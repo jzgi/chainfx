@@ -367,23 +367,23 @@ namespace Greatbone.Core
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Give(int status, IContent content = null, bool? pub = null, int maxage = 60)
+        public void Give(int status, IContent content = null, bool? @public = null, int maxage = 60)
         {
             Status = status;
             Content = content;
-            Public = pub;
+            Public = @public;
             MaxAge = maxage;
         }
 
-        public void Give(int status, IDataInput inp, bool? pub = null, int maxage = 60)
+        public void Give(int status, IDataInput inp, bool? @public = null, int maxage = 60)
         {
             Status = status;
             Content = inp.Dump();
-            Public = pub;
+            Public = @public;
             MaxAge = maxage;
         }
 
-        public void Give(int status, string text, bool? pub = null, int maxage = 60)
+        public void Give(int status, string text, bool? @public = null, int maxage = 60)
         {
             StrContent cont = new StrContent(true);
             cont.Add(text);
@@ -391,7 +391,7 @@ namespace Greatbone.Core
             // set response states
             Status = status;
             Content = cont;
-            Public = pub;
+            Public = @public;
             MaxAge = maxage;
         }
 

@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-11-02 22:11:05
+Date: 2017-11-12 10:21:31
 */
 
 
@@ -39,17 +39,6 @@ CREATE SEQUENCE "public"."repays_id_seq"
 SELECT setval('"public"."repays_id_seq"', 1293, true);
 
 -- ----------------------------
--- Sequence structure for shops_id_seq1
--- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."shops_id_seq1";
-CREATE SEQUENCE "public"."shops_id_seq1"
- INCREMENT 1
- MINVALUE 1
- MAXVALUE 9223372036854775807
- START 1
- CACHE 1;
-
--- ----------------------------
 -- Table structure for items
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."items";
@@ -57,6 +46,7 @@ CREATE TABLE "public"."items" (
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
 "descr" varchar(30) COLLATE "default",
+"mains" varchar(20) COLLATE "default",
 "icon" bytea,
 "unit" varchar(4) COLLATE "default",
 "price" money,
@@ -64,7 +54,8 @@ CREATE TABLE "public"."items" (
 "step" int2,
 "max" int2,
 "customs" varchar(30)[] COLLATE "default",
-"status" int2
+"status" int2,
+"idx" int2
 )
 WITH (OIDS=FALSE)
 
@@ -75,21 +66,25 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-"id" int8 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
+"rev" int2,
 "shopid" varchar(4) COLLATE "default",
 "shopname" varchar(10) COLLATE "default",
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
-"region" varchar(10) COLLATE "default",
+"distr" varchar(10) COLLATE "default",
+"area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
+"min" money,
+"notch" money,
+"off" money,
 "total" money,
-"created" timestamp(6),
 "cash" money DEFAULT 0,
 "paid" timestamp(6),
-"prepare" bool,
+"preparing" bool,
 "aborted" timestamp(6),
 "received" timestamp(6),
 "note" varchar(20) COLLATE "default",
@@ -126,7 +121,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."shops";
 CREATE TABLE "public"."shops" (
-"id" varchar(4) COLLATE "default" DEFAULT nextval('shops_id_seq1'::regclass) NOT NULL,
+"id" varchar(4) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
@@ -143,7 +138,9 @@ CREATE TABLE "public"."shops" (
 "oprwx" varchar(28) COLLATE "default",
 "oprtel" varchar(11) COLLATE "default",
 "oprname" varchar(10) COLLATE "default",
-"status" int2
+"status" int2,
+"schedule" varchar(20) COLLATE "default",
+"marks" varchar(10)[] COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -192,7 +189,6 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
-ALTER SEQUENCE "public"."shops_id_seq1" OWNED BY "shops"."id";
 
 -- ----------------------------
 -- Primary Key structure for table items

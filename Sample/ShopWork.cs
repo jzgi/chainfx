@@ -37,22 +37,22 @@ namespace Greatbone.Sample
                 HtmlContent h = new HtmlContent(ac, true);
                 // geolocator page
                 h.T("<html><head><script>");
-                h.T("var cities = ").JSON(City.All).T(";");
+                h.T("var cities = ").JSON(City.All, -1 ^ City.LOWER).T(";");
+                h.T("var city = cities[0].name;");
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
-                h.T("var city=''; var area='';");
                 h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
-                h.T("cities.forEach(function(c) {");
+                h.T("for (var i = 0; i < city.length; i++) {");
+                h.T("var c = cities[i];");
                 h.T("if (c.x1 < x && x < c.x2 && c.y1 < y && y < c.y2) {");
                 h.T("city=c.name;");
-                h.T("c.areas.forEach(function(a) {");
-                h.T("if (a.x1 < x && x < a.x2 && a.y1 < y && y < a.y2) {");
-                h.T("area=a.name;");
-                h.T("}});");
-                h.T("}});");
-                h.T("window.location.href = '/shop/?city=' + city + '&area=' + area;");
+                h.T("break;");
+                h.T("}");
+                h.T("}");
+                h.T("window.location.href = '/shop/?city=' + city;");
                 h.T("},");
-                h.T("function(e) {window.location.href = '/shop/?city=&area=';}, ");
-                h.T("{enableHighAccuracy: true,timeout: 5000,maximumAge: 0}");
+                h.T("function(e) {");
+                h.T("window.location.href = '/shop/?city=' + city;");
+                h.T("}, {enableHighAccuracy: true,timeout: 1000,maximumAge: 0}");
                 h.T(")");
                 h.T("</script></head></html>");
                 ac.Give(200, h);
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
             }
             ac.GiveDoc(200, m =>
             {
-                m.TOPBAR_("所在城市").SELECT(nameof(city), city, City.All, refresh: true).HIDDEN(nameof(area), area)._TOPBAR();
+                m.TOPBAR_("切换").SELECT(nameof(city), city, City.All, refresh: true)._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {

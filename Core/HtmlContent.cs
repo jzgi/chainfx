@@ -987,15 +987,15 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
 
             GRIDVIEW_();
-            short pow = 1;
             for (int i = 0; i < cards.Length; i++)
             {
-                CARD_();
+                int ordinal = i + 1;
+                CARD_(ordinal);
                 if (work.Buttonly) // if having a card lead
                 {
                     Add("<div class=\"cell small-1 lead\">");
                     Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                    Add(pow); // the power as key
+                    Add(ordinal); // ordinal as key
                     Add("\" onchange=\"checkit(this);\">");
                     Add("</div>");
                 }
@@ -1004,10 +1004,9 @@ namespace Greatbone.Core
                 if (varwork != null)
                 {
                     Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
-                    Triggers(varwork, null, pow);
+                    Triggers(varwork, null, i + 1);
                     Add("</nav>");
                 }
-                pow = (short) (pow * 2);
                 _CARD();
             }
             _GRIDVIEW();
@@ -1022,9 +1021,8 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    CARD_();
-
                     D obj = arr[i];
+                    CARD_(i + 1);
                     if (work.Buttonly) // if having a card lead
                     {
                         Add("<div class=\"cell small-1 lead\">");
@@ -1041,7 +1039,6 @@ namespace Greatbone.Core
                         Triggers(varwork, obj);
                         Add("</nav>");
                     }
-
                     _CARD();
                 }
             }
@@ -1063,11 +1060,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARD_()
+        public HtmlContent CARD_(int ordinal)
         {
             Add("<div class=\"gridview-cell cell\">");
-            Add("<form>");
-            Add("<article class=\"card grid-x\">");
+            Add("<form id=\"card-");
+            Add(ordinal);
+            Add("\"><article class=\"card grid-x\">");
             return this;
         }
 
@@ -1090,7 +1088,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Triggers(Work work, IData obj, short pow = 0)
+        void Triggers(Work work, IData obj, int ordinal = 0)
         {
             var ais = work.Styled;
             if (ais == null)
@@ -1102,7 +1100,7 @@ namespace Greatbone.Core
                 ActionInfo ai = ais[i];
                 // access check if neccessary
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
-                
+
                 UiAttribute ui = ai.Ui;
                 StyleAttribute style = ai.Style;
                 bool state = ai.StateCheck(obj);
@@ -1117,9 +1115,9 @@ namespace Greatbone.Core
                         ai.Work.PutVarKey(obj, this);
                         Add('/');
                     }
-                    else if (pow > 0)
+                    else if (ordinal > 0)
                     {
-                        Add(pow);
+                        Add(ordinal);
                         Add('/');
                     }
                     Add(ai.RPath);
@@ -1141,9 +1139,9 @@ namespace Greatbone.Core
                         ai.Work.PutVarKey(obj, this);
                         Add('/');
                     }
-                    else if (pow > 0)
+                    else if (ordinal > 0)
                     {
-                        Add(pow);
+                        Add(ordinal);
                         Add('/');
                     }
                     Add(ai.Name);
@@ -1173,9 +1171,7 @@ namespace Greatbone.Core
                 }
                 else if (style.HasScript)
                 {
-                    Add(" onclick=\"if(!confirm('");
-                    Add(ui.Tip ?? ui.Label);
-                    Add("')) return false;");
+                    Add(" onclick=\"");
                     Add(ai.Name);
                     Add("(this);return false;\"");
                 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
 using static Greatbone.Sample.User;
@@ -39,9 +38,9 @@ namespace Greatbone.Sample
                             var oi = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                             h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.customs).BUTTON("修改", true, 0)._BOX();
+                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts).BUTTON("修改", true, 0)._BOX();
                         }
-                        h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.every).T("元减").T(o.cut).T("元").T("</p>")._BOX();
+                        h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();
                     }, false, 3);
                 }
@@ -52,6 +51,9 @@ namespace Greatbone.Sample
             }
         }
 
+        /// <summary>
+        /// To create a new order or add item to an existing order.
+        /// </summary>
         public async Task add(ActionContext ac)
         {
             string wx = ac[-1];
@@ -64,7 +66,7 @@ namespace Greatbone.Sample
             decimal price = f[nameof(price)];
             short qty = f[nameof(qty)];
             string unit = f[nameof(unit)];
-            string[] customs = f[nameof(customs)];
+            string[] opts = f[nameof(opts)];
 
             using (var dc = ac.NewDbContext())
             {
@@ -72,25 +74,25 @@ namespace Greatbone.Sample
                 {
                     var o = new Order();
                     dc.Let(out o.id).Let(out o.items).Let(out o.total);
-                    o.AddItem(name, price, qty, unit, customs);
+                    o.AddItem(name, price, qty, unit, opts);
                     o.SetTotal();
-                    dc.Execute("UPDATE orders SET items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
                 else
                 {
                     User prin = (User) ac.Principal;
                     var o = new Order
                     {
+                        rev = 1,
                         shopid = shopid,
                         shopname = shopname,
                         wx = prin.wx,
                         name = prin.name,
                         tel = prin.tel,
                         city = city ?? prin.city,
-                        region = area ?? prin.area,
+                        area = area ?? prin.area,
                         addr = prin.addr,
-                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, customs = customs}},
-                        created = DateTime.Now
+                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = opts}},
                     };
                     o.SetTotal();
                     const short proj = -1 ^ Order.ID ^ Order.LATER;
@@ -124,7 +126,7 @@ namespace Greatbone.Sample
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
-                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
+                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
@@ -158,12 +160,12 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION("备货", o.prepare);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION("备货", o.preparing);
                         if (o.name != null)
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
-                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
+                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
@@ -226,7 +228,7 @@ namespace Greatbone.Sample
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
-                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
+                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
@@ -278,7 +280,7 @@ namespace Greatbone.Sample
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
-                        h.BOX_().T(o.tel)._T(o.region)._T(o.addr)._BOX();
+                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];

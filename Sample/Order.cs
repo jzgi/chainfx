@@ -30,24 +30,24 @@ namespace Greatbone.Sample
 
 
         internal int id;
+        internal short rev;
         internal string shopid;
         internal string shopname;
         internal string wx; // weixin openid
         internal string name; // customer name
         internal string tel;
         internal string city;
-        internal string region; // distr or area
-        internal string addr; // address
+        internal string area;
+        internal string addr; // may include spot
         internal OrderItem[] items;
         internal decimal min;
-        internal decimal every;
-        internal decimal cut;
-        internal decimal total; // receivable
-        internal DateTime created; // time created
+        internal decimal notch;
+        internal decimal off;
+        internal decimal total; // total price
+
         internal decimal cash; // amount recieved
         internal DateTime paid; // when cash received or forcibly accepted
-        internal bool prepare;
-        internal bool mark;
+        internal bool preparing;
         internal DateTime aborted; // time aborted
         internal DateTime received; // time shipped
         internal string note;
@@ -58,6 +58,7 @@ namespace Greatbone.Sample
             if ((proj & ID) == ID)
             {
                 i.Get(nameof(id), ref id);
+                i.Get(nameof(rev), ref rev);
             }
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(shopname), ref shopname);
@@ -65,16 +66,18 @@ namespace Greatbone.Sample
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
             i.Get(nameof(city), ref city);
-            i.Get(nameof(region), ref region);
+            i.Get(nameof(area), ref area);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(items), ref items);
+            i.Get(nameof(min), ref min);
+            i.Get(nameof(notch), ref notch);
+            i.Get(nameof(off), ref off);
             i.Get(nameof(total), ref total);
-            i.Get(nameof(created), ref created);
             if ((proj & LATER) == LATER)
             {
                 i.Get(nameof(cash), ref cash);
                 i.Get(nameof(paid), ref paid);
-                i.Get(nameof(prepare), ref prepare);
+                i.Get(nameof(preparing), ref preparing);
                 i.Get(nameof(aborted), ref aborted);
                 i.Get(nameof(received), ref received);
                 i.Get(nameof(note), ref note);
@@ -87,6 +90,7 @@ namespace Greatbone.Sample
             if ((proj & ID) == ID)
             {
                 o.Put(nameof(id), id);
+                o.Put(nameof(rev), rev);
             }
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
@@ -94,16 +98,18 @@ namespace Greatbone.Sample
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
             o.Put(nameof(city), city);
-            o.Put(nameof(region), region);
+            o.Put(nameof(area), area);
             o.Put(nameof(addr), addr);
             o.Put(nameof(items), items);
+            o.Put(nameof(min), min);
+            o.Put(nameof(notch), notch);
+            o.Put(nameof(off), off);
             o.Put(nameof(total), total);
-            o.Put(nameof(created), created);
             if ((proj & LATER) == LATER)
             {
                 o.Put(nameof(cash), cash);
                 o.Put(nameof(paid), paid);
-                o.Put(nameof(prepare), prepare);
+                o.Put(nameof(preparing), preparing);
                 o.Put(nameof(aborted), aborted);
                 o.Put(nameof(received), received);
                 o.Put(nameof(note), note);
@@ -115,16 +121,16 @@ namespace Greatbone.Sample
         {
             if (items == null)
             {
-                items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, customs = customs}};
+                items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = customs}};
             }
-            var orderitem = items.Find(o => o.name.Equals(name) && o.customs.SameAs(customs));
+            var orderitem = items.Find(o => o.name.Equals(name) && o.opts.SameAs(customs));
             if (orderitem.name != null)
             {
                 orderitem.qty += qty;
             }
             else
             {
-                items = items.AddOf(new OrderItem() {name = name, qty = qty, unit = unit, price = price, customs = customs});
+                items = items.AddOf(new OrderItem() {name = name, qty = qty, unit = unit, price = price, opts = customs});
             }
         }
 
@@ -141,15 +147,17 @@ namespace Greatbone.Sample
             }
         }
 
-        public void SetItemQty(int idx, short qty)
+        public void UpdItem(int idx, short qty, string[] opts)
         {
-            var orderitem = items[idx];
-            orderitem.qty = qty;
-        }
-
-        public void RemoveDetail(string name)
-        {
-            items = items.RemovedOf(x => x.name == name);
+            if (qty <= 0)
+            {
+                items = items.RemovedOf(idx);
+            }
+            else
+            {
+                items[idx].qty = qty;
+                items[idx].opts = opts;
+            }
         }
     }
 
@@ -159,7 +167,7 @@ namespace Greatbone.Sample
         internal decimal price;
         internal short qty;
         internal string unit;
-        internal string[] customs;
+        internal string[] opts;
 
         public decimal Subtotal => price * qty;
 
@@ -169,7 +177,7 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
             i.Get(nameof(qty), ref qty);
             i.Get(nameof(unit), ref unit);
-            i.Get(nameof(customs), ref customs);
+            i.Get(nameof(opts), ref opts);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -178,7 +186,7 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price);
             o.Put(nameof(qty), qty);
             o.Put(nameof(unit), unit);
-            o.Put(nameof(customs), customs);
+            o.Put(nameof(opts), opts);
         }
 
         public void AddQty(short qty)

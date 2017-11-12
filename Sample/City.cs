@@ -7,11 +7,14 @@ namespace Greatbone.Sample
     /// </summary>
     public class City : IData
     {
+        public const short LOWER = 2;
+
         public static Map<string, City> All;
 
         internal string name;
+
         internal double x1, y1, x2, y2;
-        internal string[] distrs;
+
         internal Area[] areas;
 
         public void Read(IDataInput i, short proj = 0x00ff)
@@ -21,8 +24,10 @@ namespace Greatbone.Sample
             i.Get(nameof(y1), ref y1);
             i.Get(nameof(x2), ref x2);
             i.Get(nameof(y2), ref y2);
-            i.Get(nameof(distrs), ref distrs);
-            i.Get(nameof(areas), ref areas);
+            if ((proj & LOWER) == LOWER)
+            {
+                i.Get(nameof(areas), ref areas);
+            }
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -32,23 +37,13 @@ namespace Greatbone.Sample
             o.Put(nameof(y1), y1);
             o.Put(nameof(x2), x2);
             o.Put(nameof(y2), y2);
-            o.Put(nameof(distrs), distrs);
-            o.Put(nameof(areas), areas);
+            if ((proj & LOWER) == LOWER)
+            {
+                o.Put(nameof(areas), areas);
+            }
         }
-
-        public string[] Distrs => distrs;
 
         public Area[] Areas => areas;
-
-        public bool Contains(double x, double y)
-        {
-            return true;
-        }
-
-        public Area LocateArea(double x, double y)
-        {
-            return default(Area);
-        }
 
         public override string ToString()
         {
@@ -59,9 +54,10 @@ namespace Greatbone.Sample
     public struct Area : IData
     {
         internal string name;
+
         internal double x1, y1, x2, y2;
-        internal string code;
-        internal string[] spots;
+
+        internal string[] places;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
@@ -70,8 +66,7 @@ namespace Greatbone.Sample
             i.Get(nameof(y1), ref y1);
             i.Get(nameof(x2), ref x2);
             i.Get(nameof(y2), ref y2);
-            i.Get(nameof(code), ref code);
-            i.Get(nameof(spots), ref spots);
+            i.Get(nameof(places), ref places);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -81,8 +76,7 @@ namespace Greatbone.Sample
             o.Put(nameof(y1), y1);
             o.Put(nameof(x2), x2);
             o.Put(nameof(y2), y2);
-            o.Put(nameof(code), code);
-            o.Put(nameof(spots), spots);
+            o.Put(nameof(places), places);
         }
 
         public override string ToString()

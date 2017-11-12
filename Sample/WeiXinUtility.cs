@@ -191,7 +191,7 @@ namespace Greatbone.Sample
             return null;
         }
 
-        public static async Task<string> PostUnifiedOrderAsync(long orderid, decimal total, string openid, string ip, string notifyurl)
+        public static async Task<(string, string)> PostUnifiedOrderAsync(string trade_no, decimal total, string openid, string ip, string notifyurl)
         {
             XElem x = new XElem("xml");
             x.AddChild("appid", appid);
@@ -200,7 +200,7 @@ namespace Greatbone.Sample
             x.AddChild("nonce_str", noncestr);
             x.AddChild("notify_url", notifyurl);
             x.AddChild("openid", openid);
-            x.AddChild("out_trade_no", orderid.ToString());
+            x.AddChild("out_trade_no", trade_no);
             x.AddChild("spbill_create_ip", ip);
             x.AddChild("total_fee", ((int) (total * 100)).ToString());
             x.AddChild("trade_type", "JSAPI");
@@ -209,18 +209,18 @@ namespace Greatbone.Sample
 
             XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).inp;
             string prepay_id = xe.Child(nameof(prepay_id));
+            string err_code = null;
             if (prepay_id == null)
             {
-                prepay_id = xe.Child("err_code");
+                err_code = xe.Child("err_code");
             }
-
-            return prepay_id;
+            return (prepay_id, err_code);
         }
 
-        public static bool Notified(XElem xe, out long out_trade_no, out decimal cash)
+        public static bool Notified(XElem xe, out string out_trade_no, out decimal cash)
         {
             cash = 0;
-            out_trade_no = 0;
+            out_trade_no = null;
 
             string appid = xe.Child(nameof(appid));
             string mch_id = xe.Child(nameof(mch_id));
@@ -330,7 +330,8 @@ namespace Greatbone.Sample
             string refund_status_0 = xi.Child(nameof(refund_status_0));
             if (refund_status_0 != "SUCCESS")
             {
-                return refund_status_0 == "PROCESSING" ? "退款处理中" : refund_status_0 == "REFUNDCLOSE" ? "退款关闭" : "退款异常";
+                return refund_status_0 == "PROCESSING" ? "退款处理中" :
+                    refund_status_0 == "REFUNDCLOSE" ? "退款关闭" : "退款异常";
             }
 
             return null;

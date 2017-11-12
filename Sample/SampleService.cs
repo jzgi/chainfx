@@ -167,8 +167,9 @@ namespace Greatbone.Sample
         public async Task notify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-            if (Notified(xe, out var orderid, out var cash))
+            if (Notified(xe, out var trade_no, out var cash))
             {
+                var (orderid, _) = trade_no.ToDual<int, short>();
                 using (var dc = NewDbContext())
                 {
                     var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
@@ -177,7 +178,7 @@ namespace Greatbone.Sample
                         var oprwx = (string) dc.Scalar("SELECT oprwx FROM shops WHERE id = @1", p => p.Set(shopid));
                         if (oprwx != null)
                         {
-                            await PostSendAsync(oprwx, "【收款通知】单号：" + orderid + "，金额：" + cash + "元");
+                            await PostSendAsync(oprwx, "【订单收款】单号：" + orderid + "，金额：" + cash + "元");
                         }
                     }
                 }

@@ -23,10 +23,10 @@ namespace Greatbone.Sample
                     else
                     {
                         StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont, pub: true, maxage: 60 * 5);
+                        ac.Give(200, cont, @public: true, maxage: 60 * 5);
                     }
                 }
-                else ac.Give(404, pub: true, maxage: 60 * 5); // not found
+                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
             }
         }
     }
@@ -83,7 +83,7 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.Give(404, pub: true, maxage: 60 * 5); // not found
+                    ac.Give(404, @public: true, maxage: 60 * 5); // not found
                 }
             }
         }

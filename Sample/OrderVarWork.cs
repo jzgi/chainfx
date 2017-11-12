@@ -98,16 +98,24 @@ namespace Greatbone.Sample
         [Ui("付款"), Style(ButtonScript)]
         public async Task Prepay(ActionContext ac)
         {
-            string wx = ac[typeof(UserVarWork)];
-            int id = ac[this];
-
-            decimal total = 0;
+            string wx = ac[-2];
+            int orderid = ac[this];
+            short rev;
+            decimal total;
             using (var dc = ac.NewDbContext())
             {
-                total = (decimal) dc.Scalar("SELECT total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(id).Set(wx));
+                dc.Query1("SELECT rev, total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                dc.Let(out rev).Let(out total);
             }
-            string prepay_id = await WeiXinUtility.PostUnifiedOrderAsync(id, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
-            ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "~" + rev, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
+            if (prepay_id != null)
+            {
+                ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
+            }
+            else
+            {
+                ac.Give(500);
+            }
         }
     }
 

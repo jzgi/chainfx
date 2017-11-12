@@ -443,7 +443,7 @@ namespace Greatbone.Core
                 Modified = modified,
                 GZip = gzip
             };
-            ac.Give(200, cont, pub: true, maxage: 60 * 15);
+            ac.Give(200, cont, @public: true, maxage: 60 * 15);
         }
     }
 }

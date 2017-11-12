@@ -1,6 +1,8 @@
-﻿namespace Greatbone.Sample
+﻿using Greatbone.Core;
+
+namespace Greatbone.Sample
 {
-    public class Mark
+    public class Mark : IData
     {
         public static Mark[] All = new Mark[]
         {
@@ -21,6 +23,14 @@
             this.mark = mark;
             this.icon = icon;
             this.descr = descr;
+        }
+
+        public void Read(IDataInput i, short proj = 255)
+        {
+        }
+
+        public void Write<R>(IDataOutput<R> o, short proj = 255) where R : IDataOutput<R>
+        {
         }
     }
 }
