@@ -31,14 +31,20 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION(o.shopname);
-                        h.BOX_().T(o.name)._T(o.tel)._T(o.addr).BUTTON("addr", true, ButtonShow)._BOX();
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
+                        h.FIELD_("收货");
+                        if (o.name != null) h._T(o.name);
+                        if (o.city != null) h._T(o.city);
+                        if (o.area != null) h._T(o.area);
+                        if (o.addr != null) h._T(o.addr);
+                        h.BUTTONSHOW("填写地址", o.id + "/addr", 1, "填写收货地址");
+                        h._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                             h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts).BUTTON("修改", true, 0)._BOX();
+//                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts).BUTTON("修改", true, 0)._BOX();
                         }
                         h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();
@@ -144,7 +150,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("新单")]
-    [User(OPR)]
+    [User(OPRMEM)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         public OprNewWork(WorkContext wc) : base(wc)
@@ -160,11 +166,13 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION("备货", o.preparing);
-                        if (o.name != null)
-                        {
-                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
-                        }
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
+                        h.FIELD_("收货");
+                        if (o.name != null) h._T(o.name);
+                        if (o.city != null) h._T(o.city);
+                        if (o.area != null) h._T(o.area);
+                        if (o.addr != null) h._T(o.addr);
+                        h._FIELD();
                         h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {

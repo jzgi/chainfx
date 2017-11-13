@@ -32,6 +32,7 @@ namespace Greatbone.Sample
 
                     h._FORM();
                 });
+                return;
             }
 
             var f = await ac.ReadAsync<Form>();

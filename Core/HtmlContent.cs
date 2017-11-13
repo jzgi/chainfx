@@ -751,21 +751,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTON(string value, bool post = true, UiMode style = 0)
+        public HtmlContent BUTTONSHOW(string text, string action, sbyte size, string tip)
         {
-            Add("<button class=\"button primary hollow\" formmethod=\"");
-            Add(post ? "post" : "get");
+            Add("<button class=\"button primary hollow\" formmethod=\"post\" formaction=\"");
+            Add(action);
+            Add("\" ");
+            Dialog(4, size, tip);
             Add("\">");
-            AddEsc(value);
+            AddEsc(text);
             Add("</button>");
-            return this;
-        }
-
-        public HtmlContent BUTTON_(bool post = true, UiMode style = 0)
-        {
-            Add("<button class=\"button primary hollow\" formmethod=\"");
-            Add(post ? "post" : "get");
-            Add("\">");
             return this;
         }
 
