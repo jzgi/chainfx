@@ -379,34 +379,6 @@ input { overflow: visible; }
      * Change the border, margin, and padding in all browsers (opinionated).
      */
 
-fieldset {
-    /* border: 1px solid silver; */
-    padding: 0.25em;
-    width: 100%;
-    border: none;
-}
-
-/**
-     * 1. Correct the text wrapping in Edge and IE.
-     * 2. Correct the color inheritance from `fieldset` elements in IE.
-     * 3. Remove the padding so developers are not caught out when they zero out
-     *    `fieldset` elements in all browsers.
-     */
-
-legend {
-    box-sizing: border-box;
-    /* 1 */
-    display: table;
-    /* 1 */
-    max-width: 100%;
-    /* 1 */
-    padding: 0;
-    /* 3 */
-    color: inherit;
-    /* 2 */
-    white-space: normal;
-    /* 1 */
-}
 
 /**
      * 1. Add the correct display in IE 9-.
@@ -880,9 +852,9 @@ ul.no-bullet, ol.no-bullet {
 textarea {
     display: inline-block;
     box-sizing: border-box;
-    width: 100%;
+    /* width: 100%; */
     height: 2.125rem;
-    padding: 0.5rem;
+    padding: 0.25rem;
     border: 1px solid #cacaca;
     box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
     font-family: inherit;

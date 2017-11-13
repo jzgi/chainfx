@@ -10,7 +10,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("客服")]
-    [User(User.OPR_)]
+    [User(User.OPR)]
     public class AdmSlideWork : SlideWork<AdmSlideVarWork>
     {
         public AdmSlideWork(WorkContext wc) : base(wc)

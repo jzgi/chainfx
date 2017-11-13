@@ -101,7 +101,6 @@
 }
 
 .page .box {
-    background-color: rgba(245, 222, 179, 0.50);
     border-bottom: 1px solid wheat;
 }
 
@@ -113,6 +112,34 @@ tr.checked {
     background-color: Lavender;
 }
 
+.pane fieldset {
+    margin: 0.25rem;
+    padding: 0.25rem 0.5rem 1.5rem 0.5rem;
+    width: 98%;
+    border: 1px solid silver;
+}
+
+.page fieldset {
+    margin: 0.25rem;
+    padding: 0.25rem 0.5rem 1.5rem 0.5rem;
+    width: 98%;
+    border: 1px solid wheat;
+}
+
+legend {
+    box-sizing: border-box;
+    /* 1 */
+    display: table;
+    /* 1 */
+    max-width: 100%;
+    /* 1 */
+    padding: 0;
+    /* 3 */
+    color: inherit;
+    /* 2 */
+    white-space: normal;
+    /* 1 */
+}
 
 /* CROPPIE */
 

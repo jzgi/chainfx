@@ -11,12 +11,12 @@ namespace Greatbone.Sample
             INITIAL = 2,
             LATE = 4;
 
-        public const short VOID = 0, OFF = 1, ON = 2;
+        public const short OFF = 1, ON = 2;
 
         public static Map<short, string> Status = new Map<short, string>
         {
-            {VOID, "未定义"},
-            {OFF, "已下班"},
+            {0, string.Empty},
+            {OFF, "休息中"},
             {ON, "营业中"}
         };
 

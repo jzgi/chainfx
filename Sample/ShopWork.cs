@@ -116,7 +116,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("作坊")]
+    [Ui("网点")]
     public class AdmShopWork : ShopWork<AdmShopVarWork>
     {
         public AdmShopWork(WorkContext wc) : base(wc)

@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
 
     [Ui("货架")]
-    [User(User.OPR_)]
+    [User(User.OPR)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)

@@ -180,7 +180,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 wx_tel_name = f[nameof(wx_tel_name)];
-                (string wx, string tel, string name) = wx_tel_name.ToTriple<string, string, string>();
+                (string wx, string tel, string name) = wx_tel_name.To3Strings('~');
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; UPDATE users SET oprat = @4, opr = " + User.OPRMGR + "  WHERE wx = @2;",

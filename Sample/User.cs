@@ -14,11 +14,11 @@ namespace Greatbone.Sample
             CREDENTIAL = 2,
             LATER = 4;
 
-        public const short OPR_ = 1, OPRMEM = 3, OPRMGR = 7;
+        public const short OPR = 1, OPRMEM = 3, OPRMGR = 7;
 
-        public static readonly Map<short, string> OPRS = new Map<short, string>
+        public static readonly Map<short, string> Oprs = new Map<short, string>
         {
-            {OPR_, "基本"},
+            {OPR, "基本"},
             {OPRMEM, "成员"},
             {OPRMGR, "经理"},
         };

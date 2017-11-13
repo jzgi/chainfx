@@ -706,9 +706,9 @@ namespace Greatbone.Core
 
         public HtmlContent FIELDSET_(string legend = null, sbyte box = 12)
         {
-            Add("<fieldset class=\"cell box small-");
+            Add("<div class=\"cell small-");
             Add(box);
-            Add("\">");
+            Add("\"><fieldset>");
             if (legend != null)
             {
                 Add("<legend>");
@@ -723,6 +723,7 @@ namespace Greatbone.Core
         {
             Add("</div>");
             Add("</fieldset>");
+            Add("</div>");
             return this;
         }
 
@@ -1171,9 +1172,9 @@ namespace Greatbone.Core
                 }
                 else if (style.HasScript)
                 {
-                    Add(" onclick=\"");
-                    Add(ai.Name);
-                    Add("(this);return false;\"");
+                    Add(" onclick=\"return ");
+                    Add(ai.Lower);
+                    Add("(this) || false;\"");
                 }
                 else if (style.HasCrop)
                 {
@@ -1233,7 +1234,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte size = 0, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1256,11 +1257,12 @@ namespace Greatbone.Core
             }
             if (max > 0)
             {
+                if (size == 0) size = (sbyte) (max + 2);
                 Add(" maxlength=\"");
                 Add(max);
                 Add("\"");
                 Add(" size=\"");
-                Add(max);
+                Add(size);
                 Add("\"");
             }
             if (min > 0)

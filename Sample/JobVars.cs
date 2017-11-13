@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
+using static Greatbone.Sample.Shop;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -144,7 +145,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("常规"), User(OPR_)]
+    [Ui("常规"), User(OPR)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
@@ -168,17 +169,17 @@ namespace Greatbone.Sample
             if (inner)
             {
                 string shopid = ac[this];
-                ac.GivePage(200, main =>
+                ac.GivePage(200, m =>
                 {
-                    main.GRIDVIEW(
+                    m.TOOLBAR();
+                    m.GRIDVIEW(
                         h =>
                         {
                             using (var dc = ac.NewDbContext())
                             {
                                 dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                                 dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
-                                h.CAPTION("本店营业状态设置");
-                                h.FIELD(Shop.Status[status].ToString(), "状态");
+                                h.CAPTION("营业状态设置", Status[status], status == ON);
                                 h.FIELDSET_("值班员信息");
                                 h.FIELD(oprname, "姓名");
                                 h.FIELD(oprwx, "微信");
@@ -195,7 +196,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权"), Style(AnchorOpen), User(OPRMEM)]
+        [Ui("操作授权"), Style(ButtonOpen), User(OPRMEM)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -224,24 +225,26 @@ namespace Greatbone.Sample
             ac.GivePane(200, m =>
             {
                 m.FORM_();
-                m.FIELDSET_("现有操作人员");
+                m.FIELDSET_("现有人员");
                 using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
                     {
+                        m.T("<div>");
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out tel).Let(out opr);
-                            m.RADIO(nameof(tel), tel, null, null, false, tel, name, OPRS[opr]);
+                            m.RADIO(nameof(tel), tel, null, null, false, tel, name, Oprs[opr]);
                         }
+                        m.T("</div>");
                         m.BUTTON(nameof(grant), 1, "删除");
                     }
                 }
                 m._FIELDSET();
 
-                m.FIELDSET_("添加操作人员");
-                m.TEXT(nameof(tel), tel, label: "手机号", pattern: "[0-9]+", max: 11, min: 11);
-                m.SELECT(nameof(opr), opr, OPRS, "权限");
+                m.FIELDSET_("添加人员");
+                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
+                m.SELECT(nameof(opr), opr, Oprs, "权限");
                 m.BUTTON(nameof(grant), 2, "添加");
                 m._FIELDSET();
                 m._FORM();
@@ -289,7 +292,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL, status = " + Shop.OFF + " WHERE id = @1", p => p.Set(shopid));
+                    dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL, status = " + OFF + " WHERE id = @1", p => p.Set(shopid));
                 }
                 ac.GivePane(200);
             }
@@ -314,7 +317,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3, status = " + Shop.ON + " WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                    dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3, status = " + ON + " WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
                 }
                 ac.GivePane(200);
             }

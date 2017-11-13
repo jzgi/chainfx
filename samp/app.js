@@ -203,7 +203,6 @@ function upload(url, circle) {
         });
 }
 
-
 function prepay(trig) {
     // get prepare id
     var action;
@@ -216,26 +215,24 @@ function prepay(trig) {
         action = trig.href
         method = 'get';
     }
-
     $.ajax({
         url: action,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-
             WeixinJSBridge.invoke('getBrandWCPayRequest',
                 data,
                 function (res) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         location.reload();
-                    }
+                    } 
                 });
-
         },
         error: function (res) {
             alert('服务器访问失败');
         }
     });
+    return false;
 }
 
 function checkit(el) {

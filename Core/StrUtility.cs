@@ -94,17 +94,17 @@ namespace Greatbone.Core
 
         public static bool TryParseDate(string str, out DateTime v)
         {
-            int year = ParseNum(str, 0, 4, 1000);
-            int month = ParseNum(str, 5, 2, 10);
-            int day = ParseNum(str, 8, 2, 10);
+            int year = ParseInt(str, 0, 4, 1000);
+            int month = ParseInt(str, 5, 2, 10);
+            int day = ParseInt(str, 8, 2, 10);
             int len = str.Length;
 
             int hour = 0, minute = 0, second = 0; // optional time part
             if (len >= 19)
             {
-                hour = ParseNum(str, 11, 2, 10);
-                minute = ParseNum(str, 14, 2, 10);
-                second = ParseNum(str, 17, 2, 10);
+                hour = ParseInt(str, 11, 2, 10);
+                minute = ParseInt(str, 14, 2, 10);
+                second = ParseInt(str, 17, 2, 10);
             }
             try
             {
@@ -113,19 +113,19 @@ namespace Greatbone.Core
             }
             catch
             {
-                v = default(DateTime);
+                v = default;
                 return false;
             }
         }
 
         public static bool TryParseUtcDate(string utcstr, out DateTime v)
         {
-            int day = ParseNum(utcstr, 5, 2, 10);
+            int day = ParseInt(utcstr, 5, 2, 10);
             int month = ParseMonth(utcstr, 8);
-            int year = ParseNum(utcstr, 12, 4, 1000);
-            int hour = ParseNum(utcstr, 17, 2, 10);
-            int minute = ParseNum(utcstr, 20, 2, 10);
-            int second = ParseNum(utcstr, 23, 2, 10);
+            int year = ParseInt(utcstr, 12, 4, 1000);
+            int hour = ParseInt(utcstr, 17, 2, 10);
+            int minute = ParseInt(utcstr, 20, 2, 10);
+            int second = ParseInt(utcstr, 23, 2, 10);
             try
             {
                 v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
@@ -133,12 +133,12 @@ namespace Greatbone.Core
             }
             catch
             {
-                v = default(DateTime);
+                v = default;
                 return false;
             }
         }
 
-        static int ParseNum(string str, int start, int count, int @base)
+        static int ParseInt(string str, int start, int count, int @base)
         {
             int num = 0;
             for (int i = 0; i < count; i++, @base /= 10)
@@ -331,123 +331,114 @@ namespace Greatbone.Core
         // CONVERTION
         //
 
-        public static bool ToBool(this string str, bool def = false)
+        public static bool ToBool(this string str)
         {
-            if ("true".Equals(str))
-            {
-                return true;
-            }
-            if ("false".Equals(str))
-            {
-                return false;
-            }
-            return def;
+            return str == "true" || str == "1";
         }
 
-        public static short ToShort(this string str, short def = 0)
+        public static short ToShort(this string str)
         {
-            short v;
-            if (str != null && short.TryParse(str, out v))
-            {
-                return v;
-            }
-            return def;
+            return (short) str.ToInt(0, str.Length);
         }
 
-        public static int ToInt(this string str, int def = 0)
+        public static int ToInt(this string str, int start, int end)
         {
-            int v;
-            if (str != null && int.TryParse(str, out v))
+            int sum = 0;
+            for (int i = start; i < end; i++)
             {
-                return v;
+                char c = str[i];
+                int n = c - '0';
+                if (n > 0 && n <= 10)
+                {
+                    sum = sum * 10 + n;
+                }
             }
-            return def;
+            return sum;
         }
 
-        public static long ToLong(this string str, long def = 0)
+        public static int ToInt(this string str)
         {
-            long v;
-            if (str != null && long.TryParse(str, out v))
-            {
-                return v;
-            }
-            return def;
+            return str.ToInt(0, str.Length);
         }
 
-        public static DateTime ToDateTime(this string str, DateTime def = default(DateTime))
+        public static long ToLong(this string str, int start, int end)
         {
-            DateTime v = def;
-            TryParseDate(str, out v);
+            long sum = 0;
+            for (int i = start; i < end; i++)
+            {
+                char c = str[i];
+                int n = c - '0';
+                if (n > 0 && n <= 10)
+                {
+                    sum = sum * 10 + n;
+                }
+            }
+            return sum;
+        }
+
+        public static long ToLong(this string str)
+        {
+            return str.ToLong(0, str.Length);
+        }
+
+        public static DateTime ToDateTime(this string str)
+        {
+            TryParseDate(str, out var v);
             return v;
         }
 
-
-        public static (A, B) ToDual<A, B>(this string str)
+        public static (int, int) To2Ints(this string str, char sep = '-')
         {
-            string a = null;
-            string b = null;
-            int dash = str.IndexOf('~');
-            if (dash != -1)
-            {
-                a = str.Substring(0, dash);
-                b = str.Substring(dash + 1);
-            }
-            else
-            {
-                a = str;
-            }
-            return (a.ToValue<A>(), b.ToValue<B>());
+            int len = str.Length;
+            int p = 0;
+            while (p < len && str[p] != sep) p++;
+
+            int a = str.ToInt(0, p);
+            int b = str.ToInt(p + 1, len);
+            return (a, b);
         }
 
-        public static (A, B, C) ToTriple<A, B, C>(this string str)
+        public static (int, string) ToIntString(this string str, char sep = '-')
         {
-            string a = null;
-            string b = null;
-            string c = null;
-            int dash1 = str.IndexOf('~');
-            if (dash1 != -1)
+            int p = 0;
+            int len = str.Length;
+            while (p < len && str[p] != sep)
             {
-                a = str.Substring(0, dash1);
-                int dash2 = str.IndexOf('~', dash1 + 1);
-                if (dash2 != -1)
-                {
-                    b = str.Substring(dash1 + 1, dash2 - dash1 - 1);
-                    c = str.Substring(dash2 + 1);
-                }
-                else
-                {
-                    b = str.Substring(dash1 + 1);
-                }
+                p++;
             }
-            else
-            {
-                a = str;
-            }
-            return (a.ToValue<A>(), b.ToValue<B>(), c.ToValue<C>());
+            int a = str.ToInt(0, p);
+            string b = str.Substring(p + 1, len - (p + 1));
+            return (a, b);
         }
 
-        public static V ToValue<V>(this string str)
+        public static (string, string) To2Strings(this string str, char sep = '-')
         {
-            if (str != null)
-            {
-                Type t = typeof(V);
+            int len = str.Length;
 
-                // cannot avoid boxing
+            int p = 0;
+            while (p < len && str[p] != sep) p++;
 
-                if (t == typeof(string))
-                {
-                    return (V) (object) str;
-                }
-                if (t == typeof(int))
-                {
-                    return (V) (object) str.ToInt();
-                }
-                if (t == typeof(long))
-                {
-                    return (V) (object) str.ToLong();
-                }
-            }
-            return default(V);
+            string a = str.Substring(0, p);
+            string b = str.Substring(p + 1, len - (p + 1));
+            return (a, b);
+        }
+
+        public static (string, string, string) To3Strings(this string str, char sep = '-')
+        {
+            int len = str.Length;
+
+            int p0 = 0, p = 0;
+            while (p < len && str[p] != sep) p++;
+            string a = str.Substring(p0, p - p0);
+
+            p0 = ++p;
+            while (p < len && str[p] != sep) p++;
+
+            string b = str.Substring(p0, p - p0);
+
+            p0 = ++p;
+            string c = str.Substring(p0, len - p0);
+            return (a, b, c);
         }
     }
 }

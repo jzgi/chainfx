@@ -107,7 +107,7 @@ namespace Greatbone.Sample
                 dc.Query1("SELECT rev, total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                 dc.Let(out rev).Let(out total);
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "~" + rev, total, wx, ac.RemoteAddr, "http://shop.144000.tv/notify");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));

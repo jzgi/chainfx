@@ -164,12 +164,12 @@ namespace Greatbone.Sample
         /// <summary>
         /// WCPay notify, placed here due to non-authentic context.
         /// </summary>
-        public async Task notify(ActionContext ac)
+        public async Task paynotify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
             if (Notified(xe, out var trade_no, out var cash))
             {
-                var (orderid, _) = trade_no.ToDual<int, short>();
+                var (orderid, _) = trade_no.To2Ints();
                 using (var dc = NewDbContext())
                 {
                     var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));

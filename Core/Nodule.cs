@@ -12,6 +12,9 @@ namespace Greatbone.Core
 
         readonly bool cap;
 
+        // name in lowercase
+        readonly string lower;
+
         // ui label or upper key
         readonly string label;
 
@@ -35,6 +38,7 @@ namespace Greatbone.Core
         {
             this.name = name;
             this.cap = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
+            this.lower = name.ToLower();
 
             // either methodinfo or typeinfo
             if (attrprov == null)
@@ -75,6 +79,8 @@ namespace Greatbone.Core
         public string Name => name;
 
         public bool IsCap => cap;
+
+        public string Lower => lower;
 
         public UiAttribute Ui => ui;
 
