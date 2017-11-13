@@ -15,7 +15,7 @@ We're aiming similar goals to create a framework for building microservices, tha
 
 The framework specifically uses the following open-source libraries. Many thanks to the great teams respectively!
 
-| ![kestrel](https://dotnetfoundation.org/Themes/DotNetFoundation.Theme/Images/logo-small.png) | ![npgsql](http://www.npgsql.org/img/logo.svg) |
+| ![kestrel](https://dotnet.github.io/images/Logo_DotNet.png) | ![npgsql](http://www.npgsql.org/img/logo.svg) |
 | ---- | ----- |
 | [kestrel](https://github.com/aspnet/KestrelHttpServer) | [npgsql](http://www.npgsql.org) |
 | ASP.NET Core's built-in web server | .NET Access to PostgreSQL |
