@@ -5,6 +5,26 @@ using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
+    public class OrderCheckAttribute : CheckAttribute
+    {
+        readonly char state;
+
+        public OrderCheckAttribute(char state)
+        {
+            this.state = state;
+        }
+
+        public override bool Check(object obj)
+        {
+            var o = obj as Order;
+            switch (state)
+            {
+                case 'A': return o.addr != null;
+            }
+            return false;
+        }
+    }
+
     public abstract class OrderVarWork : Work
     {
         protected OrderVarWork(WorkContext wc) : base(wc)
@@ -23,20 +43,29 @@ namespace Greatbone.Sample
             string wx = ac[-2];
             int orderid = ac[this];
 
+            string area = null;
+            string addr = null;
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
                 {
-                    h.FORM_();
-//                    h.SELECT(nameof(area), area, "区域")
-
-                    h._FORM();
+                    using (var dc = Service.NewDbContext())
+                    {
+                        if (dc.Query1("SELECT city, areas FROM shops WHERE id = (SELECT shopid FROM orders WHERE id = @1)", p => p.Set(orderid)))
+                        {
+                            dc.Let(out string city).Let(out string[] areas);
+                            h.FORM_();
+                            h.SELECT(nameof(area), area, areas, "区域", refresh: true);
+                            h.SELECT(nameof(addr), addr, City.All[city].FindArea(area).places, "区域");
+                            h._FORM();
+                        }
+                    }
                 });
                 return;
             }
 
             var f = await ac.ReadAsync<Form>();
-            f.Let(out string area).Let(out string addr).Let(out string tel);
+            f.Let(out area).Let(out addr).Let(out string tel);
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE orders SET area = @1, addr = @2, tel = @3 WHERE id = @4", p => p.Set(area).Set(addr).Set(tel).Set(orderid));
@@ -96,7 +125,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("付款"), Style(ButtonScript)]
+        [Ui("付款"), Style(ButtonScript), OrderCheck('A')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];

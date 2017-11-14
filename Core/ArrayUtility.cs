@@ -88,6 +88,19 @@ namespace Greatbone.Core
             return arr == null || arr.Length == 0;
         }
 
+        public static bool Contains<V>(this V[] arr, V v)
+        {
+            if (v != null && arr != null)
+            {
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (arr[i].Equals(v)) return true;
+                }
+            }
+            return false;
+        }
+
+
         public static bool SameAs<E>(this E[] arr, E[] another)
         {
             if (arr == null && another == null)

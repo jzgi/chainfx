@@ -80,6 +80,10 @@
     border-radius: 50%;
 }
 
+.box {
+    padding: 0.25rem;
+}
+
 .card .box {
     padding: 0.25rem;
 }

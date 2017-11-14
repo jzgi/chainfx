@@ -8,7 +8,6 @@ namespace Greatbone.Sample
 
         public const short
             ID = 1,
-            INITIAL = 2,
             LATE = 4;
 
         public const short OFF = 1, ON = 2;
@@ -22,12 +21,10 @@ namespace Greatbone.Sample
 
         internal string id;
         internal string name;
-        internal string[] marks;
         internal string city;
         internal string addr;
         internal string schedule;
-        internal double x;
-        internal double y;
+        internal string[] flags;
         internal string[] areas;
         internal string mgrwx;
         internal string mgrtel;
@@ -39,23 +36,15 @@ namespace Greatbone.Sample
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
-            if ((proj & ID) == ID)
-            {
-                i.Get(nameof(id), ref id);
-            }
-            if ((proj & INITIAL) == INITIAL)
-            {
-                i.Get(nameof(name), ref name);
-                i.Get(nameof(marks), ref marks);
-                i.Get(nameof(city), ref city);
-                i.Get(nameof(addr), ref addr);
-                i.Get(nameof(schedule), ref schedule);
-                i.Get(nameof(x), ref x);
-                i.Get(nameof(y), ref y);
-            }
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(city), ref city);
+            i.Get(nameof(addr), ref addr);
+            i.Get(nameof(schedule), ref schedule);
+            i.Get(nameof(flags), ref flags);
+            i.Get(nameof(areas), ref areas);
             if ((proj & LATE) == LATE)
             {
-                i.Get(nameof(areas), ref areas);
                 i.Get(nameof(mgrwx), ref mgrwx);
                 i.Get(nameof(mgrtel), ref mgrtel);
                 i.Get(nameof(mgrname), ref mgrname);
@@ -68,23 +57,15 @@ namespace Greatbone.Sample
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
-            if ((proj & ID) == ID)
-            {
-                o.Put(nameof(id), id);
-            }
-            if ((proj & INITIAL) == INITIAL)
-            {
-                o.Put(nameof(name), name);
-                o.Put(nameof(marks), marks);
-                o.Put(nameof(city), city);
-                o.Put(nameof(addr), addr);
-                o.Put(nameof(schedule), schedule);
-                o.Put(nameof(x), x);
-                o.Put(nameof(y), y);
-            }
+            o.Put(nameof(id), id);
+            o.Put(nameof(name), name);
+            o.Put(nameof(city), city);
+            o.Put(nameof(addr), addr);
+            o.Put(nameof(schedule), schedule);
+            o.Put(nameof(flags), flags);
+            o.Put(nameof(areas), areas);
             if ((proj & LATE) == LATE)
             {
-                o.Put(nameof(areas), areas);
                 o.Put(nameof(mgrwx), mgrwx);
                 o.Put(nameof(mgrtel), mgrtel);
                 o.Put(nameof(mgrname), mgrname);

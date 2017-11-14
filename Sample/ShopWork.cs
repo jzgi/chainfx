@@ -100,7 +100,7 @@ namespace Greatbone.Sample
                                 h.P(o.areas, "限送");
                             }
                             h._BOX();
-                            h.BOX_().T("<p>特色：<a href=\"mark\">").T(o.marks).T("</a></p>")._BOX();
+                            h.BOX_().T("<p>特色：<a href=\"mark\">").T(o.flags).T("</a></p>")._BOX();
                             h.IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3);
                         });
                     }
@@ -128,7 +128,7 @@ namespace Greatbone.Sample
             string city = ac[typeof(Work)];
             using (var dc = ac.NewDbContext())
             {
-                const short proj = Shop.ID | Shop.INITIAL | Shop.LATE;
+                const short proj = Shop.LATE;
                 dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops ORDER BY id");
                 if (dc.Query())
                 {
@@ -146,26 +146,28 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                var o = new Shop();
+                var o = new Shop() {city = City.All[0].Key};
+                o.Read(ac.Query);
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
-                    m.SELECT(nameof(o.city), o.city, City.All, "城市");
-                    m.TEXT(nameof(o.addr), o.addr, label: "地址", max: 20);
-                    m.NUMBER(nameof(o.x), o.x, "经度");
-                    m.NUMBER(nameof(o.y), o.y, "纬度");
+                    m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
+                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                    m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
+                    m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                    m.TEXT(nameof(o.schedule), o.schedule, "营业");
+                    m.SELECT(nameof(o.flags), o.flags, Flag.All, "特色");
+                    m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                     m._FORM();
                 });
             }
             else // post
             {
-                const short proj = Shop.INITIAL;
                 var o = await ac.ReadObjectAsync<Shop>();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj);
-                    dc.Execute(p => o.Write(p, proj));
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty);
+                    dc.Execute(p => o.Write(p));
                 }
                 ac.GivePane(200); // created
             }

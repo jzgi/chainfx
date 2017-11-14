@@ -67,7 +67,7 @@ namespace Greatbone.Core
 
         IDataInput Let(out string[] v);
 
-        IDataInput Let(out Dictionary<string, string> v);
+        IDataInput Let(out Map<string, string> v);
 
         IDataInput Let<D>(out D v, short proj = 0x00ff) where D : IData, new();
 

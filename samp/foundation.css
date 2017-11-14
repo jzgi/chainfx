@@ -855,7 +855,7 @@ textarea {
     height: 2.125rem;
     padding: 0.25rem;
     border: 1px solid #cacaca;
-    box-shadow: inset 0 1px 2px wheat;
+    box-shadow: inset 0 1px 2px gainsboro;
     font-family: inherit;
     line-height: 1.5;
     color: #0a0a0a;
@@ -868,8 +868,8 @@ textarea {
 [type='text']:focus, [type='password']:focus, [type='date']:focus, [type='datetime']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='week']:focus, [type='email']:focus, [type='number']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='url']:focus, [type='color']:focus,
 textarea:focus {
     outline: none;
-    border: 1px solid #8a8a8a;
-    box-shadow: 0 0 5px #cacaca;
+    border: 1px solid blue;
+    box-shadow: 0 0 5px blue;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
 }
 
@@ -921,19 +921,6 @@ label > [type='checkbox'],
 label > [type='radio'] { margin-right: 0.5rem; }
 
 [type='file'] { width: 100%; }
-
-label {
-    display: inline-block;
-    margin: 0;
-    font-weight: normal;
-    line-height: 1.8;
-    color: #0a0a0a;
-}
-
-label.middle {
-    margin: 0 0 1rem;
-    padding: 0.5625rem 0;
-}
 
 .help-text {
     margin-top: -0.5rem;
@@ -3019,7 +3006,6 @@ html.is-reveal-open body {
 
 table {
     border-collapse: collapse;
-    width: 100%;
     margin-bottom: 1rem;
 }
 
@@ -3124,46 +3110,6 @@ table.hover tbody tr:hover { background-color: #f9f9f9; }
     color: gainsboro;
 }
 
-.label {
-    display: inline-block;
-    padding: 0.33333rem 0.5rem;
-    font-size: 1rem;
-    line-height: 1;
-    white-space: nowrap;
-    cursor: default;
-    background: darkblue;
-    color: gainsboro;
-}
-
-.label.primary {
-    background: darkblue;
-    color: #0a0a0a;
-}
-
-.label.alert {
-    background: #c60f13;
-    color: gainsboro;
-}
-
-.label.success {
-    background: #5da423;
-    color: #0a0a0a;
-}
-
-.label.warning {
-    background: #ffae00;
-    color: #0a0a0a;
-}
-
-.label.body-font {
-    background: #222222;
-    color: gainsboro;
-}
-
-.label.header {
-    background: #222222;
-    color: gainsboro;
-}
 
 .progress {
     height: 1rem;

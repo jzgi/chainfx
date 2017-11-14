@@ -338,7 +338,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out Dictionary<string, string> v)
+        public IDataInput Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }

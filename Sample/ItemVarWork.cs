@@ -63,7 +63,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("购物车&nbsp;&#10010;", "加入购物车"), Style(ButtonPrompt, 1), ItemCheck('A')]
+        [Ui("购买", "加入购物车"), Style(ButtonPrompt, 1), ItemCheck('A')]
         public async Task Add(ActionContext ac)
         {
             string shopid = ac[-1];

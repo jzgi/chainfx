@@ -43,6 +43,26 @@ namespace Greatbone.Sample
             }
         }
 
+        public static City FindCity(string city)
+        {
+            return city == null ? null : All[city];
+        }
+
+        public Area FindArea(string area)
+        {
+            if (areas != null)
+            {
+                for (int i = 0; i < areas.Length; i++)
+                {
+                    if (areas[i].name == area)
+                    {
+                        return areas[i];
+                    }
+                }
+            }
+            return default;
+        }
+
         public Area[] Areas => areas;
 
         public override string ToString()

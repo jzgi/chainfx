@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace Greatbone.Core
 {
@@ -490,8 +489,10 @@ namespace Greatbone.Core
             Add("\">");
             if (label != null)
             {
+                Add("<label>");
                 Add(label);
                 Add("：");
+                Add("</label>");
             }
             return this;
         }
@@ -751,7 +752,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTONSHOW(string text, string action, sbyte size, string tip)
+        public HtmlContent BUTTONSHOW(string text, string action, sbyte size = 1, string tip = null)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"post\" formaction=\"");
             Add(action);
@@ -2019,14 +2020,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
+        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
             Add("<select name=\"");
             Add(name);
             Add("\"");
-            if (multiple) Add(" multiple");
             if (required) Add(" required");
             if (size > 0)
             {
@@ -2057,14 +2057,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
+        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
+        {
+            FIELD_(label, box);
+
+            Add("<select name=\"");
+            Add(name);
+            Add("\" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
+            Add(">");
+
+            for (int i = 0; i < opt.Count; i++)
+            {
+                var e = opt[i];
+                Add("<option value=\"");
+                Add(e.key);
+                Add("\"");
+                if (v.Contains(e.key)) Add(" selected");
+                Add(">");
+                Add(e.value.ToString());
+                Add("</option>");
+            }
+            Add("</select>");
+
+            _FIELD();
+            return this;
+        }
+
+        public HtmlContent SELECT(string name, string v, object[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
             Add("<select name=\"");
             Add(name);
             Add("\"");
-            if (multiple) Add(" multiple");
             if (required) Add(" required");
             if (size > 0)
             {
@@ -2082,11 +2118,52 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < opt.Length; i++)
                 {
-                    string key = opt[i];
+                    string key = opt[i].ToString();
                     Add("<option value=\"");
                     Add(key);
                     Add("\"");
                     if (key == v) Add(" selected");
+                    Add(">");
+
+                    Add(key);
+                    Add("</option>");
+                }
+            }
+            Add("</select>");
+
+            _FIELD();
+            return this;
+        }
+
+        public HtmlContent SELECT<D>(string name, string[] v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12) where D : IData
+        {
+            FIELD_(label, box);
+
+            Add("<select name=\"");
+            Add(name);
+            Add("\" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
+            Add(">");
+
+            if (opt != null)
+            {
+                for (int i = 0; i < opt.Length; i++)
+                {
+                    string key = opt[i].ToString();
+                    Add("<option value=\"");
+                    Add(key);
+                    Add("\"");
+                    if (v.Contains(key)) Add(" selected");
                     Add(">");
 
                     Add(key);

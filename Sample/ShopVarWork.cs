@@ -103,23 +103,20 @@ namespace Greatbone.Sample
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
-            const short proj = Shop.INITIAL;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops WHERE id = @1");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                     if (dc.Query1(p => p.Set(shopid)))
                     {
-                        var o = dc.ToObject<Shop>(proj);
+                        var o = dc.ToObject<Shop>();
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
                             m.TEXT(nameof(o.name), o.name, label: "名称");
                             m.SELECT(nameof(o.city), o.city, City.All, "城市");
                             m.TEXT(nameof(o.addr), o.addr, label: "地址");
-                            m.NUMBER(nameof(o.x), o.x, "经度");
-                            m.NUMBER(nameof(o.y), o.y, "纬度");
                             m._FORM();
                         });
                     }
@@ -131,13 +128,13 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Shop>(proj);
+                var o = await ac.ReadObjectAsync<Shop>();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj).T(" WHERE id = @1");
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty).T(" WHERE id = @1");
                     dc.Execute(p =>
                     {
-                        o.Write(p, proj);
+                        o.Write(p);
                         p.Set(shopid);
                     });
                 }

@@ -925,25 +925,77 @@ namespace Greatbone.Core
 
         public IDataInput Let(out short[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<short[]>(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = null;
+            return this;
         }
 
         public IDataInput Let(out int[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<int[]>(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = null;
+            return this;
         }
 
         public IDataInput Let(out long[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<long[]>(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = null;
+            return this;
         }
 
         public IDataInput Let(out string[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<string[]>(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = null;
+            return this;
         }
 
-        public IDataInput Let(out Dictionary<string, string> v)
+        public IDataInput Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }
