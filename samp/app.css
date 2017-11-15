@@ -62,18 +62,20 @@
     font-size: 1.125rem;
 }
 
-.card .flag.on {
+.card .flag-on {
     color: green;
 }
 
-.card .flag.off {
+.card .flag {
     color: gray;
 }
 
+.card .flag-off {
+    color: red;
+}
+
 .card .tail {
-    vertical-align: middle;
     padding: 0.25rem;
-    color: green;
 }
 
 .card .img.major {

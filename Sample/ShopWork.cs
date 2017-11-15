@@ -82,7 +82,7 @@ namespace Greatbone.Sample
             }
             ac.GiveDoc(200, m =>
             {
-                m.TOPBAR_("切换").SELECT(nameof(city), city, City.All, refresh: true)._TOPBAR();
+                m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true)._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {

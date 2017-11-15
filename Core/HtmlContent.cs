@@ -392,7 +392,7 @@ namespace Greatbone.Core
         {
             if (flag != null)
             {
-                Add("<span class=\"flag float-right");
+                Add("<span class=\"float-right flag");
                 if (on.HasValue)
                 {
                     Add(on.Value ? " on" : " off");
@@ -405,11 +405,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TAIL(string v)
+        public HtmlContent TAIL(string flag, bool? on = null)
         {
-            Add("<div class=\"cell shrink tail\">");
-            Add(v);
-            Add("</div>");
+            TAIL_();
+            _TAIL(flag, on);
             return this;
         }
 
@@ -419,8 +418,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _TAIL()
+        public HtmlContent _TAIL(string flag = null, bool? on = null)
         {
+            if (flag != null)
+            {
+                Add("<span class=\"float-right flag");
+                if (on.HasValue)
+                {
+                    Add(on.Value ? "-on" : "-off");
+                }
+                Add("\">");
+                Add(flag);
+                Add("</span>");
+            }
             Add("</div>");
             return this;
         }
@@ -1244,7 +1254,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte size = 0, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1267,12 +1277,8 @@ namespace Greatbone.Core
             }
             if (max > 0)
             {
-                if (size == 0) size = (sbyte) (max + 2);
                 Add(" maxlength=\"");
                 Add(max);
-                Add("\"");
-                Add(" size=\"");
-                Add(size);
                 Add("\"");
             }
             if (min > 0)
@@ -1959,9 +1965,6 @@ namespace Greatbone.Core
         public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
-
-            Add("<label>");
-            AddLabel(label, name);
             Add("<textarea name=\"");
             Add(name);
             Add("\"");
@@ -1995,8 +1998,6 @@ namespace Greatbone.Core
             Add(">");
             AddEsc(v);
             Add("</textarea>");
-            Add("</label>");
-
             _FIELD();
             return this;
         }

@@ -116,6 +116,13 @@ namespace Greatbone.Sample
             o.Put(nameof(status), status);
         }
 
+        public string Err()
+        {
+            if (total < min) return "不足最低金额，请继续选购！";
+            if (addr == null) return "您尚未填写地址哦！";
+            return null;
+        }
+
         public void AddItem(string name, decimal price, short qty, string unit, string[] customs)
         {
             if (items == null)

@@ -4,7 +4,7 @@ namespace Greatbone.Sample
 {
     public static class HtmlContentUtility
     {
-        public static HtmlContent TOPBAR_(this HtmlContent h, string title)
+        public static HtmlContent TOPBAR_(this HtmlContent h, string title = null)
         {
             h.T("<header data-sticky-container>");
             h.T("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");

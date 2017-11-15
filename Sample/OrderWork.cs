@@ -48,6 +48,7 @@ namespace Greatbone.Sample
                         }
                         h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();
+                        h.TAIL(o.Err(), false);
                     }, false, 3);
                 }
                 else
