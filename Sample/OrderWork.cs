@@ -14,9 +14,9 @@ namespace Greatbone.Sample
     }
 
     [Ui("购物车")]
-    public class MyPreWork : OrderWork<MyPreVarWork>
+    public class MyCartWork : OrderWork<MyCartVarWork>
     {
-        public MyPreWork(WorkContext wc) : base(wc)
+        public MyCartWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
                             var oi = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                             h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts).BUTTONSHOW("修改", "")._BOX();
+                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
                         }
                         h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();
@@ -127,18 +127,22 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
-                        if (o.name != null)
-                        {
-                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
-                        }
-                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
+                        h.FIELD_("收货");
+                        if (o.name != null) h._T(o.name);
+                        if (o.city != null) h._T(o.city);
+                        if (o.area != null) h._T(o.area);
+                        if (o.addr != null) h._T(o.addr);
+                        h._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
-                            var item = o.items[i];
-                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
+                            var oi = o.items[i];
+                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                            h.BOX_(5).P(oi.name).P(oi.price)._BOX();
+                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts)._BOX();
                         }
-                        h.FIELD(o.total, "总价");
+                        h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
+                        h.BOX_(5).P(o.total, "总计")._BOX();
                     }, false, 3);
                 }
                 else
@@ -173,13 +177,15 @@ namespace Greatbone.Sample
                         if (o.area != null) h._T(o.area);
                         if (o.addr != null) h._T(o.addr);
                         h._FIELD();
-                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
                         for (int i = 0; i < o.items.Length; i++)
                         {
-                            var item = o.items[i];
-                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
+                            var oi = o.items[i];
+                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                            h.BOX_(5).P(oi.name).P(oi.price)._BOX();
+                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts)._BOX();
                         }
-                        h.FIELD(o.total, "总价");
+                        h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
+                        h.BOX_(5).P(o.total, "总计")._BOX();
                     }, false, 3);
                 }
                 else
@@ -279,7 +285,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.RECKONED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + Order.ABORTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
@@ -318,7 +324,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("投诉")]
+    [Ui("客服")]
     [User(adm: true)]
     public class AdmKickWork : OrderWork<AdmKickVarWork>
     {
@@ -328,6 +334,25 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac, int page)
         {
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query("SELECT * FROM orders WHERE status >  " + Order.READY + " AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
+                ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
+                {
+                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    if (o.name != null)
+                    {
+                        h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
+                    }
+                    h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
+                    for (int i = 0; i < o.items.Length; i++)
+                    {
+                        var item = o.items[i];
+                        h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
+                    }
+                    h.FIELD(o.total, "总价");
+                }, false, 3);
+            }
         }
     }
 }

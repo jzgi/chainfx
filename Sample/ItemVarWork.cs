@@ -70,10 +70,10 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             string name = ac[this];
 
-            string unit = null;
-            decimal price = 0;
-            short qty = 0;
-            string[] opts = null;
+            string unit;
+            decimal price;
+            short qty;
+            string[] opts;
 
             if (ac.GET)
             {
@@ -85,12 +85,12 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.HIDDEN(nameof(o.unit), o.unit);
-                        h.HIDDEN(nameof(o.price), o.price);
+                        h.HIDDEN(nameof(unit), o.unit);
+                        h.HIDDEN(nameof(price), o.price);
                         h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
-                        if (o.customs != null)
+                        if (o.opts != null)
                         {
-                            h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "附加要求");
+                            h.CHECKBOXGROUP(nameof(opts), null, o.opts, "附加要求");
                         }
                         h._FORM();
                     });
@@ -145,7 +145,7 @@ namespace Greatbone.Sample
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                     dc.Execute(p => o.Write(p, proj));
                 }
-                ac.Give(200);
+                ac.GivePane(200);
             }
         }
     }

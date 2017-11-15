@@ -15,17 +15,16 @@ namespace Greatbone.Sample
             LATER = 4;
 
         // status
-        public const short CREATED = 0, PAID = 1, ABORTED = 2, READY = 3, RECEIVED = 4, RECKONED = 5;
+        public const short CREATED = 0, PAID = 1, READY = 2, ABORTED = 3, DONE = 4;
 
         // status
         public static readonly Map<short, string> STATUS = new Map<short, string>
         {
             {CREATED, "购物车"},
             {PAID, "已付款"},
-            {ABORTED, "已撤单"},
             {READY, "已备货"},
-            {RECEIVED, "已确收"},
-            {RECKONED, "已清算"},
+            {ABORTED, "已撤单"},
+            {DONE, "已送达"}
         };
 
 

@@ -51,13 +51,16 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays ORDER BY status"))
+                if (dc.Query("SELECT * FROM repays ORDER BY id DESC, status LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Repay>(), h => h.TH("名称").TH("金额"), (h, o) => h.TD(o.shopname).TD(o.total));
+                    ac.GiveTablePage(200, dc.ToArray<Repay>(),
+                        h => h.TH("网点").TH("截至日期").TH("金额").TH("转款"),
+                        (h, o) => h.TD(o.shopname).TD(o.till).TD(o.total).TD(o.payer)
+                    );
                 }
                 else
                 {
@@ -66,38 +69,36 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("结算", "为商家结算已完成的订单"), Style(ButtonShow)]
+        [Ui("结算", "结算各网点已完成的订单"), Style(ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
+            DateTime fro; // till/before date
             DateTime till; // till/before date
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    var ret = dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
+                    fro = (DateTime) dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
-                        if (ret != null)
-                        {
-                            m.CALLOUT(t => { t.T("上次结算截至日期是").T((DateTime) ret); }, false);
-                        }
-                        till = DateTime.Today;
-                        m.DATE(nameof(till), till, "本次截至日期（不包含）", max: till);
+                        m.DATE(nameof(fro), fro, "起始", @readonly: true);
+                        m.DATE(nameof(till), DateTime.Today, "截至", max: DateTime.Today);
                         m._FORM();
                     });
                 }
+                return;
             }
-            else
+
+            var f = await ac.ReadAsync<Form>();
+            fro = f[nameof(fro)];
+            till = f[nameof(till)];
+            using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
             {
-                var f = await ac.ReadAsync<Form>();
-                till = f[nameof(till)];
-                using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
-                {
-                    dc.Execute("SELECT reckon(@1, 1000000.00::money, 20000.00::money)", p => p.Set(till));
-                }
-                ac.GivePane(200);
+                dc.Execute(@"INSERT INTO repays (shopid, shopname, fro, till, orders, total) 
+                    SELECT shopid, shopname, @1, @2, COUNT(*), SUM(total) FROM orders WHERE status = 4 AND completed >= @1 AND completed < @2 GROUP BY shopid", p => p.Set(fro).Set(till));
             }
+            ac.GivePane(200);
         }
 
         struct Transfer
@@ -108,7 +109,7 @@ namespace Greatbone.Sample
             internal decimal cash;
         }
 
-        [Ui("转款", "按照结算单转款给商家"), Style(ButtonConfirm)]
+        [Ui("转款", "按照结算单转款给网点"), Style(ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
             List<Transfer> lst = new List<Transfer>(16);

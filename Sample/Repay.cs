@@ -14,9 +14,9 @@ namespace Greatbone.Sample
         public const short CREATED = 0, PAID = 1;
 
         // status
-        static readonly Map<short, string> STATUS = new Map<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "新创建/未转款"},
+            {0, string.Empty},
             {1, "已转款"}
         };
 
@@ -29,8 +29,6 @@ namespace Greatbone.Sample
         internal DateTime till;
         internal int orders;
         internal decimal total;
-        internal decimal cash;
-        internal DateTime paid;
         internal string payer;
         internal short status;
         internal string err;
@@ -42,13 +40,8 @@ namespace Greatbone.Sample
             i.Get(nameof(shopname), ref shopname);
             i.Get(nameof(orders), ref orders);
             i.Get(nameof(total), ref total);
-            i.Get(nameof(cash), ref cash);
+            i.Get(nameof(payer), ref payer);
             i.Get(nameof(till), ref till);
-            if ((proj & PAY) == PAY)
-            {
-                i.Get(nameof(paid), ref paid);
-                i.Get(nameof(payer), ref payer);
-            }
             i.Get(nameof(status), ref status);
             i.Get(nameof(err), ref err);
         }
@@ -60,13 +53,7 @@ namespace Greatbone.Sample
             o.Put(nameof(till), till);
             o.Put(nameof(orders), orders);
             o.Put(nameof(total), total);
-            o.Put(nameof(cash), cash);
-            if ((proj & PAY) == PAY)
-            {
-                o.Put(nameof(paid), paid);
-                o.Put(nameof(payer), payer);
-                o.Put(nameof(err), err);
-            }
+            o.Put(nameof(payer), payer);
             o.Put(nameof(status), status);
         }
     }

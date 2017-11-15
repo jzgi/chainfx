@@ -28,7 +28,7 @@ namespace Greatbone.Sample
         internal short min;
         internal short step;
         internal short max;
-        internal string[] customs;
+        internal string[] opts;
         internal short status;
 
         public void Read(IDataInput i, short proj = 0x00ff)
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
             i.Get(nameof(min), ref min);
             i.Get(nameof(step), ref step);
             i.Get(nameof(max), ref max);
-            i.Get(nameof(customs), ref customs);
+            i.Get(nameof(opts), ref opts);
             i.Get(nameof(status), ref status);
         }
 
@@ -63,7 +63,7 @@ namespace Greatbone.Sample
             o.Put(nameof(min), min);
             o.Put(nameof(step), step);
             o.Put(nameof(max), max);
-            o.Put(nameof(customs), customs);
+            o.Put(nameof(opts), opts);
             o.Put(nameof(status), status);
         }
     }

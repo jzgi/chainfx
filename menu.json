@@ -11,8 +11,14 @@
             "sub_button": [
                 {
                     "type": "view",
-                    "name": "购物车",
-                    "url": "http://144000.tv/my//pre/",
+                    "name": "科普《身体的奥秘》",
+                    "url": "http://144000.tv/opr//",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "我的设置",
+                    "url": "http://144000.tv/my//",
                     "sub_button": []
                 },
                 {
@@ -23,8 +29,8 @@
                 },
                 {
                     "type": "view",
-                    "name": "我的设置",
-                    "url": "http://144000.tv/my//",
+                    "name": "我的购物车",
+                    "url": "http://144000.tv/my//cart/",
                     "sub_button": []
                 }
             ]
@@ -40,14 +46,14 @@
                 },
                 {
                     "type": "view",
-                    "name": "健康宝典",
+                    "name": "内部功能（网点操作）",
                     "url": "http://144000.tv/opr//",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "（内部功能）",
-                    "url": "http://144000.tv/opr//",
+                    "name": "内部功能（平台管理）",
+                    "url": "http://144000.tv/adm/",
                     "sub_button": []
                 }
             ]

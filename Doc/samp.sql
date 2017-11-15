@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-11-12 10:21:31
+Date: 2017-11-15 14:35:06
 */
 
 
@@ -74,7 +74,6 @@ CREATE TABLE "public"."orders" (
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
-"distr" varchar(10) COLLATE "default",
 "area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
@@ -107,7 +106,6 @@ CREATE TABLE "public"."repays" (
 "orders" int4,
 "total" money,
 "cash" money,
-"paid" timestamp(6),
 "payer" varchar(6) COLLATE "default",
 "status" int2 DEFAULT 0,
 "err" varchar(40) COLLATE "default"
@@ -125,22 +123,20 @@ CREATE TABLE "public"."shops" (
 "name" varchar(10) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"x" float8,
-"y" float8,
 "icon" bytea,
+"schedule" varchar(20) COLLATE "default",
+"flags" varchar(10)[] COLLATE "default",
 "areas" varchar(10)[] COLLATE "default",
-"minimum" money,
-"every" money,
-"cut" money,
+"min" money,
+"notch" money,
+"off" money,
 "mgrwx" varchar(28) COLLATE "default",
 "mgrtel" varchar(11) COLLATE "default",
 "mgrname" varchar(10) COLLATE "default",
 "oprwx" varchar(28) COLLATE "default",
 "oprtel" varchar(11) COLLATE "default",
 "oprname" varchar(10) COLLATE "default",
-"status" int2,
-"schedule" varchar(20) COLLATE "default",
-"marks" varchar(10)[] COLLATE "default"
+"status" int2
 )
 WITH (OIDS=FALSE)
 

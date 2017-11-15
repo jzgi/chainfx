@@ -32,9 +32,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyPreVarWork : OrderVarWork
+    public class MyCartVarWork : OrderVarWork
     {
-        public MyPreVarWork(WorkContext wc) : base(wc)
+        public MyCartVarWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -84,24 +84,49 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        public async Task item(ActionContext ac)
+        public async Task item(ActionContext ac, int idx)
         {
             string wx = ac[-2];
+            int orderid = ac[this];
+
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
+                    dc.Query1(p => p.Set(orderid).Set(wx));
+                    var order = dc.ToObject<Order>();
+                    var o = order.items[idx];
+
+                    ac.GivePane(200, h =>
+                    {
+                        h.FORM_();
+                        h.HIDDEN(nameof(o.unit), o.unit);
+                        h.HIDDEN(nameof(o.price), o.price);
+                        h.NUMBER(nameof(o.qty), o.qty);
+                        if (o.opts != null)
+                        {
+                            h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "附加要求");
+                        }
+                        h._FORM();
+                    });
+                }
+                return;
+            }
+
             var f = await ac.ReadAsync<Form>();
-            long[] key = f[nameof(key)];
+            short qty = f[nameof(qty)];
+            string[] opts = f[nameof(opts)];
             using (var dc = ac.NewDbContext())
             {
-                if (key != null)
-                {
-                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
-                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
-                }
-                else
-                {
-                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
-                }
-                ac.GiveRedirect();
+                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
+                dc.Query1(p => p.Set(orderid).Set(wx));
+                var o = dc.ToObject<Order>();
+                o.UpdItem(idx, qty, opts);
+                o.SetTotal();
+                dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
             }
+            ac.GiveRedirect();
         }
 
         [Ui("删除"), Style(ButtonConfirm)]
@@ -109,6 +134,7 @@ namespace Greatbone.Sample
         {
             string wx = ac[-2];
             var f = await ac.ReadAsync<Form>();
+
             long[] key = f[nameof(key)];
             using (var dc = ac.NewDbContext())
             {
@@ -131,17 +157,19 @@ namespace Greatbone.Sample
             string wx = ac[-2];
             int orderid = ac[this];
             short rev;
+
             decimal total;
             using (var dc = ac.NewDbContext())
             {
                 dc.Query1("SELECT rev, total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                 dc.Let(out rev).Let(out total);
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify");
+            var(prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
             }
+
             else
             {
                 ac.Give(500);
@@ -155,7 +183,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("投诉", "向平台投诉该作坊的产品质量问题"), Style(AnchorShow)]
+        [Ui("我的建议"), Style(AnchorShow)]
         public async Task kick(ActionContext ac)
         {
             int id = ac[this];
@@ -186,27 +214,6 @@ namespace Greatbone.Sample
                 ac.GivePane(200);
             }
         }
-
-        [Ui("确认收货", "对商品满意并确认收货"), Style(ButtonConfirm)]
-        public async Task got(ActionContext ac)
-        {
-            int orderid = ac[this];
-            string mgrwx = null;
-            using (var dc = ac.NewDbContext())
-            {
-                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.RECEIVED).Set(orderid));
-                if (shopid != null)
-                {
-                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
-                }
-            }
-            if (mgrwx != null)
-            {
-                await WeiXinUtility.PostSendAsync(mgrwx, "【买家确收】订单编号：" + orderid);
-            }
-
-            ac.GiveRedirect("../");
-        }
     }
 
 
@@ -216,7 +223,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("撤单", "撤销此单，实收金额退回给买家"), Style(ButtonShow)]
+        [Ui("撤单"), Style(ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             int orderid = ac[this];
@@ -263,6 +270,27 @@ namespace Greatbone.Sample
     {
         public OprPastVarWork(WorkContext wc) : base(wc)
         {
+        }
+
+        [Ui("送达", "已经送达买家"), Style(ButtonConfirm)]
+        public async Task got(ActionContext ac)
+        {
+            int orderid = ac[this];
+            string mgrwx = null;
+            using (var dc = ac.NewDbContext())
+            {
+                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.DONE).Set(orderid));
+                if (shopid != null)
+                {
+                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                }
+            }
+            if (mgrwx != null)
+            {
+                await WeiXinUtility.PostSendAsync(mgrwx, "【送达】订单编号：" + orderid);
+            }
+
+            ac.GiveRedirect("../");
         }
 
         [Ui("退款核查", "实时核查退款到账情况"), Style(AnchorOpen)]
