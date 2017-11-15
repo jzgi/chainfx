@@ -45,46 +45,30 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
-                if (dc.Query1(p => p.Set(shopid)))
-                {
-                    var shop = dc.ToObject<Shop>();
-                    var shopname = shop.name;
+                dc.Query1(p => p.Set(shopid));
+                var shop = dc.ToObject<Shop>();
+                var shopname = shop.name;
 
-                    Item[] items = null;
-                    dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 ORDER BY idx");
-                    if (dc.Query(p => p.Set(shopid)))
+                dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 ORDER BY idx");
+                dc.Query(p => p.Set(shopid));
+                var items = dc.ToArray<Item>();
+
+                ac.GiveDoc(200, m =>
+                {
+                    m.TOPBAR_(shop.name).T("&nbsp;<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>")._TOPBAR();
+
+                    if (items == null)
                     {
-                        items = dc.ToArray<Item>();
+                        return;
                     }
 
-                    ac.GiveDoc(200, m =>
+                    m.GRIDVIEW(items, (h, o) =>
                     {
-                        m.TOPBAR_(shop.name).T("&nbsp;<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>")._TOPBAR();
-
-                        if (items == null)
-                        {
-                            m.T("没有上架商品");
-                            return;
-                        }
-
-                        m.GRIDVIEW(items, (h, o) =>
-                        {
-                            h.HIDDEN(nameof(shopid), shopid);
-                            h.HIDDEN(nameof(shopname), shopname);
-                            h.HIDDEN(nameof(o.name), o.name);
-                            h.HIDDEN(nameof(o.unit), o.unit);
-                            h.HIDDEN(nameof(o.price), o.price);
-
-                            h.CAPTION(o.name, Item.Statuses[o.status], o.status == 2);
-                            h.IMG((o.name) + "/icon", box: 4);
-                            h.BOX_(8).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
-                        });
+                        h.CAPTION(o.name, Item.Statuses[o.status], o.status == 2);
+                        h.IMG((o.name) + "/icon", box: 4);
+                        h.BOX_(8).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
                     });
-                }
-                else
-                {
-                    ac.Give(404, @public: true, maxage: 60 * 5); // not found
-                }
+                });
             }
         }
 
@@ -114,27 +98,29 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.TEXT(nameof(o.name), o.name, label: "名称");
-                            m.SELECT(nameof(o.city), o.city, City.All, "城市");
-                            m.TEXT(nameof(o.addr), o.addr, label: "地址");
+                            m.FIELD(o.id, "编号");
+                            m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                            m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
+                            m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                            m.TEXT(nameof(o.schedule), o.schedule, "营业");
+                            m.SELECT(nameof(o.flags), o.flags, Flag.All, "特色");
+                            m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                             m._FORM();
                         });
                     }
-                    else
-                    {
-                        ac.Give(500); // internal server error
-                    }
+                    else ac.Give(500); // internal server error
                 }
             }
             else // post
             {
                 var o = await ac.ReadObjectAsync<Shop>();
+                const short proj = -1 ^ Shop.ID;
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty).T(" WHERE id = @1");
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj).T(" WHERE id = @1");
                     dc.Execute(p =>
                     {
-                        o.Write(p);
+                        o.Write(p, proj);
                         p.Set(shopid);
                     });
                 }

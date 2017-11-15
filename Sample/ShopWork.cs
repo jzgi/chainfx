@@ -128,11 +128,12 @@ namespace Greatbone.Sample
             string city = ac[typeof(Work)];
             using (var dc = ac.NewDbContext())
             {
-                const short proj = Shop.LATE;
-                dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops ORDER BY id");
+                dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id");
                 if (dc.Query())
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Shop>(proj), h => h.TH("名称").TH("电话").TH("地址"), (h, o) => h.TD(o.name).TD(o.mgrtel).TD(o.addr), false, 3);
+                    ac.GiveTablePage(200, dc.ToArray<Shop>(),
+                        h => h.TH("编号").TH("名称").TH("城市").TH("地址").TH("特色").TH("限送").TH("经理"),
+                        (h, o) => h.TD(o.id).TD(o.name).TD(o.city).TD(o.addr).TD(o.flags).TD(o.areas).TD(o.mgrname), false, 3);
                 }
                 else
                 {

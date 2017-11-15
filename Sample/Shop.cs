@@ -8,7 +8,7 @@ namespace Greatbone.Sample
 
         public const short
             ID = 1,
-            LATE = 4;
+            LATE = 2;
 
         public const short OFF = 1, ON = 2;
 
@@ -26,6 +26,9 @@ namespace Greatbone.Sample
         internal string schedule;
         internal string[] flags;
         internal string[] areas;
+        internal decimal min;
+        internal decimal notch;
+        internal decimal off;
         internal string mgrwx;
         internal string mgrtel;
         internal string mgrname;
@@ -36,13 +39,19 @@ namespace Greatbone.Sample
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
-            i.Get(nameof(id), ref id);
+            if ((proj & ID) == ID)
+            {
+                i.Get(nameof(id), ref id);
+            }
             i.Get(nameof(name), ref name);
             i.Get(nameof(city), ref city);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(schedule), ref schedule);
             i.Get(nameof(flags), ref flags);
             i.Get(nameof(areas), ref areas);
+            i.Get(nameof(min), ref min);
+            i.Get(nameof(notch), ref notch);
+            i.Get(nameof(off), ref off);
             if ((proj & LATE) == LATE)
             {
                 i.Get(nameof(mgrwx), ref mgrwx);
@@ -57,13 +66,19 @@ namespace Greatbone.Sample
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
-            o.Put(nameof(id), id);
+            if ((proj & ID) == ID)
+            {
+                o.Put(nameof(id), id);
+            }
             o.Put(nameof(name), name);
             o.Put(nameof(city), city);
             o.Put(nameof(addr), addr);
             o.Put(nameof(schedule), schedule);
             o.Put(nameof(flags), flags);
             o.Put(nameof(areas), areas);
+            o.Put(nameof(min), min);
+            o.Put(nameof(notch), notch);
+            o.Put(nameof(off), off);
             if ((proj & LATE) == LATE)
             {
                 o.Put(nameof(mgrwx), mgrwx);

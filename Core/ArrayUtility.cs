@@ -80,7 +80,21 @@ namespace Greatbone.Core
                     if (cond(e)) return e;
                 }
             }
-            return default(E);
+            return default;
+        }
+
+        public static int FindIndex<E>(this E[] arr, Predicate<E> cond)
+        {
+            if (arr != null)
+            {
+                int len = arr.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    E e = arr[i];
+                    if (cond(e)) return i;
+                }
+            }
+            return -1;
         }
 
         public static bool IsNullOrEmpty<E>(this E[] arr)

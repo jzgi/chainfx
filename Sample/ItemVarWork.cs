@@ -33,6 +33,7 @@ namespace Greatbone.Sample
     }
 
 
+    [User]
     public class PubItemVarWork : ItemVarWork
     {
         public PubItemVarWork(WorkContext wc) : base(wc)
@@ -63,31 +64,36 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("购买", "加入购物车"), Style(ButtonPrompt, 1), ItemCheck('A')]
+        [Ui("购买", "加入购物车"), Style(ButtonShow, 1), ItemCheck('A')]
         public async Task Add(ActionContext ac)
         {
             string shopid = ac[-1];
             string name = ac[this];
+
+            string unit = null;
+            decimal price = 0;
+            short qty = 0;
+            string[] opts = null;
 
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2");
-                    if (dc.Query1(p => p.Set(shopid).Set(name)))
+                    dc.Query1(p => p.Set(shopid).Set(name));
+                    var o = dc.ToObject<Item>();
+                    ac.GivePane(200, h =>
                     {
-                        var o = dc.ToObject<Item>();
-                        ac.GivePane(200, h =>
+                        h.FORM_();
+                        h.HIDDEN(nameof(o.unit), o.unit);
+                        h.HIDDEN(nameof(o.price), o.price);
+                        h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
+                        if (o.customs != null)
                         {
-                            h.FORM_();
-                            h.NUMBER(nameof(o.max), o.min, min: o.min, step: o.step);
-                            if (o.customs != null)
-                            {
-                                h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "附加要求");
-                            }
-                            h._FORM();
-                        });
-                    }
+                            h.CHECKBOXGROUP(nameof(o.customs), null, o.customs, "附加要求");
+                        }
+                        h._FORM();
+                    });
                 }
                 return;
             }
@@ -95,38 +101,44 @@ namespace Greatbone.Sample
 
             User prin = (User) ac.Principal;
             var f = await ac.ReadAsync<Form>();
-            string city = f[nameof(city)];
-            string area = f[nameof(area)];
-            string shopname = f[nameof(shopname)];
-            decimal price = f[nameof(price)];
-            short qty = f[nameof(qty)];
-            string unit = f[nameof(unit)];
-            string[] opts = f[nameof(opts)];
+
+            // from the dialog
+            unit = f[nameof(unit)];
+            price = f[nameof(price)];
+            qty = f[nameof(qty)];
+            opts = f[nameof(opts)];
 
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query1("SELECT id, items, total FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0", p => p.Set(shopid).Set(prin.wx)))
+                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0");
+                if (dc.Query1(p => p.Set(shopid).Set(prin.wx)))
                 {
-                    var o = new Order();
-                    dc.Let(out o.id).Let(out o.items).Let(out o.total);
+                    var o = dc.ToObject<Order>();
                     o.AddItem(name, price, qty, unit, opts);
                     o.SetTotal();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
                 else
                 {
+                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
+                    dc.Query1(p => p.Set(shopid).Set(prin.wx));
+                    var shop = dc.ToObject<Shop>();
+
                     var o = new Order
                     {
                         rev = 1,
                         shopid = shopid,
-                        shopname = shopname,
+                        shopname = shop.name,
                         wx = prin.wx,
                         name = prin.name,
                         tel = prin.tel,
-                        city = city ?? prin.city,
-                        area = area ?? prin.area,
+                        city = prin.city,
+                        area = prin.area,
                         addr = prin.addr,
                         items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = opts}},
+                        min = shop.min,
+                        notch = shop.notch,
+                        off = shop.off
                     };
                     o.SetTotal();
                     const short proj = -1 ^ Order.ID ^ Order.LATER;

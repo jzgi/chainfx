@@ -320,6 +320,21 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent TD(string[] v)
+        {
+            Add("<td>");
+            if (v != null)
+            {
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) Add(" ");
+                    Add(v[i]);
+                }
+            }
+            Add("</td>");
+            return this;
+        }
+
         public HtmlContent TD_(short v)
         {
             Add("<td>");

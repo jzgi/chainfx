@@ -123,10 +123,10 @@ namespace Greatbone.Sample
             {
                 items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = customs}};
             }
-            var orderitem = items.Find(o => o.name.Equals(name) && o.opts.SameAs(customs));
-            if (orderitem.name != null)
+            int idx = items.FindIndex(o => o.name.Equals(name) && o.opts.SameAs(customs));
+            if (idx != -1)
             {
-                orderitem.qty += qty;
+                items[idx].qty += qty;
             }
             else
             {
@@ -144,6 +144,10 @@ namespace Greatbone.Sample
                     sum += items[i].qty * items[i].price;
                 }
                 total = sum;
+                if (notch > 0)
+                {
+                    total = total - (decimal.Floor(total / notch) * off);
+                }
             }
         }
 

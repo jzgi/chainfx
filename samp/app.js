@@ -177,7 +177,7 @@ function bind(url, wid, height, circle) {
 function upload(url, circle) {
 
     // get blob of cropped image
-    $('#demo').croppie('result',
+    $('#crop').croppie('result',
         {
             type: 'blob',
             size: 'viewport',
