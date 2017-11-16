@@ -79,9 +79,9 @@ namespace Greatbone.Sample
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
-                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                    h.SELECT(nameof(prin.city), prin.city, City.All, "城市", refresh: true);
+                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true, box: 12);
+                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 12);
+                    h.SELECT(nameof(prin.city), prin.city, City.All, "城市", refresh: true, box: 12);
 //                    h.SELECT(nameof(prin.area), prin.area, prin.city == null ? City.All[0].Value.Areas : City.All[prin.city].name, "区域");
                     h._FORM();
                 });

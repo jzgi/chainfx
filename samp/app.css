@@ -127,14 +127,12 @@ tr.checked {
 
 .pane fieldset {
     margin: 0.25rem;
-    padding: 0.25rem 0.5rem 1.5rem 0.5rem;
     width: 98%;
     border: 1px solid silver;
 }
 
 .page fieldset {
     margin: 0.25rem;
-    padding: 0.25rem 0.5rem 1.5rem 0.5rem;
     width: 98%;
     border: 1px solid wheat;
 }

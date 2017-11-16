@@ -85,9 +85,11 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
+                        h.FIELDSET_("数量");
                         h.HIDDEN(nameof(unit), o.unit);
                         h.HIDDEN(nameof(price), o.price);
                         h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
+                        h._FIELDSET();
                         if (o.opts != null)
                         {
                             h.CHECKBOXGROUP(nameof(opts), null, o.opts, "附加要求");

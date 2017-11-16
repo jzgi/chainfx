@@ -99,12 +99,12 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.FIELD(o.id, "编号");
-                            m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                            m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
-                            m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                            m.TEXT(nameof(o.schedule), o.schedule, "营业");
-                            m.SELECT(nameof(o.flags), o.flags, Flag.All, "特色");
-                            m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
+                            m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true, box: 12);
+                            m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true, box: 12);
+                            m.TEXT(nameof(o.addr), o.addr, "地址", max: 20, box: 12);
+                            m.TEXT(nameof(o.schedule), o.schedule, "营业", box: 12);
+                            m.SELECT(nameof(o.flags), o.flags, Flag.All, "特色", box: 12);
+                            m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送", box: 12);
                             m._FORM();
                         });
                     }

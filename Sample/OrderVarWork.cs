@@ -44,6 +44,7 @@ namespace Greatbone.Sample
             int orderid = ac[this];
 
             string area = null;
+            string place = null;
             string addr = null;
             if (ac.GET)
             {
@@ -55,8 +56,9 @@ namespace Greatbone.Sample
                         {
                             dc.Let(out string city).Let(out string[] areas);
                             h.FORM_();
-                            h.SELECT(nameof(area), area, areas, "区域", refresh: true);
-                            h.SELECT(nameof(addr), addr, City.All[city].FindArea(area).places, "区域");
+                            h.SELECT(nameof(area), areas[0], areas, "区域", refresh: true);
+                            var places = City.All[city].FindArea(areas[0]).places;
+                            h.FIELD_("地址", 11).SELECT(nameof(addr), places[0], places).TEXT(nameof(addr), addr)._FIELD();
                             h._FORM();
                         }
                     }
@@ -101,9 +103,11 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
+                        h.FIELDSET_("数量");
                         h.HIDDEN(nameof(o.unit), o.unit);
                         h.HIDDEN(nameof(o.price), o.price);
-                        h.NUMBER(nameof(o.qty), o.qty);
+                        h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1);
+                        h._FIELDSET();
                         if (o.opts != null)
                         {
                             h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "附加要求");
@@ -164,7 +168,7 @@ namespace Greatbone.Sample
                 dc.Query1("SELECT rev, total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                 dc.Let(out rev).Let(out total);
             }
-            var(prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));

@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
-                        h.FIELD_("收货");
+                        h.FIELD_("收货", 12);
                         if (o.name != null) h._T(o.name);
                         if (o.city != null) h._T(o.city);
                         if (o.area != null) h._T(o.area);
