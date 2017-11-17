@@ -122,15 +122,17 @@ tr.checked {
     background-color: Lavender;
 }
 
-.pane fieldset {
+.pane fieldset.cell {
     margin: 0.25rem;
-    width: 98%;
+    width: calc(100% - 0.5rem);
+    padding-bottom: 1.25rem;
     border: 1px solid silver;
 }
 
-.page fieldset {
+.page fieldset.cell {
     margin: 0.25rem;
-    width: 98%;
+    width: calc(100% - 0.5rem);
+    padding-bottom: 1.25rem;
     border: 1px solid wheat;
 }
 

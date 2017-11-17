@@ -187,33 +187,29 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("我的建议"), Style(AnchorShow)]
+        [Ui("建议"), Style(ButtonShow)]
         public async Task kick(ActionContext ac)
         {
-            int id = ac[this];
-
-            bool yes = false;
-            string report = null;
+            int orderid = ac[this];
+            string kick = null;
             if (ac.GET)
             {
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-
-                    m.CALLOUT("让我们共同来维护人类健康福祉。在监管人员受理您的举报后，可能需要在您的协助下进行调查。", false);
-                    m.CHECKBOX(nameof(yes), yes, "我同意协助监管人员进行调查", required: true);
-                    m.TEXTAREA(nameof(report), report, "举报内容", max: 40, required: true);
-
+                    m.FIELDSET_("我的建议", box: 12);
+                    m.TEXTAREA(nameof(kick), kick, null, max: 40, required: true, box: 12);
+                    m._FIELDSET();
                     m._FORM();
                 });
             }
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                report = f[nameof(report)];
+                kick = f[nameof(kick)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("INSERT INTO charges () VALUES () ON CONFLICT DO NOTHING");
+                    dc.Execute("UPDATE orders SET kick = @1 WHERE id = @2", p => p.Set(kick).Set(orderid));
                 }
                 ac.GivePane(200);
             }

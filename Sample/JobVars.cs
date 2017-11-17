@@ -29,15 +29,14 @@ namespace Greatbone.Sample
                     h =>
                     {
                         h.CAPTION("我的个人资料");
-                        h.FIELD(prin.name, "姓名");
-                        h.FIELD(prin.tel, "电话");
-                        h.FIELD(prin.city, "城市");
-                        h.BOX_().T(prin.area)._T(prin.addr)._BOX();
+                        h.FIELD(prin.name, "姓名", box: 12);
+                        h.FIELD(prin.tel, "电话", box: 12);
+                        h.FIELD_("地址", box: 12).T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
                     });
             });
         }
 
-        [Ui("刷新"), Style(AnchorShow)]
+        [Ui("刷新"), Style(ButtonOpen)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -81,8 +80,14 @@ namespace Greatbone.Sample
                     h.FORM_();
                     h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true, box: 12);
                     h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 12);
-                    h.SELECT(nameof(prin.city), prin.city, City.All, "城市", refresh: true, box: 12);
-//                    h.SELECT(nameof(prin.area), prin.area, prin.city == null ? City.All[0].Value.Areas : City.All[prin.city].name, "区域");
+
+                    string city = prin.city ?? City.All[0].Key;
+                    h.SELECT(nameof(prin.city), city, City.All, "城市", refresh: true, box: 12);
+
+                    var areas = City.All[city].Areas;
+                    h.SELECT(nameof(prin.area), prin.area ?? areas[0].name, areas, "区域", box: 12);
+
+                    h.TEXT(nameof(prin.addr), prin.addr, label: "场址", max: 10, min: 2, required: true, box: 12);
                     h._FORM();
                 });
             }
@@ -104,7 +109,7 @@ namespace Greatbone.Sample
         const string PASS = "0z4R4pX7";
 
         [Ui("设密码"), Style(ButtonShow)]
-        public async Task setpass(ActionContext ac)
+        public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
             string wx = ac[-1];
@@ -122,8 +127,9 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.BOX_().T("用于微信以外登录")._BOX();
-                        h.PASSWORD(nameof(password), password, label: "密码", min: 3);
+                        h.FIELDSET_("用于微信以外登录", box: 12);
+                        h.PASSWORD(nameof(password), password, label: "密码", max: 10, min: 3, required: true, box: 12);
+                        h._FIELDSET();
                         h._FORM();
                     });
                 }
@@ -180,10 +186,10 @@ namespace Greatbone.Sample
                                 dc.Query1("SELECT oprwx, oprtel, oprname, status FROM shops WHERE id = @1", p => p.Set(shopid));
                                 dc.Let(out string oprwx).Let(out string oprtel).Let(out string oprname).Let(out short status);
                                 h.CAPTION("营业状态设置", Status[status], status == ON);
-                                h.FIELDSET_("值班员信息");
-                                h.FIELD(oprname, "姓名");
-                                h.FIELD(oprwx, "微信");
-                                h.FIELD(oprtel, "电话");
+                                h.FIELDSET_("值班信息", box: 12);
+                                h.FIELD(oprname, "姓名", box: 12);
+                                h.FIELD(oprwx, "微信", box: 12);
+                                h.FIELD(oprtel, "电话", box: 12);
                                 h._FIELDSET();
                             }
                         });

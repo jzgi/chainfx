@@ -764,9 +764,14 @@ namespace Greatbone.Core
 
         public HtmlContent FIELDSET_(string legend = null, sbyte box = 0)
         {
-            Add("<div class=\"cell small-");
-            Add(box);
-            Add("\"><fieldset>");
+            Add("<fieldset");
+            if (box > 0)
+            {
+                Add(" class=\"cell small-");
+                Add(box);
+                Add("\"");
+            }
+            Add(">");
             if (legend != null)
             {
                 Add("<legend>");
@@ -781,7 +786,6 @@ namespace Greatbone.Core
         {
             Add("</div>");
             Add("</fieldset>");
-            Add("</div>");
             return this;
         }
 
@@ -877,7 +881,7 @@ namespace Greatbone.Core
             }
             // refresh
             Add("<div class=\"right\">");
-            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.5rem;\">&#128259;</a>");
+            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.75rem; line-height: 1\">&#9851;</a>");
             Add("</div>");
 
             _TOOLBAR();
@@ -2142,7 +2146,48 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, object[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0)
+        {
+            FIELD_(label, box);
+
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
+            Add(">");
+
+            if (opt != null)
+            {
+                for (int i = 0; i < opt.Length; i++)
+                {
+                    string key = opt[i];
+                    Add("<option value=\"");
+                    Add(key);
+                    Add("\"");
+                    if (key == v) Add(" selected");
+                    Add(">");
+
+                    Add(key);
+                    Add("</option>");
+                }
+            }
+            Add("</select>");
+
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent SELECT<D>(string name, string v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0) where D : IData
         {
             FIELD_(label, box);
 

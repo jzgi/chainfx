@@ -129,7 +129,7 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
-                        h.FIELD_("收货");
+                        h.FIELD_("收货", box: 12);
                         if (o.name != null) h._T(o.name);
                         if (o.city != null) h._T(o.city);
                         if (o.area != null) h._T(o.area);
@@ -138,12 +138,12 @@ namespace Greatbone.Sample
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                            h.THUMBNAIL("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                             h.BOX_(5).P(oi.name).P(oi.price)._BOX();
                             h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts)._BOX();
                         }
-                        h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
-                        h.BOX_(5).P(o.total, "总计")._BOX();
+                        h.FIELD_(box: 7).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
+                        h.FIELD(o.total, "总计", box: 5);
                     }, false, 3);
                 }
                 else
