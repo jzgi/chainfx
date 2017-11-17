@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-11-15 14:35:06
+Date: 2017-11-17 14:33:30
 */
 
 
@@ -23,8 +23,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
+ START 3
  CACHE 1;
+SELECT setval('"public"."orders_id_seq"', 3, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -37,6 +38,21 @@ CREATE SEQUENCE "public"."repays_id_seq"
  START 1293
  CACHE 16;
 SELECT setval('"public"."repays_id_seq"', 1293, true);
+
+-- ----------------------------
+-- Table structure for details
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."details";
+CREATE TABLE "public"."details" (
+"shopid" varchar(4) COLLATE "default",
+"name" varchar(10) COLLATE "default",
+"idx" int2,
+"icon" bytea,
+"descr" varchar(50) COLLATE "default"
+)
+WITH (OIDS=FALSE)
+
+;
 
 -- ----------------------------
 -- Table structure for items
@@ -53,7 +69,7 @@ CREATE TABLE "public"."items" (
 "min" int2,
 "step" int2,
 "max" int2,
-"customs" varchar(30)[] COLLATE "default",
+"opts" varchar(30)[] COLLATE "default",
 "status" int2,
 "idx" int2
 )
@@ -125,11 +141,15 @@ CREATE TABLE "public"."shops" (
 "addr" varchar(20) COLLATE "default",
 "icon" bytea,
 "schedule" varchar(20) COLLATE "default",
-"flags" varchar(10)[] COLLATE "default",
+"marks" varchar(10)[] COLLATE "default",
 "areas" varchar(10)[] COLLATE "default",
 "min" money,
 "notch" money,
 "off" money,
+"img1" bytea,
+"img2" bytea,
+"img3" bytea,
+"img4" bytea,
 "mgrwx" varchar(28) COLLATE "default",
 "mgrtel" varchar(11) COLLATE "default",
 "mgrname" varchar(10) COLLATE "default",

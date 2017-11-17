@@ -20,11 +20,22 @@ namespace Greatbone.Sample
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
-                    else
-                    {
-                        StaticContent cont = new StaticContent(byteas);
-                        ac.Give(200, cont, @public: true, maxage: 60 * 5);
-                    }
+                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                }
+                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+            }
+        }
+
+        public void img(ActionContext ac, int ordinal)
+        {
+            string shopid = ac[this];
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
+                {
+                    dc.Let(out ArraySegment<byte> byteas);
+                    if (byteas.Count == 0) ac.Give(204); // no content 
+                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
                 }
                 else ac.Give(404, @public: true, maxage: 60 * 5); // not found
             }
@@ -55,7 +66,7 @@ namespace Greatbone.Sample
 
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_(shop.name).T("&nbsp;<a href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>")._TOPBAR();
+                    m.TOPBAR_(shop.name).T("&nbsp;<a class=\"button hollow\"href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>")._TOPBAR();
 
                     if (items == null)
                     {
@@ -103,7 +114,7 @@ namespace Greatbone.Sample
                             m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true, box: 12);
                             m.TEXT(nameof(o.addr), o.addr, "地址", max: 20, box: 12);
                             m.TEXT(nameof(o.schedule), o.schedule, "营业", box: 12);
-                            m.SELECT(nameof(o.flags), o.flags, Flag.All, "特色", box: 12);
+                            m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色", box: 12);
                             m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送", box: 12);
                             m._FORM();
                         });

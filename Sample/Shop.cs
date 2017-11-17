@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         internal string city;
         internal string addr;
         internal string schedule;
-        internal string[] flags;
+        internal string[] marks;
         internal string[] areas;
         internal decimal min;
         internal decimal notch;
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
             i.Get(nameof(city), ref city);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(schedule), ref schedule);
-            i.Get(nameof(flags), ref flags);
+            i.Get(nameof(marks), ref marks);
             i.Get(nameof(areas), ref areas);
             i.Get(nameof(min), ref min);
             i.Get(nameof(notch), ref notch);
@@ -74,7 +74,7 @@ namespace Greatbone.Sample
             o.Put(nameof(city), city);
             o.Put(nameof(addr), addr);
             o.Put(nameof(schedule), schedule);
-            o.Put(nameof(flags), flags);
+            o.Put(nameof(marks), marks);
             o.Put(nameof(areas), areas);
             o.Put(nameof(min), min);
             o.Put(nameof(notch), notch);

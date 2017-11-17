@@ -1,7 +1,5 @@
 /* samp app.cs */
 
-/*  GLOBALS */
-
 .doc {
     background-color: gainsboro;
 }
@@ -11,7 +9,7 @@
 }
 
 .pane {
-    padding: 0.5rem; 
+    padding: 0.5rem;
     background-color: gainsboro;
 }
 
@@ -67,18 +65,18 @@
 }
 
 .card .flag {
-    color: gray;
+    color: red;
 }
 
 .card .flag-off {
-    color: red;
+    color: gray;
 }
 
 .card .tail {
     padding: 0.25rem;
 }
 
-.card .img.major {
+.icon {
     border-radius: 50%;
 }
 
@@ -91,7 +89,6 @@
     display: flex;
     align-items: center;
 }
-
 
 .card .box {
     padding: 0.25rem;
@@ -236,9 +233,13 @@ legend {
     margin-top: -5px
 }
 
-.croppie-container .cr-original-image { display: none }
+.croppie-container .cr-original-image {
+    display: none
+}
 
-.croppie-container .cr-vp-circle { border-radius: 50% }
+.croppie-container .cr-vp-circle {
+    border-radius: 50%
+}
 
 .croppie-container .cr-overlay {
     z-index: 1;
@@ -258,7 +259,9 @@ legend {
     overflow: hidden
 }
 
-.croppie-result img { position: absolute }
+.croppie-result img {
+    position: absolute
+}
 
 .croppie-container .cr-image, .croppie-container .cr-overlay, .croppie-container .cr-viewport {
     -webkit-transform: translateZ(0);
@@ -294,7 +297,9 @@ legend {
     margin-top: -6px
 }
 
-.cr-slider:focus { outline: 0 }
+.cr-slider:focus {
+    outline: 0
+}
 
 .cr-slider::-moz-range-track {
     width: 100%;
@@ -346,9 +351,13 @@ legend {
     margin-top: 1px
 }
 
-.cr-slider:focus::-ms-fill-lower { background: rgba(0, 0, 0, .5) }
+.cr-slider:focus::-ms-fill-lower {
+    background: rgba(0, 0, 0, .5)
+}
 
-.cr-slider:focus::-ms-fill-upper { background: rgba(0, 0, 0, .5) }
+.cr-slider:focus::-ms-fill-upper {
+    background: rgba(0, 0, 0, .5)
+}
 
 .cr-rotate-controls {
     position: absolute;
@@ -369,6 +378,10 @@ legend {
     font-size: 22px
 }
 
-.cr-rotate-l i:before { content: '↺' }
+.cr-rotate-l i:before {
+    content: '↺'
+}
 
-.cr-rotate-r i:before { content: '↻' }
+.cr-rotate-r i:before {
+    content: '↻'
+}

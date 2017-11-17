@@ -392,10 +392,10 @@ namespace Greatbone.Core
         {
             if (flag != null)
             {
-                Add("<span class=\"float-right flag");
+                Add("<span class=\"float-right flag-");
                 if (on.HasValue)
                 {
-                    Add(on.Value ? " on" : " off");
+                    Add(on.Value ? "on" : "off");
                 }
                 Add("\">");
                 Add(flag);
@@ -686,7 +686,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent IMGM(string src, string href = null, sbyte box = 0)
+        public HtmlContent THUMBNAIL(string src, string href = null, sbyte box = 0)
         {
             FIELD_(null, box);
             if (href != null)
@@ -695,7 +695,27 @@ namespace Greatbone.Core
                 Add(href);
                 Add("\">");
             }
-            Add("<img class=\"img major\" src=\"");
+            Add("<img class=\"thumbnail\" src=\"");
+            Add(src);
+            Add("\">");
+            if (href != null)
+            {
+                Add("</a>");
+            }
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent ICON(string src, string href = null, sbyte box = 0)
+        {
+            FIELD_(null, box);
+            if (href != null)
+            {
+                Add("<a href=\"");
+                Add(href);
+                Add("\">");
+            }
+            Add("<img class=\"icon\" src=\"");
             Add(src);
             Add("\">");
             if (href != null)
@@ -1447,7 +1467,7 @@ namespace Greatbone.Core
                 Add("<div class=\"input-group\">");
                 Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['");
                 Add(name);
-                Add("'].stepDown()\" value=\"&#9866;\">");
+                Add("'].stepDown()\" value=\"-\">");
             }
 
             Add("<input type=\"number\" name=\"");
@@ -1494,7 +1514,7 @@ namespace Greatbone.Core
             {
                 Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['");
                 Add(name);
-                Add("'].stepUp()\" value=\"&#10010;\">");
+                Add("'].stepUp()\" value=\"+\">");
                 Add("</div>");
             }
 

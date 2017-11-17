@@ -62,6 +62,16 @@ namespace Greatbone.Sample
         [Ui("产品详情"), Style(AnchorOpen)]
         public void detail(ActionContext ac)
         {
+            string shopid = ac[-1];
+            string name = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND descr = @2");
+                while (dc.Next())
+                {
+                    
+                }
+            }
         }
 
         [Ui("购买", "加入购物车"), Style(ButtonShow, 1), ItemCheck('A')]

@@ -82,7 +82,7 @@ namespace Greatbone.Sample
             }
             ac.GiveDoc(200, m =>
             {
-                m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true)._TOPBAR();
+                m.TOPBAR_("切换城市").SELECT(nameof(city), city, City.All, refresh: true)._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -92,16 +92,16 @@ namespace Greatbone.Sample
                         var arr = dc.ToArray<Shop>();
                         m.GRIDVIEW(arr, (h, o) =>
                         {
-                            h.CAPTION_().T(o.name)._CAPTION(Shop.Status[o.status], o.status == 2);
-                            h.IMGM(o.id + "/icon", href: o.id + "/", box: 4);
+                            h.CAPTION_().T(o.name)._CAPTION(Shop.Status[o.status], o.status == Shop.ON);
+                            h.ICON(o.id + "/icon", href: o.id + "/", box: 4);
                             h.BOX_(8).P(o.addr, "店址").P(o.schedule, "营业");
                             if (o.areas != null)
                             {
                                 h.P(o.areas, "限送");
                             }
                             h._BOX();
-                            h.BOX_().T("<p>特色：<a href=\"mark\">").T(o.flags).T("</a></p>")._BOX();
-                            h.IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3).IMG(o.id + "/荞麦红枣粥/icon", box: 3);
+                            h.BOX_().T("<p>特色：<a href=\"mark\">").T(o.marks).T("</a></p>")._BOX();
+                            h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         });
                     }
                     else
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveTablePage(200, dc.ToArray<Shop>(),
                         h => h.TH("编号").TH("名称").TH("城市").TH("地址").TH("特色").TH("限送").TH("经理"),
-                        (h, o) => h.TD(o.id).TD(o.name).TD(o.city).TD(o.addr).TD(o.flags).TD(o.areas).TD(o.mgrname), false, 3);
+                        (h, o) => h.TD(o.id).TD(o.name).TD(o.city).TD(o.addr).TD(o.marks).TD(o.areas).TD(o.mgrname), false, 3);
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace Greatbone.Sample
                     m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true, box: 12);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20, box: 12);
                     m.TEXT(nameof(o.schedule), o.schedule, "营业", box: 12);
-                    m.SELECT(nameof(o.flags), o.flags, Flag.All, "特色", box: 12);
+                    m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色", box: 12);
                     m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送", box: 12);
                     m._FORM();
                 });
