@@ -103,14 +103,14 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("数量");
+                        h.FIELDSET_("数量", box: 12);
                         h.HIDDEN(nameof(o.unit), o.unit);
                         h.HIDDEN(nameof(o.price), o.price);
-                        h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1);
+                        h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1, box: 12);
                         h._FIELDSET();
                         if (o.opts != null)
                         {
-                            h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "附加要求");
+                            h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "要求", box: 12);
                         }
                         h._FORM();
                     });

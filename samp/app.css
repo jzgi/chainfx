@@ -80,18 +80,9 @@
     border-radius: 50%;
 }
 
-.box {
-    padding: 0.25rem;
-}
-
 .pane .box {
-    padding: 0.25rem;
     display: flex;
     align-items: center;
-}
-
-.card .box {
-    padding: 0.25rem;
 }
 
 .gridview {

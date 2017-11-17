@@ -69,7 +69,6 @@ namespace Greatbone.Sample
                 dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND descr = @2");
                 while (dc.Next())
                 {
-                    
                 }
             }
         }
@@ -95,14 +94,14 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("数量");
+                        h.FIELDSET_("数量", box: 12);
                         h.HIDDEN(nameof(unit), o.unit);
                         h.HIDDEN(nameof(price), o.price);
-                        h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
+                        h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step, box: 12);
                         h._FIELDSET();
                         if (o.opts != null)
                         {
-                            h.CHECKBOXGROUP(nameof(opts), null, o.opts, "附加要求");
+                            h.CHECKBOXGROUP(nameof(opts), null, o.opts, "要求", box: 12);
                         }
                         h._FORM();
                     });
@@ -171,7 +170,7 @@ namespace Greatbone.Sample
         [Ui("修改"), Style(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            short shopid = ac[-2];
+            string shopid = ac[-2];
             string name = ac[this];
             if (ac.GET)
             {
@@ -183,14 +182,14 @@ namespace Greatbone.Sample
                         ac.GivePane(200, m =>
                         {
                             m.FORM_();
-                            m.FIELD(o.name, "名称");
-                            m.TEXT(nameof(o.descr), o.descr, label: "简述", max: 30, required: true);
-                            m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true);
-                            m.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                            m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                            m.NUMBER(nameof(o.step), o.step, "间隔", min: (short) 1);
-                            m.NUMBER(nameof(o.max), o.max, "剩余");
-                            m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
+                            m.FIELD(o.name, "名称", box: 12);
+                            m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30, required: true, box: 12);
+                            m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true, box: 12);
+                            m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 12);
+                            m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 12);
+                            m.NUMBER(nameof(o.step), o.step, "间隔", min: (short) 1, box: 12);
+                            m.NUMBER(nameof(o.max), o.max, "剩余", box: 12);
+                            m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 12);
                             m._FORM();
                         });
                     }

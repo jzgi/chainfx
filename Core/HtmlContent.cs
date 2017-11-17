@@ -238,6 +238,20 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent _T(string[] v)
+        {
+            if (v == null) return this;
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0)
+                {
+                    Add(" ");
+                }
+                Add(v[i]);
+            }
+            return this;
+        }
+
         public HtmlContent TH(string label)
         {
             Add("<th>");
@@ -1742,14 +1756,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOXGROUP(string name, string[] v, string[] opts, string legend = null)
+        public HtmlContent CHECKBOXGROUP(string name, string[] v, string[] opts, string legend = null, sbyte box = 12)
         {
             if (legend != null)
             {
-                Add("<fieldset>");
-                Add("<legend>");
-                Add(legend);
-                Add("</legend>");
+                FIELDSET_(legend, box);
             }
 
             for (int i = 0; i < opts.Length; i++)
@@ -1770,7 +1781,7 @@ namespace Greatbone.Core
 
             if (legend != null)
             {
-                Add("</fieldset>");
+                _FIELDSET();
             }
             return this;
         }

@@ -32,19 +32,17 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
-                        h.FIELD_("收货", 12);
-                        if (o.name != null) h._T(o.name);
-                        if (o.city != null) h._T(o.city);
-                        if (o.area != null) h._T(o.area);
-                        if (o.addr != null) h._T(o.addr);
-                        h.BUTTONSHOW("填写地址", o.id + "/addr", 1, "填写收货地址");
+                        h.FIELD_("收货", box: 12);
+                        h.T(o.name)._T(o.city)._T(o.area)._T(o.addr);
+                        h.BUTTONSHOW("填写地址", o.id + "/addr", 1, "收货地址");
                         h._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                             h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                            h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
+                            h.BOX_(4).T(oi.qty).T(oi.unit)._T(oi.opts)._BOX();
+                            h.BOX_(1).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
                         }
                         h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();
@@ -172,12 +170,7 @@ namespace Greatbone.Sample
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
-                        h.FIELD_("收货");
-                        if (o.name != null) h._T(o.name);
-                        if (o.city != null) h._T(o.city);
-                        if (o.area != null) h._T(o.area);
-                        if (o.addr != null) h._T(o.addr);
-                        h._FIELD();
+                        h.FIELD_("收货", box: 12)._T(o.name)._T(o.city)._T(o.area)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
@@ -295,7 +288,7 @@ namespace Greatbone.Sample
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                         }
-                        h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
+                        h.FIELD_("地址", box: 12).T(o.tel)._T(o.area)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var item = o.items[i];
