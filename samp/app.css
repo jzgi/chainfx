@@ -27,7 +27,7 @@
 }
 
 .gridview-cell {
-    padding: 0.75rem 0.375rem 0 0.375rem;
+    padding: 0.75rem 0.25rem 0 0.25rem;
 }
 
 .gridview-cell:last-of-type {
@@ -35,12 +35,18 @@
 }
 
 .card {
-    background-color: #fefefe;
+    background-color: white;
     border-radius: 4px;
+    padding: 0 0.375rem;
 }
 
 .card.checked {
     background-color: Lavender;
+}
+
+.box {
+    padding: 0.25rem;
+    background-color: rgba(216, 200, 200, 0.35);
 }
 
 .card .lead {
@@ -55,7 +61,8 @@
 }
 
 .card .caption {
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
     padding: 0.25rem;
     font-size: 1.125rem;
 }
@@ -85,23 +92,17 @@
     align-items: center;
 }
 
+.page .box {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid wheat;
+}
+
 .gridview {
     background-color: gainsboro;
 }
 
-.doc .lead, .doc .caption {
-    border-bottom: 2px solid wheat;
-}
-
 .doc .card p {
-    border-bottom: 1px solid wheat;
-}
-
-.page .lead, .page .caption {
-    border-bottom: 1px solid wheat;
-}
-
-.page .box {
     border-bottom: 1px solid wheat;
 }
 
@@ -124,7 +125,6 @@ tr.checked {
     margin: 0.25rem;
     width: calc(100% - 0.5rem);
     padding-bottom: 1.25rem;
-    border: 1px solid wheat;
 }
 
 legend {

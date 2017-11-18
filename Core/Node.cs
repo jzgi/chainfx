@@ -99,12 +99,6 @@ namespace Greatbone.Core
             return default;
         }
 
-        public static implicit operator char[](Node v)
-        {
-            string str = v.key;
-            return str?.ToCharArray();
-        }
-
         public static implicit operator string(Node v)
         {
             return v.key;

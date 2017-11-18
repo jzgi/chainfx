@@ -406,7 +406,7 @@ namespace Greatbone.Core
         {
             if (flag != null)
             {
-                Add("<span class=\"float-right flag-");
+                Add("<span style=\"margin-left: auto\" class=\"flag-");
                 if (on.HasValue)
                 {
                     Add(on.Value ? "on" : "off");
@@ -554,7 +554,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BOX_(sbyte box = 0)
+        public HtmlContent BOX_(sbyte box = 12)
         {
             Add("<div class=\"cell box small-");
             Add(box);

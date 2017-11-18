@@ -100,7 +100,7 @@ namespace Greatbone.Sample
                                 h.P(o.areas, "限送");
                             }
                             h._BOX();
-                            h.BOX_().T("<p>特色：<a href=\"mark\">").T(o.marks).T("</a></p>")._BOX();
+                            h.BOX_().T("特色：<a href=\"mark\">").T(o.marks).T("</a>")._BOX();
                             h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         });
                     }
