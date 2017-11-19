@@ -203,17 +203,44 @@ namespace Greatbone.Sample
                     }
                     else ac.Give(404); // not found           
                 }
+                return;
             }
-            else // post
+
+            var f = await ac.ReadAsync<Form>();
+            ArraySegment<byte> icon = f[nameof(icon)];
+            using (var dc = Service.NewDbContext())
             {
-                var f = await ac.ReadAsync<Form>();
-                ArraySegment<byte> icon = f[nameof(icon)];
-                using (var dc = Service.NewDbContext())
-                {
-                    dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(shopid));
-                }
-                ac.Give(200); // ok
+                dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(shopid));
             }
+            ac.Give(200); // ok
+        }
+
+        [Ui("图片"), Style(AnchorCrop, Ordinals = 4)]
+        public async Task img(ActionContext ac, int ordinal)
+        {
+            string shopid = ac[this];
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
+                    {
+                        dc.Let(out ArraySegment<byte> byteas);
+                        if (byteas.Count == 0) ac.Give(204); // no content 
+                        else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                    }
+                    else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                }
+                return;
+            }
+
+            var f = await ac.ReadAsync<Form>();
+            ArraySegment<byte> icon = f[nameof(icon)];
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(shopid));
+            }
+            ac.Give(200); // ok
         }
     }
 }

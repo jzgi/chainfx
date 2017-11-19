@@ -15,7 +15,7 @@
 
 .tool-bar {
     display: flex;
-    background-color: silver;
+    background-color: darkgray;
     align-items: center;
     height: 3rem;
     font-size: 1rem;
@@ -46,7 +46,6 @@
 
 .box {
     padding: 0.25rem;
-    background-color: rgba(216, 200, 200, 0.35);
 }
 
 .card .lead {
@@ -92,10 +91,13 @@
     align-items: center;
 }
 
+.doc .box {
+    background-color: rgba(225, 200, 200, 0.30);
+}
+
 .page .box {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid wheat;
+    background-color: rgba(225, 200, 200, 0.30);
+    border-bottom: 1px solid gainsboro;
 }
 
 .gridview {
@@ -103,7 +105,7 @@
 }
 
 .doc .card p {
-    border-bottom: 1px solid wheat;
+    border-bottom: 1px solid gainsboro;
 }
 
 .tableview {
@@ -114,17 +116,22 @@ tr.checked {
     background-color: Lavender;
 }
 
+ fieldset .box {
+    background-color: 0
+}
+
 .pane fieldset.cell {
     margin: 0.25rem;
-    width: calc(100% - 0.5rem);
+    width: calc(100% - 0.25rem);
     padding-bottom: 1.25rem;
-    border: 1px solid silver;
+    border: 1px solid darkgray;
 }
 
 .page fieldset.cell {
     margin: 0.25rem;
-    width: calc(100% - 0.5rem);
+    width: calc(100% - 0.25rem);
     padding-bottom: 1.25rem;
+    border: 1px solid gainsboro;
 }
 
 legend {

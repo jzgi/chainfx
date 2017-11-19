@@ -26,6 +26,8 @@ namespace Greatbone.Core
 
         public sbyte Size => size;
 
+        public int Ordinals { get; set; }
+
         public bool Circle { get; set; }
 
         public bool IsAnchor => elem == 0x0100;

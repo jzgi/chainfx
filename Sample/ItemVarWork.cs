@@ -213,7 +213,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片"), Style(AnchorCrop, Circle = true)]
+        [Ui("图片"), Style(AnchorCrop)]
         public async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];

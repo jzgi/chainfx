@@ -116,11 +116,11 @@ function ok(okbtn, mode, formid, tag, action, method) {
 }
 
 
-function crop(trig, siz, circle, title) {
+function crop(trig, ordinals, siz, circle, title) {
 
     var wid, hei, sizg;
     title = title || trig.innerHTML;
-    var action = trig.href;
+    var action = trig.href || trig.formAction;
     switch (siz) {
         case 1:
             wid = 120;
@@ -146,27 +146,44 @@ function crop(trig, siz, circle, title) {
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
-        '<div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]),' + wid + ',' + hei + ',' + circle + ');"></div>' + '<div style="text-align: center; margin-top: 2.875rem"><a class="button hollow" onclick="$(\'#fileinput\').click();">选择图片</a><a class="button hollow" onclick="upload(\'' + action + '\',' + circle + ');">裁剪并上传</a></div></div>';
+        '<div class="title-bar"><div class="title-bar-title">' + title + '</div>' +
+        '<div class="title-bar-left">';
+    if (ordinals > 0) {
+        html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ', ' + circle + ') ">';
+        for (var i = 1; i <= ordinals; i++) {
+            html += '<option value="' + i + '">' + i + '</option>';
+        }
+        html += '</select>';
+    }
+    html += '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinals\').value, ' + circle + ');">上传</a>' +
+        '</div>' +
+        '<div class="title-bar-right">' +
+        '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +
+        '</div>' +
+        '</div>'; // title-bar
+    html += '<div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ',' + circle + ');"></div>';
+    html += '</div>'; // dyndlg
+
     var dive = $(html);
 
     $('body').prepend(dive);
     // initialize
     $(dive).foundation();
-    bind(action, wid, hei, circle);
+    bind(action, 1, wid, hei, circle);
     // open
     $(dive).foundation('open');
     // abort the onclick
     return false;
 }
 
-function bind(url, wid, height, circle) {
+function bind(url, ordinal, width, height, circle) {
+    if (ordinal > 0) url = url + '-' + ordinal;
     var mc = $('#crop');
     mc.croppie('destroy');
     mc.croppie({
         url: url,
         viewport: {
-            width: wid,
+            width: width,
             height: height,
             type: circle ? 'circle' : 'square'
         },
@@ -174,8 +191,8 @@ function bind(url, wid, height, circle) {
     });
 }
 
-function upload(url, circle) {
-
+function upload(url, ordinal, circle) {
+    if (ordinal > 0) url = url + '-' + ordinal;
     // get blob of cropped image
     $('#crop').croppie('result',
         {
@@ -225,7 +242,7 @@ function prepay(trig) {
                 function (res) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         location.reload();
-                    } 
+                    }
                 });
         },
         error: function (res) {

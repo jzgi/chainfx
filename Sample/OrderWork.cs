@@ -41,8 +41,7 @@ namespace Greatbone.Sample
                             var oi = o.items[i];
                             h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                             h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                            h.BOX_(4).T(oi.qty).T(oi.unit)._T(oi.opts)._BOX();
-                            h.BOX_(1).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
+                            h.BOX_(5).T(oi.qty).T(oi.unit)._T(oi.opts).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
                         }
                         h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();

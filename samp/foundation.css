@@ -714,7 +714,7 @@ figure { margin: 0; }
 code {
     padding: 0.125rem 0.3125rem 0.0625rem;
     border: 1px solid #cacaca;
-    background-color: silver;
+    background-color: gainsboro;
     font-family: Consolas, "Liberation Mono", Courier, monospace;
     font-weight: normal;
     color: #0a0a0a;
@@ -723,7 +723,7 @@ code {
 kbd {
     margin: 0;
     padding: 0.125rem 0.25rem 0;
-    background-color: silver;
+    background-color: gainsboro;
     font-family: Consolas, "Liberation Mono", Courier, monospace;
     color: #0a0a0a;
 }
@@ -896,7 +896,7 @@ textarea::placeholder { color: #cacaca; }
 input:disabled, input[readonly],
 textarea:disabled,
 textarea[readonly] {
-    background-color: silver;
+    background-color: gainsboro;
     cursor: not-allowed;
 }
 
@@ -2482,7 +2482,7 @@ input:checked + label > .switch-inactive { display: none; }
     -ms-flex-align: center;
     font-size: 1rem;
     align-items: center;
-    background-color: silver;
+    background-color: darkgray;
     height: 3rem;
 }
 
@@ -2491,18 +2491,21 @@ input:checked + label > .switch-inactive { display: none; }
     margin-right: 0.25rem;
 }
 
-.title-bar-left,
-.title-bar-right {
-    -ms-flex: 1 1 0px;
-    flex: 1 1 0px;
-}
-
-.title-bar-right { text-align: right; }
-
 .title-bar-title {
     display: inline-block;
     vertical-align: middle;
 }
+
+.title-bar-left {
+    margin-left: 1rem;
+    flex: 1 1 0px;
+}
+
+.title-bar-right {
+    flex: auto;
+    text-align: right;
+}
+
 
 .top-bar {
     display: -ms-flexbox;
@@ -2515,7 +2518,7 @@ input:checked + label > .switch-inactive { display: none; }
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
     font-size: 1rem;
-    background-color: silver;
+    background-color: darkgray;
     height: 3rem;
 }
 
@@ -2711,7 +2714,7 @@ input:checked + label > .switch-inactive { display: none; }
 
 .tabs {
     margin: 0;
-    border: 1px solid silver;
+    border: 1px solid darkgray;
     background: gainsboro;
     list-style-type: none;
 }
@@ -2747,7 +2750,7 @@ input:checked + label > .switch-inactive { display: none; }
 
 .tabs-title > a {
     display: block;
-    padding: 1rem 1rem;
+    padding: 0.75rem 1rem;
     font-size: 0.875rem;
     line-height: 1;
     color: darkblue;
@@ -2759,22 +2762,22 @@ input:checked + label > .switch-inactive { display: none; }
 }
 
 .tabs-title > a:focus, .tabs-title > a[aria-selected='true'] {
-    background: silver;
+    background: darkgray;
     color: darkblue;
 }
 
 .tabs-content {
-    border: 1px solid silver;
+    border: 1px solid darkgray;
     border-top: 0;
     background: gainsboro;
     color: #0a0a0a;
     transition: all 0.5s ease;
-    height: calc(100% - 3rem);
-    height: -webkit-calc(100% - 3rem);
+    height: calc(100% - 2.5rem);
+    height: -webkit-calc(100% - 2.5rem);
 }
 
 .tabs-content.vertical {
-    border: 1px solid silver;
+    border: 1px solid darkgray;
     border-left: 0;
 }
 
@@ -2913,11 +2916,10 @@ html.is-reveal-open body {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     display: none;
-    border-left: 4px solid silver;
-    border-right: 4px solid silver;
-    background-color: silver;
+    border-left: 8px solid darkgray;
+    border-right: 8px solid darkgray;
+    background-color: darkgray;
     position: relative;
-    /* top: 100px; */
     margin-right: auto;
     margin-left: auto;
     overflow-y: auto;
@@ -2975,9 +2977,6 @@ html.is-reveal-open body {
     height: 100vh;
     min-height: 100vh;
     margin-left: 0;
-    border-left: 4px solid silver;
-    border-right: 4px solid silver;
-    background-color: silver;
 }
 
 @media screen and (max-width: 39.9375em) {
@@ -2990,17 +2989,11 @@ html.is-reveal-open body {
         height: 100vh;
         min-height: 100vh;
         margin-left: 0;
-        border-left: 4px solid silver;
-        border-right: 4px solid silver;
-        background-color: silver;
     }
 }
 
 @media screen and (max-width: 39.9375em) {
     .reveal.tiny {
-        border-left: 4px solid silver;
-        border-right: 4px solid silver;
-        background-color: silver;
         position: relative;
         width: 80%;
         max-width: none;

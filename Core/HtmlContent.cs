@@ -1249,8 +1249,10 @@ namespace Greatbone.Core
                 else if (style.HasCrop)
                 {
                     Add(" onclick=\"return crop(this,");
-                    Add(style.Size);
+                    Add(style.Ordinals);
                     Add(',');
+                    Add(style.Size);
+                    Add(",");
                     Add(style.Circle);
                     Add(",'");
                     Add(ui.Tip);
