@@ -2498,7 +2498,7 @@ input:checked + label > .switch-inactive { display: none; }
 
 .title-bar-left {
     margin-left: 1rem;
-    flex: 1 1 0px;
+    flex: auto;
 }
 
 .title-bar-right {

@@ -155,7 +155,7 @@ function crop(trig, ordinals, siz, circle, title) {
         }
         html += '</select>';
     }
-    html += '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinals\').value, ' + circle + ');">上传</a>' +
+    html += '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val(), ' + circle + ');">上传</a>' +
         '</div>' +
         '<div class="title-bar-right">' +
         '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +
@@ -177,7 +177,7 @@ function crop(trig, ordinals, siz, circle, title) {
 }
 
 function bind(url, ordinal, width, height, circle) {
-    if (ordinal > 0) url = url + '-' + ordinal;
+    if (ordinal) url = url + '-' + ordinal;
     var mc = $('#crop');
     mc.croppie('destroy');
     mc.croppie({
@@ -192,7 +192,7 @@ function bind(url, ordinal, width, height, circle) {
 }
 
 function upload(url, ordinal, circle) {
-    if (ordinal > 0) url = url + '-' + ordinal;
+    if (ordinal) url = url + '-' + ordinal;
     // get blob of cropped image
     $('#crop').croppie('result',
         {
@@ -204,7 +204,7 @@ function upload(url, ordinal, circle) {
         }).then(function (blob) {
 
             var fd = new FormData();
-            fd.append('icon', blob, 'icon.png');
+            fd.append('jpeg', blob, 'jpeg.jpg');
 
             // post
             $.ajax({

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
@@ -131,9 +132,13 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id");
                 if (dc.Query())
                 {
-                    ac.GiveTablePage(200, dc.ToArray<Shop>(),
-                        h => h.TH("编号").TH("名称").TH("城市").TH("地址").TH("特色").TH("限送").TH("经理"),
-                        (h, o) => h.TD(o.id).TD(o.name).TD(o.city).TD(o.addr).TD(o.marks).TD(o.areas).TD(o.mgrname), false, 3);
+                    ac.GiveGridPage(200, dc.ToArray<Shop>(), (h, o) =>
+                    {
+                        h.CAPTION_().T(o.id).SEP().T(o.name)._CAPTION();
+                        h.FIELD_("地址", 12).T(o.city)._T(o.addr)._FIELD();
+//                        h.FIELD(o.marks, "特色", box:12);
+                        h.FIELD(o.mgrname, "经理", box: 12);
+                    });
                 }
                 else
                 {

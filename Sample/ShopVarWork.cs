@@ -44,10 +44,7 @@ namespace Greatbone.Sample
 
     public class PubShopVarWork : ShopVarWork
     {
-        public PubShopVarWork(WorkContext wc) : base(wc)
-        {
-            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
-        }
+        public PubShopVarWork(WorkContext wc) : base(wc) => CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
 
         [Ui("进入店铺"), Style(Anchor)]
         public void @default(ActionContext ac)
@@ -184,7 +181,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片"), Style(AnchorCrop)]
+        [Ui("形象照"), Style(ButtonCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];
@@ -207,16 +204,16 @@ namespace Greatbone.Sample
             }
 
             var f = await ac.ReadAsync<Form>();
-            ArraySegment<byte> icon = f[nameof(icon)];
+            ArraySegment<byte> jpeg = f[nameof(jpeg)];
             using (var dc = Service.NewDbContext())
             {
-                dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(shopid));
+                dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }
             ac.Give(200); // ok
         }
 
-        [Ui("图片"), Style(AnchorCrop, Ordinals = 4)]
-        public async Task img(ActionContext ac, int ordinal)
+        [Ui("功能照"), Style(ButtonCrop, Ordinals = 4)]
+        public new async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
             if (ac.GET)
@@ -235,10 +232,10 @@ namespace Greatbone.Sample
             }
 
             var f = await ac.ReadAsync<Form>();
-            ArraySegment<byte> icon = f[nameof(icon)];
+            ArraySegment<byte> jpeg = f[nameof(jpeg)];
             using (var dc = Service.NewDbContext())
             {
-                dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(icon).Set(shopid));
+                dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }
             ac.Give(200); // ok
         }
