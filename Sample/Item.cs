@@ -11,12 +11,14 @@ namespace Greatbone.Sample
 
         public const short UNMOD = 1;
 
+        public const short OFF = 0, ON = 1, PROMO = 2;
+
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "下架"},
-            {1, "缺货"},
-            {2, "有货"},
+            {OFF, "下架"},
+            {ON, "上架"},
+            {PROMO, "推荐"},
         };
 
         internal string shopid;

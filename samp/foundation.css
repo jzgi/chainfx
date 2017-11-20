@@ -2946,25 +2946,25 @@ html.is-reveal-open body {
 
 @media print, screen and (min-width: 40em) {
     .reveal.tiny {
-        width: 60%;
+        width: 30%;
+        max-width: 62.5rem;
+        height: 50%;
+    }
+}
+
+@media print, screen and (min-width: 40em) {
+    .reveal.small {
+        width: 50%;
         max-width: 62.5rem;
         height: 60%;
     }
 }
 
 @media print, screen and (min-width: 40em) {
-    .reveal.small {
-        width: 75%;
-        max-width: 62.5rem;
-        height: 75%;
-    }
-}
-
-@media print, screen and (min-width: 40em) {
     .reveal.large {
-        width: 90%;
+        width: 80%;
         max-width: 62.5rem;
-        height: 90%;
+        height: 80%;
     }
 }
 
@@ -2997,9 +2997,9 @@ html.is-reveal-open body {
         position: relative;
         width: 80%;
         max-width: none;
-        height: 60%;
-        height: 60vh;
-        min-height: 20rem;
+        height: 50%;
+        height: 50vh;
+        min-height: 15rem;
         margin-right: auto;
         margin-left: auto;
     }

@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
@@ -63,6 +62,7 @@ namespace Greatbone.Sample
         }
     }
 
+    [User] // we are forced to put check here because iframe does not have weixin browsing flags 
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
                                 h.P(o.areas, "限送");
                             }
                             h._BOX();
-                            h.BOX_().T("特色：<a href=\"mark\">").T(o.marks).T("</a>")._BOX();
+                            h.BOX_().T("特色：<a href=\"marks\">").T(o.marks).T("</a>")._BOX();
                             h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         });
                     }
@@ -113,6 +113,23 @@ namespace Greatbone.Sample
                     }
                 }
             }, true, 60 * 5);
+        }
+
+        public void marks(ActionContext ac)
+        {
+            ac.GivePage(200, m =>
+            {
+                m.GRIDVIEW_();
+                for (int i = 0; i < Mark.All.Length; i++)
+                {
+                    var o = Mark.All[i];
+                    m.CARD_(i + 1);
+                    m.CAPTION(o.name);
+                    m.FIELD(o.descr);
+                    m._CARD();
+                }
+                m._GRIDVIEW();
+            });
         }
     }
 

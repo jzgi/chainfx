@@ -91,7 +91,7 @@ namespace Greatbone.Core
 
         public StyleAttribute Style => style;
 
-        public bool StateCheck(object obj)
+        public bool DoCheck(object obj)
         {
             return check == null || obj == null || check.Check(obj);
         }

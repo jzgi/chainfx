@@ -19,7 +19,7 @@ namespace Greatbone.Sample
             var o = obj as Item;
             switch (state)
             {
-                case 'A': return o.status == 2;
+                case 'A': return o.max > 0;
             }
             return false;
         }
@@ -33,7 +33,6 @@ namespace Greatbone.Sample
     }
 
 
-    [User]
     public class PubItemVarWork : ItemVarWork
     {
         public PubItemVarWork(WorkContext wc) : base(wc)
@@ -64,13 +63,25 @@ namespace Greatbone.Sample
         {
             string shopid = ac[-1];
             string name = ac[this];
-            using (var dc = ac.NewDbContext())
+
+            ac.GivePage(200, m =>
             {
-                dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND descr = @2");
-                while (dc.Next())
+                using (var dc = ac.NewDbContext())
                 {
+                    dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+
+                    m.GRIDVIEW_();
+                    while (dc.Next())
+                    {
+                        dc.Let(out int idx).Let(out string descr);
+                        m.CARD_(idx);
+                        m.CAPTION(descr);
+                        m.IMG(idx + "/img", box: 12);
+                        m._CARD();
+                    }
+                    m._GRIDVIEW();
                 }
-            }
+            });
         }
 
         [Ui("购买", "加入购物车"), Style(ButtonShow, 1), ItemCheck('A')]

@@ -44,7 +44,10 @@ namespace Greatbone.Sample
 
     public class PubShopVarWork : ShopVarWork
     {
-        public PubShopVarWork(WorkContext wc) : base(wc) => CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
+        public PubShopVarWork(WorkContext wc) : base(wc)
+        {
+            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
+        }
 
         [Ui("进入店铺"), Style(Anchor)]
         public void @default(ActionContext ac)
@@ -55,33 +58,33 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                 dc.Query1(p => p.Set(shopid));
                 var shop = dc.ToObject<Shop>();
-                var shopname = shop.name;
 
-                dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 ORDER BY idx");
+                dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
                 dc.Query(p => p.Set(shopid));
                 var items = dc.ToArray<Item>();
 
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_(shop.name).T("&nbsp;<a class=\"button hollow\"href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>")._TOPBAR();
-
-                    if (items == null)
+                    m.TOPBAR_(shop.name);
+                    if (shop.oprtel != null)
                     {
-                        return;
+                        m.T("&nbsp;<a class=\"button hollow\"href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>");
                     }
+                    m._TOPBAR();
+
+                    if (items == null) return;
 
                     m.GRIDVIEW(items, (h, o) =>
                     {
-                        h.CAPTION(o.name, Item.Statuses[o.status], o.status == 2);
-                        h.IMG((o.name) + "/icon", box: 4);
+                        h.CAPTION(o.name);
+                        h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(8).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
+
+                        // adjust item availability
+                        if (shop.status == 0) o.max = 0;
                     });
                 });
             }
-        }
-
-        public void marks(ActionContext ac)
-        {
         }
     }
 

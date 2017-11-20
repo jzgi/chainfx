@@ -1168,13 +1168,13 @@ namespace Greatbone.Core
             }
             for (int i = 0; i < ais.Length; i++)
             {
-                ActionInfo ai = ais[i];
                 // access check if neccessary
+                ActionInfo ai = ais[i];
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
 
                 UiAttribute ui = ai.Ui;
                 StyleAttribute style = ai.Style;
-                bool state = ai.StateCheck(obj);
+                bool avail = ai.DoCheck(obj);
 
                 if (style.IsAnchor)
                 {
@@ -1193,7 +1193,7 @@ namespace Greatbone.Core
                     }
                     Add(ai.RPath);
                     Add("\"");
-                    if (!state)
+                    if (!avail)
                     {
                         Add(" disabled onclick=\"return false;\"");
                     }
@@ -1217,7 +1217,7 @@ namespace Greatbone.Core
                     }
                     Add(ai.Name);
                     Add("\" formmethod=\"post\"");
-                    if (!state)
+                    if (!avail)
                     {
                         Add(" disabled");
                     }

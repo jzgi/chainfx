@@ -56,9 +56,9 @@ namespace Greatbone.Sample
                         {
                             dc.Let(out string city).Let(out string[] areas);
                             h.FORM_();
-                            h.SELECT(nameof(area), areas[0], areas, "区域", refresh: true);
+                            h.SELECT(nameof(area), areas[0], areas, "区域", refresh: true, box: 12);
                             var places = City.All[city].FindArea(areas[0]).places;
-                            h.FIELD_("地址", 11).SELECT(nameof(addr), places[0], places).TEXT(nameof(addr), addr)._FIELD();
+                            h.FIELD_("地址", 12).SELECT(nameof(addr), places[0], places).TEXT(nameof(addr), addr)._FIELD();
                             h._FORM();
                         }
                     }
@@ -130,29 +130,7 @@ namespace Greatbone.Sample
                 o.SetTotal();
                 dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
             }
-            ac.GiveRedirect();
-        }
-
-        [Ui("删除"), Style(ButtonConfirm)]
-        public async Task rm(ActionContext ac)
-        {
-            string wx = ac[-2];
-            var f = await ac.ReadAsync<Form>();
-
-            long[] key = f[nameof(key)];
-            using (var dc = ac.NewDbContext())
-            {
-                if (key != null)
-                {
-                    dc.Sql("DELETE FROM orders WHERE wx = @1 AND status = @2 AND id")._IN_(key);
-                    dc.Execute(p => p.Set(wx).Set(Order.CREATED));
-                }
-                else
-                {
-                    dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = @2", p => p.Set(wx).Set(Order.CREATED));
-                }
-                ac.GiveRedirect();
-            }
+            ac.GivePane(200);
         }
 
         [Ui("付款"), Style(ButtonScript), OrderCheck('A')]

@@ -55,6 +55,17 @@ namespace Greatbone.Sample
             }
         }
 
+        [Ui("清空购物车"), Style(ButtonConfirm)]
+        public void clear(ActionContext ac)
+        {
+            string wx = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = 0", p => p.Set(wx));
+            }
+            ac.GiveRedirect();
+        }
+
         /// <summary>
         /// To create a new order or add item to an existing order.
         /// </summary>
