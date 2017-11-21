@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
                         h.FIELD_("收货", box: 12);
                         h.T(o.name)._T(o.city)._T(o.area)._T(o.addr);
                         h.BUTTONSHOW("填写地址", o.id + "/addr", 1, "收货地址");
@@ -136,7 +136,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
                         h.FIELD_("收货", box: 12);
                         if (o.name != null) h._T(o.name);
                         if (o.city != null) h._T(o.city);
@@ -162,8 +162,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("新单")]
-    [Allow(OPRMEM)]
+    [Ui("新单"), Allow(OPRMEM)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         public OprNewWork(WorkContext wc) : base(wc)
@@ -175,11 +174,11 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY prepare, id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.preparing ? "备货中" : null, o.preparing);
+                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
                         h.FIELD_("收货", box: 12)._T(o.name)._T(o.city)._T(o.area)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -199,7 +198,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货状态"), Style(ButtonConfirm)]
+        [Ui("备货标记"), Style(ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -209,15 +208,35 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET prepare = TRUE WHERE shopid = @1 AND id")._IN_(key).T(" RETURNING wx, total");
-                    if (dc.Query(p => p.Set(shopid)))
+                    dc.Sql("UPDATE orders SET prepare = NOT prepare WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key).T(" RETURNING prepare, wx, total");
+                    if (dc.Query(p => p.Set(shopid), false)) // non-prepared statement
                     {
                         while (dc.Next())
                         {
-                            dc.Let(out string wx).Let(out decimal total);
-                            await WeiXinUtility.PostSendAsync(wx, "【通知】正在为您的订单备货生产（金额" + total + "）");
+                            dc.Let(out bool prepare).Let(out string wx).Let(out decimal total);
+                            if (prepare)
+                            {
+                                await WeiXinUtility.PostSendAsync(wx, "【通知】订单开始备货生产（金额" + total + "）");
+                            }
                         }
                     }
+                }
+            }
+            ac.GiveRedirect();
+        }
+
+        [Ui("准备派送"), Style(ButtonConfirm)]
+        public async Task ready(ActionContext ac)
+        {
+            string shopid = ac[-1];
+            var f = await ac.ReadAsync<Form>();
+            int[] key = f[nameof(key)];
+            if (key != null)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET status = ").T(Order.READY).T(" WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key);
+                    dc.Execute(p => p.Set(shopid), false); // non-prepared statement
                 }
             }
             ac.GiveRedirect();

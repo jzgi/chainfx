@@ -30,9 +30,9 @@ namespace Greatbone.Sample
                     h =>
                     {
                         h.CAPTION("我的个人资料");
-                        h.FIELD(prin.name, "姓名", box: 12);
-                        h.FIELD(prin.tel, "电话", box: 12);
-                        h.FIELD_("地址", box: 12).T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
+                        h.FIELD(prin.name, "姓名");
+                        h.FIELD(prin.tel, "电话");
+                        h.FIELD_("地址").T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
                     });
             });
         }
@@ -79,16 +79,16 @@ namespace Greatbone.Sample
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true, box: 12);
-                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 12);
+                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
+                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
 
                     string city = prin.city ?? City.All[0].Key;
-                    h.SELECT(nameof(prin.city), city, City.All, "城市", refresh: true, box: 12);
+                    h.SELECT(nameof(prin.city), city, City.All, "城市", refresh: true);
 
                     var areas = City.All[city].Areas;
-                    h.SELECT(nameof(prin.area), prin.area ?? areas[0].name, areas, "区域", box: 12);
+                    h.SELECT(nameof(prin.area), prin.area ?? areas[0].name, areas, "区域");
 
-                    h.TEXT(nameof(prin.addr), prin.addr, label: "场址", max: 10, min: 2, required: true, box: 12);
+                    h.TEXT(nameof(prin.addr), prin.addr, label: "场址", max: 10, min: 2, required: true);
                     h._FORM();
                 });
             }
@@ -128,8 +128,8 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("用于微信以外登录", box: 12);
-                        h.PASSWORD(nameof(password), password, label: "密码", max: 10, min: 3, required: true, box: 12);
+                        h.FIELDSET_("用于微信以外登录");
+                        h.PASSWORD(nameof(password), password, label: "密码", max: 10, min: 3, required: true);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -187,20 +187,18 @@ namespace Greatbone.Sample
                             dc.Query1(p => p.Set(shopid));
                             var o = dc.ToObject<Shop>();
                             h.CAPTION(o.name, Status[o.status], o.status == ON);
-                            h.FIELDSET_("设置", box: 12);
-                            h.FIELD(o.schedule, "时间", box: 12);
-                            if (o.areas != null) h.FIELD(o.areas, "送达", box: 12);
-                            h.FIELD_("计价", box: 12).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
+                            h.FIELDSET_("设置");
+                            h.FIELD(o.schedule, "时间");
+                            if (o.areas != null) h.FIELD(o.areas, "送达");
+                            h.FIELD_("计价").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                             h._FIELDSET();
-                            h.FIELDSET_("经理", box: 12);
-                            h.FIELD(o.mgrname, "姓名", box: 12);
-                            h.FIELD(o.mgrwx, "微信", box: 12);
-                            h.FIELD(o.mgrtel, "电话", box: 12);
+                            h.FIELDSET_("经理");
+                            h.FIELD_("姓名").T(o.mgrname).T(" (").T(o.mgrwx).T(")")._FIELD();
+                            h.FIELD(o.mgrtel, "电话");
                             h._FIELDSET();
-                            h.FIELDSET_("当前客服", box: 12);
-                            h.FIELD(o.oprname, "姓名", box: 12);
-                            h.FIELD(o.oprwx, "微信", box: 12);
-                            h.FIELD(o.oprtel, "电话", box: 12);
+                            h.FIELDSET_("当前客服");
+                            h.FIELD_("姓名").T(o.oprname).T(" (").T(o.oprwx).T(")")._FIELD();
+                            h.FIELD(o.oprtel, "电话");
                             h._FIELDSET();
                         }
                     });
@@ -351,16 +349,16 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT schedule, areas, min, notch, off FROM shops WHERE id = @1", p => p.Set(shopid));
-                    dc.Let(out schedule).Let(out areas).Let(out min).Let(out notch).Let(out off);
+                    dc.Query1("SELECT city, schedule, areas, min, notch, off FROM shops WHERE id = @1", p => p.Set(shopid));
+                    dc.Let(out string city).Let(out schedule).Let(out areas).Let(out min).Let(out notch).Let(out off);
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.TEXT(nameof(schedule), schedule, "时间", box:12);
-//                        h.SELECT(nameof(areas), areas,  "限送", box:12);
-                        h.NUMBER(nameof(min), min, "起送", box:12);
-                        h.NUMBER(nameof(notch), notch, "满额", box:12);
-                        h.NUMBER(nameof(off), off, "扣减", box:12);
+                        h.TEXT(nameof(schedule), schedule, "时间");
+                        h.SELECT(nameof(areas), areas, City.FindCity(city).Areas, "限送");
+                        h.NUMBER(nameof(min), min, "起送");
+                        h.NUMBER(nameof(notch), notch, "满额");
+                        h.NUMBER(nameof(off), off, "扣减");
                         h._FORM();
                     });
                 }
@@ -368,7 +366,6 @@ namespace Greatbone.Sample
             }
 
             var f = await ac.ReadAsync<Form>();
-
             schedule = f[nameof(schedule)];
             areas = f[nameof(areas)];
             min = f[nameof(min)];
@@ -383,7 +380,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("功能照"), Style(ButtonCrop, Ordinals = 4)]
-        public new async Task img(ActionContext ac, int ordinal)
+        public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[-1];
             if (ac.GET)

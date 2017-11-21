@@ -449,7 +449,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(short v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(short v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             Add(v);
@@ -461,7 +461,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(int v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(int v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             Add(v);
@@ -473,7 +473,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(long v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(long v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             Add(v);
@@ -485,7 +485,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(decimal v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(decimal v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             Add(v);
@@ -497,7 +497,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             Add(v);
@@ -509,7 +509,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(string v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(string v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             Add(v);
@@ -521,7 +521,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(string[] v, string label = null, string suffix = null, sbyte box = 0)
+        public HtmlContent FIELD(string[] v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
             for (int i = 0; i < v.Length; i++)
@@ -537,7 +537,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD_(string label = null, sbyte box = 0)
+        public HtmlContent FIELD_(string label = null, sbyte box = 12)
         {
             if (box > 0)
             {
@@ -696,7 +696,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent IMG(string src, string href = null, sbyte box = 0)
+        public HtmlContent IMG(string src, string href = null, sbyte box = 12)
         {
             FIELD_(null, box);
             if (href != null)
@@ -716,7 +716,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent THUMBNAIL(string src, string href = null, sbyte box = 0)
+        public HtmlContent THUMBNAIL(string src, string href = null, sbyte box = 12)
         {
             FIELD_(null, box);
             if (href != null)
@@ -736,7 +736,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent ICON(string src, string href = null, sbyte box = 0)
+        public HtmlContent ICON(string src, string href = null, sbyte box = 12)
         {
             FIELD_(null, box);
             if (href != null)
@@ -792,7 +792,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELDSET_(string legend = null, sbyte box = 0)
+        public HtmlContent FIELDSET_(string legend = null, sbyte box = 12)
         {
             Add("<fieldset");
             if (box > 0)
@@ -1185,8 +1185,6 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 ActionInfo ai = ais[i];
-                if (ac != null && !ai.DoAuthorize(ac)) continue;
-
                 UiAttribute ui = ai.Ui;
                 StyleAttribute style = ai.Style;
                 bool avail = ai.DoCheck(obj);
@@ -1321,7 +1319,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1362,7 +1360,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte box = 0)
+        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1405,7 +1403,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1450,7 +1448,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, sbyte box = 0)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1492,7 +1490,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = short.MaxValue, short min = short.MinValue, short step = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = short.MaxValue, short min = short.MinValue, short step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1557,7 +1555,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = int.MaxValue, int min = int.MinValue, int step = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = int.MaxValue, int min = int.MinValue, int step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1599,7 +1597,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1641,7 +1639,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1682,7 +1680,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1749,7 +1747,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, sbyte box = 0)
+        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, sbyte box = 12)
         {
             FIELD_(null, box);
 
@@ -2026,7 +2024,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte box = 0)
+        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
             Add("<textarea name=\"");
@@ -2066,7 +2064,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte box = 0)
+        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -2100,7 +2098,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0)
+        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -2137,7 +2135,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0)
+        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -2174,7 +2172,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -2215,7 +2213,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<D>(string name, string v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0) where D : IData
+        public HtmlContent SELECT<D>(string name, string v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12) where D : IData
         {
             FIELD_(label, box);
 
@@ -2256,7 +2254,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<D>(string name, string[] v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 0) where D : IData
+        public HtmlContent SELECT<D>(string name, string[] v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12) where D : IData
         {
             FIELD_(label, box);
 

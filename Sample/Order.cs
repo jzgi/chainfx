@@ -46,7 +46,7 @@ namespace Greatbone.Sample
 
         internal decimal cash; // amount recieved
         internal DateTime paid; // when cash received or forcibly accepted
-        internal bool preparing;
+        internal bool prepare;
         internal DateTime aborted; // time aborted
         internal DateTime received; // time shipped
         internal string note;
@@ -76,7 +76,7 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(cash), ref cash);
                 i.Get(nameof(paid), ref paid);
-                i.Get(nameof(preparing), ref preparing);
+                i.Get(nameof(prepare), ref prepare);
                 i.Get(nameof(aborted), ref aborted);
                 i.Get(nameof(received), ref received);
                 i.Get(nameof(note), ref note);
@@ -108,7 +108,7 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(cash), cash);
                 o.Put(nameof(paid), paid);
-                o.Put(nameof(preparing), preparing);
+                o.Put(nameof(prepare), prepare);
                 o.Put(nameof(aborted), aborted);
                 o.Put(nameof(received), received);
                 o.Put(nameof(note), note);

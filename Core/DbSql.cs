@@ -30,9 +30,21 @@ namespace Greatbone.Core
             ordinal = 0;
         }
 
-        public DbSql T(string str)
+        public DbSql T(short v)
         {
-            Add(str);
+            Add(v);
+            return this;
+        }
+
+        public DbSql T(int v)
+        {
+            Add(v);
+            return this;
+        }
+
+        public DbSql T(string v)
+        {
+            Add(v);
             return this;
         }
 

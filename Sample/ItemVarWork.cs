@@ -224,7 +224,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片"), Style(AnchorCrop)]
+        [Ui("图片"), Style(ButtonCrop)]
         public async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -235,8 +235,7 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
-                        ArraySegment<byte> byteas;
-                        dc.Let(out byteas);
+                        dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) ac.Give(204); // no content 
                         else
                         {
@@ -248,11 +247,11 @@ namespace Greatbone.Sample
             }
             else // post
             {
-                var frm = await ac.ReadAsync<Form>();
-                ArraySegment<byte> icon = frm[nameof(icon)];
+                var f = await ac.ReadAsync<Form>();
+                ArraySegment<byte> jpeg = f[nameof(jpeg)];
                 using (var dc = Service.NewDbContext())
                 {
-                    if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(icon).Set(shopid).Set(name)) > 0)
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name)) > 0)
                     {
                         ac.Give(200); // ok
                     }

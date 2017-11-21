@@ -152,7 +152,14 @@ namespace Greatbone.Sample
                 }
                 else
                 {
-                    ac.GivePage(403, m => { m.CALLOUT("您目前没有访问权限!"); });
+                    ac.GivePane(403, m =>
+                    {
+                        m.FORM_();
+                        m.FIELDSET_("没有访问权限");
+                        m.BOX_().T("您要访问的功能需要管理员授权")._BOX();
+                        m._FIELDSET();
+                        m._FORM();
+                    });
                 }
             }
             else
