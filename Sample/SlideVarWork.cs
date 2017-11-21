@@ -4,7 +4,7 @@ using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
-    [User]
+    [Allow]
     public abstract class SlideVarWork : Work
     {
         protected SlideVarWork(WorkContext wc) : base(wc)

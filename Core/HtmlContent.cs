@@ -521,6 +521,22 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent FIELD(string[] v, string label = null, string suffix = null, sbyte box = 0)
+        {
+            FIELD_(label, box);
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0) Add(" ");
+                Add(v[i]);
+            }
+            if (suffix != null)
+            {
+                Add(suffix);
+            }
+            _FIELD(box);
+            return this;
+        }
+
         public HtmlContent FIELD_(string label = null, sbyte box = 0)
         {
             if (box > 0)
@@ -1168,7 +1184,6 @@ namespace Greatbone.Core
             }
             for (int i = 0; i < ais.Length; i++)
             {
-                // access check if neccessary
                 ActionInfo ai = ais[i];
                 if (ac != null && !ai.DoAuthorize(ac)) continue;
 

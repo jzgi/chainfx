@@ -14,7 +14,7 @@ namespace Greatbone.Sample
 
         public static Map<short, string> Status = new Map<short, string>
         {
-            {0, string.Empty},
+            {0, "停业中"},
             {OFF, "休息中"},
             {ON, "营业中"}
         };

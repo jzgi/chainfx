@@ -146,7 +146,7 @@ function crop(trig, ordinals, siz, circle, title) {
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' + title + '&nbsp;';
+        '<div class="title-bar"><div class="title-bar-title">'
     if (ordinals > 0) {
         html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ', ' + circle + ') ">';
         for (var i = 1; i <= ordinals; i++) {
@@ -163,7 +163,7 @@ function crop(trig, ordinals, siz, circle, title) {
         '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +
         '</div>' +
         '</div>'; // title-bar
-    html += '<div id="crop" style="height: -webkit-calc(100% - 8rem); height: calc(100% - 8rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ',' + circle + ');"></div>';
+    html += '<div id="crop" style="height: -webkit-calc(100% - 6.5rem); height: calc(100% - 6.5rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ',' + circle + ');"></div>';
     html += '</div>'; // dyndlg
 
     var dive = $(html);
@@ -189,7 +189,7 @@ function bind(url, ordinal, width, height, circle) {
             height: height,
             type: circle ? 'circle' : 'square'
         },
-        enforceBoundary: false
+        enforceBoundary: true
     });
 }
 

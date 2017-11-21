@@ -5,11 +5,11 @@ using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
-    public class ItemCheckAttribute : CheckAttribute
+    public class ItemlyAttribute : StateAttribute
     {
         readonly char state;
 
-        public ItemCheckAttribute(char state)
+        public ItemlyAttribute(char state)
         {
             this.state = state;
         }
@@ -84,7 +84,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("购买", "加入购物车"), Style(ButtonShow, 1), ItemCheck('A')]
+        [Ui("购买", "加入购物车"), Style(ButtonShow, 1), Itemly('A')]
         public async Task Add(ActionContext ac)
         {
             string shopid = ac[-1];

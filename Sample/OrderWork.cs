@@ -163,7 +163,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("新单")]
-    [User(OPRMEM)]
+    [Allow(OPRMEM)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         public OprNewWork(WorkContext wc) : base(wc)
@@ -225,7 +225,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("派单")]
-    [User(OPR)]
+    [Allow(OPR)]
     public class OprGoWork : OrderWork<OprGoVarWork>
     {
         public OprGoWork(WorkContext wc) : base(wc)
@@ -277,7 +277,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("旧单")]
-    [User(OPR)]
+    [Allow(OPR)]
     public class OprPastWork : OrderWork<OprPastVarWork>
     {
         public OprPastWork(WorkContext wc) : base(wc)
@@ -329,7 +329,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("客服")]
-    [User(adm: true)]
+    [Allow(adm: true)]
     public class AdmKickWork : OrderWork<AdmKickVarWork>
     {
         public AdmKickWork(WorkContext wc) : base(wc)

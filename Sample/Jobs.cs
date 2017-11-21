@@ -19,7 +19,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("常规")]
-    [User(adm: true)]
+    [Allow(adm: true)]
     public class AdmWork : Work
     {
         public AdmWork(WorkContext wc) : base(wc)

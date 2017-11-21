@@ -5,11 +5,11 @@ using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
-    public class OrderCheckAttribute : CheckAttribute
+    public class OrderlyAttribute : StateAttribute
     {
         readonly char state;
 
-        public OrderCheckAttribute(char state)
+        public OrderlyAttribute(char state)
         {
             this.state = state;
         }
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("付款"), Style(ButtonScript), OrderCheck('A')]
+        [Ui("付款"), Style(ButtonScript), Orderly('A')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];

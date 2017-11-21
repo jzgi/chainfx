@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// A constraint check annotation to determine the availability of an action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public abstract class CheckAttribute : Attribute
+    public abstract class StateAttribute : Attribute
     {
         public abstract bool Check(object obj);
     }

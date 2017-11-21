@@ -62,7 +62,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [User] // we are forced to put check here because iframe does not have weixin browsing flags 
+    [Allow] // we are forced to put check here because iframe does not have weixin browsing flags 
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
