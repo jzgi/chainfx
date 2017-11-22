@@ -547,10 +547,9 @@ namespace Greatbone.Core
             }
             if (label != null)
             {
-                Add("<label>");
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
-                Add("</label>");
+                Add("</span>");
             }
             return this;
         }
@@ -589,8 +588,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
+                Add("</span>");
             }
             Add(v);
             if (suffix != null)
@@ -606,8 +606,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
+                Add("</span>");
             }
             Add(v);
             if (suffix != null)
@@ -623,8 +624,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
+                Add("</span>");
             }
             if (symbol != 0)
             {
@@ -646,8 +648,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
+                Add("</span>");
             }
             Add(v);
             if (suffix != null)
@@ -663,8 +666,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
+                Add("</span>");
             }
             Add(v);
             if (suffix != null)
@@ -681,8 +685,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
+                Add("<span class=\"label\">");
                 Add(label);
-                Add("：");
+                Add("</span>");
             }
             for (int i = 0; i < v.Length; i++)
             {

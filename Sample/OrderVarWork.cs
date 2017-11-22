@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.UiMode;
+using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
 {
@@ -56,9 +57,9 @@ namespace Greatbone.Sample
                         {
                             dc.Let(out string city).Let(out string[] areas);
                             h.FORM_();
-                            h.SELECT(nameof(area), areas[0], areas, "区域", refresh: true, box: 12);
+                            h.SELECT(nameof(area), areas[0], areas, "区域", refresh: true);
                             var places = City.All[city].FindArea(areas[0]).places;
-                            h.FIELD_("地址", 12).SELECT(nameof(addr), places[0], places).TEXT(nameof(addr), addr)._FIELD();
+                            h.FIELD_("地址").SELECT(nameof(addr), places[0], places).TEXT(nameof(addr), addr)._FIELD();
                             h._FORM();
                         }
                     }
@@ -95,7 +96,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
+                    dc.Sql("SELECT ").columnlst(Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
                     dc.Query1(p => p.Set(orderid).Set(wx));
                     var order = dc.ToObject<Order>();
                     var o = order.items[idx];
@@ -103,14 +104,14 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("数量", box: 12);
+                        h.FIELDSET_("数量");
                         h.HIDDEN(nameof(o.unit), o.unit);
                         h.HIDDEN(nameof(o.price), o.price);
-                        h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1, box: 12);
+                        h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1);
                         h._FIELDSET();
                         if (o.opts != null)
                         {
-                            h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "要求", box: 12);
+                            h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "要求");
                         }
                         h._FORM();
                     });
@@ -123,7 +124,7 @@ namespace Greatbone.Sample
             string[] opts = f[nameof(opts)];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
+                dc.Sql("SELECT ").columnlst(Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
                 dc.Query1(p => p.Set(orderid).Set(wx));
                 var o = dc.ToObject<Order>();
                 o.UpdItem(idx, qty, opts);
@@ -175,8 +176,8 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.FIELDSET_("我的建议", box: 12);
-                    m.TEXTAREA(nameof(kick), kick, null, max: 40, required: true, box: 12);
+                    m.FIELDSET_("我的建议");
+                    m.TEXTAREA(nameof(kick), kick, null, max: 40, required: true);
                     m._FIELDSET();
                     m._FORM();
                 });
@@ -225,7 +226,7 @@ namespace Greatbone.Sample
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(Order.ABORTED).Set(orderid));
+                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(ABORTED).Set(orderid));
                     }
                     ac.GivePane(200);
                 }
@@ -242,33 +243,31 @@ namespace Greatbone.Sample
         public OprGoVarWork(WorkContext wc) : base(wc)
         {
         }
+
+        [Ui("送完"), Style(ButtonConfirm)]
+        public async Task got(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            int orderid = ac[this];
+            string wx;
+            decimal total;
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query1("UPDATE orders SET delivered = localtimestamp, status = " + DELIVERED + " WHERE id = @1 AND shopid = @2 AND status = " + PREPARED + " RETURNING wx, total", p => p.Set(orderid).Set(shopid));
+                dc.Let(out wx).Let(out total);
+            }
+            if (wx != null)
+            {
+                await WeiXinUtility.PostSendAsync(wx, "【通知】您的订单已收货（单号" + orderid + "，金额¥" + total + ")");
+            }
+            ac.GiveRedirect("../");
+        }
     }
 
     public class OprPastVarWork : OrderVarWork
     {
         public OprPastVarWork(WorkContext wc) : base(wc)
         {
-        }
-
-        [Ui("送达", "已经送达买家"), Style(ButtonConfirm)]
-        public async Task got(ActionContext ac)
-        {
-            int orderid = ac[this];
-            string mgrwx = null;
-            using (var dc = ac.NewDbContext())
-            {
-                var shopid = (string) dc.Scalar("UPDATE orders SET shipped = localtimestamp, status = @1 WHERE id = @2  RETURNING shopid", p => p.Set(Order.DONE).Set(orderid));
-                if (shopid != null)
-                {
-                    mgrwx = (string) dc.Scalar("SELECT mgrwx FROM shops WHERE id = @1", p => p.Set(shopid));
-                }
-            }
-            if (mgrwx != null)
-            {
-                await WeiXinUtility.PostSendAsync(mgrwx, "【送达】订单编号：" + orderid);
-            }
-
-            ac.GiveRedirect("../");
         }
 
         [Ui("退款核查", "实时核查退款到账情况"), Style(AnchorOpen)]

@@ -198,7 +198,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货标记"), Style(ButtonConfirm)]
+        [Ui("备货"), Style(ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -225,7 +225,7 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
 
-        [Ui("准备派送"), Style(ButtonConfirm)]
+        [Ui("备完"), Style(ButtonConfirm)]
         public async Task ready(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -235,7 +235,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET status = ").T(Order.READY).T(" WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key);
+                    dc.Sql("UPDATE orders SET status = ").T(Order.PREPARED).T(" WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key);
                     dc.Execute(p => p.Set(shopid), false); // non-prepared statement
                 }
             }
@@ -256,7 +256,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.READY + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PREPARED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
@@ -359,7 +359,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status >  " + Order.READY + " AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE status >  " + Order.PREPARED + " AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();

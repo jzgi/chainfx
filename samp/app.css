@@ -121,17 +121,23 @@ tr.checked {
 }
 
 .pane fieldset.cell {
-    margin: 0.25rem;
     width: calc(100% - 0.25rem);
     padding-bottom: 1.25rem;
     border: 1px solid darkgray;
 }
 
 .page fieldset.cell {
-    margin: 0.25rem;
     width: calc(100% - 0.25rem);
     padding-bottom: 1.25rem;
     border: 1px solid gainsboro;
+}
+
+.label {
+    white-space: nowrap;
+}
+
+.label::after {
+    content: "："
 }
 
 legend {

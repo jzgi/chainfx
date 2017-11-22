@@ -15,16 +15,16 @@ namespace Greatbone.Sample
             LATER = 4;
 
         // status
-        public const short CREATED = 0, PAID = 1, READY = 2, ABORTED = 3, DONE = 4;
+        public const short CREATED = 0, PAID = 1, PREPARED = 2, ABORTED = 3, DELIVERED = 4;
 
         // status
         public static readonly Map<short, string> STATUS = new Map<short, string>
         {
             {CREATED, "购物车"},
             {PAID, "已付款"},
-            {READY, "已备货"},
+            {PREPARED, "已备货"},
             {ABORTED, "已撤单"},
-            {DONE, "已送达"}
+            {DELIVERED, "已送达"}
         };
 
 
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
         internal DateTime paid; // when cash received or forcibly accepted
         internal bool prepare;
         internal DateTime aborted; // time aborted
-        internal DateTime received; // time shipped
+        internal DateTime delivered; // time shipped
         internal string note;
         internal short status;
 
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(paid), ref paid);
                 i.Get(nameof(prepare), ref prepare);
                 i.Get(nameof(aborted), ref aborted);
-                i.Get(nameof(received), ref received);
+                i.Get(nameof(delivered), ref delivered);
                 i.Get(nameof(note), ref note);
             }
             i.Get(nameof(status), ref status);
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(paid), paid);
                 o.Put(nameof(prepare), prepare);
                 o.Put(nameof(aborted), aborted);
-                o.Put(nameof(received), received);
+                o.Put(nameof(delivered), delivered);
                 o.Put(nameof(note), note);
             }
             o.Put(nameof(status), status);

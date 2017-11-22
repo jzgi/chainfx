@@ -109,7 +109,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码"), Style(ButtonShow)]
+        [Ui("设密码"), Style(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -193,12 +193,13 @@ namespace Greatbone.Sample
                             h.FIELD_("计价").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                             h._FIELDSET();
                             h.FIELDSET_("经理");
-                            h.FIELD_("姓名").T(o.mgrname).T(" (").T(o.mgrwx).T(")")._FIELD();
-                            h.FIELD(o.mgrtel, "电话");
+                            h.FIELD(o.mgrname, "姓名", box: 6).FIELD(o.mgrtel, "电话", box: 6);
+                            h.FIELD(o.mgrwx, "微信");
+
                             h._FIELDSET();
                             h.FIELDSET_("当前客服");
-                            h.FIELD_("姓名").T(o.oprname).T(" (").T(o.oprwx).T(")")._FIELD();
-                            h.FIELD(o.oprtel, "电话");
+                            h.FIELD(o.oprname, "姓名", box: 6).FIELD(o.oprtel, "电话", box: 6);
+                            h.FIELD(o.oprwx, "微信");
                             h._FIELDSET();
                         }
                     });
@@ -206,8 +207,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                Node node = ac[this];
-                ac.GiveFrame(200, false, 60 * 15, node.Label);
+                ac.GiveFrame(200, false, 60 * 15, "粗粮达人网点操作");
             }
         }
 
@@ -302,7 +302,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("客服上/下线"), Style(ButtonShow, 1)]
+        [Ui("客服"), Style(ButtonShow, 1)]
         public void seton(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -314,9 +314,12 @@ namespace Greatbone.Sample
                     h.FORM_();
                     using (var dc = ac.NewDbContext())
                     {
-                        string hint = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)) ? "您当前已经是客服。是否下线，停止接收相关微信通知，并且我的电话不再显示为客服电话？" : "是否上线做客服，接收相关微信通知，并且我的电话显示为客服电话";
+                        bool on = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx));
+                        string hint = on ? "我当前已经是客服。是否下线？下线将会置空客服电话号码，也不接收客服通知。" : "是否上线做客服，接收客服通知，并且个人电话号码显示为客服电话？";
                         const bool yes = false;
+                        h.FIELDSET_(on ? "客服下线" : "客服上线");
                         h.CHECKBOX(nameof(yes), yes, hint, required: true);
+                        h._FIELDSET();
                     }
                     h._FORM();
                 });
