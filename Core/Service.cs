@@ -31,13 +31,13 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // event consumption
-        readonly Roll<EventInfo> events;
+        readonly Map<string, EventInfo> events;
 
         // clients to clustered peers
-        readonly Roll<Client> clients;
+        readonly Map<string, Client> clients;
 
         // event queues
-        readonly Roll<EventQueue> queues;
+        readonly Map<string, EventQueue> queues;
 
         // event schesuler thread
         Thread scheduler;
@@ -100,9 +100,9 @@ namespace Greatbone.Core
 
                 if (events == null)
                 {
-                    events = new Roll<EventInfo>(16);
+                    events = new Map<string, EventInfo>(16);
                 }
-                events.Add(evt);
+                events.Add(evt.Key, evt);
             }
 
             // cluster connectivity
@@ -110,18 +110,18 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < Cluster.Count; i++)
                 {
-                    var e = Cluster[i];
+                    var e = Cluster.At(i);
                     if (clients == null)
                     {
-                        clients = new Roll<Client>(Cluster.Count * 2);
+                        clients = new Map<string, Client>(Cluster.Count * 2);
                     }
                     clients.Add(new Client(this, e.Key, e.Value));
 
                     if (queues == null)
                     {
-                        queues = new Roll<EventQueue>(Cluster.Count * 2);
+                        queues = new Map<string, EventQueue>(Cluster.Count * 2);
                     }
-                    queues.Add(new EventQueue(e.Key));
+                    queues.Add(e.Key, new EventQueue(e.Key));
                 }
             }
 
@@ -142,9 +142,9 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Roll<Client> Clients => clients;
+        public Map<string, Client> Clients => clients;
 
-        public Roll<EventInfo> Events => events;
+        public Map<string, EventInfo> Events => events;
 
         public string Shard => ctx.shard;
 
@@ -274,7 +274,7 @@ namespace Greatbone.Core
                     StringBuilder sb = new StringBuilder();
                     sb.Append("Host=").Append(Db.host);
                     sb.Append(";Port=").Append(Db.port);
-                    sb.Append(";Database=").Append(Db.database ?? Name);
+                    sb.Append(";Database=").Append(Db.database ?? Key);
                     sb.Append(";Username=").Append(Db.username);
                     sb.Append(";Password=").Append(Db.password);
                     sb.Append(";Read Buffer Size=").Append(1024 * 32);
@@ -337,7 +337,7 @@ namespace Greatbone.Core
             for (int i = 0; i < clients.Count; i++)
             {
                 Client cli = clients[i];
-                if (cli.Name.Equals(targetid)) return cli;
+                if (cli.Key.Equals(targetid)) return cli;
             }
             return null;
         }
@@ -362,7 +362,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            DBG(Name + " -> " + Addrs[0] + " started");
+            DBG(Key + " -> " + Addrs[0] + " started");
 
             cleaner.Start();
 
@@ -477,7 +477,7 @@ namespace Greatbone.Core
             logWriter.Flush();
             logWriter.Dispose();
 
-            Console.Write(Name);
+            Console.Write(Key);
             Console.WriteLine(".");
         }
     }

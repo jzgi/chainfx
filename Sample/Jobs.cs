@@ -18,8 +18,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("常规")]
-    [Allow(adm: true)]
+    [Ui("常规"), Allow(adm: true)]
     public class AdmWork : Work
     {
         public AdmWork(WorkContext wc) : base(wc)
@@ -38,10 +37,16 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (inner)
             {
-                ac.GivePage(200, h =>
+                ac.GivePage(200, m =>
                 {
-                    h.TOOLBAR();
-                    h.GRIDVIEW((Order[]) null, null);
+                    m.TOOLBAR();
+                    m.GRIDVIEW(h =>
+                    {
+                        h.CAPTION("系统运行状况", "运行中", true);
+                        h.FIELDSET_("参数");
+                        h.FIELD("2.0", "版本");
+                        h._FIELDSET();
+                    });
                 });
             }
             else
@@ -50,8 +55,8 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("订单存档")]
-        public void archive(ActionContext ac)
+        [Ui("清除"), Style(UiMode.ButtonOpen, 2)]
+        public void clean(ActionContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())

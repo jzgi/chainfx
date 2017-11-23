@@ -43,10 +43,11 @@ namespace Greatbone.Sample
         {
             string wx = ac[-2];
             int orderid = ac[this];
-
+            string name = null;
             string area = null;
-            string place = null;
             string addr = null;
+            string tel = null;
+            User prin = (User) ac.Principal;
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -57,9 +58,19 @@ namespace Greatbone.Sample
                         {
                             dc.Let(out string city).Let(out string[] areas);
                             h.FORM_();
-                            h.SELECT(nameof(area), areas[0], areas, "区域", refresh: true);
-                            var places = City.All[city].FindArea(areas[0]).places;
-                            h.FIELD_("地址").SELECT(nameof(addr), places[0], places).TEXT(nameof(addr), addr)._FIELD();
+                            if (areas == null)
+                            {
+                                h.TEXT(nameof(name), prin.name, "姓名", required: true);
+                                h.SELECT(nameof(area), prin.area, City.FindCity(city).Areas, "区域", required: true);
+                                h.TEXT(nameof(addr), addr, "地址");
+                            }
+                            else
+                            {
+                                h.SELECT(nameof(area), prin.area, areas, "限送", refresh: true, required: true);
+                                var places = City.All[city].FindArea(areas[0]).places;
+                                h.SELECT(nameof(addr), places[0], places, "地址", box: 7).TEXT(nameof(addr), addr, box: 5);
+                            }
+                            h.TEL(nameof(tel), tel, "电话", required: true);
                             h._FORM();
                         }
                     }
@@ -68,12 +79,11 @@ namespace Greatbone.Sample
             }
 
             var f = await ac.ReadAsync<Form>();
-            f.Let(out area).Let(out addr).Let(out string tel);
+            f.Let(out area).Let(out addr).Let(out tel);
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE orders SET area = @1, addr = @2, tel = @3 WHERE id = @4", p => p.Set(area).Set(addr).Set(tel).Set(orderid));
 
-                User prin = (User) ac.Principal;
                 if (prin.city == null)
                 {
                     dc.Execute("INSERT INTO users (wx, name, city, area, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(area).Set(addr).Set(tel).Set(DateTime.Now));

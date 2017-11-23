@@ -44,7 +44,7 @@ namespace Greatbone.Core
         )
         {
             this.work = work;
-            this.rpath = Name == string.Empty ? "./" : Name;
+            this.rpath = Key == string.Empty ? "./" : Key;
             this.async = async;
             this.subscript = subscript;
             this.limit = limit;
@@ -96,7 +96,7 @@ namespace Greatbone.Core
             return state == null || obj == null || state.Check(obj);
         }
 
-        public override Service Service => work.Service;
+        public Service Service => work.Service;
 
         internal void Do(ActionContext ac, int subscpt)
         {

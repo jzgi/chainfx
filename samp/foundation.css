@@ -3017,6 +3017,10 @@ table {
     margin-bottom: 1rem;
 }
 
+table input[type='checkbox'] {
+    display: flex;
+}
+
 table thead,
 table tbody,
 table tfoot {
@@ -3025,7 +3029,7 @@ table tfoot {
 }
 
 table caption {
-    padding: 0.5rem 0.625rem 0.625rem;
+    padding: 0.625rem;
     font-weight: bold;
 }
 
@@ -3046,13 +3050,13 @@ table thead th,
 table thead td,
 table tfoot th,
 table tfoot td {
-    padding: 0.5rem 0.625rem 0.625rem;
+    padding: 0.625rem;
     font-weight: bold;
     text-align: left;
 }
 
 table tbody th,
-table tbody td { padding: 0.5rem 0.625rem 0.625rem; }
+table tbody td { padding: 0.625rem; }
 
 table tbody { background-color: gainsboro; }
 

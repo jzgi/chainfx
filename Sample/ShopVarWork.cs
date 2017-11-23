@@ -110,12 +110,12 @@ namespace Greatbone.Sample
                         {
                             m.FORM_();
                             m.FIELD(o.id, "编号");
-                            m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true, box: 12);
-                            m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true, box: 12);
-                            m.TEXT(nameof(o.addr), o.addr, "地址", max: 20, box: 12);
-                            m.TEXT(nameof(o.schedule), o.schedule, "营业", box: 12);
-                            m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色", box: 12);
-                            m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送", box: 12);
+                            m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                            m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
+                            m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                            m.TEXT(nameof(o.schedule), o.schedule, "营业");
+                            m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色");
+                            m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                             m._FORM();
                         });
                     }
@@ -211,34 +211,6 @@ namespace Greatbone.Sample
             using (var dc = Service.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
-            }
-            ac.Give(200); // ok
-        }
-
-        [Ui("功能照"), Style(ButtonCrop, Ordinals = 4)]
-        public new async Task img(ActionContext ac, int ordinal)
-        {
-            string shopid = ac[this];
-            if (ac.GET)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
-                    {
-                        dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content 
-                        else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
-                    }
-                    else ac.Give(404, @public: true, maxage: 60 * 5); // not found
-                }
-                return;
-            }
-
-            var f = await ac.ReadAsync<Form>();
-            ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = Service.NewDbContext())
-            {
-                dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }
             ac.Give(200); // ok
         }

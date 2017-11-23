@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A event queue that corresponds to a particular event client.
     /// </summary>
-    public class EventQueue : IRollable
+    public class EventQueue : IMappable<string>
     {
         // custm HTTP headers
         internal const string
@@ -39,7 +39,7 @@ namespace Greatbone.Core
             elements = new Event[CAPACITY];
         }
 
-        public string Name => name;
+        public string Key => name;
 
         public void Poll(ActionContext ac)
         {
@@ -127,7 +127,7 @@ namespace Greatbone.Core
         // static
         //
 
-        internal static void Setup(Service service, Roll<Client> clients)
+        internal static void Setup(Service service, Map<string, Client> clients)
         {
             using (var dc = service.NewDbContext())
             {
@@ -162,13 +162,13 @@ namespace Greatbone.Core
                 for (int i = 0; i < clients.Count; i++)
                 {
                     Client cli = clients[i];
-                    if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Name)))
+                    if (dc.Query1("SELECT evtid FROM evtu WHERE peerid = @1", p => p.Set(cli.Key)))
                     {
                         dc.Let(out cli.evtid);
                     }
                     else
                     {
-                        dc.Execute("INSERT INTO evtu (peerid, evtid) VALUES (@1, @2)", p => p.Set(cli.Name).Set(cli.evtid));
+                        dc.Execute("INSERT INTO evtu (peerid, evtid) VALUES (@1, @2)", p => p.Set(cli.Key).Set(cli.evtid));
                     }
                 }
             }

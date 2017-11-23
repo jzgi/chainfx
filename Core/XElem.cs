@@ -10,7 +10,7 @@ namespace Greatbone.Core
         readonly string tag;
 
         // attributes, can be null
-        Roll<XAttr> attrs;
+        Map<string, XAttr> attrs;
 
         // text node, can be null
         string text;
@@ -27,7 +27,7 @@ namespace Greatbone.Core
 
         public string Tag => tag;
 
-        public Roll<XAttr> Attrs => attrs;
+        public Map<string,XAttr> Attrs => attrs;
 
         public XAttr Attr(string attr) => attrs[attr];
 
@@ -35,7 +35,7 @@ namespace Greatbone.Core
         {
             if (attrs == null)
             {
-                attrs = new Roll<XAttr>(8);
+                attrs = new Map<string, XAttr>(8);
             }
             attrs.Add(new XAttr(name, v));
         }

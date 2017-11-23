@@ -11,6 +11,8 @@ namespace Greatbone.Sample
 
         public static Map<string, City> All;
 
+        public static Area[] AreasOf(string city) => city == null ? null : All[city]?.areas;
+
         internal string name;
 
         internal double x1, y1, x2, y2;

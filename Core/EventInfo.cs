@@ -65,7 +65,7 @@ namespace Greatbone.Core
 
         public Service Service => service;
 
-        public string Name => key;
+        public string Key => key;
 
         public bool IsAsync => async;
 
@@ -101,7 +101,7 @@ namespace Greatbone.Core
 
         public override string ToString()
         {
-            return Name;
+            return Key;
         }
     }
 }

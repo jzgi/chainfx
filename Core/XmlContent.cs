@@ -50,12 +50,12 @@ namespace Greatbone.Core
             Add(e.Tag);
             if (e.Attrs != null)
             {
-                Roll<XAttr> attrs = e.Attrs;
+                Map<string, XAttr> attrs = e.Attrs;
                 for (int i = 0; i < attrs.Count; i++)
                 {
                     XAttr attr = attrs[i];
                     Add(' ');
-                    Add(attr.Name);
+                    Add(attr.Key);
                     Add('=');
                     Add('"');
                     AddEsc(attr.Value);

@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     /// </summary>
-    public class Form : Roll<Field>, IDataInput
+    public class Form : Map<string, Field>, IDataInput
     {
         // if multipart
         readonly bool mp;

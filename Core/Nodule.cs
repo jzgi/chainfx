@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A certain node of resources along the URi path.
     /// </summary>
-    public abstract class Nodule : IRollable
+    public abstract class Nodule : IMappable<string>
     {
         // identifier as appeared in URI
         readonly string name;
@@ -15,8 +15,8 @@ namespace Greatbone.Core
         // name in lowercase
         readonly string lower;
 
-        // ui label or upper key
-        readonly string label;
+        // name in uppercase
+        readonly string upper;
 
         // user interface-related settings
         internal UiAttribute ui;
@@ -27,35 +27,35 @@ namespace Greatbone.Core
         // pre- operation
         readonly IBefore before;
 
-        readonly IBeforeAsync beforeasync;
+        readonly IBeforeAsync beforeAsync;
 
         // post- operation
         readonly IAfter after;
 
-        readonly IAfterAsync afterasync;
+        readonly IAfterAsync afterAsync;
 
-        internal Nodule(string name, ICustomAttributeProvider attrprov)
+        internal Nodule(string name, ICustomAttributeProvider attrp)
         {
-            this.name = name;
+            this.name = name ?? throw new ServiceException("null nodule name");
             this.cap = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
             this.lower = name.ToLower();
 
             // either methodinfo or typeinfo
-            if (attrprov == null)
+            if (attrp == null)
             {
-                attrprov = GetType().GetTypeInfo();
+                attrp = GetType().GetTypeInfo();
             }
 
             // ui 
-            var uis = (UiAttribute[]) attrprov.GetCustomAttributes(typeof(UiAttribute), false);
+            var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), false);
             if (uis.Length > 0)
             {
                 ui = uis[0];
-                this.label = ui.Label ?? name?.ToUpper();
+                this.upper = ui.Label ?? name.ToUpper();
             }
 
             // authorize
-            var auths = (AuthorizeAttribute[]) attrprov.GetCustomAttributes(typeof(AuthorizeAttribute), false);
+            var auths = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), false);
             if (auths.Length > 0)
             {
                 authorize = auths[0];
@@ -63,20 +63,18 @@ namespace Greatbone.Core
             }
 
             // filters
-            var attrs = attrprov.GetCustomAttributes(false);
+            var attrs = attrp.GetCustomAttributes(false);
             for (int i = 0; i < attrs.Length; i++)
             {
                 var attr = attrs[i];
                 if (attr is IBefore b) before = b;
-                if (attr is IBeforeAsync basync) beforeasync = basync;
+                if (attr is IBeforeAsync basync) beforeAsync = basync;
                 if (attr is IAfter a) after = a;
-                if (attr is IAfterAsync aasync) afterasync = aasync;
+                if (attr is IAfterAsync aasync) afterAsync = aasync;
             }
         }
 
-        public abstract Service Service { get; }
-
-        public string Name => name;
+        public string Key => name;
 
         public bool IsCap => cap;
 
@@ -88,13 +86,13 @@ namespace Greatbone.Core
 
         public IBefore Before => before;
 
-        public IBeforeAsync BeforeAsync => beforeasync;
+        public IBeforeAsync BeforeAsync => beforeAsync;
 
         public IAfter After => after;
 
-        public IAfterAsync AfterAsync => afterasync;
+        public IAfterAsync AfterAsync => afterAsync;
 
-        public string Label => label;
+        public string Upper => upper;
 
         public bool HasUi => ui != null;
 

@@ -26,7 +26,7 @@ namespace Greatbone.Core
         readonly TypeInfo typeinfo;
 
         // declared actions 
-        readonly Roll<ActionInfo> actions;
+        readonly Map<string, ActionInfo> actions;
 
         // the default action, can be null
         readonly ActionInfo @default;
@@ -37,7 +37,7 @@ namespace Greatbone.Core
         readonly bool buttonly;
 
         // subworks, if any
-        internal Roll<Work> works;
+        internal Map<string, Work> works;
 
         // variable-key subwork, if any
         internal Work varwork;
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             this.ctx = wc;
 
             // gather actions
-            actions = new Roll<ActionInfo>(32);
+            actions = new Map<string, ActionInfo>(32);
             Type typ = GetType();
             typeinfo = typ.GetTypeInfo();
 
@@ -75,7 +75,7 @@ namespace Greatbone.Core
                 else continue;
 
                 actions.Add(ai);
-                if (ai.Name == string.Empty) @default = ai;
+                if (ai.Key == string.Empty) @default = ai;
             }
 
             // gather styled actions
@@ -110,7 +110,7 @@ namespace Greatbone.Core
             }
             if (works == null)
             {
-                works = new Roll<Work>(16);
+                works = new Map<string, Work>();
             }
             // create instance by reflection
             Type typ = typeof(W);
@@ -127,7 +127,7 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            Works.Add(work);
+            Works.Add(work.Key, work);
 
             return work;
         }
@@ -170,7 +170,7 @@ namespace Greatbone.Core
             return work;
         }
 
-        public Roll<ActionInfo> Actions => actions;
+        public Map<string, ActionInfo> Actions => actions;
 
         public ActionInfo[] Styled => styled;
 
@@ -178,7 +178,7 @@ namespace Greatbone.Core
 
         public ActionInfo Default => @default;
 
-        public Roll<Work> Works => works;
+        public Map<string, Work> Works => works;
 
         public Work VarWork => varwork;
 
@@ -190,7 +190,7 @@ namespace Greatbone.Core
 
         public int Level => ctx.Level;
 
-        public override Service Service => ctx.Service;
+        public Service Service => ctx.Service;
 
         public bool HasKeyer => ctx.Keyer != null;
 
@@ -243,13 +243,13 @@ namespace Greatbone.Core
 
         internal void Describe(XmlContent cont)
         {
-            cont.ELEM(Name,
+            cont.ELEM(Key,
                 delegate
                 {
-                    for (int i = 0; i < Actions.Count; i++)
+                    for (int i = 0; i < actions.Count; i++)
                     {
-                        ActionInfo act = Actions[i];
-                        cont.Put(act.Name, "");
+                        ActionInfo act = actions[i];
+                        cont.Put(act.Key, "");
                     }
                 },
                 delegate
@@ -438,7 +438,7 @@ namespace Greatbone.Core
 
             StaticContent cont = new StaticContent(bytes, bytes.Length)
             {
-                Name = filename,
+                Key = filename,
                 Type = ctyp,
                 Modified = modified,
                 GZip = gzip

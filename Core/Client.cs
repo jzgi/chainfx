@@ -13,7 +13,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A client of RPC, service and/or event queue.
     /// </summary>
-    public class Client : HttpClient, IRollable
+    public class Client : HttpClient, IMappable<string>
     {
         const int AHEAD = 1000 * 12;
 
@@ -48,14 +48,14 @@ namespace Greatbone.Core
             this.service = service;
             this.peerid = peerid;
 
-            Roll<EventInfo> eis = service?.Events;
+            Map<string, EventInfo> eis = service?.Events;
             if (eis != null)
             {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < eis.Count; i++)
                 {
                     if (i > 0) sb.Append(',');
-                    sb.Append(eis[i].Name);
+                    sb.Append(eis.At(i).key);
                 }
                 x_event = sb.ToString();
             }
@@ -64,7 +64,7 @@ namespace Greatbone.Core
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Name => peerid;
+        public string Key => peerid;
 
 
         public void TryPoll(int ticks)
@@ -88,7 +88,7 @@ namespace Greatbone.Core
                     reqhs.TryAddWithoutValidation(X_EVENT, x_event);
                     reqhs.TryAddWithoutValidation(X_SHARD, service.Shard);
 
-                    HttpResponseMessage rsp = null;
+                    HttpResponseMessage rsp;
                     try
                     {
                         rsp = await SendAsync(req);
@@ -208,7 +208,7 @@ namespace Greatbone.Core
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
-                    return default(D);
+                    return default;
                 }
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
@@ -221,7 +221,7 @@ namespace Greatbone.Core
             {
                 retryat = Environment.TickCount + AHEAD;
             }
-            return default(D);
+            return default;
         }
 
         public async Task<D[]> GetArrayAsync<D>(ActionContext ac, string uri, short proj = 0x00ff) where D : IData, new()
@@ -278,9 +278,9 @@ namespace Greatbone.Core
             }
             finally
             {
-                if (content is DynamicContent)
+                if (content is DynamicContent cont)
                 {
-                    BufferUtility.Return((DynamicContent) content);
+                    BufferUtility.Return(cont);
                 }
             }
             return 0;
@@ -318,9 +318,9 @@ namespace Greatbone.Core
             }
             finally
             {
-                if (content is DynamicContent)
+                if (content is DynamicContent cont)
                 {
-                    BufferUtility.Return((DynamicContent) content);
+                    BufferUtility.Return(cont);
                 }
             }
             return default((int, M));

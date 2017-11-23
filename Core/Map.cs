@@ -38,7 +38,9 @@ namespace Greatbone.Core
 
         public int Count => count;
 
-        public Entry this[int index] => entries[index];
+        public Entry At(int index) => entries[index];
+
+        public V this[int index] => entries[index].value;
 
         public V this[K key]
         {
@@ -105,6 +107,11 @@ namespace Greatbone.Core
         public void Add(K key, V value)
         {
             Add(key, value, false);
+        }
+
+        public void Add<M>(M v) where M : V, IMappable<K>
+        {
+            Add(v.Key, v, false);
         }
 
         void Add(K key, V value, bool rehash)

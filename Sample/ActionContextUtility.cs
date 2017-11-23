@@ -65,12 +65,12 @@ namespace Greatbone.Sample
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
 
             Work work = ac.Work;
-            Roll<Work> subs = work.Works;
+            Map<string, Work> subs = work.Works;
             // tabs
             h.Add("<ul class=\"tabs\" data-tabs id=\"frametabs\">");
             h.Add("<li class=\"tabs-title is-active\">");
             h.Add("<a href=\"#tabs_\">");
-            h.Add(work.Label);
+            h.Add(work.Upper);
             h.Add("</a>");
             h.Add("</li>");
             if (subs != null)
@@ -80,9 +80,9 @@ namespace Greatbone.Sample
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(ac)) continue;
                     h.Add("<li class=\"tabs-title\"><a href=\"#tabs_");
-                    h.Add(sub.Name);
+                    h.Add(sub.Key);
                     h.Add("\">");
-                    h.Add(sub.Label);
+                    h.Add(sub.Upper);
                     h.Add("</a></li>");
                 }
             }
@@ -101,10 +101,10 @@ namespace Greatbone.Sample
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(ac)) continue;
                     h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"tabs_");
-                    h.Add(sub.Name);
+                    h.Add(sub.Key);
                     h.Add("\">");
                     h.Add("<iframe id=\"");
-                    h.Add(sub.Name);
+                    h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
                     h.Add("</div>");
                 }

@@ -252,6 +252,22 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent SEP()
+        {
+            Add("&nbsp;/&nbsp;");
+            return this;
+        }
+
+        public HtmlContent A(string v, string href)
+        {
+            Add("<a href=\"");
+            Add(href);
+            Add("\">");
+            Add(v);
+            Add("</a>");
+            return this;
+        }
+
         public HtmlContent TH(string label)
         {
             Add("<th>");
@@ -569,6 +585,72 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent GRID_(sbyte small = 0, sbyte medium = 0, sbyte large = 0, sbyte xlarge = 0)
+        {
+            Add("<div class=\"grid-x");
+            if (small > 0)
+            {
+                Add(" small-up-");
+                Add(small);
+            }
+            if (medium > 0)
+            {
+                Add(" medium-up-");
+                Add(medium);
+            }
+            if (large > 0)
+            {
+                Add(" large-up-");
+                Add(large);
+            }
+            if (xlarge > 0)
+            {
+                Add(" xlarge-up-");
+                Add(xlarge);
+            }
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _GRID()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent CELL_(sbyte small = 0, sbyte medium = 0, sbyte large = 0, sbyte xlarge = 0)
+        {
+            Add("<div class=\"cell");
+            if (small > 0)
+            {
+                Add(" small-");
+                Add(small);
+            }
+            if (medium > 0)
+            {
+                Add(" medium-");
+                Add(medium);
+            }
+            if (large > 0)
+            {
+                Add(" large-");
+                Add(large);
+            }
+            if (xlarge > 0)
+            {
+                Add(" xlarge-");
+                Add(xlarge);
+            }
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _CELL()
+        {
+            Add("</div>");
+            return this;
+        }
+
         public HtmlContent BOX_(sbyte box = 12)
         {
             Add("<div class=\"cell box small-");
@@ -761,13 +843,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SEP()
-        {
-            Add("&nbsp;/&nbsp;");
-            return this;
-        }
-
-
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
             Add("<form");
@@ -907,7 +982,7 @@ namespace Greatbone.Core
             if (work == null) work = ac.Work;
             if (work.Styled == null)
             {
-                TOOLBAR_(work.Label);
+                TOOLBAR_(work.Upper);
             }
             else
             {
@@ -989,7 +1064,7 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<li><a href=\"");
-                        Add(ai.Name);
+                        Add(ai.Key);
                         Add('-');
                         Add(i);
                         Add(ac.QueryString);
@@ -1001,7 +1076,7 @@ namespace Greatbone.Core
                 if (count == ai.Limit)
                 {
                     Add("<li class=\"pagination-next\"><a href=\"");
-                    Add(ai.Name);
+                    Add(ai.Key);
                     Add('-');
                     Add(subscpt + 1);
                     Add(ac.QueryString);
@@ -1071,6 +1146,23 @@ namespace Greatbone.Core
             // pagination controls if any
             PAGENATE(arr?.Length ?? 0);
             Add("</main>");
+        }
+
+        public HtmlContent CARD_(int ordinal)
+        {
+            Add("<div class=\"gridview-cell cell\">");
+            Add("<form id=\"card-");
+            Add(ordinal);
+            Add("\"><article class=\"card grid-x\">");
+            return this;
+        }
+
+        public HtmlContent _CARD()
+        {
+            Add("</article>");
+            Add("</form>");
+            Add("</div>");
+            return this;
         }
 
         public void GRIDVIEW(params Action<HtmlContent>[] cards)
@@ -1152,23 +1244,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARD_(int ordinal)
-        {
-            Add("<div class=\"gridview-cell cell\">");
-            Add("<form id=\"card-");
-            Add(ordinal);
-            Add("\"><article class=\"card grid-x\">");
-            return this;
-        }
-
-        public HtmlContent _CARD()
-        {
-            Add("</article>");
-            Add("</form>");
-            Add("</div>");
-            return this;
-        }
-
         void Dialog(sbyte style, sbyte size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
@@ -1221,7 +1296,7 @@ namespace Greatbone.Core
                     Add("<button class=\"button primary");
                     if (!ai.IsCap) Add(" hollow");
                     Add("\" name=\"");
-                    Add(ai.Name);
+                    Add(ai.Key);
                     Add("\" formaction=\"");
                     if (obj != null)
                     {
@@ -1233,7 +1308,7 @@ namespace Greatbone.Core
                         Add(ordinal);
                         Add('/');
                     }
-                    Add(ai.Name);
+                    Add(ai.Key);
                     Add("\" formmethod=\"post\"");
                     if (!avail)
                     {
@@ -1277,7 +1352,7 @@ namespace Greatbone.Core
                     Add("');\"");
                 }
                 Add(">");
-                Add(ai.Label);
+                Add(ai.Upper);
 
                 if (style.IsAnchor)
                 {
@@ -1324,7 +1399,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEXT(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1333,10 +1408,10 @@ namespace Greatbone.Core
             Add("\" value=\"");
             AddEsc(v);
             Add("\"");
-            if (help != null)
+            if (tip != null)
             {
                 Add(" placeholder=\"");
-                Add(help);
+                Add(tip);
                 Add("\"");
             }
             if (pattern != null)
@@ -1365,7 +1440,48 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte box = 12)
+        public HtmlContent TEL(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        {
+            FIELD_(label, box);
+
+            Add("<input type=\"tel\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(v);
+            Add("\"");
+            if (tip != null)
+            {
+                Add(" placeholder=\"");
+                Add(tip);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
+            if (max > 0)
+            {
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min > 0)
+            {
+                Add(" minlength=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            Add(">");
+
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent SEARCH(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1375,10 +1491,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("\"");
 
-            if (help != null)
+            if (tip != null)
             {
                 Add(" placeholder=\"");
-                Add(help);
+                Add(tip);
                 Add("\"");
             }
             if (pattern != null)
@@ -1408,7 +1524,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, string help = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
         {
             FIELD_(label, box);
 
@@ -1418,10 +1534,10 @@ namespace Greatbone.Core
             AddEsc(v);
             Add("\"");
 
-            if (help != null)
+            if (tip != null)
             {
                 Add(" Help=\"");
-                Add(help);
+                Add(tip);
                 Add("\"");
             }
             if (pattern != null)
@@ -2088,11 +2204,11 @@ namespace Greatbone.Core
 
             for (int i = 0; i < opt.Count; i++)
             {
-                var e = opt[i];
+                var e = opt.At(i);
                 Add("<option value=\"");
-                Add(e.key);
+                Add(e.Key);
                 Add("\"");
-                if (e.key == v) Add(" selected");
+                if (e.Key == v) Add(" selected");
                 Add(">");
                 Add(e.value.ToString());
                 Add("</option>");
@@ -2125,7 +2241,7 @@ namespace Greatbone.Core
 
             for (int i = 0; i < opt.Count; i++)
             {
-                var e = opt[i];
+                var e = opt.At(i);
                 Add("<option value=\"");
                 Add(e.key);
                 Add("\"");
@@ -2162,7 +2278,7 @@ namespace Greatbone.Core
 
             for (int i = 0; i < opt.Count; i++)
             {
-                var e = opt[i];
+                var e = opt.At(i);
                 Add("<option value=\"");
                 Add(e.key);
                 Add("\"");
@@ -2811,7 +2927,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent Put<K, D>(string name, Map<K, D> v, short proj = 0x00ff) where D : IData
+        public HtmlContent Put<K, D>(string name, Map<K, D> vs, short proj = 0x00ff) where D : IData
         {
             switch (putting)
             {
@@ -2824,7 +2940,7 @@ namespace Greatbone.Core
                         Add('"');
                         Add(':');
                     }
-                    if (v == null)
+                    if (vs == null)
                     {
                         Add("null");
                     }
@@ -2832,10 +2948,10 @@ namespace Greatbone.Core
                     {
                         counts[++level] = 0; // enter
                         Add('[');
-                        for (int i = 0; i < v.Count; i++)
+                        for (int i = 0; i < vs.Count; i++)
                         {
-                            var e = v[i];
-                            Put(null, e.value, proj);
+                            var v = vs[i];
+                            Put(null, v, proj);
                         }
                         Add(']');
                         level--; // exit

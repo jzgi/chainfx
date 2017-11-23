@@ -367,13 +367,13 @@ namespace Greatbone.Sample
                 JMbr mbr = jo[i];
 
                 // not include the sign field
-                if (exclude != null && mbr.Name == exclude) continue;
+                if (exclude != null && mbr.Key == exclude) continue;
 
                 if (sb.Length > 0)
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Name).Append('=').Append((string) mbr);
+                sb.Append(mbr.Key).Append('=').Append((string) mbr);
             }
 
             sb.Append("&key=").Append(key);

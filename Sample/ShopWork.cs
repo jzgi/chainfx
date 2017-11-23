@@ -169,7 +169,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                var o = new Shop() {city = City.All[0].Key};
+                var o = new Shop() {city = City.All[0].name};
                 o.Read(ac.Query);
                 ac.GivePane(200, m =>
                 {
