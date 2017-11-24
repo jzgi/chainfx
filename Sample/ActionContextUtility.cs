@@ -209,7 +209,7 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveGridDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveBoardDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
         {
             ac.GiveDoc(
                 status,
@@ -223,7 +223,7 @@ namespace Greatbone.Sample
             );
         }
 
-        public static void GiveGridPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveBoardPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
         {
             ac.GivePage(
                 status,
@@ -237,7 +237,7 @@ namespace Greatbone.Sample
             );
         }
 
-        public static void GiveTablePage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
         {
             ac.GivePage(
                 status,

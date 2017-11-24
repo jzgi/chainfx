@@ -23,7 +23,7 @@ namespace Greatbone.Sample
     {
         public AdmWork(WorkContext wc) : base(wc)
         {
-            Create<AdmUserWork>("user");
+            Create<AdmOprWork>("opr");
 
             Create<AdmShopWork>("shop");
 
@@ -63,11 +63,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) => { });
+                    ac.GiveBoardPage(200, dc.ToArray<Repay>(), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveGridPage(200, (Repay[]) null, null);
+                    ac.GiveBoardPage(200, (Repay[]) null, null);
                 }
             }
         }

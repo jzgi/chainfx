@@ -16,9 +16,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class AdmUserVarWork : UserVarWork
+    public class AdmOprVarWork : UserVarWork
     {
-        public AdmUserVarWork(WorkContext wc) : base(wc)
+        public AdmOprVarWork(WorkContext wc) : base(wc)
         {
         }
     }

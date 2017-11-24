@@ -148,20 +148,15 @@ namespace Greatbone.Sample
             using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id");
-                if (dc.Query())
+                dc.Query();
+                ac.GiveBoardPage(200, dc.ToArray<Shop>(), (h, o) =>
                 {
-                    ac.GiveGridPage(200, dc.ToArray<Shop>(), (h, o) =>
-                    {
-                        h.CAPTION_(false).T(o.id).SEP().T(o.name)._CAPTION();
-                        h.FIELD_("地址", 12).T(o.city)._T(o.addr)._FIELD();
+                    h.CAPTION_(false).T(o.name).T(" / ").T(o.id)._CAPTION();
+                    h.FIELD_("地址", 12).T(o.city)._T(o.addr)._FIELD();
 //                        h.FIELD(o.marks, "特色", box:12);
-                        h.FIELD(o.mgrname, "经理", box: 12);
-                    });
-                }
-                else
-                {
-                    ac.GiveTablePage(200, (Shop[]) null, null, null, false, 3);
-                }
+                    h.FIELD(o.mgrname, "经理", box: 12);
+                    h.TAIL();
+                });
             }
         }
 
