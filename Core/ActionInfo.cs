@@ -20,8 +20,8 @@ namespace Greatbone.Core
 
         readonly int limit;
 
-        // ui style annotation
-        internal StyleAttribute style;
+        // ui triggering annotation
+        internal TriggerAttribute trigger;
 
         // state check annotation
         internal StateAttribute state;
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             this.subscript = subscript;
             this.limit = limit;
 
-            this.style = (StyleAttribute) mi.GetCustomAttribute(typeof(StyleAttribute), false);
+            this.trigger = (TriggerAttribute) mi.GetCustomAttribute(typeof(TriggerAttribute), false);
             this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), false);
 
             // create a doer delegate
@@ -83,15 +83,15 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasStyle => style != null;
+        public bool HasTrigger => trigger != null;
 
         public bool HasSubscript => subscript;
 
         public int Limit => limit;
 
-        public StyleAttribute Style => style;
+        public TriggerAttribute Trigger => trigger;
 
-        public bool DoState(object obj)
+        public bool CheckState(object obj)
         {
             return state == null || obj == null || state.Check(obj);
         }

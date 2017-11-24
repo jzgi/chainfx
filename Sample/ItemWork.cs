@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -13,8 +13,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("货架")]
-    [Allow(User.OPR)]
+    [Ui("货架"), Allow(User.OPR)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -35,6 +34,7 @@ namespace Greatbone.Sample
                         h.BOX_(8).P(o.descr, "简述").P(o.price, "价格")._BOX();
                         h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
                         h.FIELD(o.step, "步进", box: 6).FIELD(o.max, "剩余", box: 6);
+                        h.TAIL();
                     });
                 }
                 else
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建"), Style(ButtonShow)]
+        [Ui("新建"), Trigger(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -77,7 +77,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除"), Style(ButtonConfirm)]
+        [Ui("删除"), Trigger(ButtonConfirm)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];

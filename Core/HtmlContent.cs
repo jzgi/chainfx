@@ -1107,15 +1107,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(bool checkbox, string title, string sign = null, bool? @on = null)
+        public HtmlContent CAPTION(bool checkbox, string title, string flag = null, bool? on = null)
         {
             CAPTION_(checkbox);
             Add(title);
-            _CAPTION(sign, on);
+            _CAPTION(flag, on);
             return this;
         }
 
-        private IData curobj = null;
+        private IData curobj;
 
         public HtmlContent CAPTION_(bool checkbox)
         {
@@ -1142,17 +1142,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CAPTION(string sign = null, bool? on = null)
+        public HtmlContent _CAPTION(string flag = null, bool? on = null)
         {
-            if (sign != null)
+            if (flag != null)
             {
-                Add("<span style=\"margin-left: auto\" class=\"flag-");
+                Add("<span style=\"margin-left: auto\" class=\"card-flag-");
                 if (on.HasValue)
                 {
                     Add(on.Value ? "on" : "off");
                 }
                 Add("\">");
-                Add(sign);
+                Add(flag);
                 Add("</span>");
             }
             Add("</div>");
@@ -1221,12 +1221,11 @@ namespace Greatbone.Core
             {
                 ActionInfo ai = ais[i];
                 UiAttribute ui = ai.Ui;
-                if (ui.Feature > 0 && feature != ui.Feature) break;
+                if (ui.Feature != 0 && ui.Feature != feature) continue;
+                TriggerAttribute trig = ai.Trigger;
+                bool avail = ai.CheckState(obj);
 
-                StyleAttribute style = ai.Style;
-                bool avail = ai.DoState(obj);
-
-                if (style.IsAnchor)
+                if (trig.IsAnchor)
                 {
                     Add("<a class=\"button primary");
                     Add(ai == actionCtx.Doer ? " hollow" : " clear");
@@ -1248,7 +1247,7 @@ namespace Greatbone.Core
                         Add(" disabled onclick=\"return false;\"");
                     }
                 }
-                else if (style.IsButton)
+                else if (trig.IsButton)
                 {
                     Add("<button class=\"button primary");
                     if (!ai.IsCap) Add(" hollow");
@@ -1272,38 +1271,38 @@ namespace Greatbone.Core
                         Add(" disabled");
                     }
                 }
-                if (style.HasConfirm)
+                if (trig.HasConfirm)
                 {
                     Add(" onclick=\"return confirm('");
                     Add(ui.Tip ?? ui.Label);
                     Add("?');\"");
                 }
-                else if (style.HasPrompt)
+                else if (trig.HasPrompt)
                 {
-                    Dialog(2, style.Size, ui.Tip);
+                    Dialog(2, trig.Size, ui.Tip);
                 }
-                else if (style.HasShow)
+                else if (trig.HasShow)
                 {
-                    Dialog(4, style.Size, ui.Tip);
+                    Dialog(4, trig.Size, ui.Tip);
                 }
-                else if (style.HasOpen)
+                else if (trig.HasOpen)
                 {
-                    Dialog(8, style.Size, ui.Tip);
+                    Dialog(8, trig.Size, ui.Tip);
                 }
-                else if (style.HasScript)
+                else if (trig.HasScript)
                 {
                     Add(" onclick=\"return ");
                     Add(ai.Lower);
                     Add("(this) || false;\"");
                 }
-                else if (style.HasCrop)
+                else if (trig.HasCrop)
                 {
                     Add(" onclick=\"return crop(this,");
-                    Add(style.Ordinals);
+                    Add(trig.Ordinals);
                     Add(',');
-                    Add(style.Size);
+                    Add(trig.Size);
                     Add(",");
-                    Add(style.Circle);
+                    Add(trig.Circle);
                     Add(",'");
                     Add(ui.Tip);
                     Add("');\"");
@@ -1311,11 +1310,11 @@ namespace Greatbone.Core
                 Add(">");
                 Add(ai.Label);
 
-                if (style.IsAnchor)
+                if (trig.IsAnchor)
                 {
                     Add("</a>");
                 }
-                else if (style.IsButton)
+                else if (trig.IsButton)
                 {
                     Add("</button>");
                 }

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -103,13 +103,14 @@ namespace Greatbone.Sample
                             h._BOX();
                             h.BOX_().T("特色：<a href=\"marks\">").T(o.marks).T("</a>")._BOX();
                             h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
+                            h.TAIL();
                         });
                     }
                     else
                     {
-                        m.T("<div style=\"text-align: center\">");
-                        m.T("<p>").T(city).T("目前没有商家</p>");
-                        m.T("</div>");
+                        m.GRID_();
+                        m.T("<p>").T(city).T("目前没有网点</p>");
+                        m._GRID();
                     }
                 }
             }, true, 60 * 5);
@@ -164,7 +165,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建"), Style(ButtonShow)]
+        [Ui("新建"), Trigger(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

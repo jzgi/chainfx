@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.Shop;
 using static Greatbone.Sample.User;
 
@@ -33,11 +33,12 @@ namespace Greatbone.Sample
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
                         h.FIELD_("地址").T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
+                        h.TAIL();
                     });
             });
         }
 
-        [Ui("刷新"), Style(ButtonOpen)]
+        [Ui("刷新"), Trigger(ButtonOpen)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -64,7 +65,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改"), Style(ButtonShow)]
+        [Ui("修改"), Trigger(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[-1];
@@ -109,7 +110,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码"), Style(ButtonShow, 1)]
+        [Ui("设密码"), Trigger(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -186,6 +187,7 @@ namespace Greatbone.Sample
                             dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                             dc.Query1(p => p.Set(shopid));
                             var o = dc.ToObject<Shop>();
+                            
                             h.CAPTION(false, o.name, Status[o.status], o.status == ON);
                             h.FIELDSET_("设置");
                             h.FIELD(o.schedule, "时间");
@@ -201,6 +203,7 @@ namespace Greatbone.Sample
                             h.FIELD(o.oprname, "姓名", box: 6).FIELD(o.oprtel, "电话", box: 6);
                             h.FIELD(o.oprwx, "微信");
                             h._FIELDSET();
+                            h.TAIL();
                         }
                     });
                 });
@@ -211,7 +214,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("操作授权"), Style(ButtonOpen), Allow(OPRMGR)]
+        [Ui("操作授权"), Trigger(ButtonOpen), Allow(OPRMGR)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -273,7 +276,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("营业状态"), Style(ButtonShow, 1), Allow(OPRMEM)]
+        [Ui("营业状态"), Trigger(ButtonShow, 1), Allow(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -302,7 +305,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("客服"), Style(ButtonShow, 1)]
+        [Ui("客服"), Trigger(ButtonShow, 1)]
         public void seton(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -341,7 +344,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("设置"), Style(ButtonShow)]
+        [Ui("设置"), Trigger(ButtonShow)]
         public async Task sets(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -382,7 +385,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("功能照"), Style(ButtonCrop, Ordinals = 4)]
+        [Ui("功能照"), Trigger(ButtonCrop, Ordinals = 4)]
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[-1];

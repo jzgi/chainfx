@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车"), Style(ButtonConfirm)]
+        [Ui("清空购物车"), Trigger(ButtonConfirm)]
         public void clear(ActionContext ac)
         {
             string wx = ac[-1];
@@ -198,7 +198,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货"), Style(ButtonConfirm)]
+        [Ui("备货"), Trigger(ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -225,7 +225,7 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
 
-        [Ui("备完"), Style(ButtonConfirm)]
+        [Ui("备完"), Trigger(ButtonConfirm)]
         public async Task ready(ActionContext ac)
         {
             string shopid = ac[-1];

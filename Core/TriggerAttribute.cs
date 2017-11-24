@@ -3,12 +3,12 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To specify interaction style.
+    /// To specify interaction element and pattern.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class StyleAttribute : Attribute
+    public class TriggerAttribute : Attribute
     {
-        readonly UiMode mode;
+        readonly Modal mode;
 
         readonly int elem; // ui element
 
@@ -16,7 +16,7 @@ namespace Greatbone.Core
 
         readonly sbyte size;
 
-        public StyleAttribute(UiMode mode, sbyte size = 2)
+        public TriggerAttribute(Modal mode, sbyte size = 2)
         {
             this.mode = mode;
             this.elem = (int) mode & 0xff00;
@@ -47,7 +47,7 @@ namespace Greatbone.Core
         public bool HasCrop => feature == 0x20;
     }
 
-    public enum UiMode
+    public enum Modal
     {
         Anchor = 0x0100,
 

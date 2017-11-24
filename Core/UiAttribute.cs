@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To specify basic information on user interface.
+    /// To specify basic visual information on user interface.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute

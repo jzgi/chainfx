@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("产品详情"), Style(AnchorOpen)]
+        [Ui("产品详情"), Trigger(AnchorOpen)]
         public void detail(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -84,7 +84,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("购买", "加入购物车"), Style(ButtonShow, 1), Itemly('A')]
+        [Ui("购买", "加入购物车"), Trigger(ButtonShow, 1), Itemly('A')]
         public async Task Add(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -178,7 +178,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改"), Style(ButtonShow)]
+        [Ui("修改"), Trigger(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -224,7 +224,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图片"), Style(ButtonCrop)]
+        [Ui("图片"), Trigger(ButtonCrop)]
         public async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];

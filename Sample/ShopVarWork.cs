@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        [Ui("进入店铺"), Style(Anchor)]
+        [Ui("进入店铺"), Trigger(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -79,7 +79,7 @@ namespace Greatbone.Sample
                         h.CAPTION(false, o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(8).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
-
+                        h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.max = 0;
                     });
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改"), Style(ButtonShow)]
+        [Ui("修改"), Trigger(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
@@ -139,7 +139,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理"), Style(ButtonShow)]
+        [Ui("经理"), Trigger(ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];
@@ -184,7 +184,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("形象照"), Style(ButtonCrop)]
+        [Ui("形象照"), Trigger(ButtonCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];

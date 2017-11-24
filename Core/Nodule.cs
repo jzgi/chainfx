@@ -17,7 +17,7 @@ namespace Greatbone.Core
 
         readonly string label;
 
-        // user interface-related settings
+        // basic visual info
         internal UiAttribute ui;
 
         // access check

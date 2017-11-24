@@ -81,7 +81,7 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
-                if (ai.HasStyle)
+                if (ai.HasTrigger)
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(ai);

@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清除"), Style(UiMode.ButtonOpen, 2)]
+        [Ui("清除"), Trigger(Modal.ButtonOpen, 2)]
         public void clean(ActionContext ac)
         {
             string shopid = ac[1];

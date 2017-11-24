@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -69,7 +69,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("结算", "结算各网点已完成的订单"), Style(ButtonShow)]
+        [Ui("结算", "结算各网点已完成的订单"), Trigger(ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
             DateTime fro; // till/before date
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
             internal decimal cash;
         }
 
-        [Ui("转款", "按照结算单转款给网点"), Style(ButtonConfirm)]
+        [Ui("转款", "按照结算单转款给网点"), Trigger(ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
             List<Transfer> lst = new List<Transfer>(16);
