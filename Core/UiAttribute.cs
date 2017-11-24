@@ -23,8 +23,8 @@ namespace Greatbone.Core
         public string Tip => tip;
 
         /// <summary>
-        /// A group number
+        /// A grouping number that refers to a particular functionality.
         /// </summary>
-        public short Group { get; set; }
+        public short Feature { get; set; }
     }
 }

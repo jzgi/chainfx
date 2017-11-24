@@ -70,7 +70,7 @@ namespace Greatbone.Sample
             h.Add("<ul class=\"tabs\" data-tabs id=\"frametabs\">");
             h.Add("<li class=\"tabs-title is-active\">");
             h.Add("<a href=\"#tabs_\">");
-            h.Add(work.Upper);
+            h.Add(work.Label);
             h.Add("</a>");
             h.Add("</li>");
             if (subs != null)
@@ -82,7 +82,7 @@ namespace Greatbone.Sample
                     h.Add("<li class=\"tabs-title\"><a href=\"#tabs_");
                     h.Add(sub.Key);
                     h.Add("\">");
-                    h.Add(sub.Upper);
+                    h.Add(sub.Label);
                     h.Add("</a></li>");
                 }
             }
@@ -216,7 +216,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.GRIDVIEW(arr, cell);
+                    main.BOARDVIEW(arr, cell);
                 },
                 @public,
                 maxage
@@ -230,7 +230,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.GRIDVIEW(arr, cell);
+                    main.BOARDVIEW(arr, cell);
                 },
                 @public,
                 maxage
@@ -244,7 +244,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.TABLEVIEW(arr, head, row);
+                    main.SHEETVIEW(arr, head, row);
                 },
                 @public,
                 maxage

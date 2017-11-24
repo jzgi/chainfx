@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
     {
-        readonly ActionContext ac;
+        readonly ActionContext actionCtx;
 
         // counts of each level
         readonly int[] counts = new int[8];
@@ -20,9 +20,9 @@ namespace Greatbone.Core
 
         const sbyte JS = 1, UL = 2;
 
-        public HtmlContent(ActionContext ac, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
+        public HtmlContent(ActionContext actionCtx, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
-            this.ac = ac;
+            this.actionCtx = actionCtx;
         }
 
         public override string Type => "text/html; charset=utf-8";
@@ -399,69 +399,6 @@ namespace Greatbone.Core
         public HtmlContent _TD()
         {
             Add("</td>");
-            return this;
-        }
-
-        public HtmlContent CAPTION(string v, string flag = null, bool? on = null)
-        {
-            CAPTION_();
-            Add(v);
-            _CAPTION(flag, on);
-            return this;
-        }
-
-        public HtmlContent CAPTION_()
-        {
-            Add("<div class=\"cell caption small-");
-            Add(ac.Work.Buttonly ? 11 : 12);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _CAPTION(string flag = null, bool? on = null)
-        {
-            if (flag != null)
-            {
-                Add("<span style=\"margin-left: auto\" class=\"flag-");
-                if (on.HasValue)
-                {
-                    Add(on.Value ? "on" : "off");
-                }
-                Add("\">");
-                Add(flag);
-                Add("</span>");
-            }
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent TAIL(string flag, bool? on = null)
-        {
-            TAIL_();
-            _TAIL(flag, on);
-            return this;
-        }
-
-        public HtmlContent TAIL_()
-        {
-            Add("<div class=\"cell shrink tail\">");
-            return this;
-        }
-
-        public HtmlContent _TAIL(string flag = null, bool? on = null)
-        {
-            if (flag != null)
-            {
-                Add("<span class=\"float-right flag");
-                if (on.HasValue)
-                {
-                    Add(on.Value ? "-on" : "-off");
-                }
-                Add("\">");
-                Add(flag);
-                Add("</span>");
-            }
-            Add("</div>");
             return this;
         }
 
@@ -977,82 +914,51 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work = null)
+        public void TOOLBAR(Work work = null, short feature = 0, bool refresh = true)
         {
-            if (work == null) work = ac.Work;
+            if (work == null) work = actionCtx.Work;
             if (work.Styled == null)
             {
-                TOOLBAR_(work.Upper);
+                TOOLBAR_(work.Label);
             }
             else
             {
                 TOOLBAR_();
-                Triggers(work, null);
+                Triggers(work, null, feature);
             }
-            // refresh
-            Add("<div class=\"right\">");
-            Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.75rem; line-height: 1\">&#9851;</a>");
-            Add("</div>");
-
-            _TOOLBAR();
+            _TOOLBAR(refresh);
         }
 
         public HtmlContent TOOLBAR_(string title = null)
         {
             Add("<header data-sticky-container>");
-            Add("<div class=\"sticky\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            Add("<form id=\"tool-bar-form\">");
-            Add("<nav class=\"tool-bar\">");
+            Add("<form id=\"tool-bar-form\" class=\"sticky tool-bar\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             if (title != null)
             {
-                Add("<div class=\"title\">");
                 Add(title);
-                Add("</div>");
             }
             return this;
         }
 
-        public HtmlContent _TOOLBAR()
+        public HtmlContent _TOOLBAR(bool refresh = true)
         {
-            Add("</nav>");
+            if (refresh)
+            {
+                Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.75rem; line-height: 1; margin-left: auto\">&#9851;</a>");
+            }
             Add("</form>");
-            Add("</div>");
             Add("</header>");
-            return this;
-        }
-
-        public HtmlContent LEFT_()
-        {
-            Add("<div class=\"left\">");
-            return this;
-        }
-
-        public HtmlContent _LEFT()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent RIGHT_()
-        {
-            Add("<div class=\"right\">");
-            return this;
-        }
-
-        public HtmlContent _RIGHT()
-        {
-            Add("</div>");
             return this;
         }
 
         public void PAGENATE(int count)
         {
             // pagination
-            ActionInfo ai = ac.Doer;
+            ActionInfo ai = actionCtx.Doer;
             if (ai.HasSubscript)
             {
                 Add("<ul class=\"pagination text-center\" role=\"navigation\">");
-                int subscpt = ac.Subscript;
+                int subscpt = actionCtx.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)
@@ -1067,7 +973,7 @@ namespace Greatbone.Core
                         Add(ai.Key);
                         Add('-');
                         Add(i);
-                        Add(ac.QueryString);
+                        Add(actionCtx.QueryString);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
@@ -1079,7 +985,7 @@ namespace Greatbone.Core
                     Add(ai.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(ac.QueryString);
+                    Add(actionCtx.QueryString);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");
@@ -1088,11 +994,11 @@ namespace Greatbone.Core
             }
         }
 
-        public void TABLEVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
+        public void SHEETVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
-            Work work = ac.Work;
+            Work work = actionCtx.Work;
             Work varwork = work.varwork;
-            Add("<main class=\"tableview table-scroll);\">");
+            Add("<main class=\"sheetview table-scroll);\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.Styled;
 
@@ -1101,10 +1007,6 @@ namespace Greatbone.Core
                 Add("<thead>");
                 Add("<tr>");
                 // for checkboxes
-                if (work.Buttonly)
-                {
-                    Add("<th></th>");
-                }
                 head(this);
                 if (ais != null)
                 {
@@ -1121,18 +1023,10 @@ namespace Greatbone.Core
                 {
                     D obj = arr[i];
                     Add("<tr>");
-                    // checkbox
-                    if (work.Buttonly)
-                    {
-                        Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\"  value=\"");
-                        varwork?.PutVarKey(obj, this);
-                        Add("\" onchange=\"checkit(this);\"></td>");
-                    }
                     row(this, obj);
                     if (ais != null) // triggers
                     {
-                        Add("<td style=\"width: 1px; white-space: nowrap;\">");
+                        Add("<td>");
                         Add("<form>");
                         Triggers(varwork, obj);
                         Add("</form>");
@@ -1148,11 +1042,60 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        public HtmlContent CARD_(int ordinal)
+        private int ordinal;
+
+        public void BOARDVIEW(params Action<HtmlContent>[] cards)
         {
-            Add("<div class=\"gridview-cell cell\">");
-            Add("<form id=\"card-");
-            Add(ordinal);
+            BOARDVIEW_();
+            ordinal = 0;
+            for (int i = 0; i < cards.Length; i++)
+            {
+                CARD_();
+                cards[i](this);
+                _CARD();
+            }
+            _BOARDVIEW();
+        }
+
+        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        {
+            BOARDVIEW_();
+            if (arr != null)
+            {
+                IData old = curobj;
+                curobj = null;
+                ordinal = 0;
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    D obj = arr[i];
+                    curobj = obj;
+                    CARD_();
+                    card(this, obj);
+                    _CARD();
+                }
+                curobj = old; // restore
+            }
+            _BOARDVIEW();
+            // pagination if any
+            PAGENATE(arr?.Length ?? 0);
+        }
+
+        public HtmlContent BOARDVIEW_()
+        {
+            Add("<main class=\"boardview grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            return this;
+        }
+
+        public HtmlContent _BOARDVIEW()
+        {
+            Add("</main>");
+            return this;
+        }
+
+        public HtmlContent CARD_()
+        {
+            Add("<form class=\"cell boardview-cell\" id=\"card-");
+            Add(++ordinal);
             Add("\"><article class=\"card grid-x\">");
             return this;
         }
@@ -1161,86 +1104,98 @@ namespace Greatbone.Core
         {
             Add("</article>");
             Add("</form>");
+            return this;
+        }
+
+        public HtmlContent CAPTION(bool checkbox, string title, string sign = null, bool? @on = null)
+        {
+            CAPTION_(checkbox);
+            Add(title);
+            _CAPTION(sign, on);
+            return this;
+        }
+
+        private IData curobj = null;
+
+        public HtmlContent CAPTION_(bool checkbox)
+        {
+            Add("<div class=\"cell card-caption small-12\">");
+            if (checkbox)
+            {
+                if (curobj != null)
+                {
+                    Work varwork = actionCtx.Work.VarWork;
+                    if (varwork != null)
+                    {
+                        Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
+                        varwork.PutVarKey(curobj, this);
+                        Add("\" onchange=\"checkit(this);\">");
+                    }
+                }
+                else if (ordinal > 0)
+                {
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
+                    Add(ordinal);
+                    Add("\" onchange=\"checkit(this);\">");
+                }
+            }
+            return this;
+        }
+
+        public HtmlContent _CAPTION(string sign = null, bool? on = null)
+        {
+            if (sign != null)
+            {
+                Add("<span style=\"margin-left: auto\" class=\"flag-");
+                if (on.HasValue)
+                {
+                    Add(on.Value ? "on" : "off");
+                }
+                Add("\">");
+                Add(sign);
+                Add("</span>");
+            }
             Add("</div>");
             return this;
         }
 
-        public void GRIDVIEW(params Action<HtmlContent>[] cards)
+        public HtmlContent TAIL(string flag = null, bool? on = null, short feature = 0)
         {
-            Work work = ac.Work;
-            Work varwork = work.varwork;
-
-            GRIDVIEW_();
-            for (int i = 0; i < cards.Length; i++)
-            {
-                int ordinal = i + 1;
-                CARD_(ordinal);
-                if (work.Buttonly) // if having a card lead
-                {
-                    Add("<div class=\"cell small-1 lead\">");
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                    Add(ordinal); // ordinal as key
-                    Add("\" onchange=\"checkit(this);\">");
-                    Add("</div>");
-                }
-                cards[i](this);
-                // output var triggers
-                if (varwork != null)
-                {
-                    Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
-                    Triggers(varwork, null, i + 1);
-                    Add("</nav>");
-                }
-                _CARD();
-            }
-            _GRIDVIEW();
-        }
-
-        public void GRIDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
-        {
-            Work work = ac.Work;
-            Work varwork = work.varwork;
-            GRIDVIEW_();
-            if (arr != null)
-            {
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    D obj = arr[i];
-                    CARD_(i + 1);
-                    if (work.Buttonly) // if having a card lead
-                    {
-                        Add("<div class=\"cell small-1 lead\">");
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                        varwork?.PutVarKey(obj, this);
-                        Add("\" onchange=\"checkit(this);\">");
-                        Add("</div>");
-                    }
-                    card(this, obj);
-
-                    if (varwork != null) // output var tools
-                    {
-                        Add("<nav class=\"cell shrink\" style=\"margin-left: auto\">");
-                        Triggers(varwork, obj);
-                        Add("</nav>");
-                    }
-                    _CARD();
-                }
-            }
-            _GRIDVIEW();
-
-            // pagination if any
-            PAGENATE(arr?.Length ?? 0);
-        }
-
-        public HtmlContent GRIDVIEW_()
-        {
-            Add("<main class=\"gridview grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            TAIL_(flag, on);
+            _TAIL(feature);
             return this;
         }
 
-        public HtmlContent _GRIDVIEW()
+        public HtmlContent TAIL_(string flag = null, bool? on = null)
         {
-            Add("</main>");
+            Add("<div class=\"cell card-tail\">");
+            if (flag != null)
+            {
+                Add("<span class=\"float-right card-flag");
+                if (on.HasValue)
+                {
+                    Add(on.Value ? "-on" : "-off");
+                }
+                Add("\">");
+                Add(flag);
+                Add("</span>");
+            }
+            return this;
+        }
+
+        public HtmlContent _TAIL(short feature = 0)
+        {
+            if (feature >= 0)
+            {
+                Work varwork = actionCtx.Work.VarWork;
+                if (varwork != null)
+                {
+                    Add("<div style=\"margin-left: auto\">");
+                    Triggers(varwork, curobj, feature);
+                    Add("</div>");
+                }
+            }
+            Add("</div>");
             return this;
         }
 
@@ -1255,7 +1210,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Triggers(Work work, IData obj, int ordinal = 0)
+        void Triggers(Work work, IData obj, short feature = 0)
         {
             var ais = work.Styled;
             if (ais == null)
@@ -1266,22 +1221,24 @@ namespace Greatbone.Core
             {
                 ActionInfo ai = ais[i];
                 UiAttribute ui = ai.Ui;
+                if (ui.Feature > 0 && feature != ui.Feature) break;
+
                 StyleAttribute style = ai.Style;
-                bool avail = ai.DoCheck(obj);
+                bool avail = ai.DoState(obj);
 
                 if (style.IsAnchor)
                 {
                     Add("<a class=\"button primary");
-                    Add(ai == ac.Doer ? " hollow" : " clear");
+                    Add(ai == actionCtx.Doer ? " hollow" : " clear");
                     Add("\" href=\"");
                     if (obj != null)
                     {
                         ai.Work.PutVarKey(obj, this);
                         Add('/');
                     }
-                    else if (ordinal > 0)
+                    else if (feature > 0)
                     {
-                        Add(ordinal);
+                        Add(feature);
                         Add('/');
                     }
                     Add(ai.RPath);
@@ -1303,9 +1260,9 @@ namespace Greatbone.Core
                         ai.Work.PutVarKey(obj, this);
                         Add('/');
                     }
-                    else if (ordinal > 0)
+                    else if (feature > 0)
                     {
-                        Add(ordinal);
+                        Add(feature);
                         Add('/');
                     }
                     Add(ai.Key);
@@ -1352,7 +1309,7 @@ namespace Greatbone.Core
                     Add("');\"");
                 }
                 Add(">");
-                Add(ai.Upper);
+                Add(ai.Label);
 
                 if (style.IsAnchor)
                 {

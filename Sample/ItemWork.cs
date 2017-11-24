@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Item>(), (h, o) =>
                     {
-                        h.CAPTION(o.name);
+                        h.CAPTION(false, o.name);
                         h.IMG(o.name + "/icon", box: 4);
                         h.BOX_(8).P(o.descr, "简述").P(o.price, "价格")._BOX();
                         h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);

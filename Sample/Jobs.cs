@@ -40,9 +40,9 @@ namespace Greatbone.Sample
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.GRIDVIEW(h =>
+                    m.BOARDVIEW(h =>
                     {
-                        h.CAPTION("系统运行状况", "运行中", true);
+                        h.CAPTION(false, "系统运行状况", "运行中", true);
                         h.FIELDSET_("参数");
                         h.FIELD("2.0", "版本");
                         h._FIELDSET();

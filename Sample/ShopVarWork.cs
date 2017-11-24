@@ -74,9 +74,9 @@ namespace Greatbone.Sample
 
                     if (items == null) return;
 
-                    m.GRIDVIEW(items, (h, o) =>
+                    m.BOARDVIEW(items, (h, o) =>
                     {
-                        h.CAPTION(o.name);
+                        h.CAPTION(false, o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(8).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
 

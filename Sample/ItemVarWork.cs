@@ -70,16 +70,16 @@ namespace Greatbone.Sample
                 {
                     dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
 
-                    m.GRIDVIEW_();
+                    m.BOARDVIEW_();
                     while (dc.Next())
                     {
                         dc.Let(out int idx).Let(out string descr);
-                        m.CARD_(idx);
-                        m.CAPTION(descr);
+                        m.CARD_();
+                        m.CAPTION(false, descr);
                         m.IMG(idx + "/img", box: 12);
                         m._CARD();
                     }
-                    m._GRIDVIEW();
+                    m._BOARDVIEW();
                 }
             });
         }

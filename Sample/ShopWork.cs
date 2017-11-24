@@ -91,9 +91,9 @@ namespace Greatbone.Sample
                     if (dc.Query(p => p.Set(city)))
                     {
                         var arr = dc.ToArray<Shop>();
-                        m.GRIDVIEW(arr, (h, o) =>
+                        m.BOARDVIEW(arr, (h, o) =>
                         {
-                            h.CAPTION_().T(o.name)._CAPTION(Shop.Status[o.status], o.status == Shop.ON);
+                            h.CAPTION_(false).T(o.name)._CAPTION(Shop.Status[o.status], o.status == Shop.ON);
                             h.ICON(o.id + "/icon", href: o.id + "/", box: 4);
                             h.BOX_(8).P(o.addr, "店址").P(o.schedule, "营业");
                             if (o.areas != null)
@@ -119,16 +119,16 @@ namespace Greatbone.Sample
         {
             ac.GivePage(200, m =>
             {
-                m.GRIDVIEW_();
+                m.BOARDVIEW_();
                 for (int i = 0; i < Mark.All.Length; i++)
                 {
                     var o = Mark.All[i];
-                    m.CARD_(i + 1);
-                    m.CAPTION(o.name);
+                    m.CARD_();
+                    m.CAPTION(false, o.name);
                     m.FIELD(o.descr);
                     m._CARD();
                 }
-                m._GRIDVIEW();
+                m._BOARDVIEW();
             });
         }
     }
@@ -151,7 +151,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Shop>(), (h, o) =>
                     {
-                        h.CAPTION_().T(o.id).SEP().T(o.name)._CAPTION();
+                        h.CAPTION_(false).T(o.id).SEP().T(o.name)._CAPTION();
                         h.FIELD_("地址", 12).T(o.city)._T(o.addr)._FIELD();
 //                        h.FIELD(o.marks, "特色", box:12);
                         h.FIELD(o.mgrname, "经理", box: 12);

@@ -34,8 +34,6 @@ namespace Greatbone.Core
         // actions with the style attribute
         readonly ActionInfo[] styled;
 
-        readonly bool buttonly;
-
         // subworks, if any
         internal Map<string, Work> works;
 
@@ -80,7 +78,6 @@ namespace Greatbone.Core
 
             // gather styled actions
             List<ActionInfo> lst = null;
-            int btns = 0;
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
@@ -88,11 +85,9 @@ namespace Greatbone.Core
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(ai);
-                    if (ai.Style.IsButton) btns++;
                 }
             }
             styled = lst?.ToArray();
-            buttonly = btns > 0;
         }
 
         /// <summary>
@@ -173,8 +168,6 @@ namespace Greatbone.Core
         public Map<string, ActionInfo> Actions => actions;
 
         public ActionInfo[] Styled => styled;
-
-        public bool Buttonly => buttonly;
 
         public ActionInfo Default => @default;
 

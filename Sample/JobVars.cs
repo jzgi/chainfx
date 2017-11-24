@@ -26,10 +26,10 @@ namespace Greatbone.Sample
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
-                m.GRIDVIEW(
+                m.BOARDVIEW(
                     h =>
                     {
-                        h.CAPTION("我的个人资料");
+                        h.CAPTION(false, "我的个人资料");
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
                         h.FIELD_("地址").T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
@@ -179,14 +179,14 @@ namespace Greatbone.Sample
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.GRIDVIEW(h =>
+                    m.BOARDVIEW(h =>
                     {
                         using (var dc = ac.NewDbContext())
                         {
                             dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                             dc.Query1(p => p.Set(shopid));
                             var o = dc.ToObject<Shop>();
-                            h.CAPTION(o.name, Status[o.status], o.status == ON);
+                            h.CAPTION(false, o.name, Status[o.status], o.status == ON);
                             h.FIELDSET_("设置");
                             h.FIELD(o.schedule, "时间");
                             if (o.areas != null) h.FIELD(o.areas, "送达");

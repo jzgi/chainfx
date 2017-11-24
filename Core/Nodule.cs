@@ -15,8 +15,7 @@ namespace Greatbone.Core
         // name in lowercase
         readonly string lower;
 
-        // name in uppercase
-        readonly string upper;
+        readonly string label;
 
         // user interface-related settings
         internal UiAttribute ui;
@@ -51,7 +50,7 @@ namespace Greatbone.Core
             if (uis.Length > 0)
             {
                 ui = uis[0];
-                this.upper = ui.Label ?? name.ToUpper();
+                this.label = ui.Label ?? name.ToUpper();
             }
 
             // authorize
@@ -92,7 +91,7 @@ namespace Greatbone.Core
 
         public IAfterAsync AfterAsync => afterAsync;
 
-        public string Upper => upper;
+        public string Label => label;
 
         public bool HasUi => ui != null;
 

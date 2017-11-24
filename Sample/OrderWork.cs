@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
+                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
                         h.FIELD_("收货", box: 12);
                         h.T(o.name)._T(o.city)._T(o.area)._T(o.addr);
                         h.BUTTONSHOW("填写地址", o.id + "/addr", 1, "收货地址");
@@ -45,7 +45,7 @@ namespace Greatbone.Sample
                         }
                         h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                         h.BOX_(5).P(o.total, "总计")._BOX();
-                        h.TAIL(o.Err(), false);
+                        h.TAIL(o.Err(), false, 1);
                     }, false, 3);
                 }
                 else
@@ -136,7 +136,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
+                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
                         h.FIELD_("收货", box: 12);
                         if (o.name != null) h._T(o.name);
                         if (o.city != null) h._T(o.city);
@@ -178,7 +178,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
+                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
                         h.FIELD_("收货", box: 12)._T(o.name)._T(o.city)._T(o.area)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -260,7 +260,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
@@ -312,7 +312,7 @@ namespace Greatbone.Sample
                 {
                     ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                         if (o.name != null)
                         {
                             h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
@@ -362,7 +362,7 @@ namespace Greatbone.Sample
                 dc.Query("SELECT * FROM orders WHERE status >  " + Order.PREPARED + " AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     if (o.name != null)
                     {
                         h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
