@@ -2616,6 +2616,10 @@ input:checked + label > .switch-inactive { display: none; }
     cursor: not-allowed;
 }
 
+.pagination {
+    margin: 0.875rem auto 0 auto;
+}
+
 .pagination::before, .pagination::after {
     display: table;
     content: ' ';

@@ -295,8 +295,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("旧单")]
-    [Allow(OPR)]
+    [Ui("旧单"), Allow(OPR)]
     public class OprPastWork : OrderWork<OprPastVarWork>
     {
         public OprPastWork(WorkContext wc) : base(wc)
@@ -308,28 +307,22 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + Order.ABORTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20)))
+                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + Order.ABORTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
+                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(Order.Statuses[o.status], false);
+                    h.FIELD(o.name, "买家", box: 6).FIELD(o.tel, "电话", box: 6);
+                    h.FIELD_("地址").T(o.city)._T(o.area)._T(o.addr)._FIELD();
+                    h.FIELDSET_("商品");
+                    for (int i = 0; i < o.items.Length; i++)
                     {
-                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
-                        if (o.name != null)
-                        {
-                            h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
-                        }
-                        h.FIELD_("地址", box: 12).T(o.tel)._T(o.area)._T(o.addr)._FIELD();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var item = o.items[i];
-                            h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
-                        }
-                        h.FIELD(o.total, "总价");
-                    }, false, 3);
-                }
-                else
-                {
-                    ac.GiveBoardPage(200, (Order[]) null, (h, o) => { }, false, 3);
-                }
+                        var item = o.items[i];
+                        h.FIELD(item.name, box: 6).FIELD(item.price, box: 3).FIELD(item.qty, suffix: item.unit, box: 3);
+                    }
+                    h.BOX_(6)._BOX().FIELD(o.total, "总价", box: 6);
+                    h._FIELDSET();
+                    h.TAIL();
+                }, false, 3);
             }
         }
 

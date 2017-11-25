@@ -93,28 +93,33 @@
 
 .page .box {
     background-color: rgba(225, 200, 200, 0.30);
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 1px dotted gainsboro;
 }
 
 .box>p {
-    padding: 0.25rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px dotted gainsboro;
 }
 
-fieldset .box {
-    background-color: 0
+.box>p:first-child {
+    padding: 0 0 0.25rem 0;
 }
 
-.pane fieldset.cell {
+.box>p:last-child {
+    padding: 0.25rem 0 0 0;
+    border-bottom: none;
+}
+
+
+
+fieldset.cell {
     width: calc(100% - 0.25rem);
-    padding-bottom: 1.25rem;
-    border: 1px solid darkgray;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-top: 1px dotted gainsboro;
 }
 
-.page fieldset.cell {
-    width: calc(100% - 0.25rem);
-    padding-bottom: 1.25rem;
-    border: 1px solid gainsboro;
-}
 
 .label {
     white-space: nowrap;

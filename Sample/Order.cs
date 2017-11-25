@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         public const short CREATED = 0, PAID = 1, PREPARED = 2, ABORTED = 3, DELIVERED = 4;
 
         // status
-        public static readonly Map<short, string> STATUS = new Map<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {CREATED, "购物车"},
             {PAID, "已付款"},

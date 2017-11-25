@@ -522,13 +522,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _FIELD(sbyte box)
+        void _FIELD(sbyte box)
         {
             if (box > 0)
             {
                 Add("</div>");
             }
-            return this;
         }
 
         public HtmlContent _FIELD()
@@ -751,7 +750,7 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            _FIELD();
+            _FIELD(box);
             return this;
         }
 
@@ -791,7 +790,7 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            _FIELD();
+            _FIELD(box);
             return this;
         }
 
@@ -972,7 +971,7 @@ namespace Greatbone.Core
             ActionInfo ai = actionCtx.Doer;
             if (ai.HasSubscript)
             {
-                Add("<ul class=\"pagination text-center\" role=\"navigation\">");
+                Add("<ul class=\"pagination\" role=\"navigation\">");
                 int subscpt = actionCtx.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
@@ -1090,9 +1089,9 @@ namespace Greatbone.Core
                 }
                 curobj = old; // restore
             }
-            _BOARDVIEW();
             // pagination if any
             PAGENATE(arr?.Length ?? 0);
+            _BOARDVIEW();
         }
 
         public HtmlContent BOARDVIEW_()

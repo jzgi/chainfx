@@ -25,10 +25,10 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid));
+                dc.Query("SELECT * FROM items WHERE shopid = @1 ORDER BY status DESC", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
-                    h.CAPTION(false, o.name);
+                    h.CAPTION(false, o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.IMG(o.name + "/icon", box: 4);
                     h.BOX_(8).P(o.descr, "描述").P(o.mains, "主料").P(o.price, "价格")._BOX();
                     h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
