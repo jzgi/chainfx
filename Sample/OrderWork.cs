@@ -319,7 +319,7 @@ namespace Greatbone.Sample
                         var item = o.items[i];
                         h.FIELD(item.name, box: 6).FIELD(item.price, box: 3).FIELD(item.qty, suffix: item.unit, box: 3);
                     }
-                    h.BOX_(6)._BOX().FIELD(o.total, "总价", box: 6);
+                    h.BOX(6).FIELD(o.total, "总价", box: 6);
                     h._FIELDSET();
                     h.TAIL();
                 }, false, 3);

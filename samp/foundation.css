@@ -839,6 +839,8 @@ ul.no-bullet, ol.no-bullet {
 label {
     display: inline-table;
     margin-right: 0.5rem;
+    height: 2.125rem;
+    line-height: 2.5;
 }
 
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],

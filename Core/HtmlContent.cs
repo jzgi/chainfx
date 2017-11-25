@@ -602,6 +602,13 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent BOX(sbyte box = 12)
+        {
+            BOX_(box);
+            _BOX();
+            return this;
+        }
+
         public HtmlContent BOX_(sbyte box = 12)
         {
             Add("<div class=\"cell box small-");
@@ -1631,9 +1638,7 @@ namespace Greatbone.Core
             if (group)
             {
                 Add("<div class=\"input-group\">");
-                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['");
-                Add(name);
-                Add("'].stepDown()\" value=\"-\">");
+                Add("<a class=\"input-group-label\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
             }
 
             Add("<input type=\"number\" name=\"");
@@ -1678,9 +1683,7 @@ namespace Greatbone.Core
 
             if (group)
             {
-                Add("<input type=\"button\" class=\"input-group-label\" onclick=\"this.form['");
-                Add(name);
-                Add("'].stepUp()\" value=\"+\">");
+                Add("<a class=\"input-group-label\" onclick=\"$(this).prev()[0].stepUp()\">+</a>");
                 Add("</div>");
             }
 
