@@ -187,24 +187,20 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    dc.Query1("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+                    var o = dc.ToObject<Item>();
+                    ac.GivePane(200, m =>
                     {
-                        var o = dc.ToObject<Item>();
-                        ac.GivePane(200, m =>
-                        {
-                            m.FORM_();
-                            m.FIELD(o.name, "名称", box: 12);
-                            m.TEXT(nameof(o.descr), o.descr, label: "描述", max: 30, required: true, box: 12);
-                            m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true, box: 12);
-                            m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 12);
-                            m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 12);
-                            m.NUMBER(nameof(o.step), o.step, "间隔", min: (short) 1, box: 12);
-                            m.NUMBER(nameof(o.max), o.max, "剩余", box: 12);
-                            m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 12);
-                            m._FORM();
-                        });
-                    }
-                    else ac.Give(500); // internal server error
+                        m.FORM_();
+                        m.FIELD(o.name, "名称", box: 6).TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6);
+                        m.TEXTAREA(nameof(o.descr), o.descr, "描述", max: 30, required: true, box: 12);
+                        m.TEXT(nameof(o.mains), o.mains, "主料", required: true, box: 12);
+                        m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6).NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6);
+                        m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6).NUMBER(nameof(o.max), o.max, "数量", box: 6);
+                        m.TEXT(nameof(o.opts), o.opts, label: "要求", tip:"用空格分隔");
+                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 12);
+                        m._FORM();
+                    });
                 }
             }
             else // post

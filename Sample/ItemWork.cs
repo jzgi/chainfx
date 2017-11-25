@@ -13,7 +13,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("货架"), Allow(User.OPR)]
+    [Ui("货架")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -25,22 +25,17 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid)))
+                dc.Query("SELECT * FROM items WHERE shopid = @1", p => p.Set(shopid));
+                ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
-                    ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
-                    {
-                        h.CAPTION(false, o.name);
-                        h.IMG(o.name + "/icon", box: 4);
-                        h.BOX_(8).P(o.descr, "简述").P(o.price, "价格")._BOX();
-                        h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
-                        h.FIELD(o.step, "步进", box: 6).FIELD(o.max, "剩余", box: 6);
-                        h.TAIL();
-                    });
-                }
-                else
-                {
-                    ac.GiveBoardPage(200, (Item[]) null, null);
-                }
+                    h.CAPTION(false, o.name);
+                    h.IMG(o.name + "/icon", box: 4);
+                    h.BOX_(8).P(o.descr, "描述").P(o.mains, "主料").P(o.price, "价格")._BOX();
+                    h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
+                    h.FIELD(o.step, "增减", box: 6).FIELD(o.max, "数量", box: 6);
+                    h.FIELD(o.opts, "要求");
+                    h.TAIL();
+                });
             }
         }
 

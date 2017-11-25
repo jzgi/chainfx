@@ -537,13 +537,6 @@ td {
     padding: 0;
 }
 
-p {
-    padding: 0.25rem;
-    font-size: inherit;
-    line-height: 1.5;
-    text-rendering: optimizeLegibility;
-}
-
 i {
     font-style: italic;
     line-height: inherit;
@@ -856,7 +849,7 @@ textarea {
     padding: 0.25rem;
     border: 1px solid #cacaca;
     font-family: inherit;
-    width: -webkit-fill-available;
+    width: inherit;
     line-height: 1.5;
     color: #0a0a0a;
     background-color: #fefefe;
@@ -926,7 +919,7 @@ label > [type='checkbox'],
 label > [type='radio'] {
     vertical-align: middle;
     margin-bottom: 4px;
-     margin-right: 0.25rem; 
+    margin-right: 0.25rem; 
 }
 
 [type='file'] { width: 100%; }
@@ -1017,7 +1010,7 @@ select {
     font-family: inherit;
     font-weight: normal;
     line-height: 1.5;
-    width: -webkit-fill-available;
+    width: inherit;
     height: 2.125rem;
     color: #0a0a0a;
     background-color: #fefefe;

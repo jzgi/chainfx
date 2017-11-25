@@ -489,10 +489,13 @@ namespace Greatbone.Core
         public HtmlContent FIELD(string[] v, string label = null, string suffix = null, sbyte box = 12)
         {
             FIELD_(label, box);
-            for (int i = 0; i < v.Length; i++)
+            if (v != null)
             {
-                if (i > 0) Add(" ");
-                Add(v[i]);
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) Add(" ");
+                    Add(v[i]);
+                }
             }
             if (suffix != null)
             {
@@ -1010,7 +1013,7 @@ namespace Greatbone.Core
         {
             Work work = actionCtx.Work;
             Work varwork = work.varwork;
-            Add("<main class=\"sheetview table-scroll);\">");
+            Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
             ActionInfo[] ais = varwork?.Styled;
 
@@ -1094,7 +1097,7 @@ namespace Greatbone.Core
 
         public HtmlContent BOARDVIEW_()
         {
-            Add("<main class=\"boardview grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            Add("<main class=\"board-view grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
             return this;
         }
 
@@ -1106,7 +1109,7 @@ namespace Greatbone.Core
 
         public HtmlContent CARD_()
         {
-            Add("<form class=\"cell boardview-cell\" id=\"card-");
+            Add("<form class=\"cell board-view-cell\" id=\"card-");
             Add(++ordinal);
             Add("\"><article class=\"card grid-x\">");
             return this;
@@ -1386,6 +1389,48 @@ namespace Greatbone.Core
             {
                 Add(" pattern=\"");
                 AddEsc(pattern);
+                Add("\"");
+            }
+            if (max > 0)
+            {
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min > 0)
+            {
+                Add(" minlength=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            Add(">");
+
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent TEXT(string name, string[] vs, string label = null, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        {
+            FIELD_(label, box);
+
+            Add("<input type=\"text\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            if (vs != null)
+            {
+                for (int i = 0; i > vs.Length; i++)
+                {
+                    if (i > 0) Add(' ');
+                    AddEsc(vs[i]);
+                }
+            }
+            Add("\"");
+            if (tip != null)
+            {
+                Add(" placeholder=\"");
+                Add(tip);
                 Add("\"");
             }
             if (max > 0)
