@@ -50,9 +50,7 @@ namespace Greatbone.Sample
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
                     else
-                    {
                         ac.Give(200, new StaticContent(byteas), true, 60 * 5);
-                    }
                 }
                 else ac.Give(404, @public: true, maxage: 60 * 5); // not found
             }
@@ -69,14 +67,13 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-
                     m.BOARDVIEW_();
                     while (dc.Next())
                     {
                         dc.Let(out int idx).Let(out string descr);
                         m.CARD_();
                         m.CAPTION(false, descr);
-                        m.IMG(idx + "/img", box: 12);
+                        m.IMG(idx + "/img");
                         m._CARD();
                     }
                     m._BOARDVIEW();
@@ -105,14 +102,14 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("数量", box: 12);
+                        h.FIELDSET_("数量");
                         h.HIDDEN(nameof(unit), o.unit);
                         h.HIDDEN(nameof(price), o.price);
-                        h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step, box: 12);
+                        h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
                         h._FIELDSET();
                         if (o.opts != null)
                         {
-                            h.CHECKBOXGROUP(nameof(opts), null, o.opts, "要求", box: 12);
+                            h.CHECKBOXGROUP(nameof(opts), null, o.opts, "要求");
                         }
                         h._FORM();
                     });
@@ -183,41 +180,40 @@ namespace Greatbone.Sample
         {
             string shopid = ac[-2];
             string name = ac[this];
+            Item o;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Query1("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-                    var o = dc.ToObject<Item>();
+                    o = dc.ToObject<Item>();
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
                         m.FIELD(o.name, "名称", box: 6).TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6);
-                        m.TEXTAREA(nameof(o.descr), o.descr, "描述", max: 30, required: true, box: 12);
-                        m.TEXT(nameof(o.mains), o.mains, "主料", required: true, box: 12);
+                        m.TEXTAREA(nameof(o.descr), o.descr, "描述", max: 30, required: true);
+                        m.TEXT(nameof(o.mains), o.mains, "主料", required: true);
                         m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6).NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6);
                         m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6).NUMBER(nameof(o.max), o.max, "数量", box: 6);
-                        m.TEXT(nameof(o.opts), o.opts, label: "要求", tip:"用空格分隔");
-                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 12);
+                        m.TEXT(nameof(o.opts), o.opts, label: "要求", tip: "用空格分隔");
+                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         m._FORM();
                     });
                 }
+                return;
             }
-            else // post
+            const short proj = -1 ^ Item.UNMOD;
+            o = await ac.ReadObjectAsync<Item>(proj);
+            using (var dc = ac.NewDbContext())
             {
-                const short proj = -1 ^ Item.UNMOD;
-                var o = await ac.ReadObjectAsync<Item>(proj);
-                using (var dc = ac.NewDbContext())
+                dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2");
+                dc.Execute(p =>
                 {
-                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2");
-                    dc.Execute(p =>
-                    {
-                        o.Write(p, proj);
-                        p.Set(shopid).Set(name);
-                    });
-                }
-                ac.GivePane(200); // close dialog
+                    o.Write(p, proj);
+                    p.Set(shopid).Set(name);
+                });
             }
+            ac.GivePane(200); // close dialog
         }
 
         [Ui("图片"), Trigger(ButtonCrop)]

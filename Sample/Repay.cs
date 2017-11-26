@@ -13,11 +13,10 @@ namespace Greatbone.Sample
         // status
         public const short CREATED = 0, PAID = 1;
 
-        // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, string.Empty},
-            {1, "已转款"}
+            {CREATED, "新结算"},
+            {PAID, "已转款"}
         };
 
 

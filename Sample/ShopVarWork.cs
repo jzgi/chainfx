@@ -103,23 +103,20 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
-                    if (dc.Query1(p => p.Set(shopid)))
+                    dc.Query1(p => p.Set(shopid));
+                    var o = dc.ToObject<Shop>();
+                    ac.GivePane(200, m =>
                     {
-                        var o = dc.ToObject<Shop>();
-                        ac.GivePane(200, m =>
-                        {
-                            m.FORM_();
-                            m.FIELD(o.id, "编号");
-                            m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                            m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
-                            m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                            m.TEXT(nameof(o.schedule), o.schedule, "营业");
-                            m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色");
-                            m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
-                            m._FORM();
-                        });
-                    }
-                    else ac.Give(500); // internal server error
+                        m.FORM_();
+                        m.FIELD(o.id, "编号");
+                        m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                        m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
+                        m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                        m.TEXT(nameof(o.schedule), o.schedule, "营业");
+                        m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色");
+                        m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
+                        m._FORM();
+                    });
                 }
             }
             else // post
@@ -197,9 +194,7 @@ namespace Greatbone.Sample
                         dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) ac.Give(204); // no content 
                         else
-                        {
                             ac.Give(200, new StaticContent(byteas));
-                        }
                     }
                     else ac.Give(404); // not found           
                 }

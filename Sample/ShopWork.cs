@@ -88,30 +88,21 @@ namespace Greatbone.Sample
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE city = @1 AND status > 0 ORDER BY id");
-                    if (dc.Query(p => p.Set(city)))
+                    dc.Query(p => p.Set(city));
+                    m.BOARDVIEW(dc.ToArray<Shop>(), (h, o) =>
                     {
-                        var arr = dc.ToArray<Shop>();
-                        m.BOARDVIEW(arr, (h, o) =>
+                        h.CAPTION_(false).T(o.name)._CAPTION(Shop.Status[o.status], o.status == Shop.ON);
+                        h.ICON(o.id + "/icon", href: o.id + "/", box: 0x44);
+                        h.BOX_(0x48).P(o.addr, "店址").P(o.schedule, "营业");
+                        if (o.areas != null)
                         {
-                            h.CAPTION_(false).T(o.name)._CAPTION(Shop.Status[o.status], o.status == Shop.ON);
-                            h.ICON(o.id + "/icon", href: o.id + "/", box: 0x44);
-                            h.BOX_(0x48).P(o.addr, "店址").P(o.schedule, "营业");
-                            if (o.areas != null)
-                            {
-                                h.P(o.areas, "限送");
-                            }
-                            h._BOX();
-                            h.FIELD_("特色").T("<a href=\"marks\">").T(o.marks).T("</a>")._FIELD();
-                            h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
-                            h.TAIL();
-                        });
-                    }
-                    else
-                    {
-                        m.GRID_();
-                        m.T("<p>").T(city).T("目前没有网点</p>");
-                        m._GRID();
-                    }
+                            h.P(o.areas, "限送");
+                        }
+                        h._BOX();
+                        h.FIELD_("特色").T("<a href=\"marks\">").T(o.marks).T("</a>")._FIELD();
+                        h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
+                        h.TAIL();
+                    });
                 }
             }, true, 60 * 5);
         }

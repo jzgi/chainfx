@@ -4,6 +4,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
+using static Greatbone.Sample.Repay;
 
 namespace Greatbone.Sample
 {
@@ -51,21 +52,29 @@ namespace Greatbone.Sample
         {
         }
 
+        [Ui("列新结"), Trigger(Anchor)]
         public void @default(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays ORDER BY id DESC, status LIMIT 20 OFFSET @1", p => p.Set(page * 20)))
-                {
-                    ac.GiveSheetPage(200, dc.ToArray<Repay>(),
-                        h => h.TH("网点").TH("截至日期").TH("金额").TH("转款"),
-                        (h, o) => h.TD(o.shopname).TD(o.till).TD(o.total).TD(o.payer)
-                    );
-                }
-                else
-                {
-                    ac.GiveSheetPage(200, (Repay[]) null, null, null);
-                }
+                dc.Query("SELECT * FROM repays WHERE status = " + CREATED + " ORDER BY id DESC, status LIMIT 20 OFFSET @1", p => p.Set(page * 20));
+                ac.GiveSheetPage(200, dc.ToArray<Repay>(),
+                    h => h.TH("网点").TH("截至日期").TH("金额").TH("转款"),
+                    (h, o) => h.TD(o.shopname).TD(o.till).TD(o.total).TD(o.payer)
+                );
+            }
+        }
+
+        [Ui("列已转"), Trigger(Anchor)]
+        public void old(ActionContext ac, int page)
+        {
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query("SELECT * FROM repays ORDER BY id DESC, status = " + PAID + " LIMIT 20 OFFSET @1", p => p.Set(page * 20));
+                ac.GiveSheetPage(200, dc.ToArray<Repay>(),
+                    h => h.TH("网点").TH("截至日期").TH("金额").TH("转款"),
+                    (h, o) => h.TD(o.shopname).TD(o.till).TD(o.total).TD(o.payer)
+                );
             }
         }
 
