@@ -31,8 +31,8 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // actions with the style attribute
-        readonly ActionInfo[] styled;
+        // actions with the trigger attribute
+        readonly ActionInfo[] triggers;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -87,7 +87,7 @@ namespace Greatbone.Core
                     lst.Add(ai);
                 }
             }
-            styled = lst?.ToArray();
+            triggers = lst?.ToArray();
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Greatbone.Core
 
         public Map<string, ActionInfo> Actions => actions;
 
-        public ActionInfo[] Styled => styled;
+        public ActionInfo[] Triggers => triggers;
 
         public ActionInfo Default => @default;
 

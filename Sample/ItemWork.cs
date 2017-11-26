@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 {
                     h.CAPTION(false, o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.IMG(o.name + "/icon", box: 4);
-                    h.BOX_(8).P(o.descr, "描述").P(o.mains, "主料").P(o.price, "价格")._BOX();
+                    h.BOX_(0x48).P(o.descr, "描述").P(o.mains, "主料").P(o.price, "价格")._BOX();
                     h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
                     h.FIELD(o.step, "增减", box: 6).FIELD(o.max, "数量", box: 6);
                     h.FIELD(o.opts, "要求");

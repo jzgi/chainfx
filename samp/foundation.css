@@ -529,7 +529,6 @@ h5,
 h6,
 pre,
 form,
-p,
 blockquote,
 th,
 td {
@@ -610,6 +609,11 @@ h5, .h5 {
 h6, .h6 {
     font-size: 1rem;
     line-height: 1.4;
+}
+
+p {
+    padding: 0.25rem;
+    margin: 0;
 }
 
 @media print, screen and (min-width: 40em) {
@@ -839,8 +843,27 @@ ul.no-bullet, ol.no-bullet {
 label {
     display: inline-table;
     margin-right: 0.5rem;
-    height: 2.125rem;
-    line-height: 2.5;
+}
+
+label > [type='checkbox'],
+label > [type='radio'] {
+    vertical-align: middle;
+    margin-bottom: 4px;
+    margin-right: 0.25rem;
+}
+
+fieldset {
+    width: calc(100% - 0.25rem);
+    padding: 0 0 0.875rem 0;
+    margin: 0.25rem 0 0 0;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    border-left: none;
+    border-right: none;
+}
+
+legend {
+    padding: 0.25rem;
 }
 
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
@@ -916,13 +939,6 @@ input[type='search'] { box-sizing: border-box; }
 
 [type='checkbox'] + label[for],
 [type='radio'] + label[for] { cursor: pointer; }
-
-label > [type='checkbox'],
-label > [type='radio'] {
-    vertical-align: middle;
-    margin-bottom: 4px;
-    margin-right: 0.25rem; 
-}
 
 [type='file'] { width: 100%; }
 

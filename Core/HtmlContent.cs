@@ -414,7 +414,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(short v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(short v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
@@ -426,7 +426,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(int v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(int v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
@@ -438,7 +438,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(long v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(long v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
@@ -450,7 +450,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(decimal v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(decimal v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
@@ -462,7 +462,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
@@ -474,7 +474,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(string v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(string v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
@@ -486,7 +486,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(string[] v, string label = null, string suffix = null, sbyte box = 12)
+        public HtmlContent FIELD(string[] v, string label = null, string suffix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             if (v != null)
@@ -505,14 +505,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD_(string label = null, sbyte box = 12)
+        public HtmlContent FIELD_(string label = null, byte box = 0x0c)
         {
-            if (box > 0)
-            {
-                Add("<div class=\"cell box small-");
-                Add(box);
-                Add("\">");
-            }
+            BOX_(box, false);
             if (label != null)
             {
                 Add("<span class=\"label\">");
@@ -522,9 +517,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        void _FIELD(sbyte box)
+        void _FIELD(byte box)
         {
-            if (box > 0)
+            if ((box & 0x0f) > 0)
             {
                 Add("</div>");
             }
@@ -602,18 +597,23 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BOX(sbyte box = 12)
+        public HtmlContent BOX_(byte box = 0x0c, bool column = true)
         {
-            BOX_(box);
-            _BOX();
-            return this;
-        }
-
-        public HtmlContent BOX_(sbyte box = 12)
-        {
-            Add("<div class=\"cell box small-");
-            Add(box);
-            Add("\">");
+            int grid = box & 0x0f;
+            if (grid > 0)
+            {
+                int layout = (box >> 4) & 0x0f;
+                Add("<div class=\"cell small-");
+                Add(grid);
+                Add(" box box-");
+                Add(layout);
+                Add("\"");
+                if (column)
+                {
+                    Add(" style=\"flex-direction: column; padding: 0;\"");
+                }
+                Add(">");
+            }
             return this;
         }
 
@@ -741,7 +741,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent IMG(string src, string href = null, sbyte box = 12)
+        public HtmlContent IMG(string src, string href = null, byte box = 0x0c)
         {
             FIELD_(null, box);
             if (href != null)
@@ -761,7 +761,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent THUMBNAIL(string src, string href = null, sbyte box = 12)
+        public HtmlContent THUMBNAIL(string src, string href = null, byte box = 0x0c)
         {
             FIELD_(null, box);
             if (href != null)
@@ -781,7 +781,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent ICON(string src, string href = null, sbyte box = 12)
+        public HtmlContent ICON(string src, string href = null, byte box = 0x0c)
         {
             FIELD_(null, box);
             if (href != null)
@@ -803,7 +803,7 @@ namespace Greatbone.Core
 
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
-            Add("<form");
+            Add("<form class=\"grid-x\"");
             if (action != null)
             {
                 Add(" action=\"");
@@ -819,18 +819,16 @@ namespace Greatbone.Core
                 Add(" enctype=\"multipart/form-data\"");
             }
             Add(">");
-            Add("<div class=\"grid-x\">");
             return this;
         }
 
         public HtmlContent _FORM()
         {
-            Add("</div>");
             Add("</form>");
             return this;
         }
 
-        public HtmlContent FIELDSET_(string legend = null, sbyte box = 12)
+        public HtmlContent FIELDSET_(string legend = null, byte box = 0x0c)
         {
             Add("<fieldset");
             if (box > 0)
@@ -938,14 +936,14 @@ namespace Greatbone.Core
         public void TOOLBAR(Work work = null, short feature = 0, bool refresh = true)
         {
             if (work == null) work = actionCtx.Work;
-            if (work.Styled == null)
+            if (work.Triggers == null)
             {
                 TOOLBAR_(work.Label);
             }
             else
             {
                 TOOLBAR_();
-                Triggers(work, null, feature);
+                Triggers(work, 0, null, feature);
             }
             _TOOLBAR(refresh);
         }
@@ -1021,7 +1019,7 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
             Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
-            ActionInfo[] ais = varwork?.Styled;
+            ActionInfo[] ais = varwork?.Triggers;
 
             if (head != null)
             {
@@ -1049,7 +1047,7 @@ namespace Greatbone.Core
                     {
                         Add("<td>");
                         Add("<form>");
-                        Triggers(varwork, obj);
+                        Triggers(varwork, i + 1, obj);
                         Add("</form>");
                         Add("</td>");
                     }
@@ -1212,7 +1210,7 @@ namespace Greatbone.Core
                 if (varwork != null)
                 {
                     Add("<div style=\"margin-left: auto\">");
-                    Triggers(varwork, curobj, feature);
+                    Triggers(varwork, ordinal, curobj, feature);
                     Add("</div>");
                 }
             }
@@ -1231,114 +1229,130 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Triggers(Work work, IData obj, short feature = 0)
+        void Triggers(Work work, int ordinal, IData obj, short feature = 0)
         {
-            var ais = work.Styled;
+            var ais = work.Triggers;
             if (ais == null)
             {
                 return;
             }
             for (int i = 0; i < ais.Length; i++)
             {
-                ActionInfo ai = ais[i];
-                UiAttribute ui = ai.Ui;
-                if (ui.Feature != 0 && ui.Feature != feature) continue;
-                TriggerAttribute trig = ai.Trigger;
-                bool avail = ai.CheckState(obj);
+                var ai = ais[i];
+                var feat = ai.Ui.Feature;
+                if (feat != 0 && feat != feature)
+                {
+                    continue;
+                }
+                Trigger(ais[i], ordinal, obj);
+            }
+        }
 
-                if (trig.IsAnchor)
-                {
-                    Add("<a class=\"button primary");
-                    Add(ai == actionCtx.Doer ? " hollow" : " clear");
-                    Add("\" href=\"");
-                    if (obj != null)
-                    {
-                        ai.Work.PutVarKey(obj, this);
-                        Add('/');
-                    }
-                    else if (feature > 0)
-                    {
-                        Add(feature);
-                        Add('/');
-                    }
-                    Add(ai.RPath);
-                    Add("\"");
-                    if (!avail)
-                    {
-                        Add(" disabled onclick=\"return false;\"");
-                    }
-                }
-                else if (trig.IsButton)
-                {
-                    Add("<button class=\"button primary");
-                    if (!ai.IsCap) Add(" hollow");
-                    Add("\" name=\"");
-                    Add(ai.Key);
-                    Add("\" formaction=\"");
-                    if (obj != null)
-                    {
-                        ai.Work.PutVarKey(obj, this);
-                        Add('/');
-                    }
-                    else if (feature > 0)
-                    {
-                        Add(feature);
-                        Add('/');
-                    }
-                    Add(ai.Key);
-                    Add("\" formmethod=\"post\"");
-                    if (!avail)
-                    {
-                        Add(" disabled");
-                    }
-                }
-                if (trig.HasConfirm)
-                {
-                    Add(" onclick=\"return confirm('");
-                    Add(ui.Tip ?? ui.Label);
-                    Add("?');\"");
-                }
-                else if (trig.HasPrompt)
-                {
-                    Dialog(2, trig.Size, ui.Tip);
-                }
-                else if (trig.HasShow)
-                {
-                    Dialog(4, trig.Size, ui.Tip);
-                }
-                else if (trig.HasOpen)
-                {
-                    Dialog(8, trig.Size, ui.Tip);
-                }
-                else if (trig.HasScript)
-                {
-                    Add(" onclick=\"return ");
-                    Add(ai.Lower);
-                    Add("(this) || false;\"");
-                }
-                else if (trig.HasCrop)
-                {
-                    Add(" onclick=\"return crop(this,");
-                    Add(trig.Ordinals);
-                    Add(',');
-                    Add(trig.Size);
-                    Add(",");
-                    Add(trig.Circle);
-                    Add(",'");
-                    Add(ui.Tip);
-                    Add("');\"");
-                }
-                Add(">");
-                Add(ai.Label);
+        public HtmlContent TRIGGER(string name)
+        {
+            var work = actionCtx.Work.VarWork;
+            var ai = work.GetAction(name);
+            Trigger(ai, ordinal, curobj);
+            return this;
+        }
 
-                if (trig.IsAnchor)
+        void Trigger(ActionInfo ai, int ordinal, IData obj)
+        {
+            UiAttribute ui = ai.Ui;
+            TriggerAttribute trig = ai.Trigger;
+            bool avail = ai.CheckState(obj);
+
+            if (trig.IsAnchor)
+            {
+                Add("<a class=\"button primary");
+                Add(ai == actionCtx.Doer ? " hollow" : " clear");
+                Add("\" href=\"");
+                if (obj != null)
                 {
-                    Add("</a>");
+                    ai.Work.PutVarKey(obj, this);
+                    Add('/');
                 }
-                else if (trig.IsButton)
+                else if (ordinal > 0)
                 {
-                    Add("</button>");
+                    Add(ordinal);
+                    Add('/');
+                } // otherwise it is not var
+                Add(ai.RPath);
+                Add("\"");
+                if (!avail)
+                {
+                    Add(" disabled onclick=\"return false;\"");
                 }
+            }
+            else if (trig.IsButton)
+            {
+                Add("<button class=\"button primary");
+                if (!ai.IsCap) Add(" hollow");
+                Add("\" name=\"");
+                Add(ai.Key);
+                Add("\" formaction=\"");
+                if (obj != null)
+                {
+                    ai.Work.PutVarKey(obj, this);
+                }
+                else if (ordinal > 0)
+                {
+                    Add(ordinal);
+                }
+                Add('/');
+                Add(ai.Key);
+                Add("\" formmethod=\"post\"");
+                if (!avail)
+                {
+                    Add(" disabled");
+                }
+            }
+            if (trig.HasConfirm)
+            {
+                Add(" onclick=\"return confirm('");
+                Add(ui.Tip ?? ui.Label);
+                Add("?');\"");
+            }
+            else if (trig.HasPrompt)
+            {
+                Dialog(2, trig.Size, ui.Tip);
+            }
+            else if (trig.HasShow)
+            {
+                Dialog(4, trig.Size, ui.Tip);
+            }
+            else if (trig.HasOpen)
+            {
+                Dialog(8, trig.Size, ui.Tip);
+            }
+            else if (trig.HasScript)
+            {
+                Add(" onclick=\"return ");
+                Add(ai.Lower);
+                Add("(this) || false;\"");
+            }
+            else if (trig.HasCrop)
+            {
+                Add(" onclick=\"return crop(this,");
+                Add(trig.Ordinals);
+                Add(',');
+                Add(trig.Size);
+                Add(",");
+                Add(trig.Circle);
+                Add(",'");
+                Add(ui.Tip);
+                Add("');\"");
+            }
+            Add(">");
+            Add(ai.Label);
+
+            if (trig.IsAnchor)
+            {
+                Add("</a>");
+            }
+            else if (trig.IsButton)
+            {
+                Add("</button>");
             }
         }
 
@@ -1376,7 +1390,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEXT(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1417,7 +1431,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string[] vs, string label = null, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEXT(string name, string[] vs, string label = null, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1459,7 +1473,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEL(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEL(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1500,7 +1514,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, sbyte box = 12)
+        public HtmlContent SEARCH(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1543,7 +1557,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1588,7 +1602,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, sbyte box = 12)
+        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1630,7 +1644,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = short.MaxValue, short min = short.MinValue, short step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = short.MaxValue, short min = short.MinValue, short step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1691,7 +1705,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = int.MaxValue, int min = int.MinValue, int step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = int.MaxValue, int min = int.MinValue, int step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1733,7 +1747,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1775,7 +1789,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1816,7 +1830,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1883,7 +1897,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, sbyte box = 12)
+        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, byte box = 0x0c)
         {
             FIELD_(null, box);
 
@@ -1907,7 +1921,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOXGROUP(string name, string[] v, string[] opts, string legend = null, sbyte box = 12)
+        public HtmlContent CHECKBOXGROUP(string name, string[] v, string[] opts, string legend = null, byte box = 0x0c)
         {
             if (legend != null)
             {
@@ -2160,7 +2174,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, sbyte box = 12)
+        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add("<textarea name=\"");
@@ -2200,7 +2214,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, sbyte box = 12)
+        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2234,7 +2248,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
+        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2271,7 +2285,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
+        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2308,7 +2322,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12)
+        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2349,7 +2363,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<D>(string name, string v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12) where D : IData
+        public HtmlContent SELECT<D>(string name, string v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where D : IData
         {
             FIELD_(label, box);
 
@@ -2390,7 +2404,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<D>(string name, string[] v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, sbyte box = 12) where D : IData
+        public HtmlContent SELECT<D>(string name, string[] v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where D : IData
         {
             FIELD_(label, box);
 
