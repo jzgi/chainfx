@@ -15,8 +15,6 @@ namespace Greatbone.Sample
             Create<MyCartWork>("cart");
 
             Create<MyOrderWork>("order");
-
-            CreateVar<MyVarVarWork, int>(); // dataless
         }
 
         public void @default(ActionContext ac)
@@ -33,7 +31,7 @@ namespace Greatbone.Sample
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
                         h.FIELD_("地址").T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
-                        h.TAIL();
+                        h.TAIL(tag: -1);
                     });
             });
         }
@@ -57,18 +55,11 @@ namespace Greatbone.Sample
                 }
             }
         }
-    }
 
-    public class MyVarVarWork : Work
-    {
-        public MyVarVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        [Ui("修改"), Trigger(ButtonShow)]
+        [Ui("修改", Tag = -1), Trigger(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            string wx = ac[-1];
+            string wx = ac[this];
             var prin = (User) ac.Principal;
             if (ac.GET)
             {
@@ -110,11 +101,11 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码"), Trigger(ButtonShow, 1)]
+        [Ui("设密码", Tag = -1), Trigger(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
-            string wx = ac[-1];
+            string wx = ac[this];
             string credential = null;
             string password = null;
             if (ac.GET)
@@ -152,14 +143,11 @@ namespace Greatbone.Sample
         }
     }
 
-
     [Ui("常规"), Allow(OPR)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprVarVarWork, int>();
-
             Create<OprNewWork>("new");
 
             Create<OprGoWork>("go");
@@ -187,7 +175,7 @@ namespace Greatbone.Sample
                             dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                             dc.Query1(p => p.Set(shopid));
                             var o = dc.ToObject<Shop>();
-                            
+
                             h.CAPTION(false, o.name, Status[o.status], o.status == ON);
                             h.FIELDSET_("设置");
                             h.FIELD(o.schedule, "时间");
@@ -203,7 +191,7 @@ namespace Greatbone.Sample
                             h.FIELD(o.oprname, "姓名", box: 6).FIELD(o.oprtel, "电话", box: 6);
                             h.FIELD(o.oprwx, "微信");
                             h._FIELDSET();
-                            h.TAIL();
+                            h.TAIL(tag: -1);
                         }
                     });
                 });
@@ -268,86 +256,11 @@ namespace Greatbone.Sample
                 m._FORM();
             });
         }
-    }
-
-    public class OprVarVarWork : Work
-    {
-        public OprVarVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        [Ui("营业状态"), Trigger(ButtonShow, 1), Allow(OPRMEM)]
-        public async Task status(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            short status;
-            if (ac.GET)
-            {
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        status = (short) dc.Scalar("SELECT status FROM shops WHERE id = @1", p => p.Set(shopid));
-                        h.SELECT(nameof(status), status, Status);
-                    }
-                    h._FORM();
-                });
-                return;
-            }
-
-            var f = await ac.ReadAsync<Form>();
-            status = f[nameof(status)];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(status).Set(shopid));
-            }
-            ac.GivePane(200);
-        }
-
-        [Ui("客服"), Trigger(ButtonShow, 1)]
-        public void seton(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            User prin = (User) ac.Principal;
-            if (ac.GET)
-            {
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        bool on = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx));
-                        string hint = on ? "我当前已经是客服。是否下线？下线将会置空客服电话号码，也不接收客服通知。" : "是否上线做客服，接收客服通知，并且个人电话号码显示为客服电话？";
-                        const bool yes = false;
-                        h.FIELDSET_(on ? "客服下线" : "客服上线");
-                        h.CHECKBOX(nameof(yes), yes, hint, required: true);
-                        h._FIELDSET();
-                    }
-                    h._FORM();
-                });
-            }
-            else
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)))
-                    {
-                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
-                    }
-                    else
-                    {
-                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
-                    }
-                }
-                ac.GivePane(200);
-            }
-        }
 
         [Ui("设置"), Trigger(ButtonShow)]
-        public async Task sets(ActionContext ac)
+        public async Task config(ActionContext ac)
         {
-            string shopid = ac[-1];
+            string shopid = ac[this];
             string schedule;
             string[] areas;
             decimal min, notch, off;
@@ -388,7 +301,7 @@ namespace Greatbone.Sample
         [Ui("功能照"), Trigger(ButtonCrop, Ordinals = 4)]
         public async Task img(ActionContext ac, int ordinal)
         {
-            string shopid = ac[-1];
+            string shopid = ac[this];
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
@@ -411,6 +324,74 @@ namespace Greatbone.Sample
                 dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }
             ac.Give(200); // ok
+        }
+
+        [Ui("营业状态", Tag = -1), Trigger(ButtonShow, 1), Allow(OPRMEM)]
+        public async Task status(ActionContext ac)
+        {
+            string shopid = ac[this];
+            short status;
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    using (var dc = ac.NewDbContext())
+                    {
+                        status = (short) dc.Scalar("SELECT status FROM shops WHERE id = @1", p => p.Set(shopid));
+                        h.SELECT(nameof(status), status, Status);
+                    }
+                    h._FORM();
+                });
+                return;
+            }
+
+            var f = await ac.ReadAsync<Form>();
+            status = f[nameof(status)];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(status).Set(shopid));
+            }
+            ac.GivePane(200);
+        }
+
+        [Ui("客服", Tag = -1), Trigger(ButtonShow, 1)]
+        public void contact(ActionContext ac)
+        {
+            string shopid = ac[this];
+            User prin = (User) ac.Principal;
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    using (var dc = ac.NewDbContext())
+                    {
+                        bool on = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx));
+                        string hint = on ? "我当前已经是客服。是否下线？下线将会置空客服电话号码，也不接收客服通知。" : "是否上线做客服，接收客服通知，并且个人电话号码显示为客服电话？";
+                        const bool yes = false;
+                        h.FIELDSET_(on ? "客服下线" : "客服上线");
+                        h.CHECKBOX(nameof(yes), yes, hint, required: true);
+                        h._FIELDSET();
+                    }
+                    h._FORM();
+                });
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)))
+                    {
+                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                    }
+                    else
+                    {
+                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                    }
+                }
+                ac.GivePane(200);
+            }
         }
     }
 }

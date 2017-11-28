@@ -18,7 +18,13 @@ namespace Greatbone.Core
         // type of putting
         sbyte putting;
 
-        const sbyte JS = 1, UL = 2;
+        const sbyte PUT_JS = 1, PUT_UL = 2;
+
+        // used for current level content
+        int ordinal;
+
+        // used for lower lever (var) content
+        IData model;
 
         public HtmlContent(ActionContext actionCtx, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
@@ -933,7 +939,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work = null, short feature = 0, bool refresh = true)
+        public void TOOLBAR(Work work = null, sbyte tag = 0, bool refresh = true)
         {
             if (work == null) work = actionCtx.Work;
             if (work.Triggers == null)
@@ -943,7 +949,7 @@ namespace Greatbone.Core
             else
             {
                 TOOLBAR_();
-                Triggers(work, 0, null, feature);
+                Triggers(work, tag, null);
             }
             _TOOLBAR(refresh);
         }
@@ -1047,7 +1053,7 @@ namespace Greatbone.Core
                     {
                         Add("<td>");
                         Add("<form>");
-                        Triggers(varwork, i + 1, obj);
+                        Triggers(varwork, 0, obj);
                         Add("</form>");
                         Add("</td>");
                     }
@@ -1061,12 +1067,9 @@ namespace Greatbone.Core
             Add("</main>");
         }
 
-        private int ordinal;
-
         public void BOARDVIEW(params Action<HtmlContent>[] cards)
         {
             BOARDVIEW_();
-            ordinal = 0;
             for (int i = 0; i < cards.Length; i++)
             {
                 CARD_();
@@ -1076,46 +1079,46 @@ namespace Greatbone.Core
             _BOARDVIEW();
         }
 
-        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void BOARDVIEW<D>(D[] models, Action<HtmlContent, D> card) where D : IData
         {
             BOARDVIEW_();
-            if (arr != null)
+            if (models != null)
             {
-                IData old = curobj;
-                curobj = null;
-                ordinal = 0;
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < models.Length; i++)
                 {
-                    D obj = arr[i];
-                    curobj = obj;
+                    D obj = models[i];
+                    model = obj;
                     CARD_();
                     card(this, obj);
                     _CARD();
                 }
-                curobj = old; // restore
             }
             // pagination if any
-            PAGENATE(arr?.Length ?? 0);
+            PAGENATE(models?.Length ?? 0);
             _BOARDVIEW();
         }
 
         public HtmlContent BOARDVIEW_()
         {
             Add("<main class=\"board-view grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            ordinal = 0;
+            model = null;
             return this;
         }
 
         public HtmlContent _BOARDVIEW()
         {
             Add("</main>");
+            model = null;
+            ordinal = 0;
             return this;
         }
 
         public HtmlContent CARD_()
         {
             Add("<form class=\"cell board-view-cell\" id=\"card-");
-            Add(++ordinal);
             Add("\"><article class=\"card grid-x\">");
+            ordinal++;
             return this;
         }
 
@@ -1134,28 +1137,21 @@ namespace Greatbone.Core
             return this;
         }
 
-        private IData curobj;
 
         public HtmlContent CAPTION_(bool checkbox)
         {
             Add("<div class=\"cell card-caption small-12\">");
             if (checkbox)
             {
-                if (curobj != null)
+                if (model != null)
                 {
                     Work varwork = actionCtx.Work.VarWork;
                     if (varwork != null)
                     {
                         Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                        varwork.PutVarKey(curobj, this);
+                        varwork.PutVarKey(model, this);
                         Add("\" onchange=\"checkit(this);\">");
                     }
-                }
-                else if (ordinal > 0)
-                {
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                    Add(ordinal);
-                    Add("\" onchange=\"checkit(this);\">");
                 }
             }
             return this;
@@ -1178,10 +1174,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TAIL(string flag = null, bool? on = null, short feature = 0)
+        public HtmlContent TAIL(string flag = null, bool? on = null, sbyte tag = 0)
         {
             TAIL_(flag, on);
-            _TAIL(feature);
+            _TAIL(tag);
             return this;
         }
 
@@ -1202,17 +1198,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _TAIL(short feature = 0)
+        public HtmlContent _TAIL(sbyte tag = 0)
         {
-            if (feature >= 0)
+            Work work = model == null ? actionCtx.Work : actionCtx.Work.VarWork;
+            if (work != null)
             {
-                Work varwork = actionCtx.Work.VarWork;
-                if (varwork != null)
-                {
-                    Add("<div style=\"margin-left: auto\">");
-                    Triggers(varwork, ordinal, curobj, feature);
-                    Add("</div>");
-                }
+                Add("<div style=\"margin-left: auto\">");
+                Triggers(work, tag, model);
+                Add("</div>");
             }
             Add("</div>");
             return this;
@@ -1229,7 +1222,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Triggers(Work work, int ordinal, IData obj, short feature = 0)
+        void Triggers(Work work, sbyte tag, IData obj)
         {
             var ais = work.Triggers;
             if (ais == null)
@@ -1239,29 +1232,37 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 var ai = ais[i];
-                var feat = ai.Ui.Feature;
-                if (feat != 0 && feat != feature)
+                var feat = ai.Ui.Tag;
+                if (feat != tag && (feat != 0 || tag < 0))
                 {
                     continue;
                 }
-                Trigger(ais[i], ordinal, obj);
+                Trigger(ais[i], obj);
             }
         }
 
         public HtmlContent TRIGGER(string name)
         {
-            var work = actionCtx.Work.VarWork;
-            var ai = work.GetAction(name);
-            Trigger(ai, ordinal, curobj);
+            if (model == null)
+            {
+                var work = actionCtx.Work;
+                var ai = work.GetAction(name);
+                Trigger(ai, null);
+            }
+            else
+            {
+                var work = actionCtx.Work.VarWork;
+                var ai = work.GetAction(name);
+                Trigger(ai, model);
+            }
             return this;
         }
 
-        void Trigger(ActionInfo ai, int ordinal, IData obj)
+        void Trigger(ActionInfo ai, IData obj)
         {
             UiAttribute ui = ai.Ui;
             TriggerAttribute trig = ai.Trigger;
-            bool avail = ai.CheckState(obj);
-
+            bool ok = ai.CheckState(obj);
             if (trig.IsAnchor)
             {
                 Add("<a class=\"button primary");
@@ -1272,14 +1273,9 @@ namespace Greatbone.Core
                     ai.Work.PutVarKey(obj, this);
                     Add('/');
                 }
-                else if (ordinal > 0)
-                {
-                    Add(ordinal);
-                    Add('/');
-                } // otherwise it is not var
                 Add(ai.RPath);
                 Add("\"");
-                if (!avail)
+                if (!ok)
                 {
                     Add(" disabled onclick=\"return false;\"");
                 }
@@ -1294,15 +1290,11 @@ namespace Greatbone.Core
                 if (obj != null)
                 {
                     ai.Work.PutVarKey(obj, this);
+                    Add('/');
                 }
-                else if (ordinal > 0)
-                {
-                    Add(ordinal);
-                }
-                Add('/');
                 Add(ai.Key);
                 Add("\" formmethod=\"post\"");
-                if (!avail)
+                if (!ok)
                 {
                     Add(" disabled");
                 }
@@ -1518,6 +1510,7 @@ namespace Greatbone.Core
         {
             FIELD_(label, box);
 
+            Add("<div class=\"input-group\">");
             Add("<input type=\"search\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1552,6 +1545,9 @@ namespace Greatbone.Core
                 Add("\"");
             }
             Add(">");
+
+            Add("<a class=\"input-group-label\" onclick=\"$(this).closest('form').submit();\">&#128270;</a>");
+            Add("</div>");
 
             _FIELD(box);
             return this;
@@ -1652,7 +1648,7 @@ namespace Greatbone.Core
             if (group)
             {
                 Add("<div class=\"input-group\">");
-                Add("<a class=\"input-group-label\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
+                Add("<a class=\"input-group-label round\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
             }
 
             Add("<input type=\"number\" name=\"");
@@ -1697,7 +1693,7 @@ namespace Greatbone.Core
 
             if (group)
             {
-                Add("<a class=\"input-group-label\" onclick=\"$(this).prev()[0].stepUp()\">+</a>");
+                Add("<a class=\"input-group-label round\" onclick=\"$(this).prev()[0].stepUp()\">+</a>");
                 Add("</div>");
             }
 
@@ -2494,21 +2490,21 @@ namespace Greatbone.Core
 
         public HtmlContent JSON(IData obj, short proj = 0x00ff)
         {
-            putting = JS;
+            putting = PUT_JS;
             Put(null, obj, proj);
             return this;
         }
 
         public HtmlContent JSON<D>(D[] arr, short proj = 0x00ff) where D : IData
         {
-            putting = JS;
+            putting = PUT_JS;
             Put(null, arr, proj);
             return this;
         }
 
         public HtmlContent JSON<K, D>(Map<K, D> map, short proj = 0x00ff) where D : IData
         {
-            putting = JS;
+            putting = PUT_JS;
             Put(null, map, proj);
             return this;
         }
@@ -2536,7 +2532,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2547,7 +2543,7 @@ namespace Greatbone.Core
                     }
                     Add(v ? "true" : "false");
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2557,7 +2553,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2568,7 +2564,7 @@ namespace Greatbone.Core
                     }
                     Add(v);
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2578,7 +2574,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2589,7 +2585,7 @@ namespace Greatbone.Core
                     }
                     Add(v);
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2599,7 +2595,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2610,7 +2606,7 @@ namespace Greatbone.Core
                     }
                     Add(v);
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2620,7 +2616,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2631,7 +2627,7 @@ namespace Greatbone.Core
                     }
                     Add(v);
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2641,7 +2637,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2652,7 +2648,7 @@ namespace Greatbone.Core
                     }
                     Add(v);
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2662,7 +2658,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2675,7 +2671,7 @@ namespace Greatbone.Core
                     Add(v);
                     Add('"');
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2685,7 +2681,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2705,7 +2701,7 @@ namespace Greatbone.Core
                         Add('"');
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2715,9 +2711,9 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2727,7 +2723,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2751,7 +2747,7 @@ namespace Greatbone.Core
                         Add(']');
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2761,7 +2757,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2785,7 +2781,7 @@ namespace Greatbone.Core
                         Add(']');
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2795,7 +2791,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2819,7 +2815,7 @@ namespace Greatbone.Core
                         Add(']');
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2829,7 +2825,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2863,7 +2859,7 @@ namespace Greatbone.Core
                         Add(']');
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2873,9 +2869,9 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2885,7 +2881,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2915,7 +2911,7 @@ namespace Greatbone.Core
                         level--; // exit
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2925,7 +2921,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2950,7 +2946,7 @@ namespace Greatbone.Core
                         level--; // exit
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;
@@ -2960,7 +2956,7 @@ namespace Greatbone.Core
         {
             switch (putting)
             {
-                case JS:
+                case PUT_JS:
                     if (counts[level]++ > 0) Add(',');
                     if (name != null)
                     {
@@ -2986,7 +2982,7 @@ namespace Greatbone.Core
                         level--; // exit
                     }
                     break;
-                case UL:
+                case PUT_UL:
                     break;
             }
             return this;

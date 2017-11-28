@@ -957,6 +957,10 @@ input[type='search'] { box-sizing: border-box; }
     align-items: stretch;
 }
 
+.round {
+    border-radius: 50%;
+}
+
 .input-group-label, .input-group-field, .input-group-button, .input-group-button a,
 .input-group-button input,
 .input-group-button button,
@@ -983,10 +987,6 @@ input[type='search'] { box-sizing: border-box; }
     font-size: 1.5rem;
     font-weight: bold;
 }
-
-.input-group-label:first-child { border-radius: 50%; }
-
-.input-group-label:last-child { border-radius: 50%; }
 
 .input-group-field {
     -ms-flex: 1 1 0px;

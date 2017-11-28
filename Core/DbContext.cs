@@ -331,7 +331,7 @@ namespace Greatbone.Core
 
         public D[] ToArray<D>(short proj = 0x00ff) where D : IData, new()
         {
-            List<D> coll = new List<D>(32);
+            List<D> coll = null;
             while (Next())
             {
                 D obj = new D();
@@ -343,9 +343,13 @@ namespace Greatbone.Core
                     sharded.Shard = service.Shard;
                 }
 
+                if (coll == null)
+                {
+                    coll = new List<D>(32);
+                }
                 coll.Add(obj);
             }
-            return coll.ToArray();
+            return coll?.ToArray();
         }
 
         public List<D> ToList<D>(short proj = 0x00ff) where D : IData, new()

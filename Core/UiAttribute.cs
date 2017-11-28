@@ -25,6 +25,6 @@ namespace Greatbone.Core
         /// <summary>
         /// A grouping number that refers to a particular functionality.
         /// </summary>
-        public short Feature { get; set; }
+        public sbyte Tag { get; set; }
     }
 }
