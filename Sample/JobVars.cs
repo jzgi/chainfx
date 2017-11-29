@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string wx = ac[-1];
+            string wx = ac[this];
             var prin = (User) ac.Principal;
             ac.GivePage(200, m =>
             {
@@ -31,7 +31,7 @@ namespace Greatbone.Sample
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
                         h.FIELD_("地址").T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
-                        h.TAIL(tag: -1);
+                        h.TAIL();
                     });
             });
         }
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("修改", Tag = -1), Trigger(ButtonShow)]
+        [Ui("修改", Func = -1), Trigger(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[this];
@@ -101,12 +101,12 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Tag = -1), Trigger(ButtonShow, 1)]
+        [Ui("设密码", Func = -1), Trigger(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
             string wx = ac[this];
-            string credential = null;
+            string credential;
             string password = null;
             if (ac.GET)
             {
@@ -191,7 +191,7 @@ namespace Greatbone.Sample
                             h.FIELD(o.oprname, "姓名", box: 6).FIELD(o.oprtel, "电话", box: 6);
                             h.FIELD(o.oprwx, "微信");
                             h._FIELDSET();
-                            h.TAIL(tag: -1);
+                            h.TAIL(func: -1);
                         }
                     });
                 });
@@ -326,7 +326,7 @@ namespace Greatbone.Sample
             ac.Give(200); // ok
         }
 
-        [Ui("营业状态", Tag = -1), Trigger(ButtonShow, 1), Allow(OPRMEM)]
+        [Ui("营业状态", Func = -1), Trigger(ButtonShow, 1), Allow(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             string shopid = ac[this];
@@ -355,7 +355,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("客服", Tag = -1), Trigger(ButtonShow, 1)]
+        [Ui("客服", Func = -1), Trigger(ButtonShow, 1)]
         public void contact(ActionContext ac)
         {
             string shopid = ac[this];

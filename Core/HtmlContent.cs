@@ -1174,10 +1174,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TAIL(string flag = null, bool? on = null, sbyte tag = 0)
+        public HtmlContent TAIL(string flag = null, bool? on = null, short func = 0)
         {
             TAIL_(flag, on);
-            _TAIL(tag);
+            _TAIL(func);
             return this;
         }
 
@@ -1198,14 +1198,24 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _TAIL(sbyte tag = 0)
+        public HtmlContent _TAIL(short func = 0)
         {
-            Work work = model == null ? actionCtx.Work : actionCtx.Work.VarWork;
-            if (work != null)
+            if (model == null)
             {
+                var work = actionCtx.Work;
                 Add("<div style=\"margin-left: auto\">");
-                Triggers(work, tag, model);
+                Triggers(work, (short) -ordinal, null); // negative orderinal as func
                 Add("</div>");
+            }
+            else
+            {
+                Work work = actionCtx.Work.VarWork;
+                if (work != null)
+                {
+                    Add("<div style=\"margin-left: auto\">");
+                    Triggers(work, func, model);
+                    Add("</div>");
+                }
             }
             Add("</div>");
             return this;
@@ -1222,7 +1232,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Triggers(Work work, sbyte tag, IData obj)
+        void Triggers(Work work, short func, IData obj)
         {
             var ais = work.Triggers;
             if (ais == null)
@@ -1232,8 +1242,8 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 var ai = ais[i];
-                var feat = ai.Ui.Tag;
-                if (feat != tag && (feat != 0 || tag < 0))
+                var afunc = ai.Ui.Func;
+                if (afunc != func && (afunc != 0 || func < 0))
                 {
                     continue;
                 }
