@@ -192,7 +192,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         m.FIELD(o.name, "名称", box: 6).TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6);
                         m.TEXTAREA(nameof(o.descr), o.descr, "描述", max: 30, required: true);
-                        m.TEXT(nameof(o.mains), o.mains, "主料", required: true);
+                        m.TEXT(nameof(o.content), o.content, "主料", required: true);
                         m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6).NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6);
                         m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6).NUMBER(nameof(o.max), o.max, "数量", box: 6);
                         m.TEXT(nameof(o.opts), o.opts, label: "要求", tip: "用空格分隔");

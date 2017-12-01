@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-11-18 00:42:13
+Date: 2017-11-29 11:29:37
 */
 
 
@@ -23,9 +23,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 3
+ START 10
  CACHE 1;
-SELECT setval('"public"."orders_id_seq"', 3, true);
+SELECT setval('"public"."orders_id_seq"', 10, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -47,7 +47,7 @@ CREATE TABLE "public"."details" (
 "shopid" varchar(4) COLLATE "default",
 "name" varchar(10) COLLATE "default",
 "idx" int2,
-"icon" bytea,
+"img" bytea,
 "descr" varchar(50) COLLATE "default"
 )
 WITH (OIDS=FALSE)
@@ -70,8 +70,7 @@ CREATE TABLE "public"."items" (
 "step" int2,
 "max" int2,
 "opts" varchar(30)[] COLLATE "default",
-"status" int2,
-"idx" int2
+"status" int2
 )
 WITH (OIDS=FALSE)
 
@@ -83,8 +82,8 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
 "id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
-"rev" int2,
-"shopid" varchar(4) COLLATE "default",
+"rev" int2 DEFAULT 0 NOT NULL,
+"shopid" varchar(4) COLLATE "default" NOT NULL,
 "shopname" varchar(10) COLLATE "default",
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
@@ -99,9 +98,9 @@ CREATE TABLE "public"."orders" (
 "total" money,
 "cash" money DEFAULT 0,
 "paid" timestamp(6),
-"preparing" bool,
+"prepare" bool DEFAULT false,
 "aborted" timestamp(6),
-"received" timestamp(6),
+"delivered" timestamp(6),
 "note" varchar(20) COLLATE "default",
 "kick" varchar(40) COLLATE "default",
 "status" int2
@@ -140,8 +139,8 @@ CREATE TABLE "public"."shops" (
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "icon" bytea,
-"schedule" varchar(20) COLLATE "default",
 "marks" varchar(10)[] COLLATE "default",
+"schedule" varchar(20) COLLATE "default",
 "areas" varchar(10)[] COLLATE "default",
 "min" money,
 "notch" money,

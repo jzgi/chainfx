@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("修改", Func = -1), Trigger(ButtonShow)]
+        [Ui("修改", Func = 1), Trigger(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[this];
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Func = -1), Trigger(ButtonShow, 1)]
+        [Ui("设密码", Func = 1), Trigger(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -326,7 +326,7 @@ namespace Greatbone.Sample
             ac.Give(200); // ok
         }
 
-        [Ui("营业状态", Func = -1), Trigger(ButtonShow, 1), Allow(OPRMEM)]
+        [Ui("营业状态", Func = 1), Trigger(ButtonShow, 1), Allow(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             string shopid = ac[this];
@@ -355,7 +355,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("客服", Func = -1), Trigger(ButtonShow, 1)]
+        [Ui("客服", Func = 1), Trigger(ButtonShow, 1)]
         public void contact(ActionContext ac)
         {
             string shopid = ac[this];

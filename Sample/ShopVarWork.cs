@@ -78,7 +78,7 @@ namespace Greatbone.Sample
                     {
                         h.CAPTION(false, o.name);
                         h.ICON((o.name) + "/icon", box: 4);
-                        h.BOX_(0x48).P(o.price, symbol: '¥').P(o.descr, "特色").P(o.mains, "主料")._BOX();
+                        h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主料").P(o.price, symbol: '¥')._BOX();
                         h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.max = 0;

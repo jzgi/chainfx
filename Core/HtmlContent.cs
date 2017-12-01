@@ -939,7 +939,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work = null, sbyte tag = 0, bool refresh = true)
+        public void TOOLBAR(Work work = null, short func = 0, bool refresh = true)
         {
             if (work == null) work = actionCtx.Work;
             if (work.Triggers == null)
@@ -949,7 +949,7 @@ namespace Greatbone.Core
             else
             {
                 TOOLBAR_();
-                Triggers(work, tag, null);
+                Triggers(work, func, null);
             }
             _TOOLBAR(refresh);
         }
@@ -1204,7 +1204,7 @@ namespace Greatbone.Core
             {
                 var work = actionCtx.Work;
                 Add("<div style=\"margin-left: auto\">");
-                Triggers(work, (short) -ordinal, null); // negative orderinal as func
+                Triggers(work, (short) ordinal, null); // negative orderinal as func
                 Add("</div>");
             }
             else
@@ -1243,7 +1243,7 @@ namespace Greatbone.Core
             {
                 var ai = ais[i];
                 var afunc = ai.Ui.Func;
-                if (afunc != func && (afunc != 0 || func < 0))
+                if (afunc != func)
                 {
                     continue;
                 }

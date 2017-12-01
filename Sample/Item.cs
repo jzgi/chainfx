@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         internal string shopid;
         internal string name;
         internal string descr;
-        internal string mains;
+        internal string content;
         internal string unit;
         internal decimal price;
         internal short min;
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
                 i.Get(nameof(name), ref name);
             }
             i.Get(nameof(descr), ref descr);
-            i.Get(nameof(mains), ref mains);
+            i.Get(nameof(content), ref content);
             i.Get(nameof(unit), ref unit);
             i.Get(nameof(price), ref price);
             i.Get(nameof(min), ref min);
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
                 o.Put(nameof(name), name);
             }
             o.Put(nameof(descr), descr);
-            o.Put(nameof(mains), mains);
+            o.Put(nameof(content), content);
             o.Put(nameof(unit), unit);
             o.Put(nameof(price), price);
             o.Put(nameof(min), min);

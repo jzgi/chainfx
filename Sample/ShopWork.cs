@@ -9,22 +9,22 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Shop) obj).id);
+            CreateVar<V, string>(obj => ((Shop)obj).id);
         }
     }
 
     /// <summary>
-    /// A before filter that ensures city & area are resolved and given in the URL.
+    /// A before filter that ensures city is resolved and given in the URL.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class CityAreaAttribute : Attribute, IBefore
+    public class CityAttribute : Attribute, IBefore
     {
         public bool Do(ActionContext ac)
         {
             string city = ac.Query[nameof(city)];
             if (city == null) // absent
             {
-                User prin = (User) ac.Principal;
+                User prin = (User)ac.Principal;
                 if (prin?.city != null) // use those in principal
                 {
                     ac.AddParam(nameof(prin.city), prin.city);
@@ -72,11 +72,10 @@ namespace Greatbone.Sample
         /// <summary>
         /// Returns a home page pertaining to a related city
         /// </summary>
-        [CityArea]
+        [City]
         public void @default(ActionContext ac)
         {
             string city = ac.Query[nameof(city)];
-            string area = ac.Query[nameof(area)];
             if (city.Length == 0)
             {
                 city = "南昌";
@@ -135,7 +134,6 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            string city = ac[typeof(Work)];
             using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id");
@@ -144,7 +142,7 @@ namespace Greatbone.Sample
                 {
                     h.CAPTION_(false).T(o.name).T(" / ").T(o.id)._CAPTION();
                     h.FIELD_("地址", 12).T(o.city)._T(o.addr)._FIELD();
-//                        h.FIELD(o.marks, "特色", box:12);
+                    //                        h.FIELD(o.marks, "特色", box:12);
                     h.FIELD(o.mgrname, "经理");
                     h.TAIL();
                 });
@@ -156,7 +154,7 @@ namespace Greatbone.Sample
         {
             if (ac.GET)
             {
-                var o = new Shop() {city = City.All[0].name};
+                var o = new Shop() { city = City.All[0].name };
                 o.Read(ac.Query);
                 ac.GivePane(200, m =>
                 {
