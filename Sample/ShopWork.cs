@@ -98,7 +98,6 @@ namespace Greatbone.Sample
                             h.P(o.areas, "限送");
                         }
                         h._BOX();
-                        h.FIELD_("特色").T("<a href=\"marks\">").T(o.marks).T("</a>")._FIELD();
                         h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         h.TAIL();
                     });
@@ -164,7 +163,6 @@ namespace Greatbone.Sample
                     m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                     m.TEXT(nameof(o.schedule), o.schedule, "营业");
-                    m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色");
                     m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                     m._FORM();
                 });

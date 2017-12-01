@@ -76,9 +76,11 @@ namespace Greatbone.Sample
 
                     m.BOARDVIEW(items, (h, o) =>
                     {
+                        short qty = 0;
                         h.CAPTION(false, o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主料").P(o.price, symbol: '¥')._BOX();
+                         h.FIELD(o.price, box:4).NUMBER(nameof(qty), qty, min: o.min, max: o.max, step: o.step, box:4).TRIGGER("Add");
                         h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.max = 0;
@@ -113,7 +115,6 @@ namespace Greatbone.Sample
                         m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                         m.TEXT(nameof(o.schedule), o.schedule, "营业");
-                        m.SELECT(nameof(o.marks), o.marks, Mark.All, "特色");
                         m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                         m._FORM();
                     });

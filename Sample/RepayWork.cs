@@ -26,15 +26,15 @@ namespace Greatbone.Sample
 
         public void @default(ActionContext ac)
         {
-            short shopid = ac[1];
+            string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {
                     ac.GiveBoardPage(200, dc.ToArray<Repay>(), (h, o) =>
                     {
-                        h.FIELD(o.id, "单号", box: 0);
-                        h.FIELD(o.total, "总价", box: 0);
+                        h.CAPTION(false, "截至" + o.till);
+                        h.FIELD(o.total, "金额", box:6).FIELD(o.payer, "划款",box:6);
                     }, false, 3);
                 }
                 else

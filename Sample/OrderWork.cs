@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                         var oi = o.items[i];
                         h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(0x45).P(oi.name).P(oi.price)._BOX();
-                        h.BOX_(0x45).P(oi.qty, null, oi.unit)._T(oi.opts).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
+                        h.BOX_(0x45).P(oi.qty, null, oi.unit).BUTTONSHOW("修改", o.id + "/item-" + i)._BOX();
                     }
                     h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                     h.BOX_(5).P(o.total, "总计")._BOX();
@@ -83,7 +83,7 @@ namespace Greatbone.Sample
                 {
                     var o = new Order();
                     dc.Let(out o.id).Let(out o.items).Let(out o.total);
-                    o.AddItem(name, price, qty, unit, opts);
+                    o.AddItem(name, price, qty, unit);
                     o.SetTotal();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
                         city = city ?? prin.city,
                         area = area ?? prin.area,
                         addr = prin.addr,
-                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = opts}},
+                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}},
                     };
                     o.SetTotal();
                     const short proj = -1 ^ Order.ID ^ Order.LATER;
@@ -141,7 +141,7 @@ namespace Greatbone.Sample
                         var oi = o.items[i];
                         h.THUMBNAIL("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                        h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts)._BOX();
+                        h.BOX_(5).P(oi.qty, suffix: oi.unit)._BOX();
                     }
                     h.FIELD_(box: 7).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", box: 5);
@@ -173,7 +173,7 @@ namespace Greatbone.Sample
                         var oi = o.items[i];
                         h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                        h.BOX_(5).P(oi.qty, suffix: oi.unit).P(oi.opts)._BOX();
+                        h.BOX_(5).P(oi.qty, suffix: oi.unit)._BOX();
                     }
                     h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
                     h.BOX_(5).P(o.total, "总计")._BOX();
@@ -219,7 +219,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET status = ").T(Order.PREPARED).T(" WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key);
+                    dc.Sql("UPDATE orders SET status = WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key);
                     dc.Execute(p => p.Set(shopid), false); // non-prepared statement
                 }
             }
@@ -227,57 +227,10 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("派单")]
-    [Allow(OPR)]
-    public class OprGoWork : OrderWork<OprGoVarWork>
-    {
-        public OprGoWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void @default(ActionContext ac, int page)
-        {
-            string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PREPARED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
-                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
-                {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
-                    if (o.name != null)
-                    {
-                        h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
-                    }
-                    h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
-                    for (int i = 0; i < o.items.Length; i++)
-                    {
-                        var item = o.items[i];
-                        h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
-                    }
-                    h.FIELD(o.total, "总价");
-                    h.TAIL();
-                }, false, 3);
-            }
-        }
-
-        [Ui("查询")]
-        public void send(ActionContext ac)
-        {
-            long[] key = ac.Query[nameof(key)];
-
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
-                dc.Execute();
-            }
-            ac.GiveRedirect();
-        }
-    }
-
     [Ui("旧单"), Allow(OPR)]
-    public class OprPastWork : OrderWork<OprPastVarWork>
+    public class OprOldWork : OrderWork<OprOldVarWork>
     {
-        public OprPastWork(WorkContext wc) : base(wc)
+        public OprOldWork(WorkContext wc) : base(wc)
         {
         }
 
@@ -331,7 +284,7 @@ namespace Greatbone.Sample
         {
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status >  " + Order.PREPARED + " AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE status >   AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();

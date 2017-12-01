@@ -10,21 +10,18 @@ namespace Greatbone.Sample
     {
         public static readonly Order Empty = new Order();
 
-        public const short
-            ID = 1,
-            LATER = 4;
+        public const short ID = 1, LATER = 4;
 
         // status
-        public const short CREATED = 0, PAID = 1, PREPARED = 2, ABORTED = 3, DELIVERED = 4;
+        public const short CART = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CREATED, "购物车"},
+            {CART, "购物车"},
             {PAID, "已付款"},
-            {PREPARED, "已备货"},
             {ABORTED, "已撤单"},
-            {DELIVERED, "已送达"}
+            {FINISHED, "已完成"}
         };
 
 
@@ -123,20 +120,20 @@ namespace Greatbone.Sample
             return null;
         }
 
-        public void AddItem(string name, decimal price, short qty, string unit, string[] customs)
+        public void AddItem(string name, decimal price, short qty, string unit)
         {
             if (items == null)
             {
-                items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = customs}};
+                items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}};
             }
-            int idx = items.FindIndex(o => o.name.Equals(name) && o.opts.SameAs(customs));
+            int idx = items.FindIndex(o => o.name.Equals(name));
             if (idx != -1)
             {
                 items[idx].qty += qty;
             }
             else
             {
-                items = items.AddOf(new OrderItem() {name = name, qty = qty, unit = unit, price = price, opts = customs});
+                items = items.AddOf(new OrderItem() {name = name, price = price, qty = qty, unit = unit});
             }
         }
 
@@ -157,8 +154,9 @@ namespace Greatbone.Sample
             }
         }
 
-        public void UpdItem(int idx, short qty, string[] opts)
+        public void UpdItem(string name, short qty)
         {
+            int idx = items.FindIndex(o => o.name.Equals(name));
             if (qty <= 0)
             {
                 items = items.RemovedOf(idx);
@@ -166,7 +164,6 @@ namespace Greatbone.Sample
             else
             {
                 items[idx].qty = qty;
-                items[idx].opts = opts;
             }
         }
     }
@@ -177,7 +174,6 @@ namespace Greatbone.Sample
         internal decimal price;
         internal short qty;
         internal string unit;
-        internal string[] opts;
 
         public decimal Subtotal => price * qty;
 
@@ -187,7 +183,6 @@ namespace Greatbone.Sample
             i.Get(nameof(price), ref price);
             i.Get(nameof(qty), ref qty);
             i.Get(nameof(unit), ref unit);
-            i.Get(nameof(opts), ref opts);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -196,7 +191,6 @@ namespace Greatbone.Sample
             o.Put(nameof(price), price);
             o.Put(nameof(qty), qty);
             o.Put(nameof(unit), unit);
-            o.Put(nameof(opts), opts);
         }
 
         public void AddQty(short qty)

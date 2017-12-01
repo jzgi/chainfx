@@ -33,7 +33,6 @@ namespace Greatbone.Sample
                     h.BOX_(0x48).P(o.descr, "描述").P(o.content, "主料").P(o.price, "价格")._BOX();
                     h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
                     h.FIELD(o.step, "增减", box: 6).FIELD(o.max, "数量", box: 6);
-                    h.FIELD(o.opts, "要求");
                     h.TAIL();
                 });
             }

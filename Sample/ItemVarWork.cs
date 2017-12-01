@@ -30,14 +30,6 @@ namespace Greatbone.Sample
         protected ItemVarWork(WorkContext wc) : base(wc)
         {
         }
-    }
-
-
-    public class PubItemVarWork : ItemVarWork
-    {
-        public PubItemVarWork(WorkContext wc) : base(wc)
-        {
-        }
 
         public void icon(ActionContext ac)
         {
@@ -49,11 +41,18 @@ namespace Greatbone.Sample
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
-                    else
-                        ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
                 }
                 else ac.Give(404, @public: true, maxage: 60 * 5); // not found
             }
+        }
+    }
+
+
+    public class PubItemVarWork : ItemVarWork
+    {
+        public PubItemVarWork(WorkContext wc) : base(wc)
+        {
         }
 
         [Ui("产品详情"), Trigger(AnchorOpen)]
@@ -81,7 +80,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("购买", "加入购物车"), Trigger(ButtonShow, 1), Itemly('A')]
+        [Ui("加入购物车"), Trigger(ButtonShow, 1), Itemly('A')]
         public async Task Add(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -107,10 +106,6 @@ namespace Greatbone.Sample
                         h.HIDDEN(nameof(price), o.price);
                         h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
                         h._FIELDSET();
-                        if (o.opts != null)
-                        {
-                            h.CHECKBOXGROUP(nameof(opts), null, o.opts, "要求");
-                        }
                         h._FORM();
                     });
                 }
@@ -125,7 +120,6 @@ namespace Greatbone.Sample
             unit = f[nameof(unit)];
             price = f[nameof(price)];
             qty = f[nameof(qty)];
-            opts = f[nameof(opts)];
 
             using (var dc = ac.NewDbContext())
             {
@@ -133,7 +127,7 @@ namespace Greatbone.Sample
                 if (dc.Query1(p => p.Set(shopid).Set(prin.wx)))
                 {
                     var o = dc.ToObject<Order>();
-                    o.AddItem(name, price, qty, unit, opts);
+                    o.AddItem(name, price, qty, unit);
                     o.SetTotal();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
@@ -154,7 +148,7 @@ namespace Greatbone.Sample
                         city = prin.city,
                         area = prin.area,
                         addr = prin.addr,
-                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit, opts = opts}},
+                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}},
                         min = shop.min,
                         notch = shop.notch,
                         off = shop.off
@@ -195,7 +189,6 @@ namespace Greatbone.Sample
                         m.TEXT(nameof(o.content), o.content, "主料", required: true);
                         m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6).NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6);
                         m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6).NUMBER(nameof(o.max), o.max, "数量", box: 6);
-                        m.TEXT(nameof(o.opts), o.opts, label: "要求", tip: "用空格分隔");
                         m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         m._FORM();
                     });

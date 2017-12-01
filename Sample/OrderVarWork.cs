@@ -119,10 +119,6 @@ namespace Greatbone.Sample
                         h.HIDDEN(nameof(o.price), o.price);
                         h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1);
                         h._FIELDSET();
-                        if (o.opts != null)
-                        {
-                            h.CHECKBOXGROUP(nameof(o.opts), null, o.opts, "要求");
-                        }
                         h._FORM();
                     });
                 }
@@ -137,7 +133,7 @@ namespace Greatbone.Sample
                 dc.Sql("SELECT ").columnlst(Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
                 dc.Query1(p => p.Set(orderid).Set(wx));
                 var o = dc.ToObject<Order>();
-                o.UpdItem(idx, qty, opts);
+                o.UpdItem(o.name, qty);
                 o.SetTotal();
                 dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
             }
@@ -248,35 +244,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprGoVarWork : OrderVarWork
+    public class OprOldVarWork : OrderVarWork
     {
-        public OprGoVarWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        [Ui("送完"), Trigger(ButtonConfirm)]
-        public async Task got(ActionContext ac)
-        {
-            string shopid = ac[-2];
-            int orderid = ac[this];
-            string wx;
-            decimal total;
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Query1("UPDATE orders SET delivered = localtimestamp, status = " + DELIVERED + " WHERE id = @1 AND shopid = @2 AND status = " + PREPARED + " RETURNING wx, total", p => p.Set(orderid).Set(shopid));
-                dc.Let(out wx).Let(out total);
-            }
-            if (wx != null)
-            {
-                await WeiXinUtility.PostSendAsync(wx, "【通知】您的订单已收货（单号" + orderid + "，金额¥" + total + ")");
-            }
-            ac.GiveRedirect("../");
-        }
-    }
-
-    public class OprPastVarWork : OrderVarWork
-    {
-        public OprPastVarWork(WorkContext wc) : base(wc)
+        public OprOldVarWork(WorkContext wc) : base(wc)
         {
         }
 

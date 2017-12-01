@@ -86,7 +86,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                const short proj = -1 ^ CREDENTIAL ^ LATER;
+                const short proj = -1 ^ CREDENTIAL ^ User.LATER;
                 var o = await ac.ReadObjectAsync(obj: prin);
                 o.wx = wx;
                 using (var dc = ac.NewDbContext())
@@ -150,13 +150,13 @@ namespace Greatbone.Sample
         {
             Create<OprNewWork>("new");
 
-            Create<OprGoWork>("go");
-
-            Create<OprPastWork>("past");
+            Create<OprOldWork>("old");
 
             Create<OprItemWork>("item");
 
             Create<OprRepayWork>("repay");
+            
+            Create<OprCashWork>("cash");
         }
 
         public void @default(ActionContext ac)
