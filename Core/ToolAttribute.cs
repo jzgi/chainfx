@@ -3,24 +3,21 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To specify a single UI element or a combination of multiple UI elements that work in a particular scheme.
+    /// To specify a user interface tool(set) that works in a particular pattern.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class UiToolAttribute : Attribute
+    public class ToolAttribute : Attribute
     {
-        readonly UiMode mode;
-
         readonly int element; // ui element
 
         readonly int flow; // ui flow
 
         readonly sbyte size;
 
-        public UiToolAttribute(UiMode mode, sbyte size = 2)
+        public ToolAttribute(Modal modal, sbyte size = 2)
         {
-            this.mode = mode;
-            this.element = (int) mode & 0xff00;
-            this.flow = (int) mode & 0x00ff;
+            this.element = (int) modal & 0xff00;
+            this.flow = (int) modal & 0x00ff;
             this.size = size;
         }
 

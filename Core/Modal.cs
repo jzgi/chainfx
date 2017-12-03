@@ -1,6 +1,6 @@
 namespace Greatbone.Core
 {
-    public enum UiMode
+    public enum Modal
     {
         Anchor = 0x0100,
 

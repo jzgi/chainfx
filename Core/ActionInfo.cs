@@ -20,8 +20,8 @@ namespace Greatbone.Core
 
         readonly int limit;
 
-        // ui widget annotation
-        internal readonly UiToolAttribute tool;
+        // ui tool annotation
+        internal readonly ToolAttribute tool;
 
         // state check annotation
         internal readonly StateAttribute state;
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             this.subscript = subscript;
             this.limit = limit;
 
-            this.tool = (UiToolAttribute) mi.GetCustomAttribute(typeof(UiToolAttribute), false);
+            this.tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), false);
             this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), false);
 
             // create a doer delegate
@@ -83,13 +83,13 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasWidget => tool != null;
-
         public bool HasSubscript => subscript;
 
-        public int Limit => limit;
+        public bool HasTool => tool != null;
 
-        public UiToolAttribute Tool => tool;
+        public ToolAttribute Tool => tool;
+
+        public int Limit => limit;
 
         public bool CheckState(object obj)
         {

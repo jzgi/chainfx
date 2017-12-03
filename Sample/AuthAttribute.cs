@@ -2,13 +2,13 @@
 
 namespace Greatbone.Sample
 {
-    public class AllowAttribute : AuthorizeAttribute
+    public class AuthAttribute : AuthorizeAttribute
     {
         readonly short opr;
 
         readonly bool adm;
 
-        public AllowAttribute(short opr = 0, bool adm = false)
+        public AuthAttribute(short opr = 0, bool adm = false)
         {
             this.opr = opr;
             this.adm = adm;

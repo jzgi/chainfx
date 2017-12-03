@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -38,7 +38,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建"), UiTool(ButtonShow)]
+        [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除"), UiTool(ButtonConfirm)]
+        [Ui("删除"), Tool(ButtonConfirm)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];

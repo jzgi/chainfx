@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.Shop;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
 {
-    [Ui("常规"), Allow]
+    [Ui("常规"), Auth]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkContext wc) : base(wc)
@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("刷新"), UiTool(ButtonOpen)]
+        [Ui("刷新"), Tool(ButtonOpen)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("修改", Group = 1), UiTool(ButtonShow)]
+        [Ui("修改", Group = 1), Tool(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[this];
@@ -98,7 +98,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Group = 1), UiTool(ButtonShow, 1)]
+        [Ui("设密码", Group = 1), Tool(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -140,7 +140,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("常规"), Allow(OPR)]
+    [Ui("常规"), Auth(OPR)]
     public class OprVarWork : Work
     {
         public OprVarWork(WorkContext wc) : base(wc)
@@ -214,7 +214,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("操作授权"), UiTool(ButtonOpen), Allow(OPRMGR)]
+        [Ui("操作授权"), Tool(ButtonOpen), Auth(OPRMGR)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -269,7 +269,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("设置"), UiTool(ButtonShow)]
+        [Ui("设置"), Tool(ButtonShow)]
         public async Task config(ActionContext ac)
         {
             string shopid = ac[this];
@@ -310,7 +310,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("功能照"), UiTool(ButtonCrop, Ordinals = 4)]
+        [Ui("功能照"), Tool(ButtonCrop, Ordinals = 4)]
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
@@ -338,7 +338,7 @@ namespace Greatbone.Sample
             ac.Give(200); // ok
         }
 
-        [Ui("营业状态", Group = 1), UiTool(ButtonShow, 1), Allow(OPRMEM)]
+        [Ui("营业状态", Group = 1), Tool(ButtonShow, 1), Auth(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             string shopid = ac[this];
@@ -367,7 +367,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("客服", Group = 1), UiTool(ButtonShow, 1)]
+        [Ui("客服", Group = 1), Tool(ButtonShow, 1)]
         public void contact(ActionContext ac)
         {
             string shopid = ac[this];
@@ -406,7 +406,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("调整", Group = 2), UiTool(ButtonShow, 1), Allow(OPRMEM)]
+        [Ui("调整", Group = 2), Tool(ButtonShow, 1), Auth(OPRMEM)]
         public async Task stock(ActionContext ac)
         {
             string shopid = ac[this];

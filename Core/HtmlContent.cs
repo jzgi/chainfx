@@ -1230,9 +1230,9 @@ namespace Greatbone.Core
 
         void Trigger(ActionInfo ai, IData obj)
         {
-            var widget = ai.Tool;
+            var tool = ai.Tool;
             bool ok = ai.CheckState(obj);
-            if (widget.IsAnchor)
+            if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");
                 Add(ai == actionCtx.Doer ? " hollow" : " clear");
@@ -1243,7 +1243,7 @@ namespace Greatbone.Core
                     Add('/');
                 }
                 Add(ai.RPath);
-                if (ai == actionCtx.Doer && widget.HasPrompt)
+                if (ai == actionCtx.Doer && tool.HasPrompt)
                 {
                     Add(actionCtx.QueryString);
                 }
@@ -1253,7 +1253,7 @@ namespace Greatbone.Core
                     Add(" disabled onclick=\"return false;\"");
                 }
             }
-            else if (widget.IsButton)
+            else if (tool.IsButton)
             {
                 Add("<button class=\"button primary");
                 if (!ai.IsCapitalized) Add(" hollow");
@@ -1272,38 +1272,38 @@ namespace Greatbone.Core
                     Add(" disabled");
                 }
             }
-            if (widget.HasConfirm)
+            if (tool.HasConfirm)
             {
                 Add(" onclick=\"return confirm('");
                 Add(ai.Tip ?? ai.Label);
                 Add("?');\"");
             }
-            else if (widget.HasPrompt)
+            else if (tool.HasPrompt)
             {
-                Dialog(2, widget.Size, ai.Tip);
+                Dialog(2, tool.Size, ai.Tip);
             }
-            else if (widget.HasShow)
+            else if (tool.HasShow)
             {
-                Dialog(4, widget.Size, ai.Tip);
+                Dialog(4, tool.Size, ai.Tip);
             }
-            else if (widget.HasOpen)
+            else if (tool.HasOpen)
             {
-                Dialog(8, widget.Size, ai.Tip);
+                Dialog(8, tool.Size, ai.Tip);
             }
-            else if (widget.HasScript)
+            else if (tool.HasScript)
             {
                 Add(" onclick=\"return ");
                 Add(ai.Lower);
                 Add("(this) || false;\"");
             }
-            else if (widget.HasCrop)
+            else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add(widget.Ordinals);
+                Add(tool.Ordinals);
                 Add(',');
-                Add(widget.Size);
+                Add(tool.Size);
                 Add(",");
-                Add(widget.Circle);
+                Add(tool.Circle);
                 Add(",'");
                 Add(ai.Tip);
                 Add("');\"");
@@ -1324,11 +1324,11 @@ namespace Greatbone.Core
             {
                 Add(ai.Label);
             }
-            if (widget.IsAnchor)
+            if (tool.IsAnchor)
             {
                 Add("</a>");
             }
-            else if (widget.IsButton)
+            else if (tool.IsButton)
             {
                 Add("</button>");
             }

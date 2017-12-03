@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车"), UiTool(ButtonConfirm)]
+        [Ui("清空购物车"), Tool(ButtonConfirm)]
         public void clear(ActionContext ac)
         {
             string wx = ac[-1];
@@ -149,14 +149,14 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("新单"), Allow(OPRMEM)]
+    [Ui("新单"), Auth(OPRMEM)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         public OprNewWork(WorkContext wc) : base(wc)
         {
         }
 
-        [Ui("分区..."), UiTool(AnchorPrompt)]
+        [Ui("分区..."), Tool(AnchorPrompt)]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
@@ -199,7 +199,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货"), UiTool(ButtonConfirm)]
+        [Ui("备货"), Tool(ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -226,7 +226,7 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
 
-        [Ui("备完"), UiTool(ButtonConfirm)]
+        [Ui("备完"), Tool(ButtonConfirm)]
         public async Task ready(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -244,7 +244,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("旧单"), Allow(OPR)]
+    [Ui("旧单"), Auth(OPR)]
     public class OprOldWork : OrderWork<OprOldVarWork>
     {
         public OprOldWork(WorkContext wc) : base(wc)
@@ -290,7 +290,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("客服")]
-    [Allow(adm: true)]
+    [Auth(adm: true)]
     public class AdmKickWork : OrderWork<AdmKickVarWork>
     {
         public AdmKickWork(WorkContext wc) : base(wc)

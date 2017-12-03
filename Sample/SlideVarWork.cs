@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
-    [Allow]
+    [Auth]
     public abstract class SlideVarWork : Work
     {
         protected SlideVarWork(WorkContext wc) : base(wc)
@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("回复"), UiTool(ButtonShow)]
+        [Ui("回复"), Tool(ButtonShow)]
         public async Task reply(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];

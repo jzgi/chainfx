@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui(" 钱账"), Allow(OPRMGR)]
+    [Ui(" 钱账"), Auth(OPRMGR)]
     public class OprCashWork : CashWork
     {
         public OprCashWork(WorkContext wc) : base(wc)
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("登记"), UiTool(ButtonShow)]
+        [Ui("登记"), Tool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("月报"), UiTool(ButtonOpen)]
+        [Ui("月报"), Tool(ButtonOpen)]
         public void monthly(ActionContext ac)
         {
             string shopid = ac[-1];

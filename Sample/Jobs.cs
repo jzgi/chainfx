@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("常规"), Allow(adm: true)]
+    [Ui("常规"), Auth(adm: true)]
     public class AdmWork : Work
     {
         public AdmWork(WorkContext wc) : base(wc)
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清除"), UiTool(UiMode.ButtonOpen, 2)]
+        [Ui("清除"), Tool(Modal.ButtonOpen, 2)]
         public void clean(ActionContext ac)
         {
             string shopid = ac[1];

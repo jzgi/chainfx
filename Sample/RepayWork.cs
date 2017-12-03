@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.Repay;
 
 namespace Greatbone.Sample
@@ -17,7 +17,7 @@ namespace Greatbone.Sample
     }
 
     [Ui("结款")]
-    [Allow(User.OPRMGR)]
+    [Auth(User.OPRMGR)]
     public class OprRepayWork : RepayWork<OprRepayVarWork>
     {
         public OprRepayWork(WorkContext wc) : base(wc)
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("列新结"), UiTool(Anchor)]
+        [Ui("列新结"), Tool(Anchor)]
         public void @default(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("列已转"), UiTool(Anchor)]
+        [Ui("列已转"), Tool(Anchor)]
         public void old(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("结算", "结算各网点已完成的订单"), UiTool(ButtonShow)]
+        [Ui("结算", "结算各网点已完成的订单"), Tool(ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
             DateTime fro; // till/before date
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
             internal decimal cash;
         }
 
-        [Ui("转款", "按照结算单转款给网点"), UiTool(ButtonConfirm)]
+        [Ui("转款", "按照结算单转款给网点"), Tool(ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
             List<Transfer> lst = new List<Transfer>(16);

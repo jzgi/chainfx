@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
     }
 
     // we are forced to put check here because iframe does not have weixin browsing flags
-    [Allow]
+    [Auth]
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
@@ -148,7 +148,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建"), UiTool(ButtonShow)]
+        [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)

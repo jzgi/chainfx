@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
@@ -138,7 +138,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("付款"), UiTool(ButtonScript), Orderly('A')]
+        [Ui("付款"), Tool(ButtonScript), Orderly('A')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];
@@ -170,7 +170,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("建议"), UiTool(ButtonShow)]
+        [Ui("建议"), Tool(ButtonShow)]
         public async Task kick(ActionContext ac)
         {
             int orderid = ac[this];
@@ -206,7 +206,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("撤单"), UiTool(ButtonShow)]
+        [Ui("撤单"), Tool(ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             int orderid = ac[this];
@@ -248,7 +248,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("退款核查", "实时核查退款到账情况"), UiTool(AnchorOpen)]
+        [Ui("退款核查", "实时核查退款到账情况"), Tool(AnchorOpen)]
         public async Task refundq(ActionContext ac)
         {
             int orderid = ac[this];

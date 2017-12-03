@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.UiMode;
+using static Greatbone.Core.Modal;
 
 namespace Greatbone.Sample
 {
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
         }
 
-        [Ui("进入店铺"), UiTool(Anchor)]
+        [Ui("进入店铺"), Tool(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -94,7 +94,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改"), UiTool(ButtonShow)]
+        [Ui("修改"), Tool(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
@@ -134,7 +134,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理"), UiTool(ButtonShow)]
+        [Ui("经理"), Tool(ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];
@@ -179,7 +179,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("形象照"), UiTool(ButtonCrop)]
+        [Ui("形象照"), Tool(ButtonCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];
