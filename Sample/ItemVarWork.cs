@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("产品详情"), Trigger(AnchorOpen)]
+        [Ui("产品详情"), UiTool(AnchorOpen)]
         public void detail(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -80,31 +80,41 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("加入购物车"), Trigger(ButtonShow, 1), Itemly('A')]
+        [Ui("购买"), UiTool(ButtonShow, 1), Itemly('A')]
         public async Task Add(ActionContext ac)
         {
             string shopid = ac[-1];
             string name = ac[this];
+            User prin = (User) ac.Principal;
 
             string unit;
             decimal price;
             short qty;
-            string[] opts;
 
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
+                    var exist = dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND wx = @1 AND shopid = @2 LIMIT 1", p => p.Set(prin.wx).Set(shopid));
+
                     dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2");
                     dc.Query1(p => p.Set(shopid).Set(name));
                     var o = dc.ToObject<Item>();
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("数量");
                         h.HIDDEN(nameof(unit), o.unit);
                         h.HIDDEN(nameof(price), o.price);
-                        h.NUMBER(nameof(qty), o.min, min: o.min, step: o.step);
+                        if (exist == null)
+                        {
+                            h.FIELDSET_("请填写收货地址");
+                            string addr = null;
+                            h.TEXT(nameof(addr), addr, "地址");
+                            h.TEL(nameof(addr), addr, "电话", required:true);
+                            h._FIELDSET();
+                        }
+                        h.FIELDSET_("加入购物车");
+                        h.THUMBNAIL("icon", box: 3).NUMBER(nameof(qty), o.min, min: o.min, step: o.step, box: 9);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -113,7 +123,6 @@ namespace Greatbone.Sample
             }
 
 
-            User prin = (User) ac.Principal;
             var f = await ac.ReadAsync<Form>();
 
             // from the dialog
@@ -146,7 +155,6 @@ namespace Greatbone.Sample
                         name = prin.name,
                         tel = prin.tel,
                         city = prin.city,
-                        area = prin.area,
                         addr = prin.addr,
                         items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}},
                         min = shop.min,
@@ -169,7 +177,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改"), Trigger(ButtonShow)]
+        [Ui("修改"), UiTool(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -209,8 +217,8 @@ namespace Greatbone.Sample
             ac.GivePane(200); // close dialog
         }
 
-        [Ui("图片"), Trigger(ButtonCrop)]
-        public async Task icon(ActionContext ac)
+        [Ui("图片"), UiTool(ButtonCrop)]
+        public new async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];
             string name = ac[this];
@@ -222,10 +230,7 @@ namespace Greatbone.Sample
                     {
                         dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) ac.Give(204); // no content 
-                        else
-                        {
-                            ac.Give(200, new StaticContent(byteas));
-                        }
+                        else ac.Give(200, new StaticContent(byteas));
                     }
                     else ac.Give(404); // not found           
                 }

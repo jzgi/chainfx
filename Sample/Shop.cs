@@ -8,13 +8,11 @@ namespace Greatbone.Sample
 
         public const short ID = 1, LATER = 2;
 
-        public const short OFF = 1, ON = 2;
-
-        public static readonly Map<short, string> Status = new Map<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "停业中"},
-            {OFF, "休息中"},
-            {ON, "营业中"}
+            {0, null},
+            {1, "休息中"},
+            {2, "营业中"}
         };
 
         internal string id;
@@ -22,7 +20,7 @@ namespace Greatbone.Sample
         internal string city;
         internal string addr;
         internal string schedule;
-        internal string[] areas;
+        internal Area[] areas;
         internal decimal min;
         internal decimal notch;
         internal decimal off;
@@ -32,6 +30,9 @@ namespace Greatbone.Sample
         internal string oprwx;
         internal string oprtel;
         internal string oprname;
+
+        internal Supply[] supplies;
+
         internal short status;
 
         public void Read(IDataInput i, short proj = 0x00ff)
@@ -48,6 +49,7 @@ namespace Greatbone.Sample
             i.Get(nameof(min), ref min);
             i.Get(nameof(notch), ref notch);
             i.Get(nameof(off), ref off);
+            i.Get(nameof(supplies), ref supplies);
             if ((proj & LATER) == LATER)
             {
                 i.Get(nameof(mgrwx), ref mgrwx);
@@ -74,6 +76,7 @@ namespace Greatbone.Sample
             o.Put(nameof(min), min);
             o.Put(nameof(notch), notch);
             o.Put(nameof(off), off);
+            o.Put(nameof(supplies), supplies);
             if ((proj & LATER) == LATER)
             {
                 o.Put(nameof(mgrwx), mgrwx);
@@ -89,36 +92,62 @@ namespace Greatbone.Sample
 
     public struct Area : IData
     {
-        internal string name;
+        internal string id;
 
         internal double x1, y1, x2, y2;
 
-        internal string[] places;
+        internal string[] spots;
 
         internal string wx;
-
-        internal string person;
-
+        internal string name;
         internal string tel;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
-            i.Get(nameof(name), ref name);
+            i.Get(nameof(id), ref id);
             i.Get(nameof(x1), ref x1);
             i.Get(nameof(y1), ref y1);
             i.Get(nameof(x2), ref x2);
             i.Get(nameof(y2), ref y2);
-            i.Get(nameof(places), ref places);
+            i.Get(nameof(spots), ref spots);
+        }
+
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        {
+            o.Put(nameof(id), id);
+            o.Put(nameof(x1), x1);
+            o.Put(nameof(y1), y1);
+            o.Put(nameof(x2), x2);
+            o.Put(nameof(y2), y2);
+            o.Put(nameof(spots), spots);
+        }
+
+        public override string ToString()
+        {
+            return id;
+        }
+    }
+
+    public struct Supply : IData
+    {
+        internal string name;
+
+        internal short qty;
+
+        internal string unit;
+
+        public void Read(IDataInput i, short proj = 0x00ff)
+        {
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(qty), ref qty);
+            i.Get(nameof(unit), ref unit);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
-            o.Put(nameof(x1), x1);
-            o.Put(nameof(y1), y1);
-            o.Put(nameof(x2), x2);
-            o.Put(nameof(y2), y2);
-            o.Put(nameof(places), places);
+            o.Put(nameof(qty), qty);
+            o.Put(nameof(unit), unit);
         }
 
         public override string ToString()

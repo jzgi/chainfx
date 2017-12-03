@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -30,9 +30,9 @@ namespace Greatbone.Sample
                 dc.Query(p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
+                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货");
-                    h.T(o.name)._T(o.city)._T(o.area)._T(o.addr);
+                    h.T(o.name)._T(o.city)._T(o.addr);
                     h.BUTTONSHOW("填写地址", o.id + "/addr", 1, "收货地址");
                     h._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("清空购物车"), Trigger(ButtonConfirm)]
+        [Ui("清空购物车"), UiTool(ButtonConfirm)]
         public void clear(ActionContext ac)
         {
             string wx = ac[-1];
@@ -99,7 +99,6 @@ namespace Greatbone.Sample
                         name = prin.name,
                         tel = prin.tel,
                         city = city ?? prin.city,
-                        area = area ?? prin.area,
                         addr = prin.addr,
                         items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}},
                     };
@@ -129,11 +128,10 @@ namespace Greatbone.Sample
                 dc.Query(p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
+                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货");
                     if (o.name != null) h._T(o.name);
                     if (o.city != null) h._T(o.city);
-                    if (o.area != null) h._T(o.area);
                     if (o.addr != null) h._T(o.addr);
                     h._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
@@ -158,16 +156,35 @@ namespace Greatbone.Sample
         {
         }
 
+        [Ui("分区..."), UiTool(AnchorPrompt)]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
+            bool inner = ac.Query[nameof(inner)];
+            if (inner)
+            {
+                ac.GivePane(200, m =>
+                {
+                    string filter = "abc";
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
+                        dc.Let(out Area[] areas);
+                        m.FORM_();
+                        m.RADIO(nameof(filter), filter, "sdfasdf");
+                        m.RADIOS(nameof(filter), filter, areas);
+                        m._FORM();
+                    }
+                });
+                return;
+            }
             using (var dc = ac.NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY prepare, id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(o.prepare ? "备货中" : null, o.prepare);
-                    h.FIELD_("收货")._T(o.name)._T(o.city)._T(o.area)._T(o.addr)._FIELD();
+                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.FIELD_("收货")._T(o.name)._T(o.city)._T(o.addr)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
@@ -182,7 +199,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("备货"), Trigger(ButtonConfirm)]
+        [Ui("备货"), UiTool(ButtonConfirm)]
         public async Task prepare(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -209,7 +226,7 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
 
-        [Ui("备完"), Trigger(ButtonConfirm)]
+        [Ui("备完"), UiTool(ButtonConfirm)]
         public async Task ready(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -244,7 +261,7 @@ namespace Greatbone.Sample
                 {
                     h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(Order.Statuses[o.status], false);
                     h.FIELD(o.name, "买家", box: 6).FIELD(o.tel, "电话", box: 6);
-                    h.FIELD_("地址").T(o.city)._T(o.area)._T(o.addr)._FIELD();
+                    h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELDSET_("商品");
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -292,7 +309,7 @@ namespace Greatbone.Sample
                     {
                         h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                     }
-                    h.BOX_().T(o.tel)._T(o.area)._T(o.addr)._BOX();
+                    h.BOX_().T(o.tel)._T(o.addr)._BOX();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var item = o.items[i];

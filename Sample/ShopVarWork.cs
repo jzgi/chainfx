@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -46,10 +46,10 @@ namespace Greatbone.Sample
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
         }
 
-        [Ui("进入店铺"), Trigger(Anchor)]
+        [Ui("进入店铺"), UiTool(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -76,11 +76,9 @@ namespace Greatbone.Sample
 
                     m.BOARDVIEW(items, (h, o) =>
                     {
-                        short qty = 0;
                         h.CAPTION(false, o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主料").P(o.price, symbol: '¥')._BOX();
-                         h.FIELD(o.price, box:4).NUMBER(nameof(qty), qty, min: o.min, max: o.max, step: o.step, box:4).TRIGGER("Add");
                         h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.max = 0;
@@ -96,7 +94,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("修改"), Trigger(ButtonShow)]
+        [Ui("修改"), UiTool(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
@@ -115,7 +113,6 @@ namespace Greatbone.Sample
                         m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                         m.TEXT(nameof(o.schedule), o.schedule, "营业");
-                        m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                         m._FORM();
                     });
                 }
@@ -137,7 +134,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("经理"), Trigger(ButtonShow)]
+        [Ui("经理"), UiTool(ButtonShow)]
         public async Task mgr(ActionContext ac)
         {
             string shopid = ac[this];
@@ -182,7 +179,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("形象照"), Trigger(ButtonCrop)]
+        [Ui("形象照"), UiTool(ButtonCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     {
         protected ShopWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>(obj => ((Shop)obj).id);
+            CreateVar<V, string>(obj => ((Shop) obj).id);
         }
     }
 
@@ -24,11 +24,10 @@ namespace Greatbone.Sample
             string city = ac.Query[nameof(city)];
             if (city == null) // absent
             {
-                User prin = (User)ac.Principal;
+                User prin = (User) ac.Principal;
                 if (prin?.city != null) // use those in principal
                 {
                     ac.AddParam(nameof(prin.city), prin.city);
-                    ac.AddParam(nameof(prin.area), prin.area);
                     return true;
                 }
 
@@ -37,7 +36,7 @@ namespace Greatbone.Sample
                 HtmlContent h = new HtmlContent(ac, true);
                 // geolocator page
                 h.T("<html><head><script>");
-                h.T("var cities = ").JSON(City.All, -1 ^ City.LOWER).T(";");
+//                h.T("var cities = ").JSON(City.All).T(";");
                 h.T("var city = cities[0].name;");
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
                 h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
@@ -62,7 +61,8 @@ namespace Greatbone.Sample
         }
     }
 
-    [Allow] // we are forced to put check here because iframe does not have weixin browsing flags 
+    // we are forced to put check here because iframe does not have weixin browsing flags
+    [Allow]
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
@@ -90,12 +90,12 @@ namespace Greatbone.Sample
                     dc.Query(p => p.Set(city));
                     m.BOARDVIEW(dc.ToArray<Shop>(), (h, o) =>
                     {
-                        h.CAPTION_(false).T(o.name)._CAPTION(Shop.Status[o.status], o.status == Shop.ON);
+                        h.CAPTION_(false).T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
                         h.ICON(o.id + "/icon", href: o.id + "/", box: 0x44);
                         h.BOX_(0x48).P(o.addr, "店址").P(o.schedule, "营业");
                         if (o.areas != null)
                         {
-                            h.P(o.areas, "限送");
+//                            h.P(o.areas, "限送");
                         }
                         h._BOX();
                         h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
@@ -148,12 +148,12 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建"), Trigger(ButtonShow)]
+        [Ui("新建"), UiTool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
             {
-                var o = new Shop() { city = City.All[0].name };
+                var o = new Shop() {city = City.All[0].name};
                 o.Read(ac.Query);
                 ac.GivePane(200, m =>
                 {
@@ -163,7 +163,6 @@ namespace Greatbone.Sample
                     m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                     m.TEXT(nameof(o.schedule), o.schedule, "营业");
-                    m.SELECT(nameof(o.areas), o.areas, City.FindCity(o.city)?.Areas, "限送");
                     m._FORM();
                 });
             }

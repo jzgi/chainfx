@@ -5,20 +5,12 @@ namespace Greatbone.Core
     /// <summary>
     /// For dynamic HTML5 content tooled with Zurb Foundation
     /// </summary>
-    public class HtmlContent : DynamicContent, IDataOutput<HtmlContent>
+    public class HtmlContent : DynamicContent
     {
         readonly ActionContext actionCtx;
 
         // counts of each level
         readonly int[] counts = new int[8];
-
-        // current level
-        int level;
-
-        // type of putting
-        sbyte putting;
-
-        const sbyte PUT_JS = 1, PUT_UL = 2;
 
         // used for current level content
         int ordinal;
@@ -75,45 +67,6 @@ namespace Greatbone.Core
                 else if (c == '"')
                 {
                     Add("&quot;");
-                }
-                else
-                {
-                    Add(c);
-                }
-            }
-        }
-
-        void AddJsonEsc(string v)
-        {
-            if (v == null) return;
-
-            for (int i = 0; i < v.Length; i++)
-            {
-                char c = v[i];
-                if (c == '\"')
-                {
-                    Add('\\');
-                    Add('"');
-                }
-                else if (c == '\\')
-                {
-                    Add('\\');
-                    Add('\\');
-                }
-                else if (c == '\n')
-                {
-                    Add('\\');
-                    Add('n');
-                }
-                else if (c == '\r')
-                {
-                    Add('\\');
-                    Add('r');
-                }
-                else if (c == '\t')
-                {
-                    Add('\\');
-                    Add('t');
                 }
                 else
                 {
@@ -939,17 +892,26 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(Work work = null, short func = 0, bool refresh = true)
+        public void TOOLBAR(short group = 0, bool refresh = true)
         {
-            if (work == null) work = actionCtx.Work;
-            if (work.Triggers == null)
+            var work = actionCtx.Work;
+            var ais = work.Tooled;
+            if (ais == null)
             {
                 TOOLBAR_(work.Label);
             }
             else
             {
                 TOOLBAR_();
-                Triggers(work, func, null);
+                for (int i = 0; i < ais.Length; i++)
+                {
+                    var ai = ais[i];
+                    if (ai.Group != group)
+                    {
+                        continue;
+                    }
+                    Trigger(ais[i], null);
+                }
             }
             _TOOLBAR(refresh);
         }
@@ -1025,7 +987,7 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
             Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
-            ActionInfo[] ais = varwork?.Triggers;
+            ActionInfo[] ais = varwork?.Tooled;
 
             if (head != null)
             {
@@ -1053,7 +1015,7 @@ namespace Greatbone.Core
                     {
                         Add("<td>");
                         Add("<form>");
-                        Triggers(varwork, 0, obj);
+                        Tools(varwork, 0, obj);
                         Add("</form>");
                         Add("</td>");
                     }
@@ -1137,7 +1099,6 @@ namespace Greatbone.Core
             return this;
         }
 
-
         public HtmlContent CAPTION_(bool checkbox)
         {
             Add("<div class=\"cell card-caption small-12\">");
@@ -1174,10 +1135,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TAIL(string flag = null, bool? on = null, short func = 0)
+        public HtmlContent TAIL(string flag = null, bool? on = null, short group = 0)
         {
             TAIL_(flag, on);
-            _TAIL(func);
+            _TAIL(group);
             return this;
         }
 
@@ -1198,13 +1159,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _TAIL(short func = 0)
+        public HtmlContent _TAIL(short group = 0)
         {
             if (model == null)
             {
                 var work = actionCtx.Work;
                 Add("<div style=\"margin-left: auto\">");
-                Triggers(work, (short) ordinal, null); // negative orderinal as func
+                Tools(work, (short) ordinal, null); // negative orderinal as group
                 Add("</div>");
             }
             else
@@ -1213,7 +1174,7 @@ namespace Greatbone.Core
                 if (work != null)
                 {
                     Add("<div style=\"margin-left: auto\">");
-                    Triggers(work, func, model);
+                    Tools(work, group, model);
                     Add("</div>");
                 }
             }
@@ -1232,9 +1193,9 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Triggers(Work work, short func, IData obj)
+        void Tools(Work work, short group, IData obj)
         {
-            var ais = work.Triggers;
+            var ais = work.Tooled;
             if (ais == null)
             {
                 return;
@@ -1242,8 +1203,7 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 var ai = ais[i];
-                var afunc = ai.Ui.Func;
-                if (afunc != func)
+                if (ai.Group != group)
                 {
                     continue;
                 }
@@ -1270,10 +1230,9 @@ namespace Greatbone.Core
 
         void Trigger(ActionInfo ai, IData obj)
         {
-            UiAttribute ui = ai.Ui;
-            TriggerAttribute trig = ai.Trigger;
+            var widget = ai.Tool;
             bool ok = ai.CheckState(obj);
-            if (trig.IsAnchor)
+            if (widget.IsAnchor)
             {
                 Add("<a class=\"button primary");
                 Add(ai == actionCtx.Doer ? " hollow" : " clear");
@@ -1284,16 +1243,20 @@ namespace Greatbone.Core
                     Add('/');
                 }
                 Add(ai.RPath);
+                if (ai == actionCtx.Doer && widget.HasPrompt)
+                {
+                    Add(actionCtx.QueryString);
+                }
                 Add("\"");
                 if (!ok)
                 {
                     Add(" disabled onclick=\"return false;\"");
                 }
             }
-            else if (trig.IsButton)
+            else if (widget.IsButton)
             {
                 Add("<button class=\"button primary");
-                if (!ai.IsCap) Add(" hollow");
+                if (!ai.IsCapitalized) Add(" hollow");
                 Add("\" name=\"");
                 Add(ai.Key);
                 Add("\" formaction=\"");
@@ -1309,50 +1272,63 @@ namespace Greatbone.Core
                     Add(" disabled");
                 }
             }
-            if (trig.HasConfirm)
+            if (widget.HasConfirm)
             {
                 Add(" onclick=\"return confirm('");
-                Add(ui.Tip ?? ui.Label);
+                Add(ai.Tip ?? ai.Label);
                 Add("?');\"");
             }
-            else if (trig.HasPrompt)
+            else if (widget.HasPrompt)
             {
-                Dialog(2, trig.Size, ui.Tip);
+                Dialog(2, widget.Size, ai.Tip);
             }
-            else if (trig.HasShow)
+            else if (widget.HasShow)
             {
-                Dialog(4, trig.Size, ui.Tip);
+                Dialog(4, widget.Size, ai.Tip);
             }
-            else if (trig.HasOpen)
+            else if (widget.HasOpen)
             {
-                Dialog(8, trig.Size, ui.Tip);
+                Dialog(8, widget.Size, ai.Tip);
             }
-            else if (trig.HasScript)
+            else if (widget.HasScript)
             {
                 Add(" onclick=\"return ");
                 Add(ai.Lower);
                 Add("(this) || false;\"");
             }
-            else if (trig.HasCrop)
+            else if (widget.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add(trig.Ordinals);
+                Add(widget.Ordinals);
                 Add(',');
-                Add(trig.Size);
+                Add(widget.Size);
                 Add(",");
-                Add(trig.Circle);
+                Add(widget.Circle);
                 Add(",'");
-                Add(ui.Tip);
+                Add(ai.Tip);
                 Add("');\"");
             }
             Add(">");
-            Add(ai.Label);
-
-            if (trig.IsAnchor)
+            if (ai.IsEllipsized)
+            {
+                var f = actionCtx.Query;
+                if (f.Count > 0)
+                {
+                    string filter = f[0];
+                    Add(filter);
+                    Add("...");
+                }
+                else Add(ai.Label);
+            }
+            else
+            {
+                Add(ai.Label);
+            }
+            if (widget.IsAnchor)
             {
                 Add("</a>");
             }
-            else if (trig.IsButton)
+            else if (widget.IsButton)
             {
                 Add("</button>");
             }
@@ -1983,15 +1959,20 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIO(string name, string value, bool check, string label)
+        public HtmlContent RADIO(string name, string v, string label = null, bool @checked = false)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
-            Add(check ? "\" checked>" : "\">");
-            Add(label);
+            Add(v);
+            Add("\"");
+            if (@checked)
+            {
+                Add(" checked");
+            }
+            Add(">");
+            Add(label ?? v);
             Add("</label>");
             return this;
         }
@@ -2104,6 +2085,42 @@ namespace Greatbone.Core
                 //                Add("</label>");
             });
 
+            Add("</fieldset>");
+            return this;
+        }
+
+        public HtmlContent RADIOS<O>(string name, string v, O[] opt = null, string label = null, bool required = false)
+        {
+            Add("<fieldset>");
+
+            Add("<legend>");
+            AddLabel(label, name);
+            Add("</legend>");
+
+            if (opt != null)
+            {
+                for (int i = 0; i < opt.Length; i++)
+                {
+                    var o = opt[i];
+                    Add("<label>");
+                    Add("<input type=\"radio\" name=\"");
+                    Add(name);
+
+                    Add("\" id=\"");
+                    Add(name);
+                    Add(o.ToString());
+                    Add("\"");
+
+                    Add("\" value=\"");
+                    Add(o.ToString());
+                    Add("\"");
+
+                    if (o.ToString().Equals(v)) Add(" checked");
+                    if (required) Add(" required");
+                    Add(">");
+                    Add("</label>");
+                }
+            }
             Add("</fieldset>");
             return this;
         }
@@ -2490,511 +2507,6 @@ namespace Greatbone.Core
         public HtmlContent METER()
         {
             T("</tbody>");
-            return this;
-        }
-
-
-        //
-        // JSON 
-        //
-
-        public HtmlContent JSON(IData obj, short proj = 0x00ff)
-        {
-            putting = PUT_JS;
-            Put(null, obj, proj);
-            return this;
-        }
-
-        public HtmlContent JSON<D>(D[] arr, short proj = 0x00ff) where D : IData
-        {
-            putting = PUT_JS;
-            Put(null, arr, proj);
-            return this;
-        }
-
-        public HtmlContent JSON<K, D>(Map<K, D> map, short proj = 0x00ff) where D : IData
-        {
-            putting = PUT_JS;
-            Put(null, map, proj);
-            return this;
-        }
-
-        //
-        // IDataOutput
-        //
-
-        public HtmlContent PutNull(string name)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, JNumber v)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, IDataInput v)
-        {
-            return this;
-        }
-
-        public HtmlContent Put(string name, bool v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add(v ? "true" : "false");
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, short v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add(v);
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, int v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add(v);
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, long v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add(v);
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, double v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add(v);
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, decimal v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add(v);
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, DateTime v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    Add('"');
-                    Add(v);
-                    Add('"');
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, string v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        Add('"');
-                        AddJsonEsc(v);
-                        Add('"');
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, ArraySegment<byte> v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, short[] v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        Add('[');
-                        for (int i = 0; i < v.Length; i++)
-                        {
-                            if (i > 0) Add(',');
-                            Add(v[i]);
-                        }
-                        Add(']');
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, int[] v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        Add('[');
-                        for (int i = 0; i < v.Length; i++)
-                        {
-                            if (i > 0) Add(',');
-                            Add(v[i]);
-                        }
-                        Add(']');
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, long[] v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        Add('[');
-                        for (int i = 0; i < v.Length; i++)
-                        {
-                            if (i > 0) Add(',');
-                            Add(v[i]);
-                        }
-                        Add(']');
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, string[] v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        Add('[');
-                        for (int i = 0; i < v.Length; i++)
-                        {
-                            if (i > 0) Add(',');
-                            string str = v[i];
-                            if (str == null)
-                            {
-                                Add("null");
-                            }
-                            else
-                            {
-                                Add('"');
-                                AddJsonEsc(str);
-                                Add('"');
-                            }
-                        }
-                        Add(']');
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, Map<string, string> v)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put(string name, IData v, short proj = 0x00ff)
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        counts[++level] = 0; // enter
-                        Add('{');
-
-                        // put shard property if any
-                        string shard = (v as IShardable)?.Shard;
-                        if (shard != null)
-                        {
-                            Put("#", shard);
-                        }
-
-                        v.Write(this, proj);
-                        Add('}');
-                        level--; // exit
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (v == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        counts[++level] = 0; // enter
-                        Add('[');
-                        for (int i = 0; i < v.Length; i++)
-                        {
-                            Put(null, v[i], proj);
-                        }
-                        Add(']');
-                        level--; // exit
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
-            return this;
-        }
-
-        public HtmlContent Put<K, D>(string name, Map<K, D> vs, short proj = 0x00ff) where D : IData
-        {
-            switch (putting)
-            {
-                case PUT_JS:
-                    if (counts[level]++ > 0) Add(',');
-                    if (name != null)
-                    {
-                        Add('"');
-                        Add(name);
-                        Add('"');
-                        Add(':');
-                    }
-                    if (vs == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        counts[++level] = 0; // enter
-                        Add('[');
-                        for (int i = 0; i < vs.Count; i++)
-                        {
-                            var v = vs[i];
-                            Put(null, v, proj);
-                        }
-                        Add(']');
-                        level--; // exit
-                    }
-                    break;
-                case PUT_UL:
-                    break;
-            }
             return this;
         }
     }

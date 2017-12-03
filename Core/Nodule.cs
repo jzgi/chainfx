@@ -10,18 +10,23 @@ namespace Greatbone.Core
         // identifier as appeared in URI
         readonly string name;
 
-        readonly bool cap;
+        // whether captital leading
+        readonly bool capitalized;
+
+        // whether label tailed with ellipsis
+        readonly bool ellipsized;
 
         // name in lowercase
         readonly string lower;
 
         readonly string label;
 
-        // basic visual info
-        internal UiAttribute ui;
+        readonly string tip;
+
+        readonly short group;
 
         // access check
-        internal AuthorizeAttribute authorize;
+        internal readonly AuthorizeAttribute authorize;
 
         // pre- operation
         readonly IBefore before;
@@ -36,7 +41,7 @@ namespace Greatbone.Core
         internal Nodule(string name, ICustomAttributeProvider attrp)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
-            this.cap = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
+            this.capitalized = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
             this.lower = name.ToLower();
 
             // either methodinfo or typeinfo
@@ -47,11 +52,11 @@ namespace Greatbone.Core
 
             // ui 
             var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), false);
-            if (uis.Length > 0)
-            {
-                ui = uis[0];
-                this.label = ui.Label ?? name.ToUpper();
-            }
+            UiAttribute ui = uis.Length > 0 ? uis[0] : null;
+            this.label = ui?.Label ?? name.ToUpper();
+            this.tip = ui?.Tip ?? label;
+            this.group = ui?.Group ?? 0;
+            this.ellipsized = label.EndsWith("...");
 
             // authorize
             var auths = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), false);
@@ -75,11 +80,17 @@ namespace Greatbone.Core
 
         public string Key => name;
 
-        public bool IsCap => cap;
+        public bool IsCapitalized => capitalized;
+
+        public bool IsEllipsized => ellipsized;
 
         public string Lower => lower;
 
-        public UiAttribute Ui => ui;
+        public string Label => label;
+
+        public string Tip => tip;
+
+        public short Group => group;
 
         public AuthorizeAttribute Authorize => authorize;
 
@@ -90,10 +101,6 @@ namespace Greatbone.Core
         public IAfter After => after;
 
         public IAfterAsync AfterAsync => afterAsync;
-
-        public string Label => label;
-
-        public bool HasUi => ui != null;
 
         public bool HasAuthorize => authorize != null;
 

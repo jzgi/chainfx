@@ -23,7 +23,7 @@ namespace Greatbone.Core
         // state-passing
         readonly WorkContext ctx;
 
-        readonly TypeInfo typeinfo;
+        readonly TypeInfo typeInfo;
 
         // declared actions 
         readonly Map<string, ActionInfo> actions;
@@ -31,8 +31,8 @@ namespace Greatbone.Core
         // the default action, can be null
         readonly ActionInfo @default;
 
-        // actions with the trigger attribute
-        readonly ActionInfo[] triggers;
+        // actions with UiToolAttribute
+        readonly ActionInfo[] tooled;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             // gather actions
             actions = new Map<string, ActionInfo>(32);
             Type typ = GetType();
-            typeinfo = typ.GetTypeInfo();
+            typeInfo = typ.GetTypeInfo();
 
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -81,13 +81,13 @@ namespace Greatbone.Core
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
-                if (ai.HasTrigger)
+                if (ai.HasWidget)
                 {
                     if (lst == null) lst = new List<ActionInfo>();
                     lst.Add(ai);
                 }
             }
-            triggers = lst?.ToArray();
+            tooled = lst?.ToArray();
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Greatbone.Core
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        public W Create<W>(string name) where W : Work
+        protected W Create<W>(string name) where W : Work
         {
             if (Level >= MaxNesting)
             {
@@ -136,7 +136,7 @@ namespace Greatbone.Core
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        public W CreateVar<W, K>(Func<IData, K> keyer = null, Func<IData, string> labeller = null) where W : Work where K : IEquatable<K>
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null, Func<IData, string> labeller = null) where W : Work where K : IEquatable<K>
         {
             if (Level >= MaxNesting)
             {
@@ -167,7 +167,7 @@ namespace Greatbone.Core
 
         public Map<string, ActionInfo> Actions => actions;
 
-        public ActionInfo[] Triggers => triggers;
+        public ActionInfo[] Tooled => tooled;
 
         public ActionInfo Default => @default;
 
@@ -259,7 +259,7 @@ namespace Greatbone.Core
                 });
         }
 
-        public bool IsInstanceOf(Type typ) => GetType() == typ || typeinfo.IsSubclassOf(typ);
+        public bool IsInstanceOf(Type typ) => GetType() == typ || typeInfo.IsSubclassOf(typ);
 
         public ActionInfo GetAction(string method)
         {
@@ -277,9 +277,7 @@ namespace Greatbone.Core
             {
                 return this;
             }
-
             // seek subworks/varwork
-            //
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             if (works != null && works.TryGet(key, out var work)) // if child

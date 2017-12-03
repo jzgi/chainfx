@@ -24,7 +24,6 @@ namespace Greatbone.Sample
             {FINISHED, "已完成"}
         };
 
-
         internal int id;
         internal short rev;
         internal string shopid;
@@ -33,19 +32,16 @@ namespace Greatbone.Sample
         internal string name; // customer name
         internal string tel;
         internal string city;
-        internal string area;
         internal string addr; // may include spot
         internal OrderItem[] items;
         internal decimal min;
         internal decimal notch;
         internal decimal off;
         internal decimal total; // total price
-
         internal decimal cash; // amount recieved
-        internal DateTime paid; // when cash received or forcibly accepted
-        internal bool prepare;
-        internal DateTime aborted; // time aborted
-        internal DateTime delivered; // time shipped
+        internal DateTime paid; 
+        internal DateTime aborted;
+        internal DateTime finished;
         internal string note;
         internal short status;
 
@@ -62,7 +58,6 @@ namespace Greatbone.Sample
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
             i.Get(nameof(city), ref city);
-            i.Get(nameof(area), ref area);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(items), ref items);
             i.Get(nameof(min), ref min);
@@ -73,9 +68,8 @@ namespace Greatbone.Sample
             {
                 i.Get(nameof(cash), ref cash);
                 i.Get(nameof(paid), ref paid);
-                i.Get(nameof(prepare), ref prepare);
                 i.Get(nameof(aborted), ref aborted);
-                i.Get(nameof(delivered), ref delivered);
+                i.Get(nameof(finished), ref finished);
                 i.Get(nameof(note), ref note);
             }
             i.Get(nameof(status), ref status);
@@ -94,7 +88,6 @@ namespace Greatbone.Sample
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
             o.Put(nameof(city), city);
-            o.Put(nameof(area), area);
             o.Put(nameof(addr), addr);
             o.Put(nameof(items), items);
             o.Put(nameof(min), min);
@@ -105,9 +98,8 @@ namespace Greatbone.Sample
             {
                 o.Put(nameof(cash), cash);
                 o.Put(nameof(paid), paid);
-                o.Put(nameof(prepare), prepare);
                 o.Put(nameof(aborted), aborted);
-                o.Put(nameof(delivered), delivered);
+                o.Put(nameof(finished), finished);
                 o.Put(nameof(note), note);
             }
             o.Put(nameof(status), status);

@@ -1,57 +1,8 @@
-using System;
-
 namespace Greatbone.Core
 {
-    /// <summary>
-    /// To specify interaction element and pattern.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class TriggerAttribute : Attribute
-    {
-        readonly Modal mode;
-
-        readonly int elem; // ui element
-
-        readonly int feature; // ui feature
-
-        readonly sbyte size;
-
-        public TriggerAttribute(Modal mode, sbyte size = 2)
-        {
-            this.mode = mode;
-            this.elem = (int) mode & 0xff00;
-            this.feature = (int) mode & 0x00ff;
-            this.size = size;
-        }
-
-        public sbyte Size => size;
-
-        public int Ordinals { get; set; }
-
-        public bool Circle { get; set; }
-
-        public bool IsAnchor => elem == 0x0100;
-
-        public bool IsButton => elem == 0x0200;
-
-        public bool HasConfirm => feature == 0x01;
-
-        public bool HasPrompt => feature == 0x02;
-
-        public bool HasShow => feature == 0x04;
-
-        public bool HasOpen => feature == 0x08;
-
-        public bool HasScript => feature == 0x10;
-
-        public bool HasCrop => feature == 0x20;
-    }
-
-    public enum Modal
+    public enum UiMode
     {
         Anchor = 0x0100,
-
-        AnchorConfirm = 0x0101,
 
         /// <summary>
         /// To prompt with a dialog for gathering additional data to continue the location switch.

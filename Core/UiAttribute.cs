@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To specify basic visual information on user interface.
+    /// To specify basic user interface-related information for a nodule (work or action) object.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UiAttribute : Attribute
@@ -25,6 +25,6 @@ namespace Greatbone.Core
         /// <summary>
         /// A grouping number that refers to a particular functionality.
         /// </summary>
-        public short Func { get; set; }
+        public short Group { get; set; }
     }
 }

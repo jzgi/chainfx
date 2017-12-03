@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 using static Greatbone.Sample.Order;
 
 namespace Greatbone.Sample
@@ -18,10 +18,8 @@ namespace Greatbone.Sample
         public override bool Check(object obj)
         {
             var o = obj as Order;
-            switch (state)
-            {
-                case 'A': return o.addr != null;
-            }
+            if (state == 'A')
+                return o.addr != null;
             return false;
         }
     }
@@ -61,14 +59,14 @@ namespace Greatbone.Sample
                             if (areas == null)
                             {
                                 h.TEXT(nameof(name), prin.name, "姓名", required: true);
-                                h.SELECT(nameof(area), prin.area, City.FindCity(city).Areas, "区域", required: true);
+//                                h.SELECT(nameof(area), prin.area, City.FindCity(city).Areas, "区域", required: true);
                                 h.TEXT(nameof(addr), addr, "地址");
                             }
                             else
                             {
-                                h.SELECT(nameof(area), prin.area, areas, "限送", refresh: true, required: true);
-                                var places = City.All[city].FindArea(areas[0]).places;
-                                h.SELECT(nameof(addr), places[0], places, "地址", box: 7).TEXT(nameof(addr), addr, box: 5);
+//                                h.SELECT(nameof(area), prin.area, areas, "限送", refresh: true, required: true);
+//                                var places = City.All[city].FindArea(areas[0]).places;
+//                                h.SELECT(nameof(addr), places[0], places, "地址", box: 7).TEXT(nameof(addr), addr, box: 5);
                             }
                             h.TEL(nameof(tel), tel, "电话", required: true);
                             h._FORM();
@@ -140,7 +138,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("付款"), Trigger(ButtonScript), Orderly('A')]
+        [Ui("付款"), UiTool(ButtonScript), Orderly('A')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];
@@ -172,7 +170,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("建议"), Trigger(ButtonShow)]
+        [Ui("建议"), UiTool(ButtonShow)]
         public async Task kick(ActionContext ac)
         {
             int orderid = ac[this];
@@ -208,7 +206,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("撤单"), Trigger(ButtonShow)]
+        [Ui("撤单"), UiTool(ButtonShow)]
         public async Task abort(ActionContext ac)
         {
             int orderid = ac[this];
@@ -250,7 +248,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("退款核查", "实时核查退款到账情况"), Trigger(AnchorOpen)]
+        [Ui("退款核查", "实时核查退款到账情况"), UiTool(AnchorOpen)]
         public async Task refundq(ActionContext ac)
         {
             int orderid = ac[this];

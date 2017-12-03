@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -13,7 +13,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("货架")]
+    [Ui("货品")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -38,7 +38,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("新建"), Trigger(ButtonShow)]
+        [Ui("新建"), UiTool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -71,7 +71,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("删除"), Trigger(ButtonConfirm)]
+        [Ui("删除"), UiTool(ButtonConfirm)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];

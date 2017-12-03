@@ -20,11 +20,11 @@ namespace Greatbone.Core
 
         readonly int limit;
 
-        // ui triggering annotation
-        internal TriggerAttribute trigger;
+        // ui widget annotation
+        internal readonly UiToolAttribute tool;
 
         // state check annotation
-        internal StateAttribute state;
+        internal readonly StateAttribute state;
 
         // void action(ActionContext)
         readonly Action<ActionContext> @do;
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             this.subscript = subscript;
             this.limit = limit;
 
-            this.trigger = (TriggerAttribute) mi.GetCustomAttribute(typeof(TriggerAttribute), false);
+            this.tool = (UiToolAttribute) mi.GetCustomAttribute(typeof(UiToolAttribute), false);
             this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), false);
 
             // create a doer delegate
@@ -83,13 +83,13 @@ namespace Greatbone.Core
 
         public bool IsAsync => async;
 
-        public bool HasTrigger => trigger != null;
+        public bool HasWidget => tool != null;
 
         public bool HasSubscript => subscript;
 
         public int Limit => limit;
 
-        public TriggerAttribute Trigger => trigger;
+        public UiToolAttribute Tool => tool;
 
         public bool CheckState(object obj)
         {

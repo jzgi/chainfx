@@ -16,17 +16,18 @@ namespace Greatbone.Sample
         {
             {11, "销售收入"},
             {19, "其他收入"},
-            {21, "材料支出"},
-            {22, "耗品支出"},
-            {23, "工资支出"},
-            {24, "设备支出"},
+            {21, "场所支出"},
+            {22, "设备支出"},
+            {23, "材料支出"},
+            {24, "耗品支出"},
+            {25, "工资支出"},
             {29, "其他支出"},
         };
 
         internal int id;
         internal string shopid;
         internal DateTime date;
-        internal short code;
+        internal short txn;
         internal string descr;
         internal decimal received;
         internal decimal paid;
@@ -40,7 +41,7 @@ namespace Greatbone.Sample
             }
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(date), ref date);
-            i.Get(nameof(code), ref code);
+            i.Get(nameof(txn), ref txn);
             i.Get(nameof(descr), ref descr);
             i.Get(nameof(received), ref received);
             i.Get(nameof(paid), ref paid);
@@ -55,7 +56,7 @@ namespace Greatbone.Sample
             }
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(date), date);
-            o.Put(nameof(code), code);
+            o.Put(nameof(txn), txn);
             o.Put(nameof(descr), descr);
             o.Put(nameof(received), received);
             o.Put(nameof(paid), paid);

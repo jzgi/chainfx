@@ -28,7 +28,6 @@ namespace Greatbone.Sample
         internal string tel;
         internal string credential;
         internal string city; // 
-        internal string area; // 
         internal string addr;
         internal short opr; // 
         internal string oprat; // operator at
@@ -48,7 +47,6 @@ namespace Greatbone.Sample
                 i.Get(nameof(credential), ref credential);
             }
             i.Get(nameof(city), ref city);
-            i.Get(nameof(area), ref area);
             i.Get(nameof(addr), ref addr);
             if ((proj & LATER) == LATER)
             {
@@ -72,7 +70,6 @@ namespace Greatbone.Sample
                 o.Put(nameof(credential), credential);
             }
             o.Put(nameof(city), city);
-            o.Put(nameof(area), area);
             o.Put(nameof(addr), addr);
             if ((proj & LATER) == LATER)
             {

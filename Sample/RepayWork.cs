@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 using static Greatbone.Sample.Repay;
 
 namespace Greatbone.Sample
@@ -52,7 +52,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("列新结"), Trigger(Anchor)]
+        [Ui("列新结"), UiTool(Anchor)]
         public void @default(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("列已转"), Trigger(Anchor)]
+        [Ui("列已转"), UiTool(Anchor)]
         public void old(ActionContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("结算", "结算各网点已完成的订单"), Trigger(ButtonShow)]
+        [Ui("结算", "结算各网点已完成的订单"), UiTool(ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
             DateTime fro; // till/before date
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
             internal decimal cash;
         }
 
-        [Ui("转款", "按照结算单转款给网点"), Trigger(ButtonConfirm)]
+        [Ui("转款", "按照结算单转款给网点"), UiTool(ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
             List<Transfer> lst = new List<Transfer>(16);

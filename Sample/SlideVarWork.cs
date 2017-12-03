@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 
 namespace Greatbone.Sample
 {
@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("回复"), Trigger(ButtonShow)]
+        [Ui("回复"), UiTool(ButtonShow)]
         public async Task reply(ActionContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using static Greatbone.Core.UiMode;
 using static Greatbone.Sample.Shop;
 using static Greatbone.Sample.User;
 
@@ -30,13 +30,13 @@ namespace Greatbone.Sample
                         h.CAPTION(false, "我的个人资料");
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
-                        h.FIELD_("地址").T(prin.city)._T(prin.area)._T(prin.addr)._FIELD();
+                        h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
                         h.TAIL();
                     });
             });
         }
 
-        [Ui("刷新"), Trigger(ButtonOpen)]
+        [Ui("刷新"), UiTool(ButtonOpen)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];
@@ -56,7 +56,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("修改", Func = 1), Trigger(ButtonShow)]
+        [Ui("修改", Group = 1), UiTool(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
             string wx = ac[this];
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
             {
                 if (ac.Query.Count > 0)
                 {
-                    ac.Query.Let(out prin.name).Let(out prin.tel).Let(out prin.city).Let(out prin.area);
+                    ac.Query.Let(out prin.name).Let(out prin.tel).Let(out prin.city);
                 }
 
                 ac.GivePane(200, h =>
@@ -76,9 +76,6 @@ namespace Greatbone.Sample
 
                     string city = prin.city ?? City.All[0].name;
                     h.SELECT(nameof(prin.city), city, City.All, "城市", refresh: true);
-
-                    var areas = City.All[city].Areas;
-                    h.SELECT(nameof(prin.area), prin.area ?? areas[0].name, areas, "区域");
 
                     h.TEXT(nameof(prin.addr), prin.addr, label: "场址", max: 10, min: 2, required: true);
                     h._FORM();
@@ -101,7 +98,7 @@ namespace Greatbone.Sample
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Func = 1), Trigger(ButtonShow, 1)]
+        [Ui("设密码", Group = 1), UiTool(ButtonShow, 1)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -148,61 +145,76 @@ namespace Greatbone.Sample
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
+            Create<OprItemWork>("item");
+
             Create<OprNewWork>("new");
 
             Create<OprOldWork>("old");
 
-            Create<OprItemWork>("item");
-
             Create<OprRepayWork>("repay");
-            
+
             Create<OprCashWork>("cash");
         }
 
         public void @default(ActionContext ac)
         {
             bool inner = ac.Query[nameof(inner)];
-            if (inner)
-            {
-                string shopid = ac[this];
-                ac.GivePage(200, m =>
-                {
-                    m.TOOLBAR();
-                    m.BOARDVIEW(h =>
-                    {
-                        using (var dc = ac.NewDbContext())
-                        {
-                            dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
-                            dc.Query1(p => p.Set(shopid));
-                            var o = dc.ToObject<Shop>();
-
-                            h.CAPTION(false, o.name, Status[o.status], o.status == ON);
-                            h.FIELDSET_("设置");
-                            h.FIELD(o.schedule, "时间");
-                            if (o.areas != null) h.FIELD(o.areas, "送达");
-                            h.FIELD_("计价").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
-                            h._FIELDSET();
-                            h.FIELDSET_("经理");
-                            h.FIELD(o.mgrname, "姓名", box: 6).FIELD(o.mgrtel, "电话", box: 6);
-                            h.FIELD(o.mgrwx, "微信");
-
-                            h._FIELDSET();
-                            h.FIELDSET_("当前客服");
-                            h.FIELD(o.oprname, "姓名", box: 6).FIELD(o.oprtel, "电话", box: 6);
-                            h.FIELD(o.oprwx, "微信");
-                            h._FIELDSET();
-                            h.TAIL(func: -1);
-                        }
-                    });
-                });
-            }
-            else
+            if (!inner)
             {
                 ac.GiveFrame(200, false, 60 * 15, "粗粮达人网点操作");
+                return;
             }
+
+            string shopid = ac[this];
+            ac.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                Shop o = null;
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
+                    dc.Query1(p => p.Set(shopid));
+                    o = dc.ToObject<Shop>();
+                }
+                h.BOARDVIEW_();
+
+                h.CARD_();
+                h.CAPTION(false, o.name, Statuses[o.status], o.status == 2);
+                h.FIELDSET_("设置");
+                h.FIELD(o.schedule, "时间");
+//                if (o.areas != null) h.FIELD(o.areas, "送达");
+                h.FIELD_("计价").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
+                h._FIELDSET();
+                h.FIELDSET_("经理");
+                h.FIELD(o.mgrname, "姓名", box: 6).FIELD(o.mgrtel, "电话", box: 6);
+                h.FIELD(o.mgrwx, "微信");
+                h._FIELDSET();
+
+                h.FIELDSET_("当前客服");
+                h.FIELD(o.oprname, "姓名", box: 6).FIELD(o.oprtel, "电话", box: 6);
+                h.FIELD(o.oprwx, "微信");
+                h._FIELDSET();
+                h.TAIL(@group: -1);
+                h._CARD();
+
+                h.CARD_();
+                h.CAPTION(false, "存料");
+                if (o.supplies != null)
+                {
+                    for (int i = 0; i < o.supplies.Length; i++)
+                    {
+                        var art = o.supplies[i];
+                        h.FIELD(art.name, box: 8).FIELD(art.qty, box: 2).FIELD(art.unit, box: 2);
+                    }
+                }
+                h.TAIL();
+                h._CARD();
+
+                h._BOARDVIEW();
+            });
         }
 
-        [Ui("操作授权"), Trigger(ButtonOpen), Allow(OPRMGR)]
+        [Ui("操作授权"), UiTool(ButtonOpen), Allow(OPRMGR)]
         public async Task grant(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -257,7 +269,7 @@ namespace Greatbone.Sample
             });
         }
 
-        [Ui("设置"), Trigger(ButtonShow)]
+        [Ui("设置"), UiTool(ButtonShow)]
         public async Task config(ActionContext ac)
         {
             string shopid = ac[this];
@@ -274,7 +286,7 @@ namespace Greatbone.Sample
                     {
                         h.FORM_();
                         h.TEXT(nameof(schedule), schedule, "时间");
-                        h.SELECT(nameof(areas), areas, City.FindCity(city).Areas, "限送");
+//                        h.SELECT(nameof(areas), areas, City.FindCity(city).Areas, "限送");
                         h.NUMBER(nameof(min), min, "起送");
                         h.NUMBER(nameof(notch), notch, "满额");
                         h.NUMBER(nameof(off), off, "扣减");
@@ -298,7 +310,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("功能照"), Trigger(ButtonCrop, Ordinals = 4)]
+        [Ui("功能照"), UiTool(ButtonCrop, Ordinals = 4)]
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
@@ -326,7 +338,7 @@ namespace Greatbone.Sample
             ac.Give(200); // ok
         }
 
-        [Ui("营业状态", Func = 1), Trigger(ButtonShow, 1), Allow(OPRMEM)]
+        [Ui("营业状态", Group = 1), UiTool(ButtonShow, 1), Allow(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             string shopid = ac[this];
@@ -339,7 +351,7 @@ namespace Greatbone.Sample
                     using (var dc = ac.NewDbContext())
                     {
                         status = (short) dc.Scalar("SELECT status FROM shops WHERE id = @1", p => p.Set(shopid));
-                        h.SELECT(nameof(status), status, Status);
+                        h.SELECT(nameof(status), status, Statuses);
                     }
                     h._FORM();
                 });
@@ -355,7 +367,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
-        [Ui("客服", Func = 1), Trigger(ButtonShow, 1)]
+        [Ui("客服", Group = 1), UiTool(ButtonShow, 1)]
         public void contact(ActionContext ac)
         {
             string shopid = ac[this];
@@ -392,6 +404,35 @@ namespace Greatbone.Sample
                 }
                 ac.GivePane(200);
             }
+        }
+
+        [Ui("调整", Group = 2), UiTool(ButtonShow, 1), Allow(OPRMEM)]
+        public async Task stock(ActionContext ac)
+        {
+            string shopid = ac[this];
+            short status;
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    using (var dc = ac.NewDbContext())
+                    {
+                        status = (short) dc.Scalar("SELECT status FROM shops WHERE id = @1", p => p.Set(shopid));
+                        h.SELECT(nameof(status), status, Statuses);
+                    }
+                    h._FORM();
+                });
+                return;
+            }
+
+            var f = await ac.ReadAsync<Form>();
+            status = f[nameof(status)];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(status).Set(shopid));
+            }
+            ac.GivePane(200);
         }
     }
 }

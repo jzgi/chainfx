@@ -14,7 +14,6 @@ function dialog(trig, mode, siz, title) {
     var action;
     var method = 'post';
     var src;
-    var trigclass;
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
@@ -24,19 +23,21 @@ function dialog(trig, mode, siz, title) {
         } else {
             src = action;
         }
-        trigclass = ' button-trig';
     } else if (tag == 'A') {
         action = trig.href;
         method = 'get';
-        src = action;
-        trigclass = ' anchor-trig';
+        if (mode == PROMPT) {
+            src = action.indexOf('?') == -1 ? action + '?inner=true' : action + '&' + 'inner=true';
+        } else {
+            src = action;
+        }
     }
 
     title = title || trig.innerHTML;
 
     var bottom = mode == OPEN ? '3.5rem' : '6rem';
     var html =
-        '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' +
+        '<div id="dyndlg" class="' + sizg + ' reveal" data-reveal data-close-on-click="false">' +
         '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
         '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary\" style="display: block; margin-top: 0.625rem; margin-left: auto; margin-right: auto" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
     var dive = $(html);
