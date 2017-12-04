@@ -835,18 +835,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTONSHOW(string text, string action, sbyte size = 1, string tip = null)
-        {
-            Add("<button class=\"button primary hollow\" formmethod=\"post\" formaction=\"");
-            Add(action);
-            Add("\" ");
-            Dialog(4, size, tip);
-            Add("\">");
-            AddEsc(text);
-            Add("</button>");
-            return this;
-        }
-
         public HtmlContent _BUTTON()
         {
             Add("</button>");
@@ -1208,24 +1196,24 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TOOL(string name)
+        public HtmlContent TOOL(string name, int subscript = -1)
         {
             if (model == null)
             {
                 var work = actionCtx.Work;
                 var ai = work.GetAction(name);
-                Tool(ai, null);
+                Tool(ai, null, subscript);
             }
             else
             {
                 var work = actionCtx.Work.VarWork;
                 var ai = work.GetAction(name);
-                Tool(ai, model);
+                Tool(ai, model, subscript);
             }
             return this;
         }
 
-        void Tool(ActionInfo ai, IData obj)
+        void Tool(ActionInfo ai, IData obj, int subscript = -1)
         {
             var tool = ai.Tool;
             bool ok = ai.CheckState(obj);
@@ -1240,6 +1228,11 @@ namespace Greatbone.Core
                     Add('/');
                 }
                 Add(ai.RPath);
+                if (subscript >= 0)
+                {
+                    Add('-');
+                    Add(subscript);
+                }
                 Add("\"");
                 if (!ok)
                 {
@@ -1259,6 +1252,11 @@ namespace Greatbone.Core
                     Add('/');
                 }
                 Add(ai.Key);
+                if (subscript >= 0)
+                {
+                    Add('-');
+                    Add(subscript);
+                }
                 Add("\" formmethod=\"post\"");
                 if (!ok)
                 {

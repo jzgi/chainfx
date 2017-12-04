@@ -37,6 +37,7 @@ namespace Greatbone.Sample
         {
         }
 
+        [Ui("地址", Group = -1), Tool(ButtonShow, 1)]
         public async Task addr(ActionContext ac)
         {
             string wx = ac[-2];
@@ -95,6 +96,7 @@ namespace Greatbone.Sample
             ac.GivePane(200);
         }
 
+        [Ui("修改", Group = -1), Tool(ButtonShow, 1)]
         public async Task item(ActionContext ac, int idx)
         {
             string wx = ac[-2];

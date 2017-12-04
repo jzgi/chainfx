@@ -854,10 +854,10 @@ label > [type='radio'] {
 
 fieldset {
     width: calc(100% - 0.25rem);
-    padding: 0 0 0.875rem 0;
+    padding: 0 0 0.25rem 0;
     margin: 0.25rem 0 0 0;
     border-top: 1px solid darkgray;
-    border-bottom: 1px solid darkgray;
+    border-bottom: none;
     border-left: none;
     border-right: none;
 }
@@ -2494,7 +2494,6 @@ input:checked + label > .switch-inactive { display: none; }
     -ms-flex-align: center;
     font-size: 1rem;
     align-items: center;
-    background-color: darkgray;
     height: 3rem;
 }
 
@@ -3013,11 +3012,14 @@ html.is-reveal-open body {
         position: relative;
         width: 80%;
         max-width: none;
-        height: 50%;
-        height: 50vh;
+        height: 60%;
+        height: 60vh;
         min-height: 15rem;
         margin-right: auto;
         margin-left: auto;
+        border-left: 8px solid #fefefe;
+        border-right: 8px solid #fefefe;
+        background-color: #fefefe;
     }
 }
 
