@@ -2485,7 +2485,7 @@ input:checked + label > .switch-inactive { display: none; }
 .is-dropdown-submenu.js-dropdown-active { display: block; }
 
 .title-bar {
-    padding: 0.5rem;
+    padding: 0.5rem 0;
     color: #0a0a0a;
     display: -ms-flexbox;
     display: flex;
@@ -2506,10 +2506,10 @@ input:checked + label > .switch-inactive { display: none; }
 .title-bar-title {
     display: inline-block;
     vertical-align: middle;
+    margin-right: 1rem;
 }
 
 .title-bar-left {
-    margin-left: 1rem;
     flex: auto;
 }
 

@@ -307,7 +307,6 @@ namespace Greatbone.Core
             Add(DIGIT[v]); // last reminder
         }
 
-
         public void Add(double v)
         {
             Add(v.ToString(CultureInfo.CurrentCulture));

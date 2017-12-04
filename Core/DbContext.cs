@@ -13,7 +13,7 @@ namespace Greatbone.Core
     {
         readonly Service service;
 
-        readonly IDoerContext<IDoer> doerctx;
+        readonly IDoerContext<IDoer> doerCtx;
 
         readonly NpgsqlConnection connection;
 
@@ -32,10 +32,10 @@ namespace Greatbone.Core
 
         bool disposed;
 
-        internal DbContext(Service service, IDoerContext<IDoer> doerctx = null)
+        internal DbContext(Service service, IDoerContext<IDoer> doerCtx = null)
         {
             this.service = service;
-            this.doerctx = doerctx;
+            this.doerCtx = doerCtx;
 
             connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand();

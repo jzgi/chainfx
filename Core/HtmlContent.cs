@@ -9,9 +9,6 @@ namespace Greatbone.Core
     {
         readonly ActionContext actionCtx;
 
-        // counts of each level
-        readonly int[] counts = new int[8];
-
         // used for current level content
         int ordinal;
 
@@ -910,7 +907,7 @@ namespace Greatbone.Core
                     {
                         continue;
                     }
-                    Trigger(ais[i], null);
+                    Tool(ais[i], null);
                 }
             }
             _TOOLBAR(refresh);
@@ -1207,28 +1204,28 @@ namespace Greatbone.Core
                 {
                     continue;
                 }
-                Trigger(ais[i], obj);
+                Tool(ais[i], obj);
             }
         }
 
-        public HtmlContent TRIGGER(string name)
+        public HtmlContent TOOL(string name)
         {
             if (model == null)
             {
                 var work = actionCtx.Work;
                 var ai = work.GetAction(name);
-                Trigger(ai, null);
+                Tool(ai, null);
             }
             else
             {
                 var work = actionCtx.Work.VarWork;
                 var ai = work.GetAction(name);
-                Trigger(ai, model);
+                Tool(ai, model);
             }
             return this;
         }
 
-        void Trigger(ActionInfo ai, IData obj)
+        void Tool(ActionInfo ai, IData obj)
         {
             var tool = ai.Tool;
             bool ok = ai.CheckState(obj);
@@ -1243,10 +1240,6 @@ namespace Greatbone.Core
                     Add('/');
                 }
                 Add(ai.RPath);
-                if (ai == actionCtx.Doer && tool.HasPrompt)
-                {
-                    Add(actionCtx.QueryString);
-                }
                 Add("\"");
                 if (!ok)
                 {
@@ -1311,10 +1304,11 @@ namespace Greatbone.Core
             Add(">");
             if (ai.IsEllipsized)
             {
+                string filter = null;
                 var f = actionCtx.Query;
-                if (f.Count > 0)
+                if (f.Count > 0) filter = f[0];
+                if (filter != null)
                 {
-                    string filter = f[0];
                     Add(filter);
                     Add("...");
                 }

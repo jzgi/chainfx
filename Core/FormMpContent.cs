@@ -108,14 +108,7 @@ namespace Greatbone.Core
         public FormMpContent Put(string name, string v)
         {
             Part(name);
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                Add(v);
-            }
+            Add(v ?? "null");
             return this;
         }
 
@@ -198,14 +191,7 @@ namespace Greatbone.Core
                 {
                     if (i > 0) Add(',');
                     string str = v[i];
-                    if (str == null)
-                    {
-                        Add("null");
-                    }
-                    else
-                    {
-                        Add(str);
-                    }
+                    Add(str ?? "null");
                 }
                 Add(']');
             }
