@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public class ItemlyAttribute : StateAttribute
     {
@@ -86,16 +86,14 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             string name = ac[this];
             User prin = (User) ac.Principal;
-
             string unit;
             decimal price;
             short qty;
-
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    var exist = dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND wx = @1 AND shopid = @2 LIMIT 1", p => p.Set(prin.wx).Set(shopid));
+                    var exist = (bool?) dc.Scalar("SELECT TRUE FROM orders WHERE status = 0 AND wx = @1 AND shopid = @2 LIMIT 1", p => p.Set(prin.wx).Set(shopid));
 
                     dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2");
                     dc.Query1(p => p.Set(shopid).Set(name));
@@ -103,14 +101,29 @@ namespace Greatbone.Sample
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.HIDDEN(nameof(unit), o.unit);
-                        h.HIDDEN(nameof(price), o.price);
-                        if (exist == null)
+                        if (exist.HasValue)
                         {
-                            h.FIELDSET_("请填写收货地址");
-                            string addr = null;
-                            h.TEXT(nameof(addr), addr, "地址");
-                            h.TEL(nameof(addr), addr, "电话", required:true);
+                            h.FIELD_().A("查看购物车", "/my//cart/", true)._FIELD();
+                        }
+                        else
+                        {
+                            dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
+                            dc.Let(out string city).Let(out string[] areas);
+                            h.FIELDSET_("您的收货地址");
+                            if (areas != null)
+                            {
+                                ac.Query.Let(out string a).Let(out string b).Let(out string c).Let(out string tel);
+                                if (a == null)
+                                {
+//                                    (a, b, c) = prin.addr.To3Strings('\t');
+                                }
+                                h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, City.SpotsOf(city, a), box: 4).TEXT(nameof(c), c, box: 4);
+                            }
+                            else // formless address
+                            {
+                                h.TEXT(nameof(prin.addr), prin.addr, tip: "您的完整地址");
+                            }
+                            h.TEL(nameof(prin.tel), prin.tel, "你的随身电话", required: true);
                             h._FIELDSET();
                         }
                         h.FIELDSET_("加入购物车");

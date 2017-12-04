@@ -414,10 +414,12 @@ namespace Greatbone.Core
         public static (string, string) To2Strings(this string str, char sep = '-')
         {
             int len = str.Length;
-
             int p = 0;
             while (p < len && str[p] != sep) p++;
-
+            if (p == len)
+            {
+                return (str, null);
+            }
             string a = str.Substring(0, p);
             string b = str.Substring(p + 1, len - (p + 1));
             return (a, b);
@@ -429,12 +431,19 @@ namespace Greatbone.Core
 
             int p0 = 0, p = 0;
             while (p < len && str[p] != sep) p++;
+            if (p == len)
+            {
+                return (str, null, null);
+            }
             string a = str.Substring(p0, p - p0);
 
             p0 = ++p;
             while (p < len && str[p] != sep) p++;
-
             string b = str.Substring(p0, p - p0);
+            if (p == len)
+            {
+                return (a, b, null);
+            }
 
             p0 = ++p;
             string c = str.Substring(p0, len - p0);

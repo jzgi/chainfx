@@ -1,7 +1,7 @@
 using System;
 using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     /// <summary>
     /// A lesson data object. It supports Zh and En locales.

@@ -1,6 +1,6 @@
 using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     /// <summary>
     /// A city data object.
@@ -9,7 +9,24 @@ namespace Greatbone.Sample
     {
         public static Map<string, City> All;
 
+        public static Area[] AreasOf(string city) => city == null ? null : All[city]?.areas;
+
+        public static string[] SpotsOf(string city, string area)
+        {
+            var areas = AreasOf(city);
+            if (areas != null)
+            {
+                for (int i = 0; i < areas.Length; i++)
+                {
+                    if (areas[i].id == area) return areas[i].spots;
+                }
+            }
+            return null;
+        }
+
         internal string name;
+
+        internal Area[] areas;
 
         internal double x1, y1, x2, y2;
 
@@ -20,6 +37,7 @@ namespace Greatbone.Sample
             i.Get(nameof(y1), ref y1);
             i.Get(nameof(x2), ref x2);
             i.Get(nameof(y2), ref y2);
+            i.Get(nameof(areas), ref areas);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -29,11 +47,36 @@ namespace Greatbone.Sample
             o.Put(nameof(y1), y1);
             o.Put(nameof(x2), x2);
             o.Put(nameof(y2), y2);
+            o.Put(nameof(areas), areas);
         }
 
         public override string ToString()
         {
             return name;
+        }
+    }
+
+    public struct Area : IData
+    {
+        internal string id;
+
+        internal string[] spots;
+
+        public void Read(IDataInput i, short proj = 0x00ff)
+        {
+            i.Get(nameof(id), ref id);
+            i.Get(nameof(spots), ref spots);
+        }
+
+        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        {
+            o.Put(nameof(id), id);
+            o.Put(nameof(spots), spots);
+        }
+
+        public override string ToString()
+        {
+            return id;
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     [Auth]
     public abstract class SlideVarWork : Work

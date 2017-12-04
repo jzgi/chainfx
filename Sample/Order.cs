@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     /// <summary>
     /// An order data object.

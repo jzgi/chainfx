@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Sample.User;
+using static Greatbone.Samp.User;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public abstract class CashWork : Work
     {

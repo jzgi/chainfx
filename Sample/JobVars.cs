@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Sample.Shop;
-using static Greatbone.Sample.User;
+using static Greatbone.Samp.Shop;
+using static Greatbone.Samp.User;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     [Ui("常规"), Auth]
     public class MyVarWork : Work

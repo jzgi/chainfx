@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     /// <summary>
     /// A user data object that is a principal.

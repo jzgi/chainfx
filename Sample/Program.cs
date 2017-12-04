@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public class Program : ServiceUtility
     {
@@ -14,7 +14,7 @@ namespace Greatbone.Sample
             WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
             // the only www service
-            TryCreate<SampleService>(
+            TryCreate<SampService>(
                 new ServiceContext("samp")
                 {
                     addrs = new[] {"http://localhost:8080"},

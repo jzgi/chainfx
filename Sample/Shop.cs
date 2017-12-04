@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public class Shop : IData
     {
@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         internal string city;
         internal string addr;
         internal string schedule;
-        internal Area[] areas;
+        internal string[] areas;
         internal decimal min;
         internal decimal notch;
         internal decimal off;
@@ -90,43 +90,6 @@ namespace Greatbone.Sample
         }
     }
 
-    public struct Area : IData
-    {
-        internal string id;
-
-        internal double x1, y1, x2, y2;
-
-        internal string[] spots;
-
-        internal string wx;
-        internal string name;
-        internal string tel;
-
-        public void Read(IDataInput i, short proj = 0x00ff)
-        {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(x1), ref x1);
-            i.Get(nameof(y1), ref y1);
-            i.Get(nameof(x2), ref x2);
-            i.Get(nameof(y2), ref y2);
-            i.Get(nameof(spots), ref spots);
-        }
-
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
-        {
-            o.Put(nameof(id), id);
-            o.Put(nameof(x1), x1);
-            o.Put(nameof(y1), y1);
-            o.Put(nameof(x2), x2);
-            o.Put(nameof(y2), y2);
-            o.Put(nameof(spots), spots);
-        }
-
-        public override string ToString()
-        {
-            return id;
-        }
-    }
 
     public struct Supply : IData
     {

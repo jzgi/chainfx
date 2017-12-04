@@ -852,6 +852,10 @@ label > [type='radio'] {
     margin-right: 0.25rem;
 }
 
+legend {
+    padding: 0.25rem;
+}
+
 fieldset {
     width: calc(100% - 0.25rem);
     padding: 0 0 0.25rem 0;
@@ -873,7 +877,7 @@ textarea {
     width: inherit;
     line-height: 1.5;
     color: #0a0a0a;
-    background-color: #fefefe;
+    background-color: white;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1016,7 +1020,7 @@ input[type='search'] { box-sizing: border-box; }
 
 
 select {
-    padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+    padding: 0.25rem 1.25rem 0.25rem 0.25rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -1027,7 +1031,7 @@ select {
     width: inherit;
     height: 2.125rem;
     color: #0a0a0a;
-    background-color: #fefefe;
+    background-color: white;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='32' height='24' viewBox='0 0 32 24'><polygon points='0,0 32,0 16,24' style='fill: rgb%28138, 138, 138%29'></polygon></svg>");
     background-origin: content-box;
     background-position: right -1rem center;
@@ -2931,13 +2935,13 @@ html.is-reveal-open body {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     display: none;
-    border-left: 8px solid darkgray;
-    border-right: 8px solid darkgray;
-    background-color: darkgray;
     position: relative;
     margin-right: auto;
     margin-left: auto;
     overflow-y: auto;
+    border-left: 8px solid white;
+    border-right: 8px solid white;
+    background-color: white;
 }
 
 [data-whatinput='mouse'] .reveal { outline: 0; }
@@ -2963,7 +2967,7 @@ html.is-reveal-open body {
     .reveal.tiny {
         width: 30%;
         max-width: 62.5rem;
-        height: 50%;
+        height: 60%;
     }
 }
 
@@ -2992,6 +2996,9 @@ html.is-reveal-open body {
     height: 100vh;
     min-height: 100vh;
     margin-left: 0;
+    border-left: 8px solid darkgray;
+    border-right: 8px solid darkgray;
+    background-color: darkgray;
 }
 
 @media screen and (max-width: 39.9375em) {
@@ -3004,22 +3011,22 @@ html.is-reveal-open body {
         height: 100vh;
         min-height: 100vh;
         margin-left: 0;
+        border-left: 8px solid darkgray;
+        border-right: 8px solid darkgray;
+        background-color: darkgray;
     }
 }
 
 @media screen and (max-width: 39.9375em) {
     .reveal.tiny {
         position: relative;
-        width: 80%;
+        width: 85%;
         max-width: none;
         height: 60%;
         height: 60vh;
-        min-height: 15rem;
+        min-height: 20rem;
         margin-right: auto;
         margin-left: auto;
-        border-left: 8px solid #fefefe;
-        border-right: 8px solid #fefefe;
-        background-color: #fefefe;
     }
 }
 
@@ -3037,7 +3044,7 @@ table thead,
 table tbody,
 table tfoot {
     border: 1px solid #f1f1f1;
-    background-color: #fefefe;
+    background-color: white;
 }
 
 table caption {
@@ -3075,7 +3082,7 @@ table tbody { background-color: gainsboro; }
 table tbody tr {
     border-bottom: 0;
     border-bottom: 1px solid #f1f1f1;
-    background-color: #fefefe;
+    background-color: white;
 }
 
 table.scroll {

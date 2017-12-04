@@ -2,16 +2,16 @@
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
-using static Greatbone.Sample.WeiXinUtility;
+using static Greatbone.Samp.WeiXinUtility;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     /// <summary>
-    /// The care service includes the gospel and the health provision.
+    /// The sample service includes the gospel and the health provision.
     /// </summary>
-    public class SampleService : Service<User>, IAuthenticateAsync
+    public class SampService : Service<User>, IAuthenticateAsync
     {
-        public SampleService(ServiceContext sc) : base(sc)
+        public SampService(ServiceContext sc) : base(sc)
         {
             Create<PubShopWork>("shop"); // shopping
 

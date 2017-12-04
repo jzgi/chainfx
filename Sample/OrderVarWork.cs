@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Sample.Order;
+using static Greatbone.Samp.Order;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public class OrderlyAttribute : StateAttribute
     {

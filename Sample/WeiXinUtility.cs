@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public static class WeiXinUtility
     {

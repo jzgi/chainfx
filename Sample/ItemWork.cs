@@ -2,7 +2,7 @@
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public abstract class ItemWork<V> : Work where V : ItemVarWork
     {

@@ -14,7 +14,7 @@ namespace Greatbone.Core
 
         readonly sbyte size;
 
-        public ToolAttribute(Modal modal, sbyte size = 2)
+        public ToolAttribute(Modal modal, sbyte size = 1)
         {
             this.element = (int) modal & 0xff00;
             this.flow = (int) modal & 0x00ff;

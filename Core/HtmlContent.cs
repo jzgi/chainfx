@@ -214,10 +214,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent A(string v, string href)
+        public HtmlContent A(string v, string href, bool parent = false)
         {
             Add("<a href=\"");
             Add(href);
+            if (parent)
+            {
+                Add("\" target=\"_parent");
+            }
             Add("\">");
             Add(v);
             Add("</a>");

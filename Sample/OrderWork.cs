@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Sample.User;
+using static Greatbone.Samp.User;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public abstract class OrderWork<V> : Work where V : OrderVarWork
     {
@@ -23,11 +23,9 @@ namespace Greatbone.Sample
         public void @default(ActionContext ac)
         {
             string wx = ac[-1];
-
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC");
-                dc.Query(p => p.Set(wx));
+                dc.Query("SELECT * FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC", p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
@@ -57,9 +55,7 @@ namespace Greatbone.Sample
             ac.GiveRedirect();
         }
 
-        /// <summary>
         /// To create a new order or add item to an existing order.
-        /// </summary>
         public async Task add(ActionContext ac)
         {
             string wx = ac[-1];
@@ -166,7 +162,7 @@ namespace Greatbone.Sample
                     using (var dc = ac.NewDbContext())
                     {
                         dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
-                        dc.Let(out Area[] areas);
+                        dc.Let(out string[] areas);
                         m.FORM_();
                         m.RADIO(nameof(filter), filter, "sdfasdf");
                         m.RADIOS(nameof(filter), filter, areas);

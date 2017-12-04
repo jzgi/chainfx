@@ -4,9 +4,9 @@ using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Sample.Repay;
+using static Greatbone.Samp.Repay;
 
-namespace Greatbone.Sample
+namespace Greatbone.Samp
 {
     public abstract class RepayWork<V> : Work where V : RepayVarWork
     {
