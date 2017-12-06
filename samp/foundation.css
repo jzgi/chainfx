@@ -842,14 +842,14 @@ ul.no-bullet, ol.no-bullet {
 
 label {
     display: inline-table;
-    margin-right: 0.5rem;
+    margin-right: 1rem;
+    padding: 0.25rem;
 }
 
 label > [type='checkbox'],
 label > [type='radio'] {
     vertical-align: middle;
-    margin-bottom: 4px;
-    margin-right: 0.25rem;
+    margin-bottom: 2px;
 }
 
 legend {

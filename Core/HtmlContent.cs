@@ -138,7 +138,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add("&nbsp;");
+                    if (i > 0) Add("、");
                     Add(v[i]);
                 }
             }
@@ -657,6 +657,24 @@ namespace Greatbone.Core
             {
                 Add(suffix);
             }
+            Add("</p>");
+            return this;
+        }
+
+        public HtmlContent P_(string label = null)
+        {
+            Add("<p>");
+            if (label != null)
+            {
+                Add("<span class=\"label\">");
+                Add(label);
+                Add("</span>");
+            }
+            return this;
+        }
+
+        public HtmlContent _P()
+        {
             Add("</p>");
             return this;
         }

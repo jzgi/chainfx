@@ -19,8 +19,11 @@ namespace Greatbone.Samp
         internal string name;
         internal string city;
         internal string addr;
+        internal double x;
+        internal double y;
         internal string schedule;
         internal string[] areas;
+        internal string delivery;
         internal decimal min;
         internal decimal notch;
         internal decimal off;
@@ -44,8 +47,11 @@ namespace Greatbone.Samp
             i.Get(nameof(name), ref name);
             i.Get(nameof(city), ref city);
             i.Get(nameof(addr), ref addr);
+            i.Get(nameof(x), ref x);
+            i.Get(nameof(y), ref y);
             i.Get(nameof(schedule), ref schedule);
             i.Get(nameof(areas), ref areas);
+            i.Get(nameof(delivery), ref delivery);
             i.Get(nameof(min), ref min);
             i.Get(nameof(notch), ref notch);
             i.Get(nameof(off), ref off);
@@ -71,8 +77,11 @@ namespace Greatbone.Samp
             o.Put(nameof(name), name);
             o.Put(nameof(city), city);
             o.Put(nameof(addr), addr);
+            o.Put(nameof(x), x);
+            o.Put(nameof(y), y);
             o.Put(nameof(schedule), schedule);
             o.Put(nameof(areas), areas);
+            o.Put(nameof(delivery), delivery);
             o.Put(nameof(min), min);
             o.Put(nameof(notch), notch);
             o.Put(nameof(off), off);

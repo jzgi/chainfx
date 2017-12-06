@@ -36,7 +36,7 @@ namespace Greatbone.Samp
                 HtmlContent h = new HtmlContent(ac, true);
                 // geolocator page
                 h.T("<html><head><script>");
-//                h.T("var cities = ").JSON(City.All).T(";");
+                //                h.T("var cities = ").JSON(City.All).T(";");
                 h.T("var city = cities[0].name;");
                 h.T("navigator.geolocation.getCurrentPosition(function(p) {");
                 h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
@@ -92,34 +92,18 @@ namespace Greatbone.Samp
                     {
                         h.CAPTION_(false).T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
                         h.ICON(o.id + "/icon", href: o.id + "/", box: 0x44);
-                        h.BOX_(0x48).P(o.addr, "店址").P(o.schedule, "营业");
-                        if (o.areas != null)
-                        {
-//                            h.P(o.areas, "限送");
-                        }
+                        h.BOX_(0x48);
+                        h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                        h.P_("派送");
+                        if (o.areas != null) h.T("限送").T(o.areas).T("，");
+                        h.T(o.delivery)._P();
+                        h.P(o.schedule, "营业");
                         h._BOX();
                         h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         h.TAIL();
                     });
                 }
             }, true, 60 * 5);
-        }
-
-        public void marks(ActionContext ac)
-        {
-            ac.GivePage(200, m =>
-            {
-                m.BOARDVIEW_();
-                for (int i = 0; i < Mark.All.Length; i++)
-                {
-                    var o = Mark.All[i];
-                    m.CARD_();
-                    m.CAPTION(false, o.name);
-                    m.FIELD(o.descr);
-                    m._CARD();
-                }
-                m._BOARDVIEW();
-            });
         }
     }
 

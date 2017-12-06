@@ -126,7 +126,7 @@ namespace Greatbone.Core
             }
 
             // response cache
-            cleaner = new Thread(Clean);
+            cleaner = new Thread(Clean) {Name = "Cleaner"};
             cachies = new ConcurrentDictionary<string, Cachie>(Environment.ProcessorCount * 2, 1024);
         }
 

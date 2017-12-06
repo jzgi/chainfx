@@ -178,7 +178,9 @@ function crop(trig, ordinals, siz, circle, title) {
 }
 
 function bind(url, ordinal, width, height, circle) {
+
     if (ordinal) url = url + '-' + ordinal;
+    
     var mc = $('#crop');
     mc.croppie('destroy');
     mc.croppie({
@@ -193,7 +195,9 @@ function bind(url, ordinal, width, height, circle) {
 }
 
 function upload(url, ordinal, circle) {
+
     if (ordinal) url = url + '-' + ordinal;
+
     // get blob of cropped image
     $('#crop').croppie('result',
         {
@@ -244,7 +248,8 @@ function prepay(trig) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         location.reload();
                     }
-                });
+                }
+            );
         },
         error: function (res) {
             alert('服务器访问失败');

@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace Greatbone.Core
 {
     /// <summary>
     /// An environment for database operations based on current service.
     /// </summary>
-    public class DbContext : IDataInput, IDisposable
+    public class DbContext : IDataInput, IDataOutput<DbContext>, IDisposable
     {
+        static readonly string[] PARAMS =
+        {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"
+        };
+
         readonly Service service;
 
         readonly IDoerContext<IDoer> doerCtx;
@@ -19,10 +25,8 @@ namespace Greatbone.Core
 
         readonly NpgsqlCommand command;
 
-        // can be null
+        // generator of sql string, can be null
         DbSql sql;
-
-        readonly DbParameters parameters;
 
         NpgsqlTransaction transact;
 
@@ -32,15 +36,30 @@ namespace Greatbone.Core
 
         bool disposed;
 
+        // current parameter index
+        int index;
+
         internal DbContext(Service service, IDoerContext<IDoer> doerCtx = null)
         {
             this.service = service;
             this.doerCtx = doerCtx;
-
             connection = new NpgsqlConnection(service.ConnectionString);
-            command = new NpgsqlCommand();
-            parameters = new DbParameters(command.Parameters);
-            command.Connection = connection;
+            command = new NpgsqlCommand
+            {
+                Connection = connection
+            };
+        }
+
+        void Clear()
+        {
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+            ordinal = 0;
+            command.Parameters.Clear();
+            index = 0;
         }
 
         public void Begin(IsolationLevel level)
@@ -76,17 +95,6 @@ namespace Greatbone.Core
             }
         }
 
-        void Clear()
-        {
-            if (reader != null)
-            {
-                reader.Close();
-                reader = null;
-            }
-            parameters.Clear();
-            ordinal = 0;
-        }
-
         public DbSql Sql(string str)
         {
             if (sql == null)
@@ -101,12 +109,12 @@ namespace Greatbone.Core
             return sql;
         }
 
-        public bool Query1(Action<DbParameters> p = null, bool prepare = true)
+        public bool Query1(Action<DbContext> p = null, bool prepare = true)
         {
             return Query1(sql.ToString(), p, prepare);
         }
 
-        public bool Query1(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public bool Query1(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -118,19 +126,19 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             reader = command.ExecuteReader();
             return reader.Read();
         }
 
-        public bool Query(Action<DbParameters> p = null, bool prepare = true)
+        public bool Query(Action<DbContext> p = null, bool prepare = true)
         {
             return Query(sql.ToString(), p, prepare);
         }
 
-        public bool Query(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public bool Query(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -142,14 +150,14 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
 
-        public async Task<bool> QueryAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public async Task<bool> QueryAsync(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -161,7 +169,7 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
@@ -204,12 +212,12 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(Action<DbParameters> p = null, bool prepare = true)
+        public int Execute(Action<DbContext> p = null, bool prepare = true)
         {
             return Execute(sql.ToString(), p, prepare);
         }
 
-        public int Execute(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public int Execute(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -220,18 +228,18 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             return command.ExecuteNonQuery();
         }
 
-        public async Task<int> ExecuteAsync(Action<DbParameters> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(Action<DbContext> p = null, bool prepare = true)
         {
             return await ExecuteAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<int> ExecuteAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -242,18 +250,18 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             return await command.ExecuteNonQueryAsync();
         }
 
-        public object Scalar(Action<DbParameters> p = null, bool prepare = true)
+        public object Scalar(Action<DbContext> p = null, bool prepare = true)
         {
             return Scalar(sql.ToString(), p, prepare);
         }
 
-        public object Scalar(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public object Scalar(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -264,19 +272,19 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             object res = command.ExecuteScalar();
             return res == DBNull.Value ? null : res;
         }
 
-        public async Task<object> ScalarAsync(Action<DbParameters> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(Action<DbContext> p = null, bool prepare = true)
         {
             return await ScalarAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<object> ScalarAsync(string cmdtext, Action<DbParameters> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(string cmdtext, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -287,14 +295,14 @@ namespace Greatbone.Core
             command.CommandType = CommandType.Text;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             return await command.ExecuteScalarAsync();
         }
 
         // TODO
-        public async Task<object> CallAsync(string storedproc, Action<DbParameters> p = null, bool prepare = true)
+        public async Task<object> CallAsync(string storedproc, Action<DbContext> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -305,7 +313,7 @@ namespace Greatbone.Core
             command.CommandType = CommandType.StoredProcedure;
             if (p != null)
             {
-                p(parameters);
+                p(this);
                 if (prepare) command.Prepare();
             }
             return await command.ExecuteScalarAsync();
@@ -1066,6 +1074,399 @@ namespace Greatbone.Core
             }
             v = null;
             return this;
+        }
+
+
+        //
+        // PARAMETERS
+
+        public DbContext PutNull(string name)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.AddWithValue(name, DBNull.Value);
+            return this;
+        }
+
+        public DbContext Put(string name, JNumber v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Numeric)
+            {
+                Value = v.Decimal
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, IDataInput v)
+        {
+            return this;
+        }
+
+        public DbContext Put(string name, bool v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, short v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Smallint)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, int v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, long v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bigint)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, double v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Double)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, decimal v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, DateTime v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+
+            bool date = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
+
+            command.Parameters.Add(new NpgsqlParameter(name, date ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
+            {
+                Value = v
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, string v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            int len = v?.Length ?? 0;
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, len)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, ArraySegment<byte> v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
+            {
+                Value = (v.Array != null) ? (object) v : DBNull.Value
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, JObj v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = v.ToString()
+                });
+            }
+            return this;
+        }
+
+        public DbContext Put(string name, JArr v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = v.ToString()
+                });
+            }
+            return this;
+        }
+
+        public DbContext Put(string name, short[] v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, int[] v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, long[] v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, string[] v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
+            return this;
+        }
+
+        public DbContext Put(string name, Map<string, string> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbContext Put(string name, IData v, short proj = 0x00ff)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DataInputUtility.ToString(v, proj)
+                });
+            }
+            return this;
+        }
+
+        public DbContext Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DataInputUtility.ToString(v, proj)
+                });
+            }
+            return this;
+        }
+
+        //
+        // positional
+        //
+
+        public DbContext SetNull()
+        {
+            return PutNull(null);
+        }
+
+        public DbContext Set(IDataInput v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(bool v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(short v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(int v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(long v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(double v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(decimal v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(JNumber v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(DateTime v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(string v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(ArraySegment<byte> v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(short[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(int[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(long[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(string[] v)
+        {
+            return Put(null, v);
+        }
+
+        public DbContext Set(IData v, short proj = 0x00ff)
+        {
+            return Put(null, v, proj);
+        }
+
+        public DbContext Set<D>(D[] v, short proj = 0x00ff) where D : IData
+        {
+            return Put(null, v, proj);
         }
 
 

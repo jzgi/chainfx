@@ -83,51 +83,58 @@ namespace Greatbone.Samp
         [Ui("购买"), Tool(ButtonShow, 1), Itemly('A')]
         public async Task Add(ActionContext ac)
         {
+            // NOTE it can be a work order if current user is an operator
+
+            User prin = (User) ac.Principal;
             string shopid = ac[-1];
             string name = ac[this];
-            User prin = (User) ac.Principal;
             string unit;
             decimal price;
-            short qty;
+            short num;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
                     var exist = (bool?) dc.Scalar("SELECT TRUE FROM orders WHERE status = 0 AND wx = @1 AND shopid = @2 LIMIT 1", p => p.Set(prin.wx).Set(shopid));
-
                     dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2");
                     dc.Query1(p => p.Set(shopid).Set(name));
                     var o = dc.ToObject<Item>();
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        if (exist.HasValue)
+                        if (exist == true)
                         {
                             h.FIELD_().A("查看购物车", "/my//cart/", true)._FIELD();
                         }
-                        else
+                        else // ask for address
                         {
                             dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string city).Let(out string[] areas);
-                            h.FIELDSET_("您的收货地址");
+                            h.FIELDSET_("您的地址");
                             if (areas != null)
                             {
                                 ac.Query.Let(out string a).Let(out string b).Let(out string c).Let(out string tel);
+                                if (prin.oprat == shopid)
+                                {
+                                    bool work = false;
+                                    h.CHECKBOX(nameof(work), work,"销售预提");
+                                }
                                 if (a == null)
                                 {
 //                                    (a, b, c) = prin.addr.To3Strings('\t');
                                 }
-                                h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, City.SpotsOf(city, a), box: 4).TEXT(nameof(c), c, box: 4);
+                                h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, City.SitesOf(city, a), box: 4).TEXT(nameof(c), c, box: 4);
                             }
                             else // formless address
                             {
                                 h.TEXT(nameof(prin.addr), prin.addr, tip: "您的完整地址");
                             }
-                            h.TEL(nameof(prin.tel), prin.tel, "你的随身电话", required: true);
+                            h.TEL(nameof(prin.tel), prin.tel, "您的随身电话", required: true);
                             h._FIELDSET();
                         }
+                        //
                         h.FIELDSET_("加入购物车");
-                        h.THUMBNAIL("icon", box: 3).NUMBER(nameof(qty), o.min, min: o.min, step: o.step, box: 9);
+                        h.THUMBNAIL("icon", box: 3).NUMBER(nameof(num), o.min, min: o.min, step: o.step, box: 9);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -135,21 +142,15 @@ namespace Greatbone.Samp
                 return;
             }
 
-
-            var f = await ac.ReadAsync<Form>();
-
             // from the dialog
-            unit = f[nameof(unit)];
-            price = f[nameof(price)];
-            qty = f[nameof(qty)];
-
+            (await ac.ReadAsync<Form>()).Let(out unit).Let(out price).Let(out num);
             using (var dc = ac.NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE shopid = @1 AND wx = @2 AND status = 0");
                 if (dc.Query1(p => p.Set(shopid).Set(prin.wx)))
                 {
                     var o = dc.ToObject<Order>();
-                    o.AddItem(name, price, qty, unit);
+                    o.AddItem(name, price, num, unit);
                     o.SetTotal();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
@@ -158,18 +159,13 @@ namespace Greatbone.Samp
                     dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                     dc.Query1(p => p.Set(shopid).Set(prin.wx));
                     var shop = dc.ToObject<Shop>();
-
                     var o = new Order
                     {
                         rev = 1,
                         shopid = shopid,
                         shopname = shop.name,
-                        wx = prin.wx,
-                        name = prin.name,
-                        tel = prin.tel,
-                        city = prin.city,
-                        addr = prin.addr,
-                        items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}},
+                        wx = prin.wx, name = prin.name, tel = prin.tel, city = prin.city, addr = prin.addr,
+                        items = new[] {new OrderItem {name = name, price = price, qty = num, unit = unit}},
                         min = shop.min,
                         notch = shop.notch,
                         off = shop.off

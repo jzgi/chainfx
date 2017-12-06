@@ -6,7 +6,7 @@ namespace Greatbone.Samp
     {
         protected UserWork(WorkContext wc) : base(wc)
         {
-            CreateVar<V, string>((obj) => ((User) obj).wx);
+            CreateVar<V, string>((obj) => ((User)obj).wx);
         }
     }
 

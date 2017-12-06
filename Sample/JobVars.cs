@@ -198,13 +198,13 @@ namespace Greatbone.Samp
                 h._CARD();
 
                 h.CARD_();
-                h.CAPTION(false, "存料");
+                h.CAPTION(false, "盘存");
                 if (o.supplies != null)
                 {
                     for (int i = 0; i < o.supplies.Length; i++)
                     {
-                        var art = o.supplies[i];
-                        h.FIELD(art.name, box: 8).FIELD(art.qty, box: 2).FIELD(art.unit, box: 2);
+                        var sup = o.supplies[i];
+                        h.FIELD(sup.name, box: 8).FIELD(sup.qty, box: 2).FIELD(sup.unit, box: 2);
                     }
                 }
                 h.TAIL();
@@ -261,8 +261,7 @@ namespace Greatbone.Samp
                 m._FIELDSET();
 
                 m.FIELDSET_("添加人员");
-                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                m.SELECT(nameof(opr), opr, Oprs, "权限");
+                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, box: 8).SELECT(nameof(opr), opr, Oprs, box: 4);
                 m.BUTTON(nameof(grant), 2, "添加");
                 m._FIELDSET();
                 m._FORM();

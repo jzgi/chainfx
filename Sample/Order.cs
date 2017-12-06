@@ -28,6 +28,7 @@ namespace Greatbone.Samp
         internal short rev;
         internal string shopid;
         internal string shopname;
+        internal bool work; // whether a work order
         internal string wx; // weixin openid
         internal string name; // customer name
         internal string tel;
@@ -39,7 +40,7 @@ namespace Greatbone.Samp
         internal decimal off;
         internal decimal total; // total price
         internal decimal cash; // amount recieved
-        internal DateTime paid; 
+        internal DateTime paid;
         internal DateTime aborted;
         internal DateTime finished;
         internal string note;
@@ -54,6 +55,7 @@ namespace Greatbone.Samp
             }
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(shopname), ref shopname);
+            i.Get(nameof(work), ref work);
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
@@ -84,6 +86,7 @@ namespace Greatbone.Samp
             }
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
+            o.Put(nameof(work), work);
             o.Put(nameof(wx), wx);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
@@ -112,20 +115,20 @@ namespace Greatbone.Samp
             return null;
         }
 
-        public void AddItem(string name, decimal price, short qty, string unit)
+        public void AddItem(string name, decimal price, short num, string unit)
         {
-            if (items == null)
-            {
-                items = new[] {new OrderItem {name = name, price = price, qty = qty, unit = unit}};
-            }
             int idx = items.FindIndex(o => o.name.Equals(name));
             if (idx != -1)
             {
-                items[idx].qty += qty;
+                if (work) items[idx].load += num;
+                else items[idx].qty += num;
             }
             else
             {
-                items = items.AddOf(new OrderItem() {name = name, price = price, qty = qty, unit = unit});
+                var o = new OrderItem {name = name, unit = unit, price = price, qty = num};
+                if (work) o.load = num;
+                else o.qty = num;
+                items = items.AddOf(o);
             }
         }
 
@@ -163,26 +166,29 @@ namespace Greatbone.Samp
     public struct OrderItem : IData
     {
         internal string name;
+        internal string unit;
         internal decimal price;
         internal short qty;
-        internal string unit;
+        internal short load; // work order kept
 
         public decimal Subtotal => price * qty;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
             i.Get(nameof(name), ref name);
+            i.Get(nameof(unit), ref unit);
             i.Get(nameof(price), ref price);
             i.Get(nameof(qty), ref qty);
-            i.Get(nameof(unit), ref unit);
+            i.Get(nameof(load), ref load);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
+            o.Put(nameof(unit), unit);
             o.Put(nameof(price), price);
             o.Put(nameof(qty), qty);
-            o.Put(nameof(unit), unit);
+            o.Put(nameof(load), load);
         }
 
         public void AddQty(short qty)

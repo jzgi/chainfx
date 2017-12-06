@@ -11,14 +11,14 @@ namespace Greatbone.Samp
 
         public static Area[] AreasOf(string city) => city == null ? null : All[city]?.areas;
 
-        public static string[] SpotsOf(string city, string area)
+        public static string[] SitesOf(string city, string area)
         {
             var areas = AreasOf(city);
             if (areas != null)
             {
                 for (int i = 0; i < areas.Length; i++)
                 {
-                    if (areas[i].id == area) return areas[i].spots;
+                    if (areas[i].name == area) return areas[i].sites;
                 }
             }
             return null;
@@ -58,25 +58,25 @@ namespace Greatbone.Samp
 
     public struct Area : IData
     {
-        internal string id;
+        internal string name;
 
-        internal string[] spots;
+        internal string[] sites;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(spots), ref spots);
+            i.Get(nameof(name), ref name);
+            i.Get(nameof(sites), ref sites);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(spots), spots);
+            o.Put(nameof(name), name);
+            o.Put(nameof(sites), sites);
         }
 
         public override string ToString()
         {
-            return id;
+            return name;
         }
     }
 }
