@@ -98,7 +98,7 @@ namespace Greatbone.Samp
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Group = 1), Tool(ButtonShow, 1)]
+        [Ui("设密码", Group = 1), Tool(ButtonShow)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -147,9 +147,9 @@ namespace Greatbone.Samp
         {
             Create<OprItemWork>("item");
 
-            Create<OprNewWork>("newly");
+            Create<OprNewWork>("new");
 
-            Create<OprOldWork>("oldly");
+            Create<OprOldWork>("old");
 
             Create<OprCashWork>("cash");
         }
@@ -335,7 +335,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("营业状态", Group = 1), Tool(ButtonShow, 1), Auth(OPRMEM)]
+        [Ui("营业状态", Group = 1), Tool(ButtonShow), Auth(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             string shopid = ac[this];
@@ -364,7 +364,7 @@ namespace Greatbone.Samp
             ac.GivePane(200);
         }
 
-        [Ui("客服", Group = 1), Tool(ButtonShow, 1)]
+        [Ui("客服", Group = 1), Tool(ButtonShow)]
         public void contact(ActionContext ac)
         {
             string shopid = ac[this];
@@ -403,7 +403,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("调整", Group = 2), Tool(ButtonShow, 1), Auth(OPRMEM)]
+        [Ui("调整", Group = 2), Tool(ButtonShow), Auth(OPRMEM)]
         public async Task stock(ActionContext ac)
         {
             string shopid = ac[this];

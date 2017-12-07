@@ -111,7 +111,7 @@ namespace Greatbone.Samp
                             if (prin.oprat == shopid) // staff
                             {
                                 bool work = false;
-                                h.CHECKBOX(nameof(work), work, "销售提货", box: 8);
+                                h.CHECKBOX(nameof(work), work, "移动销售领取", box: 8);
                             }
                             dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string city).Let(out string[] areas);

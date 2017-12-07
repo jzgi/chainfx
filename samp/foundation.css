@@ -2972,17 +2972,25 @@ html.is-reveal-open body {
 
 @media print, screen and (min-width: 40em) {
     .reveal.small {
-        width: 50%;
+        width: 40%;
         max-width: 62.5rem;
         height: 70%;
     }
 }
 
 @media print, screen and (min-width: 40em) {
-    .reveal.large {
-        width: 70%;
+    .reveal.medium {
+        width: 50%;
         max-width: 62.5rem;
         height: 80%;
+    }
+}
+
+@media print, screen and (min-width: 40em) {
+    .reveal.large {
+        width: 60%;
+        max-width: 62.5rem;
+        height: 90%;
     }
 }
 
@@ -3001,7 +3009,7 @@ html.is-reveal-open body {
 }
 
 @media screen and (max-width: 39.9375em) {
-    .reveal.small, .reveal.large {
+    .reveal.medium, .reveal.large {
         top: 0;
         left: 0;
         width: 100%;
@@ -3024,6 +3032,19 @@ html.is-reveal-open body {
         height: 60%;
         height: 60vh;
         min-height: 20rem;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+
+@media screen and (max-width: 39.9375em) {
+    .reveal.small {
+        position: relative;
+        width: 90%;
+        max-width: none;
+        height: 80%;
+        height: 80vh;
+        min-height: 25rem;
         margin-right: auto;
         margin-left: auto;
     }

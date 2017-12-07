@@ -164,7 +164,7 @@ namespace Greatbone.Samp
                         dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
                         dc.Let(out string[] areas);
                         m.FORM_();
-                        m.RADIOSET(nameof(filter), filter, areas);
+                        m.RADIOSET<string>(nameof(filter), filter, areas);
                         m._FORM();
                     }
                 });

@@ -87,31 +87,28 @@ namespace Greatbone.Samp
             ac.GiveRedirect();
         }
 
-        [Ui("流动库存","当前流动库存状况"), Tool(AnchorOpen, 2)]
-        public void pos(ActionContext ac)
+        [Ui("移动销售","当前移动销售状况"), Tool(AnchorOpen, 2)]
+        public void mosale(ActionContext ac)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND direct", p => p.Set(shopid));
+                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND mosale", p => p.Set(shopid));
                 var os = dc.ToArray<Order>();
-                ac.GivePage(200, h =>
+                ac.GivePane(200, h =>
                 {
+                    h.FORM_();
                     for (int i = 0; i < os.Length; i++)
                     {
                         var o = os[i];
-                        h.CARD_();
-                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
-                        h.FIELD_("收货").T(o.name)._T(o.city)._T(o.addr)._FIELD();
+                        h.CAPTION_(false).T(o.addr)._T(o.id).SEP().T(o.paid)._CAPTION(o.name);
                         for (int j = 0; j < o.items.Length; j++)
                         {
                             var oi = o.items[j];
                             h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
                         }
-                        h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
-                        h.TAIL();
-                        h._CARD();
                     }
+                    h._FORM();
                 }, false, 3);
             }
         }

@@ -1880,22 +1880,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOXES(string name, IDataInput inp, Action<IDataInput, HtmlContent, char> putter)
-        {
-            while (inp.Next())
-            {
-                Add("<label>");
-                Add("<input type=\"checkbox\" name=\"");
-                Add(name);
-                Add("\" value=\"");
-                putter(inp, this, 'V'); // putting value
-                Add("\">");
-                putter(inp, this, 'L'); // putting label
-                Add("</label>");
-            }
-            return this;
-        }
-
         public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, byte box = 0x0c)
         {
             FIELD_(null, box);
@@ -1920,13 +1904,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOXGROUP(string name, string[] v, string[] opts, string legend = null, byte box = 0x0c)
+        public HtmlContent CHECKBOXSET(string name, string[] v, string[] opts, string legend = null, byte box = 0x0c)
         {
-            if (legend != null)
-            {
-                FIELDSET_(legend, box);
-            }
-
+            FIELDSET_(legend, box);
             for (int i = 0; i < opts.Length; i++)
             {
                 var item = opts[i];
@@ -1942,11 +1922,7 @@ namespace Greatbone.Core
                 Add(item);
                 Add(" </label>");
             }
-
-            if (legend != null)
-            {
-                _FIELDSET();
-            }
+            _FIELDSET();
             return this;
         }
 
@@ -2065,44 +2041,27 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS<O>(string name, short v, Map<short, O> opt = null, string legend = null, bool required = false)
+        public HtmlContent RADIOSET<O>(string name, short v, Map<short, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
-            Add("<fieldset>");
-
-            Add("<legend>");
-            AddLabel(legend, name);
-            Add("</legend>");
-
+            FIELDSET_(legend, box);
             opt?.ForEach((key, item) =>
             {
                 Add("<label>");
                 Add("<input type=\"radio\" name=\"");
                 Add(name);
-
                 Add("\" id=\"");
                 Add(name);
                 Add(key);
                 Add("\"");
-
                 Add("\" value=\"");
                 Add(key);
                 Add("\"");
-
                 if (key.Equals(v)) Add(" checked");
                 if (required) Add(" required");
                 Add(">");
                 Add("</label>");
-
-                Add(key);
-                //                Add("<label for=\"");
-                //                Add(name);
-                //                Add(key);
-                //                Add("\">");
-                //                Add(item.ToString());
-                //                Add("</label>");
             });
-
-            Add("</fieldset>");
+            _FIELDSET();
             return this;
         }
 
@@ -2131,14 +2090,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false)
+        public HtmlContent RADIOS<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
-            Add("<fieldset>");
-
-            Add("<legend>");
-            AddLabel(legend, name);
-            Add("</legend>");
-
+            FIELDSET_(legend, box);
             opt?.ForEach((key, item) =>
             {
                 Add("<input type=\"radio\" name=\"");
@@ -2164,21 +2118,13 @@ namespace Greatbone.Core
                 Add(item.ToString());
                 Add("</label>");
             });
-
-            Add("</fieldset>");
+            _FIELDSET();
             return this;
         }
 
-        public HtmlContent RADIOGROUP(string name, string v, string[] opt, string legend = null, bool required = false)
+        public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, bool required = false, byte box = 0x0c)
         {
-            if (legend != null)
-            {
-                Add("<fieldset>");
-                Add("<legend>");
-                Add(legend);
-                Add("</legend>");
-            }
-
+            FIELDSET_(legend, box);
             for (int i = 0; i < opt.Length; i++)
             {
                 var item = opt[i];
@@ -2196,10 +2142,7 @@ namespace Greatbone.Core
                 Add(item);
                 Add("</label>");
             }
-            if (legend != null)
-            {
-                Add("</fieldset>");
-            }
+            _FIELDSET();
             return this;
         }
 

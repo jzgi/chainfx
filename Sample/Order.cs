@@ -28,7 +28,7 @@ namespace Greatbone.Samp
         internal short rev;
         internal string shopid;
         internal string shopname;
-        internal bool work; // whether a work order
+        internal bool mosale; // whether a work order
         internal string wx; // weixin openid
         internal string name; // customer name
         internal string tel;
@@ -55,7 +55,7 @@ namespace Greatbone.Samp
             }
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(shopname), ref shopname);
-            i.Get(nameof(work), ref work);
+            i.Get(nameof(mosale), ref mosale);
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
@@ -86,7 +86,7 @@ namespace Greatbone.Samp
             }
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
-            o.Put(nameof(work), work);
+            o.Put(nameof(mosale), mosale);
             o.Put(nameof(wx), wx);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
@@ -120,13 +120,13 @@ namespace Greatbone.Samp
             int idx = items.FindIndex(o => o.name.Equals(name));
             if (idx != -1)
             {
-                if (work) items[idx].load += num;
+                if (mosale) items[idx].load += num;
                 else items[idx].qty += num;
             }
             else
             {
                 var o = new OrderItem {name = name, unit = unit, price = price, qty = num};
-                if (work) o.load = num;
+                if (mosale) o.load = num;
                 else o.qty = num;
                 items = items.AddOf(o);
             }
