@@ -13,7 +13,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui(" 钱账"), Auth(OPRMGR)]
+    [Ui(" 财务"), Auth(OPRMGR)]
     public class OprCashWork : CashWork
     {
         public OprCashWork(WorkContext wc) : base(wc)
@@ -33,8 +33,8 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("登记"), Tool(ButtonShow)]
-        public async Task @new(ActionContext ac)
+        [Ui("记账"), Tool(ButtonShow)]
+        public async Task entry(ActionContext ac)
         {
             string shopid = ac[-1];
             Cash o = null;

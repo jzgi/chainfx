@@ -17,35 +17,6 @@ namespace Greatbone.Samp
     }
 
     [Ui("结款")]
-    [Auth(User.OPRMGR)]
-    public class OprRepayWork : RepayWork<OprRepayVarWork>
-    {
-        public OprRepayWork(WorkContext wc) : base(wc)
-        {
-        }
-
-        public void @default(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
-                {
-                    ac.GiveBoardPage(200, dc.ToArray<Repay>(), (h, o) =>
-                    {
-                        h.CAPTION(false, "截至" + o.till);
-                        h.FIELD(o.total, "金额", box:6).FIELD(o.payer, "划款",box:6);
-                    }, false, 3);
-                }
-                else
-                {
-                    ac.GiveSheetPage(200, (Repay[]) null, null, null);
-                }
-            }
-        }
-    }
-
-    [Ui("结款")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
         public AdmRepayWork(WorkContext wc) : base(wc)

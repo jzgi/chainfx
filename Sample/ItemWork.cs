@@ -29,10 +29,9 @@ namespace Greatbone.Samp
                 ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
                     h.CAPTION(false, o.name, Item.Statuses[o.status], o.status >= Item.ON);
-                    h.IMG(o.name + "/icon", box: 4);
-                    h.BOX_(0x48).P(o.descr, "描述").P(o.content, "主料").P(o.price, "价格")._BOX();
-                    h.FIELD(o.unit, "单位", box: 6).FIELD(o.min, "起订", box: 6);
-                    h.FIELD(o.step, "增减", box: 6).FIELD(o.max, "数量", box: 6);
+                    h.IMG(o.name + "/icon", box: 3);
+                    h.BOX_(0x49).P(o.descr, "描述").P(o.content, "主含").P(o.price, "价格")._BOX();
+                    h.FIELD(o.unit, "单位", box: 3).FIELD(o.min, "起订", box: 3).FIELD(o.step, "增减", box: 3).FIELD(o.max, "数量", box: 3);
                     h.TAIL();
                 });
             }
@@ -86,6 +85,35 @@ namespace Greatbone.Samp
                 }
             }
             ac.GiveRedirect();
+        }
+
+        [Ui("流动库存","当前流动库存状况"), Tool(AnchorOpen, 2)]
+        public void pos(ActionContext ac)
+        {
+            string shopid = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND direct", p => p.Set(shopid));
+                var os = dc.ToArray<Order>();
+                ac.GivePage(200, h =>
+                {
+                    for (int i = 0; i < os.Length; i++)
+                    {
+                        var o = os[i];
+                        h.CARD_();
+                        h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.FIELD_("收货").T(o.name)._T(o.city)._T(o.addr)._FIELD();
+                        for (int j = 0; j < o.items.Length; j++)
+                        {
+                            var oi = o.items[j];
+                            h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
+                        }
+                        h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
+                        h.TAIL();
+                        h._CARD();
+                    }
+                }, false, 3);
+            }
         }
     }
 }

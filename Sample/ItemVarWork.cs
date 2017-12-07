@@ -106,24 +106,24 @@ namespace Greatbone.Samp
                         {
                             h.FIELD_().A("查看购物车", "/my//cart/", true)._FIELD();
                         }
-                        else // ask for address
+                        else // new order, ask for necessary info
                         {
+                            if (prin.oprat == shopid) // staff
+                            {
+                                bool work = false;
+                                h.CHECKBOX(nameof(work), work, "销售提货", box: 8);
+                            }
                             dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string city).Let(out string[] areas);
-                            h.FIELDSET_("您的地址");
+                            h.FIELDSET_("收货地址");
                             if (areas != null)
                             {
                                 ac.Query.Let(out string a).Let(out string b).Let(out string c).Let(out string tel);
-                                if (prin.oprat == shopid)
-                                {
-                                    bool work = false;
-                                    h.CHECKBOX(nameof(work), work,"销售预提");
-                                }
+                                h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, City.SitesOf(city, a), box: 4).TEXT(nameof(c), c, box: 4);
                                 if (a == null)
                                 {
 //                                    (a, b, c) = prin.addr.To3Strings('\t');
                                 }
-                                h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, City.SitesOf(city, a), box: 4).TEXT(nameof(c), c, box: 4);
                             }
                             else // formless address
                             {
@@ -164,12 +164,16 @@ namespace Greatbone.Samp
                         rev = 1,
                         shopid = shopid,
                         shopname = shop.name,
-                        wx = prin.wx, name = prin.name, tel = prin.tel, city = prin.city, addr = prin.addr,
-                        items = new[] {new OrderItem {name = name, price = price, qty = num, unit = unit}},
+                        wx = prin.wx,
+                        name = prin.name,
+                        tel = prin.tel,
+                        city = prin.city,
+                        addr = prin.addr,
                         min = shop.min,
                         notch = shop.notch,
                         off = shop.off
                     };
+                    o.AddItem(name, price, num, unit);
                     o.SetTotal();
                     const short proj = -1 ^ Order.ID ^ Order.LATER;
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);

@@ -149,91 +149,44 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("分区..."), Tool(AnchorPrompt)]
+        [Ui("分区域..."), Tool(AnchorPrompt)]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
             bool inner = ac.Query[nameof(inner)];
+            string filter = (string) ac.Query[nameof(filter)] ?? string.Empty;
             if (inner)
             {
                 ac.GivePane(200, m =>
                 {
-                    string filter = "abc";
                     using (var dc = ac.NewDbContext())
                     {
                         dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
                         dc.Let(out string[] areas);
                         m.FORM_();
-                        m.RADIO(nameof(filter), filter, "sdfasdf");
-                        m.RADIOS(nameof(filter), filter, areas);
+                        m.RADIOSET(nameof(filter), filter, areas);
                         m._FORM();
                     }
                 });
                 return;
             }
+
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = " + Order.PAID + " ORDER BY prepare, id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
-                    h.FIELD_("收货")._T(o.name)._T(o.city)._T(o.addr)._FIELD();
+                    h.FIELD_("收货").T(o.name)._T(o.city)._T(o.addr)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
-                        h.IMG("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                        h.BOX_(5).P(oi.name).P(oi.price)._BOX();
-                        h.BOX_(5).P(oi.qty, suffix: oi.unit)._BOX();
+                        h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
                     }
-                    h.BOX_(7).T("<p>").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元").T("</p>")._BOX();
-                    h.BOX_(5).P(o.total, "总计")._BOX();
-                    h.TAIL();
+                    h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
+                    h.TAIL(o.Err(), false);
                 }, false, 3);
             }
-        }
-
-        [Ui("备货"), Tool(ButtonConfirm)]
-        public async Task prepare(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            var f = await ac.ReadAsync<Form>();
-            int[] key = f[nameof(key)];
-            if (key != null)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("UPDATE orders SET prepare = NOT prepare WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key).T(" RETURNING prepare, wx, total");
-                    if (dc.Query(p => p.Set(shopid), false)) // non-prepared statement
-                    {
-                        while (dc.Next())
-                        {
-                            dc.Let(out bool prepare).Let(out string wx).Let(out decimal total);
-                            if (prepare)
-                            {
-                                await WeiXinUtility.PostSendAsync(wx, "【通知】订单开始备货生产（金额" + total + "）");
-                            }
-                        }
-                    }
-                }
-            }
-            ac.GiveRedirect();
-        }
-
-        [Ui("备完"), Tool(ButtonConfirm)]
-        public async Task ready(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            var f = await ac.ReadAsync<Form>();
-            int[] key = f[nameof(key)];
-            if (key != null)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Sql("UPDATE orders SET status = WHERE shopid = @1 AND status = ").T(Order.PAID).T(" AND id")._IN_(key);
-                    dc.Execute(p => p.Set(shopid), false); // non-prepared statement
-                }
-            }
-            ac.GiveRedirect();
         }
     }
 

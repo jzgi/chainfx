@@ -147,11 +147,9 @@ namespace Greatbone.Samp
         {
             Create<OprItemWork>("item");
 
-            Create<OprNewWork>("new");
+            Create<OprNewWork>("newly");
 
-            Create<OprOldWork>("old");
-
-            Create<OprRepayWork>("repay");
+            Create<OprOldWork>("oldly");
 
             Create<OprCashWork>("cash");
         }

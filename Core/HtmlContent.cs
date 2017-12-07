@@ -1168,21 +1168,24 @@ namespace Greatbone.Core
 
         public HtmlContent _TAIL(short group = 0)
         {
-            if (model == null)
+            if (group >= 0)
             {
-                var work = actionCtx.Work;
-                Add("<div style=\"margin-left: auto\">");
-                Tools(work, (short) ordinal, null); // negative orderinal as group
-                Add("</div>");
-            }
-            else
-            {
-                Work work = actionCtx.Work.VarWork;
-                if (work != null)
+                if (model == null)
                 {
+                    var work = actionCtx.Work;
                     Add("<div style=\"margin-left: auto\">");
-                    Tools(work, group, model);
+                    Tools(work, (short) ordinal, null); // negative orderinal as group
                     Add("</div>");
+                }
+                else
+                {
+                    Work work = actionCtx.Work.VarWork;
+                    if (work != null)
+                    {
+                        Add("<div style=\"margin-left: auto\">");
+                        Tools(work, group, model);
+                        Add("</div>");
+                    }
                 }
             }
             Add("</div>");
@@ -2062,12 +2065,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS<O>(string name, short v, Map<short, O> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS<O>(string name, short v, Map<short, O> opt = null, string legend = null, bool required = false)
         {
             Add("<fieldset>");
 
             Add("<legend>");
-            AddLabel(label, name);
+            AddLabel(legend, name);
             Add("</legend>");
 
             opt?.ForEach((key, item) =>
@@ -2103,14 +2106,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS<O>(string name, string v, O[] opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOSET<O>(string name, string v, O[] opt = null, string legend = null, bool required = false, byte box = 12)
         {
-            Add("<fieldset>");
-
-            Add("<legend>");
-            AddLabel(label, name);
-            Add("</legend>");
-
+            FIELDSET_(legend, box);
             if (opt != null)
             {
                 for (int i = 0; i < opt.Length; i++)
@@ -2119,32 +2117,26 @@ namespace Greatbone.Core
                     Add("<label>");
                     Add("<input type=\"radio\" name=\"");
                     Add(name);
-
-                    Add("\" id=\"");
-                    Add(name);
-                    Add(o.ToString());
-                    Add("\"");
-
                     Add("\" value=\"");
                     Add(o.ToString());
                     Add("\"");
-
                     if (o.ToString().Equals(v)) Add(" checked");
                     if (required) Add(" required");
                     Add(">");
+                    Add(o.ToString());
                     Add("</label>");
                 }
             }
-            Add("</fieldset>");
+            _FIELDSET();
             return this;
         }
 
-        public HtmlContent RADIOS<O>(string name, string v, Map<string, O> opt = null, string label = null, bool required = false)
+        public HtmlContent RADIOS<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false)
         {
             Add("<fieldset>");
 
             Add("<legend>");
-            AddLabel(label, name);
+            AddLabel(legend, name);
             Add("</legend>");
 
             opt?.ForEach((key, item) =>

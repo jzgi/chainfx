@@ -201,6 +201,12 @@ namespace Greatbone.Samp
         }
     }
 
+    public class OprCartVarWork : OrderVarWork
+    {
+        public OprCartVarWork(WorkContext wc) : base(wc)
+        {
+        }
+    }
 
     public class OprNewVarWork : OrderVarWork
     {
@@ -212,7 +218,40 @@ namespace Greatbone.Samp
         public async Task abort(ActionContext ac)
         {
             int orderid = ac[this];
+            if (ac.GET)
+            {
+                ac.GivePane(200, m => { m.FORM_().CALLOUT("确定要撤销此单，实收金额退回给买家?")._FORM(); });
+            }
+            else
+            {
+                decimal total = 0, cash = 0;
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(orderid)))
+                    {
+                        dc.Let(out total).Let(out cash);
+                    }
+                }
+                string err = await WeiXinUtility.PostRefundAsync(orderid, total, cash);
+                if (err == null) // success
+                {
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(ABORTED).Set(orderid));
+                    }
+                    ac.GivePane(200);
+                }
+                else // err
+                {
+                    ac.GivePane(200, m => { m.FORM_().CALLOUT(err).CALLOUT("确定重复操作吗？")._FORM(); });
+                }
+            }
+        }
 
+        [Ui("出单"), Tool(ButtonShow)]
+        public async Task deduct(ActionContext ac)
+        {
+            int orderid = ac[this];
             if (ac.GET)
             {
                 ac.GivePane(200, m => { m.FORM_().CALLOUT("确定要撤销此单，实收金额退回给买家?")._FORM(); });
