@@ -5,15 +5,14 @@
 const PROMPT = 2, SHOW = 4, OPEN = 8;
 
 function dialog(trig, mode, siz, title) {
-
-    var sizg = siz == 1 ? 'tiny' : siz == 2 ? 'small' : siz == 3 ? 'large' : 'full';
-
+    var sizg = siz == 1 ? 'tiny' : siz == 2 ? 'small' : siz == 3 ? 'medium' : siz == 4 ? 'large' : 'full';
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
     var tag = trig.tagName;
     var action;
     var method = 'post';
     var src;
+    var trigclass;
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
@@ -23,6 +22,7 @@ function dialog(trig, mode, siz, title) {
         } else {
             src = action;
         }
+        trigclass = ' button-trig';
     } else if (tag == 'A') {
         action = trig.href;
         method = 'get';
@@ -31,13 +31,14 @@ function dialog(trig, mode, siz, title) {
         } else {
             src = action;
         }
+        trigclass = ' anchor-trig';
     }
 
     title = title || trig.innerHTML;
 
     var bottom = mode == OPEN ? '3.5rem' : '6rem';
     var html =
-        '<div id="dyndlg" class="' + sizg + ' reveal" data-reveal data-close-on-click="false">' +
+        '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' +
         '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
         '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary\" style="display: block; margin-top: 0.625rem; margin-left: auto; margin-right: auto" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
     var dive = $(html);
@@ -52,50 +53,42 @@ function dialog(trig, mode, siz, title) {
 
 // when clicked on the OK button
 function ok(okbtn, mode, formid, tag, action, method) {
-
     var dlge = $('#dyndlg');
-
     if (mode == PROMPT) {
-
         iframe = dlge.find('iframe');
         form = iframe.contents().find('form');
-        if (form.length != 0) {
-
-            if (!form[0].reportValidity()) return;
-
-            if (tag == 'A') { // append to url and switch
-                qstr = $(form[0]).serialize();
+        if (!form.length || !form[0].reportValidity()) return;
+        if (tag == 'A') { // append to url and switch
+            qstr = $(form[0]).serialize();
+            if (qstr) {
+                uri = action.indexOf('?') == -1 ? action + '?' + qstr : action + qstr;
+                location.href = uri;
+            }
+        } else if (tag == 'BUTTON') { // merge to the parent and submit
+            if (method == 'get') {
+                var qstr = $(form[0]).serialize();
                 if (qstr) {
-                    uri = action.indexOf('?') == -1 ? action + '?' + qstr : action + qstr;
-                    location.href = uri;
-                }
-            } else if (tag == 'BUTTON') { // merge to the parent and submit
-                if (method == 'get') {
-                    var qstr = $(form[0]).serialize();
-                    if (qstr) {
-                        // dispose the dialog
-                        dlge.foundation('close');
-                        dlge.foundation('destroy');
-                        dlge.remove();
-                        // load page
-                        location.href = action.split("?")[0] + '?' + qstr;
-                    }
-                } else if (method == 'post') {
-                    var theform = $('#' + formid);
-                    var pairs = $(form[0]).serializeArray();
-                    pairs.forEach(function (e, i) {
-                        $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(theform);
-                    });
-
                     // dispose the dialog
                     dlge.foundation('close');
                     dlge.foundation('destroy');
                     dlge.remove();
-                    // submit
-                    theform.attr('action', action);
-                    theform.attr('method', method);
-                    theform.submit();
+                    // load page
+                    location.href = action.split("?")[0] + '?' + qstr;
                 }
+            } else if (method == 'post') {
+                var theform = $('#' + formid);
+                var pairs = $(form[0]).serializeArray();
+                pairs.forEach(function (e, i) {
+                    $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(theform);
+                });
+                // dispose the dialog
+                dlge.foundation('close');
+                dlge.foundation('destroy');
+                dlge.remove();
+                // submit
+                theform.attr('action', action);
+                theform.attr('method', method);
+                theform.submit();
             }
         }
     } else if (mode == SHOW) {
@@ -107,9 +100,9 @@ function ok(okbtn, mode, formid, tag, action, method) {
         }
     } else {
         if (mode == OPEN) {
-            var iframe = dlge.find('iframe');
-            var form = iframe.contents().find('form');
-            if (form.length != 0) {
+            iframe = dlge.find('iframe');
+            form = iframe.contents().find('form');
+            if (form.length) {
                 if (!form[0].reportValidity()) return;
             }
         }
@@ -124,30 +117,25 @@ function crop(trig, ordinals, siz, circle, title) {
     var action = trig.href || trig.formAction;
     switch (siz) {
         case 1:
-            wid = 120;
-            hei = 120;
-            sizg = 'tiny';
+            wid = 120; hei = 120; sizg = 'tiny';
             break;
         case 2:
-            wid = 240;
-            hei = 240;
-            sizg = 'small';
+            wid = 240; hei = 240; sizg = 'small';
             break;
         case 3:
-            wid = 320;
-            hei = 320;
-            sizg = 'large';
+            wid = 320; hei = 320; sizg = 'medium';
+            break;
+        case 4:
+            wid = 480; hei = 480; sizg = 'large';
             break;
         default:
-            wid = 640;
-            hei = 640;
-            sizg = 'full';
+            wid = 640; hei = 640; sizg = 'full';
             break;
     }
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-left">'
+        '<div class="title-bar"><div class="title-bar-title">'
     if (ordinals > 0) {
         html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ', ' + circle + ') ">';
         for (var i = 1; i <= ordinals; i++) {
@@ -155,7 +143,9 @@ function crop(trig, ordinals, siz, circle, title) {
         }
         html += '</select>';
     }
+    html += '</div>';
     html +=
+        '<div class="title-bar-left">' +
         '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val(), ' + circle + ');">上传</a>' +
         '</div>' +
         '<div class="title-bar-right">' +
@@ -178,9 +168,7 @@ function crop(trig, ordinals, siz, circle, title) {
 }
 
 function bind(url, ordinal, width, height, circle) {
-
     if (ordinal) url = url + '-' + ordinal;
-    
     var mc = $('#crop');
     mc.croppie('destroy');
     mc.croppie({
@@ -195,9 +183,7 @@ function bind(url, ordinal, width, height, circle) {
 }
 
 function upload(url, ordinal, circle) {
-
     if (ordinal) url = url + '-' + ordinal;
-
     // get blob of cropped image
     $('#crop').croppie('result',
         {
@@ -248,8 +234,7 @@ function prepay(trig) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         location.reload();
                     }
-                }
-            );
+                });
         },
         error: function (res) {
             alert('服务器访问失败');

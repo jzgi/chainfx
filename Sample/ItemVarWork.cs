@@ -190,7 +190,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow)]
+        [Ui("修改"), Tool(ButtonShow, 2)]
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -205,12 +205,12 @@ namespace Greatbone.Samp
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
-                        m.FIELD(o.name, "名称", box: 6).TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6);
-                        m.TEXTAREA(nameof(o.descr), o.descr, "描述", max: 30, required: true);
-                        m.TEXT(nameof(o.content), o.content, "主料", required: true);
-                        m.NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6).NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6);
-                        m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6).NUMBER(nameof(o.max), o.max, "数量", box: 6);
-                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
+                        m.FIELD(o.name, "名称");
+                        m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
+                        m.TEXT(nameof(o.content), o.content, label: "主含", max: 10, required: true);
+                        m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
+                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
+                        m.NUMBER(nameof(o.max), o.max, "剩余", box: 6).SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6);
                         m._FORM();
                     });
                 }

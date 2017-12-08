@@ -13,7 +13,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui(" 财务"), Auth(OPRMGR)]
+    [Ui(" 财务"), Role(OPRMGR)]
     public class OprCashWork : CashWork
     {
         public OprCashWork(WorkContext wc) : base(wc)

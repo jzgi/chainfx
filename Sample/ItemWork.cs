@@ -13,7 +13,7 @@ namespace Greatbone.Samp
     }
 
 
-    [Ui("货品")]
+    [Ui("货架")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -37,7 +37,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("新建"), Tool(ButtonShow)]
+        [Ui("新建"), Tool(ButtonShow, 2)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -48,12 +48,10 @@ namespace Greatbone.Samp
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
                     m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
-                    m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true);
-                    m.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                    m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                    m.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
-                    m.NUMBER(nameof(o.max), o.max, "剩余");
-                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
+                    m.TEXT(nameof(o.content), o.content, label: "主含", max: 10, required: true);
+                    m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
+                    m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
+                    m.NUMBER(nameof(o.max), o.max, "剩余", box: 6).SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6);
                     m._FORM();
                 });
             }
@@ -87,7 +85,7 @@ namespace Greatbone.Samp
             ac.GiveRedirect();
         }
 
-        [Ui("移动销售","当前移动销售状况"), Tool(AnchorOpen, 2)]
+        [Ui("移动销售", "当前移动销售状况"), Tool(AnchorOpen, 2)]
         public void mosale(ActionContext ac)
         {
             string shopid = ac[-1];

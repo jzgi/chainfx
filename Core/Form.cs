@@ -296,17 +296,38 @@ namespace Greatbone.Core
 
         public IDataInput Let(out int[] v)
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = null;
+            return this;
         }
 
         public IDataInput Let(out long[] v)
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = null;
+            return this;
         }
 
         public IDataInput Let(out string[] v)
         {
-            throw new NotImplementedException();
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = null;
+            return this;
         }
 
         public IDataInput Let(out Map<string, string> v)

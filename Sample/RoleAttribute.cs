@@ -2,13 +2,13 @@
 
 namespace Greatbone.Samp
 {
-    public class AuthAttribute : AuthorizeAttribute
+    public class RoleAttribute : AuthorizeAttribute
     {
         readonly short opr;
 
         readonly bool adm;
 
-        public AuthAttribute(short opr = 0, bool adm = false)
+        public RoleAttribute(short opr = 0, bool adm = false)
         {
             this.opr = opr;
             this.adm = adm;

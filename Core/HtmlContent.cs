@@ -196,14 +196,14 @@ namespace Greatbone.Core
 
         public HtmlContent _T(string[] v)
         {
-            if (v == null) return this;
-            for (int i = 0; i < v.Length; i++)
+            Add("&nbsp;");
+            if (v != null)
             {
-                if (i > 0)
+                for (int i = 0; i < v.Length; i++)
                 {
-                    Add(" ");
+                    if (i > 0) Add("、");
+                    Add(v[i]);
                 }
-                Add(v[i]);
             }
             return this;
         }
@@ -2211,7 +2211,7 @@ namespace Greatbone.Core
                 Add("\"");
                 if (e.Key == v) Add(" selected");
                 Add(">");
-                Add(e.value.ToString());
+                Add(e.value?.ToString());
                 Add("</option>");
             }
             Add("</select>");

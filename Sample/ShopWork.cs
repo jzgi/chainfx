@@ -62,7 +62,7 @@ namespace Greatbone.Samp
     }
 
     // we are forced to put check here because iframe does not have weixin browsing flags
-    [Auth]
+    [Role]
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)

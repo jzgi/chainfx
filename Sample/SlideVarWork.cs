@@ -4,7 +4,7 @@ using static Greatbone.Core.Modal;
 
 namespace Greatbone.Samp
 {
-    [Auth]
+    [Role]
     public abstract class SlideVarWork : Work
     {
         protected SlideVarWork(WorkContext wc) : base(wc)

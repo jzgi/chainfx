@@ -10,7 +10,7 @@ namespace Greatbone.Samp
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, null},
+            {0, "停业中"},
             {1, "休息中"},
             {2, "营业中"}
         };
@@ -34,7 +34,7 @@ namespace Greatbone.Samp
         internal string oprtel;
         internal string oprname;
 
-        internal Supply[] supplies;
+        internal Article[] articles;
 
         internal short status;
 
@@ -55,7 +55,7 @@ namespace Greatbone.Samp
             i.Get(nameof(min), ref min);
             i.Get(nameof(notch), ref notch);
             i.Get(nameof(off), ref off);
-            i.Get(nameof(supplies), ref supplies);
+            i.Get(nameof(articles), ref articles);
             if ((proj & LATER) == LATER)
             {
                 i.Get(nameof(mgrwx), ref mgrwx);
@@ -85,7 +85,7 @@ namespace Greatbone.Samp
             o.Put(nameof(min), min);
             o.Put(nameof(notch), notch);
             o.Put(nameof(off), off);
-            o.Put(nameof(supplies), supplies);
+            o.Put(nameof(articles), articles);
             if ((proj & LATER) == LATER)
             {
                 o.Put(nameof(mgrwx), mgrwx);
@@ -100,7 +100,7 @@ namespace Greatbone.Samp
     }
 
 
-    public struct Supply : IData
+    public struct Article : IData
     {
         internal string name;
 

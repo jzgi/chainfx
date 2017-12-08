@@ -18,7 +18,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("常规"), Auth(adm: true)]
+    [Ui("常规"), Role(adm: true)]
     public class AdmWork : Work
     {
         public AdmWork(WorkContext wc) : base(wc)
