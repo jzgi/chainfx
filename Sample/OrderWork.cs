@@ -235,7 +235,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("客服")]
+    [Ui("反馈")]
     [Role(adm: true)]
     public class AdmKickWork : OrderWork<AdmKickVarWork>
     {
@@ -247,7 +247,7 @@ namespace Greatbone.Samp
         {
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status >   AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE status > 0 AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();

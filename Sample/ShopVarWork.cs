@@ -46,7 +46,7 @@ namespace Greatbone.Samp
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {
-            CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         [Ui("进入店铺"), Tool(Anchor)]
@@ -98,13 +98,14 @@ namespace Greatbone.Samp
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
+            const short proj = Shop.ADM;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
+                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops WHERE id = @1");
                     dc.Query1(p => p.Set(shopid));
-                    var o = dc.ToObject<Shop>();
+                    var o = dc.ToObject<Shop>(proj);
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -112,21 +113,20 @@ namespace Greatbone.Samp
                         m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
                         m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                        m.TEXT(nameof(o.schedule), o.schedule, "营业");
+                        m.NUMBER(nameof(o.x), o.x, "经度", box: 6).NUMBER(nameof(o.x), o.x, "纬度", box: 6);
                         m._FORM();
                     });
                 }
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Shop>();
-                const short proj = -1 ^ Shop.ID;
+                var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj).T(" WHERE id = @1");
+                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj ^ Shop.ID).T(" WHERE id = @1");
                     dc.Execute(p =>
                     {
-                        o.Write(p, proj);
+                        o.Write(p, proj ^ Shop.ID);
                         p.Set(shopid);
                     });
                 }
@@ -147,7 +147,6 @@ namespace Greatbone.Samp
                     m.FORM_();
                     m.FIELDSET_("查询帐号（手机号）");
                     m.SEARCH(nameof(forid), forid, pattern: "[0-9]+", max: 11, min: 11);
-                    m.BUTTON("查询", false);
                     m._FIELDSET();
                     if (forid != null)
                     {

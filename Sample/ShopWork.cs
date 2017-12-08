@@ -124,9 +124,9 @@ namespace Greatbone.Samp
                 ac.GiveBoardPage(200, dc.ToArray<Shop>(), (h, o) =>
                 {
                     h.CAPTION_(false).T(o.name).T(" / ").T(o.id)._CAPTION();
-                    h.FIELD_("地址", 12).T(o.city)._T(o.addr)._FIELD();
-                    //                        h.FIELD(o.marks, "特色", box:12);
-                    h.FIELD(o.mgrname, "经理");
+                    h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
+                    h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
+                    h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                     h.TAIL();
                 });
             }
@@ -135,10 +135,11 @@ namespace Greatbone.Samp
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
+            const short proj = Shop.ADM;
             if (ac.GET)
             {
                 var o = new Shop() {city = City.All[0].name};
-                o.Read(ac.Query);
+                o.Read(ac.Query, proj);
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
@@ -146,17 +147,17 @@ namespace Greatbone.Samp
                     m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
                     m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                    m.TEXT(nameof(o.schedule), o.schedule, "营业");
+                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20, box: 6).NUMBER(nameof(o.x), o.x, "纬度", max: 20, box: 6);
                     m._FORM();
                 });
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Shop>();
+                var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty)._VALUES_(Shop.Empty);
-                    dc.Execute(p => o.Write(p));
+                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj);
+                    dc.Execute(p => o.Write(p, proj));
                 }
                 ac.GivePane(200); // created
             }

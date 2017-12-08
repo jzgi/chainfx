@@ -1549,7 +1549,7 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            Add("<a class=\"input-group-label\" onclick=\"$(this).closest('form').submit();\">&#128270;</a>");
+            Add("<button formmethod=\"get\" class=\"input-group-label\">&#128270;</button>");
             Add("</div>");
 
             _FIELD(box);

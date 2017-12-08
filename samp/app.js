@@ -135,7 +135,7 @@ function crop(trig, ordinals, siz, circle, title) {
 
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">'
+        '<div class="title-bar"><div class="title-bar-left">'
     if (ordinals > 0) {
         html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ', ' + circle + ') ">';
         for (var i = 1; i <= ordinals; i++) {
@@ -143,9 +143,7 @@ function crop(trig, ordinals, siz, circle, title) {
         }
         html += '</select>';
     }
-    html += '</div>';
     html +=
-        '<div class="title-bar-left">' +
         '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val(), ' + circle + ');">上传</a>' +
         '</div>' +
         '<div class="title-bar-right">' +

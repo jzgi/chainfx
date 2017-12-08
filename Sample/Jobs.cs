@@ -43,9 +43,8 @@ namespace Greatbone.Samp
                     m.BOARDVIEW(h =>
                     {
                         h.CAPTION(false, "系统运行状况", "运行中", true);
-                        h.FIELDSET_("参数");
                         h.FIELD("2.0", "版本");
-                        h._FIELDSET();
+                        h.TAIL();
                     });
                 });
             }
@@ -55,7 +54,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("清除"), Tool(Modal.ButtonOpen, 2)]
+        [Ui("清理"), Tool(Modal.ButtonOpen, 2)]
         public void clean(ActionContext ac)
         {
             string shopid = ac[1];
