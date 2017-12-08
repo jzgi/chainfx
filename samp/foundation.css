@@ -544,7 +544,7 @@ i {
 em {
     font-style: normal;
     font-weight: bolder;
-    font-size: 1rem;
+    font-size: 1.125em;
 }
 
 strong,
@@ -2555,6 +2555,8 @@ input:checked + label > .switch-inactive { display: none; }
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 @media print, screen and (min-width: 10em) {

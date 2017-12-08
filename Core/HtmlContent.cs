@@ -132,6 +132,14 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent EM(string v)
+        {
+            Add("<em>");
+            Add(v);
+            Add("</em>");
+            return this;
+        }
+
         public HtmlContent T(string[] v)
         {
             if (v != null)
@@ -214,13 +222,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent A(string v, string href, bool parent = false)
+        public HtmlContent A(string v, string href, bool button = false, bool parent = false)
         {
             Add("<a href=\"");
             Add(href);
             if (parent)
             {
                 Add("\" target=\"_parent");
+            }
+            if (button)
+            {
+                Add("\" class=\"button primary hollow");
             }
             Add("\">");
             Add(v);

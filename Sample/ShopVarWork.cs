@@ -65,7 +65,9 @@ namespace Greatbone.Samp
 
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_(shop.name);
+                    m.TOPBAR_().A("&Lt;", "../?city=" + shop.city, true);
+                    m.T("&nbsp;&nbsp;");
+                    m.EM(shop.name);
                     if (shop.oprtel != null)
                     {
                         m.T("&nbsp;<a class=\"button hollow\"href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>");

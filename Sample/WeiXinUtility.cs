@@ -30,6 +30,7 @@ namespace Greatbone.Samp
 
         static string key;
 
+        public const string WatchRef = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=110#wechat_redirect";
 
         static Client WCPay;
 
