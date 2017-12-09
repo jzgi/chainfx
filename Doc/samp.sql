@@ -11,9 +11,21 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-11-29 11:29:37
+Date: 2017-12-10 00:43:43
 */
 
+
+-- ----------------------------
+-- Sequence structure for cashes_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."cashes_id_seq";
+CREATE SEQUENCE "public"."cashes_id_seq"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
+ START 4
+ CACHE 1;
+SELECT setval('"public"."cashes_id_seq"', 4, true);
 
 -- ----------------------------
 -- Sequence structure for orders_id_seq
@@ -23,9 +35,8 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 10
+ START 1
  CACHE 1;
-SELECT setval('"public"."orders_id_seq"', 10, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -40,15 +51,18 @@ CREATE SEQUENCE "public"."repays_id_seq"
 SELECT setval('"public"."repays_id_seq"', 1293, true);
 
 -- ----------------------------
--- Table structure for details
+-- Table structure for cashes
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."details";
-CREATE TABLE "public"."details" (
-"shopid" varchar(4) COLLATE "default",
-"name" varchar(10) COLLATE "default",
-"idx" int2,
-"img" bytea,
-"descr" varchar(50) COLLATE "default"
+DROP TABLE IF EXISTS "public"."cashes";
+CREATE TABLE "public"."cashes" (
+"id" int4 DEFAULT nextval('cashes_id_seq'::regclass) NOT NULL,
+"shopid" varchar(4) COLLATE "default" NOT NULL,
+"date" date,
+"txn" int2,
+"descr" varchar(20) COLLATE "default",
+"received" money,
+"paid" money,
+"recorder" varchar(10) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -62,14 +76,13 @@ CREATE TABLE "public"."items" (
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
 "descr" varchar(30) COLLATE "default",
-"mains" varchar(20) COLLATE "default",
+"content" varchar(20) COLLATE "default",
 "icon" bytea,
 "unit" varchar(4) COLLATE "default",
 "price" money,
 "min" int2,
 "step" int2,
 "max" int2,
-"opts" varchar(30)[] COLLATE "default",
 "status" int2
 )
 WITH (OIDS=FALSE)
@@ -85,25 +98,40 @@ CREATE TABLE "public"."orders" (
 "rev" int2 DEFAULT 0 NOT NULL,
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "shopname" varchar(10) COLLATE "default",
+"mosale" bool DEFAULT false,
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
-"area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
 "min" money,
 "notch" money,
 "off" money,
+"qty" int2,
 "total" money,
 "cash" money DEFAULT 0,
 "paid" timestamp(6),
-"prepare" bool DEFAULT false,
 "aborted" timestamp(6),
-"delivered" timestamp(6),
+"finished" timestamp(6),
 "note" varchar(20) COLLATE "default",
 "kick" varchar(40) COLLATE "default",
 "status" int2
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
+-- Table structure for preps
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."preps";
+CREATE TABLE "public"."preps" (
+"shopid" varchar(4) COLLATE "default",
+"name" varchar(10) COLLATE "default",
+"idx" int2,
+"img" bytea,
+"descr" varchar(50) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -138,10 +166,12 @@ CREATE TABLE "public"."shops" (
 "name" varchar(10) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
+"x" float8,
+"y" float8,
 "icon" bytea,
-"marks" varchar(10)[] COLLATE "default",
 "schedule" varchar(20) COLLATE "default",
 "areas" varchar(10)[] COLLATE "default",
+"delivery" varchar(20) COLLATE "default",
 "min" money,
 "notch" money,
 "off" money,
@@ -149,6 +179,7 @@ CREATE TABLE "public"."shops" (
 "img2" bytea,
 "img3" bytea,
 "img4" bytea,
+"articles" jsonb,
 "mgrwx" varchar(28) COLLATE "default",
 "mgrtel" varchar(11) COLLATE "default",
 "mgrname" varchar(10) COLLATE "default",
@@ -202,8 +233,14 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
+ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "cashes"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
+
+-- ----------------------------
+-- Primary Key structure for table cashes
+-- ----------------------------
+ALTER TABLE "public"."cashes" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table items

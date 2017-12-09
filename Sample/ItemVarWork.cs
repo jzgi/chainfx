@@ -190,8 +190,8 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow, 2)]
-        public async Task edit(ActionContext ac)
+        [Ui("基本"), Tool(ButtonShow, 2)]
+        public async Task basic(ActionContext ac)
         {
             string shopid = ac[-2];
             string name = ac[this];
@@ -206,11 +206,11 @@ namespace Greatbone.Samp
                     {
                         m.FORM_();
                         m.FIELD(o.name, "名称");
-                        m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
-                        m.TEXT(nameof(o.content), o.content, label: "主含", max: 10, required: true);
-                        m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
+                        m.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 10, max: 30, required: true);
+                        m.TEXT(nameof(o.content), o.content, "主含", min: 5, max: 20, required: true);
+                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
                         m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
-                        m.NUMBER(nameof(o.max), o.max, "剩余", box: 6).SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6);
+                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         m._FORM();
                     });
                 }
@@ -260,6 +260,39 @@ namespace Greatbone.Samp
                     }
                     else ac.Give(500); // internal server error
                 }
+            }
+        }
+
+        [Ui("制作"), Tool(ButtonShow)]
+        public async Task prep(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            string name = ac[this];
+        }
+
+        [Ui("供量"), Tool(ButtonShow)]
+        public async Task max(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            string name = ac[this];
+            short max = 0;
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Query1("SELECT max FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+                    dc.Let(out max);
+                    ac.GivePane(200, h => { h.FORM_().NUMBER(nameof(max), max, step: (short) 1)._FORM(); });
+                }
+            }
+            else // post
+            {
+                (await ac.ReadAsync<Form>()).Let(out max);
+                using (var dc = Service.NewDbContext())
+                {
+                    dc.Execute("UPDATE items SET max = @1 WHERE shopid = @2 AND name = @3", p => p.Set(max).Set(shopid).Set(name));
+                }
+                ac.Give(200); // ok
             }
         }
     }

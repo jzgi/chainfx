@@ -145,11 +145,13 @@ namespace Greatbone.Samp
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
-            Create<OprItemWork>("item");
-
             Create<OprNewWork>("new");
 
             Create<OprOldWork>("old");
+
+            Create<OprCartWork>("cart");
+
+            Create<OprItemWork>("item");
 
             Create<OprCashWork>("cash");
         }

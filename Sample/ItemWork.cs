@@ -13,7 +13,7 @@ namespace Greatbone.Samp
     }
 
 
-    [Ui("货架")]
+    [Ui("货品"), Role(User.OPRMEM)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -28,10 +28,10 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM items WHERE shopid = @1 ORDER BY status DESC", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
-                    h.CAPTION(false, o.name, Item.Statuses[o.status], o.status >= Item.ON);
+                    h.CAPTION(true, o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.IMG(o.name + "/icon", box: 3);
-                    h.BOX_(0x49).P(o.descr, "描述").P(o.content, "主含").P(o.price, "价格")._BOX();
-                    h.FIELD(o.unit, "单位", box: 3).FIELD(o.min, "起订", box: 3).FIELD(o.step, "增减", box: 3).FIELD(o.max, "数量", box: 3);
+                    h.BOX_(0x49).P(o.descr, "描述").P(o.content, "主含").P(o.price, "价格", o.unit)._BOX();
+                    h.FIELD(o.min, "起订", box: 4).FIELD(o.step, "增减", box: 4).FIELD(o.max, "供量", box: 4);
                     h.TAIL();
                 });
             }
@@ -83,32 +83,6 @@ namespace Greatbone.Samp
                 }
             }
             ac.GiveRedirect();
-        }
-
-        [Ui("移动销售", "当前移动销售状况"), Tool(AnchorOpen, 2)]
-        public void mosale(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND mosale", p => p.Set(shopid));
-                var os = dc.ToArray<Order>();
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    for (int i = 0; i < os.Length; i++)
-                    {
-                        var o = os[i];
-                        h.CAPTION_(false).T(o.addr)._T(o.id).SEP().T(o.paid)._CAPTION(o.name);
-                        for (int j = 0; j < o.items.Length; j++)
-                        {
-                            var oi = o.items[j];
-                            h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
-                        }
-                    }
-                    h._FORM();
-                }, false, 3);
-            }
         }
     }
 }

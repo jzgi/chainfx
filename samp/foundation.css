@@ -3029,8 +3029,8 @@ html.is-reveal-open body {
         position: relative;
         width: 85%;
         max-width: none;
-        height: 60%;
-        height: 60vh;
+        height: 55%;
+        height: 55vh;
         min-height: 20rem;
         margin-right: auto;
         margin-left: auto;
@@ -3044,7 +3044,7 @@ html.is-reveal-open body {
         max-width: none;
         height: 80%;
         height: 80vh;
-        min-height: 25rem;
+        min-height: 30rem;
         margin-right: auto;
         margin-left: auto;
     }

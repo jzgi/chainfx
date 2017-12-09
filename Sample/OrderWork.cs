@@ -142,6 +142,44 @@ namespace Greatbone.Samp
         }
     }
 
+    [Ui("现场"), Role(OPRMEM)]
+    public class OprCartWork : OrderWork<OprCartVarWork>
+    {
+        public OprCartWork(WorkContext wc) : base(wc)
+        {
+        }
+
+        public void @default(ActionContext ac, int page)
+        {
+            string shopid = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND mosale", p => p.Set(shopid));
+                var os = dc.ToArray<Order>();
+                ac.GiveBoardPage(200, os, (h, o) =>
+                {
+                    h.CAPTION_(true).T(o.addr)._T(o.id).SEP().T(o.paid)._CAPTION(o.name);
+                    for (int j = 0; j < o.items.Length; j++)
+                    {
+                        var oi = o.items[j];
+                        h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
+                    }
+                    h.TAIL();
+                });
+            }
+        }
+
+        [Ui("新建"), Tool(ButtonShow, 2)]
+        public void @new(ActionContext ac, int page)
+        {
+        }
+
+        [Ui("删除"), Tool(ButtonShow, 2)]
+        public void del(ActionContext ac, int page)
+        {
+        }
+    }
+
     [Ui("新单"), Role(OPRMEM)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {

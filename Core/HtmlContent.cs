@@ -2198,10 +2198,46 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent SELECT_(string name, string label = null, bool multiple = false, bool required = false, int size = 0, byte box = 0x0c)
+        {
+            FIELD_(label, box);
+            Add("<select name=\"");
+            Add(name);
+            Add("\"");
+            if (multiple) Add(" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _SELECT()
+        {
+            Add("</select>");
+            _FIELD();
+            return this;
+        }
+
+        public HtmlContent OPTION(string value, string label, bool selected = false)
+        {
+            Add("<option value=\"");
+            Add(value);
+            Add("\"");
+            if (selected) Add(" selected");
+            Add(">");
+            Add(label);
+            Add("</option>");
+            return this;
+        }
+
         public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, byte box = 0x0c)
         {
             FIELD_(label, box);
-
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -2227,7 +2263,6 @@ namespace Greatbone.Core
                 Add("</option>");
             }
             Add("</select>");
-
             _FIELD(box);
             return this;
         }

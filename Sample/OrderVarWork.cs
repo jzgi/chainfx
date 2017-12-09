@@ -206,6 +206,92 @@ namespace Greatbone.Samp
         public OprCartVarWork(WorkContext wc) : base(wc)
         {
         }
+
+        [Ui("加货"), Tool(ButtonShow, 2)]
+        public async Task add(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            int orderid = ac[this];
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    string opr = null;
+                    string addr = null;
+                    // operator list
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Query("SELECT name, max FROM items WHERE shopid = @1 AND status > 0 AND max > 0", p => p.Set(shopid));
+                        while (dc.Next())
+                        {
+                            dc.Let(out string name).Let(out short max);
+                            m.FIELD(name, box: 7).NUMBER(name, (short) 0, min: (short) 0, step: (short) 1, max: max, box: 5);
+                        }
+                    }
+
+                    m._FORM();
+                });
+                return;
+            }
+
+            var f = await ac.ReadAsync<Form>();
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query1("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
+                var o = dc.ToObject<Order>();
+                dc.Let(out Item[] items);
+                for (int i = 0; i < f.Count; i++)
+                {
+                    var e = f.At(i);
+//                    o.AddItem(e.key, );
+                }
+            }
+        }
+
+        [Ui("分派"), Tool(ButtonShow)]
+        public async Task assign(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            int orderid = ac[this];
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    string opr = null;
+                    string addr = null;
+                    // operator list
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(shopid));
+                        m.SELECT_(nameof(opr), "人员");
+                        while (dc.Next())
+                        {
+                            dc.Let(out string wx).Let(out string name).Let(out string tel);
+                            m.OPTION(wx, name);
+                        }
+                        m._SELECT();
+
+                        dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
+                        dc.Let(out string[] areas);
+                        if (areas != null)
+                        {
+                            m.SELECT(nameof(addr), addr, areas, "区域");
+                        }
+                        else
+                        {
+                            m.TEXT(nameof(addr), addr, "区域");
+                        }
+                    }
+
+                    m._FORM();
+                });
+            }
+            else
+            {
+            }
+        }
     }
 
     public class OprNewVarWork : OrderVarWork

@@ -22,8 +22,8 @@ namespace Greatbone.Samp
         internal double x;
         internal double y;
         internal string schedule;
-        internal string[] areas;
         internal string delivery;
+        internal string[] areas;
         internal decimal min;
         internal decimal notch;
         internal decimal off;
@@ -33,9 +33,7 @@ namespace Greatbone.Samp
         internal string oprwx;
         internal string oprtel;
         internal string oprname;
-
         internal Article[] articles;
-
         internal short status;
 
         public void Read(IDataInput i, short proj = 0x00ff)
@@ -52,8 +50,8 @@ namespace Greatbone.Samp
             if ((proj & NORM) == NORM)
             {
                 i.Get(nameof(schedule), ref schedule);
-                i.Get(nameof(areas), ref areas);
                 i.Get(nameof(delivery), ref delivery);
+                i.Get(nameof(areas), ref areas);
                 i.Get(nameof(min), ref min);
                 i.Get(nameof(notch), ref notch);
                 i.Get(nameof(off), ref off);
@@ -85,8 +83,8 @@ namespace Greatbone.Samp
             if ((proj & NORM) == NORM)
             {
                 o.Put(nameof(schedule), schedule);
-                o.Put(nameof(areas), areas);
                 o.Put(nameof(delivery), delivery);
+                o.Put(nameof(areas), areas);
                 o.Put(nameof(min), min);
                 o.Put(nameof(notch), notch);
                 o.Put(nameof(off), off);
