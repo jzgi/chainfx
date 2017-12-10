@@ -19,7 +19,7 @@ namespace Greatbone.Samp
             var o = obj as Item;
             switch (state)
             {
-                case 'A': return o.max > 0;
+                case 'A': return o.stock > 0;
             }
             return false;
         }
@@ -150,7 +150,7 @@ namespace Greatbone.Samp
                 if (dc.Query1(p => p.Set(shopid).Set(prin.wx)))
                 {
                     var o = dc.ToObject<Order>();
-                    o.AddItem(name, price, num, unit);
+                    o.AddItem(name, unit, price, num);
                     o.SetTotal();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
@@ -173,7 +173,7 @@ namespace Greatbone.Samp
                         notch = shop.notch,
                         off = shop.off
                     };
-                    o.AddItem(name, price, num, unit);
+                    o.AddItem(name, unit, price, num);
                     o.SetTotal();
                     const short proj = -1 ^ Order.ID ^ Order.LATER;
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
@@ -195,13 +195,12 @@ namespace Greatbone.Samp
         {
             string shopid = ac[-2];
             string name = ac[this];
-            Item o;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Query1("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-                    o = dc.ToObject<Item>();
+                    var o = dc.ToObject<Item>();
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -214,23 +213,25 @@ namespace Greatbone.Samp
                         m._FORM();
                     });
                 }
-                return;
             }
-            const short proj = -1 ^ Item.UNMOD;
-            o = await ac.ReadObjectAsync<Item>(proj);
-            using (var dc = ac.NewDbContext())
+            else // POST
             {
-                dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2");
-                dc.Execute(p =>
+                const short proj = -1 ^ Item.PK;
+                var o = await ac.ReadObjectAsync<Item>(proj);
+                using (var dc = ac.NewDbContext())
                 {
-                    o.Write(p, proj);
-                    p.Set(shopid).Set(name);
-                });
+                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2");
+                    dc.Execute(p =>
+                    {
+                        o.Write(p, proj);
+                        p.Set(shopid).Set(name);
+                    });
+                }
+                ac.GivePane(200); // close
             }
-            ac.GivePane(200); // close dialog
         }
 
-        [Ui("图片"), Tool(ButtonCrop)]
+        [Ui("成品照"), Tool(ButtonCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -248,7 +249,7 @@ namespace Greatbone.Samp
                     else ac.Give(404); // not found           
                 }
             }
-            else // post
+            else // POST
             {
                 var f = await ac.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
@@ -263,11 +264,32 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("制作"), Tool(ButtonShow)]
-        public async Task prep(ActionContext ac)
+        [Ui("过程照"), Tool(ButtonCrop, Ordinals = 3)]
+        public async Task prep(ActionContext ac, int ordinal)
         {
             string shopid = ac[-2];
             string name = ac[this];
+            if (ac.GET)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    {
+                        dc.Let(out ArraySegment<byte> byteas);
+                        if (byteas.Count == 0) ac.Give(204); // no content 
+                        else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                    }
+                    else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                }
+                return;
+            }
+            var f = await ac.ReadAsync<Form>();
+            ArraySegment<byte> jpeg = f[nameof(jpeg)];
+            using (var dc = Service.NewDbContext())
+            {
+                dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
+            }
+            ac.Give(200); // ok
         }
 
         [Ui("供量"), Tool(ButtonShow)]
@@ -275,22 +297,21 @@ namespace Greatbone.Samp
         {
             string shopid = ac[-2];
             string name = ac[this];
-            short max = 0;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT max FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-                    dc.Let(out max);
-                    ac.GivePane(200, h => { h.FORM_().NUMBER(nameof(max), max, step: (short) 1)._FORM(); });
+                    dc.Query1("SELECT stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+                    dc.Let(out short stock);
+                    ac.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short) 1)._FORM(); });
                 }
             }
-            else // post
+            else // POST
             {
-                (await ac.ReadAsync<Form>()).Let(out max);
+                (await ac.ReadAsync<Form>()).Let(out short stock);
                 using (var dc = Service.NewDbContext())
                 {
-                    dc.Execute("UPDATE items SET max = @1 WHERE shopid = @2 AND name = @3", p => p.Set(max).Set(shopid).Set(name));
+                    dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
                 }
                 ac.Give(200); // ok
             }

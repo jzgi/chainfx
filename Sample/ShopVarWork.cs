@@ -49,7 +49,7 @@ namespace Greatbone.Samp
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        [Ui("进入店铺"), Tool(Anchor)]
+        [Ui("进入该网点"), Tool(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
@@ -83,7 +83,7 @@ namespace Greatbone.Samp
                         h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P(o.price, symbol: '¥')._BOX();
                         h.TAIL();
                         // adjust item availability
-                        if (shop.status == 0) o.max = 0;
+                        if (shop.status == 0) o.stock = 0;
                     });
                 });
             }

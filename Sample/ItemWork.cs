@@ -13,7 +13,7 @@ namespace Greatbone.Samp
     }
 
 
-    [Ui("货品"), Role(User.OPRMEM)]
+    [Ui("货品")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkContext wc) : base(wc)
@@ -31,7 +31,7 @@ namespace Greatbone.Samp
                     h.CAPTION(true, o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.IMG(o.name + "/icon", box: 3);
                     h.BOX_(0x49).P(o.descr, "描述").P(o.content, "主含").P(o.price, "价格", o.unit)._BOX();
-                    h.FIELD(o.min, "起订", box: 4).FIELD(o.step, "增减", box: 4).FIELD(o.max, "供量", box: 4);
+                    h.FIELD(o.min, "起订", box: 4).FIELD(o.step, "增减", box: 4).FIELD(o.stock, "供量", box: 4);
                     h.TAIL();
                 });
             }
@@ -48,14 +48,14 @@ namespace Greatbone.Samp
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
                     m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
-                    m.TEXT(nameof(o.content), o.content, label: "主含", max: 10, required: true);
-                    m.TEXT(nameof(o.unit), o.unit, label: "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
+                    m.TEXT(nameof(o.content), o.content, "主含", max: 10, required: true);
+                    m.TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
                     m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
-                    m.NUMBER(nameof(o.max), o.max, "剩余", box: 6).SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6);
+                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "供量", box: 6);
                     m._FORM();
                 });
             }
-            else // post
+            else // POST
             {
                 var o = await ac.ReadObjectAsync<Item>();
                 o.shopid = ac[-1];
@@ -79,7 +79,7 @@ namespace Greatbone.Samp
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key);
-                    dc.Execute(p => p.Set(shopid));
+                    dc.Execute(p => p.Set(shopid), false);
                 }
             }
             ac.GiveRedirect();

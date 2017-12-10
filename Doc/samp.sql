@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-12-10 00:43:43
+Date: 2017-12-10 11:40:47
 */
 
 
@@ -82,8 +82,11 @@ CREATE TABLE "public"."items" (
 "price" money,
 "min" int2,
 "step" int2,
-"max" int2,
-"status" int2
+"status" int2,
+"stock" int2,
+"img1" bytea,
+"img2" bytea,
+"img3" bytea
 )
 WITH (OIDS=FALSE)
 
@@ -96,42 +99,28 @@ DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
 "id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "rev" int2 DEFAULT 0 NOT NULL,
+"status" int2,
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "shopname" varchar(10) COLLATE "default",
-"mosale" bool DEFAULT false,
+"onsite" bool DEFAULT false,
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
+"note" varchar(20) COLLATE "default",
 "min" money,
 "notch" money,
 "off" money,
 "qty" int2,
 "total" money,
+"created" timestamp(6),
 "cash" money DEFAULT 0,
 "paid" timestamp(6),
 "aborted" timestamp(6),
 "finished" timestamp(6),
-"note" varchar(20) COLLATE "default",
-"kick" varchar(40) COLLATE "default",
-"status" int2
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Table structure for preps
--- ----------------------------
-DROP TABLE IF EXISTS "public"."preps";
-CREATE TABLE "public"."preps" (
-"shopid" varchar(4) COLLATE "default",
-"name" varchar(10) COLLATE "default",
-"idx" int2,
-"img" bytea,
-"descr" varchar(50) COLLATE "default"
+"kick" varchar(40) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 

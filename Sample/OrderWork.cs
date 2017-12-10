@@ -76,7 +76,7 @@ namespace Greatbone.Samp
                 {
                     var o = new Order();
                     dc.Let(out o.id).Let(out o.items).Let(out o.total);
-                    o.AddItem(name, price, qty, unit);
+                    o.AddItem(name, unit, price, qty);
                     o.SetTotal();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
@@ -154,7 +154,7 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND mosale", p => p.Set(shopid));
+                dc.Query("SELECT * FROM orders WHERE status = 1  AND shopid = @1 AND onsite", p => p.Set(shopid));
                 var os = dc.ToArray<Order>();
                 ac.GiveBoardPage(200, os, (h, o) =>
                 {

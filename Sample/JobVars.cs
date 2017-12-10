@@ -315,7 +315,6 @@ namespace Greatbone.Samp
                 }
                 return;
             }
-
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
             using (var dc = Service.NewDbContext())
