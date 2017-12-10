@@ -244,7 +244,7 @@ namespace Greatbone.Samp
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out tel).Let(out opr);
-                            m.RADIO(nameof(tel), tel, null, null, false, tel, name, Oprs[opr]);
+//                            m.RADIO(nameof(tel), tel, null, null, false, tel, name, Oprs[opr]);
                         }
                         m.T("</div>");
                         m.BUTTON(nameof(access), 1, "删除");
@@ -324,9 +324,10 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("营业状态", Group = 1), Tool(ButtonShow)]
+        [Ui("上下班", Group = 1), Tool(ButtonShow)]
         public async Task status(ActionContext ac)
         {
+            User prin = (User) ac.Principal;
             string shopid = ac[this];
             short status;
             if (ac.GET)
@@ -337,7 +338,14 @@ namespace Greatbone.Samp
                     using (var dc = ac.NewDbContext())
                     {
                         status = (short) dc.Scalar("SELECT status FROM shops WHERE id = @1", p => p.Set(shopid));
-                        h.SELECT(nameof(status), status, Statuses);
+                        h.FIELDSET_("设置网点营业状态").SELECT(nameof(status), status, Statuses, "营业状态")._FIELDSET();
+
+                        bool on = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx));
+                        string hint = on ? "我确定客服下线。这将会置空客服电话号码，也不接收客服通知" : "我确定客服上线，个人电话号码显示为客服电话，并且接收客服通知";
+                        const bool yes = false;
+                        h.FIELDSET_(on ? "我客服下线" : "我客服上线");
+                        h.CHECKBOX(nameof(yes), yes, hint, required: true);
+                        h._FIELDSET();
                     }
                     h._FORM();
                 });
@@ -349,47 +357,17 @@ namespace Greatbone.Samp
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(status).Set(shopid));
+
+                if (dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)))
+                {
+                    dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                }
+                else
+                {
+                    dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                }
             }
             ac.GivePane(200);
-        }
-
-        [Ui("客服", Group = 1), Tool(ButtonShow)]
-        public void custsvc(ActionContext ac)
-        {
-            string shopid = ac[this];
-            User prin = (User) ac.Principal;
-            if (ac.GET)
-            {
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        bool on = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx));
-                        string hint = on ? "我当前已经是客服。是否下线？下线将会置空客服电话号码，也不接收客服通知。" : "是否上线做客服，接收客服通知，并且个人电话号码显示为客服电话？";
-                        const bool yes = false;
-                        h.FIELDSET_(on ? "客服下线" : "客服上线");
-                        h.CHECKBOX(nameof(yes), yes, hint, required: true);
-                        h._FIELDSET();
-                    }
-                    h._FORM();
-                });
-            }
-            else
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    if (dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)))
-                    {
-                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
-                    }
-                    else
-                    {
-                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
-                    }
-                }
-                ac.GivePane(200);
-            }
         }
 
         [Ui("调整", Group = 2), Tool(ButtonOpen), Role(OPRMEM)]
@@ -414,12 +392,12 @@ namespace Greatbone.Samp
                             articles = articles.RemovedOf(x => x.name == name);
                             break;
                         case 2: // add
-                            articles = articles.AddOf(new Article(){name = name, qty = qty});
+                            articles = articles.AddOf(new Article() {name = name, qty = qty});
                             break;
                         case 3: // edit
                             var o = articles.Find(x => x.name == name);
                             o.name = name;
-                                
+
                             break;
                     }
                 }

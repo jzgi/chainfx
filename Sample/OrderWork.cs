@@ -142,7 +142,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("现场"), Role(OPRMEM)]
+    [Ui("售点"), Role(OPRMEM)]
     public class OprCartWork : OrderWork<OprCartVarWork>
     {
         public OprCartWork(WorkContext wc) : base(wc)

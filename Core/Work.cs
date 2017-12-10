@@ -272,6 +272,7 @@ namespace Greatbone.Core
 
         internal Work Resolve(ref string relative, ActionContext ac)
         {
+            if (!DoAuthorize(ac)) throw AuthorizeEx;
             int slash = relative.IndexOf('/');
             if (slash == -1)
             {
@@ -313,12 +314,9 @@ namespace Greatbone.Core
         internal async Task HandleAsync(string rsc, ActionContext ac)
         {
             ac.Work = this;
-            if (!DoAuthorize(ac)) throw AuthorizeEx;
-
             // any before filterings
             if (Before?.Do(ac) == false) goto WorkExit;
             if (BeforeAsync != null && !(await BeforeAsync.DoAsync(ac))) goto WorkExit;
-
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
             {
@@ -346,13 +344,11 @@ namespace Greatbone.Core
                     return;
                 }
 
-                ac.Doer = ai;
                 if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
-
+                ac.Doer = ai;
                 // any before filterings
                 if (ai.Before?.Do(ac) == false) goto ActionExit;
                 if (ai.BeforeAsync != null && !(await ai.BeforeAsync.DoAsync(ac))) goto ActionExit;
-
                 // try in cache
                 if (!Service.TryGiveFromCache(ac))
                 {
@@ -367,14 +363,12 @@ namespace Greatbone.Core
                     }
                     Service.Cache(ac); // try cache it
                 }
-
                 ActionExit:
                 // action's after filtering
                 ai.After?.Do(ac);
                 if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
                 ac.Doer = null;
             }
-
             WorkExit:
             After?.Do(ac);
             if (AfterAsync != null) await AfterAsync.DoAsync(ac);

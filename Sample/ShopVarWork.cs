@@ -158,7 +158,7 @@ namespace Greatbone.Samp
                             {
                                 dc.Let(out string wx).Let(out string tel).Let(out string name);
                                 m.FIELDSET_("设置经理");
-                                m.RADIO(nameof(wx_tel_name), wx, tel, name, false, null, tel, name);
+//                                m.RADIO(nameof(wx_tel_name), wx, tel, name, false, null, tel, name);
                                 m._FIELDSET();
                             }
                         }

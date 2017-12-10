@@ -1938,7 +1938,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIO(string name, int value, bool @checked, string label)
+        public HtmlContent RADIO(string name, short value, string label = null, bool @checked = false)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
@@ -1951,14 +1951,27 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIO(string name, long value, bool check, string label)
+        public HtmlContent RADIO(string name, int value, string label = null, bool @checked = false)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(value);
-            Add(check ? "\" checked>" : "\">");
+            Add(@checked ? "\" checked>" : "\">");
+            Add(label);
+            Add("</label>");
+            return this;
+        }
+
+        public HtmlContent RADIO(string name, long value, string label = null, bool @checked = false)
+        {
+            Add("<label>");
+            Add("<input type=\"radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(value);
+            Add(@checked ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
             return this;
@@ -1982,97 +1995,31 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIO(string name, Action<HtmlContent> value, bool @checked, Action<HtmlContent> label)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            value(this);
-            Add(@checked ? "\" checked>" : "\">");
-            label(this);
-            Add("</label>");
-            return this;
-        }
-
-        public HtmlContent RADIO(string name, string v1, string v2, string v3, bool @checked, string l1, string l2, string l3)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v1);
-            if (v2 != null)
-            {
-                Add('~');
-                Add(v2);
-            }
-            if (v3 != null)
-            {
-                Add('~');
-                Add(v3);
-            }
-            Add(@checked ? "\" checked>" : "\">");
-            Add(l1);
-            if (l2 != null)
-            {
-                Add(' ');
-                Add(l2);
-            }
-            if (l3 != null)
-            {
-                Add(' ');
-                Add(l3);
-            }
-            Add("</label>");
-            return this;
-        }
-
-        public HtmlContent RADIO(string name, long v1, string v2, bool @checked, long l1, string l2, string l3 = null)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v1);
-            if (v2 != null)
-            {
-                Add('-');
-                Add(v2);
-            }
-            Add(@checked ? "\" checked>" : "\">");
-            Add(l1);
-            Add(' ');
-            Add(l2);
-            if (l3 != null)
-            {
-                Add(' ');
-                Add(l3);
-            }
-            Add("</label>");
-            return this;
-        }
-
         public HtmlContent RADIOSET<O>(string name, short v, Map<short, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
-            opt?.ForEach((key, item) =>
+            if (opt != null)
             {
-                Add("<label>");
-                Add("<input type=\"radio\" name=\"");
-                Add(name);
-                Add("\" id=\"");
-                Add(name);
-                Add(key);
-                Add("\"");
-                Add("\" value=\"");
-                Add(key);
-                Add("\"");
-                if (key.Equals(v)) Add(" checked");
-                if (required) Add(" required");
-                Add(">");
-                Add("</label>");
-            });
+                for (int i = 0; i < opt.Count; i++)
+                {
+                    var o = opt.At(i);
+                    Add("<label>");
+                    Add("<input type=\"radio\" name=\"");
+                    Add(name);
+                    Add("\" id=\"");
+                    Add(name);
+                    Add(o.Key);
+                    Add("\"");
+                    Add("\" value=\"");
+                    Add(o.Key);
+                    Add("\"");
+                    if (o.Key.Equals(v)) Add(" checked");
+                    if (required) Add(" required");
+                    Add(">");
+                    Add(o.Value.ToString());
+                    Add("</label>");
+                }
+            }
             _FIELDSET();
             return this;
         }

@@ -28,7 +28,7 @@ namespace Greatbone.Samp
         internal short status;
         internal string shopid;
         internal string shopname;
-        internal bool onsite; // whether an onsite sales order
+        internal bool pos; // whether an onsite sales order
         internal string wx; // weixin openid
         internal string name; // customer name
         internal string tel;
@@ -57,7 +57,7 @@ namespace Greatbone.Samp
             i.Get(nameof(status), ref status);
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(shopname), ref shopname);
-            i.Get(nameof(onsite), ref onsite);
+            i.Get(nameof(pos), ref pos);
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
@@ -90,7 +90,7 @@ namespace Greatbone.Samp
             o.Put(nameof(status), status);
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
-            o.Put(nameof(onsite), onsite);
+            o.Put(nameof(pos), pos);
             o.Put(nameof(wx), wx);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
@@ -125,13 +125,13 @@ namespace Greatbone.Samp
             int idx = items.FindIndex(o => o.name.Equals(name));
             if (idx != -1)
             {
-                if (onsite) items[idx].load += num;
+                if (pos) items[idx].load += num;
                 else items[idx].qty += num;
             }
             else
             {
                 var o = new OrderItem {name = name, unit = unit, price = price, qty = num};
-                if (onsite) o.load = num;
+                if (pos) o.load = num;
                 else o.qty = num;
                 items = items.AddOf(o);
             }

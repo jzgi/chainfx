@@ -48,36 +48,10 @@ namespace Greatbone.Samp
         }
     }
 
-
     public class PubItemVarWork : ItemVarWork
     {
         public PubItemVarWork(WorkContext wc) : base(wc)
         {
-        }
-
-        [Ui("产品详情"), Tool(AnchorOpen)]
-        public void detail(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            string name = ac[this];
-
-            ac.GivePage(200, m =>
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Query("SELECT idx, descr FROM details WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-                    m.BOARDVIEW_();
-                    while (dc.Next())
-                    {
-                        dc.Let(out int idx).Let(out string descr);
-                        m.CARD_();
-                        m.CAPTION(false, descr);
-                        m.IMG(idx + "/img");
-                        m._CARD();
-                    }
-                    m._BOARDVIEW();
-                }
-            });
         }
 
         [Ui("购买"), Tool(ButtonShow, 1), Itemly('A')]
@@ -108,11 +82,6 @@ namespace Greatbone.Samp
                         }
                         else // new order, ask for necessary info
                         {
-                            if (prin.oprat == shopid) // staff
-                            {
-                                bool work = false;
-                                h.CHECKBOX(nameof(work), work, "移动销售领取", box: 8);
-                            }
                             dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
                             dc.Let(out string city).Let(out string[] areas);
                             h.FIELDSET_("收货地址");

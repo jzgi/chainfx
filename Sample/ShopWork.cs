@@ -61,8 +61,7 @@ namespace Greatbone.Samp
         }
     }
 
-    // we are forced to put check here because iframe does not have weixin browsing flags
-    [Role]
+    [Role] // we are forced to put check here because  weixin auth does't work in iframe
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
@@ -72,11 +71,11 @@ namespace Greatbone.Samp
         /// <summary>
         /// Returns a home page pertaining to a related city
         /// </summary>
-        [City]
+//        [City]
         public void @default(ActionContext ac)
         {
             string city = ac.Query[nameof(city)];
-            if (city.Length == 0)
+            if (string.IsNullOrEmpty(city))
             {
                 city = "南昌";
             }
