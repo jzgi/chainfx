@@ -137,7 +137,7 @@ function crop(trig, ordinals, siz, title) {
         '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
         '<div class="title-bar"><div class="title-bar-left">'
     if (ordinals > 0) {
-        html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ', ' + circle + ') ">';
+        html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ')">';
         for (var i = 1; i <= ordinals; i++) {
             html += '<option value="' + i + '">' + i + '</option>';
         }
@@ -150,7 +150,7 @@ function crop(trig, ordinals, siz, title) {
         '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +
         '</div>' +
         '</div>'; // title-bar
-    html += '<div id="crop" style="height: -webkit-calc(100% - 6.5rem); height: calc(100% - 6.5rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ',' + circle + ');"></div>';
+    html += '<div id="crop" style="height: -webkit-calc(100% - 6.5rem); height: calc(100% - 6.5rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
     html += '</div>'; // dyndlg
 
     var dive = $(html);
@@ -158,14 +158,14 @@ function crop(trig, ordinals, siz, title) {
     $('body').prepend(dive);
     // initialize
     $(dive).foundation();
-    bind(action, 1, wid, hei, circle);
+    bind(action, 1, wid, hei);
     // open
     $(dive).foundation('open');
     // abort the onclick
     return false;
 }
 
-function bind(url, ordinal, width, height, circle) {
+function bind(url, ordinal, width, height) {
     if (ordinal) url = url + '-' + ordinal;
     var mc = $('#crop');
     mc.croppie('destroy');
@@ -173,8 +173,7 @@ function bind(url, ordinal, width, height, circle) {
         url: url,
         viewport: {
             width: width,
-            height: height,
-            type: circle ? 'circle' : 'square'
+            height: height
         },
         enforceBoundary: true
     });

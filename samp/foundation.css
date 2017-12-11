@@ -2634,6 +2634,9 @@ input:checked + label > .switch-inactive { display: none; }
 
 .pagination {
     margin: 0.875rem auto 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .pagination::before, .pagination::after {
