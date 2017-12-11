@@ -14,7 +14,7 @@ namespace Greatbone.Samp
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GiveDoc(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
+        public static void GiveDoc(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
 
@@ -22,7 +22,9 @@ namespace Greatbone.Samp
             h.Add("<html>");
 
             h.Add("<head>");
-            h.Add("<title>粗粮达人</title>");
+            h.Add("<title>粗粮达人 - ");
+            h.Add(title);
+            h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -55,7 +57,7 @@ namespace Greatbone.Samp
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title);
+            h.Add(title ?? "粗粮达人");
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
@@ -129,7 +131,7 @@ namespace Greatbone.Samp
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60)
+        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
 
@@ -137,7 +139,9 @@ namespace Greatbone.Samp
             h.Add("<html>");
 
             h.Add("<head>");
-            h.Add("<title>粗粮达人</title>");
+            h.Add("<title>");
+            h.Add(title ?? "粗粮达人");
+            h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -209,7 +213,7 @@ namespace Greatbone.Samp
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveBoardDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveBoardDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GiveDoc(
                 status,
@@ -218,12 +222,11 @@ namespace Greatbone.Samp
                     main.TOOLBAR();
                     main.BOARDVIEW(arr, cell);
                 },
-                @public,
-                maxage
+                @public, maxage, title
             );
         }
 
-        public static void GiveBoardPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveBoardPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GivePage(
                 status,
@@ -232,12 +235,11 @@ namespace Greatbone.Samp
                     main.TOOLBAR();
                     main.BOARDVIEW(arr, cell);
                 },
-                @public,
-                maxage
+                @public, maxage, title
             );
         }
 
-        public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60) where D : IData
+        public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GivePage(
                 status,
@@ -246,8 +248,7 @@ namespace Greatbone.Samp
                     main.TOOLBAR();
                     main.SHEETVIEW(arr, head, row);
                 },
-                @public,
-                maxage
+                @public, maxage, title
             );
         }
     }

@@ -202,6 +202,25 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent FLAG(string flag, bool? on = null)
+        {
+            Add("<span class=\"flag-");
+            if (on.HasValue)
+            {
+                Add(on.Value ? "on" : "off");
+            }
+            Add("\">");
+            Add(flag);
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlContent SP()
+        {
+            Add("&nbsp;&nbsp;");
+            return this;
+        }
+
         public HtmlContent A(string v, string href, bool button = false, bool parent = false)
         {
             Add("<a href=\"");
@@ -1119,7 +1138,7 @@ namespace Greatbone.Core
         {
             if (flag != null)
             {
-                Add("<span style=\"margin-left: auto\" class=\"card-flag-");
+                Add("<span style=\"margin-left: auto\" class=\"flag-");
                 if (on.HasValue)
                 {
                     Add(on.Value ? "on" : "off");
@@ -1144,7 +1163,7 @@ namespace Greatbone.Core
             Add("<div class=\"cell card-tail\">");
             if (flag != null)
             {
-                Add("<span class=\"float-right card-flag");
+                Add("<span class=\"float-right flag");
                 if (on.HasValue)
                 {
                     Add(on.Value ? "-on" : "-off");

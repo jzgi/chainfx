@@ -40,11 +40,11 @@ namespace Greatbone.Samp
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", box: 4);
                     h.TAIL(o.Err(), false);
-                }, false, 3);
+                }, false, 3, "购物车");
             }
         }
 
-        [Ui("清空购物车"), Tool(ButtonConfirm)]
+        [Ui("清空"), Tool(ButtonConfirm)]
         public void clear(ActionContext ac)
         {
             string wx = ac[-1];

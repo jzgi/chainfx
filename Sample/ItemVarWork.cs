@@ -46,6 +46,22 @@ namespace Greatbone.Samp
                 else ac.Give(404, @public: true, maxage: 60 * 5); // not found
             }
         }
+
+        public void img(ActionContext ac, int ordinal)
+        {
+            string shopid = ac[-1];
+            string name = ac[this];
+            using (var dc = Service.NewDbContext())
+            {
+                if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                {
+                    dc.Let(out ArraySegment<byte> byteas);
+                    if (byteas.Count == 0) ac.Give(204); // no content 
+                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                }
+                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+            }
+        }
     }
 
     public class PubItemVarWork : ItemVarWork

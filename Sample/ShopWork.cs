@@ -81,7 +81,7 @@ namespace Greatbone.Samp
             }
             ac.GiveDoc(200, m =>
             {
-                m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0).T("&nbsp;&nbsp;<em>").T("粗粮达人").T(city).T("网点</em>")._TOPBAR();
+                m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
 
                 using (var dc = ac.NewDbContext())
                 {
@@ -90,19 +90,20 @@ namespace Greatbone.Samp
                     m.BOARDVIEW(dc.ToArray<Shop>(), (h, o) =>
                     {
                         h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
-                        h.ICON(o.id + "/icon", href: o.id + "/", box: 0x44);
+                        h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
                         h.BOX_(0x48);
                         h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
                         h.P_("派送").T(o.delivery);
                         if (o.areas != null) h.SEP().T("限送").T(o.areas);
                         h._P();
                         h.P(o.schedule, "营业");
+                        if (o.off > 0) h.P_("促销").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._P();
                         h._BOX();
                         h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         h.TAIL();
                     });
                 }
-            }, true, 60 * 5);
+            }, true, 60 * 5, city);
         }
     }
 

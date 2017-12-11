@@ -58,16 +58,19 @@
     padding: 0.25rem;
 }
 
-.card-flag-on {
+.flag-on {
     color: green;
+    font-size: 1rem;
 }
 
-.card-flag {
+.flag {
     color: red;
+    font-size: 1rem;
 }
 
-.card-flag-off {
+.flag-off {
     color: gray;
+    font-size: 1rem;
 }
 
 .icon {
