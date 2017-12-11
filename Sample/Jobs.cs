@@ -42,7 +42,7 @@ namespace Greatbone.Samp
                     m.TOOLBAR();
                     m.BOARDVIEW(h =>
                     {
-                        h.CAPTION(false, "系统运行状况", "运行中", true);
+                        h.CAPTION("系统运行状况", "运行中", true);
                         h.FIELD("2.0", "版本");
                         h.TAIL();
                     });

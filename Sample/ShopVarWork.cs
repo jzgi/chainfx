@@ -65,20 +65,17 @@ namespace Greatbone.Samp
 
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().A("&Lt;", "../?city=" + shop.city, true);
-                    m.T("&nbsp;&nbsp;");
-                    m.EM(shop.name);
+                    m.TOPBAR_().A("&Lt;", "../?city=" + shop.city, true).T("&nbsp;&nbsp;").EM(shop.name)._TOPBAR();
+                    if (items == null) return;
                     if (shop.oprtel != null)
                     {
-                        m.T("&nbsp;<a class=\"button hollow\"href=\"tel:").T(shop.oprtel).T("#mp.weixin.qq.com\">&#128222;").T(shop.oprtel).T("</a>");
+                        m.GRID_();
+                        m.FIELD_(box: 6)._FIELD().FIELD_(box: 6).A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", true)._FIELD();
+                        m._GRID();
                     }
-                    m._TOPBAR();
-
-                    if (items == null) return;
-
                     m.BOARDVIEW(items, (h, o) =>
                     {
-                        h.CAPTION(false, o.name);
+                        h.CAPTION(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P(o.price, symbol: '¥')._BOX();
                         h.TAIL();

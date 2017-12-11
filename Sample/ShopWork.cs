@@ -89,7 +89,7 @@ namespace Greatbone.Samp
                     dc.Query(p => p.Set(city));
                     m.BOARDVIEW(dc.ToArray<Shop>(), (h, o) =>
                     {
-                        h.CAPTION_(false).T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
+                        h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
                         h.ICON(o.id + "/icon", href: o.id + "/", box: 0x44);
                         h.BOX_(0x48);
                         h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
@@ -122,7 +122,7 @@ namespace Greatbone.Samp
                 dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Shop>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T(o.name).T(" / ").T(o.id)._CAPTION();
+                    h.CAPTION_().T(o.name).T(" / ").T(o.id)._CAPTION();
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
                     h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();

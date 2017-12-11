@@ -28,7 +28,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM items WHERE shopid = @1 ORDER BY status DESC", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
-                    h.CAPTION(true, o.name, Item.Statuses[o.status], o.status >= Item.ON);
+                    h.CAPTION(o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.IMG(o.name + "/icon", box: 3);
                     h.BOX_(0x49).P(o.descr, "描述").P(o.content, "主含").P(o.price, "价格", o.unit)._BOX();
                     h.FIELD(o.min, "起订", box: 4).FIELD(o.step, "增减", box: 4).FIELD(o.stock, "供量", box: 4);
@@ -68,7 +68,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("删除"), Tool(ButtonConfirm)]
+        [Ui("删除"), Tool(ButtonConfirmPick)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];

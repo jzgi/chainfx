@@ -27,33 +27,13 @@ namespace Greatbone.Samp
                 m.BOARDVIEW(
                     h =>
                     {
-                        h.CAPTION(false, "我的个人资料");
+                        h.CAPTION("我的个人资料");
                         h.FIELD(prin.name, "姓名");
                         h.FIELD(prin.tel, "电话");
                         h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
                         h.TAIL();
                     });
             });
-        }
-
-        [Ui("刷新"), Tool(ButtonOpen)]
-        public void token(ActionContext ac)
-        {
-            string wx = ac[this];
-            using (var dc = ac.NewDbContext())
-            {
-                const short proj = -1 ^ CREDENTIAL;
-                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
-                {
-                    var o = dc.ToObject<User>(proj);
-                    ac.SetTokenCookie(o, proj);
-                    ac.GivePane(200);
-                }
-                else
-                {
-                    ac.GivePane(404);
-                }
-            }
         }
 
         [Ui("修改", Group = 1), Tool(ButtonShow)]
@@ -177,7 +157,7 @@ namespace Greatbone.Samp
                     h.BOARDVIEW_();
 
                     h.CARD_();
-                    h.CAPTION(false, o.name, Statuses[o.status], o.status == 2);
+                    h.CAPTION(o.name, Statuses[o.status], o.status == 2);
                     h.FIELD(o.schedule, "时间");
                     h.FIELD_("派送").T(o.delivery);
                     if (o.areas != null) h._T("限送").T(o.areas);
@@ -189,7 +169,7 @@ namespace Greatbone.Samp
                     h._CARD();
 
                     h.CARD_();
-                    h.CAPTION(false, "盘存");
+                    h.CAPTION("盘存");
                     if (o.articles != null)
                     {
                         for (int i = 0; i < o.articles.Length; i++)

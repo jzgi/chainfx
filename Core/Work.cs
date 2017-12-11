@@ -40,6 +40,9 @@ namespace Greatbone.Core
         // variable-key subwork, if any
         internal Work varwork;
 
+        // if there is any action that must pick form value
+        readonly bool pick;
+
         // to obtain a string key from a data object.
         protected Work(WorkContext wc) : base(wc.Name, null)
         {
@@ -74,6 +77,8 @@ namespace Greatbone.Core
 
                 actions.Add(ai);
                 if (ai.Key == string.Empty) @default = ai;
+
+                if (ai.Tool?.MustPick == true) pick = true;
             }
 
             // gather styled actions
@@ -168,6 +173,8 @@ namespace Greatbone.Core
         public Map<string, ActionInfo> Actions => actions;
 
         public ActionInfo[] Tooled => tooled;
+
+        public bool HasPick => pick;
 
         public ActionInfo Default => @default;
 

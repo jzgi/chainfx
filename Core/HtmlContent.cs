@@ -22,26 +22,6 @@ namespace Greatbone.Core
 
         public override string Type => "text/html; charset=utf-8";
 
-        void AddLabel(string label, string alt)
-        {
-            if (label != null)
-            {
-                Add(label);
-            }
-            else // alt uppercase
-            {
-                for (int i = 0; i < alt.Length; i++)
-                {
-                    char c = alt[i];
-                    if (c >= 'a' && c <= 'z')
-                    {
-                        c = (char) (c - 32);
-                    }
-                    Add(c);
-                }
-            }
-        }
-
         public void AddEsc(string v)
         {
             if (v == null) return;
@@ -1110,28 +1090,26 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(bool checkbox, string title, string flag = null, bool? on = null)
+        public HtmlContent CAPTION(string title, string flag = null, bool? @on = null)
         {
-            CAPTION_(checkbox);
+            CAPTION_();
             Add(title);
             _CAPTION(flag, on);
             return this;
         }
 
-        public HtmlContent CAPTION_(bool checkbox)
+        public HtmlContent CAPTION_()
         {
             Add("<div class=\"cell card-caption small-12\">");
-            if (checkbox)
+            if (model != null)
             {
-                if (model != null)
+                var work = actionCtx.Work;
+                Work varwork = work.VarWork;
+                if (varwork != null && work.HasPick)
                 {
-                    Work varwork = actionCtx.Work.VarWork;
-                    if (varwork != null)
-                    {
-                        Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                        varwork.PutVarKey(model, this);
-                        Add("\" onchange=\"checkit(this);\">");
-                    }
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
+                    varwork.PutVarKey(model, this);
+                    Add("\" onchange=\"checkit(this);\">");
                 }
             }
             return this;
@@ -1204,10 +1182,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Dialog(sbyte style, sbyte size, string tip)
+        void Dialog(sbyte mode, bool pick, sbyte size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
-            Add(style);
+            Add(mode);
+            Add(",");
+            Add(pick);
             Add(",");
             Add(size);
             Add(",'");
@@ -1302,21 +1282,21 @@ namespace Greatbone.Core
             }
             if (tool.HasConfirm)
             {
-                Add(" onclick=\"return confirm('");
+                Add(" onclick=\"if ($(this.form).serialize()) return confirm('");
                 Add(ai.Tip ?? ai.Label);
-                Add("?');\"");
+                Add("?'); else return false;\"");
             }
             else if (tool.HasPrompt)
             {
-                Dialog(2, tool.Size, ai.Tip);
+                Dialog(2, tool.MustPick, tool.Size, ai.Tip);
             }
             else if (tool.HasShow)
             {
-                Dialog(4, tool.Size, ai.Tip);
+                Dialog(4, tool.MustPick, tool.Size, ai.Tip);
             }
             else if (tool.HasOpen)
             {
-                Dialog(8, tool.Size, ai.Tip);
+                Dialog(8, tool.MustPick, tool.Size, ai.Tip);
             }
             else if (tool.HasScript)
             {
@@ -1330,29 +1310,12 @@ namespace Greatbone.Core
                 Add(tool.Ordinals);
                 Add(',');
                 Add(tool.Size);
-                Add(",");
-                Add(tool.Circle);
                 Add(",'");
                 Add(ai.Tip);
                 Add("');\"");
             }
             Add(">");
-            if (ai.IsEllipsized)
-            {
-                string filter = null;
-                var f = actionCtx.Query;
-                if (f.Count > 0) filter = f[0];
-                if (filter != null)
-                {
-                    Add(filter);
-                    Add("...");
-                }
-                else Add(ai.Label);
-            }
-            else
-            {
-                Add(ai.Label);
-            }
+            Add(ai.Label);
             if (tool.IsAnchor)
             {
                 Add("</a>");

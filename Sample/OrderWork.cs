@@ -28,7 +28,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC", p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货").T(o.name)._T(o.city)._T(o.addr).TOOL("addr")._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -121,7 +121,7 @@ namespace Greatbone.Samp
                 dc.Query(p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货");
                     if (o.name != null) h._T(o.name);
                     if (o.city != null) h._T(o.city);
@@ -158,7 +158,7 @@ namespace Greatbone.Samp
                 var os = dc.ToArray<Order>();
                 ac.GiveBoardPage(200, os, (h, o) =>
                 {
-                    h.CAPTION_(true).T(o.addr)._T(o.id).SEP().T(o.paid)._CAPTION(o.name);
+                    h.CAPTION_().T(o.addr)._T(o.id).SEP().T(o.paid)._CAPTION(o.name);
                     for (int j = 0; j < o.items.Length; j++)
                     {
                         var oi = o.items[j];
@@ -174,7 +174,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("删除"), Tool(ButtonShow, 2)]
+        [Ui("删除"), Tool(ButtonConfirmPick)]
         public void del(ActionContext ac, int page)
         {
         }
@@ -214,7 +214,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货").T(o.name)._T(o.city)._T(o.addr)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -243,7 +243,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + Order.ABORTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(Order.Statuses[o.status], false);
+                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(Order.Statuses[o.status], false);
                     h.FIELD(o.name, "买家", box: 6).FIELD(o.tel, "电话", box: 6);
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELDSET_("商品");
@@ -288,7 +288,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status > 0 AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_(false).T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
                     if (o.name != null)
                     {
                         h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);

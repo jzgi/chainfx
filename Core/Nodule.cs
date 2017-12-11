@@ -13,9 +13,6 @@ namespace Greatbone.Core
         // whether captital leading
         readonly bool capitalized;
 
-        // whether label tailed with ellipsis
-        readonly bool ellipsized;
-
         // name in lowercase
         readonly string lower;
 
@@ -56,7 +53,6 @@ namespace Greatbone.Core
             this.label = ui?.Label ?? name.ToUpper();
             this.tip = ui?.Tip ?? label;
             this.group = ui?.Group ?? 0;
-            this.ellipsized = label.EndsWith("...");
 
             // authorize
             var auths = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), false);
@@ -81,8 +77,6 @@ namespace Greatbone.Core
         public string Key => name;
 
         public bool IsCapitalized => capitalized;
-
-        public bool IsEllipsized => ellipsized;
 
         public string Lower => lower;
 

@@ -4,7 +4,7 @@
 // mode
 const PROMPT = 2, SHOW = 4, OPEN = 8;
 
-function dialog(trig, mode, siz, title) {
+function dialog(trig, mode, pick, siz, title) {
     var sizg = siz == 1 ? 'tiny' : siz == 2 ? 'small' : siz == 3 ? 'medium' : siz == 4 ? 'large' : 'full';
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
@@ -16,7 +16,11 @@ function dialog(trig, mode, siz, title) {
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
-        var qstr = $(trig.form).serialize();
+        var qstr;
+        if (pick) { // if must pick form values
+            qstr = $(trig.form).serialize();
+            if (!qstr) return false;
+        }
         if (qstr) {
             src = action.indexOf('?') == -1 ? action + '?' + qstr : action + '&' + qstr;
         } else {
@@ -26,11 +30,7 @@ function dialog(trig, mode, siz, title) {
     } else if (tag == 'A') {
         action = trig.href;
         method = 'get';
-        if (mode == PROMPT) {
-            src = action.indexOf('?') == -1 ? action + '?inner=true' : action + '&' + 'inner=true';
-        } else {
-            src = action;
-        }
+        src = action.indexOf('?') == -1 ? action + '?inner=true' : action + '&' + 'inner=true';
         trigclass = ' anchor-trig';
     }
 
@@ -110,7 +110,7 @@ function ok(okbtn, mode, formid, tag, action, method) {
 }
 
 
-function crop(trig, ordinals, siz, circle, title) {
+function crop(trig, ordinals, siz, title) {
 
     var wid, hei, sizg;
     title = title || trig.innerHTML;
@@ -144,7 +144,7 @@ function crop(trig, ordinals, siz, circle, title) {
         html += '</select>';
     }
     html +=
-        '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val(), ' + circle + ');">上传</a>' +
+        '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val());">上传</a>' +
         '</div>' +
         '<div class="title-bar-right">' +
         '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +
@@ -180,7 +180,7 @@ function bind(url, ordinal, width, height, circle) {
     });
 }
 
-function upload(url, ordinal, circle) {
+function upload(url, ordinal) {
     if (ordinal) url = url + '-' + ordinal;
     // get blob of cropped image
     $('#crop').croppie('result',
@@ -188,13 +188,10 @@ function upload(url, ordinal, circle) {
             type: 'blob',
             size: 'viewport',
             format: 'jpeg',
-            quality: 0.75,
-            circle: circle
+            quality: 0.75
         }).then(function (blob) {
-
             var fd = new FormData();
             fd.append('jpeg', blob, 'jpeg.jpg');
-
             // post
             $.ajax({
                 type: 'POST',

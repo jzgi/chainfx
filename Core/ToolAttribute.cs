@@ -10,14 +10,17 @@ namespace Greatbone.Core
     {
         readonly int element; // ui element
 
-        readonly int flow; // ui flow
+        readonly int mode; // ui mode
+
+        readonly int pick; // form value pick
 
         readonly sbyte size;
 
         public ToolAttribute(Modal modal, sbyte size = 1)
         {
-            this.element = (int) modal & 0xff00;
-            this.flow = (int) modal & 0x00ff;
+            this.element = (int) modal & 0xf000;
+            this.mode = (int) modal & 0x00ff;
+            this.pick = (int) modal & 0x0f00;
             this.size = size;
         }
 
@@ -25,22 +28,22 @@ namespace Greatbone.Core
 
         public int Ordinals { get; set; }
 
-        public bool Circle { get; set; }
+        public bool IsAnchor => element == 0x1000;
 
-        public bool IsAnchor => element == 0x0100;
+        public bool IsButton => element == 0x2000;
 
-        public bool IsButton => element == 0x0200;
+        public bool MustPick => pick == 0x0100;
 
-        public bool HasConfirm => flow == 0x01;
+        public bool HasConfirm => mode == 0x01;
 
-        public bool HasPrompt => flow == 0x02;
+        public bool HasPrompt => mode == 0x02;
 
-        public bool HasShow => flow == 0x04;
+        public bool HasShow => mode == 0x04;
 
-        public bool HasOpen => flow == 0x08;
+        public bool HasOpen => mode == 0x08;
 
-        public bool HasScript => flow == 0x10;
+        public bool HasScript => mode == 0x10;
 
-        public bool HasCrop => flow == 0x20;
+        public bool HasCrop => mode == 0x20;
     }
 }
