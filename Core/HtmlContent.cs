@@ -126,7 +126,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add("、");
+                    if (i > 0) Add(", ");
                     Add(v[i]);
                 }
             }

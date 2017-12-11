@@ -10,7 +10,7 @@ namespace Greatbone.Core
     {
         int[] buckets;
 
-        Entry[] entries;
+        protected Entry[] entries;
 
         int count;
 
@@ -102,6 +102,23 @@ namespace Greatbone.Core
             }
             value = default;
             return false;
+        }
+
+        public int FindIndex(K key)
+        {
+            int code = key.GetHashCode() & 0x7fffffff;
+            int buck = code % buckets.Length; // target bucket
+            int idx = buckets[buck];
+            while (idx != -1)
+            {
+                Entry e = entries[idx];
+                if (e.Match(code, key))
+                {
+                    return idx;
+                }
+                idx = entries[idx].next; // adjust for next index
+            }
+            return -1;
         }
 
         public void Add(K key, V value)

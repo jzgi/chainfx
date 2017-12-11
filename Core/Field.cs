@@ -51,10 +51,10 @@ namespace Greatbone.Core
         {
             if (items == 1) // a single string
             {
-                string old = (string) value;
-                string[] arr = new string[8];
-                arr[0] = old;
+                var arr = new string[8];
+                arr[0] = (string) value;
                 arr[1] = v;
+                value = arr;
                 items = 2;
             }
             else

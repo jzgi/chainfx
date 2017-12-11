@@ -26,7 +26,15 @@ namespace Greatbone.Core
 
         public void Add(string name, string v)
         {
-            Add(new Field(name, v));
+            int idx = FindIndex(name);
+            if (idx == -1)
+            {
+                Add(new Field(name, v));
+            }
+            else
+            {
+                entries[idx].value.Add(v);
+            }
         }
 
         public void Add(string name, string filename, int offset, int count)

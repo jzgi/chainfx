@@ -175,8 +175,12 @@ namespace Greatbone.Samp
         }
 
         [Ui("删除"), Tool(ButtonConfirmPick)]
-        public void del(ActionContext ac, int page)
+        public async Task del(ActionContext ac, int page)
         {
+            int[] key = (await ac.ReadAsync<Form>())[nameof(key)];
+            using (var dc = ac.NewDbContext())
+            {
+            }
         }
     }
 
