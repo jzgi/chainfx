@@ -27,6 +27,8 @@ namespace Greatbone.Samp
 
     public abstract class ItemVarWork : Work
     {
+        const int PIC_AGE = 60 * 15;
+
         protected ItemVarWork(WorkContext wc) : base(wc)
         {
         }
@@ -41,9 +43,9 @@ namespace Greatbone.Samp
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                    else ac.Give(200, new StaticContent(byteas), true, PIC_AGE);
                 }
-                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                else ac.Give(404, @public: true, maxage: PIC_AGE); // not found
             }
         }
 
@@ -57,9 +59,9 @@ namespace Greatbone.Samp
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                    else ac.Give(200, new StaticContent(byteas), true, PIC_AGE);
                 }
-                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                else ac.Give(404, @public: true, maxage: PIC_AGE); // not found
             }
         }
     }
@@ -262,9 +264,9 @@ namespace Greatbone.Samp
                     {
                         dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) ac.Give(204); // no content 
-                        else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                        else ac.Give(200, new StaticContent(byteas));
                     }
-                    else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                    else ac.Give(404); // not found
                 }
                 return;
             }

@@ -103,7 +103,7 @@ namespace Greatbone.Samp
                         h.TAIL();
                     });
                 }
-            }, true, 60 * 5, city);
+            }, true, 60 * 5);
         }
     }
 

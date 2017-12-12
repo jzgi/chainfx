@@ -80,7 +80,7 @@ namespace Greatbone.Samp
                     m._BOX();
                     m.QRCODE(HTTPADDR + ac.Uri, box: 0x15);
                     if (shop.oprtel != null)
-                        m.FIELD_(box: 7).A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", true)._FIELD();
+                        m.FIELD_(box: 7).A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", false)._FIELD();
                     m._A_DROPDOWN();
 
                     m._TOPBAR();
@@ -96,7 +96,7 @@ namespace Greatbone.Samp
                         // adjust item availability
                         if (shop.status == 0) o.stock = 0;
                     });
-                }, true, 60 * 5, shop.city);
+                }, true, 60 * 5);
             }
         }
     }

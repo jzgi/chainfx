@@ -346,9 +346,9 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(values));
         }
 
-        public void SetTokenCookie<P>(P prin, short proj) where P : class, IData, new()
+        public void SetTokenCookie<P>(P prin, short proj, int maxage = 0) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj, 1800);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
         }
 
         public bool InCache { get; internal set; }

@@ -1211,7 +1211,6 @@ select[multiple] {
     padding: 0.375rem 0.5rem;
     -webkit-appearance: none;
     border: 1px solid transparent;
-    border-radius: 12px;
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
     font-size: 0.875rem;
     line-height: 1;
@@ -1219,6 +1218,10 @@ select[multiple] {
     cursor: pointer;
     background-color: darkblue;
     color: gainsboro;
+}
+
+button.button {
+    border-radius: 12px;
 }
 
 [data-whatinput='mouse'] .button { outline: 0; }
@@ -2534,8 +2537,26 @@ input:checked + label > .switch-inactive { display: none; }
     height: 3rem;
 }
 
+.top-bar-title {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    font-size: 1rem;
+}
+
 .top-bar-left {
-    padding: 0 6px;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+}
+
+.top-bar-right {
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
 }
 
 .top-bar input {
@@ -2550,46 +2571,6 @@ input:checked + label > .switch-inactive { display: none; }
 
 .top-bar input.button { width: auto; }
 
-.top-bar .top-bar-left,
-.top-bar .top-bar-right {
-    -ms-flex: 0 0 100%;
-    flex: 0 0 100%;
-    max-width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-@media print, screen and (min-width: 10em) {
-    .top-bar {
-        -ms-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-    }
-
-    .top-bar .top-bar-left {
-        -ms-flex: 1 1 auto;
-        flex: 1 1 auto;
-        margin-right: auto;
-    }
-
-    .top-bar .top-bar-right {
-        -ms-flex: 0 1 auto;
-        flex: 0 1 auto;
-        margin-left: auto;
-    }
-}
-
-.top-bar-title {
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto;
-    font-size: 1rem;
-}
-
-.top-bar-left,
-.top-bar-right {
-    padding: 0 4px;
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto;
-}
 
 .breadcrumbs {
     margin: 0 0 1rem 0;
@@ -2711,7 +2692,7 @@ input:checked + label > .switch-inactive { display: none; }
 .dropdown-pane {
     position: absolute;
     z-index: 10;
-    width: 75%;
+    width: 300px;
     padding: 0.5rem;
     visibility: hidden;
     display: none;
@@ -2727,11 +2708,13 @@ input:checked + label > .switch-inactive { display: none; }
     display: block;
 }
 
-.dropdown-pane.tiny { width: 100px; }
+.dropdown-pane.tiny { width: 200px; }
 
-.dropdown-pane.small { width: 200px; }
+.dropdown-pane.small { width: 300px; }
 
-.dropdown-pane.large { width: 400px; }
+.dropdown-pane.medium { width: 400px; }
+
+.dropdown-pane.large { width: 500px; }
 
 .tabs {
     margin: 0;

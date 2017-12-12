@@ -208,7 +208,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent A(string v, string href, bool button = false, bool parent = false)
+        public HtmlContent A(string v, string href, bool? solid_button = null, bool parent = false)
         {
             Add("<a href=\"");
             Add(href);
@@ -216,9 +216,16 @@ namespace Greatbone.Core
             {
                 Add("\" target=\"_parent");
             }
-            if (button)
+            if (solid_button.HasValue)
             {
-                Add("\" class=\"button primary hollow");
+                if (solid_button == true)
+                {
+                    Add("\" class=\"button primary");
+                }
+                else
+                {
+                    Add("\" class=\"button primary hollow");
+                }
             }
             Add("\">");
             Add(v);
@@ -792,22 +799,27 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent A_DROPDOWN_(string label)
+        public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
         {
             // current dropdown - action - ordinal as the id
             string m = actionCtx.Doer.Lower;
-            Add("<a class=\"button primary hollow\" data-toggle=\"dropdown-");
+            Add("<a class=\"primary\" data-toggle=\"dropdown-");
             Add(m);
             Add('-');
             Add(ordinal);
             Add("\">");
             Add(label);
             Add("</a>");
-            Add("<div class=\"dropdown-pane\" id=\"dropdown-");
+            Add("<div class=\"dropdown-pane");
+            if (size > 0)
+            {
+                Add(size == 1 ? " tiny" : size == 2 ? " small" : size == 3 ? " medium" : " large");
+            }
+            Add("\" id=\"dropdown-");
             Add(m);
             Add('-');
             Add(ordinal);
-            Add("\" data-dropdown data-auto-focus=\"true\" data-close-on-click=\"true\">");
+            Add("\" data-dropdown data-close-on-click=\"true\">");
             Add("<div class=\"grid-x\">");
             return this;
         }
