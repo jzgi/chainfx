@@ -2711,13 +2711,13 @@ input:checked + label > .switch-inactive { display: none; }
 .dropdown-pane {
     position: absolute;
     z-index: 10;
-    width: 300px;
-    padding: 1rem;
+    width: 75%;
+    padding: 0.5rem;
     visibility: hidden;
     display: none;
-    border: 1px solid #cacaca;
-    background-color: gainsboro;
-    font-size: 1rem;
+    background-color: linen;
+    box-shadow: 2px 2px 2px 1px gray;
+    font-size: 0.875rem;
 }
 
 .dropdown-pane.is-opening { display: block; }

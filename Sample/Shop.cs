@@ -10,9 +10,9 @@ namespace Greatbone.Samp
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "处在停业中"},
-            {1, "还在休息中"},
-            {2, "正在营业中"}
+            {0, "停业中"},
+            {1, "休息中"},
+            {2, "营业中"}
         };
 
         internal string id;

@@ -202,19 +202,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FLAG(string flag, bool? on = null)
-        {
-            Add("<span class=\"flag-");
-            if (on.HasValue)
-            {
-                Add(on.Value ? "on" : "off");
-            }
-            Add("\">");
-            Add(flag);
-            Add("</span>");
-            return this;
-        }
-
         public HtmlContent SP()
         {
             Add("&nbsp;&nbsp;");
@@ -790,6 +777,48 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent QRCODE(string v = null, byte box = 0x0c)
+        {
+            FIELD_(null, box);
+            Add("<div>");
+            Add("<script type=\"text/javascript\">");
+            Add("var scripte = document.scripts[document.scripts.length - 1];");
+            Add("new QRCode(scripte.parentNode, \"");
+            Add(v);
+            Add("\");");
+            Add("</script>");
+            Add("</div>");
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent A_DROPDOWN_(string label)
+        {
+            // current dropdown - action - ordinal as the id
+            string m = actionCtx.Doer.Lower;
+            Add("<a class=\"button primary hollow\" data-toggle=\"dropdown-");
+            Add(m);
+            Add('-');
+            Add(ordinal);
+            Add("\">");
+            Add(label);
+            Add("</a>");
+            Add("<div class=\"dropdown-pane\" id=\"dropdown-");
+            Add(m);
+            Add('-');
+            Add(ordinal);
+            Add("\" data-dropdown data-auto-focus=\"true\" data-close-on-click=\"true\">");
+            Add("<div class=\"grid-x\">");
+            return this;
+        }
+
+        public HtmlContent _A_DROPDOWN()
+        {
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
             Add("<form class=\"grid-x\"");
@@ -1097,8 +1126,8 @@ namespace Greatbone.Core
         public HtmlContent CARD_()
         {
             Add("<form class=\"cell board-view-cell\" id=\"card-");
+            Add(++ordinal);
             Add("\"><article class=\"card grid-x\">");
-            ordinal++;
             return this;
         }
 
@@ -1138,7 +1167,7 @@ namespace Greatbone.Core
         {
             if (flag != null)
             {
-                Add("<span style=\"margin-left: auto\" class=\"flag-");
+                Add("<span style=\"margin-left: auto\" class=\"card-flag-");
                 if (on.HasValue)
                 {
                     Add(on.Value ? "on" : "off");
@@ -1163,7 +1192,7 @@ namespace Greatbone.Core
             Add("<div class=\"cell card-tail\">");
             if (flag != null)
             {
-                Add("<span class=\"float-right flag");
+                Add("<span class=\"float-right card-flag");
                 if (on.HasValue)
                 {
                     Add(on.Value ? "-on" : "-off");

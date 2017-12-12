@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
+using static Greatbone.Samp.SampUtility;
 
 namespace Greatbone.Samp
 {
@@ -66,33 +67,36 @@ namespace Greatbone.Samp
                 ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().A("&Lt;", "../?city=" + shop.city, true).SP();
-                    m.FLAG(Shop.Statuses[shop.status], shop.status == 2).SP();
-                    if (shop.oprtel != null) m.A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", true);
-                    m._TOPBAR();
 
-                    m.GRID_();
-                    m.BOX_(0x48);
+                    m.A_DROPDOWN_(shop.name);
+                    m.BOX_(0x4c);
+                    m.P(Shop.Statuses[shop.status], "状态");
                     m.P_("派送").T(shop.delivery);
                     if (shop.areas != null) m.SEP().T("限送").T(shop.areas);
                     m._P();
                     m.P(shop.schedule, "营业");
-                    if (shop.off > 0) m.P_("促销").T(shop.min).T("元起送，满").T(shop.notch).T("元减").T(shop.off).T("元")._P();
+                    if (shop.off > 0)
+                        m.P_("促销").T(shop.min).T("元起送，满").T(shop.notch).T("元减").T(shop.off).T("元")._P();
                     m._BOX();
-                    m.ICON("", box: 0x14);
-                    m._GRID();
+                    m.QRCODE(HTTPADDR + ac.Uri, box: 0x15);
+                    if (shop.oprtel != null)
+                        m.FIELD_(box: 7).A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", true)._FIELD();
+                    m._A_DROPDOWN();
+
+                    m._TOPBAR();
 
                     if (items == null) return;
                     m.BOARDVIEW(items, (h, o) =>
                     {
                         h.CAPTION(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
-                        h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P(o.price, symbol: '¥')._BOX();
+                        h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P(o.price, symbol: '¥').P(o.stock, "还剩", o.unit)._BOX();
                         h.THUMBNAIL(o.name + "/img-1", box: 3).THUMBNAIL(o.name + "/img-2", box: 3).THUMBNAIL(o.name + "/img-3", box: 3).THUMBNAIL(o.name + "/img-4", box: 3);
                         h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.stock = 0;
                     });
-                }, true, 60 * 5, shop.name);
+                }, true, 60 * 5, shop.city);
             }
         }
     }

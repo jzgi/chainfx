@@ -28,6 +28,9 @@ namespace Greatbone.Samp
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body class=\"doc\">");
@@ -35,9 +38,6 @@ namespace Greatbone.Samp
             main(h);
 
             // zurb foundation
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
             h.Add("</script>");
@@ -62,6 +62,9 @@ namespace Greatbone.Samp
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
@@ -114,9 +117,6 @@ namespace Greatbone.Samp
             h.Add(" </div>");
 
             // zurb foundation
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();\n");
             h.Add("$('#frametabs').on('change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
@@ -145,6 +145,9 @@ namespace Greatbone.Samp
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body class=\"page\">");
@@ -152,9 +155,6 @@ namespace Greatbone.Samp
             main(h);
 
             // zurb foundation
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
             h.Add("$(document).foundation();");
             h.Add("</script>");
@@ -180,6 +180,9 @@ namespace Greatbone.Samp
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
+            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
+            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body class=\"pane\">");
@@ -187,9 +190,6 @@ namespace Greatbone.Samp
             main?.Invoke(h);
 
             // zurb foundation
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("<script>");
 
             h.Add("$(document).ready(function(){");

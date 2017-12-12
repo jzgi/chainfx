@@ -249,7 +249,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("过程照"), Tool(ButtonCrop, Ordinals = 3)]
+        [Ui("过程照"), Tool(ButtonCrop, Ordinals = 4)]
         public async Task prep(ActionContext ac, int ordinal)
         {
             string shopid = ac[-2];

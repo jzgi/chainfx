@@ -58,17 +58,17 @@
     padding: 0.25rem;
 }
 
-.flag-on {
+.card-flag-on {
     color: green;
     font-size: 1rem;
 }
 
-.flag {
+.card-flag {
     color: red;
     font-size: 1rem;
 }
 
-.flag-off {
+.card-flag-off {
     color: gray;
     font-size: 1rem;
 }
@@ -87,14 +87,6 @@
 .pane .box input, .pane .box textarea, .pane .box select {
     flex : 1;
     width: inherit;
-}
-
-.doc .box {
-    background-color: #f1f1f1;
-}
-
-.page .box {
-    background-color: #f1f1f1;
 }
 
 .box.box-0 {
@@ -157,14 +149,16 @@
     justify-content: space-between;
 }
 
-
-
 .card fieldset {
     background-color: #f1f1f1;
     width: calc(100% - 0.25rem);
     padding: 0;
     border: none;
     margin: 0.25rem 0 0 0;
+}
+
+.card .box {
+    background-color: #f1f1f1;
 }
 
 .card legend {
