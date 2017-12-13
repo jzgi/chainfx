@@ -129,7 +129,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("新建"), Tool(ButtonConfirm)]
+        [Ui("新建"), Tool(ButtonConfirm), User(OPRMEM)]
         public void @new(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -156,7 +156,7 @@ namespace Greatbone.Samp
             ac.GiveRedirect();
         }
 
-        [Ui("删除"), Tool(ButtonConfirmPick)]
+        [Ui("删除"), Tool(ButtonConfirmPick), User(OPRMEM)]
         public async Task del(ActionContext ac, int page)
         {
             string shopid = ac[-1];
@@ -173,7 +173,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("新单"), Role(OPRMEM)]
+    [Ui("新单"), User(OPRMEM)]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         public OprNewWork(WorkContext wc) : base(wc)
@@ -221,7 +221,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("旧单"), Role(OPR)]
+    [Ui("旧单"), User(OPR)]
     public class OprOldWork : OrderWork<OprOldVarWork>
     {
         public OprOldWork(WorkContext wc) : base(wc)
@@ -267,7 +267,7 @@ namespace Greatbone.Samp
     }
 
     [Ui("反馈")]
-    [Role(adm: true)]
+    [User(adm: true)]
     public class AdmKickWork : OrderWork<AdmKickVarWork>
     {
         public AdmKickWork(WorkContext wc) : base(wc)

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
 using static Greatbone.Samp.Order;
+using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
@@ -210,7 +211,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("加货"), Tool(ButtonShow, 2)]
+        [Ui("加货"), Tool(ButtonShow, 2), User(OPRMEM)]
         public async Task add(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -243,9 +244,9 @@ namespace Greatbone.Samp
                     {
                         var e = f.At(i);
                         var (name, unit, price) = e.Key.To3Strings('~');
-                        short pr = e.Value;
-                        o.ReceiveItem(name, unit, decimal.Parse(price), pr);
-                        dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(pr).Set(shopid).Set(name));
+                        short price_ = e.Value;
+                        o.ReceiveItem(name, unit, decimal.Parse(price), price_);
+                        dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(price_).Set(shopid).Set(name));
                     }
                     dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
                 }
@@ -253,30 +254,30 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("分派"), Tool(ButtonShow)]
+        [Ui("分派"), Tool(ButtonShow), User(OPRMEM)]
         public async Task assign(ActionContext ac)
         {
-            string shopid = ac[-2];
             int orderid = ac[this];
+            string shopid = ac[-2];
+            string opr;
+            string addr = null;
             if (ac.GET)
             {
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    string opr = null;
-                    string addr = null;
-                    // operator list
                     using (var dc = ac.NewDbContext())
                     {
+                        // select operator info
                         dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(shopid));
                         m.SELECT_(nameof(opr), "人员");
                         while (dc.Next())
                         {
                             dc.Let(out string wx).Let(out string name).Let(out string tel);
-                            m.OPTION(wx, name);
+                            m.OPTION(wx + '~' + name + '~' + tel, name);
                         }
                         m._SELECT();
-
+                        // input addr
                         dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
                         dc.Let(out string[] areas);
                         if (areas != null)
@@ -288,12 +289,19 @@ namespace Greatbone.Samp
                             m.TEXT(nameof(addr), addr, "区域");
                         }
                     }
-
                     m._FORM();
                 });
             }
             else
             {
+                (await ac.ReadAsync<Form>()).Let(out opr).Let(out addr);
+                var (wx, name, tel) = opr.To3Strings('~');
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND shopid = @6",
+                        p => p.Set(wx).Set(name).Set(tel).Set(addr).Set(orderid).Set(shopid));
+                }
+                ac.GivePane(200);
             }
         }
     }

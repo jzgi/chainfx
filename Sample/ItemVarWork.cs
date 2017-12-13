@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
+using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
@@ -33,7 +34,7 @@ namespace Greatbone.Samp
 
         public void icon(ActionContext ac)
         {
-            string shopid = ac[-1];
+            string shopid = ac[typeof(IShopVar)];
             string name = ac[this];
             using (var dc = Service.NewDbContext())
             {
@@ -187,7 +188,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("基本"), Tool(ButtonShow, 2)]
+        [Ui("基本"), Tool(ButtonShow, 2), User(OPRMEM)]
         public async Task basic(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -228,8 +229,8 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("成品照"), Tool(ButtonCrop)]
-        public new async Task icon(ActionContext ac)
+        [Ui("成品照"), Tool(ButtonCrop), User(OPRMEM)]
+        public async Task ficon(ActionContext ac)
         {
             string shopid = ac[-2];
             string name = ac[this];
@@ -261,8 +262,8 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("过程照"), Tool(ButtonCrop, Ordinals = 4)]
-        public async Task prep(ActionContext ac, int ordinal)
+        [Ui("过程照"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
+        public async Task fimgs(ActionContext ac, int ordinal)
         {
             string shopid = ac[-2];
             string name = ac[this];
@@ -289,7 +290,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("供量"), Tool(ButtonShow)]
+        [Ui("供量"), Tool(ButtonShow), User(OPRMEM)]
         public async Task max(ActionContext ac)
         {
             string shopid = ac[-2];

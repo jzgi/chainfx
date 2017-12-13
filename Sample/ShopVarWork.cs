@@ -43,7 +43,7 @@ namespace Greatbone.Samp
         }
     }
 
-    public class PubShopVarWork : ShopVarWork
+    public class PubShopVarWork : ShopVarWork, IShopVar
     {
         public PubShopVarWork(WorkContext wc) : base(wc)
         {

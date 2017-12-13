@@ -91,7 +91,7 @@ namespace Greatbone.Core
 
         public int Limit => limit;
 
-        public bool CheckState(object obj)
+        public bool DoState(object obj)
         {
             return state == null || obj == null || state.Check(obj);
         }

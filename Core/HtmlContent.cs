@@ -1293,7 +1293,7 @@ namespace Greatbone.Core
         void Tool(ActionInfo ai, IData obj, int subscript = -1)
         {
             var tool = ai.Tool;
-            bool ok = ai.CheckState(obj);
+            bool ok = ai.DoAuthorize(actionCtx) && ai.DoState(obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");

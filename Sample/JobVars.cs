@@ -7,7 +7,7 @@ using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
-    [Ui("常规"), Role]
+    [Ui("常规"), User]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkContext wc) : base(wc)
@@ -34,6 +34,26 @@ namespace Greatbone.Samp
                         h.TAIL();
                     });
             });
+        }
+
+        [Tool(ButtonOpen)]
+        public void token(ActionContext ac)
+        {
+            string wx = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                const short proj = -1 ^ CREDENTIAL;
+                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
+                {
+                    var o = dc.ToObject<User>(proj);
+                    ac.SetTokenCookie(o, proj);
+                    ac.GivePane(200);
+                }
+                else
+                {
+                    ac.GivePane(404);
+                }
+            }
         }
 
         [Ui("修改", Group = 1), Tool(ButtonShow)]
@@ -120,8 +140,8 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("常规"), Role(OPR)]
-    public class OprVarWork : Work
+    [Ui("常规"), User(OPR)]
+    public class OprVarWork : Work, IShopVar
     {
         public OprVarWork(WorkContext wc) : base(wc)
         {
@@ -186,7 +206,7 @@ namespace Greatbone.Samp
             });
         }
 
-        [Ui("人员"), Tool(ButtonOpen, 2), Role(OPRMGR)]
+        [Ui("人员"), Tool(ButtonOpen, 2), User(OPRMGR)]
         public async Task access(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
@@ -240,7 +260,7 @@ namespace Greatbone.Samp
             });
         }
 
-        [Ui("设置"), Tool(ButtonShow, 2), Role(OPRMGR)]
+        [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
         public async Task sets(ActionContext ac)
         {
             string shopid = ac[this];
@@ -277,7 +297,7 @@ namespace Greatbone.Samp
             ac.GivePane(200);
         }
 
-        [Ui("功能照"), Tool(ButtonCrop, Ordinals = 4)]
+        [Ui("功能照"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
@@ -304,7 +324,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("上下班", Group = 1), Tool(ButtonShow)]
+        [Ui("上下班", Group = 1), Tool(ButtonShow), User(OPRMEM)]
         public async Task status(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -350,7 +370,7 @@ namespace Greatbone.Samp
             ac.GivePane(200);
         }
 
-        [Ui("调整", Group = 2), Tool(ButtonOpen), Role(OPRMEM)]
+        [Ui("调整", Group = 2), Tool(ButtonOpen), User(OPRMEM)]
         public async Task adjust(ActionContext ac, int cmd)
         {
             string shopid = ac[this];

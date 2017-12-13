@@ -23,6 +23,8 @@ namespace Greatbone.Core
         // state-passing
         readonly WorkContext ctx;
 
+        readonly Type type;
+
         readonly TypeInfo typeInfo;
 
         // declared actions 
@@ -50,10 +52,10 @@ namespace Greatbone.Core
 
             // gather actions
             actions = new Map<string, ActionInfo>(32);
-            Type typ = GetType();
-            typeInfo = typ.GetTypeInfo();
+            this.type = GetType();
+            typeInfo = type.GetTypeInfo();
 
-            foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
                 Type ret = mi.ReturnType;
@@ -266,7 +268,7 @@ namespace Greatbone.Core
                 });
         }
 
-        public bool IsInstanceOf(Type typ) => GetType() == typ || typeInfo.IsSubclassOf(typ);
+        public bool IsInstanceOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
         public ActionInfo GetAction(string method)
         {

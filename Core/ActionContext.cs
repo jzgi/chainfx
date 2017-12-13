@@ -54,14 +54,14 @@ namespace Greatbone.Core
 
         public Node this[int pos] => pos < 0 ? chain[level + pos - 1] : chain[pos];
 
-        public Node this[Type workType]
+        public Node this[Type typ]
         {
             get
             {
                 for (int i = 0; i < level; i++)
                 {
                     Node node = chain[i];
-                    if (node.Work.IsInstanceOf(workType)) return node;
+                    if (node.Work.IsInstanceOf(typ)) return node;
                 }
                 return default;
             }

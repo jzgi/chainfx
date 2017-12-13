@@ -61,7 +61,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Role] // we are forced to put check here because  weixin auth does't work in iframe
+    [User] // we are forced to put check here because  weixin auth does't work in iframe
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
         public PubShopWork(WorkContext wc) : base(wc)
