@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-12-10 11:40:47
+Date: 2017-12-13 22:58:22
 */
 
 
@@ -35,8 +35,10 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
- CACHE 1;
+ START 59
+ CACHE 8
+ CYCLE;
+SELECT setval('"public"."orders_id_seq"', 59, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -86,7 +88,8 @@ CREATE TABLE "public"."items" (
 "stock" int2,
 "img1" bytea,
 "img2" bytea,
-"img3" bytea
+"img3" bytea,
+"img4" bytea
 )
 WITH (OIDS=FALSE)
 
@@ -102,18 +105,15 @@ CREATE TABLE "public"."orders" (
 "status" int2,
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "shopname" varchar(10) COLLATE "default",
-"onsite" bool DEFAULT false,
+"pos" bool DEFAULT false,
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
-"city" varchar(6) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "items" jsonb,
-"note" varchar(20) COLLATE "default",
 "min" money,
 "notch" money,
 "off" money,
-"qty" int2,
 "total" money,
 "created" timestamp(6),
 "cash" money DEFAULT 0,
@@ -186,7 +186,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."slides";
 CREATE TABLE "public"."slides" (
-"no" varchar(4) COLLATE "default",
+"id" varchar(4) COLLATE "default",
 "lesson" varchar(10) COLLATE "default",
 "title" varchar(30) COLLATE "default",
 "figure" varchar(254) COLLATE "default",
@@ -235,6 +235,11 @@ ALTER TABLE "public"."cashes" ADD PRIMARY KEY ("id");
 -- Primary Key structure for table items
 -- ----------------------------
 ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
+
+-- ----------------------------
+-- Indexes structure for table orders
+-- ----------------------------
+CREATE INDEX "orders_wxstatus_index" ON "public"."orders" USING btree ("wx", "status");
 
 -- ----------------------------
 -- Primary Key structure for table orders

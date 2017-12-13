@@ -62,7 +62,7 @@ namespace Greatbone.Core
             index = 0;
         }
 
-        public void Begin(IsolationLevel level)
+        public void Begin(IsolationLevel level = IsolationLevel.ReadCommitted)
         {
             if (connection.State != ConnectionState.Open)
             {

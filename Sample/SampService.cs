@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -44,6 +45,8 @@ namespace Greatbone.Samp
                 h.T("<div class=\"top-bar-right\">");
                 h.T("</div>");
                 h.T("</header>");
+
+                h.A("PAYNOTIF", "paynotify");
 
                 if (slides != null)
                 {
@@ -177,18 +180,29 @@ namespace Greatbone.Samp
             if (Notified(xe, out var trade_no, out var cash))
             {
                 var (orderid, _) = trade_no.To2Ints();
-                using (var dc = NewDbContext())
+                string oprwx = null;
+                using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, accepted = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
-                    if (shopid != null) // try to send a notification to the operator
+                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
+                    // reflect in stock 
+                    dc.Query1("SELECT items FROM orders WHERE id = @1", p => p.Set(orderid));
+                    dc.Let(out OrderItem[] items);
+                    for (int i = 0; i < items.Length; i++)
                     {
-                        var oprwx = (string) dc.Scalar("SELECT oprwx FROM shops WHERE id = @1", p => p.Set(shopid));
-                        if (oprwx != null)
-                        {
-                            await PostSendAsync(oprwx, "【订单收款】单号：" + orderid + "，金额：" + cash + "元");
-                        }
+                        var o = items[i];
+                        dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
+                    }
+                    if (shopid != null)
+                    {
+                        oprwx = (string) dc.Scalar("SELECT oprwx FROM shops WHERE id = @1", p => p.Set(shopid));
                     }
                 }
+                // send a notification
+                if (oprwx != null)
+                {
+                    await PostSendAsync(oprwx, "【收款】单号：" + orderid + "，金额：" + cash + "元");
+                }
+
                 // return xml to WCPay server
                 XmlContent x = new XmlContent(true, 1024);
                 x.ELEM("xml", null, () =>

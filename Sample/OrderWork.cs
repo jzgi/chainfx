@@ -180,7 +180,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("分区域..."), Tool(AnchorPrompt)]
+        [Ui("区域"), Tool(AnchorPrompt)]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
