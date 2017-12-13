@@ -1,4 +1,4 @@
-using System;
+using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
@@ -37,107 +37,110 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("地址", Group = -1), Tool(ButtonShow, 1)]
+        [Ui("修改", Group = -1), Tool(ButtonShow)]
         public async Task addr(ActionContext ac)
         {
-            string wx = ac[-2];
             int orderid = ac[this];
-            string name = null;
-            string area = null;
-            string addr = null;
-            string tel = null;
-            User prin = (User) ac.Principal;
+            string wx = ac[-2];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
                 {
+                    h.FORM_();
                     using (var dc = Service.NewDbContext())
                     {
-                        if (dc.Query1("SELECT city, areas FROM shops WHERE id = (SELECT shopid FROM orders WHERE id = @1)", p => p.Set(orderid)))
+                        dc.Query1("SELECT shopid, pos, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                        dc.Let(out string oshopid).Let(out bool opos).Let(out string oaddr).Let(out string otel);
+                        dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(oshopid));
+                        dc.Let(out string city).Let(out string[] areas);
+                        h.FIELDSET_("收货地址");
+                        string tel;
+                        if (areas != null) // limited delivery areas
                         {
-                            dc.Let(out string city).Let(out string[] areas);
-                            h.FORM_();
-                            if (areas == null)
+                            ac.Query.Let(out string a).Let(out string b).Let(out string c).Let(out tel); // by select refresh
+                            if (a == null) // init from order
                             {
-                                h.TEXT(nameof(name), prin.name, "姓名", required: true);
-//                                h.SELECT(nameof(area), prin.area, City.FindCity(city).Areas, "区域", required: true);
-                                h.TEXT(nameof(addr), addr, "地址");
+                                (a, b, c) = oaddr.To3Strings('\a');
+                                a = City.ResolveIn(a, areas);
+                                tel = otel;
                             }
-                            else
-                            {
-//                                h.SELECT(nameof(area), prin.area, areas, "限送", refresh: true, required: true);
-//                                var places = City.All[city].FindArea(areas[0]).places;
-//                                h.SELECT(nameof(addr), places[0], places, "地址", box: 7).TEXT(nameof(addr), addr, box: 5);
-                            }
-                            h.TEL(nameof(tel), tel, "电话", required: true);
-                            h._FORM();
+                            var sites = City.SitesOf(city, a);
+                            b = City.ResolveIn(b, sites);
+                            h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
                         }
+                        else // formless address
+                        {
+                            ac.Query.Let(out string a).Let(out tel);
+                            if (a == null)
+                            {
+                                a = oaddr;
+                                tel = otel;
+                            }
+                            h.TEXT(nameof(a), a, tip: "填写您的完整地址");
+                        }
+                        h.TEL(nameof(tel), tel, "您的随身电话", required: true);
                     }
+                    h._FORM();
                 });
-                return;
             }
-
-            var f = await ac.ReadAsync<Form>();
-            f.Let(out area).Let(out addr).Let(out tel);
-            using (var dc = ac.NewDbContext())
+            else // POST
             {
-                dc.Execute("UPDATE orders SET area = @1, addr = @2, tel = @3 WHERE id = @4", p => p.Set(area).Set(addr).Set(tel).Set(orderid));
-
-                if (prin.city == null)
+                var f = await ac.ReadAsync<Form>();
+                string a = f[nameof(a)];
+                string b = f[nameof(b)];
+                string c = f[nameof(c)];
+                string tel = f[nameof(tel)];
+                using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("INSERT INTO users (wx, name, city, area, addr, tel, created) VALUES (@1, @2, @3, @4, @5, @6, @7) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, distr = @4, addr = @5, tel = @6, created = @7", p => p.Set(wx).Set(area).Set(addr).Set(tel).Set(DateTime.Now));
-                    prin.city = area;
-                    prin.addr = addr;
-                    prin.tel = tel;
-                    // refresh the client cookie
-                    ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
+                    dc.Query1("SELECT pos FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                    dc.Let(out bool pos);
+                    string addr = pos ? a + '\a' + b + '\a' + c : a;
+                    dc.Execute("UPDATE orders SET addr = @1, tel = @2 WHERE id = @3", p => p.Set(addr).Set(tel).Set(orderid));
                 }
+                ac.GivePane(200);
             }
-            ac.GivePane(200);
         }
 
-        [Ui("修改", Group = -1), Tool(ButtonShow, 1)]
+        [Ui("修改", Group = -1), Tool(ButtonShow)]
         public async Task item(ActionContext ac, int idx)
         {
-            string wx = ac[-2];
             int orderid = ac[this];
-
+            string wx = ac[-2];
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
-                    dc.Query1(p => p.Set(orderid).Set(wx));
-                    var order = dc.ToObject<Order>();
-                    var o = order.items[idx];
-
+                    dc.Query1("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                    var o = dc.ToObject<Order>();
+                    var oi = o.items[idx];
+                    dc.Query1("SELECT step, stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(o.shopid).Set(oi.name));
+                    dc.Let(out short step).Let(out short stock);
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("数量");
-                        h.HIDDEN(nameof(o.unit), o.unit);
-                        h.HIDDEN(nameof(o.price), o.price);
-                        h.NUMBER(nameof(o.qty), o.qty, min: (short) 0, max: (short) 20, step: (short) 1);
+                        h.FIELDSET_("修改数量");
+                        h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                        h.NUMBER(nameof(oi.qty), oi.qty, min: (short) 0, max: stock, step: step, box: 8);
+                        h.FIELD(oi.unit, box: 2);
                         h._FIELDSET();
                         h._FORM();
                     });
                 }
-                return;
             }
-
-            var f = await ac.ReadAsync<Form>();
-            short qty = f[nameof(qty)];
-            string[] opts = f[nameof(opts)];
-            using (var dc = ac.NewDbContext())
+            else // POST
             {
-                dc.Sql("SELECT ").columnlst(Empty).T(" FROM orders WHERE id = @1 AND wx = @2");
-                dc.Query1(p => p.Set(orderid).Set(wx));
-                var o = dc.ToObject<Order>();
-                o.UpdItem(o.name, qty);
-                o.SetTotal();
-                dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                var f = await ac.ReadAsync<Form>();
+                short qty = f[nameof(qty)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Query1("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                    var o = dc.ToObject<Order>();
+                    o.UpdItem(idx, qty);
+                    o.TotalUp();
+                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                }
+                ac.GivePane(200);
             }
-            ac.GivePane(200);
         }
 
         [Ui("付款"), Tool(ButtonScript), Orderly('A')]
@@ -217,35 +220,36 @@ namespace Greatbone.Samp
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    string opr = null;
-                    string addr = null;
-                    // operator list
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Query("SELECT name, max FROM items WHERE shopid = @1 AND status > 0 AND max > 0", p => p.Set(shopid));
+                        dc.Query("SELECT name, unit, price, stock FROM items WHERE shopid = @1 AND status > 0 AND stock > 0", p => p.Set(shopid));
                         while (dc.Next())
                         {
-                            dc.Let(out string name).Let(out short max);
-                            m.FIELD(name, box: 7).NUMBER(name, (short) 0, min: (short) 0, step: (short) 1, max: max, box: 5);
+                            dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
+                            m.FIELD(name, box: 5).FIELD(stock, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
                         }
                     }
-
                     m._FORM();
                 });
-                return;
             }
-
-            var f = await ac.ReadAsync<Form>();
-            using (var dc = ac.NewDbContext())
+            else // POST
             {
-                dc.Query1("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
-                var o = dc.ToObject<Order>();
-                dc.Let(out Item[] items);
-                for (int i = 0; i < f.Count; i++)
+                var f = await ac.ReadAsync<Form>();
+                using (var dc = ac.NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    var e = f.At(i);
-//                    o.AddItem(e.key, );
+                    dc.Query1("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
+                    var o = dc.ToObject<Order>();
+                    for (int i = 0; i < f.Count; i++)
+                    {
+                        var e = f.At(i);
+                        var (name, unit, price) = e.Key.To3Strings('~');
+                        short pr = e.Value;
+                        o.ReceiveItem(name, unit, decimal.Parse(price), pr);
+                        dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(pr).Set(shopid).Set(name));
+                    }
+                    dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
                 }
+                ac.GivePane(200);
             }
         }
 

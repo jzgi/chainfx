@@ -11,7 +11,7 @@ namespace Greatbone.Core
         readonly string name;
 
         // whether captital leading
-        readonly bool capitalized;
+        readonly bool capital;
 
         // name in lowercase
         readonly string lower;
@@ -38,7 +38,7 @@ namespace Greatbone.Core
         internal Nodule(string name, ICustomAttributeProvider attrp)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
-            this.capitalized = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
+            this.capital = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
             this.lower = name.ToLower();
 
             // either methodinfo or typeinfo
@@ -76,7 +76,7 @@ namespace Greatbone.Core
 
         public string Key => name;
 
-        public bool IsCapitalized => capitalized;
+        public bool IsCapital => capital;
 
         public string Lower => lower;
 

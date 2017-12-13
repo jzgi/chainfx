@@ -11,6 +11,19 @@ namespace Greatbone.Samp
 
         public static Area[] AreasOf(string city) => city == null ? null : All[city]?.areas;
 
+        public static string ResolveIn(string area, string[] areas)
+        {
+            if (areas != null && areas.Length > 0)
+            {
+                for (int i = 0; i < areas.Length; i++)
+                {
+                    if (areas[i] == area) return area;
+                }
+                return areas[0];
+            }
+            return null;
+        }
+
         public static string[] SitesOf(string city, string area)
         {
             var areas = AreasOf(city);

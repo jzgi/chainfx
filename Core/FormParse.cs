@@ -72,6 +72,19 @@ namespace Greatbone.Core
                     pos = p;
                     return str.ToString();
                 }
+                else if (b == '+')
+                {
+                    str.Accept(' ');
+                }
+                else if (b == '%') // percent-encoding %xy
+                {
+                    if (p >= length) throw ParseEx;
+                    int x = this[p++];
+                    if (p >= length) throw ParseEx;
+                    int y = this[p++];
+
+                    str.Accept(Dv(x) << 4 | Dv(y));
+                }
                 else
                 {
                     str.Accept(b);

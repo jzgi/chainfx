@@ -1319,7 +1319,7 @@ namespace Greatbone.Core
             else if (tool.IsButton)
             {
                 Add("<button class=\"button primary");
-                if (!ai.IsCapitalized) Add(" hollow");
+                if (!ai.IsCapital) Add(" hollow");
                 Add("\" name=\"");
                 Add(ai.Key);
                 Add("\" formaction=\"");
@@ -1342,9 +1342,14 @@ namespace Greatbone.Core
             }
             if (tool.HasConfirm)
             {
-                Add(" onclick=\"if ($(this.form).serialize()) return confirm('");
+                Add(" onclick=\"return ");
+                if (tool.MustPick)
+                {
+                    Add("($(this.form).serialize()) && '");
+                }
+                Add("confirm('");
                 Add(ai.Tip ?? ai.Label);
-                Add("?'); else return false;\"");
+                Add("');\"");
             }
             else if (tool.HasPrompt)
             {

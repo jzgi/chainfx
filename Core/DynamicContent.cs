@@ -227,7 +227,7 @@ namespace Greatbone.Core
         {
             if (v == 0)
             {
-                AddByte((byte) '0');
+                Add('0');
                 return;
             }
             int x = v; // convert to int

@@ -10,7 +10,7 @@ namespace Greatbone.Samp
     {
         public static readonly Order Empty = new Order();
 
-        public const short ID = 1, LATER = 4;
+        public const short KEY = 1, LATER = 4;
 
         // status
         public const short CART = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
@@ -18,7 +18,7 @@ namespace Greatbone.Samp
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {CART, "购物车"},
-            {PAID, "已付款"},
+            {PAID, "在处理"},
             {ABORTED, "已撤单"},
             {FINISHED, "已完成"}
         };
@@ -32,10 +32,8 @@ namespace Greatbone.Samp
         internal string wx; // weixin openid
         internal string name; // customer name
         internal string tel;
-        internal string city;
         internal string addr; // may include area and site
         internal OrderItem[] items;
-        internal string note; // comment
         internal decimal min;
         internal decimal notch;
         internal decimal off;
@@ -49,7 +47,7 @@ namespace Greatbone.Samp
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
-            if ((proj & ID) == ID)
+            if ((proj & KEY) == KEY)
             {
                 i.Get(nameof(id), ref id);
                 i.Get(nameof(rev), ref rev);
@@ -61,10 +59,8 @@ namespace Greatbone.Samp
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(name), ref name);
             i.Get(nameof(tel), ref tel);
-            i.Get(nameof(city), ref city);
             i.Get(nameof(addr), ref addr);
             i.Get(nameof(items), ref items);
-            i.Get(nameof(note), ref note);
             i.Get(nameof(min), ref min);
             i.Get(nameof(notch), ref notch);
             i.Get(nameof(off), ref off);
@@ -82,7 +78,7 @@ namespace Greatbone.Samp
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
         {
-            if ((proj & ID) == ID)
+            if ((proj & KEY) == KEY)
             {
                 o.Put(nameof(id), id);
                 o.Put(nameof(rev), rev);
@@ -94,10 +90,8 @@ namespace Greatbone.Samp
             o.Put(nameof(wx), wx);
             o.Put(nameof(name), name);
             o.Put(nameof(tel), tel);
-            o.Put(nameof(city), city);
             o.Put(nameof(addr), addr);
             o.Put(nameof(items), items);
-            o.Put(nameof(note), note);
             o.Put(nameof(min), min);
             o.Put(nameof(notch), notch);
             o.Put(nameof(off), off);
@@ -120,37 +114,54 @@ namespace Greatbone.Samp
             return null;
         }
 
-        public void AddItem(string name, string unit, decimal price, short num)
+        public void AddItem(string name, string unit, decimal price, short n)
         {
             int idx = items.FindIndex(o => o.name.Equals(name));
             if (idx != -1)
             {
-                if (pos) items[idx].load += num;
-                else items[idx].qty += num;
+                items[idx].qty += n;
+                if (pos) items[idx].load -= n; // deduce pos load
             }
             else
             {
-                var o = new OrderItem {name = name, unit = unit, price = price, qty = num};
-                if (pos) o.load = num;
-                else o.qty = num;
-                items = items.AddOf(o);
+                items = items.AddOf(new OrderItem {name = name, unit = unit, price = price, qty = n});
             }
         }
 
-        public void UpdItem(string name, short qty)
+        public void UpdItem(int idx, short n)
+        {
+            if (pos)
+            {
+                items[idx].load += (short) (items[idx].qty - n); // affect load
+                items[idx].qty = n;
+            }
+            else
+            {
+                if (n <= 0)
+                {
+                    items = items.RemovedOf(idx);
+                }
+                else
+                {
+                    items[idx].qty = n;
+                }
+            }
+        }
+
+        public void ReceiveItem(string name, string unit, decimal price, short n)
         {
             int idx = items.FindIndex(o => o.name.Equals(name));
-            if (qty <= 0)
+            if (idx != -1)
             {
-                items = items.RemovedOf(idx);
+                items[idx].load += n;
             }
             else
             {
-                items[idx].qty = qty;
+                items = items.AddOf(new OrderItem {name = name, unit = unit, price = price, load = n});
             }
         }
 
-        public void SetTotal()
+        public void TotalUp()
         {
             if (items != null)
             {
