@@ -78,7 +78,7 @@ namespace Greatbone.Samp
                     if (shop.off > 0)
                         m.P_("促销").T(shop.min).T("元起送，满").T(shop.notch).T("元减").T(shop.off).T("元")._P();
                     m._BOX();
-                    m.QRCODE(HTTPADDR + ac.Uri, box: 0x15);
+                    m.QRCODE(NETADDR + ac.Uri, box: 0x15);
                     if (shop.oprtel != null)
                         m.FIELD_(box: 7).A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", false)._FIELD();
                     m._A_DROPDOWN();

@@ -31,7 +31,7 @@ namespace Greatbone.Samp
         internal string descr;
         internal decimal received;
         internal decimal paid;
-        internal string recorder;
+        internal string keeper;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
@@ -45,7 +45,7 @@ namespace Greatbone.Samp
             i.Get(nameof(descr), ref descr);
             i.Get(nameof(received), ref received);
             i.Get(nameof(paid), ref paid);
-            i.Get(nameof(recorder), ref recorder);
+            i.Get(nameof(keeper), ref keeper);
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
@@ -60,7 +60,7 @@ namespace Greatbone.Samp
             o.Put(nameof(descr), descr);
             o.Put(nameof(received), received);
             o.Put(nameof(paid), paid);
-            o.Put(nameof(recorder), recorder);
+            o.Put(nameof(keeper), keeper);
         }
     }
 }

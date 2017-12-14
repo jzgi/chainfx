@@ -2632,7 +2632,8 @@ input:checked + label > .switch-inactive { display: none; }
 .pagination::after { clear: both; }
 
 .pagination li {
-    margin-right: 0.0625rem;
+    padding: 0.1875rem 0.625rem;
+    margin: 0 0.0625rem;
     border-radius: 50%;
     font-size: 0.875rem;
     display: none;
@@ -2644,20 +2645,18 @@ input:checked + label > .switch-inactive { display: none; }
     .pagination li { display: inline-block; }
 }
 
-.pagination a,
-.pagination button {
+.pagination a {
     display: block;
     padding: 0.1875rem 0.625rem;
     color: #0a0a0a;
+    border-radius: 50%;
 }
 
-.pagination a:hover,
-.pagination button:hover { background: silver; }
+.pagination a:hover { background: silver; }
 
 .pagination .current {
-    padding: 0.1875rem 0.625rem;
     background: darkblue;
-    color: gainsboro;
+    color: #fafafa;
     cursor: default;
 }
 
@@ -2666,8 +2665,6 @@ input:checked + label > .switch-inactive { display: none; }
     color: #cacaca;
     cursor: not-allowed;
 }
-
-.pagination .disabled:hover { background: transparent; }
 
 .pagination .ellipsis::after {
     padding: 0.1875rem 0.625rem;

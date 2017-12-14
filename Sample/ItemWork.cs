@@ -69,7 +69,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("删除"), Tool(ButtonConfirmPick), User(OPRMEM)]
+        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRMEM)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];

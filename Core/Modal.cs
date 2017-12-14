@@ -34,32 +34,30 @@ namespace Greatbone.Core
 
         ButtonConfirm = 0x2001,
 
-        ButtonConfirmPick = 0x2101,
+        ButtonPickConfirm = 0x2101,
 
         /// <summary>
         /// To show a dialog for gathering additional data to continue the button submission for a post action.
         /// </summary>
         ButtonPrompt = 0x2002,
 
-        ButtonPromptPick = 0x2102,
+        ButtonPickPrompt = 0x2102,
 
         ButtonShow = 0x2004,
 
-        ButtonShowPick = 0x2104,
+        ButtonPickShow = 0x2104,
 
         /// <summary>
         /// To open a free-style dialog, passing current form context
         /// </summary>
         ButtonOpen = 0x2008,
 
-        ButtonOpenPick = 0x2108,
+        ButtonPickOpen = 0x2108,
 
         ButtonScript = 0x2010,
 
-        ButtonScriptPick = 0x2110,
+        ButtonPickScript = 0x2110,
 
         ButtonCrop = 0x2020,
-
-        ButtonCropPick = 0x2120,
     }
 }

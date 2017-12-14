@@ -30,6 +30,8 @@ namespace Greatbone.Samp
             Create<AdmRepayWork>("repay");
 
             Create<AdmKickWork>("kick");
+
+            Create<AdmSlideWork>("slide");
         }
 
         public void @default(ActionContext ac)

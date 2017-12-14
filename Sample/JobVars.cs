@@ -36,7 +36,7 @@ namespace Greatbone.Samp
             });
         }
 
-        [Tool(ButtonOpen)]
+        [Ui("身份刷新"), Tool(ButtonOpen)]
         public void token(ActionContext ac)
         {
             string wx = ac[this];

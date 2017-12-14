@@ -9,20 +9,19 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("客服"), User(User.OPR)]
+    [User(adm: true)]
     public class AdmSlideWork : SlideWork<AdmSlideVarWork>
     {
         public AdmSlideWork(WorkContext wc) : base(wc)
         {
-            CreateVar<AdmSlideVarWork, string>((obj) => ((Slide)obj).no);
+            CreateVar<AdmSlideVarWork, string>((obj) => ((Slide) obj).no);
         }
 
         public void @default(ActionContext ac)
         {
-            string shopid = ac[typeof(ShopVarWork)];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM slides WHERE shopid = @1", p => p.Set(shopid));
+                dc.Query("SELECT * FROM slides");
                 ac.GiveBoardPage(200, dc.ToArray<Slide>(), (h, o) => { });
             }
         }

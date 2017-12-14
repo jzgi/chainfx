@@ -28,7 +28,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM cashes WHERE shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Cash>(),
                     h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
-                    (h, o) => h.TD(o.date).TD(Cash.Codes[o.txn]).TD(o.received).TD(o.paid).TD(o.recorder),
+                    (h, o) => h.TD(o.date).TD(Cash.Codes[o.txn]).TD(o.received).TD(o.paid).TD(o.keeper),
                     false, 3);
             }
         }
@@ -56,7 +56,7 @@ namespace Greatbone.Samp
             {
                 shopid = shopid,
                 date = DateTime.Now,
-                recorder = ((User) ac.Principal).name
+                keeper = ((User) ac.Principal).name
             });
             using (var dc = ac.NewDbContext())
             {
@@ -79,7 +79,7 @@ namespace Greatbone.Samp
                     {
                         m.SHEETVIEW(items,
                             h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
-                            (h, o) => h.TD(o.date).TD(Cash.Codes[o.txn]).TD(o.received).TD(o.paid).TD(o.recorder));
+                            (h, o) => h.TD(o.date).TD(Cash.Codes[o.txn]).TD(o.received).TD(o.paid).TD(o.keeper));
                     },
                     false, 3);
             }

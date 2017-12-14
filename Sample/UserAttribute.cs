@@ -2,6 +2,9 @@
 
 namespace Greatbone.Samp
 {
+    /// <summary>
+    /// To check access to an annotated work or actions. 
+    /// </summary>
     public class UserAttribute : AuthorizeAttribute
     {
         readonly short opr;

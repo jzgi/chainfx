@@ -156,7 +156,7 @@ namespace Greatbone.Samp
             ac.GiveRedirect();
         }
 
-        [Ui("删除"), Tool(ButtonConfirmPick), User(OPRMEM)]
+        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRMEM)]
         public async Task del(ActionContext ac, int page)
         {
             string shopid = ac[-1];
@@ -173,14 +173,14 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("新单"), User(OPRMEM)]
+    [Ui("新单")]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
         public OprNewWork(WorkContext wc) : base(wc)
         {
         }
 
-        [Ui("区域"), Tool(AnchorPrompt)]
+        [Ui("区域↓"), Tool(AnchorPrompt)]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
