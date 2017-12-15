@@ -18,7 +18,40 @@ namespace Greatbone.Core
         {
         }
 
-        public Service Service { get; internal set; }
+        //
+        // add-only object provider
+
+        object[] objects;
+
+        int objcount;
+
+        public void Register(object v)
+        {
+            if (objects == null)
+            {
+                objects = new object[8];
+            }
+            objects[objcount++] = v;
+        }
+
+        public T Obtain<T>() where T : class
+        {
+            if (objects != null)
+            {
+                for (int i = 0; i < objcount; i++)
+                {
+                    if (objects[i] is T v) return v;
+                }
+            }
+            return null;
+        }
+
+        public T SearchUp<T>() where T : class
+        {
+            return Obtain<T>() ?? ServiceCtx.Get<T>();
+        }
+
+        public ServiceContext ServiceCtx { get; internal set; }
 
         /// Whether this is requested from a cluster member.
         ///
@@ -43,13 +76,13 @@ namespace Greatbone.Core
 
         int level; // actual number of segments
 
-        internal void Chain(string key, string label, Work work)
+        internal void Chain(string key, Work work)
         {
             if (chain == null)
             {
                 chain = new Node[8];
             }
-            chain[level++] = new Node(key, label, work);
+            chain[level++] = new Node(key, work);
         }
 
         public Node this[int pos] => pos < 0 ? chain[level + pos - 1] : chain[pos];
@@ -348,7 +381,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, short proj, int maxage = 0) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
+            ((Service<P>) ServiceCtx.Work).SetTokenCookie(this, prin, proj, maxage);
         }
 
         public bool InCache { get; internal set; }
@@ -493,7 +526,7 @@ namespace Greatbone.Core
 
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
-            DbContext dc = new DbContext(Service, this);
+            DbContext dc = new DbContext(ServiceCtx, this);
             if (level != null)
             {
                 dc.Begin(level.Value);

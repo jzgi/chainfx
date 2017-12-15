@@ -15,7 +15,7 @@ namespace Greatbone.Samp
         public void icon(ActionContext ac)
         {
             string shopid = ac[this];
-            using (var dc = Service.NewDbContext())
+            using (var dc = ServiceCtx.NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
@@ -30,7 +30,7 @@ namespace Greatbone.Samp
         public void img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
-            using (var dc = Service.NewDbContext())
+            using (var dc = ServiceCtx.NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
@@ -59,6 +59,7 @@ namespace Greatbone.Samp
                 dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
                 dc.Query1(p => p.Set(shopid));
                 var shop = dc.ToObject<Shop>();
+                ac.Register(shop);
 
                 dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
                 dc.Query(p => p.Set(shopid));
@@ -213,7 +214,7 @@ namespace Greatbone.Samp
 
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = Service.NewDbContext())
+            using (var dc = ServiceCtx.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }

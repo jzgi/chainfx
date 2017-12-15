@@ -91,12 +91,10 @@ namespace Greatbone.Core
 
         public int Limit => limit;
 
-        public bool DoState(object obj)
+        public bool DoState(ActionContext ac, object model)
         {
-            return state == null || obj == null || state.Check(obj);
+            return state == null || model == null || state.Check(ac, model);
         }
-
-        public Service Service => work.Service;
 
         internal void Do(ActionContext ac, int subscpt)
         {

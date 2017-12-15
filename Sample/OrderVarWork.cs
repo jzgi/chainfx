@@ -7,18 +7,18 @@ using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
-    public class OrderlyAttribute : StateAttribute
+    public class OrderAttribute : StateAttribute
     {
         readonly char state;
 
-        public OrderlyAttribute(char state)
+        public OrderAttribute(char state)
         {
             this.state = state;
         }
 
-        public override bool Check(object obj)
+        public override bool Check(ActionContext ac, object model)
         {
-            var o = obj as Order;
+            var o = model as Order;
             if (state == 'A')
                 return o.addr != null;
             return false;
@@ -48,7 +48,7 @@ namespace Greatbone.Samp
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    using (var dc = Service.NewDbContext())
+                    using (var dc = ServiceCtx.NewDbContext())
                     {
                         dc.Query1("SELECT shopid, pos, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                         dc.Let(out string oshopid).Let(out bool opos).Let(out string oaddr).Let(out string otel);
@@ -144,7 +144,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("付款"), Tool(ButtonScript), Orderly('A')]
+        [Ui("付款"), Tool(ButtonScript), Order('A')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];

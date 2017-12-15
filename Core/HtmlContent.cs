@@ -813,7 +813,9 @@ namespace Greatbone.Core
             Add("<div class=\"dropdown-pane");
             if (size > 0)
             {
-                Add(size == 1 ? " tiny" : size == 2 ? " small" : size == 3 ? " medium" : " large");
+                Add(size == 1 ? " tiny" :
+                    size == 2 ? " small" :
+                    size == 3 ? " medium" : " large");
             }
             Add("\" id=\"dropdown-");
             Add(m);
@@ -1168,7 +1170,7 @@ namespace Greatbone.Core
                 if (varwork != null && work.HasPick)
                 {
                     Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
-                    varwork.PutVarKey(model, this);
+                    varwork.PutVariableKey(model, this);
                     Add("\" onchange=\"checkit(this);\">");
                 }
             }
@@ -1293,7 +1295,7 @@ namespace Greatbone.Core
         void Tool(ActionInfo ai, IData obj, int subscript = -1)
         {
             var tool = ai.Tool;
-            bool ok = ai.DoAuthorize(actionCtx) && ai.DoState(obj);
+            bool ok = ai.DoAuthorize(actionCtx) && ai.DoState(actionCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");
@@ -1301,7 +1303,7 @@ namespace Greatbone.Core
                 Add("\" href=\"");
                 if (obj != null)
                 {
-                    ai.Work.PutVarKey(obj, this);
+                    ai.Work.PutVariableKey(obj, this);
                     Add('/');
                 }
                 Add(ai.RPath);
@@ -1325,7 +1327,7 @@ namespace Greatbone.Core
                 Add("\" formaction=\"");
                 if (obj != null)
                 {
-                    ai.Work.PutVarKey(obj, this);
+                    ai.Work.PutVariableKey(obj, this);
                     Add('/');
                 }
                 Add(ai.Key);

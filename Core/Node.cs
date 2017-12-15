@@ -9,20 +9,15 @@ namespace Greatbone.Core
     {
         readonly string key;
 
-        readonly string label;
-
         readonly Work work;
 
-        internal Node(string key, string label, Work work)
+        internal Node(string key, Work work)
         {
             this.key = key;
-            this.label = label;
             this.work = work;
         }
 
         public string Key => key;
-
-        public string Label => label;
 
         public Type Type => work?.GetType();
 

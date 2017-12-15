@@ -86,7 +86,7 @@ namespace Greatbone.Core
                     HttpRequestHeaders reqhs = req.Headers;
                     reqhs.TryAddWithoutValidation("From", service.Id);
                     reqhs.TryAddWithoutValidation(X_EVENT, x_event);
-                    reqhs.TryAddWithoutValidation(X_SHARD, service.Shard);
+                    reqhs.TryAddWithoutValidation(X_SHARD, service.ServiceCtx.shard);
 
                     HttpResponseMessage rsp;
                     try

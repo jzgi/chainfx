@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -22,8 +21,6 @@ namespace Greatbone.Core
     /// </summary>
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        protected readonly ServiceContext ctx;
-
         // the service instance id
         readonly string id;
 
@@ -50,10 +47,7 @@ namespace Greatbone.Core
 
         protected Service(ServiceContext sc) : base(sc)
         {
-            sc.Service = this;
-            this.ctx = sc;
-
-            id = (Shard == null) ? sc.Name : sc.Name + "-" + Shard;
+            id = (ServiceCtx.shard == null) ? sc.Name : sc.Name + "-" + ServiceCtx.shard;
 
             // setup logging
             LoggerFactory factory = new LoggerFactory();
@@ -66,11 +60,11 @@ namespace Greatbone.Core
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
             ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
-            if (Addrs == null)
+            if (ServiceCtx.addrs == null)
             {
                 throw new ServiceException("missing 'addrs'");
             }
-            foreach (string a in Addrs)
+            foreach (string a in ServiceCtx.addrs)
             {
                 addrcoll.Add(a.Trim());
             }
@@ -106,20 +100,21 @@ namespace Greatbone.Core
             }
 
             // cluster connectivity
-            if (Cluster != null)
+            var cluster = ServiceCtx.cluster;
+            if (cluster != null)
             {
-                for (int i = 0; i < Cluster.Count; i++)
+                for (int i = 0; i < cluster.Count; i++)
                 {
-                    var e = Cluster.At(i);
+                    var e = ServiceCtx.cluster.At(i);
                     if (clients == null)
                     {
-                        clients = new Map<string, Client>(Cluster.Count * 2);
+                        clients = new Map<string, Client>(cluster.Count * 2);
                     }
                     clients.Add(new Client(this, e.Key, e.Value));
 
                     if (queues == null)
                     {
-                        queues = new Map<string, EventQueue>(Cluster.Count * 2);
+                        queues = new Map<string, EventQueue>(cluster.Count * 2);
                     }
                     queues.Add(e.Key, new EventQueue(e.Key));
                 }
@@ -145,17 +140,6 @@ namespace Greatbone.Core
         public Map<string, Client> Clients => clients;
 
         public Map<string, EventInfo> Events => events;
-
-        public string Shard => ctx.shard;
-
-        public string[] Addrs => ctx.addrs;
-
-        public Db Db => ctx.db;
-
-        public Map<string, string> Cluster => ctx.cluster;
-
-        public int Logging => ctx.logging;
-
 
         public virtual void OnStart()
         {
@@ -222,7 +206,7 @@ namespace Greatbone.Core
         {
             return new ActionContext(features)
             {
-                Service = this
+                ServiceCtx = ServiceCtx
             };
         }
 
@@ -230,16 +214,6 @@ namespace Greatbone.Core
         {
             // dispose the action context
             ((ActionContext) context).Dispose();
-        }
-
-        public DbContext NewDbContext(IsolationLevel? level = null)
-        {
-            DbContext dc = new DbContext(this);
-            if (level != null)
-            {
-                dc.Begin(level.Value);
-            }
-            return dc;
         }
 
         protected void Poll(ActionContext ac)
@@ -260,30 +234,6 @@ namespace Greatbone.Core
                 {
                     eq.Poll(ac);
                 }
-            }
-        }
-
-        volatile string connstr;
-
-        public string ConnectionString
-        {
-            get
-            {
-                if (connstr == null)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("Host=").Append(Db.host);
-                    sb.Append(";Port=").Append(Db.port);
-                    sb.Append(";Database=").Append(Db.database ?? Key);
-                    sb.Append(";Username=").Append(Db.username);
-                    sb.Append(";Password=").Append(Db.password);
-                    sb.Append(";Read Buffer Size=").Append(1024 * 32);
-                    sb.Append(";Write Buffer Size=").Append(1024 * 32);
-                    sb.Append(";No Reset On Close=").Append(true);
-
-                    connstr = sb.ToString();
-                }
-                return connstr;
             }
         }
 
@@ -362,7 +312,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            DBG(Key + " -> " + Addrs[0] + " started");
+            DBG(Key + " -> " + ServiceCtx.addrs[0] + " started");
 
             cleaner.Start();
 
@@ -409,32 +359,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int) level >= Logging;
-        }
-
-        public void TRC(string message, Exception exception = null)
-        {
-            Log(LogLevel.Trace, 0, message, exception, null);
-        }
-
-        public void DBG(string message, Exception exception = null)
-        {
-            Log(LogLevel.Debug, 0, message, exception, null);
-        }
-
-        public void INF(string message, Exception exception = null)
-        {
-            Log(LogLevel.Information, 0, message, exception, null);
-        }
-
-        public void WAR(string message, Exception exception = null)
-        {
-            Log(LogLevel.Warning, 0, message, exception, null);
-        }
-
-        public void ERR(string message, Exception exception = null)
-        {
-            Log(LogLevel.Error, 0, message, exception, null);
+            return (int) level >= ServiceCtx.logging;
         }
 
         static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
@@ -595,7 +520,7 @@ namespace Greatbone.Core
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int mask = (int) ctx.cipher;
+            int mask = (int) ServiceCtx.cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target
             int p = 0;
@@ -618,7 +543,7 @@ namespace Greatbone.Core
 
         public P Decrypt(string token)
         {
-            int mask = (int) ctx.cipher;
+            int mask = (int) ServiceCtx.cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             Str str = new Str(256);

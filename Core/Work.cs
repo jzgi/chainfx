@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Greatbone.Core
 {
@@ -18,10 +19,13 @@ namespace Greatbone.Core
         // max nesting levels
         const int MaxNesting = 8;
 
-        const string Var = "var";
+        const string VAR = "var";
 
-        // state-passing
+        readonly ServiceContext serviceCtx;
+
         readonly WorkContext ctx;
+
+        readonly Work parent;
 
         readonly Type type;
 
@@ -46,9 +50,11 @@ namespace Greatbone.Core
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkContext wc) : base(wc.Name, null)
+        protected Work(WorkContext ctx) : base(ctx.Name, null)
         {
-            this.ctx = wc;
+            this.serviceCtx = ctx.ServiceCtx;
+            this.ctx = ctx;
+            this.parent = ctx.Parent?.Work;
 
             // gather actions
             actions = new Map<string, ActionInfo>(32);
@@ -97,6 +103,26 @@ namespace Greatbone.Core
             tooled = lst?.ToArray();
         }
 
+        public ServiceContext ServiceCtx => serviceCtx;
+
+        public WorkContext Ctx => ctx;
+
+        public Service Service => (Service) serviceCtx.Work;
+
+        public Work Parent => parent;
+
+        public Map<string, ActionInfo> Actions => actions;
+
+        public ActionInfo[] Tooled => tooled;
+
+        public bool HasPick => pick;
+
+        public ActionInfo Default => @default;
+
+        public Map<string, Work> Works => works;
+
+        public Work VarWork => varwork;
+
         /// <summary>
         /// Create a fixed-key subwork.
         /// </summary>
@@ -106,7 +132,7 @@ namespace Greatbone.Core
         /// <exception cref="ServiceException">Thrown if error</exception>
         protected W Create<W>(string name) where W : Work
         {
-            if (Level >= MaxNesting)
+            if (ctx.Level >= MaxNesting)
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
@@ -123,11 +149,13 @@ namespace Greatbone.Core
             }
             WorkContext wc = new WorkContext(name)
             {
-                Parent = this,
-                Level = Level + 1,
-                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
-                Service = Service
+                ServiceCtx = serviceCtx,
+                Parent = ctx,
+                Work = this,
+                Level = ctx.Level + 1,
+                Directory = (ctx.Parent == null) ? name : Path.Combine(ctx.Parent.Directory, name),
             };
+            // init sub work
             W work = (W) ci.Invoke(new object[] {wc});
             Works.Add(work.Key, work);
 
@@ -143,9 +171,9 @@ namespace Greatbone.Core
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null, Func<IData, string> labeller = null) where W : Work where K : IEquatable<K>
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null) where W : Work where K : IEquatable<K>
         {
-            if (Level >= MaxNesting)
+            if (ctx.Level >= MaxNesting)
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
@@ -157,51 +185,23 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " no valid constructor");
             }
-            WorkContext wc = new WorkContext(Var)
+            WorkContext wc = new WorkContext(VAR)
             {
+                ServiceCtx = serviceCtx,
+                Parent = ctx,
+                Work = this,
+                Level = ctx.Level + 1,
+                Directory = (ctx.Parent == null) ? VAR : Path.Combine(ctx.Parent.Directory, VAR),
                 Keyer = keyer,
-                Labeller = labeller,
-                Parent = this,
                 IsVar = true,
-                Level = Level + 1,
-                Directory = (Parent == null) ? Var : Path.Combine(Parent.Directory, Var),
-                Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
             varwork = work;
             return work;
         }
 
-        public Map<string, ActionInfo> Actions => actions;
-
-        public ActionInfo[] Tooled => tooled;
-
-        public bool HasPick => pick;
-
-        public ActionInfo Default => @default;
-
-        public Map<string, Work> Works => works;
-
-        public Work VarWork => varwork;
-
-        public string Directory => ctx.Directory;
-
-        public Work Parent => ctx.Parent;
-
-        public bool IsVar => ctx.IsVar;
-
-        public int Level => ctx.Level;
-
-        public Service Service => ctx.Service;
-
-        public bool HasKeyer => ctx.Keyer != null;
-
-        public bool HasLabeller => ctx.Labeller != null;
-
-        public string GetVarKey(IData obj, out string label)
+        public string GetVariableKey(IData obj)
         {
-            label = ctx.Labeller?.Invoke(obj);
-
             Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string> fstr)
             {
@@ -222,7 +222,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public void PutVarKey(IData obj, DynamicContent cont)
+        public void PutVariableKey(IData obj, DynamicContent cont)
         {
             Delegate keyer = ctx.Keyer;
             if (keyer is Func<IData, string> fstr)
@@ -292,22 +292,21 @@ namespace Greatbone.Core
             relative = relative.Substring(slash + 1); // adjust relative
             if (works != null && works.TryGet(key, out var work)) // if child
             {
-                ac.Chain(key, null, work);
+                ac.Chain(key, work);
                 return work.Resolve(ref relative, ac);
             }
             if (varwork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                string label = null;
-                if (key.Length == 0 && varwork.HasKeyer) // resolve shortcut
+                if (key.Length == 0 && varwork.ctx.Keyer != null) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
-                    if ((key = varwork.GetVarKey(prin, out label)) == null)
+                    if ((key = varwork.GetVariableKey(prin)) == null)
                     {
                         throw AuthorizeEx;
                     }
                 }
-                ac.Chain(key, label, varwork);
+                ac.Chain(key, varwork);
                 return varwork.Resolve(ref relative, ac);
             }
             return null;
@@ -330,10 +329,11 @@ namespace Greatbone.Core
             if (dot != -1) // file
             {
                 // try in cache 
-                if (!Service.TryGiveFromCache(ac))
+                var svc = Service;
+                if (!svc.TryGiveFromCache(ac))
                 {
                     DoFile(rsc, rsc.Substring(dot), ac);
-                    Service.Cache(ac); // try cache it
+                    svc.Cache(ac); // try cache it
                 }
             }
             else // action
@@ -359,7 +359,8 @@ namespace Greatbone.Core
                 if (ai.Before?.Do(ac) == false) goto ActionExit;
                 if (ai.BeforeAsync != null && !(await ai.BeforeAsync.DoAsync(ac))) goto ActionExit;
                 // try in cache
-                if (!Service.TryGiveFromCache(ac))
+                var svc = Service;
+                if (!svc.TryGiveFromCache(ac))
                 {
                     // method invocation
                     if (ai.IsAsync)
@@ -370,7 +371,7 @@ namespace Greatbone.Core
                     {
                         ai.Do(ac, subscpt);
                     }
-                    Service.Cache(ac); // try cache it
+                    svc.Cache(ac); // try cache it
                 }
                 ActionExit:
                 // action's after filtering
@@ -398,7 +399,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            string path = Path.Combine(Directory, filename);
+            string path = Path.Combine(ctx.Directory, filename);
             if (!File.Exists(path))
             {
                 ac.Give(404); // not found
@@ -438,6 +439,34 @@ namespace Greatbone.Core
                 GZip = gzip
             };
             ac.Give(200, cont, @public: true, maxage: 60 * 15);
+        }
+
+
+        //
+
+        public void TRC(string message, Exception exception = null)
+        {
+            Service.Log(LogLevel.Trace, 0, message, exception, null);
+        }
+
+        public void DBG(string message, Exception exception = null)
+        {
+            Service.Log(LogLevel.Debug, 0, message, exception, null);
+        }
+
+        public void INF(string message, Exception exception = null)
+        {
+            Service.Log(LogLevel.Information, 0, message, exception, null);
+        }
+
+        public void WAR(string message, Exception exception = null)
+        {
+            Service.Log(LogLevel.Warning, 0, message, exception, null);
+        }
+
+        public void ERR(string message, Exception exception = null)
+        {
+            Service.Log(LogLevel.Error, 0, message, exception, null);
         }
     }
 }

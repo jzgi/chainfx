@@ -1,4 +1,6 @@
-using System.Collections.Generic;
+using System.Collections;
+using System.Data;
+using System.Text;
 
 namespace Greatbone.Core
 {
@@ -30,6 +32,71 @@ namespace Greatbone.Core
 
         public ServiceContext(string name) : base(name)
         {
+        }
+
+        //
+        // add-only object provider
+
+        object[] array;
+        
+        int objc;
+
+        public void Attach(object v)
+        {
+            if (array == null)
+            {
+                array = new object[8];
+            }
+            array[objc++] = v;
+        }
+
+        public T Get<T>() where T : class
+        {
+            if (array != null)
+            {
+                for (int i = 0; i < objc; i++)
+                {
+                    if (array[i] is T v) return v;
+                }
+            }
+            return null;
+        }
+        
+        //
+        // db connection
+
+        volatile string connstr;
+
+        public string ConnectionString
+        {
+            get
+            {
+                if (connstr == null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("Host=").Append(db.host);
+                    sb.Append(";Port=").Append(db.port);
+                    sb.Append(";Database=").Append(db.database ?? Name);
+                    sb.Append(";Username=").Append(db.username);
+                    sb.Append(";Password=").Append(db.password);
+                    sb.Append(";Read Buffer Size=").Append(1024 * 32);
+                    sb.Append(";Write Buffer Size=").Append(1024 * 32);
+                    sb.Append(";No Reset On Close=").Append(true);
+
+                    connstr = sb.ToString();
+                }
+                return connstr;
+            }
+        }
+
+        public DbContext NewDbContext(IsolationLevel? level = null)
+        {
+            DbContext dc = new DbContext(this);
+            if (level != null)
+            {
+                dc.Begin(level.Value);
+            }
+            return dc;
         }
 
         public void Read(IDataInput i, short proj = 0x00ff)

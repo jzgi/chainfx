@@ -14,7 +14,7 @@ namespace Greatbone.Samp
     {
         public OprWork(WorkContext wc) : base(wc)
         {
-            CreateVar<OprVarWork, string>(prin => ((User) prin).oprat, prin => ((User) prin).oprname);
+            CreateVar<OprVarWork, string>(prin => ((User) prin).oprat);
         }
     }
 

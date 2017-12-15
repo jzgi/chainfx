@@ -6,20 +6,23 @@ using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
-    public class ItemlyAttribute : StateAttribute
+    public class ItemAttribute : StateAttribute
     {
         readonly char state;
 
-        public ItemlyAttribute(char state)
+        public ItemAttribute(char state)
         {
             this.state = state;
         }
 
-        public override bool Check(object obj)
+        public override bool Check(ActionContext ac, object model)
         {
-            var o = obj as Item;
+            var o = model as Item;
             if (state == 'A')
-                return o != null && o.stock > 0;
+            {
+                var on = ac.Obtain<Shop>()?.status > 1;
+                return on && o != null && o.stock > 0;
+            }
             return false;
         }
     }
@@ -36,7 +39,7 @@ namespace Greatbone.Samp
         {
             string shopid = ac[typeof(IShopVar)];
             string name = ac[this];
-            using (var dc = Service.NewDbContext())
+            using (var dc = ServiceCtx.NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
@@ -52,7 +55,7 @@ namespace Greatbone.Samp
         {
             string shopid = ac[-1];
             string name = ac[this];
-            using (var dc = Service.NewDbContext())
+            using (var dc = ServiceCtx.NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
@@ -71,7 +74,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("购买"), Tool(ButtonShow), Itemly('A')]
+        [Ui("购买"), Tool(ButtonShow), Item('A')]
         public async Task Add(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -251,7 +254,7 @@ namespace Greatbone.Samp
             {
                 var f = await ac.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = Service.NewDbContext())
+                using (var dc = ServiceCtx.NewDbContext())
                 {
                     if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name)) > 0)
                     {
@@ -283,7 +286,7 @@ namespace Greatbone.Samp
             }
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = Service.NewDbContext())
+            using (var dc = ServiceCtx.NewDbContext())
             {
                 dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
             }
@@ -307,7 +310,7 @@ namespace Greatbone.Samp
             else // POST
             {
                 (await ac.ReadAsync<Form>()).Let(out short stock);
-                using (var dc = Service.NewDbContext())
+                using (var dc = ServiceCtx.NewDbContext())
                 {
                     dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
                 }

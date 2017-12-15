@@ -19,12 +19,12 @@ namespace Greatbone.Core
 
         public static S TryCreate<S>(ServiceContext sc, bool load) where S : Service
         {
-            // initialize work context
+            // initialize context
+            sc.ServiceCtx = sc;
             sc.Parent = null;
             sc.Level = 0;
             sc.Directory = sc.Name;
-
-            if (load) // need to load configuration file
+            if (load) // need to load from configuration file
             {
                 string file = sc.GetFilePath(CONFIG);
                 if (File.Exists(file))
@@ -32,7 +32,6 @@ namespace Greatbone.Core
                     byte[] bytes = File.ReadAllBytes(file);
                     JsonParse p = new JsonParse(bytes, bytes.Length);
                     JObj jo = (JObj) p.Parse();
-
                     // this will override values
                     sc.Read(jo, -1);
                 }
@@ -42,17 +41,17 @@ namespace Greatbone.Core
                 }
             }
 
-            // create instance by reflection
+            // create service instance by reflection
             Type typ = typeof(S);
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(ServiceContext)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " missing ServiceContext");
             }
-
-            S svc = (S) ci.Invoke(new object[] {sc});
-            services.Add(svc);
-            return svc;
+            S inst = (S) ci.Invoke(new object[] {sc});
+            sc.Work = inst;
+            services.Add(inst);
+            return inst;
         }
 
         /// 

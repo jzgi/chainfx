@@ -60,7 +60,7 @@ namespace Greatbone.Samp
             {
                 var o = await ac.ReadObjectAsync<Item>();
                 o.shopid = ac[-1];
-                using (var dc = Service.NewDbContext())
+                using (var dc = ServiceCtx.NewDbContext())
                 {
                     dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty);
                     dc.Execute(p => o.Write(p));

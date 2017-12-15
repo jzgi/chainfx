@@ -26,7 +26,7 @@ namespace Greatbone.Samp
                         port = 5432,
                         username = "postgres",
                         password = "721004"
-                    }
+                    },
                 },
                 deploy
             );

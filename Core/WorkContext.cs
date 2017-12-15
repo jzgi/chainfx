@@ -16,18 +16,15 @@ namespace Greatbone.Core
             this.name = name;
         }
 
-        public Service Service { get; internal set; }
-
         public string Name => name;
 
-        // to obtain a string key from a data object.
-        public Delegate Keyer { get; internal set; }
+        public ServiceContext ServiceCtx { get; internal set; }
 
-        public Func<IData, string> Labeller { get; internal set; }
+        public WorkContext Parent { get; internal set; }
+
+        public Work Work { get; internal set; }
 
         public int Level { get; internal set; }
-
-        public Work Parent { get; internal set; }
 
         public bool IsVar { get; internal set; }
 
@@ -37,5 +34,8 @@ namespace Greatbone.Core
         {
             return Path.Combine(Directory, file);
         }
+
+        // to obtain a string key from a data object.
+        public Delegate Keyer { get; internal set; }
     }
 }

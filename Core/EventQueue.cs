@@ -129,7 +129,7 @@ namespace Greatbone.Core
 
         internal static void Setup(Service service, Map<string, Client> clients)
         {
-            using (var dc = service.NewDbContext())
+            using (var dc = service.ServiceCtx.NewDbContext())
             {
                 // create database objects
 
