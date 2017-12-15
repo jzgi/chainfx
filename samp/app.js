@@ -144,7 +144,7 @@ function crop(trig, ordinals, siz, title) {
         html += '</select>';
     }
     html +=
-        '<a class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</a><a class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val());">上传</a>' +
+        '<button class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</button><button class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val());">上传</button>' +
         '</div>' +
         '<div class="title-bar-right">' +
         '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +

@@ -293,7 +293,7 @@ namespace Greatbone.Samp
                 {
                     dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
                 }
-                ac.Give(200); // ok
+                ac.GivePane(200); // close
             }
         }
     }

@@ -67,19 +67,22 @@ namespace Greatbone.Samp
             ac.GivePane(200);
         }
 
-        [Ui("月报"), Tool(ButtonOpen)]
+        [Ui("月报"), Tool(ButtonOpen, 2)]
         public void monthly(ActionContext ac)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM cashes WHERE shopid = @1 ORDER BY id DESC", p => p.Set(shopid));
-                var items = dc.ToArray<Cash>();
                 ac.GivePane(200, m =>
                     {
-                        m.SHEETVIEW(items,
-                            h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
-                            (h, o) => h.TD(o.date).TD(Cash.Codes[o.txn]).TD(o.received).TD(o.paid).TD(o.keeper));
+                        dc.Query("SELECT to_char(date, 'YYYY-MM') as yrmon, txn, SUM(received), SUM(paid) FROM cashes WHERE shopid = @1 GROUP BY yrmon, txn ORDER BY yrmon DESC", p => p.Set(shopid));
+                        while (dc.Next())
+                        {
+                            dc.Let(out string yrmon).Let(out short txn).Let(out decimal recieved).Let(out decimal paid);
+                            m.FIELDSET_(yrmon);
+
+                            m._FIELDSET();
+                        }
                     },
                     false, 3);
             }

@@ -1181,10 +1181,10 @@ namespace Greatbone.Core
         {
             if (flag != null)
             {
-                Add("<span style=\"margin-left: auto\" class=\"card-flag-");
+                Add("<span style=\"margin-left: auto\" class=\"card-flag");
                 if (on.HasValue)
                 {
-                    Add(on.Value ? "on" : "off");
+                    Add(on.Value ? "-on" : "-off");
                 }
                 Add("\">");
                 Add(flag);
