@@ -41,7 +41,7 @@ namespace Greatbone.Core
         
         int objc;
 
-        public void Attach(object v)
+        public void Register(object v)
         {
             if (array == null)
             {
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             array[objc++] = v;
         }
 
-        public T Get<T>() where T : class
+        public T Obtain<T>() where T : class
         {
             if (array != null)
             {

@@ -48,7 +48,7 @@ namespace Greatbone.Core
 
         public T SearchUp<T>() where T : class
         {
-            return Obtain<T>() ?? ServiceCtx.Get<T>();
+            return Obtain<T>() ?? ServiceCtx.Obtain<T>();
         }
 
         public ServiceContext ServiceCtx { get; internal set; }
@@ -85,7 +85,7 @@ namespace Greatbone.Core
             chain[level++] = new Node(key, work);
         }
 
-        public Node this[int pos] => pos < 0 ? chain[level + pos - 1] : chain[pos];
+        public Node this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
 
         public Node this[Type typ]
         {
