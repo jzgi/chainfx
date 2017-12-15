@@ -8,7 +8,7 @@ namespace Greatbone.Samp
 {
     public abstract class ShopVarWork : Work
     {
-        protected ShopVarWork(WorkConfig wc) : base(wc)
+        protected ShopVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -45,7 +45,7 @@ namespace Greatbone.Samp
 
     public class PubShopVarWork : ShopVarWork, IShopVar
     {
-        public PubShopVarWork(WorkConfig wc) : base(wc)
+        public PubShopVarWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
@@ -104,7 +104,7 @@ namespace Greatbone.Samp
 
     public class AdmShopVarWork : ShopVarWork
     {
-        public AdmShopVarWork(WorkConfig wc) : base(wc)
+        public AdmShopVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

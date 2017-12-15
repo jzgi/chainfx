@@ -135,17 +135,17 @@ namespace Greatbone.Core
             return cont.ToString();
         }
 
-        public string Shard => ((ServiceConfig) config).shard;
+        public string Shard => ((ServiceConfig) cfg).shard;
 
-        public string[] Addrs => ((ServiceConfig) config).addrs;
+        public string[] Addrs => ((ServiceConfig) cfg).addrs;
 
-        public Db Db => ((ServiceConfig) config).db;
+        public Db Db => ((ServiceConfig) cfg).db;
 
-        public Map<string, string> Cluster => ((ServiceConfig) config).cluster;
+        public Map<string, string> Cluster => ((ServiceConfig) cfg).cluster;
 
-        public int Logging => ((ServiceConfig) config).logging;
+        public int Logging => ((ServiceConfig) cfg).logging;
 
-        public long Cipher => ((ServiceConfig) config).cipher;
+        public long Cipher => ((ServiceConfig) cfg).cipher;
 
 
         ///
@@ -355,7 +355,7 @@ namespace Greatbone.Core
             }
         }
 
-        public string ConnectionString => ((ServiceConfig) config).ConnectionString;
+        public string ConnectionString => ((ServiceConfig) cfg).ConnectionString;
 
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
@@ -565,7 +565,6 @@ namespace Greatbone.Core
             }
             // return pool
             BufferUtility.Return(bytebuf);
-
             return new string(charbuf, 0, charbuf.Length);
         }
 
@@ -574,19 +573,17 @@ namespace Greatbone.Core
             int mask = (int) Cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
-            Str str = new Str(256);
+            var str = new Str(1024);
             int p = 0;
             for (int i = 0; i < len; i++)
             {
-                // reordering
+                // TODO reordering
 
                 // transform to byte
                 int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
-
                 // masking
                 str.Accept((byte) (b ^ masks[i % 4]));
             }
-
             // deserialize
             try
             {
@@ -602,10 +599,7 @@ namespace Greatbone.Core
         }
 
         // hexidecimal characters
-        static readonly char[] HEX =
-        {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-        };
+        readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
         // return digit value
         static int Dv(char hex)

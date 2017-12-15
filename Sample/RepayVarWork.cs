@@ -4,21 +4,21 @@ namespace Greatbone.Samp
 {
     public abstract class RepayVarWork : Work
     {
-        protected RepayVarWork(WorkConfig fc) : base(fc)
+        protected RepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
     public class OprRepayVarWork : RepayVarWork
     {
-        public OprRepayVarWork(WorkConfig fc) : base(fc)
+        public OprRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
     public class AdmRepayVarWork : RepayVarWork
     {
-        public AdmRepayVarWork(WorkConfig fc) : base(fc)
+        public AdmRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

@@ -9,7 +9,7 @@ namespace Greatbone.Samp
 {
     public abstract class OrderWork<V> : Work where V : OrderVarWork
     {
-        protected OrderWork(WorkConfig wc) : base(wc)
+        protected OrderWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<V, long>((obj) => ((Order) obj).id);
         }
@@ -18,7 +18,7 @@ namespace Greatbone.Samp
     [Ui("购物车")]
     public class MyCartWork : OrderWork<MyCartVarWork>
     {
-        public MyCartWork(WorkConfig wc) : base(wc)
+        public MyCartWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -64,7 +64,7 @@ namespace Greatbone.Samp
     [Ui("我的订单")]
     public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
-        public MyOrderWork(WorkConfig wc) : base(wc)
+        public MyOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -103,7 +103,7 @@ namespace Greatbone.Samp
     [Ui("售点")]
     public class OprCartWork : OrderWork<OprCartVarWork>
     {
-        public OprCartWork(WorkConfig wc) : base(wc)
+        public OprCartWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -176,7 +176,7 @@ namespace Greatbone.Samp
     [Ui("新单")]
     public class OprNewWork : OrderWork<OprNewVarWork>
     {
-        public OprNewWork(WorkConfig wc) : base(wc)
+        public OprNewWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -224,7 +224,7 @@ namespace Greatbone.Samp
     [Ui("旧单"), User(OPR)]
     public class OprOldWork : OrderWork<OprOldVarWork>
     {
-        public OprOldWork(WorkConfig wc) : base(wc)
+        public OprOldWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -270,7 +270,7 @@ namespace Greatbone.Samp
     [User(adm: true)]
     public class AdmKickWork : OrderWork<AdmKickVarWork>
     {
-        public AdmKickWork(WorkConfig wc) : base(wc)
+        public AdmKickWork(WorkConfig cfg) : base(cfg)
         {
         }
 

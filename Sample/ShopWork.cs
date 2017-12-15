@@ -7,7 +7,7 @@ namespace Greatbone.Samp
 {
     public abstract class ShopWork<V> : Work where V : ShopVarWork
     {
-        protected ShopWork(WorkConfig wc) : base(wc)
+        protected ShopWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<V, string>(obj => ((Shop) obj).id);
         }
@@ -64,7 +64,7 @@ namespace Greatbone.Samp
     [User] // we are forced to put check here because  weixin auth does't work in iframe
     public class PubShopWork : ShopWork<PubShopVarWork>
     {
-        public PubShopWork(WorkConfig wc) : base(wc)
+        public PubShopWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -111,7 +111,7 @@ namespace Greatbone.Samp
     [Ui("网点")]
     public class AdmShopWork : ShopWork<AdmShopVarWork>
     {
-        public AdmShopWork(WorkConfig wc) : base(wc)
+        public AdmShopWork(WorkConfig cfg) : base(cfg)
         {
         }
 

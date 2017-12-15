@@ -19,31 +19,31 @@ namespace Greatbone.Core
         }
 
         //
-        // add-only object provider
+        // OBJECT PROVIDER
 
-        object[] objects;
+        object[] attached;
 
         int objcount;
 
         public void Register(object v)
         {
-            if (objects == null)
+            if (attached == null)
             {
-                objects = new object[8];
+                attached = new object[8];
             }
-            objects[objcount++] = v;
+            attached[objcount++] = v;
         }
 
         public T Obtain<T>() where T : class
         {
-            if (objects != null)
+            if (attached != null)
             {
                 for (int i = 0; i < objcount; i++)
                 {
-                    if (objects[i] is T v) return v;
+                    if (attached[i] is T v) return v;
                 }
             }
-            return null;
+            return Service.Obtain<T>();
         }
 
         public Service Service { get; internal set; }

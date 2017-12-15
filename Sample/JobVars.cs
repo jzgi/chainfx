@@ -10,7 +10,7 @@ namespace Greatbone.Samp
     [Ui("常规"), User]
     public class MyVarWork : Work
     {
-        public MyVarWork(WorkConfig wc) : base(wc)
+        public MyVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<MyCartWork>("cart");
 
@@ -143,7 +143,7 @@ namespace Greatbone.Samp
     [Ui("常规"), User(OPR)]
     public class OprVarWork : Work, IShopVar
     {
-        public OprVarWork(WorkConfig wc) : base(wc)
+        public OprVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<OprNewWork>("new");
 

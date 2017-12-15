@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         const string VAR = "var";
 
-        protected readonly WorkConfig config;
+        protected readonly WorkConfig cfg;
 
         readonly Type type;
 
@@ -44,9 +44,9 @@ namespace Greatbone.Core
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig config) : base(config.Name, null)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null)
         {
-            this.config = config;
+            this.cfg = cfg;
 
             // gather actions
             actions = new Map<string, ActionInfo>(32);
@@ -93,17 +93,17 @@ namespace Greatbone.Core
             tooled = lst?.ToArray();
         }
 
-        public Service Service => config.Service;
+        public Service Service => cfg.Service;
 
-        public Work Parent => config.Parent;
+        public Work Parent => cfg.Parent;
 
-        public bool IsVar => config.IsVar;
+        public bool IsVar => cfg.IsVar;
 
-        public int Level => config.Level;
+        public int Level => cfg.Level;
 
-        public string Directory => config.Directory;
+        public string Directory => cfg.Directory;
 
-        public bool HasKeyer => config.Keyer != null;
+        public bool HasKeyer => cfg.Keyer != null;
 
         public Map<string, ActionInfo> Actions => actions;
 
@@ -121,12 +121,13 @@ namespace Greatbone.Core
         /// Create a fixed-key subwork.
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
+        /// <param name="attachs"></param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, params object[] attach) where W : Work
+        protected W Create<W>(string name, params object[] attachs) where W : Work
         {
-            if (config.Level >= MaxNesting)
+            if (cfg.Level >= MaxNesting)
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
@@ -150,7 +151,7 @@ namespace Greatbone.Core
             };
             // init sub work
             W work = (W) ci.Invoke(new object[] {wc});
-            work.Attach(attach);
+            work.Attach(attachs);
             works.Add(work.Key, work);
 
             return work;
@@ -160,14 +161,14 @@ namespace Greatbone.Core
         /// Create a variable-key subwork.
         /// </summary>
         /// <param name="keyer"></param>
-        /// <param name="labeller">an attachment object</param>
+        /// <param name="attachs"></param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null, params object[] objs) where W : Work where K : IEquatable<K>
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null, params object[] attachs) where W : Work where K : IEquatable<K>
         {
-            if (config.Level >= MaxNesting)
+            if (cfg.Level >= MaxNesting)
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
@@ -188,14 +189,14 @@ namespace Greatbone.Core
                 Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            work.Attach(objs);
+            work.Attach(attachs);
             varwork = work;
             return work;
         }
 
         public string GetVariableKey(IData obj)
         {
-            Delegate keyer = config.Keyer;
+            Delegate keyer = cfg.Keyer;
             if (keyer is Func<IData, string> fstr)
             {
                 return fstr(obj);
@@ -217,7 +218,7 @@ namespace Greatbone.Core
 
         public void PutVariableKey(IData obj, DynamicContent cont)
         {
-            Delegate keyer = config.Keyer;
+            Delegate keyer = cfg.Keyer;
             if (keyer is Func<IData, string> fstr)
             {
                 cont.Add(fstr(obj));
@@ -291,7 +292,7 @@ namespace Greatbone.Core
             if (varwork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                if (key.Length == 0 && varwork.config.Keyer != null) // resolve shortcut
+                if (key.Length == 0 && varwork.cfg.Keyer != null) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
                     if ((key = varwork.GetVariableKey(prin)) == null)
@@ -322,11 +323,10 @@ namespace Greatbone.Core
             if (dot != -1) // file
             {
                 // try in cache 
-                var svc = Service;
-                if (!svc.TryGiveFromCache(ac))
+                if (!Service.TryGiveFromCache(ac))
                 {
                     DoFile(rsc, rsc.Substring(dot), ac);
-                    svc.Cache(ac); // try cache it
+                    Service.Cache(ac); // try cache it
                 }
             }
             else // action
@@ -352,8 +352,7 @@ namespace Greatbone.Core
                 if (ai.Before?.Do(ac) == false) goto ActionExit;
                 if (ai.BeforeAsync != null && !(await ai.BeforeAsync.DoAsync(ac))) goto ActionExit;
                 // try in cache
-                var svc = Service;
-                if (!svc.TryGiveFromCache(ac))
+                if (!Service.TryGiveFromCache(ac))
                 {
                     // method invocation
                     if (ai.IsAsync)
@@ -364,7 +363,7 @@ namespace Greatbone.Core
                     {
                         ai.Do(ac, subscpt);
                     }
-                    svc.Cache(ac); // try cache it
+                    Service.Cache(ac); // try cache it
                 }
                 ActionExit:
                 // action's after filtering
@@ -385,22 +384,18 @@ namespace Greatbone.Core
                 ac.Give(403); // forbidden
                 return;
             }
-
             if (!StaticContent.TryGetType(ext, out var ctyp))
             {
                 ac.Give(415); // unsupported media type
                 return;
             }
-
-            string path = Path.Combine(config.Directory, filename);
+            string path = Path.Combine(cfg.Directory, filename);
             if (!File.Exists(path))
             {
                 ac.Give(404); // not found
                 return;
             }
-
             DateTime modified = File.GetLastWriteTime(path);
-
             // load file content
             byte[] bytes;
             bool gzip = false;
@@ -437,41 +432,40 @@ namespace Greatbone.Core
         //
         // OBJECT PROVIDER
 
-        object[] array;
+        object[] attached;
 
         int objc;
 
         public void Attach(object v)
         {
-            if (array == null)
+            if (attached == null)
             {
-                array = new object[8];
+                attached = new object[8];
             }
-            array[objc++] = v;
+            attached[objc++] = v;
         }
 
-        public void Attach(params object[] v)
+        public void Attach(params object[] attachs)
         {
-            if (array == null)
+            if (attached == null)
             {
-                array = v;
+                attached = attachs;
             }
         }
 
         public T Obtain<T>() where T : class
         {
-            if (array != null)
+            if (attached != null)
             {
                 for (int i = 0; i < objc; i++)
                 {
-                    if (array[i] is T v) return v;
+                    if (attached[i] is T v) return v;
                 }
             }
-            return null;
+            return Parent?.Obtain<T>();
         }
 
-
-        //
+        // LOGGING
 
         public void TRC(string message, Exception exception = null)
         {

@@ -10,7 +10,7 @@ namespace Greatbone.Samp
     {
         const int PIC_AGE = 60 * 15;
 
-        protected ItemVarWork(WorkConfig wc) : base(wc)
+        protected ItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -49,7 +49,7 @@ namespace Greatbone.Samp
 
     public class PubItemVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkConfig wc) : base(wc)
+        public PubItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -166,7 +166,7 @@ namespace Greatbone.Samp
 
     public class OprItemVarWork : ItemVarWork
     {
-        public OprItemVarWork(WorkConfig wc) : base(wc)
+        public OprItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

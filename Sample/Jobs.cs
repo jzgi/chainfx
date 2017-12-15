@@ -4,7 +4,7 @@ namespace Greatbone.Samp
 {
     public class MyWork : Work
     {
-        public MyWork(WorkConfig wc) : base(wc)
+        public MyWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<MyVarWork, string>((obj) => ((User) obj).wx);
         }
@@ -21,7 +21,7 @@ namespace Greatbone.Samp
     [Ui("常规"), User(adm: true)]
     public class AdmWork : Work
     {
-        public AdmWork(WorkConfig wc) : base(wc)
+        public AdmWork(WorkConfig cfg) : base(cfg)
         {
             Create<AdmOprWork>("opr");
 

@@ -7,14 +7,14 @@ namespace Greatbone.Samp
     [User]
     public abstract class SlideVarWork : Work
     {
-        protected SlideVarWork(WorkConfig wc) : base(wc)
+        protected SlideVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
     public class AdmSlideVarWork : SlideVarWork
     {
-        public AdmSlideVarWork(WorkConfig wc) : base(wc)
+        public AdmSlideVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
