@@ -10,7 +10,7 @@ namespace Greatbone.Samp
 {
     public abstract class RepayWork<V> : Work where V : RepayVarWork
     {
-        protected RepayWork(WorkContext wc) : base(wc)
+        protected RepayWork(WorkConfig wc) : base(wc)
         {
             CreateVar<V, int>();
         }
@@ -19,7 +19,7 @@ namespace Greatbone.Samp
     [Ui("结款")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
-        public AdmRepayWork(WorkContext wc) : base(wc)
+        public AdmRepayWork(WorkConfig wc) : base(wc)
         {
         }
 

@@ -17,7 +17,7 @@ namespace Greatbone.Core
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"
         };
 
-        readonly ServiceContext serviceCtx;
+        readonly Service service;
 
         readonly IDoerContext<IDoer> doerCtx;
 
@@ -39,11 +39,11 @@ namespace Greatbone.Core
         // current parameter index
         int index;
 
-        internal DbContext(ServiceContext serviceCtx, IDoerContext<IDoer> doerCtx = null)
+        internal DbContext(Service service, IDoerContext<IDoer> doerCtx = null)
         {
-            this.serviceCtx = serviceCtx;
+            this.service = service;
             this.doerCtx = doerCtx;
-            connection = new NpgsqlConnection(serviceCtx.ConnectionString);
+            connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand
             {
                 Connection = connection
@@ -331,7 +331,7 @@ namespace Greatbone.Core
             // add shard if any
             if (obj is IShardable sharded)
             {
-                sharded.Shard = serviceCtx.shard;
+                sharded.Shard = service.Shard;
             }
 
             return obj;
@@ -348,7 +348,7 @@ namespace Greatbone.Core
                 // add shard if any
                 if (obj is IShardable sharded)
                 {
-                    sharded.Shard = serviceCtx.shard;
+                    sharded.Shard = service.Shard;
                 }
 
                 if (coll == null)
@@ -371,7 +371,7 @@ namespace Greatbone.Core
                 // add shard if any
                 if (obj is IShardable sharded)
                 {
-                    sharded.Shard = serviceCtx.shard;
+                    sharded.Shard = service.Shard;
                 }
 
                 coll.Add(obj);
@@ -390,7 +390,7 @@ namespace Greatbone.Core
                 // add shard name if any
                 if (obj is IShardable sharded)
                 {
-                    sharded.Shard = serviceCtx.shard;
+                    sharded.Shard = service.Shard;
                 }
 
                 K key = keyer(obj);
@@ -605,7 +605,7 @@ namespace Greatbone.Core
                     // add shard if any
                     if (v is IShardable sharded)
                     {
-                        sharded.Shard = serviceCtx.shard;
+                        sharded.Shard = service.Shard;
                     }
                     return true;
                 }
@@ -748,7 +748,7 @@ namespace Greatbone.Core
                         // add shard if any
                         if (obj is IShardable sharded)
                         {
-                            sharded.Shard = serviceCtx.shard;
+                            sharded.Shard = service.Shard;
                         }
 
                         v[i] = obj;
@@ -1028,7 +1028,7 @@ namespace Greatbone.Core
                     // add shard if any
                     if (v is IShardable sharded)
                     {
-                        sharded.Shard = serviceCtx.shard;
+                        sharded.Shard = service.Shard;
                     }
                     return this;
                 }
@@ -1061,7 +1061,7 @@ namespace Greatbone.Core
                         // add shard if any
                         if (obj is IShardable sharded)
                         {
-                            sharded.Shard = serviceCtx.shard;
+                            sharded.Shard = service.Shard;
                         }
 
                         v[i] = obj;

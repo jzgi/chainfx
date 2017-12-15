@@ -4,7 +4,7 @@ namespace Greatbone.Samp
 {
     public abstract class SlideWork<V> : Work where V : SlideVarWork
     {
-        protected SlideWork(WorkContext wc) : base(wc)
+        protected SlideWork(WorkConfig wc) : base(wc)
         {
         }
     }
@@ -12,7 +12,7 @@ namespace Greatbone.Samp
     [User(adm: true)]
     public class AdmSlideWork : SlideWork<AdmSlideVarWork>
     {
-        public AdmSlideWork(WorkContext wc) : base(wc)
+        public AdmSlideWork(WorkConfig wc) : base(wc)
         {
             CreateVar<AdmSlideVarWork, string>((obj) => ((Slide) obj).no);
         }

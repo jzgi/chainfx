@@ -9,14 +9,14 @@ namespace Greatbone.Samp
 {
     public abstract class OrderVarWork : Work
     {
-        protected OrderVarWork(WorkContext wc) : base(wc)
+        protected OrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
     public class MyCartVarWork : OrderVarWork
     {
-        public MyCartVarWork(WorkContext wc) : base(wc)
+        public MyCartVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -30,7 +30,7 @@ namespace Greatbone.Samp
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    using (var dc = ServiceCtx.NewDbContext())
+                    using (var dc = ac.NewDbContext())
                     {
                         dc.Query1("SELECT shopid, pos, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                         dc.Let(out string oshopid).Let(out bool opos).Let(out string oaddr).Let(out string otel);
@@ -154,7 +154,7 @@ namespace Greatbone.Samp
 
     public class MyOrderVarWork : OrderVarWork
     {
-        public MyOrderVarWork(WorkContext wc) : base(wc)
+        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -189,7 +189,7 @@ namespace Greatbone.Samp
 
     public class OprCartVarWork : OrderVarWork
     {
-        public OprCartVarWork(WorkContext wc) : base(wc)
+        public OprCartVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -290,7 +290,7 @@ namespace Greatbone.Samp
 
     public class OprNewVarWork : OrderVarWork
     {
-        public OprNewVarWork(WorkContext wc) : base(wc)
+        public OprNewVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -365,7 +365,7 @@ namespace Greatbone.Samp
 
     public class OprOldVarWork : OrderVarWork
     {
-        public OprOldVarWork(WorkContext wc) : base(wc)
+        public OprOldVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -400,7 +400,7 @@ namespace Greatbone.Samp
 
     public class AdmKickVarWork : OrderVarWork
     {
-        public AdmKickVarWork(WorkContext wc) : base(wc)
+        public AdmKickVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

@@ -7,7 +7,7 @@ namespace Greatbone.Samp
 {
     public abstract class ItemWork<V> : Work where V : ItemVarWork
     {
-        protected ItemWork(WorkContext wc) : base(wc)
+        protected ItemWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<V, string>(obj => ((Item) obj).name);
         }
@@ -17,7 +17,7 @@ namespace Greatbone.Samp
     [Ui("货品")]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
-        public OprItemWork(WorkContext wc) : base(wc)
+        public OprItemWork(WorkConfig wc) : base(wc)
         {
         }
 
@@ -60,7 +60,7 @@ namespace Greatbone.Samp
             {
                 var o = await ac.ReadObjectAsync<Item>();
                 o.shopid = ac[-1];
-                using (var dc = ServiceCtx.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty);
                     dc.Execute(p => o.Write(p));

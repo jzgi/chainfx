@@ -10,7 +10,7 @@ namespace Greatbone.Samp
     [Ui("常规"), User]
     public class MyVarWork : Work
     {
-        public MyVarWork(WorkContext wc) : base(wc)
+        public MyVarWork(WorkConfig wc) : base(wc)
         {
             Create<MyCartWork>("cart");
 
@@ -143,7 +143,7 @@ namespace Greatbone.Samp
     [Ui("常规"), User(OPR)]
     public class OprVarWork : Work, IShopVar
     {
-        public OprVarWork(WorkContext wc) : base(wc)
+        public OprVarWork(WorkConfig wc) : base(wc)
         {
             Create<OprNewWork>("new");
 
@@ -289,7 +289,7 @@ namespace Greatbone.Samp
 
             var f = await ac.ReadAsync<Form>();
             f.Let(out schedule).Let(out delivery).Let(out areas).Let(out min).Let(out notch).Let(out off);
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
                     p => p.Set(schedule).Set(delivery).Set(areas).Set(min).Set(notch).Set(off).Set(shopid));
@@ -317,7 +317,7 @@ namespace Greatbone.Samp
             }
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }

@@ -12,7 +12,7 @@ namespace Greatbone.Samp
     /// </summary>
     public class SampService : Service<User>, IAuthenticateAsync
     {
-        public SampService(ServiceContext sc) : base(sc)
+        public SampService(ServiceConfig cfg) : base(cfg)
         {
             Create<PubShopWork>("shop"); // shopping
 
@@ -22,14 +22,14 @@ namespace Greatbone.Samp
 
             Create<AdmWork>("adm"); // administrator
 
-            City.All = DataInputUtility.FileToMap<string, City>(sc.GetFilePath("$cities.json"), o => o.name);
+            City.All = DataInputUtility.FileToMap<string, City>(cfg.GetFilePath("$cities.json"), o => o.name);
         }
 
         public void @default(ActionContext ac)
         {
             string lang = ac.Query[nameof(lang)];
             Slide[] slides = null;
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 if (dc.Query("SELECT * FROM slides"))
                 {
@@ -86,7 +86,7 @@ namespace Greatbone.Samp
                     return false;
                 }
                 // check in db
-                using (var dc = ServiceCtx.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
                     {
@@ -112,7 +112,7 @@ namespace Greatbone.Samp
                 int colon = orig.IndexOf(':');
                 string tel = orig.Substring(0, colon);
                 string credential = StrUtility.MD5(orig);
-                using (var dc = ServiceCtx.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", p => p.Set(tel)))
                     {
@@ -181,7 +181,7 @@ namespace Greatbone.Samp
             {
                 var (orderid, _) = trade_no.To2Ints();
                 string oprwx = null;
-                using (var dc = ServiceCtx.NewDbContext(IsolationLevel.ReadCommitted))
+                using (var dc = ac.NewDbContext(IsolationLevel.ReadCommitted))
                 {
                     var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
                     // reflect in stock 

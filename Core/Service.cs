@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -45,14 +46,16 @@ namespace Greatbone.Core
         // cache cleaner thread
         readonly Thread cleaner;
 
-        protected Service(ServiceContext sc) : base(sc)
+        protected Service(ServiceConfig cfg) : base(cfg)
         {
-            id = (ServiceCtx.shard == null) ? sc.Name : sc.Name + "-" + ServiceCtx.shard;
+            cfg.Service = this;
+
+            id = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
 
             // setup logging
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
-            string file = sc.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
+            string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
@@ -60,11 +63,11 @@ namespace Greatbone.Core
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
             ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
-            if (ServiceCtx.addrs == null)
+            if (Addrs == null)
             {
                 throw new ServiceException("missing 'addrs'");
             }
-            foreach (string a in ServiceCtx.addrs)
+            foreach (string a in Addrs)
             {
                 addrcoll.Add(a.Trim());
             }
@@ -100,12 +103,12 @@ namespace Greatbone.Core
             }
 
             // cluster connectivity
-            var cluster = ServiceCtx.cluster;
+            var cluster = Cluster;
             if (cluster != null)
             {
                 for (int i = 0; i < cluster.Count; i++)
                 {
-                    var e = ServiceCtx.cluster.At(i);
+                    var e = cluster.At(i);
                     if (clients == null)
                     {
                         clients = new Map<string, Client>(cluster.Count * 2);
@@ -131,6 +134,19 @@ namespace Greatbone.Core
             Describe(cont);
             return cont.ToString();
         }
+
+        public string Shard => ((ServiceConfig) config).shard;
+
+        public string[] Addrs => ((ServiceConfig) config).addrs;
+
+        public Db Db => ((ServiceConfig) config).db;
+
+        public Map<string, string> Cluster => ((ServiceConfig) config).cluster;
+
+        public int Logging => ((ServiceConfig) config).logging;
+
+        public long Cipher => ((ServiceConfig) config).cipher;
+
 
         ///
         /// Uniquely identify a service instance.
@@ -206,7 +222,7 @@ namespace Greatbone.Core
         {
             return new ActionContext(features)
             {
-                ServiceCtx = ServiceCtx
+                Service = this
             };
         }
 
@@ -312,7 +328,7 @@ namespace Greatbone.Core
 
             OnStart();
 
-            DBG(Key + " -> " + ServiceCtx.addrs[0] + " started");
+            DBG(Key + " -> " + Addrs[0] + " started");
 
             cleaner.Start();
 
@@ -339,6 +355,18 @@ namespace Greatbone.Core
             }
         }
 
+        public string ConnectionString => ((ServiceConfig) config).ConnectionString;
+
+        public DbContext NewDbContext(IsolationLevel? level = null)
+        {
+            DbContext dc = new DbContext(this);
+            if (level != null)
+            {
+                dc.Begin(level.Value);
+            }
+            return dc;
+        }
+
         //
         // LOGGING
         //
@@ -359,7 +387,7 @@ namespace Greatbone.Core
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int) level >= ServiceCtx.logging;
+            return (int) level >= Logging;
         }
 
         static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
@@ -413,7 +441,7 @@ namespace Greatbone.Core
     /// <typeparam name="P">the principal type.</typeparam>
     public abstract class Service<P> : Service where P : class, IData, new()
     {
-        protected Service(ServiceContext sc) : base(sc)
+        protected Service(ServiceConfig cfg) : base(cfg)
         {
         }
 
@@ -520,7 +548,7 @@ namespace Greatbone.Core
             byte[] bytebuf = cont.ByteBuffer;
             int count = cont.Size;
 
-            int mask = (int) ServiceCtx.cipher;
+            int mask = (int) Cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target
             int p = 0;
@@ -543,7 +571,7 @@ namespace Greatbone.Core
 
         public P Decrypt(string token)
         {
-            int mask = (int) ServiceCtx.cipher;
+            int mask = (int) Cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             Str str = new Str(256);

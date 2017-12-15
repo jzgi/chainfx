@@ -8,7 +8,7 @@ namespace Greatbone.Core
     /// <typeparam name="D">The descriptor type of the related doer method.</typeparam>
     public interface IDoerContext<out D> where D : IDoer
     {
-        ServiceContext ServiceCtx { get; }
+        Service Service { get; }
 
         Work Work { get; }
 

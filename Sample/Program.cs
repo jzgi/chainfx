@@ -15,7 +15,7 @@ namespace Greatbone.Samp
 
             // the only www service
             TryCreate<SampService>(
-                new ServiceContext("samp")
+                new ServiceConfig("samp")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,

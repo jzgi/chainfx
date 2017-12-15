@@ -8,7 +8,7 @@ namespace Greatbone.Samp
 {
     public abstract class CashWork : Work
     {
-        protected CashWork(WorkContext wc) : base(wc)
+        protected CashWork(WorkConfig wc) : base(wc)
         {
         }
     }
@@ -16,7 +16,7 @@ namespace Greatbone.Samp
     [Ui(" 财务"), User(OPRMGR)]
     public class OprCashWork : CashWork
     {
-        public OprCashWork(WorkContext wc) : base(wc)
+        public OprCashWork(WorkConfig wc) : base(wc)
         {
         }
 

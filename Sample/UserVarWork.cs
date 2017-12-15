@@ -4,21 +4,21 @@ namespace Greatbone.Samp
 {
     public abstract class UserVarWork : Work
     {
-        protected UserVarWork(WorkContext wc) : base(wc)
+        protected UserVarWork(WorkConfig wc) : base(wc)
         {
         }
     }
 
     public class OprUserVarWork : UserVarWork
     {
-        public OprUserVarWork(WorkContext wc) : base(wc)
+        public OprUserVarWork(WorkConfig wc) : base(wc)
         {
         }
     }
 
     public class AdmOprVarWork : UserVarWork
     {
-        public AdmOprVarWork(WorkContext wc) : base(wc)
+        public AdmOprVarWork(WorkConfig wc) : base(wc)
         {
         }
     }

@@ -8,14 +8,14 @@ namespace Greatbone.Samp
 {
     public abstract class ShopVarWork : Work
     {
-        protected ShopVarWork(WorkContext wc) : base(wc)
+        protected ShopVarWork(WorkConfig wc) : base(wc)
         {
         }
 
         public void icon(ActionContext ac)
         {
             string shopid = ac[this];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
@@ -30,7 +30,7 @@ namespace Greatbone.Samp
         public void img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
@@ -45,7 +45,7 @@ namespace Greatbone.Samp
 
     public class PubShopVarWork : ShopVarWork, IShopVar
     {
-        public PubShopVarWork(WorkContext wc) : base(wc)
+        public PubShopVarWork(WorkConfig wc) : base(wc)
         {
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
@@ -104,7 +104,7 @@ namespace Greatbone.Samp
 
     public class AdmShopVarWork : ShopVarWork
     {
-        public AdmShopVarWork(WorkContext wc) : base(wc)
+        public AdmShopVarWork(WorkConfig wc) : base(wc)
         {
         }
 
@@ -214,7 +214,7 @@ namespace Greatbone.Samp
 
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }

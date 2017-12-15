@@ -46,12 +46,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public T SearchUp<T>() where T : class
-        {
-            return Obtain<T>() ?? ServiceCtx.Obtain<T>();
-        }
-
-        public ServiceContext ServiceCtx { get; internal set; }
+        public Service Service { get; internal set; }
 
         /// Whether this is requested from a cluster member.
         ///
@@ -381,7 +376,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, short proj, int maxage = 0) where P : class, IData, new()
         {
-            ((Service<P>) ServiceCtx.Work).SetTokenCookie(this, prin, proj, maxage);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
         }
 
         public bool InCache { get; internal set; }
@@ -526,7 +521,7 @@ namespace Greatbone.Core
 
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
-            DbContext dc = new DbContext(ServiceCtx, this);
+            DbContext dc = new DbContext(Service, this);
             if (level != null)
             {
                 dc.Begin(level.Value);

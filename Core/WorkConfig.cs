@@ -6,23 +6,21 @@ namespace Greatbone.Core
     /// <summary>
     /// The creation environment for a particular work instance.
     /// </summary>
-    public class WorkContext
+    public class WorkConfig
     {
         // either the identifying name for a fixed work or the constant var for a variable work
         readonly string name;
 
-        public WorkContext(string name)
+        public WorkConfig(string name)
         {
             this.name = name;
         }
 
         public string Name => name;
 
-        public ServiceContext ServiceCtx { get; internal set; }
+        public Service Service { get; internal set; }
 
-        public WorkContext Parent { get; internal set; }
-
-        public Work Work { get; internal set; }
+        public Work Parent { get; internal set; }
 
         public int Level { get; internal set; }
 

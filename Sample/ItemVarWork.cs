@@ -10,7 +10,7 @@ namespace Greatbone.Samp
     {
         const int PIC_AGE = 60 * 15;
 
-        protected ItemVarWork(WorkContext wc) : base(wc)
+        protected ItemVarWork(WorkConfig wc) : base(wc)
         {
         }
 
@@ -18,7 +18,7 @@ namespace Greatbone.Samp
         {
             string shopid = ac[typeof(IShopVar)];
             string name = ac[this];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
@@ -34,7 +34,7 @@ namespace Greatbone.Samp
         {
             string shopid = ac[-1];
             string name = ac[this];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
@@ -49,7 +49,7 @@ namespace Greatbone.Samp
 
     public class PubItemVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkContext wc) : base(wc)
+        public PubItemVarWork(WorkConfig wc) : base(wc)
         {
         }
 
@@ -166,7 +166,7 @@ namespace Greatbone.Samp
 
     public class OprItemVarWork : ItemVarWork
     {
-        public OprItemVarWork(WorkContext wc) : base(wc)
+        public OprItemVarWork(WorkConfig wc) : base(wc)
         {
         }
 
@@ -233,7 +233,7 @@ namespace Greatbone.Samp
             {
                 var f = await ac.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = ServiceCtx.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name)) > 0)
                     {
@@ -265,7 +265,7 @@ namespace Greatbone.Samp
             }
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = ServiceCtx.NewDbContext())
+            using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
             }
@@ -289,7 +289,7 @@ namespace Greatbone.Samp
             else // POST
             {
                 (await ac.ReadAsync<Form>()).Let(out short stock);
-                using (var dc = ServiceCtx.NewDbContext())
+                using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
                 }

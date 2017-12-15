@@ -26,11 +26,11 @@ namespace Greatbone.Core
 
         public long Id => id;
 
-        public ServiceContext ServiceCtx { get; internal set; }
+        public Service Service { get; internal set; }
 
-        public Work Work { get; set; }
+        public Work Work { get; internal set; }
 
-        public EventInfo Doer { get; set; }
+        public EventInfo Doer { get; internal set; }
 
         public int Subscript { get; internal set; }
 
@@ -64,7 +64,7 @@ namespace Greatbone.Core
         {
             if (dbctx == null)
             {
-                DbContext dc = new DbContext(ServiceCtx, this);
+                DbContext dc = new DbContext(Service, this);
                 if (level != null)
                 {
                     dc.Begin(level.Value);

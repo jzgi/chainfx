@@ -21,15 +21,9 @@ namespace Greatbone.Core
 
         const string VAR = "var";
 
-        readonly ServiceContext serviceCtx;
-
-        readonly WorkContext ctx;
-
-        readonly Work parent;
+        protected readonly WorkConfig config;
 
         readonly Type type;
-
-        readonly TypeInfo typeInfo;
 
         // declared actions 
         readonly Map<string, ActionInfo> actions;
@@ -50,17 +44,13 @@ namespace Greatbone.Core
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkContext ctx) : base(ctx.Name, null)
+        protected Work(WorkConfig config) : base(config.Name, null)
         {
-            this.serviceCtx = ctx.ServiceCtx;
-            this.ctx = ctx;
-            this.parent = ctx.Parent?.Work;
+            this.config = config;
 
             // gather actions
             actions = new Map<string, ActionInfo>(32);
             this.type = GetType();
-            typeInfo = type.GetTypeInfo();
-
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
@@ -103,13 +93,17 @@ namespace Greatbone.Core
             tooled = lst?.ToArray();
         }
 
-        public ServiceContext ServiceCtx => serviceCtx;
+        public Service Service => config.Service;
 
-        public WorkContext Ctx => ctx;
+        public Work Parent => config.Parent;
 
-        public Service Service => (Service) serviceCtx.Work;
+        public bool IsVar => config.IsVar;
 
-        public Work Parent => parent;
+        public int Level => config.Level;
+
+        public string Directory => config.Directory;
+
+        public bool HasKeyer => config.Keyer != null;
 
         public Map<string, ActionInfo> Actions => actions;
 
@@ -130,9 +124,9 @@ namespace Greatbone.Core
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name) where W : Work
+        protected W Create<W>(string name, params object[] attach) where W : Work
         {
-            if (ctx.Level >= MaxNesting)
+            if (config.Level >= MaxNesting)
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
@@ -142,22 +136,22 @@ namespace Greatbone.Core
             }
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
                 throw new ServiceException(typ + "no valid constructor");
             }
-            WorkContext wc = new WorkContext(name)
+            WorkConfig wc = new WorkConfig(name)
             {
-                ServiceCtx = serviceCtx,
-                Parent = ctx,
-                Work = this,
-                Level = ctx.Level + 1,
-                Directory = (ctx.Parent == null) ? name : Path.Combine(ctx.Parent.Directory, name),
+                Parent = this,
+                Level = Level + 1,
+                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
+                Service = Service
             };
             // init sub work
             W work = (W) ci.Invoke(new object[] {wc});
-            Works.Add(work.Key, work);
+            work.Attach(attach);
+            works.Add(work.Key, work);
 
             return work;
         }
@@ -171,38 +165,37 @@ namespace Greatbone.Core
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null) where W : Work where K : IEquatable<K>
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null, params object[] objs) where W : Work where K : IEquatable<K>
         {
-            if (ctx.Level >= MaxNesting)
+            if (config.Level >= MaxNesting)
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
-
             // create instance
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkContext)});
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " no valid constructor");
             }
-            WorkContext wc = new WorkContext(VAR)
+            WorkConfig wc = new WorkConfig(VAR)
             {
-                ServiceCtx = serviceCtx,
-                Parent = ctx,
-                Work = this,
-                Level = ctx.Level + 1,
-                Directory = (ctx.Parent == null) ? VAR : Path.Combine(ctx.Parent.Directory, VAR),
                 Keyer = keyer,
+                Parent = this,
                 IsVar = true,
+                Level = Level + 1,
+                Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
+                Service = Service
             };
             W work = (W) ci.Invoke(new object[] {wc});
+            work.Attach(objs);
             varwork = work;
             return work;
         }
 
         public string GetVariableKey(IData obj)
         {
-            Delegate keyer = ctx.Keyer;
+            Delegate keyer = config.Keyer;
             if (keyer is Func<IData, string> fstr)
             {
                 return fstr(obj);
@@ -224,7 +217,7 @@ namespace Greatbone.Core
 
         public void PutVariableKey(IData obj, DynamicContent cont)
         {
-            Delegate keyer = ctx.Keyer;
+            Delegate keyer = config.Keyer;
             if (keyer is Func<IData, string> fstr)
             {
                 cont.Add(fstr(obj));
@@ -298,7 +291,7 @@ namespace Greatbone.Core
             if (varwork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                if (key.Length == 0 && varwork.ctx.Keyer != null) // resolve shortcut
+                if (key.Length == 0 && varwork.config.Keyer != null) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
                     if ((key = varwork.GetVariableKey(prin)) == null)
@@ -399,7 +392,7 @@ namespace Greatbone.Core
                 return;
             }
 
-            string path = Path.Combine(ctx.Directory, filename);
+            string path = Path.Combine(config.Directory, filename);
             if (!File.Exists(path))
             {
                 ac.Give(404); // not found
@@ -439,6 +432,42 @@ namespace Greatbone.Core
                 GZip = gzip
             };
             ac.Give(200, cont, @public: true, maxage: 60 * 15);
+        }
+
+        //
+        // OBJECT PROVIDER
+
+        object[] array;
+
+        int objc;
+
+        public void Attach(object v)
+        {
+            if (array == null)
+            {
+                array = new object[8];
+            }
+            array[objc++] = v;
+        }
+
+        public void Attach(params object[] v)
+        {
+            if (array == null)
+            {
+                array = v;
+            }
+        }
+
+        public T Obtain<T>() where T : class
+        {
+            if (array != null)
+            {
+                for (int i = 0; i < objc; i++)
+                {
+                    if (array[i] is T v) return v;
+                }
+            }
+            return null;
         }
 
 
