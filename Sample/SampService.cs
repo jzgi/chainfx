@@ -21,44 +21,16 @@ namespace Greatbone.Samp
             Create<OprWork>("opr"); // shop operator
 
             Create<AdmWork>("adm"); // administrator
+        }
 
+        public override void OnStart()
+        {
             City.All = DataInputUtility.FileToMap<string, City>(cfg.GetFilePath("$cities.json"), o => o.name);
         }
 
-        public void @default(ActionContext ac)
+        public override void OnStop()
         {
-            string lang = ac.Query[nameof(lang)];
-            Slide[] slides = null;
-            using (var dc = ac.NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM slides"))
-                {
-                    slides = dc.ToArray<Slide>();
-                }
-            }
-            ac.GivePage(200, h =>
-            {
-                h.T("<header class=\"top-bar\">");
-                h.T("<div class=\"top-bar-title\">");
-                h.T(lang == "en" ? "The Grandest Truth" : "最宏大的真相");
-                h.T("</div>");
-                h.T("<div class=\"top-bar-right\">");
-                h.T("</div>");
-                h.T("</header>");
-
-                h.A("PAYNOTIF", "paynotify");
-
-                if (slides != null)
-                {
-                    for (int i = 0; i < slides.Length; i++)
-                    {
-                        var o = slides[i];
-                        h.T("<div class=\"card\">");
-                        h.T(o.text);
-                        h.T("</div>");
-                    }
-                }
-            });
+            City.All = null;
         }
 
         public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
@@ -136,9 +108,9 @@ namespace Greatbone.Samp
             return true;
         }
 
-        public override void Catch(Exception e, ActionContext ac)
+        public override void Catch(Exception ex, ActionContext ac)
         {
-            if (e is AuthorizeException)
+            if (ex is AuthorizeException)
             {
                 if (ac.Principal == null)
                 {
@@ -167,8 +139,47 @@ namespace Greatbone.Samp
             }
             else
             {
-                ac.Give(500, e.Message);
+                ac.Give(500, ex.Message);
             }
+        }
+
+        //
+        // BUSINESS
+
+        public void @default(ActionContext ac)
+        {
+            string lang = ac.Query[nameof(lang)];
+            Slide[] slides = null;
+            using (var dc = ac.NewDbContext())
+            {
+                if (dc.Query("SELECT * FROM slides"))
+                {
+                    slides = dc.ToArray<Slide>();
+                }
+            }
+            ac.GivePage(200, h =>
+            {
+                h.T("<header class=\"top-bar\">");
+                h.T("<div class=\"top-bar-title\">");
+                h.T(lang == "en" ? "The Grandest Truth" : "最宏大的真相");
+                h.T("</div>");
+                h.T("<div class=\"top-bar-right\">");
+                h.T("</div>");
+                h.T("</header>");
+
+                h.A("PAYNOTIF", "paynotify");
+
+                if (slides != null)
+                {
+                    for (int i = 0; i < slides.Length; i++)
+                    {
+                        var o = slides[i];
+                        h.T("<div class=\"card\">");
+                        h.T(o.text);
+                        h.T("</div>");
+                    }
+                }
+            });
         }
 
         /// <summary>

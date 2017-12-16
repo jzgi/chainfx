@@ -97,7 +97,7 @@ namespace Greatbone.Core
 
                 if (events == null)
                 {
-                    events = new Map<string, EventInfo>(16);
+                    events = new Map<string, EventInfo>(8);
                 }
                 events.Add(evt.Key, evt);
             }
@@ -128,13 +128,6 @@ namespace Greatbone.Core
             cachies = new ConcurrentDictionary<string, Cachie>(Environment.ProcessorCount * 2, 1024);
         }
 
-        public string Describe()
-        {
-            XmlContent cont = new XmlContent(false);
-            Describe(cont);
-            return cont.ToString();
-        }
-
         public string Shard => ((ServiceConfig) cfg).shard;
 
         public string[] Addrs => ((ServiceConfig) cfg).addrs;
@@ -147,7 +140,6 @@ namespace Greatbone.Core
 
         public long Cipher => ((ServiceConfig) cfg).cipher;
 
-
         ///
         /// Uniquely identify a service instance.
         ///
@@ -157,6 +149,13 @@ namespace Greatbone.Core
 
         public Map<string, EventInfo> Events => events;
 
+        public string Describe()
+        {
+            XmlContent cont = new XmlContent(false);
+            Describe(cont);
+            return cont.ToString();
+        }
+
         public virtual void OnStart()
         {
         }
@@ -165,10 +164,10 @@ namespace Greatbone.Core
         {
         }
 
-        public virtual void Catch(Exception e, ActionContext ac)
+        public virtual void Catch(Exception ex, ActionContext ac)
         {
-            WAR(e.Message, e);
-            ac.Give(500, e.Message);
+            WAR(ex.Message, ex);
+            ac.Give(500, ex.Message);
         }
 
         /// <summary>
@@ -179,7 +178,6 @@ namespace Greatbone.Core
             ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
-
             // handling
             try
             {
@@ -313,6 +311,8 @@ namespace Greatbone.Core
         public void Stop()
         {
             stop = true;
+            OnStop(); // call custom destruction
+            // todo stop kestrel
         }
 
         public void Start()
@@ -321,17 +321,11 @@ namespace Greatbone.Core
             {
                 EventQueue.Setup(this, clients);
             }
-
             // start the server
-            //
+            OnStart(); // call custom construction
             server.Start(this);
-
-            OnStart();
-
             DBG(Key + " -> " + Addrs[0] + " started");
-
             cleaner.Start();
-
             if (clients != null)
             {
                 // Run in the scheduler thread to repeatedly check and initiate event polling activities.
@@ -341,7 +335,6 @@ namespace Greatbone.Core
                     {
                         // interval
                         Thread.Sleep(5000);
-
                         // a schedule cycle
                         int tick = Environment.TickCount;
                         for (int i = 0; i < Clients.Count; i++)
@@ -436,7 +429,7 @@ namespace Greatbone.Core
     }
 
     /// <summary>
-    /// A microservice that implements authentication and authorization.
+    /// A service that implements authentication and authorization.
     /// </summary>
     /// <typeparam name="P">the principal type.</typeparam>
     public abstract class Service<P> : Service where P : class, IData, new()
@@ -450,7 +443,7 @@ namespace Greatbone.Core
         /// </summary>
         public override async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = NewMethod(context);
+            ActionContext ac = (ActionContext) context;
             HttpRequest req = ac.Request;
             string path = req.Path.Value;
 
@@ -470,7 +463,6 @@ namespace Greatbone.Core
             {
                 DBG(e.Message);
             }
-
             // handling
             try
             {
@@ -506,11 +498,6 @@ namespace Greatbone.Core
             }
         }
 
-        private static ActionContext NewMethod(HttpContext context)
-        {
-            return (ActionContext) context;
-        }
-
         internal void SetTokenCookie(ActionContext ac, P prin, short proj, int maxage = 0)
         {
             StringBuilder sb = new StringBuilder("Token=");
@@ -520,7 +507,6 @@ namespace Greatbone.Core
             {
                 sb.Append("; Max-Age=").Append(maxage);
             }
-
             // obtain and add the domain attribute
             string host = ac.Header("Host");
             if (host != null)
@@ -536,7 +522,6 @@ namespace Greatbone.Core
                     sb.Append("; Domain=").Append(domain);
                 }
             }
-
             sb.Append("; Path=/; HttpOnly");
             ac.SetHeader("Set-Cookie", sb.ToString());
         }

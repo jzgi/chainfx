@@ -3,7 +3,7 @@ using System.Text;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// The configuration and running environment for a service istance. It is easy to be constructed programmatically or loaded from file.
+    /// The configuration for a service instance which is constructed programmatically or loaded from file.
     /// </summary>
     public class ServiceConfig : WorkConfig, IData
     {

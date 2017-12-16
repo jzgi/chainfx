@@ -140,14 +140,15 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
-                throw new ServiceException(typ + "no valid constructor");
+                throw new ServiceException(typ + " constructor missing WorkConfig");
             }
             WorkConfig wc = new WorkConfig(name)
             {
+                Service = Service,
                 Parent = this,
                 Level = Level + 1,
+                IsVar = false,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
-                Service = Service
             };
             // init sub work
             W work = (W) ci.Invoke(new object[] {wc});
@@ -177,16 +178,16 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
-                throw new ServiceException(typ + " no valid constructor");
+                throw new ServiceException(typ + " constructor missing WorkConfig");
             }
             WorkConfig wc = new WorkConfig(VAR)
             {
-                Keyer = keyer,
+                Service = Service,
                 Parent = this,
-                IsVar = true,
                 Level = Level + 1,
+                IsVar = true,
                 Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
-                Service = Service
+                Keyer = keyer,
             };
             W work = (W) ci.Invoke(new object[] {wc});
             work.Attach(attachs);
@@ -262,7 +263,7 @@ namespace Greatbone.Core
                 });
         }
 
-        public bool IsInstanceOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
+        public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
         public ActionInfo GetAction(string method)
         {
@@ -467,29 +468,29 @@ namespace Greatbone.Core
 
         // LOGGING
 
-        public void TRC(string message, Exception exception = null)
+        public void TRC(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Trace, 0, message, exception, null);
+            Service.Log(LogLevel.Trace, 0, msg, ex, null);
         }
 
-        public void DBG(string message, Exception exception = null)
+        public void DBG(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Debug, 0, message, exception, null);
+            Service.Log(LogLevel.Debug, 0, msg, ex, null);
         }
 
-        public void INF(string message, Exception exception = null)
+        public void INF(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Information, 0, message, exception, null);
+            Service.Log(LogLevel.Information, 0, msg, ex, null);
         }
 
-        public void WAR(string message, Exception exception = null)
+        public void WAR(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Warning, 0, message, exception, null);
+            Service.Log(LogLevel.Warning, 0, msg, ex, null);
         }
 
-        public void ERR(string message, Exception exception = null)
+        public void ERR(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Error, 0, message, exception, null);
+            Service.Log(LogLevel.Error, 0, msg, ex, null);
         }
     }
 }

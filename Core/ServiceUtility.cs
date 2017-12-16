@@ -19,11 +19,13 @@ namespace Greatbone.Core
 
         public static S TryCreate<S>(ServiceConfig cfg, bool load) where S : Service
         {
-            // initialize context
+            // initialize config
             cfg.Parent = null;
             cfg.Level = 0;
+            cfg.IsVar = false;
             cfg.Directory = cfg.Name;
-            if (load) // need to load from configuration file
+            // may load from the configuration file
+            if (load)
             {
                 string file = cfg.GetFilePath(CONFIG);
                 if (File.Exists(file))
@@ -39,7 +41,6 @@ namespace Greatbone.Core
                     return null;
                 }
             }
-
             // create service instance by reflection
             Type typ = typeof(S);
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(ServiceConfig)});
@@ -62,7 +63,6 @@ namespace Greatbone.Core
                 Console.CancelKeyPress += (sender, eventArgs) =>
                 {
                     cts.Cancel();
-
                     // wait for the Main thread to exit gracefully.
                     eventArgs.Cancel = true;
                 };
@@ -76,18 +76,14 @@ namespace Greatbone.Core
                 Console.WriteLine("ctrl_c to shut down");
 
                 cts.Token.Register(state =>
+                {
+                    ((IApplicationLifetime) state).StopApplication();
+                    foreach (Service svc in services) // dispose services
                     {
-                        ((IApplicationLifetime) state).StopApplication();
-                        // dispose services
-                        foreach (Service svc in services)
-                        {
-                            svc.OnStop();
-
-                            svc.Dispose();
-                        }
-                    },
-                    Lifetime);
-
+                        svc.OnStop(); // call custom destruction
+                        svc.Dispose();
+                    }
+                }, Lifetime);
                 Lifetime.ApplicationStopping.WaitHandle.WaitOne();
             }
         }
@@ -128,7 +124,7 @@ namespace Greatbone.Core
             {
                 try
                 {
-                    stopping.Cancel(throwOnFirstException: false);
+                    stopping.Cancel(false);
                 }
                 catch (Exception)
                 {
@@ -143,7 +139,7 @@ namespace Greatbone.Core
         {
             try
             {
-                started.Cancel(throwOnFirstException: false);
+                started.Cancel(false);
             }
             catch (Exception)
             {
@@ -157,7 +153,7 @@ namespace Greatbone.Core
         {
             try
             {
-                stopped.Cancel(throwOnFirstException: false);
+                stopped.Cancel(false);
             }
             catch (Exception)
             {

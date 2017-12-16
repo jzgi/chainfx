@@ -89,7 +89,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < level; i++)
                 {
                     Node node = chain[i];
-                    if (node.Work.IsInstanceOf(typ)) return node;
+                    if (node.Work.IsOf(typ)) return node;
                 }
                 return default;
             }
