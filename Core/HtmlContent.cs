@@ -1347,7 +1347,7 @@ namespace Greatbone.Core
                 Add(" onclick=\"return ");
                 if (tool.MustPick)
                 {
-                    Add("($(this.form).serialize()) && '");
+                    Add("!($(this.form).serialize()) ? false : ");
                 }
                 Add("confirm('");
                 Add(ai.Tip ?? ai.Label);
