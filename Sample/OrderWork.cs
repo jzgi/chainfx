@@ -38,7 +38,9 @@ namespace Greatbone.Samp
                         h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(0x46).P(oi.name).P(oi.price)._BOX();
                         h.BOX_(0x42).P(oi.qty, null, oi.unit).TOOL("item", i)._BOX();
-                        h.BOX_(0x42); if (o.pos) h.P(oi.load, sign: oi.unit); h._BOX();
+                        h.BOX_(0x42);
+                        if (o.pos) h.P(oi.load, sign: oi.unit);
+                        h._BOX();
                     }
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", box: 4);
@@ -231,20 +233,17 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + ABORTED + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], false);
-                    h.FIELD(o.name, "买家", box: 6).FIELD(o.tel, "电话", box: 6);
-                    h.FIELD_("地址").T(o.addr)._FIELD();
-                    h.FIELDSET_("商品");
+                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
+                    h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
-                        var item = o.items[i];
-                        h.FIELD(item.name, box: 6).FIELD(item.price, box: 3).FIELD(item.qty, sign: item.unit, box: 3);
+                        var oi = o.items[i];
+                        h.FIELD(oi.name, box: 6).FIELD(oi.price, sign: "¥", box: 0x23).FIELD(oi.qty, sign: oi.unit, box: 3);
                     }
-                    h.BOX_(6)._BOX().FIELD(o.total, "总价", box: 6);
-                    h._FIELDSET();
+                    h.BOX_(9)._BOX().FIELD(o.total, "总价", sign: "¥", box: 3);
                     h.TAIL();
                 }, false, 3);
             }

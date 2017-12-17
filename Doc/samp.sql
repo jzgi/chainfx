@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-12-13 22:58:22
+Date: 2017-12-17 22:24:02
 */
 
 
@@ -35,10 +35,10 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 59
- CACHE 8
+ START 24
+ CACHE 4
  CYCLE;
-SELECT setval('"public"."orders_id_seq"', 59, true);
+SELECT setval('"public"."orders_id_seq"', 24, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -64,7 +64,7 @@ CREATE TABLE "public"."cashes" (
 "descr" varchar(20) COLLATE "default",
 "received" money,
 "paid" money,
-"recorder" varchar(10) COLLATE "default"
+"keeper" varchar(10) COLLATE "default"
 )
 WITH (OIDS=FALSE)
 
@@ -108,8 +108,8 @@ CREATE TABLE "public"."orders" (
 "pos" bool DEFAULT false,
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
-"tel" varchar(11) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
+"tel" varchar(11) COLLATE "default",
 "items" jsonb,
 "min" money,
 "notch" money,
@@ -133,7 +133,6 @@ DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
 "id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
 "shopid" varchar(4) COLLATE "default",
-"shopname" varchar(10) COLLATE "default",
 "till" date,
 "orders" int4,
 "total" money,
@@ -208,7 +207,6 @@ CREATE TABLE "public"."users" (
 "tel" varchar(11) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "city" varchar(4) COLLATE "default",
-"area" varchar(10) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "opr" int2 DEFAULT 0,
 "oprat" varchar(4) COLLATE "default",
@@ -227,6 +225,11 @@ ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 
 -- ----------------------------
+-- Indexes structure for table cashes
+-- ----------------------------
+CREATE INDEX "cashes_shopiddate_index" ON "public"."cashes" USING btree ("shopid", "date");
+
+-- ----------------------------
 -- Primary Key structure for table cashes
 -- ----------------------------
 ALTER TABLE "public"."cashes" ADD PRIMARY KEY ("id");
@@ -240,6 +243,7 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
 -- Indexes structure for table orders
 -- ----------------------------
 CREATE INDEX "orders_wxstatus_index" ON "public"."orders" USING btree ("wx", "status");
+CREATE INDEX "orders_statusshopid_index" ON "public"."orders" USING btree ("status", "shopid");
 
 -- ----------------------------
 -- Primary Key structure for table orders
@@ -255,6 +259,11 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 -- Primary Key structure for table shops
 -- ----------------------------
 ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Indexes structure for table users
+-- ----------------------------
+CREATE INDEX "users_tel_index" ON "public"."users" USING btree ("tel");
 
 -- ----------------------------
 -- Primary Key structure for table users

@@ -117,6 +117,11 @@ namespace Greatbone.Core
 
         public Work VarWork => varwork;
 
+        public string GetFilePath(string file)
+        {
+            return Path.Combine(Directory, file);
+        }
+
         /// <summary>
         /// Create a fixed-key subwork.
         /// </summary>
@@ -277,6 +282,7 @@ namespace Greatbone.Core
         internal Work Resolve(ref string relative, ActionContext ac)
         {
             if (!DoAuthorize(ac)) throw AuthorizeEx;
+            
             int slash = relative.IndexOf('/');
             if (slash == -1)
             {

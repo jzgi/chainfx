@@ -25,10 +25,10 @@ namespace Greatbone.Samp
 
         internal string wx; // wexin openid
         internal string name;
-        internal string tel;
         internal string credential;
         internal string city; // 
         internal string addr;
+        internal string tel;
         internal short opr; // 
         internal string oprat; // operator at
         internal string oprname;
@@ -41,13 +41,13 @@ namespace Greatbone.Samp
                 i.Get(nameof(wx), ref wx);
             }
             i.Get(nameof(name), ref name);
-            i.Get(nameof(tel), ref tel);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 i.Get(nameof(credential), ref credential);
             }
             i.Get(nameof(city), ref city);
             i.Get(nameof(addr), ref addr);
+            i.Get(nameof(tel), ref tel);
             if ((proj & LATER) == LATER)
             {
                 i.Get(nameof(opr), ref opr);
@@ -64,13 +64,13 @@ namespace Greatbone.Samp
                 o.Put(nameof(wx), wx);
             }
             o.Put(nameof(name), name);
-            o.Put(nameof(tel), tel);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 o.Put(nameof(credential), credential);
             }
             o.Put(nameof(city), city);
             o.Put(nameof(addr), addr);
+            o.Put(nameof(tel), tel);
             if ((proj & LATER) == LATER)
             {
                 o.Put(nameof(opr), opr);

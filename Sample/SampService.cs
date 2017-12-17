@@ -25,7 +25,7 @@ namespace Greatbone.Samp
 
         public override void OnStart()
         {
-            City.All = DataInputUtility.FileToMap<string, City>(cfg.GetFilePath("$cities.json"), o => o.name);
+            City.All = DataInputUtility.FileToMap<string, City>(GetFilePath("$cities.json"), o => o.name);
         }
 
         public override void OnStop()
