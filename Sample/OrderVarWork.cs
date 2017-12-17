@@ -1,6 +1,6 @@
-using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static System.Data.IsolationLevel;
 using static Greatbone.Core.Modal;
 using static Greatbone.Samp.Order;
 using static Greatbone.Samp.User;
@@ -126,7 +126,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("付款"), Tool(ButtonScript), Order('A')]
+        [Ui("付款"), Tool(ButtonScript), Order('P')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];
@@ -144,7 +144,6 @@ namespace Greatbone.Samp
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
             }
-
             else
             {
                 ac.Give(500);
@@ -218,7 +217,7 @@ namespace Greatbone.Samp
             else // POST
             {
                 var f = await ac.ReadAsync<Form>();
-                using (var dc = ac.NewDbContext(IsolationLevel.ReadCommitted))
+                using (var dc = ac.NewDbContext(ReadUncommitted))
                 {
                     dc.Query1("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
                     var o = dc.ToObject<Order>();
@@ -228,7 +227,6 @@ namespace Greatbone.Samp
                         var (name, unit, price) = e.Key.To3Strings('~');
                         short price_ = e.Value;
                         o.ReceiveItem(name, unit, decimal.Parse(price), price_);
-                        dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(price_).Set(shopid).Set(name));
                     }
                     dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
                 }
@@ -294,72 +292,57 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("撤单"), Tool(ButtonShow)]
+        [Ui("撤消", "【警告】确认要撤销此单吗？实收金额将退回给买家"), Tool(ButtonConfirm)]
         public async Task abort(ActionContext ac)
         {
+            string shopid = ac[-2];
             int orderid = ac[this];
-            if (ac.GET)
+            short rev = 0;
+            decimal total = 0, cash = 0;
+            using (var dc = ac.NewDbContext())
             {
-                ac.GivePane(200, m => { m.FORM_().CALLOUT("确定要撤销此单，实收金额退回给买家?")._FORM(); });
-            }
-            else
-            {
-                decimal total = 0, cash = 0;
-                using (var dc = ac.NewDbContext())
+                if (dc.Query1("SELECT rev, total, cash FROM orders WHERE id = @1 AND status = " + PAID, p => p.Set(orderid)))
                 {
-                    if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(orderid)))
-                    {
-                        dc.Let(out total).Let(out cash);
-                    }
+                    dc.Let(out rev).Let(out total).Let(out cash);
                 }
-                string err = await WeiXinUtility.PostRefundAsync(orderid, total, cash);
+            }
+            if (cash > 0)
+            {
+                string err = await WeiXinUtility.PostRefundAsync(orderid + "-" + rev, total, cash);
                 if (err == null) // success
                 {
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = ac.NewDbContext(ReadUncommitted))
                     {
-                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(ABORTED).Set(orderid));
+                        dc.Query1("UPDATE orders SET status = " + ABORTED + ", aborted = localtimestamp WHERE id = @1 AND shopid = @2 RETURNING items", p => p.Set(orderid).Set(shopid));
+                        dc.Let(out OrderItem[] items);
+                        for (int i = 0; i < items?.Length; i++) // revert stock
+                        {
+                            var oi = items[i];
+                            dc.Execute("UPDATE items SET stock = stock + @1 WHERE shopid = @2 AND name = @3", p => p.Set(oi.qty).Set(shopid).Set(oi.name));
+                        }
                     }
-                    ac.GivePane(200);
-                }
-                else // err
-                {
-                    ac.GivePane(200, m => { m.FORM_().CALLOUT(err).CALLOUT("确定重复操作吗？")._FORM(); });
                 }
             }
+            ac.GiveRedirect("../");
         }
 
-        [Ui("出单"), Tool(ButtonShow)]
-        public async Task deduct(ActionContext ac)
+        [Ui("完成", "确认完成？"), Tool(ButtonConfirm)]
+        public void finish(ActionContext ac)
         {
+            string shopid = ac[-2];
             int orderid = ac[this];
-            if (ac.GET)
+            using (var dc = ac.NewDbContext(ReadCommitted))
             {
-                ac.GivePane(200, m => { m.FORM_().CALLOUT("确定要撤销此单，实收金额退回给买家?")._FORM(); });
-            }
-            else
-            {
-                decimal total = 0, cash = 0;
-                using (var dc = ac.NewDbContext())
+                if (dc.Query1("UPDATE orders SET status = @1 WHERE id = @2 AND shopid = @3 AND status = " + PAID + "RETURNING pos, wx, name, addr, tel", p => p.Set(FINISHED).Set(orderid).Set(shopid)))
                 {
-                    if (dc.Query1("SELECT total, cash FROM orders WHERE id = @1", p => p.Set(orderid)))
+                    dc.Let(out bool pos).Let(out string wx).Let(out string name).Let(out string addr).Let(out string tel);
+                    if (!pos) // if ordinary order then update user info
                     {
-                        dc.Let(out total).Let(out cash);
+                        dc.Execute("UPDATE users SET name = COALESCE(@1, name), addr = COALESCE(@2, addr), tel = COALESCE(@3, tel) WHERE wx = @4", p => p.Set(name).Set(addr).Set(tel).Set(wx));
                     }
                 }
-                string err = await WeiXinUtility.PostRefundAsync(orderid, total, cash);
-                if (err == null) // success
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE orders SET status = @1 WHERE id = @2", p => p.Set(ABORTED).Set(orderid));
-                    }
-                    ac.GivePane(200);
-                }
-                else // err
-                {
-                    ac.GivePane(200, m => { m.FORM_().CALLOUT(err).CALLOUT("确定重复操作吗？")._FORM(); });
-                }
             }
+            ac.GiveRedirect("../");
         }
     }
 
@@ -367,34 +350,6 @@ namespace Greatbone.Samp
     {
         public OprOldVarWork(WorkConfig cfg) : base(cfg)
         {
-        }
-
-        [Ui("退款核查", "实时核查退款到账情况"), Tool(AnchorOpen)]
-        public async Task refundq(ActionContext ac)
-        {
-            int orderid = ac[this];
-
-            string err = await WeiXinUtility.PostRefundQueryAsync(orderid);
-            if (err == null) // success
-            {
-                ac.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.CALLOUT("退款成功", false);
-                    m._FORM();
-                });
-            }
-            else
-            {
-                ac.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.CALLOUT(err);
-                    m.CHECKBOX("ok", false, "重新提交退款请求", required: true);
-                    m.BUTTON("", 1, "确认");
-                    m._FORM();
-                });
-            }
         }
     }
 

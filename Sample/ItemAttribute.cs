@@ -11,9 +11,9 @@ namespace Greatbone.Samp
             this.state = state;
         }
 
-        public override bool Check(ActionContext ac, object model)
+        public override bool Check(ActionContext ac, object obj)
         {
-            var o = model as Item;
+            var o = obj as Item;
             if (state == 'A')
             {
                 var on = ac.Obtain<Shop>()?.status > 1;

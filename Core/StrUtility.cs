@@ -348,7 +348,7 @@ namespace Greatbone.Core
             {
                 char c = str[i];
                 int n = c - '0';
-                if (n > 0 && n <= 10)
+                if (n >= 0 && n <= 9)
                 {
                     sum = sum * 10 + n;
                 }

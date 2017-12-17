@@ -379,79 +379,91 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(short v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(short v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(int v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(int v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(long v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(long v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(decimal v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(decimal v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
-            Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                if (sign == "¥" || sign == "$")
+                {
+                    Add(sign);
+                    Add(v);
+                }
+                else
+                {
+                    Add(v);
+                    Add(sign);
+                }
+            }
+            else
+            {
+                Add(v);
             }
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(DateTime v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(DateTime v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(string v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(string v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(string[] v, string label = null, string suffix = null, byte box = 0x0c)
+        public HtmlContent FIELD(string[] v, string label = null, string sign = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             if (v != null)
@@ -462,9 +474,9 @@ namespace Greatbone.Core
                     Add(v[i]);
                 }
             }
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             _FIELD(box);
             return this;
@@ -588,7 +600,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(short v, string label = null, string suffix = null)
+        public HtmlContent P(short v, string label = null, string sign = null)
         {
             Add("<p>");
             if (label != null)
@@ -598,15 +610,15 @@ namespace Greatbone.Core
                 Add("</span>");
             }
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             Add("</p>");
             return this;
         }
 
-        public HtmlContent P(int v, string label = null, string suffix = null)
+        public HtmlContent P(int v, string label = null, string sign = null)
         {
             Add("<p>");
             if (label != null)
@@ -616,15 +628,15 @@ namespace Greatbone.Core
                 Add("</span>");
             }
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             Add("</p>");
             return this;
         }
 
-        public HtmlContent P(decimal v, string label = null, string suffix = null, char symbol = (char) 0)
+        public HtmlContent P(decimal v, string label = null, string sign = null, char symbol = (char) 0)
         {
             Add("<p>");
             if (label != null)
@@ -640,15 +652,15 @@ namespace Greatbone.Core
             }
             Add(v);
             if (symbol != 0) Add("</em>");
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             Add("</p>");
             return this;
         }
 
-        public HtmlContent P(DateTime v, string label = null, string suffix = null)
+        public HtmlContent P(DateTime v, string label = null, string sign = null)
         {
             Add("<p>");
             if (label != null)
@@ -658,9 +670,9 @@ namespace Greatbone.Core
                 Add("</span>");
             }
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             Add("</p>");
             return this;
@@ -684,7 +696,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(string v, string label = null, string suffix = null)
+        public HtmlContent P(string v, string label = null, string sign = null)
         {
             Add("<p>");
             if (label != null)
@@ -694,9 +706,9 @@ namespace Greatbone.Core
                 Add("</span>");
             }
             Add(v);
-            if (suffix != null)
+            if (sign != null)
             {
-                Add(suffix);
+                Add(sign);
             }
             Add("</p>");
             return this;

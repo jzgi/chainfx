@@ -8,6 +8,6 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class StateAttribute : Attribute
     {
-        public abstract bool Check(ActionContext ac, object model);
+        public abstract bool Check(ActionContext ac, object obj);
     }
 }

@@ -38,9 +38,7 @@ namespace Greatbone.Samp
                         h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(0x46).P(oi.name).P(oi.price)._BOX();
                         h.BOX_(0x42).P(oi.qty, null, oi.unit).TOOL("item", i)._BOX();
-                        h.BOX_(0x42);
-                        if (o.pos) h.P(oi.load);
-                        h._BOX();
+                        h.BOX_(0x42); if (o.pos) h.P(oi.load, sign: oi.unit); h._BOX();
                     }
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", box: 4);
@@ -121,7 +119,7 @@ namespace Greatbone.Samp
                         for (int j = 0; j < o.items.Length; j++)
                         {
                             var oi = o.items[j];
-                            h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
+                            h.FIELD(oi.name, box: 6).FIELD(oi.price, box: 0x23, sign: "¥").FIELD(oi.load, null, oi.unit, box: 0x23);
                         }
                     }
                     h.TAIL();
@@ -204,7 +202,7 @@ namespace Greatbone.Samp
 
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status = 1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE status = 1 AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
@@ -243,7 +241,7 @@ namespace Greatbone.Samp
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var item = o.items[i];
-                        h.FIELD(item.name, box: 6).FIELD(item.price, box: 3).FIELD(item.qty, suffix: item.unit, box: 3);
+                        h.FIELD(item.name, box: 6).FIELD(item.price, box: 3).FIELD(item.qty, sign: item.unit, box: 3);
                     }
                     h.BOX_(6)._BOX().FIELD(o.total, "总价", box: 6);
                     h._FIELDSET();
@@ -256,7 +254,6 @@ namespace Greatbone.Samp
         public void send(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
-
             using (var dc = ac.NewDbContext())
             {
                 dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
@@ -290,7 +287,7 @@ namespace Greatbone.Samp
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var item = o.items[i];
-                        h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, suffix: item.unit, box: 4);
+                        h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, sign: item.unit, box: 4);
                     }
                     h.FIELD(o.total, "总价");
                 }, false, 3);

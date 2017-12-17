@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
+using static System.Data.IsolationLevel;
 using static Greatbone.Samp.WeiXinUtility;
 
 namespace Greatbone.Samp
@@ -192,7 +192,7 @@ namespace Greatbone.Samp
             {
                 var (orderid, _) = trade_no.To2Ints();
                 string oprwx = null;
-                using (var dc = ac.NewDbContext(IsolationLevel.ReadCommitted))
+                using (var dc = ac.NewDbContext(ReadUncommitted))
                 {
                     var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
                     // reflect in stock 
@@ -211,7 +211,7 @@ namespace Greatbone.Samp
                 // send a notification
                 if (oprwx != null)
                 {
-                    await PostSendAsync(oprwx, "【收款】单号：" + orderid + "，金额：" + cash + "元");
+                    await PostSendAsync(oprwx, "【收款】单号:" + orderid + "  金额:" + cash + "元");
                 }
 
                 // return xml to WCPay server

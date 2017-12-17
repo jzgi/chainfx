@@ -267,10 +267,8 @@ namespace Greatbone.Samp
             return cash_fee;
         }
 
-        public static async Task<string> PostRefundAsync(long orderid, decimal total, decimal cash)
+        public static async Task<string> PostRefundAsync(string orderno, decimal total, decimal cash)
         {
-            string orderno = orderid.ToString();
-
             XElem xo = new XElem("xml");
             xo.AddChild("appid", appid);
             xo.AddChild("mch_id", mchid);
