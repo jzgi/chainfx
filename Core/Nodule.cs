@@ -3,7 +3,7 @@ using System.Reflection;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A certain node of resources along the URi path.
+    /// A certain node of resources along URI path.
     /// </summary>
     public abstract class Nodule : IMappable<string>
     {

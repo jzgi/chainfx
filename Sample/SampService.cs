@@ -198,7 +198,7 @@ namespace Greatbone.Samp
                     // reflect in stock 
                     dc.Query1("SELECT items FROM orders WHERE id = @1", p => p.Set(orderid));
                     dc.Let(out OrderItem[] items);
-                    for (int i = 0; i < items.Length; i++)
+                    for (int i = 0; i < items?.Length; i++)
                     {
                         var o = items[i];
                         dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
@@ -211,7 +211,8 @@ namespace Greatbone.Samp
                 // send a notification
                 if (oprwx != null)
                 {
-                    await PostSendAsync(oprwx, "【收款】单号:" + orderid + "  金额:" + cash + "元");
+//                    await PostSendAsync(oprwx, "【收款】#" + orderid + " ¥" + cash);
+                    await PostSendAsync(oprwx, "下单 #" + orderid + " ¥" + cash, "下单描述下单描述", "http://baidu.com");
                 }
 
                 // return xml to WCPay server

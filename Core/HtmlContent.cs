@@ -875,10 +875,14 @@ namespace Greatbone.Core
         public HtmlContent FIELDSET_(string legend = null, byte box = 0x0c)
         {
             Add("<fieldset");
-            if (box > 0)
+            int grid = box & 0x0f;
+            if (grid > 0)
             {
+                int layout = (box >> 4) & 0x0f;
                 Add(" class=\"cell small-");
-                Add(box);
+                Add(grid);
+                Add(" box box-");
+                Add(layout);
                 Add("\"");
             }
             Add(">");
@@ -898,6 +902,19 @@ namespace Greatbone.Core
             Add("</fieldset>");
             return this;
         }
+
+        public HtmlContent INPBUTTON(string value, string script, byte box = 0x0c)
+        {
+            FIELD_(null, box);
+            Add("<input type=\"button\" class=\"button primary hollow\" value=\"");
+            AddEsc(value);
+            Add("\" onclick=\"");
+            Add(script);
+            Add("\">");
+            _FIELD(box);
+            return this;
+        }
+
 
         public HtmlContent BUTTON(string value, bool post = true)
         {

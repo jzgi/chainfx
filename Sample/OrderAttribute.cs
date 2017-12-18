@@ -17,7 +17,7 @@ namespace Greatbone.Samp
             if (state == 'A')
                 return o.addr != null;
             else if (state == 'P') // payable
-                return o.total > o.min;
+                return o.total >= o.min;
             return false;
         }
     }

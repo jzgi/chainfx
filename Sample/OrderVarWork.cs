@@ -208,7 +208,7 @@ namespace Greatbone.Samp
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            m.FIELD(name, box: 5).FIELD(stock, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
+                            m.FIELD(name, box: 5).FIELD(stock, sign: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
                         }
                     }
                     m._FORM();
@@ -225,8 +225,8 @@ namespace Greatbone.Samp
                     {
                         var e = f.At(i);
                         var (name, unit, price) = e.Key.To3Strings('~');
-                        short price_ = e.Value;
-                        o.ReceiveItem(name, unit, decimal.Parse(price), price_);
+                        short n = e.Value;
+                        if (n != 0) o.ReceiveItem(name, unit, decimal.Parse(price), n);
                     }
                     dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
                 }

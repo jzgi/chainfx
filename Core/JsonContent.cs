@@ -60,30 +60,62 @@ namespace Greatbone.Core
             }
         }
 
-        public void ARR(Action a)
+        public void ARR(Action<JsonContent> a)
+        {
+            ARR_();
+            a?.Invoke(this);
+            _ARR();
+        }
+
+        public JsonContent ARR_(string name = null)
         {
             if (counts[level]++ > 0) Add(',');
-
             counts[++level] = 0; // enter
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
             Add('[');
+            return this;
+        }
 
-            a?.Invoke();
-
+        public JsonContent _ARR()
+        {
             Add(']');
             level--; // exit
+            return this;
         }
 
         public void OBJ(Action<JsonContent> a)
         {
-            if (counts[level]++ > 0) Add(',');
-
-            counts[++level] = 0; // enter
-            Add('{');
-
+            OBJ_();
             a?.Invoke(this);
+            _OBJ();
+        }
 
+        public JsonContent OBJ_(string name = null)
+        {
+            if (counts[level]++ > 0) Add(',');
+            counts[++level] = 0; // enter
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add('{');
+            return this;
+        }
+
+        public JsonContent _OBJ()
+        {
             Add('}');
             level--; // exit
+            return this;
         }
 
         //
@@ -142,7 +174,6 @@ namespace Greatbone.Core
             else
             {
                 counts[++level] = 0; // enter
-
                 if (v.DataSet)
                 {
                     Add('[');
@@ -150,13 +181,10 @@ namespace Greatbone.Core
                     while (v.Next())
                     {
                         counts[++level] = 0; // enter an data entry
-
                         if (bgn) Add(',');
-
                         Add('{');
                         v.Write(this);
                         Add('}');
-
                         level--;
                         bgn = true;
                     }
@@ -165,9 +193,7 @@ namespace Greatbone.Core
                 else
                 {
                     Add('{');
-
                     v.Write(this);
-
                     Add('}');
                 }
 
@@ -301,7 +327,7 @@ namespace Greatbone.Core
 
         public JsonContent Put(string name, ArraySegment<byte> v)
         {
-            return this; // ignore ir
+            return this; // ignore
         }
 
         public JsonContent Put(string name, short[] v)
@@ -447,14 +473,12 @@ namespace Greatbone.Core
             {
                 counts[++level] = 0; // enter
                 Add('{');
-
                 // put shard property if any
                 string shard = (v as IShardable)?.Shard;
                 if (shard != null)
                 {
                     Put("#", shard);
                 }
-
                 v.Write(this, proj);
                 Add('}');
                 level--; // exit

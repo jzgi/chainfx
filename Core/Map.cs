@@ -4,7 +4,7 @@ using System.Collections;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A dictionary structure that is in placement order.
+    /// A dictionary structure where entries are placed in insertion-order.
     /// </summary>
     public class Map<K, V> : IEnumerable
     {

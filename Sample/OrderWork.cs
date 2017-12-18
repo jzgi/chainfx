@@ -115,7 +115,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND pos", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("单号: ").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
+                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
                     if (o.items != null)
                     {
                         for (int j = 0; j < o.items.Length; j++)
@@ -207,7 +207,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status = 1 AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {

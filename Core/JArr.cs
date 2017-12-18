@@ -1,14 +1,15 @@
 using System;
+using System.Collections;
 
 namespace Greatbone.Core
 {
     /// <summary>
     /// A JSON array model.
     /// </summary>
-    public class JArr : IDataInput
+    public class JArr : IDataInput, IEnumerable
     {
         // array elements
-        JMbr[] elems;
+        JMbr[] elements;
 
         int count;
 
@@ -16,124 +17,133 @@ namespace Greatbone.Core
 
         internal JArr(int capacity = 16)
         {
-            elems = new JMbr[capacity];
+            elements = new JMbr[capacity];
             count = 0;
             current = -1;
         }
 
-        public JArr(params int[] elems) : this(elems.Length)
+        public JArr(params int[] values) : this(values.Length)
         {
-            for (int i = 0; i < elems.Length; i++)
+            for (int i = 0; i < values.Length; i++)
             {
-                Add(new JMbr(null, elems[i]));
+                Add(new JMbr(values[i]));
             }
         }
 
-        public JArr(params string[] elems) : this(elems.Length)
+        public JArr(params string[] values) : this(values.Length)
         {
-            for (int i = 0; i < elems.Length; i++)
+            for (int i = 0; i < values.Length; i++)
             {
-                Add(new JMbr(null, elems[i]));
+                Add(new JMbr(values[i]));
             }
         }
 
-        public JMbr this[int index] => elems[index];
+        public JMbr this[int index] => elements[index];
 
         public int Count => count;
 
-        internal void Add(JMbr e)
+        /// <summary>
+        /// This add can be used in initialzier
+        /// </summary>
+        /// <param name="elem"></param>
+        internal void Add(JMbr elem)
         {
-            int len = elems.Length;
+            int len = elements.Length;
             if (count >= len)
             {
                 JMbr[] alloc = new JMbr[len * 4];
-                Array.Copy(elems, 0, alloc, 0, len);
-                elems = alloc;
+                Array.Copy(elements, 0, alloc, 0, len);
+                elements = alloc;
             }
-            elems[count++] = e;
+            elements[count++] = elem;
+        }
+
+        public void Add(JObj elem)
+        {
+            Add(new JMbr(elem));
         }
 
         public bool Get(string name, ref bool v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref short v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref int v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref long v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref double v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref decimal v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref string v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get<D>(string name, ref D v, short proj = 0x00ff) where D : IData, new()
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v, proj);
         }
 
         public bool Get(string name, ref short[] v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref int[] v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref long[] v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
         public bool Get(string name, ref string[] v)
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
 
@@ -144,10 +154,9 @@ namespace Greatbone.Core
 
         public bool Get<D>(string name, ref D[] v, short proj = 0x00ff) where D : IData, new()
         {
-            JObj jo = elems[current];
+            JObj jo = elements[current];
             return jo != null && jo.Get(name, ref v);
         }
-
 
         //
         // LET
@@ -155,42 +164,50 @@ namespace Greatbone.Core
 
         public IDataInput Let(out bool v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out short v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out int v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out long v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out double v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out decimal v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out DateTime v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out string v)
         {
-            throw new NotImplementedException();
+            v = elements[current];
+            return this;
         }
 
         public IDataInput Let(out ArraySegment<byte> v)
@@ -233,7 +250,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-
         //
         // ENTIRITY
         //
@@ -251,7 +267,7 @@ namespace Greatbone.Core
             for (int i = 0; i < arr.Length; i++)
             {
                 D obj = new D();
-                obj.Read((JObj) elems[i], proj);
+                obj.Read((JObj) elements[i], proj);
                 arr[i] = obj;
             }
             return arr;
@@ -263,7 +279,7 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
-                obj.Read((JObj) elems[i], proj);
+                obj.Read((JObj) elements[i], proj);
                 K key = keyer(obj);
                 coll.Add(key, obj);
             }
@@ -274,23 +290,23 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                JMbr mbr = elems[i];
-                JType t = mbr.type;
+                JMbr elem = elements[i];
+                JType t = elem.type;
                 if (t == JType.Array)
                 {
-                    o.Put(null, (IDataInput) (JArr) mbr);
+                    o.Put(null, (IDataInput) (JArr) elem);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(null, (JObj) mbr);
+                    o.Put(null, (JObj) elem);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(null, (string) mbr);
+                    o.Put(null, (string) elem);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(null, (JNumber) mbr);
+                    o.Put(null, (JNumber) elem);
                 }
                 else if (t == JType.True)
                 {
@@ -328,6 +344,11 @@ namespace Greatbone.Core
             string str = cont.ToString();
             BufferUtility.Return(cont);
             return str;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
 
         public static implicit operator string[](JArr v)

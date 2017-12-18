@@ -129,11 +129,11 @@ namespace Greatbone.Samp
 
             JObj jo = new JObj
             {
-                new JMbr("appId", appid),
-                new JMbr("nonceStr", noncestr),
-                new JMbr("package", package),
-                new JMbr("signType", "MD5"),
-                new JMbr("timeStamp", timeStamp),
+                new JMbr(appid, "appId"),
+                new JMbr(noncestr, "nonceStr"),
+                new JMbr(package, "package"),
+                new JMbr("MD5", "signType"),
+                new JMbr(timeStamp, "timeStamp"),
             };
             jo.Add("paySign", Sign(jo, "paySign"));
 
@@ -142,17 +142,29 @@ namespace Greatbone.Samp
 
         public static async Task PostSendAsync(string openid, string text)
         {
-            var cnt = new JsonContent(true);
-            cnt.OBJ(x =>
-            {
-                x.Put("touser", openid);
-                x.Put("msgtype", "text");
-                x.Put("text", new JObj()
-                {
-                    new JMbr("content", text)
-                });
-            });
-            await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, cnt);
+            var j = new JsonContent(true);
+            j.OBJ_();
+            j.Put("touser", openid);
+            j.Put("msgtype", "text");
+            j.OBJ_("text").Put("content", text)._OBJ();
+            j._OBJ();
+            await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, j);
+        }
+
+        public static async Task PostSendAsync(string openid, string title, string descr, string url, string picurl = null)
+        {
+            var j = new JsonContent(true);
+            j.OBJ_();
+            j.Put("touser", openid);
+            j.Put("msgtype", "news");
+            j.OBJ_("news").ARR_("articles").OBJ_();
+            j.Put("title", title);
+            j.Put("description", descr);
+            j.Put("url", url);
+            j.Put("picurl", picurl);
+            j._OBJ()._ARR()._OBJ();
+            j._OBJ();
+            await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, j);
         }
 
 

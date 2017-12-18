@@ -93,6 +93,32 @@ namespace Greatbone.Core
             }
         }
 
+        public static implicit operator double(JNumber v) => v.Double;
+
+        public static implicit operator long(JNumber v) => v.Long;
+
+        public static implicit operator int(JNumber v) => v.Int;
+
+        public static implicit operator short(JNumber v) => v.Short;
+
+        public static implicit operator decimal(JNumber v) => v.Decimal;
+
+        /// <summary>
+        /// Cast from int.
+        /// </summary>
+        public static implicit operator JNumber(long v)
+        {
+            JNumber num;
+            num.bigint = v;
+            num.fract = 0;
+            num.pt = 0;
+            num.negative = v < 0;
+            return num;
+        }
+
+        /// <summary>
+        /// Cast from int.
+        /// </summary>
         public static implicit operator JNumber(int v)
         {
             JNumber num;

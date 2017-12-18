@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     ///
-    /// A JSON member that is either a value, or a property if with the name.
+    /// A JSON member that is either a value, or a property if with name.
     ///
     public struct JMbr : IMappable<string>
     {
@@ -18,15 +18,15 @@ namespace Greatbone.Core
 
         internal readonly JNumber numv;
 
-        public JMbr(string name)
+        public JMbr(JType jnull, string name = null)
         {
             this.name = name;
-            type = JType.Null;
+            type = jnull;
             refv = null;
             numv = default;
         }
 
-        public JMbr(string name, JObj v)
+        public JMbr(JObj v, string name = null)
         {
             this.name = name;
             type = JType.Object;
@@ -34,7 +34,7 @@ namespace Greatbone.Core
             numv = default;
         }
 
-        public JMbr(string name, JArr v)
+        public JMbr(JArr v, string name = null)
         {
             this.name = name;
             type = JType.Array;
@@ -42,7 +42,7 @@ namespace Greatbone.Core
             numv = default;
         }
 
-        public JMbr(string name, string v)
+        public JMbr(string v, string name = null)
         {
             this.name = name;
             type = JType.String;
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             numv = default;
         }
 
-        public JMbr(string name, byte[] v)
+        public JMbr(byte[] v, string name = null)
         {
             this.name = name;
             type = JType.Bytes;
@@ -58,7 +58,7 @@ namespace Greatbone.Core
             numv = default;
         }
 
-        public JMbr(string name, bool v)
+        public JMbr(bool v, string name = null)
         {
             this.name = name;
             type = v ? JType.True : JType.False;
@@ -66,7 +66,7 @@ namespace Greatbone.Core
             numv = default;
         }
 
-        public JMbr(string name, JNumber v)
+        public JMbr(JNumber v, string name = null)
         {
             this.name = name;
             type = JType.Number;

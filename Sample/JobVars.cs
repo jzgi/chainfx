@@ -357,7 +357,6 @@ namespace Greatbone.Samp
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(status).Set(shopid));
-
                 if (dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)))
                 {
                     dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
@@ -370,42 +369,11 @@ namespace Greatbone.Samp
             ac.GivePane(200);
         }
 
-        [Ui("调整", Group = 2), Tool(ButtonOpen), User(OPRMEM)]
-        public async Task adjust(ActionContext ac, int cmd)
+        [Ui("调整", Group = 2), Tool(ButtonShow, 2), User(OPRMEM)]
+        public async Task adjust(ActionContext ac)
         {
             string shopid = ac[this];
             short status;
-            string name = null;
-            short qty = 0;
-            var f = await ac.ReadAsync<Form>();
-            if (f != null)
-            {
-                name = f[nameof(name)];
-                qty = f[nameof(qty)];
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Query1("SELECT articles FROM shops WHERE id = @1", p => p.Set(shopid));
-                    dc.Let(out Article[] articles);
-                    switch (cmd)
-                    {
-                        case 1: // remove
-                            articles = articles.RemovedOf(x => x.name == name);
-                            break;
-                        case 2: // add
-                            articles = articles.AddOf(new Article() {name = name, qty = qty});
-                            break;
-                        case 3: // edit
-                            var o = articles.Find(x => x.name == name);
-                            o.name = name;
-
-                            break;
-                    }
-                }
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(shopid).Set(qty).Set(name));
-                }
-            }
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -419,13 +387,14 @@ namespace Greatbone.Samp
                         {
                             for (int i = 0; i < articles.Length; i++)
                             {
-                                h.NUMBER(articles[i].name, i, articles[i].name, box: 6);
+                                var o = articles[i];
+                                h.FIELD(o.name, box: 5).NUMBER(o.name, (short) 0, min: (short) 0, step: (short) 1, box: 5).INPBUTTON("X", "$(this).closest()");
                             }
                         }
+                        h.INPBUTTON("+", "");
                     }
                     h._FORM();
                 });
-                return;
             }
         }
     }

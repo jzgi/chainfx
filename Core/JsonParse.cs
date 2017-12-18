@@ -23,7 +23,7 @@ namespace Greatbone.Core
             this.bytebuf = bytebuf;
             this.length = length;
             this.strbuf = null;
-            this.str = new Str(256);
+            this.str = new Str(512);
         }
 
         public JsonParse(string strbuf)
@@ -31,7 +31,7 @@ namespace Greatbone.Core
             this.strbuf = strbuf;
             this.length = strbuf.Length;
             this.bytebuf = null;
-            this.str = new Str(256);
+            this.str = new Str(512);
         }
 
         int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
@@ -167,36 +167,36 @@ namespace Greatbone.Core
                 if (b == '{')
                 {
                     JObj v = ParseObj(ref p);
-                    ja.Add(new JMbr(null, v));
+                    ja.Add(new JMbr(v));
                 }
                 else if (b == '[')
                 {
                     JArr v = ParseArr(ref p);
-                    ja.Add(new JMbr(null, v));
+                    ja.Add(new JMbr(v));
                 }
                 else if (b == '"')
                 {
                     string v = ParseString(ref p);
-                    ja.Add(new JMbr(null, v));
+                    ja.Add(new JMbr(v));
                 }
                 else if (b == 'n')
                 {
-                    if (ParseNull(ref p)) ja.Add(new JMbr());
+                    if (ParseNull(ref p)) ja.Add(new JMbr(JType.Null));
                 }
                 else if (b == 't' || b == 'f')
                 {
                     bool v = ParseBool(ref p, b);
-                    ja.Add(new JMbr(null, v));
+                    ja.Add(new JMbr(v));
                 }
                 else if (b == '-' || b >= '0' && b <= '9')
                 {
                     JNumber v = ParseNumber(ref p, b);
-                    ja.Add(new JMbr(null, v));
+                    ja.Add(new JMbr(v));
                 }
                 else if (b == '&') // bytes extension
                 {
                     byte[] v = ParseBytes(p);
-                    ja.Add(new JMbr(null, v));
+                    ja.Add(new JMbr(v));
                 }
                 else throw ParseEx;
 
@@ -228,7 +228,13 @@ namespace Greatbone.Core
                 int b = this[++p];
                 if (esc)
                 {
-                    str.Add(b == '"' ? '"' : b == '\\' ? '\\' : b == 'b' ? '\b' : b == 'f' ? '\f' : b == 'n' ? '\n' : b == 'r' ? '\r' : b == 't' ? '\t' : (char) 0);
+                    str.Add(b == '"' ? '"' :
+                        b == '\\' ? '\\' :
+                        b == 'b' ? '\b' :
+                        b == 'f' ? '\f' :
+                        b == 'n' ? '\n' :
+                        b == 'r' ? '\r' :
+                        b == 't' ? '\t' : (char) 0);
                     esc = !esc;
                 }
                 else

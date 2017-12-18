@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A resolved node of the controller hierarchy corresponding to a segment in URI path.
+    /// A resolved node of the work hierarchy corresponding to a URI segment.
     /// </summary>
     public struct Node
     {

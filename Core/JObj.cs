@@ -14,37 +14,37 @@ namespace Greatbone.Core
         /// To add null property
         internal void AddNull(string name)
         {
-            Add(new JMbr(name));
+            Add(new JMbr(JType.Null, name));
         }
 
-        internal void Add(string name, JObj v)
+        public void Add(string name, JObj v)
         {
-            Add(new JMbr(name, v));
+            Add(new JMbr(v, name));
         }
 
-        internal void Add(string name, JArr v)
+        public void Add(string name, JArr v)
         {
-            Add(new JMbr(name, v));
+            Add(new JMbr(v, name));
         }
 
-        internal void Add(string name, string v)
+        public void Add(string name, string v)
         {
-            Add(new JMbr(name, v));
+            Add(new JMbr(v, name));
         }
 
-        internal void Add(string name, byte[] v)
+        public void Add(string name, byte[] v)
         {
-            Add(new JMbr(name, v));
+            Add(new JMbr(v, name));
         }
 
-        internal void Add(string name, bool v)
+        public void Add(string name, bool v)
         {
-            Add(new JMbr(name, v));
+            Add(new JMbr(v, name));
         }
 
-        internal void Add(string name, JNumber v)
+        public void Add(string name, JNumber v)
         {
-            Add(new JMbr(name, v));
+            Add(new JMbr(v, name));
         }
 
         //

@@ -223,6 +223,11 @@ namespace Greatbone.Core
             }
         }
 
+        public void Add(sbyte v)
+        {
+            Add((short) v);
+        }
+
         public void Add(short v)
         {
             if (v == 0)
