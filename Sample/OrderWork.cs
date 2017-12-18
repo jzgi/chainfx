@@ -115,7 +115,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND pos", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
+                    h.CAPTION_().T("#").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
                     if (o.items != null)
                     {
                         for (int j = 0; j < o.items.Length; j++)
@@ -180,7 +180,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("区域↓"), Tool(AnchorPrompt)]
+        [Ui("列表..."), Tool(AnchorPrompt)]
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
@@ -207,7 +207,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status = 1 AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION();
                     h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -217,6 +217,40 @@ namespace Greatbone.Samp
                     h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
                     h.TAIL(o.Err(), false);
                 }, false, 3);
+            }
+        }
+
+        static readonly Map<string, string> MSGS = new Map<string, string>
+        {
+            ["订单处理"] = "我们已经接到您的订单（金额{0}元）",
+            ["派送通知"] = "销售人员正在派送您所购的商品",
+            ["sdf"] = "",
+        };
+
+
+        [Ui("通知"), Tool(ButtonPickShow)]
+        public void send(ActionContext ac)
+        {
+            long[] key = ac.Query[nameof(key)];
+
+            string msg = null;
+            if (ac.GET)
+            {
+                ac.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", box: 0x4c);
+                    m._FORM();
+                });
+            }
+            else
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
+                    dc.Execute(prepare: false);
+                }
+                ac.GivePane(200);
             }
         }
     }
@@ -236,7 +270,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
+                    h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -277,7 +311,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status > 0 AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("单号")._T(o.id).SEP().T(o.paid)._CAPTION();
+                    h.CAPTION_().T("#")._T(o.id).SEP().T(o.paid)._CAPTION();
                     if (o.name != null)
                     {
 //                        h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);

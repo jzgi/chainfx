@@ -2083,7 +2083,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOSET<O>(string name, string v, O[] opt = null, string legend = null, bool required = false, byte box = 12)
+        public HtmlContent RADIOSET<O>(string name, string v, O[] opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
             if (opt != null)
@@ -2108,34 +2108,31 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOS<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
-            opt?.ForEach((key, item) =>
+            if (opt != null)
             {
-                Add("<input type=\"radio\" name=\"");
-                Add(name);
-
-                Add("\" id=\"");
-                Add(name);
-                Add(key);
-                Add("\"");
-
-                Add("\" value=\"");
-                Add(key);
-                Add("\"");
-
-                if (key.Equals(v)) Add(" checked");
-                if (required) Add(" required");
-                Add(">");
-
-                Add("<label for=\"");
-                Add(name);
-                Add(key);
-                Add("\">");
-                Add(item.ToString());
-                Add("</label>");
-            });
+                for (int i = 0; i < opt.Count; i++)
+                {
+                    var o = opt.At(i);
+                    Add("<label>");
+                    Add("<input type=\"radio\" name=\"");
+                    Add(name);
+                    Add("\" id=\"");
+                    Add(name);
+                    Add(o.Key);
+                    Add("\"");
+                    Add("\" value=\"");
+                    Add(o.Key);
+                    Add("\"");
+                    if (o.Key.Equals(v)) Add(" checked");
+                    if (required) Add(" required");
+                    Add(">");
+                    Add(o.Value.ToString());
+                    Add("</label>");
+                }
+            }
             _FIELDSET();
             return this;
         }
