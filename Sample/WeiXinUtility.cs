@@ -126,17 +126,15 @@ namespace Greatbone.Samp
         {
             string package = "prepay_id=" + prepay_id;
             string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
-
             JObj jo = new JObj
             {
-                new JMbr(appid, "appId"),
-                new JMbr(noncestr, "nonceStr"),
-                new JMbr(package, "package"),
-                new JMbr("MD5", "signType"),
-                new JMbr(timeStamp, "timeStamp"),
+                {"appId", appid},
+                {"nonceStr", noncestr},
+                {"package", package},
+                {"signType", "MD5"},
+                {"timeStamp", timeStamp}
             };
             jo.Add("paySign", Sign(jo, "paySign"));
-
             return jo.Dump();
         }
 
@@ -167,23 +165,23 @@ namespace Greatbone.Samp
             await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, j);
         }
 
-
         public static async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)
         {
-            XElem x = new XElem("xml");
-            x.AddChild("amount", ((int) (cash * 100)).ToString());
-            x.AddChild("check_name", "FORCE_CHECK");
-            x.AddChild("desc", desc);
-            x.AddChild("mch_appid", appid);
-            x.AddChild("mchid", mchid);
-            x.AddChild("nonce_str", noncestr);
-            x.AddChild("openid", openid);
-            x.AddChild("partner_trade_no", id.ToString());
-            x.AddChild("re_user_name", username);
-            x.AddChild("spbill_create_ip", spbillcreateip);
-
+            XElem x = new XElem("xml")
+            {
+                {"amount", ((int) (cash * 100)).ToString()},
+                {"check_name", "FORCE_CHECK"},
+                {"desc", desc},
+                {"mch_appid", appid},
+                {"mchid", mchid},
+                {"nonce_str", noncestr},
+                {"openid", openid},
+                {"partner_trade_no", id.ToString()},
+                {"re_user_name", username},
+                {"spbill_create_ip", spbillcreateip}
+            };
             string sign = Sign(x);
-            x.AddChild("sign", sign);
+            x.Add("sign", sign);
 
             XElem xe = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).inp;
             string return_code = xe.Child(nameof(return_code));
@@ -206,19 +204,21 @@ namespace Greatbone.Samp
 
         public static async Task<(string, string)> PostUnifiedOrderAsync(string trade_no, decimal total, string openid, string ip, string notifyurl)
         {
-            XElem x = new XElem("xml");
-            x.AddChild("appid", appid);
-            x.AddChild("body", BODY_DESC);
-            x.AddChild("mch_id", mchid);
-            x.AddChild("nonce_str", noncestr);
-            x.AddChild("notify_url", notifyurl);
-            x.AddChild("openid", openid);
-            x.AddChild("out_trade_no", trade_no);
-            x.AddChild("spbill_create_ip", ip);
-            x.AddChild("total_fee", ((int) (total * 100)).ToString());
-            x.AddChild("trade_type", "JSAPI");
+            XElem x = new XElem("xml")
+            {
+                {"appid", appid},
+                {"body", BODY_DESC},
+                {"mch_id", mchid},
+                {"nonce_str", noncestr},
+                {"notify_url", notifyurl},
+                {"openid", openid},
+                {"out_trade_no", trade_no},
+                {"spbill_create_ip", ip},
+                {"total_fee", ((int) (total * 100)).ToString()},
+                {"trade_type", "JSAPI"}
+            };
             string sign = Sign(x);
-            x.AddChild("sign", sign);
+            x.Add("sign", sign);
 
             XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).inp;
             string prepay_id = xe.Child(nameof(prepay_id));
@@ -234,7 +234,6 @@ namespace Greatbone.Samp
         {
             cash = 0;
             out_trade_no = null;
-
             string appid = xe.Child(nameof(appid));
             string mch_id = xe.Child(nameof(mch_id));
             string nonce_str = xe.Child(nameof(nonce_str));
@@ -255,16 +254,17 @@ namespace Greatbone.Samp
             return true;
         }
 
-        public static async Task<decimal> PostOrderQueryAsync(long orderid)
+        public static async Task<decimal> PostOrderQueryAsync(string orderno)
         {
-            XElem x = new XElem("xml");
-            x.AddChild("appid", appid);
-            x.AddChild("mch_id", mchid);
-            x.AddChild("nonce_str", noncestr);
-            x.AddChild("out_trade_no", orderid.ToString());
+            XElem x = new XElem("xml")
+            {
+                {"appid", appid},
+                {"mch_id", mchid},
+                {"nonce_str", noncestr},
+                {"out_trade_no", orderno}
+            };
             string sign = Sign(x);
-            x.AddChild("sign", sign);
-
+            x.Add("sign", sign);
             XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/orderquery", x.Dump())).inp;
 
             sign = xe.Child(nameof(sign));
@@ -281,17 +281,19 @@ namespace Greatbone.Samp
 
         public static async Task<string> PostRefundAsync(string orderno, decimal total, decimal cash)
         {
-            XElem xo = new XElem("xml");
-            xo.AddChild("appid", appid);
-            xo.AddChild("mch_id", mchid);
-            xo.AddChild("nonce_str", noncestr);
-            xo.AddChild("op_user_id", mchid);
-            xo.AddChild("out_refund_no", orderno);
-            xo.AddChild("out_trade_no", orderno);
-            xo.AddChild("refund_fee", ((int) (cash * 100)).ToString());
-            xo.AddChild("total_fee", ((int) (total * 100)).ToString());
+            XElem xo = new XElem("xml")
+            {
+                {"appid", appid},
+                {"mch_id", mchid},
+                {"nonce_str", noncestr},
+                {"op_user_id", mchid},
+                {"out_refund_no", orderno},
+                {"out_trade_no", orderno},
+                {"refund_fee", ((int) (cash * 100)).ToString()},
+                {"total_fee", ((int) (total * 100)).ToString()}
+            };
             string sign = Sign(xo);
-            xo.AddChild("sign", sign);
+            xo.Add("sign", sign);
 
             XElem xi = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", xo.Dump())).inp;
             string return_code = xi.Child(nameof(return_code));
@@ -311,13 +313,15 @@ namespace Greatbone.Samp
 
         public static async Task<string> PostRefundQueryAsync(long orderid)
         {
-            XElem xo = new XElem("xml");
-            xo.AddChild("appid", appid);
-            xo.AddChild("mch_id", mchid);
-            xo.AddChild("nonce_str", noncestr);
-            xo.AddChild("out_trade_no", orderid.ToString());
+            XElem xo = new XElem("xml")
+            {
+                {"appid", appid},
+                {"mch_id", mchid},
+                {"nonce_str", noncestr},
+                {"out_trade_no", orderid.ToString()}
+            };
             string sign = Sign(xo);
-            xo.AddChild("sign", sign);
+            xo.Add("sign", sign);
 
             XElem xi = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", xo.Dump())).inp;
 
@@ -353,20 +357,16 @@ namespace Greatbone.Samp
             StringBuilder sb = new StringBuilder(1024);
             for (int i = 0; i < xe.Count; i++)
             {
-                XElem child = xe.Child(i);
-
+                XElem child = xe[i];
                 // not include the sign field
                 if (exclude != null && child.Tag == exclude) continue;
-
                 if (sb.Length > 0)
                 {
                     sb.Append('&');
                 }
                 sb.Append(child.Tag).Append('=').Append(child.Text);
             }
-
             sb.Append("&key=").Append(key);
-
             return StrUtility.MD5(sb.ToString());
         }
 
@@ -376,19 +376,15 @@ namespace Greatbone.Samp
             for (int i = 0; i < jo.Count; i++)
             {
                 JMbr mbr = jo[i];
-
                 // not include the sign field
                 if (exclude != null && mbr.Key == exclude) continue;
-
                 if (sb.Length > 0)
                 {
                     sb.Append('&');
                 }
                 sb.Append(mbr.Key).Append('=').Append((string) mbr);
             }
-
             sb.Append("&key=").Append(key);
-
             return StrUtility.MD5(sb.ToString());
         }
     }

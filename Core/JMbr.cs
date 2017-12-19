@@ -13,7 +13,7 @@ namespace Greatbone.Core
         // type of the value
         internal readonly JType type;
 
-        // JObj, JArr, string, byte[]
+        // JObj, JArr, string
         internal readonly object refv;
 
         internal readonly JNumber numv;
@@ -46,14 +46,6 @@ namespace Greatbone.Core
         {
             this.name = name;
             type = JType.String;
-            refv = v;
-            numv = default;
-        }
-
-        public JMbr(byte[] v, string name = null)
-        {
-            this.name = name;
-            type = JType.Bytes;
             refv = v;
             numv = default;
         }
@@ -170,15 +162,6 @@ namespace Greatbone.Core
             if (v.type == JType.String)
             {
                 return (string) v.refv;
-            }
-            return null;
-        }
-
-        public static implicit operator byte[](JMbr v)
-        {
-            if (v.type == JType.String)
-            {
-                return (byte[]) v.refv;
             }
             return null;
         }

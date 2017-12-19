@@ -1,46 +1,52 @@
 using System;
+using System.Collections;
 
 namespace Greatbone.Core
 {
     /// <summary>
     /// An XML element.
     /// </summary>
-    public class XElem : IDataInput, IComparable<XElem>
+    public class XElem : IDataInput, IComparable<XElem>, IEnumerable
     {
         readonly string tag;
 
         // attributes, can be null
-        Map<string, XAttr> attrs;
-
-        // text node, can be null
-        string text;
+        Map<string, string> attrs;
 
         // child elements. can be null
         XElem[] children;
 
         int count; // number of children
 
-        public XElem(string tag)
+        int current;
+
+        public XElem(string tag, Map<string, string> attrs = null)
         {
             this.tag = tag;
+            this.attrs = attrs;
         }
 
         public string Tag => tag;
 
-        public Map<string,XAttr> Attrs => attrs;
+        public Map<string, string> Attrs => attrs;
 
-        public XAttr Attr(string attr) => attrs[attr];
+        public string Attr(string attr) => attrs?[attr];
 
-        internal void AddAttr(string name, string v)
+        /// <summary>
+        /// The text node of this element, can be null.
+        /// </summary>
+        public string Text { get; internal set; }
+
+        internal void AddAttr(string name, string value)
         {
             if (attrs == null)
             {
-                attrs = new Map<string, XAttr>(8);
+                attrs = new Map<string, string>(8);
             }
-            attrs.Add(new XAttr(name, v));
+            attrs.Add(name, value);
         }
 
-        internal void AddChild(XElem e)
+        public void Add(XElem elem)
         {
             if (children == null)
             {
@@ -56,22 +62,17 @@ namespace Greatbone.Core
                     Array.Copy(temp, 0, children, 0, len);
                 }
             }
-            children[count++] = e;
+            children[count++] = elem;
         }
 
-        public void AddChild(string tag, string text)
+        public void Add(string tag, string text)
         {
-            var e = new XElem(tag) {Text = text};
-            AddChild(e);
+            var e = new XElem(tag)
+            {
+                Text = text
+            };
+            Add(e);
         }
-
-        public string Text
-        {
-            get => text;
-            internal set => text = value;
-        }
-
-        int current;
 
         public XElem Child(string name)
         {
@@ -99,10 +100,9 @@ namespace Greatbone.Core
             return null;
         }
 
-        public XElem Child(int index) => children?[index];
+        public XElem this[int index] => children?[index];
 
         public int Count => count;
-
 
         public void Sort()
         {
@@ -114,18 +114,17 @@ namespace Greatbone.Core
             // try attribute
             if (attrs != null && attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = attr.ToBool();
                 return true;
             }
             return false;
         }
 
-
         public bool Get(string name, ref short v)
         {
             if (attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = attr.ToShort();
                 return true;
             }
             return false;
@@ -135,7 +134,7 @@ namespace Greatbone.Core
         {
             if (attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = attr.ToInt();
                 return true;
             }
             return false;
@@ -145,7 +144,7 @@ namespace Greatbone.Core
         {
             if (attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = attr.ToLong();
                 return true;
             }
             return false;
@@ -155,7 +154,7 @@ namespace Greatbone.Core
         {
             if (attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = double.Parse(attr);
                 return true;
             }
             return false;
@@ -165,7 +164,7 @@ namespace Greatbone.Core
         {
             if (attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = decimal.Parse(attr);
                 return true;
             }
             return false;
@@ -175,7 +174,7 @@ namespace Greatbone.Core
         {
             if (attrs.TryGet(name, out var attr))
             {
-                v = attr;
+                v = attr.ToDateTime();
                 return true;
             }
             return false;
@@ -351,17 +350,22 @@ namespace Greatbone.Core
 
         public static implicit operator int(XElem v)
         {
-            return v?.text.ToInt() ?? 0;
+            return v?.Text.ToInt() ?? 0;
         }
 
         public static implicit operator string(XElem v)
         {
-            return v?.text;
+            return v?.Text;
         }
 
         public int CompareTo(XElem other)
         {
-            return String.CompareOrdinal(tag, other.tag);
+            return string.CompareOrdinal(tag, other.tag);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

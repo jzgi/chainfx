@@ -22,22 +22,6 @@ namespace Greatbone.Core
             current = -1;
         }
 
-        public JArr(params int[] values) : this(values.Length)
-        {
-            for (int i = 0; i < values.Length; i++)
-            {
-                Add(new JMbr(values[i]));
-            }
-        }
-
-        public JArr(params string[] values) : this(values.Length)
-        {
-            for (int i = 0; i < values.Length; i++)
-            {
-                Add(new JMbr(values[i]));
-            }
-        }
-
         public JMbr this[int index] => elements[index];
 
         public int Count => count;
@@ -59,6 +43,21 @@ namespace Greatbone.Core
         }
 
         public void Add(JObj elem)
+        {
+            Add(new JMbr(elem));
+        }
+
+        public void Add(JArr elem)
+        {
+            Add(new JMbr(elem));
+        }
+
+        public void Add(bool elem)
+        {
+            Add(new JMbr(elem));
+        }
+
+        public void Add(JNumber elem)
         {
             Add(new JMbr(elem));
         }

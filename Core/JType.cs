@@ -15,10 +15,8 @@ namespace Greatbone.Core
 
         Array = 4,
 
-        Bytes = 5,
+        True = 5,
 
-        True = 6,
-
-        False = 7
+        False = 6
     }
 }

@@ -12,39 +12,34 @@ namespace Greatbone.Core
         }
 
         /// To add null property
-        internal void AddNull(string name)
+        public void Add(string name)
         {
-            Add(new JMbr(JType.Null, name));
+            Add<JMbr>(new JMbr(JType.Null, name));
         }
 
         public void Add(string name, JObj v)
         {
-            Add(new JMbr(v, name));
+            Add<JMbr>(new JMbr(v, name));
         }
 
         public void Add(string name, JArr v)
         {
-            Add(new JMbr(v, name));
+            Add<JMbr>(new JMbr(v, name));
         }
 
         public void Add(string name, string v)
         {
-            Add(new JMbr(v, name));
-        }
-
-        public void Add(string name, byte[] v)
-        {
-            Add(new JMbr(v, name));
+            Add<JMbr>(new JMbr(v, name));
         }
 
         public void Add(string name, bool v)
         {
-            Add(new JMbr(v, name));
+            Add<JMbr>(new JMbr(v, name));
         }
 
         public void Add(string name, JNumber v)
         {
-            Add(new JMbr(v, name));
+            Add<JMbr>(new JMbr(v, name));
         }
 
         //
@@ -133,13 +128,7 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            if (TryGet(name, out var mbr))
-            {
-                byte[] bv = mbr;
-                v = new ArraySegment<byte>(bv);
-                return true;
-            }
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref short[] v)

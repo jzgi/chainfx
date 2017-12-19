@@ -204,7 +204,7 @@ namespace Greatbone.Core
                         else if (IsNameStartChar(b))
                         {
                             XElem child = ParseElem(ref p, b);
-                            elem.AddChild(child);
+                            elem.Add(child);
                         }
                     }
                     else // text node

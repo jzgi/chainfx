@@ -112,7 +112,7 @@ namespace Greatbone.Core
                     }
                     else if (b == 'n')
                     {
-                        if (ParseNull(ref p)) jo.AddNull(name);
+                        if (ParseNull(ref p)) jo.Add(name);
                     }
                     else if (b == 't' || b == 'f')
                     {
@@ -122,11 +122,6 @@ namespace Greatbone.Core
                     else if (b == '-' || b >= '0' && b <= '9')
                     {
                         JNumber v = ParseNumber(ref p, b);
-                        jo.Add(name, v);
-                    }
-                    else if (b == '&') // bytes extension
-                    {
-                        byte[] v = ParseBytes(p);
                         jo.Add(name, v);
                     }
                     else throw ParseEx;
@@ -193,11 +188,6 @@ namespace Greatbone.Core
                     JNumber v = ParseNumber(ref p, b);
                     ja.Add(new JMbr(v));
                 }
-                else if (b == '&') // bytes extension
-                {
-                    byte[] v = ParseBytes(p);
-                    ja.Add(new JMbr(v));
-                }
                 else throw ParseEx;
 
                 // comma or return
@@ -254,11 +244,6 @@ namespace Greatbone.Core
                     }
                 }
             }
-        }
-
-        byte[] ParseBytes(int start)
-        {
-            return null;
         }
 
         bool ParseNull(ref int pos)

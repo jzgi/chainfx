@@ -44,43 +44,44 @@ namespace Greatbone.Core
             }
         }
 
-        public XmlContent ELEM(XElem e)
+        public XmlContent ELEM(XElem elem)
         {
             Add('<');
-            Add(e.Tag);
-            if (e.Attrs != null)
+            Add(elem.Tag);
+            Map<string, string> attrs = elem.Attrs;
+            if (attrs != null)
             {
-                Map<string, XAttr> attrs = e.Attrs;
                 for (int i = 0; i < attrs.Count; i++)
                 {
-                    XAttr attr = attrs[i];
+                    var ety = attrs.At(i);
                     Add(' ');
-                    Add(attr.Key);
+                    Add(ety.Key);
                     Add('=');
                     Add('"');
-                    AddEsc(attr.Value);
+                    AddEsc(ety.Value);
                     Add('"');
                 }
             }
             Add('>');
 
-            if (e.Text != null)
+            if (elem.Text != null)
             {
-                AddEsc(e.Text);
+                AddEsc(elem.Text);
             }
-            if (e.Count > 0)
+            if (elem.Count > 0)
             {
-                for (int i = 0; i < e.Count; i++)
+                for (int i = 0; i < elem.Count; i++)
                 {
-                    ELEM(e.Child(i));
+                    ELEM(elem[i]);
                 }
             }
             Add("</");
-            Add(e.Tag);
+            Add(elem.Tag);
             Add('>');
 
             return this;
         }
+
         //
         // PUT
         //
