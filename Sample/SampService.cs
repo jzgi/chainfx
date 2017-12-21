@@ -117,7 +117,7 @@ namespace Greatbone.Samp
                     // weixin authorization challenge
                     if (ac.ByWeiXin) // weixin
                     {
-                        ac.GiveRedirectWeiXinAuthorize();
+                        ac.GiveRedirectWeiXinAuthorize("http://144000.tv");
                     }
                     else // challenge BASIC scheme
                     {

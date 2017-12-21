@@ -9,13 +9,6 @@ namespace Greatbone.Samp
         }
     }
 
-    public class OprUserVarWork : UserVarWork
-    {
-        public OprUserVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-    }
-
     public class AdmOprVarWork : UserVarWork
     {
         public AdmOprVarWork(WorkConfig cfg) : base(cfg)

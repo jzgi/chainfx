@@ -140,14 +140,17 @@ namespace Greatbone.Samp
         }
     }
 
+    /// <summary>
+    /// The working folder of shop operators.
+    /// </summary>
     [Ui("常规"), User(OPR)]
     public class OprVarWork : Work, IShopVar
     {
         public OprVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<OprNewWork>("new");
+            Create<OprNewieWork>("newie");
 
-            Create<OprOldWork>("old");
+            Create<OprOldieWork>("oldie");
 
             Create<OprCartWork>("cart");
 
@@ -221,14 +224,14 @@ namespace Greatbone.Samp
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(tel));
+                        dc.Execute("UPDATE users SET opr = 0, oprat = NULL WHERE tel = @1", p => p.Set(tel));
                     }
                 }
                 else if (cmd == 2) // add
                 {
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(shopid).Set(opr).Set(tel));
+                        dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(shopid).Set(tel));
                     }
                 }
             }
@@ -244,7 +247,7 @@ namespace Greatbone.Samp
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out tel).Let(out opr);
-//                            m.RADIO(nameof(tel), tel, null, null, false, tel, name, Oprs[opr]);
+                            m.RADIO(nameof(tel), tel, label: tel + ' ' + name + ' ' + Oprs[opr]);
                         }
                         m.T("</div>");
                         m.BUTTON(nameof(access), 1, "删除");

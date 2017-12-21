@@ -174,9 +174,9 @@ namespace Greatbone.Samp
     }
 
     [Ui("新单")]
-    public class OprNewWork : OrderWork<OprNewVarWork>
+    public class OprNewieWork : OrderWork<OprNewieVarWork>
     {
-        public OprNewWork(WorkConfig cfg) : base(cfg)
+        public OprNewieWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -256,9 +256,9 @@ namespace Greatbone.Samp
     }
 
     [Ui("旧单"), User(OPR)]
-    public class OprOldWork : OrderWork<OprOldVarWork>
+    public class OprOldieWork : OrderWork<OprOldieVarWork>
     {
-        public OprOldWork(WorkConfig cfg) : base(cfg)
+        public OprOldieWork(WorkConfig cfg) : base(cfg)
         {
         }
 

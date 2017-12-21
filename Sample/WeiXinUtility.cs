@@ -13,11 +13,6 @@ namespace Greatbone.Samp
     {
         public const string WXAUTH = "wxauth";
 
-        public const string BODY_DESC = "粗粮达人-健康产品";
-
-        public const string ADDR = "http://144000.tv";
-
-
         static string appid;
 
         static string appsecret;
@@ -88,9 +83,9 @@ namespace Greatbone.Samp
             stop = true;
         }
 
-        public static void GiveRedirectWeiXinAuthorize(this ActionContext ac)
+        public static void GiveRedirectWeiXinAuthorize(this ActionContext ac, string listenAddr)
         {
-            string redirect_url = WebUtility.UrlEncode(ADDR + ac.Uri);
+            string redirect_url = WebUtility.UrlEncode(listenAddr + ac.Uri);
             ac.SetHeader("Location", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appid + "&redirect_uri=" + redirect_url + "&response_type=code&scope=snsapi_base&state=" + WXAUTH + "#wechat_redirect");
             ac.Give(303);
         }
@@ -202,12 +197,12 @@ namespace Greatbone.Samp
             return null;
         }
 
-        public static async Task<(string, string)> PostUnifiedOrderAsync(string trade_no, decimal total, string openid, string ip, string notifyurl)
+        public static async Task<(string, string)> PostUnifiedOrderAsync(string trade_no, decimal total, string openid, string ip, string notifyurl, string descr)
         {
             XElem x = new XElem("xml")
             {
                 {"appid", appid},
-                {"body", BODY_DESC},
+                {"body", descr},
                 {"mch_id", mchid},
                 {"nonce_str", noncestr},
                 {"notify_url", notifyurl},

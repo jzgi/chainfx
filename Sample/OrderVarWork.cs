@@ -139,7 +139,7 @@ namespace Greatbone.Samp
                 dc.Query1("SELECT rev, total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                 dc.Let(out rev).Let(out total);
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify", "粗粮达人-健康产品");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
@@ -286,9 +286,9 @@ namespace Greatbone.Samp
         }
     }
 
-    public class OprNewVarWork : OrderVarWork
+    public class OprNewieVarWork : OrderVarWork
     {
-        public OprNewVarWork(WorkConfig cfg) : base(cfg)
+        public OprNewieVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -346,9 +346,9 @@ namespace Greatbone.Samp
         }
     }
 
-    public class OprOldVarWork : OrderVarWork
+    public class OprOldieVarWork : OrderVarWork
     {
-        public OprOldVarWork(WorkConfig cfg) : base(cfg)
+        public OprOldieVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

@@ -31,7 +31,6 @@ namespace Greatbone.Samp
         internal string tel;
         internal short opr; // 
         internal string oprat; // operator at
-        internal string oprname;
         internal bool adm; // adm
 
         public void Read(IDataInput i, short proj = 0x00ff)
@@ -52,7 +51,6 @@ namespace Greatbone.Samp
             {
                 i.Get(nameof(opr), ref opr);
                 i.Get(nameof(oprat), ref oprat);
-                i.Get(nameof(oprname), ref oprname);
                 i.Get(nameof(adm), ref adm);
             }
         }
@@ -75,7 +73,6 @@ namespace Greatbone.Samp
             {
                 o.Put(nameof(opr), opr);
                 o.Put(nameof(oprat), oprat);
-                o.Put(nameof(oprname), oprname);
                 o.Put(nameof(adm), adm);
             }
         }

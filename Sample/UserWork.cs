@@ -25,7 +25,7 @@ namespace Greatbone.Samp
                 dc.Query(p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<User>(),
                     h => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                    (h, o) => h.TD(o.name).TD(o.tel).TD(o.city, o.oprname).TD(User.Oprs[o.opr])
+                    (h, o) => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(User.Oprs[o.opr])
                 );
             }
         }
