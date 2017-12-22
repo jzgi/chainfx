@@ -20,6 +20,12 @@
     padding: 0.25rem;
 }
 
+.tool-bar-right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
 .board-view {
     padding-bottom: 0.875rem;
     background-color: gainsboro;

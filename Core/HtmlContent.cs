@@ -982,46 +982,41 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(short group = 0, bool refresh = true)
+        public void TOOLBAR(short @group = 0, string title = null, bool refresh = true)
         {
-            var work = actionCtx.Work;
-            var ais = work.Tooled;
-            if (ais == null)
+            var ais = actionCtx.Work.Tooled;
+            TOOLBAR_();
+            for (int i = 0; i < ais.Length; i++)
             {
-                TOOLBAR_(work.Label);
-            }
-            else
-            {
-                TOOLBAR_();
-                for (int i = 0; i < ais.Length; i++)
+                var ai = ais[i];
+                if (ai.Group != group)
                 {
-                    var ai = ais[i];
-                    if (ai.Group != group)
-                    {
-                        continue;
-                    }
-                    Tool(ais[i], null);
+                    continue;
                 }
+                Tool(ais[i], null);
             }
-            _TOOLBAR(refresh);
+            _TOOLBAR(title, refresh);
         }
 
-        public HtmlContent TOOLBAR_(string title = null)
+        public HtmlContent TOOLBAR_()
         {
             Add("<header data-sticky-container>");
             Add("<form id=\"tool-bar-form\" class=\"sticky tool-bar\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
-            if (title != null)
-            {
-                Add(title);
-            }
             return this;
         }
 
-        public HtmlContent _TOOLBAR(bool refresh = true)
+        public HtmlContent _TOOLBAR(string title = null, bool refresh = true)
         {
             if (refresh)
             {
-                Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.75rem; line-height: 1; margin-left: auto\">&#9851;</a>");
+                Add("<div class=\"tool-bar-right\">");
+                if (title != null)
+                {
+                    Add(title);
+                    Add("&nbsp;");
+                }
+                Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.75rem; line-height: 1;\">&#9851;</a>");
+                Add("</div>");
             }
             Add("</form>");
             Add("</header>");

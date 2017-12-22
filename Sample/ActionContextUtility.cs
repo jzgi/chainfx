@@ -215,8 +215,7 @@ namespace Greatbone.Samp
 
         public static void GiveBoardDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
-            ac.GiveDoc(
-                status,
+            ac.GiveDoc(status,
                 main =>
                 {
                     main.TOOLBAR();
@@ -228,8 +227,7 @@ namespace Greatbone.Samp
 
         public static void GiveBoardPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
-            ac.GivePage(
-                status,
+            ac.GivePage(status,
                 main =>
                 {
                     main.TOOLBAR();
@@ -241,8 +239,7 @@ namespace Greatbone.Samp
 
         public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
-            ac.GivePage(
-                status,
+            ac.GivePage(status,
                 main =>
                 {
                     main.TOOLBAR();

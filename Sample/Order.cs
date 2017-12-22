@@ -13,14 +13,14 @@ namespace Greatbone.Samp
         public const short KEY = 1, LATER = 4;
 
         // status
-        public const short CART = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
+        public const short CARTED = 0, PAID = 1, ABORTED = 3, DELIVERED = 4;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CART, "购物车"},
+            {CARTED, "购物车"},
             {PAID, "在处理"},
             {ABORTED, "已撤单"},
-            {FINISHED, "已完成"}
+            {DELIVERED, "已交货"}
         };
 
         internal int id;
@@ -176,6 +176,24 @@ namespace Greatbone.Samp
                     total = total - (decimal.Floor(total / notch) * off);
                 }
             }
+        }
+
+        public static bool Deduce(OrderItem[] a, OrderItem[] b)
+        {
+            for (var i = 0; i < a.Length; i++)
+            {
+                bool found = false;
+                for (var k = 0; k < b.Length; k++)
+                {
+                    if (a[i].name == b[k].name)
+                    {
+                        a[i].load = b[k].qty;
+                        found = true;
+                    }
+                }
+                if (!found) return false;
+            }
+            return true;
         }
     }
 

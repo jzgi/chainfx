@@ -286,9 +286,9 @@ namespace Greatbone.Samp
         }
     }
 
-    public class OprNewieVarWork : OrderVarWork
+    public class OprNewlyVarWork : OrderVarWork
     {
-        public OprNewieVarWork(WorkConfig cfg) : base(cfg)
+        public OprNewlyVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -326,29 +326,64 @@ namespace Greatbone.Samp
             ac.GiveRedirect("../");
         }
 
-        [Ui("完成", "确认完成？"), Tool(ButtonConfirm)]
-        public void finish(ActionContext ac)
+        [Ui("交货"), Tool(ButtonShow)]
+        public async Task deliver(ActionContext ac)
         {
             string shopid = ac[-2];
             int orderid = ac[this];
-            using (var dc = ac.NewDbContext(ReadCommitted))
+            User prin = (User) ac.Principal;
+            short src;
+            if (ac.GET)
             {
-                if (dc.Query1("UPDATE orders SET status = @1 WHERE id = @2 AND shopid = @3 AND status = " + PAID + "RETURNING pos, wx, name, addr, tel", p => p.Set(FINISHED).Set(orderid).Set(shopid)))
+                ac.GivePane(200, m =>
                 {
-                    dc.Let(out bool pos).Let(out string wx).Let(out string name).Let(out string addr).Let(out string tel);
-                    if (!pos) // if ordinary order then update user info
+                    // check personal pos
+                    using (var dc = ac.NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET name = COALESCE(@1, name), addr = COALESCE(@2, addr), tel = COALESCE(@3, tel) WHERE wx = @4", p => p.Set(name).Set(addr).Set(tel).Set(wx));
+                        if (dc.Query1("SELECT 1 FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2  AND pos", p => p.Set(shopid).Set(prin.wx)))
+                        {
+                            m.RADIO(nameof(src), 1, "从我的摊点里出货");
+                        }
+                    }
+                    m.RADIO(nameof(src), 2, "从大库出货");
+                });
+            }
+            else // POST
+            {
+                src = (await ac.ReadAsync<Form>())[nameof(src)];
+                
+                using (var dc = ac.NewDbContext(ReadCommitted))
+                {
+                    if (dc.Query1("UPDATE orders SET status = " + DELIVERED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + "RETURNING *", p => p.Set(orderid).Set(shopid)))
+                    {
+                        var o = dc.ToObject<Order>();
+                        if (!o.pos) // if ordinary order then update user info
+                        {
+                            dc.Execute("UPDATE users SET name = COALESCE(@1, name), addr = COALESCE(@2, addr), tel = COALESCE(@3, tel) WHERE wx = @4", p => p.Set(o.name).Set(o.addr).Set(o.tel).Set(o.wx));
+                        }
+                        if (src == 1) // deduce from cart
+                        {
+                            dc.Query1("SELECT id, items FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2  AND pos", p => p.Set(shopid).Set(prin.wx));
+                            dc.Let(out int cartid).Let(out OrderItem[] cart);
+                            if (Deduce(cart, o.items))
+                            {
+                                dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND shopid = @3", p => p.Set(cart).Set(shopid));
+                            }
+                            else
+                            {
+                                dc.Rollback();
+                            }
+                        }
                     }
                 }
+                ac.GivePane(200);
             }
-            ac.GiveRedirect("../");
         }
     }
 
-    public class OprOldieVarWork : OrderVarWork
+    public class OprPastlyVarWork : OrderVarWork
     {
-        public OprOldieVarWork(WorkConfig cfg) : base(cfg)
+        public OprPastlyVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

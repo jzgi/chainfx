@@ -12,7 +12,7 @@ namespace Greatbone.Samp
 
     public class OprWork : Work
     {
-        public OprWork(WorkConfig wc) : base(wc)
+        public OprWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<OprVarWork, string>(prin => ((User) prin).oprat);
         }

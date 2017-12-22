@@ -100,7 +100,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("售点")]
+    [Ui("摊点")]
     public class OprCartWork : OrderWork<OprCartVarWork>
     {
         public OprCartWork(WorkConfig cfg) : base(cfg)
@@ -174,14 +174,40 @@ namespace Greatbone.Samp
     }
 
     [Ui("新单")]
-    public class OprNewieWork : OrderWork<OprNewieVarWork>
+    public class OprNewlyWork : OrderWork<OprNewlyVarWork>
     {
-        public OprNewieWork(WorkConfig cfg) : base(cfg)
+        public OprNewlyWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("列表..."), Tool(AnchorPrompt)]
+        [Ui("全部"), Tool(Anchor)]
         public void @default(ActionContext ac, int page)
+        {
+            string shopid = ac[-1];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                ac.GivePage(200, main =>
+                {
+                    main.TOOLBAR();
+                    main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
+                    {
+                        h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var oi = o.items[i];
+                            h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
+                        }
+                        h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
+                        h.TAIL(o.Err(), false);
+                    });
+                }, false, 3);
+            }
+        }
+
+        [Ui("区域"), Tool(AnchorPrompt)]
+        public void area(ActionContext ac, int page)
         {
             string shopid = ac[-1];
             bool inner = ac.Query[nameof(inner)];
@@ -201,21 +227,24 @@ namespace Greatbone.Samp
                 });
                 return;
             }
-
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status = 1 AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
-                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
+                dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
+                ac.GivePage(200, main =>
                 {
-                    h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION();
-                    h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
-                    for (int i = 0; i < o.items.Length; i++)
+                    main.TOOLBAR(title: filter);
+                    main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
-                        var oi = o.items[i];
-                        h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
-                    }
-                    h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
-                    h.TAIL(o.Err(), false);
+                        h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var oi = o.items[i];
+                            h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
+                        }
+                        h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
+                        h.TAIL(o.Err(), false);
+                    });
                 }, false, 3);
             }
         }
@@ -226,7 +255,6 @@ namespace Greatbone.Samp
             ["派送通知"] = "销售人员正在派送您所购的商品",
             ["sdf"] = "",
         };
-
 
         [Ui("通知"), Tool(ButtonPickShow)]
         public void send(ActionContext ac)
@@ -256,9 +284,9 @@ namespace Greatbone.Samp
     }
 
     [Ui("旧单"), User(OPR)]
-    public class OprOldieWork : OrderWork<OprOldieVarWork>
+    public class OprPastlyWork : OrderWork<OprPastlyVarWork>
     {
-        public OprOldieWork(WorkConfig cfg) : base(cfg)
+        public OprPastlyWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -270,7 +298,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
+                    h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == DELIVERED);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {

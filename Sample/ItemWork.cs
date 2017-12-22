@@ -14,7 +14,7 @@ namespace Greatbone.Samp
     }
 
 
-    [Ui("货品")]
+    [Ui("货品"), User(OPRMEM)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkConfig wc) : base(wc)
