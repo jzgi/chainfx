@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
 using static Greatbone.Samp.SampUtility;
+using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
@@ -61,13 +62,13 @@ namespace Greatbone.Samp
                 var shop = dc.ToObject<Shop>();
                 ac.Register(shop);
 
-                dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
+                dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL as imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
                 dc.Query(p => p.Set(shopid));
-                var items = dc.ToArray<Item>();
+                var items = dc.ToArray<Item>(-1);
 
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().A("&Lt;", "../?city=" + shop.city, true).SP();
+                    m.TOPBAR_().T("<a style=\"font-size: 2.5rem; line-height: 1.2; margin-bottom: 0.375rem\" href=\"../?city=").T(shop.city).T("\">❮</a>&nbsp;");
 
                     m.A_DROPDOWN_(shop.name);
                     m.BOX_(0x4c);
@@ -91,8 +92,11 @@ namespace Greatbone.Samp
                     {
                         h.CAPTION(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
-                        h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P(o.price, symbol: '¥').P(o.stock, "还剩", o.unit)._BOX();
-                        h.THUMBNAIL(o.name + "/img-1", box: 3).THUMBNAIL(o.name + "/img-2", box: 3).THUMBNAIL(o.name + "/img-3", box: 3).THUMBNAIL(o.name + "/img-4", box: 3);
+                        h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P_().EM(o.price, "¥").T("（还剩").T(o.stock).T(o.unit).T("）")._P()._BOX();
+                        if (o.imgg)
+                        {
+                            h.THUMBNAIL(o.name + "/img-1", box: 3).THUMBNAIL(o.name + "/img-2", box: 3).THUMBNAIL(o.name + "/img-3", box: 3).THUMBNAIL(o.name + "/img-4", box: 3);
+                        }
                         h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.stock = 0;
@@ -166,11 +170,11 @@ namespace Greatbone.Samp
                     {
                         using (var dc = ac.NewDbContext())
                         {
-                            if (dc.Query1("SELECT wx, tel, name FROM users WHERE tel = @1", p => p.Set(forid)))
+                            if (dc.Query1("SELECT concat(wx, ' ', tel, ' ', name) FROM users WHERE tel = @1", p => p.Set(forid)))
                             {
-                                dc.Let(out string wx).Let(out string tel).Let(out string name);
+                                dc.Let(out wx_tel_name);
                                 m.FIELDSET_("设置经理");
-//                                m.RADIO(nameof(wx_tel_name), wx, tel, name, false, null, tel, name);
+                                m.RADIO(nameof(wx_tel_name), wx_tel_name, wx_tel_name);
                                 m._FIELDSET();
                             }
                         }
@@ -182,17 +186,17 @@ namespace Greatbone.Samp
             {
                 var f = await ac.ReadAsync<Form>();
                 wx_tel_name = f[nameof(wx_tel_name)];
-                (string wx, string tel, string name) = wx_tel_name.To3Strings('~');
+                (string wx, string tel, string name) = wx_tel_name.To3Strings();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; UPDATE users SET oprat = @4, opr = " + User.OPRMGR + "  WHERE wx = @2;",
-                        p => p.Set(wx).Set(tel).Set(name).Set(shopid));
+                    dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
+                        UPDATE users SET opr = " + OPRMGR + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(shopid));
                 }
                 ac.GivePane(200);
             }
         }
 
-        [Ui("形象照"), Tool(ButtonCrop)]
+        [Ui("照片"), Tool(ButtonCrop)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[this];

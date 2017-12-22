@@ -300,7 +300,7 @@ namespace Greatbone.Samp
             ac.GivePane(200);
         }
 
-        [Ui("功能照"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
+        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];

@@ -326,7 +326,7 @@ namespace Greatbone.Samp
             ac.GiveRedirect("../");
         }
 
-        [Ui("交货"), Tool(ButtonShow)]
+        [Ui("完成"), Tool(ButtonShow)]
         public async Task deliver(ActionContext ac)
         {
             string shopid = ac[-2];

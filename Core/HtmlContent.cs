@@ -112,10 +112,50 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent EM(string v)
+        public HtmlContent EM(decimal v, string sign = null)
         {
             Add("<em>");
-            Add(v);
+            if (sign != null)
+            {
+                if (sign == "¥" || sign == "$")
+                {
+                    Add(sign);
+                    Add(v);
+                }
+                else
+                {
+                    Add(v);
+                    Add(sign);
+                }
+            }
+            else
+            {
+                Add(v);
+            }
+            Add("</em>");
+            return this;
+        }
+
+        public HtmlContent EM(string v, string sign = null)
+        {
+            Add("<em>");
+            if (sign != null)
+            {
+                if (sign == "¥" || sign == "$")
+                {
+                    Add(sign);
+                    Add(v);
+                }
+                else
+                {
+                    Add(v);
+                    Add(sign);
+                }
+            }
+            else
+            {
+                Add(v);
+            }
             Add("</em>");
             return this;
         }
@@ -636,7 +676,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(decimal v, string label = null, string sign = null, char symbol = (char) 0)
+        public HtmlContent P(decimal v, string label = null, string sign = null, bool em = false)
         {
             Add("<p>");
             if (label != null)
@@ -645,16 +685,30 @@ namespace Greatbone.Core
                 Add(label);
                 Add("</span>");
             }
-            if (symbol != 0)
+            if (em)
             {
                 Add("<em>");
-                Add(symbol);
             }
-            Add(v);
-            if (symbol != 0) Add("</em>");
             if (sign != null)
             {
-                Add(sign);
+                if (sign == "¥" || sign == "$")
+                {
+                    Add(sign);
+                    Add(v);
+                }
+                else
+                {
+                    Add(v);
+                    Add(sign);
+                }
+            }
+            else
+            {
+                Add(v);
+            }
+            if (em)
+            {
+                Add("</em>");
             }
             Add("</p>");
             return this;

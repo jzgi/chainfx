@@ -9,7 +9,7 @@ namespace Greatbone.Samp
     {
         public static readonly Item Empty = new Item();
 
-        public const short PK = 1, LATER = 4;
+        public const short PK = 1, LATER = 4, IMGG = 0x100;
 
         public const short OFF = 0, ON = 1, HOT = 2;
 
@@ -32,6 +32,8 @@ namespace Greatbone.Samp
         internal short status;
         internal short stock; // remaining capacity
 
+        internal bool imgg;
+
         public void Read(IDataInput i, short proj = 0x00ff)
         {
             if ((proj & PK) == PK)
@@ -47,6 +49,10 @@ namespace Greatbone.Samp
             i.Get(nameof(step), ref step);
             i.Get(nameof(status), ref status);
             i.Get(nameof(stock), ref stock);
+            if ((proj & IMGG) == IMGG)
+            {
+                i.Get(nameof(imgg), ref imgg);
+            }
         }
 
         public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>

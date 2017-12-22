@@ -180,15 +180,15 @@ namespace Greatbone.Samp
 
         public static bool Deduce(OrderItem[] a, OrderItem[] b)
         {
-            for (var i = 0; i < a.Length; i++)
+            for (var i = 0; i < b.Length; i++)
             {
                 bool match = false;
-                for (var k = 0; k < b.Length; k++)
+                for (var j = 0; j < a.Length; j++)
                 {
-                    if (a[i].name == b[k].name)
+                    if (a[j].name == b[i].name)
                     {
-                        a[i].load -= b[k].qty;
-                        if (a[i].load >= 0)
+                        a[j].load -= b[i].qty;
+                        if (a[j].load >= 0)
                         {
                             match = true;
                             break;

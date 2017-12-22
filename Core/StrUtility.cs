@@ -425,7 +425,7 @@ namespace Greatbone.Core
             return (a, b);
         }
 
-        public static (string, string, string) To3Strings(this string str, char sep = '-')
+        public static (string, string, string) To3Strings(this string str, char sep = ' ')
         {
             int len = str.Length;
 

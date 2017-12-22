@@ -211,7 +211,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("成品照"), Tool(ButtonCrop), User(OPRMEM)]
+        [Ui("照片"), Tool(ButtonCrop), User(OPRMEM)]
         public async Task ficon(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -244,7 +244,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("过程照"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
+        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
         public async Task fimgs(ActionContext ac, int ordinal)
         {
             string shopid = ac[-2];
@@ -272,7 +272,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("供量"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("剩量"), Tool(ButtonShow), User(OPRMEM)]
         public async Task max(ActionContext ac)
         {
             string shopid = ac[-2];
