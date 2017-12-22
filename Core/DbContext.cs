@@ -34,7 +34,7 @@ namespace Greatbone.Core
 
         bool multi;
 
-        bool disposed;
+        bool disposing;
 
         // current parameter index
         int index;
@@ -54,7 +54,7 @@ namespace Greatbone.Core
         {
             if (reader != null)
             {
-                reader.Close();
+                reader.Dispose();
                 reader = null;
             }
             ordinal = 0;
@@ -80,16 +80,6 @@ namespace Greatbone.Core
             if (transact != null)
             {
                 transact.Commit();
-                command.Transaction = null;
-                transact = null;
-            }
-        }
-
-        public void Rollback()
-        {
-            if (transact != null)
-            {
-                transact.Rollback();
                 command.Transaction = null;
                 transact = null;
             }
@@ -1538,24 +1528,35 @@ namespace Greatbone.Core
             return new JsonContent(true).Put(null, this);
         }
 
+        public void Rollback()
+        {
+            if (transact != null && !transact.IsCompleted)
+            {
+                // indicate disposing the instance 
+                reader?.Close();
+                command.Dispose();
+                transact.Rollback();
+                command.Transaction = null;
+                transact = null;
+            }
+        }
+
         public void Dispose()
         {
-            if (!disposed)
+            if (!disposing)
             {
-                // return to pool
+                // indicate disposing the instance 
+                disposing = true;
+                // return to chars pool
                 if (sql != null) BufferUtility.Return(sql);
-
                 // commit ongoing transaction
                 if (transact != null && !transact.IsCompleted)
                 {
                     transact.Commit();
                 }
-
-                reader?.Dispose();
+                reader?.Close();
                 command.Dispose();
-                connection.Dispose();
-                // indicate that the instance has been disposed.
-                disposed = true;
+                connection.Close();
             }
         }
     }

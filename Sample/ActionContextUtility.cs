@@ -196,7 +196,7 @@ namespace Greatbone.Samp
             h.Add("$(document).foundation();");
             if (main != null) // enable the ok button
             {
-                h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', false);");
+                h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', document.forms.length == 0);");
             }
             else // trigger click on the close-button
             {

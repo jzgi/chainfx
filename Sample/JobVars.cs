@@ -148,9 +148,9 @@ namespace Greatbone.Samp
     {
         public OprVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<OprNewlyWork>("new");
+            Create<OprNewlyWork>("newly");
 
-            Create<OprPastlyWork>("past");
+            Create<OprPastlyWork>("pastly");
 
             Create<OprCartWork>("cart");
 

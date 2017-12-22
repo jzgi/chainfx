@@ -295,7 +295,7 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE shopid = @1 AND status > " + PAID + " ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == DELIVERED);

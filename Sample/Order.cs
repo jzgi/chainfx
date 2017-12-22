@@ -182,16 +182,20 @@ namespace Greatbone.Samp
         {
             for (var i = 0; i < a.Length; i++)
             {
-                bool found = false;
+                bool match = false;
                 for (var k = 0; k < b.Length; k++)
                 {
                     if (a[i].name == b[k].name)
                     {
-                        a[i].load = b[k].qty;
-                        found = true;
+                        a[i].load -= b[k].qty;
+                        if (a[i].load >= 0)
+                        {
+                            match = true;
+                            break;
+                        }
                     }
                 }
-                if (!found) return false;
+                if (!match) return false;
             }
             return true;
         }

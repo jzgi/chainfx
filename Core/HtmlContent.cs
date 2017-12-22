@@ -982,11 +982,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(short @group = 0, string title = null, bool refresh = true)
+        public void TOOLBAR(short group = 0, string title = null, bool refresh = true)
         {
             var ais = actionCtx.Work.Tooled;
             TOOLBAR_();
-            for (int i = 0; i < ais.Length; i++)
+            for (int i = 0; i < ais?.Length; i++)
             {
                 var ai = ais[i];
                 if (ai.Group != group)
@@ -1176,7 +1176,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string title, string flag = null, bool? @on = null)
+        public HtmlContent CAPTION(string title, string flag = null, bool? on = null)
         {
             CAPTION_();
             Add(title);

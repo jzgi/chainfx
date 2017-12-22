@@ -332,7 +332,7 @@ namespace Greatbone.Samp
             string shopid = ac[-2];
             int orderid = ac[this];
             User prin = (User) ac.Principal;
-            short src;
+            bool mycart;
             if (ac.GET)
             {
                 ac.GivePane(200, m =>
@@ -340,38 +340,38 @@ namespace Greatbone.Samp
                     // check personal pos
                     using (var dc = ac.NewDbContext())
                     {
-                        if (dc.Query1("SELECT 1 FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2  AND pos", p => p.Set(shopid).Set(prin.wx)))
+                        if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND pos", p => p.Set(shopid).Set(prin.wx)))
                         {
-                            m.RADIO(nameof(src), 1, "从我的摊点里出货");
+                            m.FORM_().CHECKBOX(nameof(mycart), true, "从我的摊点里出货")._FORM();
                         }
                     }
-                    m.RADIO(nameof(src), 2, "从大库出货");
                 });
             }
             else // POST
             {
-                src = (await ac.ReadAsync<Form>())[nameof(src)];
-                
+                mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = ac.NewDbContext(ReadCommitted))
                 {
-                    if (dc.Query1("UPDATE orders SET status = " + DELIVERED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + "RETURNING *", p => p.Set(orderid).Set(shopid)))
+                    if (dc.Query1("UPDATE orders SET status = " + DELIVERED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
                     {
                         var o = dc.ToObject<Order>();
                         if (!o.pos) // if ordinary order then update user info
                         {
                             dc.Execute("UPDATE users SET name = COALESCE(@1, name), addr = COALESCE(@2, addr), tel = COALESCE(@3, tel) WHERE wx = @4", p => p.Set(o.name).Set(o.addr).Set(o.tel).Set(o.wx));
                         }
-                        if (src == 1) // deduce from cart
+                        if (mycart) // deduce my cart loads
                         {
-                            dc.Query1("SELECT id, items FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2  AND pos", p => p.Set(shopid).Set(prin.wx));
+                            dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2 AND pos", p => p.Set(prin.wx).Set(shopid));
                             dc.Let(out int cartid).Let(out OrderItem[] cart);
                             if (Deduce(cart, o.items))
                             {
-                                dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND shopid = @3", p => p.Set(cart).Set(shopid));
+                                dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND shopid = @3", p => p.Set(cart).Set(cartid).Set(shopid));
                             }
                             else
                             {
                                 dc.Rollback();
+                                ac.GivePane(200, m => { m.CALLOUT("摊点上的数目不够扣减"); });
+                                return;
                             }
                         }
                     }
