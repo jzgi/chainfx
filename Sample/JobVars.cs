@@ -7,7 +7,7 @@ using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
-    [Ui("常规"), User]
+    [Ui("我的设置"), User]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)

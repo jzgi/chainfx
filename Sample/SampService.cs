@@ -3,6 +3,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static System.Data.IsolationLevel;
+using static Greatbone.Samp.Order;
+using static Greatbone.Samp.SampUtility;
 using static Greatbone.Samp.WeiXinUtility;
 
 namespace Greatbone.Samp
@@ -77,7 +79,6 @@ namespace Greatbone.Samp
                 {
                     return true;
                 }
-
                 // decode basic scheme
                 byte[] bytes = Convert.FromBase64String(h_auth.Substring(6));
                 string orig = Encoding.ASCII.GetString(bytes);
@@ -192,9 +193,14 @@ namespace Greatbone.Samp
             {
                 var (orderid, _) = trade_no.To2Ints();
                 string oprwx = null;
-                using (var dc = ac.NewDbContext(ReadUncommitted))
+                string addr;
+                using (var dc = ac.NewDbContext(ReadCommitted))
                 {
-                    var shopid = (string) dc.Scalar("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + Order.PAID + " WHERE id = @2 AND status < " + Order.PAID + " RETURNING shopid", (p) => p.Set(cash).Set(orderid));
+                    if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, addr", (p) => p.Set(cash).Set(orderid)))
+                    {
+                        return; // WCPay may send notification more than once
+                    }
+                    dc.Let(out string shopid).Let(out addr);
                     // reflect in stock 
                     dc.Query1("SELECT items FROM orders WHERE id = @1", p => p.Set(orderid));
                     dc.Let(out OrderItem[] items);
@@ -211,10 +217,8 @@ namespace Greatbone.Samp
                 // send a notification
                 if (oprwx != null)
                 {
-//                    await PostSendAsync(oprwx, "【收款】#" + orderid + " ¥" + cash);
-                    await PostSendAsync(oprwx, "下单 #" + orderid + " ¥" + cash, "下单描述下单描述", "http://baidu.com");
+                    await PostSendAsync(oprwx, "收到新单", "单号: #" + orderid + "  地址: " + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
                 }
-
                 // return xml to WCPay server
                 XmlContent x = new XmlContent(true, 1024);
                 x.ELEM("xml", null, () =>

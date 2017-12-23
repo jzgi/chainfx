@@ -103,7 +103,7 @@ namespace Greatbone.Samp
                         h.TAIL();
                     });
                 }
-            }, true, 60 * 5);
+            }, true, 60 * 5, "粗狼达人 - " + city);
         }
     }
 

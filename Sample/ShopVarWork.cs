@@ -62,15 +62,15 @@ namespace Greatbone.Samp
                 var shop = dc.ToObject<Shop>();
                 ac.Register(shop);
 
-                dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL as imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
+                dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
                 dc.Query(p => p.Set(shopid));
                 var items = dc.ToArray<Item>(-1);
 
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().T("<a style=\"font-size: 2.5rem; line-height: 1.2; margin-bottom: 0.375rem\" href=\"../?city=").T(shop.city).T("\">❮</a>&nbsp;");
+                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../?city=").T(shop.city).T("\">❮</a>&nbsp;");
 
-                    m.A_DROPDOWN_(shop.name);
+                    m.A_DROPDOWN_("网点详情");
                     m.BOX_(0x4c);
                     m.P(Shop.Statuses[shop.status], "状态");
                     m.P_("派送").T(shop.delivery);
@@ -101,7 +101,7 @@ namespace Greatbone.Samp
                         // adjust item availability
                         if (shop.status == 0) o.stock = 0;
                     });
-                }, true, 60 * 5);
+                }, true, 60 * 5, shop.name);
             }
         }
     }

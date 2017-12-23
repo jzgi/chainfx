@@ -8,7 +8,7 @@ namespace Greatbone.Samp
 {
     public abstract class ItemVarWork : Work
     {
-        const int PIC_AGE = 60 * 15;
+        const int PIC_AGE = 60 * 60;
 
         protected ItemVarWork(WorkConfig cfg) : base(cfg)
         {
@@ -212,7 +212,7 @@ namespace Greatbone.Samp
         }
 
         [Ui("照片"), Tool(ButtonCrop), User(OPRMEM)]
-        public async Task ficon(ActionContext ac)
+        public new async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];
             string name = ac[this];
@@ -245,7 +245,7 @@ namespace Greatbone.Samp
         }
 
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
-        public async Task fimgs(ActionContext ac, int ordinal)
+        public new async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[-2];
             string name = ac[this];

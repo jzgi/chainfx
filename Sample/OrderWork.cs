@@ -15,7 +15,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("购物车")]
+    [Ui("我的购物车")]
     public class MyCartWork : OrderWork<MyCartVarWork>
     {
         public MyCartWork(WorkConfig cfg) : base(cfg)
@@ -45,7 +45,7 @@ namespace Greatbone.Samp
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", box: 4);
                     h.TAIL(o.Err(), false);
-                }, false, 3, "购物车");
+                }, false, 3);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Greatbone.Samp
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", box: 4);
                     h.TAIL();
-                }, false, 3, "我的订单");
+                }, false, 3);
             }
         }
     }

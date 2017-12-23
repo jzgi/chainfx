@@ -11,6 +11,7 @@
     <RuntimeFrameworkVersion>1.1.4</RuntimeFrameworkVersion>
     <Version>2.5</Version>
     <LangVersion>7.1</LangVersion>
+    <Company>Greatbone</Company>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
