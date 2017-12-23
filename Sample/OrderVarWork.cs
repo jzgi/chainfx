@@ -352,7 +352,7 @@ namespace Greatbone.Samp
                 mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = ac.NewDbContext(ReadCommitted))
                 {
-                    if (dc.Query1("UPDATE orders SET status = " + DELIVERED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
+                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
                     {
                         var o = dc.ToObject<Order>();
                         if (!o.pos) // if ordinary order then update user info
@@ -385,6 +385,18 @@ namespace Greatbone.Samp
     {
         public OprPastlyVarWork(WorkConfig cfg) : base(cfg)
         {
+        }
+
+        [Ui("回退", "【警告】确认要回退此单吗？回退后将出现在新单列表里"), Tool(ButtonConfirm)]
+        public void reject(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            int orderid = ac[this];
+            using (var dc = ac.NewDbContext(ReadUncommitted))
+            {
+                dc.Execute("UPDATE orders SET status = " + PAID + " WHERE id = @1 AND shopid = @2", p => p.Set(orderid).Set(shopid));
+            }
+            ac.GiveRedirect("../");
         }
     }
 

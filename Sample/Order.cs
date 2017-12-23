@@ -13,14 +13,14 @@ namespace Greatbone.Samp
         public const short KEY = 1, LATER = 4;
 
         // status
-        public const short CARTED = 0, PAID = 1, ABORTED = 3, DELIVERED = 4;
+        public const short CARTED = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {CARTED, "购物车"},
             {PAID, "在处理"},
             {ABORTED, "已撤单"},
-            {DELIVERED, "已交货"}
+            {FINISHED, "已交货"}
         };
 
         internal int id;

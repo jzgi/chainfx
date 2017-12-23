@@ -2,7 +2,7 @@
     "button": [
         {
             "type": "view",
-            "name": "点餐/选购",
+            "name": "外卖/选购",
             "url": "http://144000.tv/shop/",
             "sub_button": []
         },
@@ -17,8 +17,8 @@
                 },
                 {
                     "type": "view",
-                    "name": "我的设置",
-                    "url": "http://144000.tv/my//",
+                    "name": "我的购物车",
+                    "url": "http://144000.tv/my//cart/",
                     "sub_button": []
                 },
                 {
@@ -29,8 +29,8 @@
                 },
                 {
                     "type": "view",
-                    "name": "我的购物车",
-                    "url": "http://144000.tv/my//cart/",
+                    "name": "我的设置",
+                    "url": "http://144000.tv/my//",
                     "sub_button": []
                 }
             ]
