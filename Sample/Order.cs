@@ -12,6 +12,15 @@ namespace Greatbone.Samp
 
         public const short KEY = 1, LATER = 4;
 
+        // types
+        public const short POS = 1;
+
+        public static readonly Map<short, string> Types = new Map<short, string>
+        {
+            {0, "普通"},
+            {POS, "摊点"},
+        };
+
         // status
         public const short CARTED = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
 
@@ -28,11 +37,12 @@ namespace Greatbone.Samp
         internal short status;
         internal string shopid;
         internal string shopname;
-        internal bool pos; // whether an onsite sales order
+        internal short typ; // 
         internal string wx; // weixin openid
         internal string name; // customer name
-        internal string tel;
+        internal string city;
         internal string addr; // may include area and site
+        internal string tel;
         internal OrderItem[] items;
         internal decimal min;
         internal decimal notch;
@@ -55,11 +65,12 @@ namespace Greatbone.Samp
             i.Get(nameof(status), ref status);
             i.Get(nameof(shopid), ref shopid);
             i.Get(nameof(shopname), ref shopname);
-            i.Get(nameof(pos), ref pos);
+            i.Get(nameof(typ), ref typ);
             i.Get(nameof(wx), ref wx);
             i.Get(nameof(name), ref name);
-            i.Get(nameof(tel), ref tel);
+            i.Get(nameof(city), ref city);
             i.Get(nameof(addr), ref addr);
+            i.Get(nameof(tel), ref tel);
             i.Get(nameof(items), ref items);
             i.Get(nameof(min), ref min);
             i.Get(nameof(notch), ref notch);
@@ -86,11 +97,12 @@ namespace Greatbone.Samp
             o.Put(nameof(status), status);
             o.Put(nameof(shopid), shopid);
             o.Put(nameof(shopname), shopname);
-            o.Put(nameof(pos), pos);
+            o.Put(nameof(typ), typ);
             o.Put(nameof(wx), wx);
             o.Put(nameof(name), name);
-            o.Put(nameof(tel), tel);
+            o.Put(nameof(city), city);
             o.Put(nameof(addr), addr);
+            o.Put(nameof(tel), tel);
             o.Put(nameof(items), items);
             o.Put(nameof(min), min);
             o.Put(nameof(notch), notch);
@@ -120,7 +132,7 @@ namespace Greatbone.Samp
             if (idx != -1)
             {
                 items[idx].qty += n;
-                if (pos) items[idx].load -= n; // deduce pos load
+                if (typ == POS) items[idx].load -= n; // deduce pos load
             }
             else
             {
@@ -130,7 +142,7 @@ namespace Greatbone.Samp
 
         public void UpdItem(int idx, short n)
         {
-            if (pos)
+            if (typ == POS)
             {
                 items[idx].load += (short) (items[idx].qty - n); // affect load
                 items[idx].qty = n;

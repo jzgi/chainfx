@@ -57,32 +57,27 @@ namespace Greatbone.Samp
             string shopid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
-                dc.Query1(p => p.Set(shopid));
-                var shop = dc.ToObject<Shop>();
-                ac.Register(shop);
+                var sh = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1"), p => p.Set(shopid));
+                ac.Register(sh);
 
-                dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC");
-                dc.Query(p => p.Set(shopid));
-                var items = dc.ToArray<Item>(-1);
-
+                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../?city=").T(shop.city).T("\">❮</a>&nbsp;");
+                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../?city=").T(sh.city).T("\">❮</a>&nbsp;");
 
-                    m.A_DROPDOWN_("网点详情");
+                    m.A_DROPDOWN_("网点概况");
                     m.BOX_(0x4c);
-                    m.P(Shop.Statuses[shop.status], "状态");
-                    m.P_("派送").T(shop.delivery);
-                    if (shop.areas != null) m.SEP().T("限送").T(shop.areas);
+                    m.P(Shop.Statuses[sh.status], "状态");
+                    m.P_("派送").T(sh.delivery);
+                    if (sh.areas != null) m.SEP().T("限送").T(sh.areas);
                     m._P();
-                    m.P(shop.schedule, "营业");
-                    if (shop.off > 0)
-                        m.P_("促销").T(shop.min).T("元起送，满").T(shop.notch).T("元减").T(shop.off).T("元")._P();
+                    m.P(sh.schedule, "营业");
+                    if (sh.off > 0)
+                        m.P_("促销").T(sh.min).T("元起送，满").T(sh.notch).T("元减").T(sh.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x15);
-                    if (shop.oprtel != null)
-                        m.FIELD_(box: 7).A("&#128222;" + shop.oprtel, "tel:" + shop.oprtel + "#mp.weixin.qq.com", false)._FIELD();
+                    if (sh.oprtel != null)
+                        m.FIELD_(box: 7).A("&#128222;" + sh.oprtel, "tel:" + sh.oprtel + "#mp.weixin.qq.com", false)._FIELD();
                     m._A_DROPDOWN();
 
                     m._TOPBAR();
@@ -99,9 +94,9 @@ namespace Greatbone.Samp
                         }
                         h.TAIL();
                         // adjust item availability
-                        if (shop.status == 0) o.stock = 0;
+                        if (sh.status == 0) o.stock = 0;
                     });
-                }, true, 60 * 5, shop.name);
+                }, true, 60 * 5, sh.name);
             }
         }
     }
@@ -121,9 +116,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops WHERE id = @1");
-                    dc.Query1(p => p.Set(shopid));
-                    var o = dc.ToObject<Shop>(proj);
+                    var o = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops WHERE id = @1"), p => p.Set(shopid), proj);
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -141,8 +134,7 @@ namespace Greatbone.Samp
                 var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj ^ Shop.ID).T(" WHERE id = @1");
-                    dc.Execute(p =>
+                    dc.Execute(dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj ^ Shop.ID).T(" WHERE id = @1"), p =>
                     {
                         o.Write(p, proj ^ Shop.ID);
                         p.Set(shopid);
@@ -186,7 +178,7 @@ namespace Greatbone.Samp
             {
                 var f = await ac.ReadAsync<Form>();
                 wx_tel_name = f[nameof(wx_tel_name)];
-                (string wx, string tel, string name) = wx_tel_name.To3Strings();
+                (string wx, string tel, string name) = wx_tel_name.ToTriple();
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 

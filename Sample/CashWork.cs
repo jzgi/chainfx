@@ -61,8 +61,7 @@ namespace Greatbone.Samp
             using (var dc = ac.NewDbContext())
             {
                 const short proj = -1 ^ Cash.ID;
-                dc.Sql("INSERT INTO cashes")._(Cash.Empty, proj)._VALUES_(Cash.Empty, proj);
-                dc.Execute(p => o.Write(p, proj));
+                dc.Execute(dc.Sql("INSERT INTO cashes")._(Cash.Empty, proj)._VALUES_(Cash.Empty, proj), p => o.Write(p, proj));
             }
             ac.GivePane(200);
         }

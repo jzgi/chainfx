@@ -112,6 +112,12 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent BR()
+        {
+            Add("<br>");
+            return this;
+        }
+
         public HtmlContent EM(decimal v, string sign = null)
         {
             Add("<em>");

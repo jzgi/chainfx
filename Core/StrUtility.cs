@@ -411,7 +411,48 @@ namespace Greatbone.Core
             return (a, b);
         }
 
-        public static (string, string) To2Strings(this string str, char sep = '-')
+        static bool TryParseTill(this string str, ref int pos, out string v, char sep)
+        {
+            int len = str.Length;
+            if (pos >= len)
+            {
+                v = null;
+                return false;
+            }
+            int p = pos;
+            while (p < len && str[p] != sep) p++;
+            v = p == len ? str : str.Substring(pos, p);
+            pos = p;
+            return true;
+        }
+
+        public static bool TryParseTill(this string str, ref int pos, out int v, char sep)
+        {
+            int len = str.Length;
+            if (pos >= len)
+            {
+                v = 0;
+                return false;
+            }
+            int sum = 0;
+            int p = pos;
+            while (p < len && str[p] != sep)
+            {
+                char c = str[p];
+                int n = c - '0';
+                if (n >= 0 && n <= 9)
+                {
+                    sum = sum * 10 + n;
+                }
+                p++;
+            }
+            v = sum;
+            pos = p;
+            return true;
+        }
+
+
+        public static (string, string) ToDual(this string str, char sep = '-')
         {
             int len = str.Length;
             int p = 0;
@@ -425,7 +466,7 @@ namespace Greatbone.Core
             return (a, b);
         }
 
-        public static (string, string, string) To3Strings(this string str, char sep = ' ')
+        public static (string, string, string) ToTriple(this string str, char sep = ' ')
         {
             int len = str.Length;
 

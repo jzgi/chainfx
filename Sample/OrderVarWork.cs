@@ -3,6 +3,7 @@ using Greatbone.Core;
 using static System.Data.IsolationLevel;
 using static Greatbone.Core.Modal;
 using static Greatbone.Samp.Order;
+using static Greatbone.Samp.SampUtility;
 using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
@@ -25,6 +26,7 @@ namespace Greatbone.Samp
         {
             int orderid = ac[this];
             string wx = ac[-2];
+            string name, city, a, b, c, tel; // form values
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -32,36 +34,42 @@ namespace Greatbone.Samp
                     h.FORM_();
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Query1("SELECT shopid, pos, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                        dc.Let(out string oshopid).Let(out bool opos).Let(out string oaddr).Let(out string otel);
-                        dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(oshopid));
-                        dc.Let(out string city).Let(out string[] areas);
+                        dc.Query1("SELECT shopid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                        dc.Let(out string oshopid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
                         h.FIELDSET_("收货地址");
-                        string tel;
+                        dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(oshopid));
+                        dc.Let(out string[] areas);
                         if (areas != null) // limited delivery areas
                         {
-                            ac.Query.Let(out string a).Let(out string b).Let(out string c).Let(out tel); // by select refresh
+                            ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel); // by select refresh
                             if (a == null) // init from order
                             {
-                                (a, b, c) = oaddr.To3Strings('\a');
+                                name = oname;
+                                city = ocity;
+                                (a, b, c) = oaddr.ToTriple(SEPCHAR);
                                 a = City.ResolveIn(a, areas);
                                 tel = otel;
                             }
                             var sites = City.SitesOf(city, a);
                             b = City.ResolveIn(b, sites);
+                            h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
                             h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
+                            h.TEL(nameof(tel), tel, "您的随身电话", required: true);
                         }
-                        else // formless address
+                        else // free delivery
                         {
-                            ac.Query.Let(out string a).Let(out tel);
+                            ac.Query.Let(out name).Let(out city).Let(out a).Let(out tel);
                             if (a == null)
                             {
+                                name = oname;
+                                city = ocity;
                                 a = oaddr;
                                 tel = otel;
                             }
-                            h.TEXT(nameof(a), a, tip: "填写您的完整地址");
+                            h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, box: 9);
+                            h.TEXT(nameof(name), name, "姓名", required: true, box: 6).TEL(nameof(tel), tel, "电话", required: true, box: 6);
                         }
-                        h.TEL(nameof(tel), tel, "您的随身电话", required: true);
+                        h._FIELDSET();
                     }
                     h._FORM();
                 });
@@ -69,16 +77,18 @@ namespace Greatbone.Samp
             else // POST
             {
                 var f = await ac.ReadAsync<Form>();
-                string a = f[nameof(a)];
-                string b = f[nameof(b)];
-                string c = f[nameof(c)];
-                string tel = f[nameof(tel)];
+                name = f[nameof(name)];
+                city = f[nameof(city)];
+                a = f[nameof(a)];
+                b = f[nameof(b)];
+                c = f[nameof(c)];
+                tel = f[nameof(tel)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT pos FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                    dc.Let(out bool pos);
-                    string addr = pos ? a + '\a' + b + '\a' + c : a;
-                    dc.Execute("UPDATE orders SET addr = @1, tel = @2 WHERE id = @3", p => p.Set(addr).Set(tel).Set(orderid));
+                    dc.Query1("SELECT areas FROM shops WHERE id = (SELECT shopid FROM orders WHERE id = @1)", p => p.Set(orderid));
+                    dc.Let(out string[] areas);
+                    string addr = areas == null ? a : a + SEPCHAR + b + SEPCHAR + c;
+                    dc.Execute("UPDATE orders SET name = @1, city = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(name).Set(city).Set(addr).Set(tel).Set(orderid));
                 }
                 ac.GivePane(200);
             }
@@ -93,8 +103,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                    var o = dc.ToObject<Order>();
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                     var oi = o.items[idx];
                     dc.Query1("SELECT step, stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(o.shopid).Set(oi.name));
                     dc.Let(out short step).Let(out short stock);
@@ -116,8 +125,7 @@ namespace Greatbone.Samp
                 short qty = f[nameof(qty)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                    var o = dc.ToObject<Order>();
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                     o.UpdItem(idx, qty);
                     o.TotalUp();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
@@ -219,12 +227,11 @@ namespace Greatbone.Samp
                 var f = await ac.ReadAsync<Form>();
                 using (var dc = ac.NewDbContext(ReadUncommitted))
                 {
-                    dc.Query1("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
-                    var o = dc.ToObject<Order>();
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
                     for (int i = 0; i < f.Count; i++)
                     {
                         var e = f.At(i);
-                        var (name, unit, price) = e.Key.To3Strings('~');
+                        var (name, unit, price) = e.Key.ToTriple('~');
                         short n = e.Value;
                         if (n != 0) o.ReceiveItem(name, unit, decimal.Parse(price), n);
                     }
@@ -275,7 +282,7 @@ namespace Greatbone.Samp
             else
             {
                 (await ac.ReadAsync<Form>()).Let(out opr).Let(out addr);
-                var (wx, name, tel) = opr.To3Strings('~');
+                var (wx, name, tel) = opr.ToTriple('~');
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND shopid = @6",
@@ -355,9 +362,9 @@ namespace Greatbone.Samp
                     if (dc.Query1("UPDATE orders SET status = " + FINISHED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
                     {
                         var o = dc.ToObject<Order>();
-                        if (!o.pos) // if ordinary order then update user info
+                        if (o.typ == 0) // if ordinary order then record user info
                         {
-                            dc.Execute("UPDATE users SET name = COALESCE(@1, name), addr = COALESCE(@2, addr), tel = COALESCE(@3, tel) WHERE wx = @4", p => p.Set(o.name).Set(o.addr).Set(o.tel).Set(o.wx));
+                            dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1,  @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = COALESCE(@2, name), city = COALESCE(@3, city), addr = COALESCE(@4, addr), tel = COALESCE(@5, tel) WHERE wx = @1", p => p.Set(o.wx).Set(o.name).Set(o.city).Set(o.addr).Set(o.tel));
                         }
                         if (mycart) // deduce my cart loads
                         {

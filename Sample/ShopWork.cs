@@ -119,8 +119,7 @@ namespace Greatbone.Samp
         {
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id");
-                dc.Query();
+                dc.Query(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id"));
                 ac.GiveBoardPage(200, dc.ToArray<Shop>(), (h, o) =>
                 {
                     h.CAPTION_().T(o.name).T(" / ").T(o.id)._CAPTION();
@@ -138,7 +137,7 @@ namespace Greatbone.Samp
             const short proj = Shop.ADM;
             if (ac.GET)
             {
-                var o = new Shop() {city = City.All[0].name};
+                var o = new Shop {city = City.All[0].name};
                 o.Read(ac.Query, proj);
                 ac.GivePane(200, m =>
                 {
@@ -156,8 +155,7 @@ namespace Greatbone.Samp
                 var o = await ac.ReadObjectAsync<Shop>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj);
-                    dc.Execute(p => o.Write(p, proj));
+                    dc.Execute(dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj), p => o.Write(p, proj));
                 }
                 ac.GivePane(200); // created
             }

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
+using static Greatbone.Samp.SampUtility;
 using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
@@ -58,54 +59,57 @@ namespace Greatbone.Samp
         {
             User prin = (User) ac.Principal;
             string shopid = ac[-1];
-            string name = ac[this];
+            string itemname = ac[this];
+            string name, city, a, b, c, tel; // form values
             short num;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    var exist = dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2 LIMIT 1", p => p.Set(prin.wx).Set(shopid));
-                    dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2");
-                    dc.Query1(p => p.Set(shopid).Set(name));
-                    var o = dc.ToObject<Item>();
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        if (exist == null) // new needs more input
+                        if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // new
                         {
                             dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
-                            dc.Let(out string city).Let(out string[] areas);
+                            dc.Let(out string shopcity).Let(out string[] areas);
                             h.FIELDSET_("收货地址");
-                            string tel;
-                            if (areas != null) // limited delivery areas
+                            if (areas != null) // dedicated delivery areas
                             {
-                                ac.Query.Let(out string a).Let(out string b).Let(out string c).Let(out tel);
+                                ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel);
                                 if (a == null) // init from principal
                                 {
-                                    (a, b, c) = prin.addr.To3Strings('\a');
+                                    name = prin.name;
+                                    city = shopcity;
+                                    (a, b, c) = prin.addr.ToTriple(SEPCHAR);
                                     a = City.ResolveIn(a, areas);
                                     tel = prin.tel;
                                 }
                                 var sites = City.SitesOf(city, a);
                                 b = City.ResolveIn(b, sites);
+                                h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
                                 h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
+                                h.TEL(nameof(tel), tel, "您的随身电话", required: true);
                             }
-                            else // formless address
+                            else // free delivery
                             {
-                                ac.Query.Let(out string a).Let(out tel);
+                                ac.Query.Let(out name).Let(out city).Let(out a).Let(out tel);
                                 if (a == null) // init from principal
                                 {
+                                    name = prin.name;
+                                    city = prin.city;
                                     a = prin.addr;
                                     tel = prin.tel;
                                 }
-                                h.TEXT(nameof(a), a, tip: "您的完整地址");
+                                h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, box: 9);
+                                h.TEXT(nameof(name), name, "姓名", required: true, box: 6).TEL(nameof(tel), tel, "电话", required: true, box: 6);
                             }
-                            h.TEL(nameof(tel), tel, "您的随身电话", required: true);
                             h._FIELDSET();
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        h.ICON("icon", box: 3).NUMBER(nameof(num), o.min, min: o.min, step: o.step, box: 7).FIELD(o.unit, box: 2);
+                        var itm = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
+                        h.ICON("icon", box: 3).NUMBER(nameof(num), itm.min, min: itm.min, step: itm.step, box: 7).FIELD(itm.unit, box: 2);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -115,49 +119,49 @@ namespace Greatbone.Samp
             // POST
             using (var dc = ac.NewDbContext())
             {
-                dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+                dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
                 dc.Let(out string unit).Let(out decimal price);
 
                 if (dc.Query1("SELECT * FROM orders WHERE  wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx)))
                 {
                     var o = dc.ToObject<Order>();
                     (await ac.ReadAsync<Form>()).Let(out num);
-                    o.AddItem(name, unit, price, num);
+                    o.AddItem(itemname, unit, price, num);
                     o.TotalUp();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
                 else // create new order
                 {
                     var f = await ac.ReadAsync<Form>();
-                    string a = f[nameof(a)];
-                    string b = f[nameof(b)];
-                    string c = f[nameof(c)];
-                    string tel = f[nameof(tel)];
+                    name = f[nameof(name)];
+                    city = f[nameof(city)];
+                    a = f[nameof(a)];
+                    b = f[nameof(b)];
+                    c = f[nameof(c)];
+                    tel = f[nameof(tel)];
                     num = f[nameof(num)];
-                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
-                    dc.Query1(p => p.Set(shopid).Set(prin.wx));
-                    var shop = dc.ToObject<Shop>();
+                    var shop = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1"), p => p.Set(shopid).Set(prin.wx));
                     var o = new Order
                     {
                         rev = 1,
                         status = 0,
                         shopid = shopid,
                         shopname = shop.name,
-                        pos = false,
+                        typ = 0, // ordinal order
                         wx = prin.wx,
-                        name = prin.name,
+                        name = name,
+                        city = city,
+                        addr = shop.areas == null ? a : a + SEPCHAR + b + SEPCHAR + c, // concatenate addr if needed
                         tel = tel,
-                        addr = shop.areas == null ? a : a + '\a' + b + '\a' + c, // concatenate addr if needed
                         min = shop.min,
                         notch = shop.notch,
                         off = shop.off,
                         created = DateTime.Now
                     };
-                    o.AddItem(name, unit, price, num);
+                    o.AddItem(itemname, unit, price, num);
                     o.TotalUp();
                     const short proj = -1 ^ Order.KEY ^ Order.LATER;
-                    dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
-                    dc.Execute(p => o.Write(p, proj));
+                    dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
                 }
                 ac.GivePane(200);
             }
@@ -179,8 +183,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-                    var o = dc.ToObject<Item>();
+                    var o = dc.Query1<Item>("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -200,8 +203,7 @@ namespace Greatbone.Samp
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2");
-                    dc.Execute(p =>
+                    dc.Execute(dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2"), p =>
                     {
                         o.Write(p, proj);
                         p.Set(shopid).Set(name);

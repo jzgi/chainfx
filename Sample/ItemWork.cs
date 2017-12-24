@@ -62,8 +62,7 @@ namespace Greatbone.Samp
                 o.shopid = ac[-1];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty);
-                    dc.Execute(p => o.Write(p));
+                    dc.Execute(dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty), p => o.Write(p));
                 }
                 ac.GivePane(200); // close dialog
             }
@@ -79,8 +78,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key);
-                    dc.Execute(p => p.Set(shopid), false);
+                    dc.Execute(dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key), p => p.Set(shopid), false);
                 }
             }
             ac.GiveRedirect();

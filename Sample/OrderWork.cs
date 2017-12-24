@@ -31,19 +31,19 @@ namespace Greatbone.Samp
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("网点: ").T(o.shopname)._CAPTION();
-                    h.BOX_().P_("收货").T(o.name)._T(o.addr)._T(o.tel).SP().TOOL("addr")._P()._BOX();
+                    h.FIELD_("收货", box: 10).T(o.city)._T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr")._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
                         h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                        h.BOX_(0x46).P(oi.name).P(oi.price)._BOX();
+                        h.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
                         h.BOX_(0x42).P(oi.qty, null, oi.unit).TOOL("item", i)._BOX();
                         h.BOX_(0x42);
-                        if (o.pos) h.P(oi.load, sign: oi.unit);
+                        if (o.typ == POS) h.P(oi.load, sign: oi.unit);
                         h._BOX();
                     }
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
-                    h.FIELD(o.total, "总计", box: 4);
+                    h.FIELD(o.total, "总计", sign: "¥", box: 4);
                     h.TAIL(o.Err(), false);
                 }, false, 3);
             }
@@ -73,8 +73,7 @@ namespace Greatbone.Samp
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC");
-                dc.Query(p => p.Set(wx));
+                dc.Query(dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC"), p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("网点: ").T(o.shopname).SEP().T("单号: ").T(o.id)._CAPTION(Statuses[o.status], o.status == PAID);
@@ -89,7 +88,7 @@ namespace Greatbone.Samp
                         h.BOX_(0x46).P(oi.name).P(oi.price)._BOX();
                         h.BOX_(0x42).P(oi.qty, null, oi.unit)._BOX();
                         h.BOX_(0x42);
-                        if (o.pos) h.P(oi.load);
+                        if (o.typ == POS) h.P(oi.load);
                         h._BOX();
                     }
                     h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
@@ -143,15 +142,14 @@ namespace Greatbone.Samp
                     status = 0,
                     shopid = shopid,
                     shopname = shopname,
-                    pos = true,
+                    typ = POS,
                     min = min,
                     notch = notch,
                     off = off,
                     created = DateTime.Now
                 };
                 const short proj = -1 ^ KEY ^ Order.LATER;
-                dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
-                dc.Execute(p => o.Write(p, proj), false);
+                dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj), false);
             }
             ac.GiveRedirect();
         }
@@ -165,8 +163,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("DELETE FROM orders WHERE shopid = @1 AND id")._IN_(key);
-                    dc.Execute(p => p.Set(shopid), false);
+                    dc.Execute(dc.Sql("DELETE FROM orders WHERE shopid = @1 AND id")._IN_(key), p => p.Set(shopid), false);
                 }
             }
             ac.GiveRedirect();
@@ -260,7 +257,6 @@ namespace Greatbone.Samp
         public void send(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
-
             string msg = null;
             if (ac.GET)
             {
@@ -275,8 +271,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
-                    dc.Execute(prepare: false);
+                    dc.Execute(dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key), prepare: false);
                 }
                 ac.GivePane(200);
             }
@@ -317,8 +312,7 @@ namespace Greatbone.Samp
             long[] key = ac.Query[nameof(key)];
             using (var dc = ac.NewDbContext())
             {
-                dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
-                dc.Execute();
+                dc.Execute(dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key));
             }
             ac.GiveRedirect();
         }
@@ -342,13 +336,13 @@ namespace Greatbone.Samp
                     h.CAPTION_().T("#")._T(o.id).SEP().T(o.paid)._CAPTION();
                     if (o.name != null)
                     {
-//                        h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
+                        //                        h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
                     }
                     h.BOX_().T(o.tel)._T(o.addr)._BOX();
                     for (int i = 0; i < o.items.Length; i++)
                     {
-                        var item = o.items[i];
-                        h.FIELD(item.name, box: 4).FIELD(item.price, box: 4).FIELD(item.qty, sign: item.unit, box: 4);
+                        var it = o.items[i];
+                        h.FIELD(it.name, box: 4).FIELD(it.price, box: 4).FIELD(it.qty, sign: it.unit, box: 4);
                     }
                     h.FIELD(o.total, "总价");
                 }, false, 3);

@@ -174,9 +174,7 @@ namespace Greatbone.Samp
                 h.TOOLBAR();
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1");
-                    dc.Query1(p => p.Set(shopid));
-                    var o = dc.ToObject<Shop>();
+                    var o = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1"), p => p.Set(shopid));
                     h.BOARDVIEW_();
 
                     h.CARD_();

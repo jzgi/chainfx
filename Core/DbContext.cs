@@ -10,7 +10,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An environment for database operations based on current service.
     /// </summary>
-    public class DbContext : IDataInput, IDataOutput<DbContext>, IDisposable
+    public class DbContext : IDataInput, IDbParams, IDisposable
     {
         static readonly string[] PARAMS =
         {
@@ -99,12 +99,37 @@ namespace Greatbone.Core
             return sql;
         }
 
-        public bool Query1(Action<DbContext> p = null, bool prepare = true)
+        public bool Query1(Action<IDbParams> p = null, bool prepare = true)
         {
             return Query1(sql.ToString(), p, prepare);
         }
 
-        public bool Query1(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public bool Query1(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        {
+            this.sql = sql;
+            return Query1(sql.ToString(), p, prepare);
+        }
+
+        public D Query1<D>(DbSql sql, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
+        {
+            this.sql = sql;
+            if (Query1(sql.ToString(), p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+            return default;
+        }
+
+        public D Query1<D>(string cmdtext, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
+        {
+            if (Query1(cmdtext, p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+            return default;
+        }
+
+        public bool Query1(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -123,12 +148,37 @@ namespace Greatbone.Core
             return reader.Read();
         }
 
-        public bool Query(Action<DbContext> p = null, bool prepare = true)
+        public bool Query(Action<IDbParams> p = null, bool prepare = true)
         {
             return Query(sql.ToString(), p, prepare);
         }
 
-        public bool Query(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public bool Query(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        {
+            this.sql = sql;
+            return Query(sql.ToString(), p, prepare);
+        }
+
+        public D[] Query<D>(DbSql sql, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
+        {
+            this.sql = sql;
+            if (Query(sql.ToString(), p, prepare))
+            {
+                return ToArray<D>(proj);
+            }
+            return null;
+        }
+
+        public D[] Query<D>(string cmdtext, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
+        {
+            if (Query(cmdtext, p, prepare))
+            {
+                return ToArray<D>(proj);
+            }
+            return null;
+        }
+
+        public bool Query(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -147,7 +197,13 @@ namespace Greatbone.Core
             return reader.HasRows;
         }
 
-        public async Task<bool> QueryAsync(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public async Task<bool> QueryAsync(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        {
+            this.sql = sql;
+            return await QueryAsync(sql.ToString(), p, prepare);
+        }
+
+        public async Task<bool> QueryAsync(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -202,12 +258,18 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(Action<DbContext> p = null, bool prepare = true)
+        public int Execute(Action<IDbParams> p = null, bool prepare = true)
         {
             return Execute(sql.ToString(), p, prepare);
         }
 
-        public int Execute(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public int Execute(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        {
+            this.sql = sql;
+            return Execute(sql.ToString(), p, prepare);
+        }
+
+        public int Execute(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -224,12 +286,12 @@ namespace Greatbone.Core
             return command.ExecuteNonQuery();
         }
 
-        public async Task<int> ExecuteAsync(Action<DbContext> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(Action<IDbParams> p = null, bool prepare = true)
         {
             return await ExecuteAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<int> ExecuteAsync(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -246,12 +308,18 @@ namespace Greatbone.Core
             return await command.ExecuteNonQueryAsync();
         }
 
-        public object Scalar(Action<DbContext> p = null, bool prepare = true)
+        public object Scalar(Action<IDbParams> p = null, bool prepare = true)
         {
             return Scalar(sql.ToString(), p, prepare);
         }
 
-        public object Scalar(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public object Scalar(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        {
+            this.sql = sql;
+            return Scalar(sql.ToString(), p, prepare);
+        }
+
+        public object Scalar(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -269,12 +337,12 @@ namespace Greatbone.Core
             return res == DBNull.Value ? null : res;
         }
 
-        public async Task<object> ScalarAsync(Action<DbContext> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(Action<IDbParams> p = null, bool prepare = true)
         {
             return await ScalarAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<object> ScalarAsync(string cmdtext, Action<DbContext> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -292,7 +360,7 @@ namespace Greatbone.Core
         }
 
         // TODO
-        public async Task<object> CallAsync(string storedproc, Action<DbContext> p = null, bool prepare = true)
+        public async Task<object> CallAsync(string storedproc, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -1070,7 +1138,7 @@ namespace Greatbone.Core
         //
         // PARAMETERS
 
-        public DbContext PutNull(string name)
+        public IDbParams PutNull(string name)
         {
             if (name == null)
             {
@@ -1080,7 +1148,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, JNumber v)
+        public IDbParams Put(string name, JNumber v)
         {
             if (name == null)
             {
@@ -1093,12 +1161,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, IDataInput v)
+        public IDbParams Put(string name, IDataInput v)
         {
             return this;
         }
 
-        public DbContext Put(string name, bool v)
+        public IDbParams Put(string name, bool v)
         {
             if (name == null)
             {
@@ -1111,7 +1179,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, short v)
+        public IDbParams Put(string name, short v)
         {
             if (name == null)
             {
@@ -1124,7 +1192,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, int v)
+        public IDbParams Put(string name, int v)
         {
             if (name == null)
             {
@@ -1137,7 +1205,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, long v)
+        public IDbParams Put(string name, long v)
         {
             if (name == null)
             {
@@ -1150,7 +1218,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, double v)
+        public IDbParams Put(string name, double v)
         {
             if (name == null)
             {
@@ -1163,7 +1231,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, decimal v)
+        public IDbParams Put(string name, decimal v)
         {
             if (name == null)
             {
@@ -1176,7 +1244,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, DateTime v)
+        public IDbParams Put(string name, DateTime v)
         {
             if (name == null)
             {
@@ -1192,7 +1260,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, string v)
+        public IDbParams Put(string name, string v)
         {
             if (name == null)
             {
@@ -1206,7 +1274,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, ArraySegment<byte> v)
+        public IDbParams Put(string name, ArraySegment<byte> v)
         {
             if (name == null)
             {
@@ -1219,7 +1287,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, JObj v)
+        public IDbParams Put(string name, JObj v)
         {
             if (name == null)
             {
@@ -1242,7 +1310,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, JArr v)
+        public IDbParams Put(string name, JArr v)
         {
             if (name == null)
             {
@@ -1265,7 +1333,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, short[] v)
+        public IDbParams Put(string name, short[] v)
         {
             if (name == null)
             {
@@ -1278,7 +1346,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, int[] v)
+        public IDbParams Put(string name, int[] v)
         {
             if (name == null)
             {
@@ -1291,7 +1359,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, long[] v)
+        public IDbParams Put(string name, long[] v)
         {
             if (name == null)
             {
@@ -1304,7 +1372,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, string[] v)
+        public IDbParams Put(string name, string[] v)
         {
             if (name == null)
             {
@@ -1317,12 +1385,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put(string name, Map<string, string> v)
+        public IDbParams Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public DbContext Put(string name, IData v, short proj = 0x00ff)
+        public IDbParams Put(string name, IData v, short proj = 0x00ff)
         {
             if (name == null)
             {
@@ -1342,7 +1410,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbContext Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
+        public IDbParams Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
         {
             if (name == null)
             {
@@ -1369,96 +1437,95 @@ namespace Greatbone.Core
         // positional
         //
 
-        public DbContext SetNull()
+        public IDbParams SetNull()
         {
             return PutNull(null);
         }
 
-        public DbContext Set(IDataInput v)
+        public IDbParams Set(IDataInput v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(bool v)
+        public IDbParams Set(bool v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(short v)
+        public IDbParams Set(short v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(int v)
+        public IDbParams Set(int v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(long v)
+        public IDbParams Set(long v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(double v)
+        public IDbParams Set(double v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(decimal v)
+        public IDbParams Set(decimal v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(JNumber v)
+        public IDbParams Set(JNumber v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(DateTime v)
+        public IDbParams Set(DateTime v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(string v)
+        public IDbParams Set(string v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(ArraySegment<byte> v)
+        public IDbParams Set(ArraySegment<byte> v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(short[] v)
+        public IDbParams Set(short[] v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(int[] v)
+        public IDbParams Set(int[] v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(long[] v)
+        public IDbParams Set(long[] v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(string[] v)
+        public IDbParams Set(string[] v)
         {
             return Put(null, v);
         }
 
-        public DbContext Set(IData v, short proj = 0x00ff)
+        public IDbParams Set(IData v, short proj = 0x00ff)
         {
             return Put(null, v, proj);
         }
 
-        public DbContext Set<D>(D[] v, short proj = 0x00ff) where D : IData
+        public IDbParams Set<D>(D[] v, short proj = 0x00ff) where D : IData
         {
             return Put(null, v, proj);
         }
-
 
         //
         // EVENTS
