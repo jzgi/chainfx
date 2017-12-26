@@ -9,12 +9,12 @@ namespace Greatbone.Samp
         }
     }
 
-    [User(adm: true)]
+    [Ui("课程"), User(adm: true)]
     public class AdmLessonWork : LessonWork<AdmLessonVarWork>
     {
         public AdmLessonWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<AdmLessonVarWork, string>((obj) => ((Lesson) obj).id);
+            CreateVar<AdmLessonVarWork, string>((obj) => ((Lesson)obj).id);
         }
 
         public void @default(ActionContext ac)

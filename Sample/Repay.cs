@@ -23,6 +23,7 @@ namespace Greatbone.Samp
 
         internal int id;
         internal string shopid;
+        internal DateTime fro;
         internal DateTime till;
         internal int orders;
         internal decimal total;
@@ -35,11 +36,12 @@ namespace Greatbone.Samp
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
+            i.Get(nameof(fro), ref fro);
+            i.Get(nameof(till), ref till);
             i.Get(nameof(orders), ref orders);
             i.Get(nameof(total), ref total);
             i.Get(nameof(cash), ref cash);
             i.Get(nameof(payer), ref payer);
-            i.Get(nameof(till), ref till);
             i.Get(nameof(status), ref status);
             i.Get(nameof(err), ref err);
         }
@@ -48,6 +50,7 @@ namespace Greatbone.Samp
         {
             o.Put(nameof(id), id);
             o.Put(nameof(shopid), shopid);
+            o.Put(nameof(fro), fro);
             o.Put(nameof(till), till);
             o.Put(nameof(orders), orders);
             o.Put(nameof(total), total);

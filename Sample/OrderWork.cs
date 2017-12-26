@@ -35,7 +35,7 @@ namespace Greatbone.Samp
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
-                        h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                        h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
                         h.BOX_(0x42).P(oi.qty, null, oi.unit).TOOL("item", i)._BOX();
                         h.BOX_(0x42);
@@ -84,7 +84,7 @@ namespace Greatbone.Samp
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
-                        h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                        h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.BOX_(0x46).P(oi.name).P(oi.price)._BOX();
                         h.BOX_(0x42).P(oi.qty, null, oi.unit)._BOX();
                         h.BOX_(0x42);

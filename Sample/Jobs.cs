@@ -31,7 +31,7 @@ namespace Greatbone.Samp
 
             Create<AdmKickWork>("kick");
 
-            Create<AdmLessonWork>("slide");
+            Create<AdmLessonWork>("lesson");
         }
 
         public void @default(ActionContext ac)

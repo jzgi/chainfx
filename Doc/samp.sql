@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90505
 File Encoding         : 65001
 
-Date: 2017-12-21 16:28:45
+Date: 2017-12-26 21:01:12
 */
 
 
@@ -35,22 +35,20 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 44
- CACHE 4
- CYCLE;
-SELECT setval('"public"."orders_id_seq"', 44, true);
+ START 81
+ CACHE 4;
+SELECT setval('"public"."orders_id_seq"', 81, true);
 
 -- ----------------------------
--- Sequence structure for repays_id_seq
+-- Sequence structure for repays_id_seq1
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."repays_id_seq";
-CREATE SEQUENCE "public"."repays_id_seq"
+DROP SEQUENCE IF EXISTS "public"."repays_id_seq1";
+CREATE SEQUENCE "public"."repays_id_seq1"
  INCREMENT 1
- MINVALUE 1000
+ MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1293
- CACHE 16;
-SELECT setval('"public"."repays_id_seq"', 1293, true);
+ START 1
+ CACHE 1;
 
 -- ----------------------------
 -- Table structure for cashes
@@ -96,6 +94,20 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
+-- Table structure for lessons
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."lessons";
+CREATE TABLE "public"."lessons" (
+"id" varchar(2) COLLATE "default" NOT NULL,
+"name" varchar(20) COLLATE "default",
+"refid" varchar(20) COLLATE "default",
+"modified" timestamp(6)
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
 -- Table structure for orders
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
@@ -105,9 +117,10 @@ CREATE TABLE "public"."orders" (
 "status" int2,
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "shopname" varchar(10) COLLATE "default",
-"pos" bool DEFAULT false,
+"typ" int2 DEFAULT 0,
 "wx" varchar(28) COLLATE "default",
 "name" varchar(10) COLLATE "default",
+"city" varchar(4) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "items" jsonb,
@@ -131,9 +144,10 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
-"id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
-"shopid" varchar(4) COLLATE "default",
-"till" date,
+"id" int4 DEFAULT nextval('repays_id_seq1'::regclass) NOT NULL,
+"shopid" varchar(4) COLLATE "default" NOT NULL,
+"fro" date NOT NULL,
+"till" date NOT NULL,
 "orders" int4,
 "total" money,
 "cash" money,
@@ -181,33 +195,16 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
--- Table structure for slides
--- ----------------------------
-DROP TABLE IF EXISTS "public"."slides";
-CREATE TABLE "public"."slides" (
-"id" varchar(4) COLLATE "default",
-"lesson" varchar(10) COLLATE "default",
-"title" varchar(30) COLLATE "default",
-"figure" varchar(254) COLLATE "default",
-"text" varchar(254) COLLATE "default",
-"mp3" bytea,
-"modified" date
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
 "wx" varchar(28) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default",
-"tel" varchar(11) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "city" varchar(4) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
+"tel" varchar(11) COLLATE "default",
 "opr" int2 DEFAULT 0,
 "oprat" varchar(4) COLLATE "default",
 "adm" bool DEFAULT false
@@ -221,7 +218,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "cashes"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
-ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
+ALTER SEQUENCE "public"."repays_id_seq1" OWNED BY "repays"."id";
 
 -- ----------------------------
 -- Indexes structure for table cashes
@@ -241,8 +238,8 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("shopid", "name");
 -- ----------------------------
 -- Indexes structure for table orders
 -- ----------------------------
-CREATE INDEX "orders_wxstatus_index" ON "public"."orders" USING btree ("wx", "status");
 CREATE INDEX "orders_statusshopid_index" ON "public"."orders" USING btree ("status", "shopid");
+CREATE INDEX "orders_wxstatus_index" ON "public"."orders" USING btree ("wx", "status");
 
 -- ----------------------------
 -- Primary Key structure for table orders
