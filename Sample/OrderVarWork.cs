@@ -200,7 +200,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("加货"), Tool(ButtonShow, 2), User(OPRMEM)]
+        [Ui("加货"), Tool(ButtonShow, 2), User(OPRSTAFF)]
         public async Task add(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -241,7 +241,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("分派"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("分派"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task assign(ActionContext ac)
         {
             int orderid = ac[this];
@@ -347,7 +347,7 @@ namespace Greatbone.Samp
                     // check personal pos
                     using (var dc = ac.NewDbContext())
                     {
-                        if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND pos", p => p.Set(shopid).Set(prin.wx)))
+                        if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(shopid).Set(prin.wx)))
                         {
                             m.FORM_().CHECKBOX(nameof(mycart), true, "从我的摊点里出货")._FORM();
                         }
@@ -368,7 +368,7 @@ namespace Greatbone.Samp
                         }
                         if (mycart) // deduce my cart loads
                         {
-                            dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2 AND pos", p => p.Set(prin.wx).Set(shopid));
+                            dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2 AND typ = 1", p => p.Set(prin.wx).Set(shopid));
                             dc.Let(out int cartid).Let(out OrderItem[] cart);
                             if (Deduce(cart, o.items))
                             {

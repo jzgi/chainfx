@@ -183,22 +183,9 @@ namespace Greatbone.Samp
                     h.FIELD_("派送").T(o.delivery);
                     if (o.areas != null) h._T("限送").T(o.areas);
                     h._FIELD();
-                    h.FIELD_("计价").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
+                    h.FIELD_("计价").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                     h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                     h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                    h.TAIL();
-                    h._CARD();
-
-                    h.CARD_();
-                    h.CAPTION("盘存");
-                    if (o.articles != null)
-                    {
-                        for (int i = 0; i < o.articles.Length; i++)
-                        {
-                            var sup = o.articles[i];
-                            h.FIELD(sup.name, box: 8).FIELD(sup.qty, box: 2).FIELD(sup.unit, box: 2);
-                        }
-                    }
                     h.TAIL();
                     h._CARD();
 
@@ -281,24 +268,30 @@ namespace Greatbone.Samp
                         h.TEXT(nameof(schedule), schedule, "时间");
                         h.TEXT(nameof(delivery), delivery, "派送");
                         h.SELECT(nameof(areas), areas, City.AreasOf(city), "限送");
-                        h.NUMBER(nameof(min), min, "起送", box: 4).NUMBER(nameof(notch), notch, "满额", box: 4).NUMBER(nameof(off), off, "扣减", box: 4);
+                        h.NUMBER(nameof(min), min, "起订", box: 4).NUMBER(nameof(notch), notch, "满额", box: 4).NUMBER(nameof(off), off, "扣减", box: 4);
                         h._FORM();
                     });
                 }
-                return;
             }
-
-            var f = await ac.ReadAsync<Form>();
-            f.Let(out schedule).Let(out delivery).Let(out areas).Let(out min).Let(out notch).Let(out off);
-            using (var dc = ac.NewDbContext())
+            else
             {
-                dc.Execute("UPDATE shops SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
-                    p => p.Set(schedule).Set(delivery).Set(areas).Set(min).Set(notch).Set(off).Set(shopid));
+                var f = await ac.ReadAsync<Form>();
+                schedule = f[nameof(schedule)];
+                delivery = f[nameof(delivery)];
+                areas = f[nameof(areas)];
+                min = f[nameof(min)];
+                notch = f[nameof(notch)];
+                off = f[nameof(off)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE shops SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
+                        p => p.Set(schedule).Set(delivery).Set(areas).Set(min).Set(notch).Set(off).Set(shopid));
+                }
+                ac.GivePane(200);
             }
-            ac.GivePane(200);
         }
 
-        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
+        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRSTAFF)]
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
@@ -325,7 +318,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("上下班", Group = 1), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("上下班", Group = 1), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task status(ActionContext ac)
         {
             User prin = (User) ac.Principal;
@@ -368,35 +361,6 @@ namespace Greatbone.Samp
                 }
             }
             ac.GivePane(200);
-        }
-
-        [Ui("调整", Group = 2), Tool(ButtonShow, 2), User(OPRMEM)]
-        public async Task adjust(ActionContext ac)
-        {
-            string shopid = ac[this];
-            short status;
-            if (ac.GET)
-            {
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Query1("SELECT articles FROM shops WHERE id = @1", p => p.Set(shopid));
-                        dc.Let(out Article[] articles);
-                        if (articles != null)
-                        {
-                            for (int i = 0; i < articles.Length; i++)
-                            {
-                                var o = articles[i];
-                                h.FIELD(o.name, box: 5).NUMBER(o.name, (short) 0, min: (short) 0, step: (short) 1, box: 5).INPBUTTON("X", "$(this).closest()");
-                            }
-                        }
-                        h.INPBUTTON("+", "");
-                    }
-                    h._FORM();
-                });
-            }
         }
     }
 }

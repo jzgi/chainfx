@@ -63,7 +63,7 @@ namespace Greatbone.Samp
                 var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../?city=").T(sh.city).T("\">❮</a>&nbsp;");
+                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../list?city=").T(sh.city).T("\">❮</a>&nbsp;");
 
                     m.A_DROPDOWN_("网点概况");
                     m.BOX_(0x4c);

@@ -14,7 +14,7 @@ namespace Greatbone.Samp
     }
 
 
-    [Ui("货品"), User(OPRMEM)]
+    [Ui("货品"), User(OPRSTAFF)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkConfig wc) : base(wc)
@@ -38,7 +38,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("新建"), Tool(ButtonShow, 2), User(OPRMEM)]
+        [Ui("新建"), Tool(ButtonShow, 2), User(OPRSTAFF)]
         public async Task @new(ActionContext ac)
         {
             if (ac.GET)
@@ -68,11 +68,64 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRMEM)]
+        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
         public async Task del(ActionContext ac)
         {
             short shopid = ac[-1];
             var f = await ac.ReadAsync<Form>();
+            string[] key = f[nameof(key)];
+            if (key != null)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute(dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key), p => p.Set(shopid), false);
+                }
+            }
+            ac.GiveRedirect();
+        }
+        
+        [Ui("盘存"), Tool(AnchorOpen), User(OPRSTAFF)]
+        public async Task articles(ActionContext ac)
+        {
+            short shopid = ac[-1];
+            var f = await ac.ReadAsync<Form>();
+            
+            if (ac.GET)
+            {
+                ac.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Query1("SELECT articles FROM shops WHERE id = @1", p => p.Set(shopid));
+                        dc.Let(out Article[] articles);
+                        if (articles != null)
+                        {
+                            for (int i = 0; i < articles.Length; i++)
+                            {
+                                var o = articles[i];
+                                h.FIELD(o.name, box: 5).NUMBER(o.name, (short) 0, min: (short) 0, step: (short) 1, box: 5).INPBUTTON("X", "$(this).closest()");
+                            }
+                        }
+                        h.INPBUTTON("+", "");
+                    }
+                    h._FORM();
+                });
+            }
+//            h.CARD_();
+//            h.CAPTION("盘存");
+//            if (o.articles != null)
+//            {
+//                for (int i = 0; i < o.articles.Length; i++)
+//                {
+//                    var sup = o.articles[i];
+//                    h.FIELD(sup.name, box: 8).FIELD(sup.qty, box: 2).FIELD(sup.unit, box: 2);
+//                }
+//            }
+//            h.TAIL();
+//            h._CARD();
+
+
             string[] key = f[nameof(key)];
             if (key != null)
             {

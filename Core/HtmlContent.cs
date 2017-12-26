@@ -223,8 +223,11 @@ namespace Greatbone.Core
 
         public HtmlContent _T(string str)
         {
-            Add("&nbsp;");
-            Add(str);
+            if (str != null)
+            {
+                Add("&nbsp;");
+                Add(str);
+            }
             return this;
         }
 
@@ -1310,7 +1313,7 @@ namespace Greatbone.Core
                 {
                     var work = actionCtx.Work;
                     Add("<div style=\"margin-left: auto\">");
-                    Tools(work, (short) ordinal, null); // negative orderinal as group
+                    Tools(work, (short)ordinal, null); // negative orderinal as group
                     Add("</div>");
                 }
                 else

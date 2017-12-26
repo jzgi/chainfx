@@ -41,12 +41,12 @@ namespace Greatbone.Core
                 }
                 else
                 {
-                    Str txt = new Str();
+                    Str str = new Str();
                     for (int i = 0; i < length; i++)
                     {
-                        txt.Accept(buffer[i]);
+                        str.Accept(buffer[i]);
                     }
-                    return txt;
+                    return str;
                 }
             }
             return null;

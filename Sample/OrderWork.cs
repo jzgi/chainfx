@@ -31,7 +31,7 @@ namespace Greatbone.Samp
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("网点: ").T(o.shopname)._CAPTION();
-                    h.FIELD_("收货", box: 10).T(o.city)._T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr")._FIELD();
+                    h.FIELD_("收货", box: 0x4a).T(o.city)._T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr")._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
@@ -42,7 +42,7 @@ namespace Greatbone.Samp
                         if (o.typ == POS) h.P(oi.load, sign: oi.unit);
                         h._BOX();
                     }
-                    h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
+                    h.FIELD_(box: 8).T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                     h.FIELD(o.total, "总计", sign: "¥", box: 4);
                     h.TAIL(o.Err(), false);
                 }, false, 3);
@@ -111,7 +111,7 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND pos", p => p.Set(shopid));
+                dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("#").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
@@ -128,7 +128,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("新建"), Tool(ButtonConfirm), User(OPRMEM)]
+        [Ui("新建"), Tool(ButtonConfirm), User(OPRSTAFF)]
         public void @new(ActionContext ac)
         {
             string shopid = ac[-1];
@@ -154,7 +154,7 @@ namespace Greatbone.Samp
             ac.GiveRedirect();
         }
 
-        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRMEM)]
+        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
         public async Task del(ActionContext ac, int page)
         {
             string shopid = ac[-1];

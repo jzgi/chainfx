@@ -10,13 +10,61 @@ using static Greatbone.Samp.WeiXinUtility;
 namespace Greatbone.Samp
 {
     /// <summary>
+    /// A before filter that ensures city is resolved and given in the URL.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    public class CityAttribute : Attribute, IBefore
+    {
+        public bool Do(ActionContext ac)
+        {
+            string city = ac.Query[nameof(city)];
+            if (city == null) // absent
+            {
+                User prin = (User) ac.Principal;
+                if (prin?.city != null) // use those in principal
+                {
+                    ac.AddParam(nameof(prin.city), prin.city);
+                    return true;
+                }
+
+                // give out a geolocation page
+                //
+                HtmlContent h = new HtmlContent(ac, true);
+                // geolocator page
+                h.T("<html><head><script>");
+                //                h.T("var cities = ").JSON(City.All).T(";");
+                h.T("var city = cities[0].name;");
+                h.T("navigator.geolocation.getCurrentPosition(function(p) {");
+                h.T("var x=p.coords.longitude; var y=p.coords.latitude;");
+                h.T("for (var i = 0; i < city.length; i++) {");
+                h.T("var c = cities[i];");
+                h.T("if (c.x1 < x && x < c.x2 && c.y1 < y && y < c.y2) {");
+                h.T("city=c.name;");
+                h.T("break;");
+                h.T("}");
+                h.T("}");
+                h.T("window.location.href = '/shop/?city=' + city;");
+                h.T("},");
+                h.T("function(e) {");
+                h.T("window.location.href = '/shop/?city=' + city;");
+                h.T("}, {enableHighAccuracy: true,timeout: 1000,maximumAge: 0}");
+                h.T(")");
+                h.T("</script></head></html>");
+                ac.Give(200, h);
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /// <summary>
     /// The sample service includes the gospel and the health provision.
     /// </summary>
     public class SampService : Service<User>, IAuthenticateAsync
     {
         public SampService(ServiceConfig cfg) : base(cfg)
         {
-            Create<PubShopWork>("shop"); // shopping
+            CreateVar<PubShopVarWork, string>(obj => ((Shop) obj).id); // subshop
 
             Create<MyWork>("my"); // personal
 
@@ -144,43 +192,64 @@ namespace Greatbone.Samp
             }
         }
 
-        //
-        // BUSINESS
-
+        /// <summary>
+        /// The home page that lists gospel lessons.
+        /// </summary>
         public void @default(ActionContext ac)
         {
-            string lang = ac.Query[nameof(lang)];
-            Slide[] slides = null;
-            using (var dc = ac.NewDbContext())
+            ac.GivePage(200, m =>
             {
-                if (dc.Query("SELECT * FROM slides"))
+                using (var dc = ac.NewDbContext())
                 {
-                    slides = dc.ToArray<Slide>();
-                }
-            }
-            ac.GivePage(200, h =>
-            {
-                h.T("<header class=\"top-bar\">");
-                h.T("<div class=\"top-bar-title\">");
-                h.T(lang == "en" ? "The Grandest Truth" : "最宏大的真相");
-                h.T("</div>");
-                h.T("<div class=\"top-bar-right\">");
-                h.T("</div>");
-                h.T("</header>");
-
-                h.A("PAYNOTIF", "paynotify");
-
-                if (slides != null)
-                {
-                    for (int i = 0; i < slides.Length; i++)
+                    var lessons = dc.Query<Lesson>("SELECT * FROM lessons");
+                    for (int i = 0; i < lessons?.Length; i++)
                     {
-                        var o = slides[i];
-                        h.T("<div class=\"card\">");
-                        h.T(o.text);
-                        h.T("</div>");
+                        var lesson = lessons[i];
+                        m.T("<div class=\"card\">");
+                        m.T("<embed src=\"http://player.youku.com/player.php/sid/").T(lesson.refid).T("/v.swf\" allowFullScreen=\"true\" quality=\"high\" width=\"480\" height=\"400\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
+                        m.T("</div>");
                     }
                 }
             });
+        }
+
+        /// <summary>
+        /// Returns a home page pertaining to a related city
+        /// </summary>
+//        [City]
+        [User] // we are forced to put check here because  weixin auth does't work in iframe
+        public void list(ActionContext ac)
+        {
+            string city = ac.Query[nameof(city)];
+            if (string.IsNullOrEmpty(city))
+            {
+                city = "南昌";
+            }
+            ac.GiveDoc(200, m =>
+            {
+                m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
+
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE city = @1 AND status > 0 ORDER BY id");
+                    dc.Query(p => p.Set(city));
+                    m.BOARDVIEW(dc.ToArray<Shop>(), (h, o) =>
+                    {
+                        h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
+                        h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
+                        h.BOX_(0x48);
+                        h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                        h.P_("派送").T(o.delivery);
+                        if (o.areas != null) h.SEP().T("限送").T(o.areas);
+                        h._P();
+                        h.P(o.schedule, "营业");
+                        if (o.off > 0) h.P_("促销").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._P();
+                        h._BOX();
+                        h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
+                        h.TAIL();
+                    });
+                }
+            }, true, 60 * 5, "粗狼达人 - " + city);
         }
 
         /// <summary>

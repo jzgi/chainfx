@@ -9,7 +9,7 @@ namespace Greatbone.Samp
 {
     public abstract class ItemVarWork : Work
     {
-        const int PIC_AGE = 60 * 60;
+        const int PICAGE = 60 * 60;
 
         protected ItemVarWork(WorkConfig cfg) : base(cfg)
         {
@@ -25,9 +25,9 @@ namespace Greatbone.Samp
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, PIC_AGE);
+                    else ac.Give(200, new StaticContent(byteas), true, PICAGE);
                 }
-                else ac.Give(404, @public: true, maxage: PIC_AGE); // not found
+                else ac.Give(404, @public: true, maxage: PICAGE); // not found
             }
         }
 
@@ -41,9 +41,9 @@ namespace Greatbone.Samp
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, PIC_AGE);
+                    else ac.Give(200, new StaticContent(byteas), true, PICAGE);
                 }
-                else ac.Give(404, @public: true, maxage: PIC_AGE); // not found
+                else ac.Give(404, @public: true, maxage: PICAGE); // not found
             }
         }
     }
@@ -174,7 +174,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("基本"), Tool(ButtonShow, 2), User(OPRMEM)]
+        [Ui("基本"), Tool(ButtonShow, 2), User(OPRSTAFF)]
         public async Task basic(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -213,7 +213,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop), User(OPRMEM)]
+        [Ui("照片"), Tool(ButtonCrop), User(OPRSTAFF)]
         public new async Task icon(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -246,7 +246,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMEM)]
+        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRSTAFF)]
         public new async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[-2];
@@ -274,7 +274,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("剩量"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("剩量"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task max(ActionContext ac)
         {
             string shopid = ac[-2];
