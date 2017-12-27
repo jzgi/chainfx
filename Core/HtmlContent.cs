@@ -861,7 +861,7 @@ namespace Greatbone.Core
 
         public HtmlContent QRCODE(string v = null, byte box = 0x0c)
         {
-            FIELD_(null, box);
+            BOX_(box, false);
             Add("<div>");
             Add("<script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
@@ -870,7 +870,7 @@ namespace Greatbone.Core
             Add("\");");
             Add("</script>");
             Add("</div>");
-            _FIELD(box);
+            _BOX();
             return this;
         }
 
@@ -1313,7 +1313,7 @@ namespace Greatbone.Core
                 {
                     var work = actionCtx.Work;
                     Add("<div style=\"margin-left: auto\">");
-                    Tools(work, (short)ordinal, null); // negative orderinal as group
+                    Tools(work, (short) ordinal, null); // negative orderinal as group
                     Add("</div>");
                 }
                 else

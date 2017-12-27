@@ -134,18 +134,17 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query1("SELECT name, min, notch, off FROM shops WHERE id = @1", p => p.Set(shopid));
-                dc.Let(out string shopname).Let(out short min).Let(out short notch).Let(out short off);
+                var shop = ((SampService) Service).ShopRoll[shopid];
                 var o = new Order
                 {
                     rev = 1,
                     status = 0,
                     shopid = shopid,
-                    shopname = shopname,
+                    shopname = shop.name,
                     typ = POS,
-                    min = min,
-                    notch = notch,
-                    off = off,
+                    min = shop.min,
+                    notch = shop.notch,
+                    off = shop.off,
                     created = DateTime.Now
                 };
                 const short proj = -1 ^ KEY ^ Order.LATER;
@@ -213,22 +212,18 @@ namespace Greatbone.Samp
             {
                 ac.GivePane(200, m =>
                 {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
-                        dc.Let(out string[] areas);
-                        m.FORM_();
-                        m.RADIOSET<string>(nameof(filter), filter, areas);
-                        m._FORM();
-                    }
+                    var shop = ((SampService) Service).ShopRoll[shopid];
+                    m.FORM_();
+                    m.RADIOSET<string>(nameof(filter), filter, shop.areas);
+                    m._FORM();
                 });
                 return;
             }
-            using (var dc = ac.NewDbContext())
+            ac.GivePage(200, main =>
             {
-                dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
-                ac.GivePage(200, main =>
+                using (var dc = ac.NewDbContext())
                 {
+                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                     main.TOOLBAR(title: filter);
                     main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
@@ -242,8 +237,8 @@ namespace Greatbone.Samp
                         h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
                         h.TAIL(o.Err(), false);
                     });
-                }, false, 3);
-            }
+                }
+            }, false, 3);
         }
 
         static readonly Map<string, string> MSGS = new Map<string, string>

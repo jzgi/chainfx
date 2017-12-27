@@ -82,13 +82,12 @@ namespace Greatbone.Samp
             }
             ac.GiveRedirect();
         }
-        
+
         [Ui("盘存"), Tool(AnchorOpen), User(OPRSTAFF)]
         public async Task articles(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             var f = await ac.ReadAsync<Form>();
-            
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -96,13 +95,12 @@ namespace Greatbone.Samp
                     h.FORM_();
                     using (var dc = ac.NewDbContext())
                     {
-                        dc.Query1("SELECT articles FROM shops WHERE id = @1", p => p.Set(shopid));
-                        dc.Let(out Article[] articles);
-                        if (articles != null)
+                        var shop = ((SampService) Service).ShopRoll[shopid];
+                        if (shop.articles != null)
                         {
-                            for (int i = 0; i < articles.Length; i++)
+                            for (int i = 0; i < shop.articles.Length; i++)
                             {
-                                var o = articles[i];
+                                var o = shop.articles[i];
                                 h.FIELD(o.name, box: 5).NUMBER(o.name, (short) 0, min: (short) 0, step: (short) 1, box: 5).INPBUTTON("X", "$(this).closest()");
                             }
                         }

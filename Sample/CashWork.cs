@@ -70,21 +70,20 @@ namespace Greatbone.Samp
         public void monthly(ActionContext ac)
         {
             string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            ac.GivePane(200, m =>
             {
-                ac.GivePane(200, m =>
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Query("SELECT to_char(date, 'YYYY-MM') as yrmon, txn, SUM(received), SUM(paid) FROM cashes WHERE shopid = @1 GROUP BY yrmon, txn ORDER BY yrmon DESC", p => p.Set(shopid));
+                    while (dc.Next())
                     {
-                        dc.Query("SELECT to_char(date, 'YYYY-MM') as yrmon, txn, SUM(received), SUM(paid) FROM cashes WHERE shopid = @1 GROUP BY yrmon, txn ORDER BY yrmon DESC", p => p.Set(shopid));
-                        while (dc.Next())
-                        {
-                            dc.Let(out string yrmon).Let(out short txn).Let(out decimal recieved).Let(out decimal paid);
-                            m.FIELDSET_(yrmon);
+                        dc.Let(out string yrmon).Let(out short txn).Let(out decimal recieved).Let(out decimal paid);
+                        m.FIELDSET_(yrmon);
 
-                            m._FIELDSET();
-                        }
-                    },
-                    false, 3);
-            }
+                        m._FIELDSET();
+                    }
+                }
+            }, false, 3);
         }
     }
 }

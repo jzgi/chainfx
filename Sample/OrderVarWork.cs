@@ -37,9 +37,8 @@ namespace Greatbone.Samp
                         dc.Query1("SELECT shopid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                         dc.Let(out string oshopid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
                         h.FIELDSET_("收货地址");
-                        dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(oshopid));
-                        dc.Let(out string[] areas);
-                        if (areas != null) // limited delivery areas
+                        var shop = ((SampService) Service).ShopRoll[oshopid];
+                        if (shop.areas != null) // limited delivery areas
                         {
                             ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel); // by select refresh
                             if (a == null) // init from order
@@ -47,13 +46,13 @@ namespace Greatbone.Samp
                                 name = oname;
                                 city = ocity;
                                 (a, b, c) = oaddr.ToTriple(SEPCHAR);
-                                a = City.ResolveIn(a, areas);
+                                a = City.ResolveIn(a, shop.areas);
                                 tel = otel;
                             }
                             var sites = City.SitesOf(city, a);
                             b = City.ResolveIn(b, sites);
                             h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                            h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
+                            h.SELECT(nameof(a), a, shop.areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
                             h.TEL(nameof(tel), tel, "您的随身电话", required: true);
                         }
                         else // free delivery
@@ -80,14 +79,12 @@ namespace Greatbone.Samp
                 name = f[nameof(name)];
                 city = f[nameof(city)];
                 a = f[nameof(a)];
-                b = f[nameof(b)];
+                b = f[nameof(b)]; // can be null indicating free delivery
                 c = f[nameof(c)];
                 tel = f[nameof(tel)];
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT areas FROM shops WHERE id = (SELECT shopid FROM orders WHERE id = @1)", p => p.Set(orderid));
-                    dc.Let(out string[] areas);
-                    string addr = areas == null ? a : a + SEPCHAR + b + SEPCHAR + c;
+                    string addr = b == null ? a : a + SEPCHAR + b + SEPCHAR + c;
                     dc.Execute("UPDATE orders SET name = @1, city = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(name).Set(city).Set(addr).Set(tel).Set(orderid));
                 }
                 ac.GivePane(200);
@@ -110,8 +107,8 @@ namespace Greatbone.Samp
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("修改数量");
-                        h.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                        h.FIELDSET_("购买数量");
+                        h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                         h.NUMBER(nameof(oi.qty), oi.qty, min: (short) 0, max: stock, step: step, box: 8);
                         h.FIELD(oi.unit, box: 2);
                         h._FIELDSET();
@@ -265,11 +262,10 @@ namespace Greatbone.Samp
                         }
                         m._SELECT();
                         // input addr
-                        dc.Query1("SELECT areas FROM shops WHERE id = @1", p => p.Set(shopid));
-                        dc.Let(out string[] areas);
-                        if (areas != null)
+                        var shop = ((SampService) Service).ShopRoll[shopid];
+                        if (shop.areas != null)
                         {
-                            m.SELECT(nameof(addr), addr, areas, "区域");
+                            m.SELECT(nameof(addr), addr, shop.areas, "区域");
                         }
                         else
                         {

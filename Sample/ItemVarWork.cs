@@ -62,33 +62,32 @@ namespace Greatbone.Samp
             string itemname = ac[this];
             string name, city, a, b, c, tel; // form values
             short num;
+            var shop = ((SampService) Service).ShopRoll[shopid];
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                ac.GivePane(200, h =>
                 {
-                    ac.GivePane(200, h =>
+                    using (var dc = ac.NewDbContext())
                     {
                         h.FORM_();
                         if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // new
                         {
-                            dc.Query1("SELECT city, areas FROM shops WHERE id = @1", p => p.Set(shopid));
-                            dc.Let(out string shopcity).Let(out string[] areas);
                             h.FIELDSET_("收货地址");
-                            if (areas != null) // dedicated delivery areas
+                            if (shop.areas != null) // dedicated delivery areas
                             {
                                 ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel);
                                 if (a == null) // init from principal
                                 {
                                     name = prin.name;
-                                    city = shopcity;
+                                    city = shop.city;
                                     (a, b, c) = prin.addr.ToTriple(SEPCHAR);
-                                    a = City.ResolveIn(a, areas);
+                                    a = City.ResolveIn(a, shop.areas);
                                     tel = prin.tel;
                                 }
                                 var sites = City.SitesOf(city, a);
                                 b = City.ResolveIn(b, sites);
                                 h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                                h.SELECT(nameof(a), a, areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
+                                h.SELECT(nameof(a), a, shop.areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
                                 h.TEL(nameof(tel), tel, "您的随身电话", required: true);
                             }
                             else // free delivery
@@ -108,62 +107,62 @@ namespace Greatbone.Samp
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        var itm = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
-                        h.ICON("icon", box: 3).NUMBER(nameof(num), itm.min, min: itm.min, step: itm.step, box: 7).FIELD(itm.unit, box: 2);
+                        var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
+                        h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
                         h._FORM();
-                    });
-                }
-                return;
+                    }
+                });
             }
-            // POST
-            using (var dc = ac.NewDbContext())
+            else // POST
             {
-                dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
-                dc.Let(out string unit).Let(out decimal price);
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
+                    dc.Let(out string unit).Let(out decimal price);
 
-                if (dc.Query1("SELECT * FROM orders WHERE  wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx)))
-                {
-                    var o = dc.ToObject<Order>();
-                    (await ac.ReadAsync<Form>()).Let(out num);
-                    o.AddItem(itemname, unit, price, num);
-                    o.TotalUp();
-                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
-                }
-                else // create new order
-                {
-                    var f = await ac.ReadAsync<Form>();
-                    name = f[nameof(name)];
-                    city = f[nameof(city)];
-                    a = f[nameof(a)];
-                    b = f[nameof(b)];
-                    c = f[nameof(c)];
-                    tel = f[nameof(tel)];
-                    num = f[nameof(num)];
-                    var shop = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1"), p => p.Set(shopid).Set(prin.wx));
-                    var o = new Order
+                    if (dc.Query1("SELECT * FROM orders WHERE  wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add
                     {
-                        rev = 1,
-                        status = 0,
-                        shopid = shopid,
-                        shopname = shop.name,
-                        typ = 0, // ordinal order
-                        wx = prin.wx,
-                        name = name,
-                        city = city,
-                        addr = shop.areas == null ? a : a + SEPCHAR + b + SEPCHAR + c, // concatenate addr if needed
-                        tel = tel,
-                        min = shop.min,
-                        notch = shop.notch,
-                        off = shop.off,
-                        created = DateTime.Now
-                    };
-                    o.AddItem(itemname, unit, price, num);
-                    o.TotalUp();
-                    const short proj = -1 ^ Order.KEY ^ Order.LATER;
-                    dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
+                        var o = dc.ToObject<Order>();
+                        (await ac.ReadAsync<Form>()).Let(out num);
+                        o.AddItem(itemname, unit, price, num);
+                        o.TotalUp();
+                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                    }
+                    else // create new order
+                    {
+                        var f = await ac.ReadAsync<Form>();
+                        name = f[nameof(name)];
+                        city = f[nameof(city)];
+                        a = f[nameof(a)];
+                        b = f[nameof(b)];
+                        c = f[nameof(c)];
+                        tel = f[nameof(tel)];
+                        num = f[nameof(num)];
+                        var o = new Order
+                        {
+                            rev = 1,
+                            status = 0,
+                            shopid = shopid,
+                            shopname = shop.name,
+                            typ = 0, // ordinal order
+                            wx = prin.wx,
+                            name = name,
+                            city = city,
+                            addr = shop.areas == null ? a : a + SEPCHAR + b + SEPCHAR + c, // concatenate addr if needed
+                            tel = tel,
+                            min = shop.min,
+                            notch = shop.notch,
+                            off = shop.off,
+                            created = DateTime.Now
+                        };
+                        o.AddItem(itemname, unit, price, num);
+                        o.TotalUp();
+                        const short proj = -1 ^ Order.KEY ^ Order.LATER;
+                        dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
+                    }
+                    ac.GivePane(200);
                 }
-                ac.GivePane(200);
             }
         }
     }

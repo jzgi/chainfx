@@ -327,17 +327,16 @@ namespace Greatbone.Samp
             User prin = (User) ac.Principal;
             string shopid = ac[this];
             var o = ((SampService) Service).ShopRoll[shopid];
+            bool custsvc;
             if (ac.GET)
             {
+                custsvc = o.oprwx == prin.wx;
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
                     h.FIELDSET_("设置网点营业状态").SELECT(nameof(o.status), o.status, Statuses, "营业状态")._FIELDSET();
-                    bool on = o.oprwx == prin.wx;
-                    string hint = on ? "我确定客服下线。这将会置空客服电话号码，也不接收客服通知" : "我确定客服上线，个人电话号码显示为客服电话，并且接收客服通知";
-                    const bool yes = false;
-                    h.FIELDSET_(on ? "我客服下线" : "我客服上线");
-                    h.CHECKBOX(nameof(yes), yes, hint, required: true);
+                    h.FIELDSET_("客服设置");
+                    h.CHECKBOX(nameof(custsvc), custsvc, "我要作为上线客服");
                     h._FIELDSET();
                     h._FORM();
                 });
@@ -346,16 +345,23 @@ namespace Greatbone.Samp
             {
                 var f = await ac.ReadAsync<Form>();
                 o.status = f[nameof(o.status)];
+                custsvc = f[nameof(custsvc)];
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(o.status).Set(shopid));
-                    if (o.oprwx == prin.wx) // if already on duty
+                    if (custsvc)
                     {
-                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                        o.oprwx = prin.wx;
+                        o.oprtel = prin.tel;
+                        o.oprname = prin.name;
                     }
                     else
                     {
-                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                        o.oprwx = null;
+                        o.oprtel = null;
+                        o.oprname = null;
                     }
                 }
                 ac.GivePane(200);
