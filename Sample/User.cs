@@ -18,7 +18,7 @@ namespace Greatbone.Samp
 
         public static readonly Map<short, string> Oprs = new Map<short, string>
         {
-            {OPR, "基本"},
+            {OPR, "客串"},
             {OPRSTAFF, "成员"},
             {OPRMGR, "经理"},
         };

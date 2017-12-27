@@ -2,8 +2,20 @@
 
 namespace Greatbone.Samp
 {
+    /// <summary>
+    /// For easy sharing code between works.
+    /// </summary>
+    public interface IShopVar
+    {
+    }
+
     public class Program : ServiceUtility
     {
+        public const string NETADDR = "http://144000.tv";
+
+        // an invisible/unprintable char
+        public const char SEPCHAR = '\u200f';
+
         /// <summary>
         /// The application entry point.
         /// </summary>
@@ -14,7 +26,7 @@ namespace Greatbone.Samp
             WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
 
             // the only www service
-            TryCreate<SampService>(
+             TryCreate<SampService>(
                 new ServiceConfig("samp")
                 {
                     addrs = new[] {"http://localhost:8080"},

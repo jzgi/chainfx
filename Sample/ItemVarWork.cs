@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Samp.SampUtility;
+using static Greatbone.Samp.Program;
 using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp

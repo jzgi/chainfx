@@ -439,18 +439,16 @@ namespace Greatbone.Core
 
         public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
-            Map<K, D> coll = new Map<K, D>();
+            Map<K, D> coll = new Map<K, D>(32);
             while (Next())
             {
                 D obj = new D();
                 obj.Read(this, proj);
-
                 // add shard name if any
                 if (obj is IShardable sharded)
                 {
                     sharded.Shard = service.Shard;
                 }
-
                 K key = keyer(obj);
                 coll.Add(key, obj);
             }

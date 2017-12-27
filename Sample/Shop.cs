@@ -1,19 +1,13 @@
-﻿using Greatbone.Core;
+﻿using System;
+using Greatbone.Core;
 
 namespace Greatbone.Samp
 {
     public class Shop : IData
     {
-        public static Map<string, Shop> All;
-
-        public static Shop[] ShopsOf(string city)
-        {
-            return null;
-        }
-
         public static readonly Shop Empty = new Shop();
 
-        public const short ADM = 3, ID = 1, NORM = 4, LATER = 8;
+        public const short ADM = 3, ID = 1, NORM = 4, LATER = 8, EXTRA = 0x0100;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -42,6 +36,8 @@ namespace Greatbone.Samp
         internal string oprname;
         internal Article[] articles;
         internal short status;
+
+        internal ArraySegment<byte> icon, img1, img2, img3, img4;
 
         public void Read(IDataInput i, short proj = 0x00ff)
         {
@@ -73,6 +69,14 @@ namespace Greatbone.Samp
                 i.Get(nameof(oprtel), ref oprtel);
                 i.Get(nameof(oprname), ref oprname);
                 i.Get(nameof(status), ref status);
+            }
+            if ((proj & EXTRA) == EXTRA)
+            {
+                i.Get(nameof(icon), ref icon);
+                i.Get(nameof(img1), ref img1);
+                i.Get(nameof(img2), ref img2);
+                i.Get(nameof(img3), ref img3);
+                i.Get(nameof(img4), ref img4);
             }
         }
 
@@ -106,6 +110,14 @@ namespace Greatbone.Samp
                 o.Put(nameof(oprtel), oprtel);
                 o.Put(nameof(oprname), oprname);
                 o.Put(nameof(status), status);
+            }
+            if ((proj & EXTRA) == EXTRA)
+            {
+                o.Put(nameof(icon), icon);
+                o.Put(nameof(img1), img1);
+                o.Put(nameof(img2), img2);
+                o.Put(nameof(img3), img3);
+                o.Put(nameof(img4), img4);
             }
         }
     }

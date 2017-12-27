@@ -172,52 +172,49 @@ namespace Greatbone.Samp
             ac.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                using (var dc = ac.NewDbContext())
-                {
-                    var o = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1"), p => p.Set(shopid));
-                    h.BOARDVIEW_();
+                var o = ((SampService) Service).ShopRoll[shopid];
+                h.BOARDVIEW_();
 
-                    h.CARD_();
-                    h.CAPTION(o.name, Statuses[o.status], o.status == 2);
-                    h.FIELD(o.schedule, "时间");
-                    h.FIELD_("派送").T(o.delivery);
-                    if (o.areas != null) h._T("限送").T(o.areas);
-                    h._FIELD();
-                    h.FIELD_("计价").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
-                    h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-                    h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                    h.TAIL();
-                    h._CARD();
+                h.CARD_();
+                h.CAPTION(o.name, Statuses[o.status], o.status == 2);
+                h.FIELD(o.schedule, "时间");
+                h.FIELD_("派送").T(o.delivery);
+                if (o.areas != null) h._T("限送").T(o.areas);
+                h._FIELD();
+                h.FIELD_("计价").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
+                h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
+                h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
+                h.TAIL();
+                h._CARD();
 
-                    h._BOARDVIEW();
-                }
+                h._BOARDVIEW();
             });
         }
 
         [Ui("人员"), Tool(ButtonOpen, 2), User(OPRMGR)]
-        public async Task access(ActionContext ac, int cmd)
+        public async Task acl(ActionContext ac, int cmd)
         {
             string shopid = ac[this];
+            string wx;
             string tel = null;
             short opr = 0;
-            var f = await ac.ReadAsync<Form>();
-            if (f != null)
+            if (cmd == 1) // remove
             {
+                var f = await ac.ReadAsync<Form>();
+                wx = f[nameof(wx)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE users SET opr = 0, oprat = NULL WHERE wx = @1", p => p.Set(wx));
+                }
+            }
+            else if (cmd == 2) // add
+            {
+                var f = await ac.ReadAsync<Form>();
                 tel = f[nameof(tel)];
                 opr = f[nameof(opr)];
-                if (cmd == 1) // remove
+                using (var dc = ac.NewDbContext())
                 {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET opr = 0, oprat = NULL WHERE tel = @1", p => p.Set(tel));
-                    }
-                }
-                else if (cmd == 2) // add
-                {
-                    using (var dc = ac.NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(shopid).Set(tel));
-                    }
+                    dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(shopid).Set(tel)); // may add multiple
                 }
             }
             ac.GivePane(200, m =>
@@ -226,23 +223,23 @@ namespace Greatbone.Samp
                 m.FIELDSET_("现有人员");
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
+                    if (dc.Query("SELECT wx, name, tel, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
                     {
                         m.T("<div>");
                         while (dc.Next())
                         {
-                            dc.Let(out string name).Let(out tel).Let(out opr);
-                            m.RADIO(nameof(tel), tel, label: tel + ' ' + name + ' ' + Oprs[opr]);
+                            dc.Let(out wx).Let(out string uname).Let(out string utel).Let(out short uopr);
+                            m.RADIO(nameof(wx), wx, label: utel + ' ' + uname + ' ' + Oprs[uopr]);
                         }
                         m.T("</div>");
-                        m.BUTTON(nameof(access), 1, "删除");
+                        m.BUTTON(nameof(acl), 1, "删除");
                     }
                 }
                 m._FIELDSET();
 
                 m.FIELDSET_("添加人员");
                 m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, box: 8).SELECT(nameof(opr), opr, Oprs, box: 4);
-                m.BUTTON(nameof(access), 2, "添加");
+                m.BUTTON(nameof(acl), 2, "添加");
                 m._FIELDSET();
                 m._FORM();
             });
@@ -252,40 +249,32 @@ namespace Greatbone.Samp
         public async Task sets(ActionContext ac)
         {
             string shopid = ac[this];
-            string schedule;
-            string delivery;
-            string[] areas;
-            decimal min, notch, off;
+            var o = ((SampService) Service).ShopRoll[shopid];
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                ac.GivePane(200, h =>
                 {
-                    dc.Query1("SELECT city, schedule, delivery, areas, min, notch, off FROM shops WHERE id = @1", p => p.Set(shopid));
-                    dc.Let(out string city).Let(out schedule).Let(out delivery).Let(out areas).Let(out min).Let(out notch).Let(out off);
-                    ac.GivePane(200, h =>
-                    {
-                        h.FORM_();
-                        h.TEXT(nameof(schedule), schedule, "时间");
-                        h.TEXT(nameof(delivery), delivery, "派送");
-                        h.SELECT(nameof(areas), areas, City.AreasOf(city), "限送");
-                        h.NUMBER(nameof(min), min, "起订", box: 4).NUMBER(nameof(notch), notch, "满额", box: 4).NUMBER(nameof(off), off, "扣减", box: 4);
-                        h._FORM();
-                    });
-                }
+                    h.FORM_();
+                    h.TEXT(nameof(o.schedule), o.schedule, "时间");
+                    h.TEXT(nameof(o.delivery), o.delivery, "派送");
+                    h.SELECT(nameof(o.areas), o.areas, City.AreasOf(o.city), "限送");
+                    h.NUMBER(nameof(o.min), o.min, "起订", box: 4).NUMBER(nameof(o.notch), o.notch, "满额", box: 4).NUMBER(nameof(o.off), o.off, "扣减", box: 4);
+                    h._FORM();
+                });
             }
             else
             {
                 var f = await ac.ReadAsync<Form>();
-                schedule = f[nameof(schedule)];
-                delivery = f[nameof(delivery)];
-                areas = f[nameof(areas)];
-                min = f[nameof(min)];
-                notch = f[nameof(notch)];
-                off = f[nameof(off)];
+                o.schedule = f[nameof(o.schedule)];
+                o.delivery = f[nameof(o.delivery)];
+                o.areas = f[nameof(o.areas)];
+                o.min = f[nameof(o.min)];
+                o.notch = f[nameof(o.notch)];
+                o.off = f[nameof(o.off)];
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
-                        p => p.Set(schedule).Set(delivery).Set(areas).Set(min).Set(notch).Set(off).Set(shopid));
+                        p => p.Set(o.schedule).Set(o.delivery).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(shopid));
                 }
                 ac.GivePane(200);
             }
@@ -295,27 +284,41 @@ namespace Greatbone.Samp
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
+            var o = ((SampService) Service).ShopRoll[shopid];
             if (ac.GET)
             {
+                var byteas =
+                    ordinal == 1 ? o.img1 :
+                    ordinal == 2 ? o.img2 :
+                    ordinal == 3 ? o.img3 : o.img4;
+                if (byteas.Count == 0) ac.Give(204); // no content 
+                else ac.Give(200, new StaticContent(byteas), true, 60 * 15);
+            }
+            else
+            {
+                var f = await ac.ReadAsync<Form>();
+                ArraySegment<byte> jpeg = f[nameof(jpeg)];
                 using (var dc = ac.NewDbContext())
                 {
-                    if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
+                    dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
+                    switch (ordinal)
                     {
-                        dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content 
-                        else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
+                        case 1:
+                            o.img1 = jpeg;
+                            break;
+                        case 2:
+                            o.img2 = jpeg;
+                            break;
+                        case 3:
+                            o.img3 = jpeg;
+                            break;
+                        case 4:
+                            o.img4 = jpeg;
+                            break;
                     }
-                    else ac.Give(404, @public: true, maxage: 60 * 5); // not found
                 }
-                return;
+                ac.Give(200); // ok
             }
-            var f = await ac.ReadAsync<Form>();
-            ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
-            }
-            ac.Give(200); // ok
         }
 
         [Ui("上下班", Group = 1), Tool(ButtonShow), User(OPRSTAFF)]
@@ -323,44 +326,40 @@ namespace Greatbone.Samp
         {
             User prin = (User) ac.Principal;
             string shopid = ac[this];
-            short status;
+            var o = ((SampService) Service).ShopRoll[shopid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        status = (short) dc.Scalar("SELECT status FROM shops WHERE id = @1", p => p.Set(shopid));
-                        h.FIELDSET_("设置网点营业状态").SELECT(nameof(status), status, Statuses, "营业状态")._FIELDSET();
-
-                        bool on = dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx));
-                        string hint = on ? "我确定客服下线。这将会置空客服电话号码，也不接收客服通知" : "我确定客服上线，个人电话号码显示为客服电话，并且接收客服通知";
-                        const bool yes = false;
-                        h.FIELDSET_(on ? "我客服下线" : "我客服上线");
-                        h.CHECKBOX(nameof(yes), yes, hint, required: true);
-                        h._FIELDSET();
-                    }
+                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(o.status), o.status, Statuses, "营业状态")._FIELDSET();
+                    bool on = o.oprwx == prin.wx;
+                    string hint = on ? "我确定客服下线。这将会置空客服电话号码，也不接收客服通知" : "我确定客服上线，个人电话号码显示为客服电话，并且接收客服通知";
+                    const bool yes = false;
+                    h.FIELDSET_(on ? "我客服下线" : "我客服上线");
+                    h.CHECKBOX(nameof(yes), yes, hint, required: true);
+                    h._FIELDSET();
                     h._FORM();
                 });
-                return;
             }
-
-            var f = await ac.ReadAsync<Form>();
-            status = f[nameof(status)];
-            using (var dc = ac.NewDbContext())
+            else
             {
-                dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(status).Set(shopid));
-                if (dc.Query1("SELECT 1 FROM shops WHERE id = @1 AND oprwx = @2", p => p.Set(shopid).Set(prin.wx)))
+                var f = await ac.ReadAsync<Form>();
+                o.status = f[nameof(o.status)];
+                using (var dc = ac.NewDbContext())
                 {
-                    dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                    dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(o.status).Set(shopid));
+                    if (o.oprwx == prin.wx) // if already on duty
+                    {
+                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                    }
+                    else
+                    {
+                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                    }
                 }
-                else
-                {
-                    dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
-                }
+                ac.GivePane(200);
             }
-            ac.GivePane(200);
         }
     }
 }

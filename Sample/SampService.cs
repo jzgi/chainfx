@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static System.Data.IsolationLevel;
 using static Greatbone.Samp.Order;
-using static Greatbone.Samp.SampUtility;
+using static Greatbone.Samp.Program;
 using static Greatbone.Samp.WeiXinUtility;
 
 namespace Greatbone.Samp
@@ -62,6 +62,8 @@ namespace Greatbone.Samp
     /// </summary>
     public class SampService : Service<User>, IAuthenticateAsync
     {
+        public readonly Roll<string, Shop> ShopRoll;
+
         public SampService(ServiceConfig cfg) : base(cfg)
         {
             CreateVar<PubShopVarWork, string>(obj => ((Shop) obj).id); // subshop
@@ -71,6 +73,15 @@ namespace Greatbone.Samp
             Create<OprWork>("opr"); // shop operator
 
             Create<AdmWork>("adm"); // administrator
+
+            ShopRoll = new Roll<string, Shop>(delegate
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Query("SELECT * FROM shops WHERE status > 0 ORDER BY id");
+                    return dc.ToMap<string, Shop>(x => x.id, -1);
+                }
+            }, 60 * 30);
         }
 
         public override void OnStart()
@@ -228,28 +239,22 @@ namespace Greatbone.Samp
             ac.GiveDoc(200, m =>
             {
                 m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
-
-                using (var dc = ac.NewDbContext())
+                m.BOARDVIEW(ShopRoll.FindAll(x => x.city == city), (h, o) =>
                 {
-                    dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE city = @1 AND status > 0 ORDER BY id");
-                    dc.Query(p => p.Set(city));
-                    m.BOARDVIEW(dc.ToArray<Shop>(), (h, o) =>
-                    {
-                        h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
-                        h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
-                        h.BOX_(0x48);
-                        h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
-                        h.P_("派送").T(o.delivery);
-                        if (o.areas != null) h.SEP().T("限送").T(o.areas);
-                        h._P();
-                        h.P(o.schedule, "营业");
-                        if (o.off > 0)
-                            h.P_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._P();
-                        h._BOX();
-                        h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
-                        h.TAIL();
-                    });
-                }
+                    h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
+                    h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
+                    h.BOX_(0x48);
+                    h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                    h.P_("派送").T(o.delivery);
+                    if (o.areas != null) h.SEP().T("限送").T(o.areas);
+                    h._P();
+                    h.P(o.schedule, "营业");
+                    if (o.off > 0)
+                        h.P_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._P();
+                    h._BOX();
+                    h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
+                    h.TAIL();
+                });
             }, true, 60, "粗狼达人 - " + city);
         }
 
@@ -281,7 +286,7 @@ namespace Greatbone.Samp
                     }
                     if (shopid != null)
                     {
-                        oprwx = (string) dc.Scalar("SELECT oprwx FROM shops WHERE id = @1", p => p.Set(shopid));
+                        oprwx = ShopRoll[shopid].oprwx;
                     }
                 }
                 // send a notification

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Samp.SampUtility;
+using static Greatbone.Samp.Program;
 using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
@@ -16,30 +16,33 @@ namespace Greatbone.Samp
         public void icon(ActionContext ac)
         {
             string shopid = ac[this];
-            using (var dc = ac.NewDbContext())
+            var byteas = ((SampService) Service).ShopRoll[shopid].icon;
+            if (byteas.Count == 0)
             {
-                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
-                {
-                    dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
-                }
-                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                ac.Give(204); // no content 
+            }
+            else
+            {
+                ac.Give(200, new StaticContent(byteas), true, 60 * 15);
             }
         }
 
         public void img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
-            using (var dc = ac.NewDbContext())
+            var shop = ((SampService) Service).ShopRoll[shopid];
+            var byteas =
+                ordinal == 1 ? shop.img1 :
+                ordinal == 2 ? shop.img2 :
+                ordinal == 3 ? shop.img3 :
+                shop.img4;
+            if (byteas.Count == 0)
             {
-                if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
-                {
-                    dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, 60 * 5);
-                }
-                else ac.Give(404, @public: true, maxage: 60 * 5); // not found
+                ac.Give(204); // no content 
+            }
+            else
+            {
+                ac.Give(200, new StaticContent(byteas), true, 60 * 15);
             }
         }
     }
@@ -48,32 +51,34 @@ namespace Greatbone.Samp
     {
         public PubShopVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
+            var shop = ((SampService) Service).ShopRoll[shopid];
+            ac.Register(shop);
+
             using (var dc = ac.NewDbContext())
             {
-                var sh = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE id = @1"), p => p.Set(shopid));
-                ac.Register(sh);
-
                 var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../list?city=").T(sh.city).T("\">❮</a>&nbsp;");
+                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../list?city=").T(shop.city).T("\">❮</a>&nbsp;");
 
                     m.A_DROPDOWN_("网点概况");
                     m.BOX_(0x4c);
-                    m.P(Shop.Statuses[sh.status], "状态");
-                    m.P_("派送").T(sh.delivery); if (sh.areas != null) m.SEP().T("限送").T(sh.areas); m._P();
-                    m.P(sh.schedule, "营业");
-                    if (sh.off > 0) m.P_("优惠").T(sh.min).T("元起订，每满").T(sh.notch).T("元立减").T(sh.off).T("元")._P();
+                    m.P(Shop.Statuses[shop.status], "状态");
+                    m.P_("派送").T(shop.delivery);
+                    if (shop.areas != null) m.SEP().T("限送").T(shop.areas);
+                    m._P();
+                    m.P(shop.schedule, "营业");
+                    if (shop.off > 0) m.P_("优惠").T(shop.min).T("元起订，每满").T(shop.notch).T("元立减").T(shop.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x15);
-                    if (sh.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + sh.oprtel + "#mp.weixin.qq.com", false)._FIELD();
+                    if (shop.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + shop.oprtel + "#mp.weixin.qq.com", false)._FIELD();
                     m._A_DROPDOWN();
 
                     m._TOPBAR();
@@ -90,9 +95,9 @@ namespace Greatbone.Samp
                         }
                         h.TAIL();
                         // adjust item availability
-                        if (sh.status == 0) o.stock = 0;
+                        if (shop.status == 0) o.stock = 0;
                     });
-                }, true, 60, sh.name);
+                }, true, 60, shop.name);
             }
         }
     }
