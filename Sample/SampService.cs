@@ -102,7 +102,7 @@ namespace Greatbone.Samp
                 {
                     return false;
                 }
-                ( _, string openid) = await GetAccessorAsync(code);
+                (_, string openid) = await GetAccessorAsync(code);
                 if (openid == null)
                 {
                     return false;
@@ -166,7 +166,7 @@ namespace Greatbone.Samp
                     // weixin authorization challenge
                     if (ac.ByWeiXin) // weixin
                     {
-                        ac.GiveRedirectWeiXinAuthorize("http://144000.tv");
+                        ac.GiveRedirectWeiXinAuthorize(NETADDR);
                     }
                     else // challenge BASIC scheme
                     {
@@ -180,7 +180,7 @@ namespace Greatbone.Samp
                     {
                         m.FORM_();
                         m.FIELDSET_("没有访问权限");
-                        m.BOX_().T("您要访问的功能需要管理员授权")._BOX();
+                        m.BOX_().T("您要访问的功能需要经过管理员授权后才能使用。")._BOX();
                         m._FIELDSET();
                         m._FORM();
                     });
@@ -223,7 +223,7 @@ namespace Greatbone.Samp
             string city = ac.Query[nameof(city)];
             if (string.IsNullOrEmpty(city))
             {
-                city = "南昌";
+                city = City.All?[0].name;
             }
             ac.GiveDoc(200, m =>
             {
@@ -243,13 +243,14 @@ namespace Greatbone.Samp
                         if (o.areas != null) h.SEP().T("限送").T(o.areas);
                         h._P();
                         h.P(o.schedule, "营业");
-                        if (o.off > 0) h.P_("促销").T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._P();
+                        if (o.off > 0)
+                            h.P_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._P();
                         h._BOX();
                         h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                         h.TAIL();
                     });
                 }
-            }, true, 60 * 5, "粗狼达人 - " + city);
+            }, true, 60, "粗狼达人 - " + city);
         }
 
         /// <summary>

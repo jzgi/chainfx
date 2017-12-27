@@ -439,34 +439,34 @@ namespace Greatbone.Core
         //
         // OBJECT PROVIDER
 
-        object[] attached;
+        object[] attachs;
 
         int objc;
 
         public void Attach(object v)
         {
-            if (attached == null)
+            if (attachs == null)
             {
-                attached = new object[8];
+                attachs = new object[8];
             }
-            attached[objc++] = v;
+            attachs[objc++] = v;
         }
 
         public void Attach(params object[] attachs)
         {
-            if (attached == null)
+            if (this.attachs == null)
             {
-                attached = attachs;
+                this.attachs = attachs;
             }
         }
 
         public T Obtain<T>() where T : class
         {
-            if (attached != null)
+            if (attachs != null)
             {
                 for (int i = 0; i < objc; i++)
                 {
-                    if (attached[i] is T v) return v;
+                    if (attachs[i] is T v) return v;
                 }
             }
             return Parent?.Obtain<T>();

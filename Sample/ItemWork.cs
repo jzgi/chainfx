@@ -31,7 +31,7 @@ namespace Greatbone.Samp
                 {
                     h.CAPTION(o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.ICON(o.name + "/icon", box: 3);
-                    h.BOX_(0x49).P(o.descr, "描述").P(o.content, "主含").P(o.price, "单价", "¥")._BOX();
+                    h.BOX_(0x49).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
                     h.FIELD(o.unit, "单位", box: 3).FIELD(o.min, "起订", box: 3).FIELD(o.step, "增减", box: 3).FIELD(o.stock, "剩量", box: 3);
                     h.TAIL();
                 });
@@ -49,7 +49,6 @@ namespace Greatbone.Samp
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
                     m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
-                    m.TEXT(nameof(o.content), o.content, "主含", max: 10, required: true);
                     m.TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
                     m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
                     m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "剩量", box: 6);

@@ -4,6 +4,13 @@ namespace Greatbone.Samp
 {
     public class Shop : IData
     {
+        public static Map<string, Shop> All;
+
+        public static Shop[] ShopsOf(string city)
+        {
+            return null;
+        }
+
         public static readonly Shop Empty = new Shop();
 
         public const short ADM = 3, ID = 1, NORM = 4, LATER = 8;

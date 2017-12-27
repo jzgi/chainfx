@@ -252,7 +252,7 @@ namespace Greatbone.Core
         }
 
         //
-        // CACHE
+        // RESPONSE CACHE
 
         internal void Clean()
         {

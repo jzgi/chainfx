@@ -48,7 +48,7 @@ namespace Greatbone.Samp
     {
         public PubShopVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
@@ -68,16 +68,12 @@ namespace Greatbone.Samp
                     m.A_DROPDOWN_("网点概况");
                     m.BOX_(0x4c);
                     m.P(Shop.Statuses[sh.status], "状态");
-                    m.P_("派送").T(sh.delivery);
-                    if (sh.areas != null) m.SEP().T("限送").T(sh.areas);
-                    m._P();
+                    m.P_("派送").T(sh.delivery); if (sh.areas != null) m.SEP().T("限送").T(sh.areas); m._P();
                     m.P(sh.schedule, "营业");
-                    if (sh.off > 0)
-                        m.P_("促销").T(sh.min).T("元起送，满").T(sh.notch).T("元减").T(sh.off).T("元")._P();
+                    if (sh.off > 0) m.P_("优惠").T(sh.min).T("元起订，每满").T(sh.notch).T("元立减").T(sh.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x15);
-                    if (sh.oprtel != null)
-                        m.FIELD_(box: 7).A("&#128222;" + sh.oprtel, "tel:" + sh.oprtel + "#mp.weixin.qq.com", false)._FIELD();
+                    if (sh.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + sh.oprtel + "#mp.weixin.qq.com", false)._FIELD();
                     m._A_DROPDOWN();
 
                     m._TOPBAR();
@@ -87,7 +83,7 @@ namespace Greatbone.Samp
                     {
                         h.CAPTION(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
-                        h.BOX_(0x48).P(o.descr, "特色").P(o.content, "主含").P_().EM(o.price, "¥").T("（还剩").T(o.stock).T(o.unit).T("）")._P()._BOX();
+                        h.BOX_(0x48).P(o.descr, "特色").P(o.stock, "总共", o.unit).P_().EM(o.price, "¥")._P()._BOX();
                         if (o.imgg)
                         {
                             h.THUMBNAIL(o.name + "/img-1", box: 3).THUMBNAIL(o.name + "/img-2", box: 3).THUMBNAIL(o.name + "/img-3", box: 3).THUMBNAIL(o.name + "/img-4", box: 3);
@@ -96,7 +92,7 @@ namespace Greatbone.Samp
                         // adjust item availability
                         if (sh.status == 0) o.stock = 0;
                     });
-                }, true, 60 * 5, sh.name);
+                }, true, 60, sh.name);
             }
         }
     }
