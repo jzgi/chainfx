@@ -272,7 +272,7 @@ namespace Greatbone.Samp
             ac.Give(200); // ok
         }
 
-        [Ui("剩量"), Tool(ButtonShow), User(OPRSTAFF)]
+        [Ui("存量"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task max(ActionContext ac)
         {
             string shopid = ac[-2];

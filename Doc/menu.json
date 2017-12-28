@@ -1,0 +1,62 @@
+{
+    "button": [
+        {
+            "type": "view",
+            "name": "外卖/选购",
+            "url": "http://144000.tv/list",
+            "sub_button": []
+        },
+        {
+            "name": "我的...",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": "科普《身体的奥秘》",
+                    "url": "http://144000.tv/opr//",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "我的购物车",
+                    "url": "http://144000.tv/my//cart/",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "我的订单",
+                    "url": "http://144000.tv/my//order/",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "我的设置",
+                    "url": "http://144000.tv/my//",
+                    "sub_button": []
+                }
+            ]
+        },
+        {
+            "name": "平台...",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": "关于粗粮达人",
+                    "url": "http://144000.tv/about.html",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "内部功能（网点操作）",
+                    "url": "http://144000.tv/opr//",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "内部功能（平台管理）",
+                    "url": "http://144000.tv/adm/",
+                    "sub_button": []
+                }
+            ]
+        }
+    ]
+}
