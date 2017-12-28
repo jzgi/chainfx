@@ -31,7 +31,7 @@ namespace Greatbone.Samp
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("网点: ").T(o.shopname)._CAPTION();
-                    h.FIELD_("收货", box: 0x4a).T(o.city)._T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr")._FIELD();
+                    h.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr")._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
@@ -106,7 +106,7 @@ namespace Greatbone.Samp
         {
         }
 
-        public void @default(ActionContext ac, int page)
+        public void @default(ActionContext ac)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())

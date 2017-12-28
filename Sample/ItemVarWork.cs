@@ -87,8 +87,8 @@ namespace Greatbone.Samp
                                 var sites = City.SitesOf(city, a);
                                 b = City.ResolveIn(b, sites);
                                 h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                                h.SELECT(nameof(a), a, shop.areas, refresh: true, box: 4).SELECT(nameof(b), b, sites, box: 4).TEXT(nameof(c), c, box: 4);
-                                h.TEL(nameof(tel), tel, "您的随身电话", required: true);
+                                h.SELECT(nameof(a), a, shop.areas, refresh: true, required: true, box: 4).SELECT(nameof(b), b, sites, required: true, box: 4).TEXT(nameof(c), c, required: true, box: 4);
+                                h.TEL(nameof(tel), tel, "您的随身电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             }
                             else // free delivery
                             {
@@ -100,8 +100,8 @@ namespace Greatbone.Samp
                                     a = prin.addr;
                                     tel = prin.tel;
                                 }
-                                h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, box: 9);
-                                h.TEXT(nameof(name), name, "姓名", required: true, box: 6).TEL(nameof(tel), tel, "电话", required: true, box: 6);
+                                h.SELECT(nameof(city), city, City.All, required: true, box: 3).TEXT(nameof(a), a, max: 20, required: true, box: 9);
+                                h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, box: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                             }
                             h._FIELDSET();
                         }
