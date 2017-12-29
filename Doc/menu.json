@@ -11,25 +11,25 @@
             "sub_button": [
                 {
                     "type": "view",
-                    "name": "科普《身体的奥秘》",
+                    "name": "《身体的奥秘》",
                     "url": "http://144000.tv/opr//",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "我的购物车",
+                    "name": "购物车",
                     "url": "http://144000.tv/my//cart/",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "我的订单",
+                    "name": "订单",
                     "url": "http://144000.tv/my//order/",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "我的设置",
+                    "name": "设置",
                     "url": "http://144000.tv/my//",
                     "sub_button": []
                 }

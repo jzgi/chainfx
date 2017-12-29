@@ -55,7 +55,42 @@ namespace Greatbone.Core
             }
         }
 
-        public V[] FindAll(Predicate<V> cond)
+        public V First(Predicate<V> cond = null)
+        {
+            EnterUpgradeableReadLock();
+            try
+            {
+                if (content == null || (Environment.TickCount & int.MaxValue) >= expiry) // whether to load
+                {
+                    EnterWriteLock();
+                    try
+                    {
+                        content = loader();
+                        expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
+                    }
+                    finally
+                    {
+                        ExitWriteLock();
+                    }
+                }
+                // search
+                for (int i = 0; i < content.Count; i++)
+                {
+                    var v = content[i];
+                    if (cond == null || cond(v))
+                    {
+                        return v;
+                    }
+                }
+                return default;
+            }
+            finally
+            {
+                ExitUpgradeableReadLock();
+            }
+        }
+
+        public V[] All(Predicate<V> cond = null)
         {
             EnterUpgradeableReadLock();
             try
@@ -78,7 +113,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < content.Count; i++)
                 {
                     var v = content[i];
-                    if (cond(v))
+                    if (cond == null || cond(v))
                     {
                         if (lst == null) lst = new List<V>(16);
                         lst.Add(v);

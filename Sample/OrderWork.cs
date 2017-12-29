@@ -15,7 +15,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("我的购物车")]
+    [Ui("购物车")]
     public class MyCartWork : OrderWork<MyCartVarWork>
     {
         public MyCartWork(WorkConfig cfg) : base(cfg)
@@ -61,7 +61,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("我的订单")]
+    [Ui("订单")]
     public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
         public MyOrderWork(WorkConfig cfg) : base(cfg)
@@ -180,11 +180,11 @@ namespace Greatbone.Samp
         public void @default(ActionContext ac, int page)
         {
             string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            ac.GivePage(200, main =>
             {
-                dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
-                ac.GivePage(200, main =>
+                using (var dc = ac.NewDbContext())
                 {
+                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                     main.TOOLBAR();
                     main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
@@ -198,8 +198,8 @@ namespace Greatbone.Samp
                         h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
                         h.TAIL(o.Err(), false);
                     });
-                }, false, 3);
-            }
+                }
+            }, false, 3);
         }
 
         [Ui("区域"), Tool(AnchorPrompt)]

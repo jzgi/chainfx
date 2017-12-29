@@ -7,7 +7,7 @@ using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
 {
-    [Ui("我的设置"), User]
+    [Ui("设置"), User]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -73,11 +73,9 @@ namespace Greatbone.Samp
                     h.FORM_();
                     h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
                     h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
-
                     string city = prin.city ?? City.All[0].name;
                     h.SELECT(nameof(prin.city), city, City.All, "城市", refresh: true);
-
-                    h.TEXT(nameof(prin.addr), prin.addr, label: "场址", max: 10, min: 2, required: true);
+                    h.TEXT(nameof(prin.addr), prin.addr, label: "地址", max: 10, min: 2, required: true);
                     h._FORM();
                 });
             }

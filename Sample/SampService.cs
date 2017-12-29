@@ -239,7 +239,7 @@ namespace Greatbone.Samp
             ac.GiveDoc(200, m =>
             {
                 m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
-                m.BOARDVIEW(ShopRoll.FindAll(x => x.city == city), (h, o) =>
+                m.BOARDVIEW(ShopRoll.All(x => x.city == city), (h, o) =>
                 {
                     h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
                     h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
