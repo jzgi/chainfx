@@ -18,7 +18,7 @@ namespace Greatbone.Core
         // number of rest octets
         int rest;
 
-        public Str(int capacity = 256)
+        public Str(int capacity = 512)
         {
             charbuf = new char[capacity];
             sum = 0;

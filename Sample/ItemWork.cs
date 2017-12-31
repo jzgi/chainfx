@@ -48,10 +48,10 @@ namespace Greatbone.Samp
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
-                    m.TEXTAREA(nameof(o.descr), o.descr, "简述", max: 30, required: true);
+                    m.TEXTAREA(nameof(o.descr), o.descr, "简述", min: 20, max: 50, required: true);
                     m.TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
                     m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "递增", min: (short) 1, box: 6);
-                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "存量", box: 6);
+                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "可供", box: 6);
                     m._FORM();
                 });
             }
@@ -67,10 +67,10 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
+        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
         public async Task del(ActionContext ac)
         {
-            short shopid = ac[-1];
+            string shopid = ac[-1];
             var f = await ac.ReadAsync<Form>();
             string[] key = f[nameof(key)];
             if (key != null)
@@ -84,7 +84,7 @@ namespace Greatbone.Samp
         }
 
         [Ui("盘存"), Tool(AnchorOpen), User(OPRSTAFF)]
-        public async Task articles(ActionContext ac)
+        public async Task things(ActionContext ac)
         {
             string shopid = ac[-1];
             var f = await ac.ReadAsync<Form>();

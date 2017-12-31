@@ -12,30 +12,28 @@ namespace Greatbone.Core
         static readonly int factor = ProcessorCount <= 2 ? 1 :
             ProcessorCount <= 4 ? 2 :
             ProcessorCount <= 8 ? 3 :
-            ProcessorCount <= 16 ? 4 : 5;
+            ProcessorCount <= 16 ? 4 :
+            ProcessorCount <= 32 ? 5 : 6;
 
-        // for byte buffers, remember that caching may exclusively hold some byte buffers
+        // for byte buffers, stuffed only when being used
         static readonly Queue<byte[]>[] bpool =
         {
-            new Queue<byte[]>(1024 * 16, factor * 8),
+            new Queue<byte[]>(512, factor * 32),
+            new Queue<byte[]>(1024 * 2, factor * 16),
+            new Queue<byte[]>(1024 * 8, factor * 16),
             new Queue<byte[]>(1024 * 32, factor * 8),
-            new Queue<byte[]>(1024 * 64, factor * 8),
-            new Queue<byte[]>(1024 * 128, factor * 4),
-            new Queue<byte[]>(1024 * 256, factor * 4),
-            new Queue<byte[]>(1024 * 512, factor * 2),
-            new Queue<byte[]>(1024 * 1024, factor * 2)
+            new Queue<byte[]>(1024 * 128, factor * 8),
+            new Queue<byte[]>(1024 * 512, factor * 4)
         };
 
         // for char buffers
         static readonly Queue<char[]>[] cpool =
         {
-            new Queue<char[]>(1024 * 1, factor * 8),
-            new Queue<char[]>(1024 * 2, factor * 8),
+            new Queue<char[]>(256, factor * 16),
+            new Queue<char[]>(1024 * 1, factor * 16),
             new Queue<char[]>(1024 * 4, factor * 8),
-            new Queue<char[]>(1024 * 8, factor * 8),
-            new Queue<char[]>(1024 * 16, factor * 4),
-            new Queue<char[]>(1024 * 32, factor * 4),
-            new Queue<char[]>(1024 * 64, factor * 2)
+            new Queue<char[]>(1024 * 16, factor * 8),
+            new Queue<char[]>(1024 * 64, factor * 4)
         };
 
         public static byte[] GetByteBuffer(int demand)

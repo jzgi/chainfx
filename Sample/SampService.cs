@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -264,49 +265,58 @@ namespace Greatbone.Samp
         public async Task paynotify(ActionContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-            if (Notified(xe, out var trade_no, out var cash))
-            {
-                var (orderid, _) = trade_no.To2Ints();
-                string oprwx = null;
-                string addr;
-                using (var dc = ac.NewDbContext(ReadCommitted))
-                {
-                    if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, addr", (p) => p.Set(cash).Set(orderid)))
-                    {
-                        return; // WCPay may send notification more than once
-                    }
-                    dc.Let(out string shopid).Let(out addr);
-                    // reflect in stock 
-                    dc.Query1("SELECT items FROM orders WHERE id = @1", p => p.Set(orderid));
-                    dc.Let(out OrderItem[] items);
-                    for (int i = 0; i < items?.Length; i++)
-                    {
-                        var o = items[i];
-                        dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
-                    }
-                    if (shopid != null)
-                    {
-                        oprwx = ShopRoll[shopid].oprwx;
-                    }
-                }
-                // send a notification
-                if (oprwx != null)
-                {
-                    await PostSendAsync(oprwx, "收到新单", "单号: #" + orderid + "  地址: " + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
-                }
-                // return xml to WCPay server
-                XmlContent x = new XmlContent(true, 1024);
-                x.ELEM("xml", null, () =>
-                {
-                    x.ELEM("return_code", "SUCCESS");
-                    x.ELEM("return_msg", "OK");
-                });
-                ac.Give(200, x);
-            }
-            else
+            if (!Notified(xe, out var trade_no, out var cash))
             {
                 ac.Give(400);
+                return;
             }
+            var (orderid, _) = trade_no.To2Ints();
+            string city, addr;
+            List<string> wxlst = new List<string>(4);
+            using (var dc = ac.NewDbContext(ReadCommitted))
+            {
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr, items", (p) => p.Set(cash).Set(orderid)))
+                {
+                    // WCPay may send notification more than once
+                    return;
+                }
+                dc.Let(out string shopid).Let(out city).Let(out addr).Let(out OrderItem[] items);
+                for (int i = 0; i < items?.Length; i++) // update in stock
+                {
+                    var o = items[i];
+                    dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
+                }
+                
+                if (ShopRoll[shopid].areas != null) // retrieve POS openid(s)
+                {
+                    var (a, _, _) = addr.ToTriple(SEPCHAR);
+                    dc.Query("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3", p => p.Set(shopid).Set(city).Set(a + "%"));
+                    while (dc.Next())
+                    {
+                        dc.Let(out string wx);
+                        wxlst.Add(wx);
+                    }
+                }
+                if (wxlst.Count == 0)
+                {
+                    var oprwx = ShopRoll[shopid].oprwx;
+                    if (oprwx != null) wxlst.Add(oprwx);
+                }
+            }
+            // send messages
+            foreach (var wx in wxlst)
+            {
+                await PostSendAsync(wx, "收到新单", "单号: " + orderid + "  地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+            }
+
+            // return xml to WCPay server
+            XmlContent x = new XmlContent(true, 1024);
+            x.ELEM("xml", null, () =>
+            {
+                x.ELEM("return_code", "SUCCESS");
+                x.ELEM("return_msg", "OK");
+            });
+            ac.Give(200, x);
         }
     }
 }
