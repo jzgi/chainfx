@@ -71,13 +71,13 @@ namespace Greatbone.Core
 
         int level; // actual number of segments
 
-        internal void Chain(string key, Work work)
+        internal void Chain(Work work, string key, object princi = null)
         {
             if (chain == null)
             {
                 chain = new Node[8];
             }
-            chain[level++] = new Node(key, work);
+            chain[level++] = new Node(work, key, princi);
         }
 
         public Node this[int position] => position < 0 ? chain[level + position - 1] : chain[position];

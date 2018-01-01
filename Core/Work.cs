@@ -172,7 +172,7 @@ namespace Greatbone.Core
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null, params object[] attachs) where W : Work where K : IEquatable<K>
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null, params object[] attachs) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -200,24 +200,40 @@ namespace Greatbone.Core
             return work;
         }
 
-        public string GetVariableKey(IData obj)
+        public object GetVariableKey(IData obj)
         {
             Delegate keyer = cfg.Keyer;
             if (keyer is Func<IData, string> fstr)
             {
                 return fstr(obj);
             }
-            if (keyer is Func<IData, long> flong)
-            {
-                return flong(obj).ToString();
-            }
             if (keyer is Func<IData, int> fint)
             {
-                return fint(obj).ToString();
+                return fint(obj);
+            }
+            if (keyer is Func<IData, long> flong)
+            {
+                return flong(obj);
             }
             if (keyer is Func<IData, short> fshort)
             {
-                return fshort(obj).ToString();
+                return fshort(obj);
+            }
+            if (keyer is Func<IData, string[]> fstrs)
+            {
+                return fstrs(obj);
+            }
+            if (keyer is Func<IData, int[]> fints)
+            {
+                return fints(obj);
+            }
+            if (keyer is Func<IData, long[]> flongs)
+            {
+                return flongs(obj);
+            }
+            if (keyer is Func<IData, short[]> fshorts)
+            {
+                return fshorts(obj);
             }
             return null;
         }
@@ -282,7 +298,7 @@ namespace Greatbone.Core
         internal Work Resolve(ref string relative, ActionContext ac)
         {
             if (!DoAuthorize(ac)) throw AuthorizeEx;
-            
+
             int slash = relative.IndexOf('/');
             if (slash == -1)
             {
@@ -293,21 +309,22 @@ namespace Greatbone.Core
             relative = relative.Substring(slash + 1); // adjust relative
             if (works != null && works.TryGet(key, out var work)) // if child
             {
-                ac.Chain(key, work);
+                ac.Chain(work, key);
                 return work.Resolve(ref relative, ac);
             }
             if (varwork != null) // if variable-key sub
             {
                 IData prin = ac.Principal;
-                if (key.Length == 0 && varwork.cfg.Keyer != null) // resolve shortcut
+                object princi = null;
+                if (key.Length == 0) // resolve shortcut
                 {
                     if (prin == null) throw AuthorizeEx;
-                    if ((key = varwork.GetVariableKey(prin)) == null)
+                    if ((princi = varwork.GetVariableKey(prin)) == null)
                     {
                         throw AuthorizeEx;
                     }
                 }
-                ac.Chain(key, varwork);
+                ac.Chain(varwork, key, princi);
                 return varwork.Resolve(ref relative, ac);
             }
             return null;

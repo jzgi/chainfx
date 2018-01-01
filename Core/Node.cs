@@ -1,25 +1,28 @@
-﻿using System;
-
-namespace Greatbone.Core
+﻿namespace Greatbone.Core
 {
     /// <summary>
-    /// A resolved node of the work hierarchy corresponding to a URI segment.
+    /// A resolved node of the work hierarchy corresponding to a uri segment.
     /// </summary>
     public struct Node
     {
+        // as uri segment
         readonly string key;
+
+        // key object get from principal
+        readonly object princi;
 
         readonly Work work;
 
-        internal Node(string key, Work work)
+        internal Node(Work work, string key, object princi)
         {
             this.key = key;
+            this.princi = princi;
             this.work = work;
         }
 
         public string Key => key;
 
-        public Type Type => work?.GetType();
+        public object Princi => princi;
 
         public Work Work => work;
 
@@ -27,25 +30,13 @@ namespace Greatbone.Core
         // CONVERSION
         //
 
-        public static implicit operator bool(Node v)
-        {
-            string str = v.key;
-            if (!string.IsNullOrEmpty(str))
-            {
-                return "true".Equals(str) || "1".Equals(str) || "on".Equals(str);
-            }
-            return false;
-        }
-
         public static implicit operator short(Node v)
         {
             string str = v.key;
-            if (!string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str)) return (short) v.princi;
+            if (short.TryParse(str, out var n))
             {
-                if (short.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
@@ -53,12 +44,10 @@ namespace Greatbone.Core
         public static implicit operator int(Node v)
         {
             string str = v.key;
-            if (!string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str)) return (int) v.princi;
+            if (int.TryParse(str, out var n))
             {
-                if (int.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
@@ -66,37 +55,39 @@ namespace Greatbone.Core
         public static implicit operator long(Node v)
         {
             string str = v.key;
-            if (!string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str)) return (long) v.princi;
+            if (long.TryParse(str, out var n))
             {
-                if (long.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
-        }
-
-        public static implicit operator decimal(Node v)
-        {
-            string str = v.key;
-            if (!string.IsNullOrEmpty(str))
-            {
-                if (decimal.TryParse(str, out var n))
-                {
-                    return n;
-                }
-            }
-            return 0;
-        }
-
-        public static implicit operator DateTime(Node v)
-        {
-            return default;
         }
 
         public static implicit operator string(Node v)
         {
-            return v.key;
+            string str = v.key;
+            if (string.IsNullOrEmpty(str)) return (string) v.princi;
+            return str;
+        }
+
+        public static implicit operator short[](Node v)
+        {
+            return (short[]) v.princi;
+        }
+
+        public static implicit operator int[](Node v)
+        {
+            return (int[]) v.princi;
+        }
+
+        public static implicit operator long[](Node v)
+        {
+            return (long[]) v.princi;
+        }
+
+        public static implicit operator string[](Node v)
+        {
+            return (string[]) v.princi;
         }
     }
 }
