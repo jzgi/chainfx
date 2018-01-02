@@ -54,7 +54,7 @@ namespace Greatbone.Core
         {
             if (reader != null)
             {
-                reader.Dispose();
+                reader.Close();
                 reader = null;
             }
             ordinal = 0;
@@ -1607,8 +1607,7 @@ namespace Greatbone.Core
             if (transact != null && !transact.IsCompleted)
             {
                 // indicate disposing the instance 
-                reader?.Close();
-                command.Dispose();
+                Clear();
                 transact.Rollback();
                 command.Transaction = null;
                 transact = null;
@@ -1626,10 +1625,11 @@ namespace Greatbone.Core
                 // commit ongoing transaction
                 if (transact != null && !transact.IsCompleted)
                 {
+                    Clear();
                     transact.Commit();
                 }
                 reader?.Close();
-                command.Dispose();
+                command.Transaction = null;
                 connection.Close();
             }
         }

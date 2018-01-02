@@ -13,9 +13,11 @@ namespace Greatbone.Core
     {
         readonly Func<Map<K, V>> loader;
 
+        Exception excep;
+
         readonly int age; //in seconds
 
-        Map<K, V> content;
+        Map<K, V> map;
 
         // tick count,   
         int expiry;
@@ -25,6 +27,10 @@ namespace Greatbone.Core
             this.age = age;
             this.loader = loader;
         }
+
+        public int Age => age;
+
+        public Exception Excep => excep;
 
         public V this[K key]
         {
@@ -38,15 +44,19 @@ namespace Greatbone.Core
                         EnterWriteLock();
                         try
                         {
-                            content = loader();
-                            expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
+                            map = loader();
+                        }
+                        catch (Exception ex)
+                        {
+                            excep = ex;
                         }
                         finally
                         {
+                            expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
                             ExitWriteLock();
                         }
                     }
-                    return content[key];
+                    return map[key];
                 }
                 finally
                 {
@@ -60,23 +70,27 @@ namespace Greatbone.Core
             EnterUpgradeableReadLock();
             try
             {
-                if (content == null || (Environment.TickCount & int.MaxValue) >= expiry) // whether to load
+                if (map == null || (Environment.TickCount & int.MaxValue) >= expiry) // whether to load
                 {
                     EnterWriteLock();
                     try
                     {
-                        content = loader();
-                        expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
+                        map = loader();
+                    }
+                    catch (Exception ex)
+                    {
+                        excep = ex;
                     }
                     finally
                     {
+                        expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
                         ExitWriteLock();
                     }
                 }
                 // search
-                for (int i = 0; i < content.Count; i++)
+                for (int i = 0; i < map.Count; i++)
                 {
-                    var v = content[i];
+                    var v = map[i];
                     if (cond == null || cond(v))
                     {
                         return v;
@@ -95,24 +109,28 @@ namespace Greatbone.Core
             EnterUpgradeableReadLock();
             try
             {
-                if (content == null || (Environment.TickCount & int.MaxValue) >= expiry) // whether to load
+                if (map == null || (Environment.TickCount & int.MaxValue) >= expiry) // whether to load
                 {
                     EnterWriteLock();
                     try
                     {
-                        content = loader();
-                        expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
+                        map = loader();
+                    }
+                    catch (Exception ex)
+                    {
+                        excep = ex;
                     }
                     finally
                     {
+                        expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
                         ExitWriteLock();
                     }
                 }
                 // search
                 List<V> lst = null;
-                for (int i = 0; i < content.Count; i++)
+                for (int i = 0; i < map.Count; i++)
                 {
-                    var v = content[i];
+                    var v = map[i];
                     if (cond == null || cond(v))
                     {
                         if (lst == null) lst = new List<V>(16);

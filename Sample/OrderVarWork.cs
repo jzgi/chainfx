@@ -162,7 +162,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("建议"), Tool(ButtonShow)]
+//        [Ui("建议"), Tool(ButtonShow)]
         public async Task kick(ActionContext ac)
         {
             int orderid = ac[this];
@@ -346,6 +346,8 @@ namespace Greatbone.Samp
                         if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(shopid).Set(prin.wx)))
                         {
                             m.FORM_().CHECKBOX(nameof(mycart), true, "从我的摊点里出货")._FORM();
+                        } else {
+                            m.FORM_().T("按确认完成此单")._FORM();
                         }
                     }
                 });
@@ -358,10 +360,6 @@ namespace Greatbone.Samp
                     if (dc.Query1("UPDATE orders SET status = " + FINISHED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
                     {
                         var o = dc.ToObject<Order>();
-                        if (o.typ == 0) // if ordinary order then record user info
-                        {
-                            dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1,  @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = COALESCE(@2, name), city = COALESCE(@3, city), addr = COALESCE(@4, addr), tel = COALESCE(@5, tel) WHERE wx = @1", p => p.Set(o.wx).Set(o.name).Set(o.city).Set(o.addr).Set(o.tel));
-                        }
                         if (mycart) // deduce my cart loads
                         {
                             dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2 AND typ = 1", p => p.Set(prin.wx).Set(shopid));

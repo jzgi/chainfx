@@ -271,14 +271,15 @@ namespace Greatbone.Samp
                 return;
             }
             var (orderid, _) = trade_no.To2Ints();
+//            decimal cash = 2;
+//            int orderid = 106;
             string city, addr;
             List<string> wxlst = new List<string>(4);
             using (var dc = ac.NewDbContext(ReadCommitted))
             {
                 if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr, items", (p) => p.Set(cash).Set(orderid)))
                 {
-                    // WCPay may send notification more than once
-                    return;
+                    return; // WCPay may send notification more than once
                 }
                 dc.Let(out string shopid).Let(out city).Let(out addr).Let(out OrderItem[] items);
                 for (int i = 0; i < items?.Length; i++) // update in stock
@@ -286,7 +287,7 @@ namespace Greatbone.Samp
                     var o = items[i];
                     dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
                 }
-                
+
                 if (ShopRoll[shopid].areas != null) // retrieve POS openid(s)
                 {
                     var (a, _, _) = addr.ToTriple(SEPCHAR);
