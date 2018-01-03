@@ -137,14 +137,21 @@ namespace Greatbone.Samp
             string wx = ac[-2];
             int orderid = ac[this];
             short rev;
-
             decimal total;
+            User prin = (User) ac.Principal;
             using (var dc = ac.NewDbContext())
             {
-                dc.Query1("SELECT rev, total FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                dc.Let(out rev).Let(out total);
+                dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                dc.Let(out rev).Let(out total).Let(out short typ).Let(out prin.name).Let(out prin.city).Let(out prin.addr).Let(out prin.tel);
+                if (typ == 0) // normal order then keep user info
+                {
+                    if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = COALESCE(@2, users.name), city = COALESCE(@3, users.city), addr = COALESCE(@4, users.addr), tel = COALESCE(@5, users.tel)", p => p.Set(wx).Set(prin.name).Set(prin.city).Set(prin.addr).Set(prin.tel)) > 0)
+                    {
+                        ac.SetTokenCookie(prin, -1 ^ CREDENTIAL); // refresh client token thru cookie
+                    }
+                }
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, "http://144000.tv/paynotify", "粗粮达人-健康产品");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, NETADDR + "/paynotify", "粗粮达人-健康产品");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
@@ -346,7 +353,9 @@ namespace Greatbone.Samp
                         if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(shopid).Set(prin.wx)))
                         {
                             m.FORM_().CHECKBOX(nameof(mycart), true, "从我的摊点里出货")._FORM();
-                        } else {
+                        }
+                        else
+                        {
                             m.FORM_().T("按确认完成此单")._FORM();
                         }
                     }

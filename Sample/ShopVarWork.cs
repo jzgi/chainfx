@@ -60,29 +60,24 @@ namespace Greatbone.Samp
         {
             string shopid = ac[this];
             var shop = ((SampService) Service).ShopRoll[shopid];
-            ac.Register(shop);
+            ac.Attach(shop);
 
             using (var dc = ac.NewDbContext())
             {
-                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", img1 IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
+                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", COALESCE(img1, img2, img3, img4) IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().T("<a class=\"back-arrow\" href=\"../list?city=").T(shop.city).T("\">❮</a>&nbsp;");
-
-                    m.A_DROPDOWN_("网点概况");
+                    m.TOPBAR_().A_DROPDOWN_("网点正在" + Shop.Statuses[shop.status]);
                     m.BOX_(0x4c);
-                    m.P(Shop.Statuses[shop.status], "状态");
+                    m.P(shop.schedule, "营业");
                     m.P_("派送").T(shop.delivery);
                     if (shop.areas != null) m.SEP().T("限送").T(shop.areas);
                     m._P();
-                    m.P(shop.schedule, "营业");
                     if (shop.off > 0) m.P_("优惠").T(shop.min).T("元起订，每满").T(shop.notch).T("元立减").T(shop.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x15);
                     if (shop.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + shop.oprtel + "#mp.weixin.qq.com", false)._FIELD();
-                    m._A_DROPDOWN();
-
-                    m._TOPBAR();
+                    m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
                     m.BOARDVIEW(items, (h, o) =>

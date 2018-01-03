@@ -26,7 +26,7 @@ namespace Greatbone.Core
 
         public void Add(string name, string v)
         {
-            int idx = FindIndex(name);
+            int idx = IndexOf(name);
             if (idx == -1)
             {
                 Add(new Field(name, v));

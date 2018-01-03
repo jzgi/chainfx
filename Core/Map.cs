@@ -104,7 +104,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public int FindIndex(K key)
+        public int IndexOf(K key)
         {
             int code = key.GetHashCode() & 0x7fffffff;
             int buck = code % buckets.Length; // target bucket

@@ -25,7 +25,7 @@ namespace Greatbone.Core
 
         int objcount;
 
-        public void Register(object v)
+        public void Attach(object v)
         {
             if (attached == null)
             {

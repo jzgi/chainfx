@@ -1027,6 +1027,24 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent CALLOUT_(string v, bool closable = false)
+        {
+            Add("<div class=\"callout primary\"");
+            if (closable)
+            {
+                Add(" data-closable");
+            }
+            Add("><p class=\"text-center\">");
+            Add(v);
+            Add("</p>");
+            if (closable)
+            {
+                Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
+            }
+            Add("</div>");
+            return this;
+        }
+
         public HtmlContent CALLOUT(Action<HtmlContent> m, bool closable)
         {
             Add("<div class=\"callout primary\"");
