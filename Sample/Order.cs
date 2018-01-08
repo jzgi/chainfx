@@ -26,8 +26,8 @@ namespace Greatbone.Samp
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CARTED, "购物车"},
-            {PAID, "在处理"},
+            {CARTED, "未付款"},
+            {PAID, "在办理"},
             {ABORTED, "已撤单"},
             {FINISHED, "已交货"}
         };

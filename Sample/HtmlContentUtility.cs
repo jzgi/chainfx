@@ -20,7 +20,7 @@ namespace Greatbone.Samp
         {
             h.T("</div>"); // top-bar-left
             h.T("<div class=\"top-bar-right\">");
-            h.T("<a class=\"float-right\" href=\"/my//cart/\"><div style=\"padding: 2px; border: 2px solid darkblue; border-radius: 50%\"><img src=\"/cart.svg\" style=\"width: 1.5rem; height: 1.5rem\"></div></a>");
+            h.T("<a class=\"button hollow round float-right\" href=\"/my//order/\">我的订单</a>");
             h.T("</div>");
             h.T("</form>");
             h.T("</header>");

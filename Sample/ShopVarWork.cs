@@ -55,11 +55,16 @@ namespace Greatbone.Samp
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        [Ui("进入该网点"), Tool(Anchor)]
+        [Ui("进入该店铺"), Tool(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
             var shop = ((SampService) Service).ShopRoll[shopid];
+            if (shop == null)
+            {
+                ac.Give(404, @public: true, maxage: 3600);
+                return;
+            }
             ac.Attach(shop);
 
             using (var dc = ac.NewDbContext())
@@ -67,7 +72,7 @@ namespace Greatbone.Samp
                 var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", COALESCE(img1, img2, img3, img4) IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().A_DROPDOWN_("网点正在" + Shop.Statuses[shop.status]);
+                    m.TOPBAR_().A_DROPDOWN_("店铺正在" + Shop.Statuses[shop.status]);
                     m.BOX_(0x4c);
                     m.P(shop.schedule, "营业");
                     m.P_("派送").T(shop.delivery);

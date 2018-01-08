@@ -43,10 +43,9 @@ namespace Greatbone.Core
 
         public D ToObject<D>(short proj = 0x00ff) where D : IData, new()
         {
-            IDataInput inp = entity as IDataInput;
-            if (inp == null)
+            if (!(entity is IDataInput inp))
             {
-                return default(D);
+                return default;
             }
             return inp.ToObject<D>(proj);
         }

@@ -1207,22 +1207,21 @@ namespace Greatbone.Core
             _BOARDVIEW();
         }
 
-        public void BOARDVIEW<D>(D[] models, Action<HtmlContent, D> card) where D : IData
+        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             BOARDVIEW_();
-            if (models != null)
+            if (arr != null)
             {
-                for (int i = 0; i < models.Length; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
-                    D obj = models[i];
-                    model = obj;
-                    CARD_();
+                    D obj = arr[i];
+                    CARD_(obj);
                     card(this, obj);
                     _CARD();
                 }
             }
             // pagination if any
-            PAGENATE(models?.Length ?? 0);
+            PAGENATE(arr?.Length ?? 0);
             _BOARDVIEW();
         }
 
@@ -1237,16 +1236,19 @@ namespace Greatbone.Core
         public HtmlContent _BOARDVIEW()
         {
             Add("</main>");
-            model = null;
             ordinal = 0;
             return this;
         }
 
-        public HtmlContent CARD_()
+        public HtmlContent CARD_(IData obj = null)
         {
             Add("<form class=\"cell board-view-cell\" id=\"card-");
             Add(++ordinal);
             Add("\"><article class=\"card grid-x\">");
+            if (obj != null)
+            {
+                model = obj;
+            }
             return this;
         }
 
@@ -1254,6 +1256,7 @@ namespace Greatbone.Core
         {
             Add("</article>");
             Add("</form>");
+            model = null;
             return this;
         }
 

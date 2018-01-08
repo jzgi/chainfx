@@ -15,9 +15,9 @@ namespace Greatbone.Samp
         }
     }
 
-    public class MyCartVarWork : OrderVarWork
+    public class MyOrderVarWork : OrderVarWork
     {
-        public MyCartVarWork(WorkConfig cfg) : base(cfg)
+        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -131,7 +131,19 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("付款"), Tool(ButtonScript), Order('P')]
+        [Ui("删除", Group = 1), Tool(ButtonConfirm)]
+        public void del(ActionContext ac)
+        {
+            string wx = ac[-2];
+            int orderid = ac[this];
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Execute("DELETE FROM orders WHERE id = @2 AND wx = @2", p => p.Set(orderid).Set(wx));
+            }
+            ac.GiveRedirect();
+        }
+
+        [Ui("付款", Group = 1), Tool(ButtonScript), Order('P')]
         public async Task Prepay(ActionContext ac)
         {
             string wx = ac[-2];
@@ -161,15 +173,8 @@ namespace Greatbone.Samp
                 ac.Give(500);
             }
         }
-    }
 
-    public class MyOrderVarWork : OrderVarWork
-    {
-        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-//        [Ui("建议"), Tool(ButtonShow)]
+        //        [Ui("建议"), Tool(ButtonShow)]
         public async Task kick(ActionContext ac)
         {
             int orderid = ac[this];

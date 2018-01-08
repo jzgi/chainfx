@@ -8,19 +8,12 @@
 
 .pane {
     padding: 0.25rem;
-    background-color: #f5f5f5;
-}
-
-.back-arrow {
-    font-size: 2.5rem; 
-    line-height: 1.2; 
-    margin-bottom: 0.375rem;
-    color: #8a8a8a;
+    background-color: #f5efef;
 }
 
 .tool-bar {
     display: flex;
-    background-color: silver;
+    background-color: darkgray;
     align-items: center;
     height: 3rem;
     font-size: 1rem;
@@ -49,7 +42,7 @@
 }
 
 .card.checked {
-    background-color: Lavender;
+    background-color: LightSteelBlue;
 }
 
 .card-caption {
@@ -163,7 +156,7 @@
 }
 
 .card fieldset {
-    background-color: #f1f1f1;
+    background-color: #f5efef;
     width: calc(100% - 0.25rem);
     padding: 0;
     border: none;
@@ -171,11 +164,11 @@
 }
 
 .card .box {
-    background-color: #f5f5f5;
+    background-color: #f5efef;
 }
 
 .card legend {
-    background-color: #f5f5f5;
+    background-color: #f5efef;
     padding: 0.25rem;
 }
 
@@ -200,7 +193,7 @@
 }
 
 tr.checked {
-    background-color: Lavender;
+    background-color: LightSteelBlue	;
 }
 
 

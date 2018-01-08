@@ -3,7 +3,7 @@ using System;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A event queue that corresponds to a particular event client.
+    /// An server-side event queue that corresponds to a particular event client.
     /// </summary>
     public class EventQueue : IMappable<string>
     {
@@ -14,7 +14,7 @@ namespace Greatbone.Core
             X_ARG = "X-Arg",
             X_ID = "X-ID";
 
-        const int CAPACITY = 120;
+        const int CAPACITY = 256;
 
         readonly string name;
 

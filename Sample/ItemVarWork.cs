@@ -106,7 +106,7 @@ namespace Greatbone.Samp
                             h._FIELDSET();
                         }
                         // quantity
-                        h.FIELDSET_("加入购物车");
+                        h.FIELDSET_("加入订单");
                         var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();

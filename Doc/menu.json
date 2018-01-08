@@ -2,7 +2,7 @@
     "button": [
         {
             "type": "view",
-            "name": "外卖/选购",
+            "name": "产品/下单",
             "url": "http://144000.tv/list",
             "sub_button": []
         },
@@ -13,12 +13,6 @@
                     "type": "view",
                     "name": "《身体的奥秘》",
                     "url": "http://144000.tv/opr//",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "购物车",
-                    "url": "http://144000.tv/my//cart/",
                     "sub_button": []
                 },
                 {

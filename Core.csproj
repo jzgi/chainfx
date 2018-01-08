@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <Description>Greatbone Core</Description>
-    <VersionPrefix>2.5</VersionPrefix>
+    <VersionPrefix>2.6.1</VersionPrefix>
     <Authors>hismichael</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>Core</AssemblyName>

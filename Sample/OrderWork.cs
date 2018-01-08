@@ -15,85 +15,43 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("购物车")]
-    public class MyCartWork : OrderWork<MyCartVarWork>
-    {
-        public MyCartWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        public void @default(ActionContext ac)
-        {
-            string wx = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Query("SELECT * FROM orders WHERE wx = @1 AND status = 0 ORDER BY id DESC", p => p.Set(wx));
-                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
-                {
-                    h.CAPTION_().T("网点: ").T(o.shopname)._CAPTION();
-                    h.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr")._FIELD();
-                    for (int i = 0; i < o.items.Length; i++)
-                    {
-                        var oi = o.items[i];
-                        h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                        h.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
-                        h.BOX_(0x42).P(oi.qty, null, oi.unit).TOOL("item", i)._BOX();
-                        h.BOX_(0x42);
-                        if (o.typ == POS) h.P(oi.load, sign: oi.unit);
-                        h._BOX();
-                    }
-                    h.FIELD_(box: 8).T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
-                    h.FIELD(o.total, "总计", sign: "¥", box: 4);
-                    h.TAIL(o.Err(), false);
-                }, false, 3);
-            }
-        }
-
-        [Ui("清空"), Tool(ButtonConfirm)]
-        public void clear(ActionContext ac)
-        {
-            string wx = ac[-1];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = 0", p => p.Set(wx));
-            }
-            ac.GiveRedirect();
-        }
-    }
-
-    [Ui("订单")]
+    [Ui("我的订单")]
     public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
         public MyOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(ActionContext ac, int page)
         {
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                dc.Query(dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 AND status > 0 ORDER BY id DESC"), p => p.Set(wx));
+                dc.Query(dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 ORDER BY id DESC"), p => p.Set(wx));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("网点: ").T(o.shopname).SEP().T("单号: ").T(o.id)._CAPTION(Statuses[o.status], o.status == PAID);
-                    h.FIELD_("收货");
-                    if (o.name != null) h._T(o.name);
-                    if (o.addr != null) h._T(o.addr);
+                    h.CAPTION_().T("店铺: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status < PAID);
+
+                    h.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr).BR().T(o.name)._T(o.tel)._FIELD().FIELD_(box: 2);
+                    if (o.status == 0) h.TOOL("addr");
                     h._FIELD();
+
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
-                        h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                        h.BOX_(0x46).P(oi.name).P(oi.price)._BOX();
-                        h.BOX_(0x42).P(oi.qty, null, oi.unit)._BOX();
+                        if (o.status <= 1) h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                        h.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
+                        h.BOX_(0x42).P(oi.qty, null, oi.unit);
+                        if (o.status == 0) h.TOOL("item", i);
+                        h._BOX();
                         h.BOX_(0x42);
-                        if (o.typ == POS) h.P(oi.load);
+                        if (o.typ == POS) h.P(oi.load, sign: oi.unit);
                         h._BOX();
                     }
-                    h.FIELD_(box: 8).T(o.min).T("元起送，满").T(o.notch).T("元减").T(o.off).T("元")._FIELD();
-                    h.FIELD(o.total, "总计", box: 4);
-                    h.TAIL();
+                    h.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
+                    h.FIELD(o.total, "总计", sign: "¥", box: 4);
+
+                    h.TAIL(o.Err(), false, group: o.status == 0 ? (short) 1 : (short) 0);
                 }, false, 3);
             }
         }

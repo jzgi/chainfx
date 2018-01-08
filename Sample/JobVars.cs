@@ -12,8 +12,6 @@ namespace Greatbone.Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MyCartWork>("cart");
-
             Create<MyOrderWork>("order");
         }
 

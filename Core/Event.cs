@@ -5,14 +5,20 @@ namespace Greatbone.Core
     /// <summary>
     /// The data object of an event in the event queue.
     /// </summary>
-    public struct Event : IData
+    public class Event : IData
     {
         internal long id;
+
         internal string name;
+
         internal string shard;
+
         internal string arg;
+
         internal string type;
+
         internal ArraySegment<byte> body;
+
         internal DateTime time;
 
         public void Read(IDataInput i, short proj = 0x00ff)
