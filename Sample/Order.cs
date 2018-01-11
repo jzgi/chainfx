@@ -15,7 +15,7 @@ namespace Greatbone.Samp
         // types
         public const short POS = 1;
 
-        public static readonly Map<short, string> Types = new Map<short, string>
+        public static readonly Roll<short, string> Types = new Roll<short, string>
         {
             {0, "普通"},
             {POS, "摊点"},
@@ -24,7 +24,7 @@ namespace Greatbone.Samp
         // status
         public const short CARTED = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
 
-        public static readonly Map<short, string> Statuses = new Map<short, string>
+        public static readonly Roll<short, string> Statuses = new Roll<short, string>
         {
             {CARTED, "未付款"},
             {PAID, "在办理"},

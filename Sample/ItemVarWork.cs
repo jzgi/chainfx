@@ -62,7 +62,7 @@ namespace Greatbone.Samp
             string itemname = ac[this];
             string name, city, a, b, c, tel; // form values
             short num;
-            var shop = ((SampService) Service).ShopRoll[shopid];
+            var shop = ((SampService) Service).Shops[shopid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>

@@ -92,7 +92,7 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                var shop = ((SampService) Service).ShopRoll[shopid];
+                var shop = ((SampService) Service).Shops[shopid];
                 var o = new Order
                 {
                     rev = 1,
@@ -170,7 +170,7 @@ namespace Greatbone.Samp
             {
                 ac.GivePane(200, m =>
                 {
-                    var shop = ((SampService) Service).ShopRoll[shopid];
+                    var shop = ((SampService) Service).Shops[shopid];
                     m.FORM_();
                     m.RADIOSET<string>(nameof(filter), filter, shop.areas);
                     m._FORM();
@@ -199,7 +199,7 @@ namespace Greatbone.Samp
             }, false, 3);
         }
 
-        static readonly Map<string, string> MSGS = new Map<string, string>
+        static readonly Roll<string, string> MSGS = new Roll<string, string>
         {
             ["订单处理"] = "我们已经接到您的订单（金额{0}元）",
             ["派送通知"] = "销售人员正在派送您所购的商品",

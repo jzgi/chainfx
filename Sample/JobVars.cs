@@ -168,7 +168,7 @@ namespace Greatbone.Samp
             ac.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                var o = ((SampService) Service).ShopRoll[shopid];
+                var o = ((SampService) Service).Shops[shopid];
                 h.BOARDVIEW_();
 
                 h.CARD_();
@@ -245,7 +245,7 @@ namespace Greatbone.Samp
         public async Task sets(ActionContext ac)
         {
             string shopid = ac[this];
-            var o = ((SampService) Service).ShopRoll[shopid];
+            var o = ((SampService) Service).Shops[shopid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -280,7 +280,7 @@ namespace Greatbone.Samp
         public async Task img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
-            var o = ((SampService) Service).ShopRoll[shopid];
+            var o = ((SampService) Service).Shops[shopid];
             if (ac.GET)
             {
                 var byteas =
@@ -322,7 +322,7 @@ namespace Greatbone.Samp
         {
             User prin = (User) ac.Principal;
             string shopid = ac[this];
-            var o = ((SampService) Service).ShopRoll[shopid];
+            var o = ((SampService) Service).Shops[shopid];
             bool custsvc;
             if (ac.GET)
             {

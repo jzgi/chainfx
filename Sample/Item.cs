@@ -14,7 +14,7 @@ namespace Greatbone.Samp
         public const short OFF = 0, ON = 1, HOT = 2;
 
         // status
-        public static readonly Map<short, string> Statuses = new Map<short, string>
+        public static readonly Roll<short, string> Statuses = new Roll<short, string>
         {
             {OFF, "下架"},
             {ON, "上架"},

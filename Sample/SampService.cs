@@ -63,7 +63,7 @@ namespace Greatbone.Samp
     /// </summary>
     public class SampService : Service<User>, IAuthenticateAsync
     {
-        public readonly Roll<string, Shop> ShopRoll;
+        public readonly Cache<string, Shop> Shops;
 
         public SampService(ServiceConfig cfg) : base(cfg)
         {
@@ -75,12 +75,12 @@ namespace Greatbone.Samp
 
             Create<AdmWork>("adm"); // administrator
 
-            ShopRoll = new Roll<string, Shop>(delegate
+            Shops = new Cache<string, Shop>(c =>
             {
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM shops WHERE status > 0 ORDER BY id");
-                    return dc.ToMap<string, Shop>(x => x.id, -1);
+                    while (dc.Next()) c.Add(dc.ToObject<Shop>(-1));
                 }
             }, 60 * 30);
         }
@@ -240,7 +240,7 @@ namespace Greatbone.Samp
             ac.GiveDoc(200, m =>
             {
                 m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
-                m.BOARDVIEW(ShopRoll.All(x => x.city == city), (h, o) =>
+                m.BOARDVIEW(Shops.All(x => x.city == city), (h, o) =>
                 {
                     h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
                     h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
@@ -288,7 +288,7 @@ namespace Greatbone.Samp
                     dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
                 }
 
-                if (ShopRoll[shopid].areas != null) // retrieve POS openid(s)
+                if (Shops[shopid].areas != null) // retrieve POS openid(s)
                 {
                     var (a, _, _) = addr.ToTriple(SEPCHAR);
                     dc.Query("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3", p => p.Set(shopid).Set(city).Set(a + "%"));
@@ -300,7 +300,7 @@ namespace Greatbone.Samp
                 }
                 if (wxlst.Count == 0)
                 {
-                    var oprwx = ShopRoll[shopid].oprwx;
+                    var oprwx = Shops[shopid].oprwx;
                     if (oprwx != null) wxlst.Add(oprwx);
                 }
             }

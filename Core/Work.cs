@@ -26,7 +26,7 @@ namespace Greatbone.Core
         readonly Type type;
 
         // declared actions 
-        readonly Map<string, ActionInfo> actions;
+        readonly Roll<string, ActionInfo> actions;
 
         // the default action, can be null
         readonly ActionInfo @default;
@@ -35,7 +35,7 @@ namespace Greatbone.Core
         readonly ActionInfo[] tooled;
 
         // subworks, if any
-        internal Map<string, Work> works;
+        internal Roll<string, Work> works;
 
         // variable-key subwork, if any
         internal Work varwork;
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             this.cfg = cfg;
 
             // gather actions
-            actions = new Map<string, ActionInfo>(32);
+            actions = new Roll<string, ActionInfo>(32);
             this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -105,7 +105,7 @@ namespace Greatbone.Core
 
         public bool HasKeyer => cfg.Keyer != null;
 
-        public Map<string, ActionInfo> Actions => actions;
+        public Roll<string, ActionInfo> Actions => actions;
 
         public ActionInfo[] Tooled => tooled;
 
@@ -113,7 +113,7 @@ namespace Greatbone.Core
 
         public ActionInfo Default => @default;
 
-        public Map<string, Work> Works => works;
+        public Roll<string, Work> Works => works;
 
         public Work VarWork => varwork;
 
@@ -138,7 +138,7 @@ namespace Greatbone.Core
             }
             if (works == null)
             {
-                works = new Map<string, Work>();
+                works = new Roll<string, Work>();
             }
             // create instance by reflection
             Type typ = typeof(W);

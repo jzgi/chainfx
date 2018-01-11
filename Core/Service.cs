@@ -29,19 +29,19 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // event consumption
-        readonly Map<string, EventInfo> events;
+        readonly Roll<string, EventInfo> events;
 
         // clients to clustered peers
-        readonly Map<string, Client> clients;
+        readonly Roll<string, Client> clients;
 
         // event queues
-        readonly Map<string, EventQueue> queues;
+        readonly Roll<string, EventQueue> queues;
 
         // event schesuler thread
         Thread scheduler;
 
         // cache entries
-        readonly ConcurrentDictionary<string, Cachie> cachies;
+        readonly ConcurrentDictionary<string, Entry> entries;
 
         // cache cleaner thread
         readonly Thread cleaner;
@@ -97,7 +97,7 @@ namespace Greatbone.Core
 
                 if (events == null)
                 {
-                    events = new Map<string, EventInfo>(8);
+                    events = new Roll<string, EventInfo>(8);
                 }
                 events.Add(evt.Key, evt);
             }
@@ -111,13 +111,13 @@ namespace Greatbone.Core
                     var e = cluster.At(i);
                     if (clients == null)
                     {
-                        clients = new Map<string, Client>(cluster.Count * 2);
+                        clients = new Roll<string, Client>(cluster.Count * 2);
                     }
                     clients.Add(new Client(this, e.Key, e.Value));
 
                     if (queues == null)
                     {
-                        queues = new Map<string, EventQueue>(cluster.Count * 2);
+                        queues = new Roll<string, EventQueue>(cluster.Count * 2);
                     }
                     queues.Add(e.Key, new EventQueue(e.Key));
                 }
@@ -125,7 +125,7 @@ namespace Greatbone.Core
 
             // response cache
             cleaner = new Thread(Clean) {Name = "Cleaner"};
-            cachies = new ConcurrentDictionary<string, Cachie>(Environment.ProcessorCount * 2, 1024);
+            entries = new ConcurrentDictionary<string, Entry>(Environment.ProcessorCount * 2, 1024);
         }
 
         public string Shard => ((ServiceConfig) cfg).shard;
@@ -134,7 +134,7 @@ namespace Greatbone.Core
 
         public Db Db => ((ServiceConfig) cfg).db;
 
-        public Map<string, string> Cluster => ((ServiceConfig) cfg).cluster;
+        public Roll<string, string> Cluster => ((ServiceConfig) cfg).cluster;
 
         public int Logging => ((ServiceConfig) cfg).logging;
 
@@ -145,9 +145,9 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Map<string, Client> Clients => clients;
+        public Roll<string, Client> Clients => clients;
 
-        public Map<string, EventInfo> Events => events;
+        public Roll<string, EventInfo> Events => events;
 
         public string Describe()
         {
@@ -263,11 +263,11 @@ namespace Greatbone.Core
                 int now = Environment.TickCount;
 
                 // a single loop to clean up expired items
-                using (var enm = cachies.GetEnumerator())
+                using (var enm = entries.GetEnumerator())
                 {
                     while (enm.MoveNext())
                     {
-                        Cachie ca = enm.Current.Value;
+                        Entry ca = enm.Current.Value;
                         ca.TryClear(now);
                     }
                 }
@@ -276,17 +276,17 @@ namespace Greatbone.Core
 
         internal void Cache(ActionContext ac)
         {
-            if (!ac.InCache && ac.Public == true && Cachie.IsCacheable(ac.Status))
+            if (!ac.InCache && ac.Public == true && Entry.IsCacheable(ac.Status))
             {
-                Cachie ca = new Cachie(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
-                cachies.AddOrUpdate(ac.Uri, ca, (k, old) => ca.MergeWith(old));
+                Entry ca = new Entry(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
+                entries.AddOrUpdate(ac.Uri, ca, (k, old) => ca.MergeWith(old));
                 ac.InCache = true;
             }
         }
 
         internal bool TryGiveFromCache(ActionContext ac)
         {
-            if (cachies.TryGetValue(ac.Uri, out var ca))
+            if (entries.TryGetValue(ac.Uri, out var ca))
             {
                 return ca.TryGive(ac, Environment.TickCount);
             }
@@ -425,6 +425,87 @@ namespace Greatbone.Core
 
             Console.Write(Key);
             Console.WriteLine(".");
+        }
+
+        /// <summary>
+        /// An entry in the service response cache.
+        /// </summary>
+        public class Entry
+        {
+            // response status, 0 means cleared, otherwise one of the cacheable status
+            int status;
+
+            // can be set to null
+            IContent content;
+
+            // maxage in seconds
+            int maxage;
+
+            // time ticks when entered
+            int stamp;
+
+            int hits;
+
+            internal Entry(int status, IContent content, int maxage, int stamp)
+            {
+                this.status = status;
+                this.content = content;
+                this.maxage = maxage;
+                this.stamp = stamp;
+            }
+
+            /// <summary>
+            ///  RFC 7231 cacheable status codes.
+            /// </summary>
+            public static bool IsCacheable(int code)
+            {
+                return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
+            }
+
+            internal void TryClear(int ticks)
+            {
+                lock (this)
+                {
+                    if (status == 0) return;
+
+                    if (((stamp + maxage * 1000) - ticks) / 1000 <= 0)
+                    {
+                        status = 0;
+                        content = null; // NOTE: the buffer won't return to the pool
+                        maxage = 0;
+                        stamp = 0;
+                    }
+                }
+            }
+
+            public int Hits => hits;
+
+            internal bool TryGive(ActionContext ac, int ticks)
+            {
+                lock (this)
+                {
+                    if (status == 0) return false;
+
+                    int remain = ((stamp + maxage * 1000) - ticks) / 1000;
+                    if (remain > 0)
+                    {
+                        ac.InCache = true;
+                        ac.Give(status, content, true, remain);
+
+                        Interlocked.Increment(ref hits);
+
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            internal Entry MergeWith(Entry old)
+            {
+                Interlocked.Add(ref hits, old.Hits);
+                return this;
+            }
         }
     }
 

@@ -16,7 +16,7 @@ namespace Greatbone.Samp
 
         public const short OPR = 1, OPRSTAFF = 3, OPRMGR = 7;
 
-        public static readonly Map<short, string> Oprs = new Map<short, string>
+        public static readonly Roll<short, string> Oprs = new Roll<short, string>
         {
             {OPR, "客串"},
             {OPRSTAFF, "成员"},

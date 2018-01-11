@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     /// </summary>
-    public class Form : Map<string, Field>, IDataInput
+    public class Form : Roll<string, Field>, IDataInput
     {
         // if multipart
         readonly bool mp;
@@ -338,7 +338,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public IDataInput Let(out Roll<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -354,7 +354,7 @@ namespace Greatbone.Core
         }
 
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref Roll<string, string> v)
         {
             throw new NotImplementedException();
         }

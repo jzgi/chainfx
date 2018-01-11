@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An server-side event queue that corresponds to a particular event client.
     /// </summary>
-    public class EventQueue : IMappable<string>
+    public class EventQueue : IRollable<string>
     {
         // custm HTTP headers
         internal const string
@@ -127,7 +127,7 @@ namespace Greatbone.Core
         // static
         //
 
-        internal static void Setup(Service service, Map<string, Client> clients)
+        internal static void Setup(Service service, Roll<string, Client> clients)
         {
             using (var dc = service.NewDbContext())
             {

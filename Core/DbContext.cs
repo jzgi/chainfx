@@ -178,7 +178,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string cmdtext, Func<D, K> keyer, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
+        public Roll<K, D> Query<K, D>(string cmdtext, Func<D, K> keyer, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
@@ -446,9 +446,9 @@ namespace Greatbone.Core
             return coll;
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
+        public Roll<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
-            Map<K, D> coll = new Map<K, D>(32);
+            Roll<K, D> coll = new Roll<K, D>(32);
             while (Next())
             {
                 D obj = new D();
@@ -649,7 +649,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref Roll<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -1072,7 +1072,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public IDataInput Let(out Roll<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -1392,7 +1392,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, Map<string, string> v)
+        public IDbParams Put(string name, Roll<string, string> v)
         {
             throw new NotImplementedException();
         }

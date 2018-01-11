@@ -37,7 +37,7 @@ namespace Greatbone.Samp
                         dc.Query1("SELECT shopid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                         dc.Let(out string oshopid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
                         h.FIELDSET_("收货地址");
-                        var shop = ((SampService) Service).ShopRoll[oshopid];
+                        var shop = ((SampService) Service).Shops[oshopid];
                         if (shop.areas != null) // limited delivery areas
                         {
                             ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel); // by select refresh
@@ -138,9 +138,9 @@ namespace Greatbone.Samp
             int orderid = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE id = @2 AND wx = @2", p => p.Set(orderid).Set(wx));
+                dc.Execute("DELETE FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
             }
-            ac.GiveRedirect();
+            ac.GiveRedirect("../");
         }
 
         [Ui("付款", Group = 1), Tool(ButtonScript), Order('P')]
@@ -274,7 +274,7 @@ namespace Greatbone.Samp
                         }
                         m._SELECT();
                         // input addr
-                        var shop = ((SampService) Service).ShopRoll[shopid];
+                        var shop = ((SampService) Service).Shops[shopid];
                         if (shop.areas != null)
                         {
                             m.SELECT(nameof(addr), addr, shop.areas, "区域");

@@ -12,7 +12,7 @@ namespace Greatbone.Samp
         
         public static readonly Cash Empty = new Cash();
 
-        public static readonly Map<short, string> Codes = new Map<short, string>
+        public static readonly Roll<short, string> Codes = new Roll<short, string>
         {
             {11, "销售收入"},
             {19, "其他收入"},

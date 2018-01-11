@@ -95,7 +95,7 @@ namespace Greatbone.Samp
                     h.FORM_();
                     using (var dc = ac.NewDbContext())
                     {
-                        var shop = ((SampService) Service).ShopRoll[shopid];
+                        var shop = ((SampService) Service).Shops[shopid];
                         if (shop.articles != null)
                         {
                             for (int i = 0; i < shop.articles.Length; i++)

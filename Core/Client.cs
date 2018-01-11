@@ -13,7 +13,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A client of RPC, service and/or event queue.
     /// </summary>
-    public class Client : HttpClient, IMappable<string>
+    public class Client : HttpClient, IRollable<string>
     {
         const int AHEAD = 1000 * 12;
 
@@ -48,7 +48,7 @@ namespace Greatbone.Core
             this.service = service;
             this.peerid = peerid;
 
-            Map<string, EventInfo> eis = service?.Events;
+            Roll<string, EventInfo> eis = service?.Events;
             if (eis != null)
             {
                 StringBuilder sb = new StringBuilder();

@@ -48,7 +48,7 @@ namespace Greatbone.Core
         {
             Add('<');
             Add(elem.Tag);
-            Map<string, string> attrs = elem.Attrs;
+            Roll<string, string> attrs = elem.Attrs;
             if (attrs != null)
             {
                 for (int i = 0; i < attrs.Count; i++)
@@ -365,7 +365,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, Map<string, string> v)
+        public XmlContent Put(string name, Roll<string, string> v)
         {
             return this;
         }

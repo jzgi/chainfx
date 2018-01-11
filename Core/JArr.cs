@@ -146,7 +146,7 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref Roll<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -234,7 +234,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public IDataInput Let(out Roll<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -272,9 +272,9 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
+        public Roll<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
-            Map<K, D> coll = new Map<K, D>();
+            Roll<K, D> coll = new Roll<K, D>();
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();

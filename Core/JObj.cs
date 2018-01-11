@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A JSON object model.
     /// </summary>
-    public class JObj : Map<string, JMbr>, IDataInput
+    public class JObj : Roll<string, JMbr>, IDataInput
     {
         public JObj(int capacity = 16) : base(capacity)
         {
@@ -203,7 +203,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref Roll<string, string> v)
         {
             if (TryGet(name, out var mbr))
             {
@@ -211,13 +211,13 @@ namespace Greatbone.Core
                 {
                     JObj jo = mbr;
                     int count = jo.Count;
-                    Map<string, string> map = new Map<string, string>();
+                    Roll<string, string> roll = new Roll<string, string>();
                     for (int i = 0; i < count; i++)
                     {
                         JMbr e = jo[i];
-                        map.Add(e.Key, e);
+                        roll.Add(e.Key, e);
                     }
-                    v = map;
+                    v = roll;
                     return true;
                 }
             }
@@ -326,7 +326,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public IDataInput Let(out Roll<string, string> v)
         {
             throw new NotImplementedException();
         }

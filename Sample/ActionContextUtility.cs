@@ -70,7 +70,7 @@ namespace Greatbone.Samp
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
 
             Work work = ac.Work;
-            Map<string, Work> subs = work.Works;
+            Roll<string, Work> subs = work.Works;
             // tabs
             h.Add("<ul class=\"tabs\" data-tabs id=\"frametabs\">");
             h.Add("<li class=\"tabs-title is-active\">");
