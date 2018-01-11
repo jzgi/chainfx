@@ -2138,27 +2138,33 @@ namespace Greatbone.Core
             FIELDSET_(legend, box);
             if (opt != null)
             {
-                opt.Begin();
-                for (int i = 0; i < opt.Count; i++)
+                opt.EnterRead();
+                try
                 {
-                    var o = opt.At(i);
-                    Add("<label>");
-                    Add("<input type=\"radio\" name=\"");
-                    Add(name);
-                    Add("\" id=\"");
-                    Add(name);
-                    Add(o.Key);
-                    Add("\"");
-                    Add("\" value=\"");
-                    Add(o.Key);
-                    Add("\"");
-                    if (o.Key.Equals(v)) Add(" checked");
-                    if (required) Add(" required");
-                    Add(">");
-                    Add(o.Value.ToString());
-                    Add("</label>");
+                    for (int i = 0; i < opt.Count; i++)
+                    {
+                        var o = opt.At(i);
+                        Add("<label>");
+                        Add("<input type=\"radio\" name=\"");
+                        Add(name);
+                        Add("\" id=\"");
+                        Add(name);
+                        Add(o.Key);
+                        Add("\"");
+                        Add("\" value=\"");
+                        Add(o.Key);
+                        Add("\"");
+                        if (o.Key.Equals(v)) Add(" checked");
+                        if (required) Add(" required");
+                        Add(">");
+                        Add(o.Value.ToString());
+                        Add("</label>");
+                    }
                 }
-                opt.End();
+                finally
+                {
+                    opt.ExitRead();
+                }
             }
             _FIELDSET();
             return this;
@@ -2194,27 +2200,33 @@ namespace Greatbone.Core
             FIELDSET_(legend, box);
             if (opt != null)
             {
-                opt.Begin();
-                for (int i = 0; i < opt.Count; i++)
+                opt.EnterRead();
+                try
                 {
-                    var o = opt.At(i);
-                    Add("<label>");
-                    Add("<input type=\"radio\" name=\"");
-                    Add(name);
-                    Add("\" id=\"");
-                    Add(name);
-                    Add(o.Key);
-                    Add("\"");
-                    Add("\" value=\"");
-                    Add(o.Key);
-                    Add("\"");
-                    if (o.Key.Equals(v)) Add(" checked");
-                    if (required) Add(" required");
-                    Add(">");
-                    Add(o.Value.ToString());
-                    Add("</label>");
+                    for (int i = 0; i < opt.Count; i++)
+                    {
+                        var o = opt.At(i);
+                        Add("<label>");
+                        Add("<input type=\"radio\" name=\"");
+                        Add(name);
+                        Add("\" id=\"");
+                        Add(name);
+                        Add(o.Key);
+                        Add("\"");
+                        Add("\" value=\"");
+                        Add(o.Key);
+                        Add("\"");
+                        if (o.Key.Equals(v)) Add(" checked");
+                        if (required) Add(" required");
+                        Add(">");
+                        Add(o.Value.ToString());
+                        Add("</label>");
+                    }
                 }
-                opt.End();
+                finally
+                {
+                    opt.ExitRead();
+                }
             }
             _FIELDSET();
             return this;
@@ -2337,19 +2349,25 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            opt.Begin();
-            for (int i = 0; i < opt.Count; i++)
+            opt.EnterRead();
+            try
             {
-                var e = opt.At(i);
-                Add("<option value=\"");
-                Add(e.Key);
-                Add("\"");
-                if (e.Key == v) Add(" selected");
-                Add(">");
-                Add(e.value?.ToString());
-                Add("</option>");
+                for (int i = 0; i < opt.Count; i++)
+                {
+                    var e = opt.At(i);
+                    Add("<option value=\"");
+                    Add(e.Key);
+                    Add("\"");
+                    if (e.Key == v) Add(" selected");
+                    Add(">");
+                    Add(e.value?.ToString());
+                    Add("</option>");
+                }
             }
-            opt.End();
+            finally
+            {
+                opt.ExitRead();
+            }
 
             Add("</select>");
             _FIELD(box);
@@ -2376,19 +2394,25 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            opt.Begin();
-            for (int i = 0; i < opt.Count; i++)
+            opt.EnterRead();
+            try
             {
-                var e = opt.At(i);
-                Add("<option value=\"");
-                Add(e.key);
-                Add("\"");
-                if (e.key == v) Add(" selected");
-                Add(">");
-                Add(e.value.ToString());
-                Add("</option>");
+                for (int i = 0; i < opt.Count; i++)
+                {
+                    var e = opt.At(i);
+                    Add("<option value=\"");
+                    Add(e.key);
+                    Add("\"");
+                    if (e.key == v) Add(" selected");
+                    Add(">");
+                    Add(e.value.ToString());
+                    Add("</option>");
+                }
             }
-            opt.End();
+            finally
+            {
+                opt.ExitRead();
+            }
 
             Add("</select>");
             _FIELD(box);
@@ -2415,19 +2439,25 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            opt.Begin();
-            for (int i = 0; i < opt.Count; i++)
+            opt.EnterRead();
+            try
             {
-                var e = opt.At(i);
-                Add("<option value=\"");
-                Add(e.key);
-                Add("\"");
-                if (v.Contains(e.key)) Add(" selected");
-                Add(">");
-                Add(e.value.ToString());
-                Add("</option>");
+                for (int i = 0; i < opt.Count; i++)
+                {
+                    var e = opt.At(i);
+                    Add("<option value=\"");
+                    Add(e.key);
+                    Add("\"");
+                    if (v.Contains(e.key)) Add(" selected");
+                    Add(">");
+                    Add(e.value.ToString());
+                    Add("</option>");
+                }
             }
-            opt.End();
+            finally
+            {
+                opt.ExitRead();
+            }
             Add("</select>");
 
             _FIELD(box);

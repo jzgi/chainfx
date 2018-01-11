@@ -31,7 +31,7 @@ namespace Greatbone.Core
 
         public Exception Excep => excep;
 
-        public override void Begin()
+        public override void EnterRead()
         {
             lck.EnterUpgradeableReadLock();
 
@@ -55,7 +55,7 @@ namespace Greatbone.Core
             }
         }
 
-        public override void End()
+        public override void ExitRead()
         {
             lck.ExitUpgradeableReadLock();
         }
@@ -64,47 +64,47 @@ namespace Greatbone.Core
         {
             get
             {
-                Begin();
+                EnterRead();
                 try
                 {
                     return base[key];
                 }
                 finally
                 {
-                    End();
+                    ExitRead();
                 }
             }
         }
 
         public override V First(Predicate<V> cond = null)
         {
-            Begin();
+            EnterRead();
             try
             {
                 return base.First(cond);
             }
             finally
             {
-                End();
+                ExitRead();
             }
         }
 
         public override V[] All(Predicate<V> cond = null)
         {
-            Begin();
+            EnterRead();
             try
             {
                 return base.All(cond);
             }
             finally
             {
-                End();
+                ExitRead();
             }
         }
 
         public override void ForEach(Func<K, V, bool> cond, Action<K, V> hand, bool write = false)
         {
-            Begin();
+            EnterRead();
             try
             {
                 if (write)
@@ -126,7 +126,7 @@ namespace Greatbone.Core
             }
             finally
             {
-                End();
+                ExitRead();
             }
         }
     }

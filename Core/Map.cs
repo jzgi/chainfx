@@ -25,14 +25,17 @@ namespace Greatbone.Core
             ReInit(size);
         }
 
-        void ReInit(int size)
+        void ReInit(int size) // size must be power of 2
         {
-            buckets = new int[size];
-            for (int i = 0; i < size; i++)
+            if (entries == null || size > entries.Length) // allocalte new arrays as needed
             {
-                buckets[i] = -1; // initialize all buckets to -1
+                buckets = new int[size];
+                entries = new Entry[size];
             }
-            entries = new Entry[size];
+            for (int i = 0; i < buckets.Length; i++) // initialize all buckets to -1
+            {
+                buckets[i] = -1;
+            }
             count = 0;
         }
 
@@ -61,7 +64,10 @@ namespace Greatbone.Core
 
         public void Clear()
         {
-            count = 0;
+            if (entries != null)
+            {
+                ReInit(entries.Length);
+            }
         }
 
         public void Add(K key, V value)
@@ -146,11 +152,11 @@ namespace Greatbone.Core
         //
         // advanced search operations that can be overridden with concurrency constructs
 
-        public virtual void Begin()
+        public virtual void EnterRead()
         {
         }
 
-        public virtual void End()
+        public virtual void ExitRead()
         {
         }
 
