@@ -15,7 +15,7 @@ namespace Greatbone.Samp
         // status
         public const short CREATED = 0, PAID = 1;
 
-        public static readonly Roll<short, string> Statuses = new Roll<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {CREATED, "新结算"},
             {PAID, "已转款"}

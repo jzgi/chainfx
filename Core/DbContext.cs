@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
@@ -178,7 +177,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Roll<K, D> Query<K, D>(string cmdtext, Func<D, K> keyer, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string cmdtext, Func<D, K> keyer, Action<IDbParams> p = null, short proj = 0x00ff, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
@@ -394,61 +393,51 @@ namespace Greatbone.Core
         {
             D obj = new D();
             obj.Read(this, proj);
-
             // add shard if any
             if (obj is IShardable sharded)
             {
                 sharded.Shard = service.Shard;
             }
-
             return obj;
         }
 
         public D[] ToArray<D>(short proj = 0x00ff) where D : IData, new()
         {
-            List<D> coll = null;
+            Roll<D> roll = new Roll<D>(32);
             while (Next())
             {
                 D obj = new D();
                 obj.Read(this, proj);
-
                 // add shard if any
                 if (obj is IShardable sharded)
                 {
                     sharded.Shard = service.Shard;
                 }
-
-                if (coll == null)
-                {
-                    coll = new List<D>(32);
-                }
-                coll.Add(obj);
+                roll.Add(obj);
             }
-            return coll?.ToArray();
+            return roll.ToArray();
         }
 
-        public List<D> ToList<D>(short proj = 0x00ff) where D : IData, new()
+        public Roll<D> ToRoll<D>(short proj = 0x00ff) where D : IData, new()
         {
-            List<D> coll = new List<D>(32);
+            Roll<D> roll = new Roll<D>(32);
             while (Next())
             {
                 D obj = new D();
                 obj.Read(this, proj);
-
                 // add shard if any
                 if (obj is IShardable sharded)
                 {
                     sharded.Shard = service.Shard;
                 }
-
-                coll.Add(obj);
+                roll.Add(obj);
             }
-            return coll;
+            return roll;
         }
 
-        public Roll<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
-            Roll<K, D> coll = new Roll<K, D>(32);
+            Map<K, D> map = new Map<K, D>(32);
             while (Next())
             {
                 D obj = new D();
@@ -459,9 +448,9 @@ namespace Greatbone.Core
                     sharded.Shard = service.Shard;
                 }
                 K key = keyer(obj);
-                coll.Add(key, obj);
+                map.Add(key, obj);
             }
-            return coll;
+            return map;
         }
 
         // current column ordinal
@@ -649,7 +638,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Roll<string, string> v)
+        public bool Get(string name, ref Map<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -1072,7 +1061,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out Roll<string, string> v)
+        public IDataInput Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -1392,7 +1381,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, Roll<string, string> v)
+        public IDbParams Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }

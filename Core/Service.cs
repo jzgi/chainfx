@@ -29,13 +29,13 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // event consumption
-        readonly Roll<string, EventInfo> events;
+        readonly Map<string, EventInfo> events;
 
         // clients to clustered peers
-        readonly Roll<string, Client> clients;
+        readonly Map<string, Client> clients;
 
         // event queues
-        readonly Roll<string, EventQueue> queues;
+        readonly Map<string, EventQueue> queues;
 
         // event schesuler thread
         Thread scheduler;
@@ -97,7 +97,7 @@ namespace Greatbone.Core
 
                 if (events == null)
                 {
-                    events = new Roll<string, EventInfo>(8);
+                    events = new Map<string, EventInfo>(8);
                 }
                 events.Add(evt.Key, evt);
             }
@@ -111,13 +111,13 @@ namespace Greatbone.Core
                     var e = cluster.At(i);
                     if (clients == null)
                     {
-                        clients = new Roll<string, Client>(cluster.Count * 2);
+                        clients = new Map<string, Client>(cluster.Count * 2);
                     }
                     clients.Add(new Client(this, e.Key, e.Value));
 
                     if (queues == null)
                     {
-                        queues = new Roll<string, EventQueue>(cluster.Count * 2);
+                        queues = new Map<string, EventQueue>(cluster.Count * 2);
                     }
                     queues.Add(e.Key, new EventQueue(e.Key));
                 }
@@ -134,7 +134,7 @@ namespace Greatbone.Core
 
         public Db Db => ((ServiceConfig) cfg).db;
 
-        public Roll<string, string> Cluster => ((ServiceConfig) cfg).cluster;
+        public Map<string, string> Cluster => ((ServiceConfig) cfg).cluster;
 
         public int Logging => ((ServiceConfig) cfg).logging;
 
@@ -145,9 +145,9 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Roll<string, Client> Clients => clients;
+        public Map<string, Client> Clients => clients;
 
-        public Roll<string, EventInfo> Events => events;
+        public Map<string, EventInfo> Events => events;
 
         public string Describe()
         {

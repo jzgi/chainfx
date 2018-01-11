@@ -8,9 +8,9 @@ namespace Greatbone.Core
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class Cache<K, V> : Roll<K, V>
+    public class CacheMap<K, V> : Map<K, V>
     {
-        readonly Action<Cache<K, V>> loader;
+        readonly Action<CacheMap<K, V>> loader;
 
         Exception excep;
 
@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         readonly ReaderWriterLockSlim lck = new ReaderWriterLockSlim();
 
-        public Cache(Action<Cache<K, V>> loader, int age = 3600 * 12)
+        public CacheMap(Action<CacheMap<K, V>> loader, int age = 3600 * 12)
         {
             this.age = age;
             this.loader = loader;
@@ -59,7 +59,6 @@ namespace Greatbone.Core
         {
             lck.ExitUpgradeableReadLock();
         }
-
 
         public override V this[K key]
         {

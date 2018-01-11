@@ -3,13 +3,13 @@ using Greatbone.Core;
 
 namespace Greatbone.Samp
 {
-    public class Shop : IData, IRollable<string>
+    public class Shop : IData, IMappable<string>
     {
         public static readonly Shop Empty = new Shop();
 
         public const short ADM = 3, ID = 1, NORM = 4, LATER = 8, EXTRA = 0x0100;
 
-        public static readonly Roll<short, string> Statuses = new Roll<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {0, "停业中"},
             {1, "休息中"},

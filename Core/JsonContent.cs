@@ -450,7 +450,7 @@ namespace Greatbone.Core
         }
 
 
-        public JsonContent Put(string name, Roll<string, string> v)
+        public JsonContent Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }

@@ -163,7 +163,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static Roll<K, D> FileToMap<K, D>(string file, Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
+        public static Map<K, D> FileToMap<K, D>(string file, Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
             try
             {

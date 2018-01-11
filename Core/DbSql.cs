@@ -453,7 +453,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, Roll<string, string> v)
+        public DbSql Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }

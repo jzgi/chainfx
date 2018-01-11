@@ -39,7 +39,7 @@ namespace Greatbone.Core
 
         R Put(string name, string[] v);
 
-        R Put(string name, Roll<string, string> v);
+        R Put(string name, Map<string, string> v);
 
         R Put(string name, IData v, short proj = 0x00ff);
 

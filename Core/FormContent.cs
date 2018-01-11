@@ -279,7 +279,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, Roll<string, string> v)
+        public FormContent Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }

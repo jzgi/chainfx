@@ -199,7 +199,7 @@ namespace Greatbone.Samp
             }, false, 3);
         }
 
-        static readonly Roll<string, string> MSGS = new Roll<string, string>
+        static readonly Map<string, string> MSGS = new Map<string, string>
         {
             ["订单处理"] = "我们已经接到您的订单（金额{0}元）",
             ["派送通知"] = "销售人员正在派送您所购的商品",

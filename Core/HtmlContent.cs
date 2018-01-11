@@ -2133,11 +2133,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOSET<O>(string name, short v, Roll<short, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET<O>(string name, short v, Map<short, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
             if (opt != null)
             {
+                opt.Begin();
                 for (int i = 0; i < opt.Count; i++)
                 {
                     var o = opt.At(i);
@@ -2157,6 +2158,7 @@ namespace Greatbone.Core
                     Add(o.Value.ToString());
                     Add("</label>");
                 }
+                opt.End();
             }
             _FIELDSET();
             return this;
@@ -2187,11 +2189,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIOSET<O>(string name, string v, Roll<string, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
             if (opt != null)
             {
+                opt.Begin();
                 for (int i = 0; i < opt.Count; i++)
                 {
                     var o = opt.At(i);
@@ -2211,6 +2214,7 @@ namespace Greatbone.Core
                     Add(o.Value.ToString());
                     Add("</label>");
                 }
+                opt.End();
             }
             _FIELDSET();
             return this;
@@ -2317,7 +2321,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, short v, Roll<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, byte box = 0x0c)
+        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add("<select name=\"");
@@ -2333,6 +2337,7 @@ namespace Greatbone.Core
             }
             Add(">");
 
+            opt.Begin();
             for (int i = 0; i < opt.Count; i++)
             {
                 var e = opt.At(i);
@@ -2344,12 +2349,14 @@ namespace Greatbone.Core
                 Add(e.value?.ToString());
                 Add("</option>");
             }
+            opt.End();
+
             Add("</select>");
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string v, Roll<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
+        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2369,6 +2376,7 @@ namespace Greatbone.Core
             }
             Add(">");
 
+            opt.Begin();
             for (int i = 0; i < opt.Count; i++)
             {
                 var e = opt.At(i);
@@ -2380,13 +2388,14 @@ namespace Greatbone.Core
                 Add(e.value.ToString());
                 Add("</option>");
             }
-            Add("</select>");
+            opt.End();
 
+            Add("</select>");
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string[] v, Roll<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
+        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2406,6 +2415,7 @@ namespace Greatbone.Core
             }
             Add(">");
 
+            opt.Begin();
             for (int i = 0; i < opt.Count; i++)
             {
                 var e = opt.At(i);
@@ -2417,6 +2427,7 @@ namespace Greatbone.Core
                 Add(e.value.ToString());
                 Add("</option>");
             }
+            opt.End();
             Add("</select>");
 
             _FIELD(box);

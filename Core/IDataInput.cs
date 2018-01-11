@@ -33,7 +33,7 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string[] v);
 
-        bool Get(string name, ref Roll<string, string> v);
+        bool Get(string name, ref Map<string, string> v);
 
         bool Get<D>(string name, ref D v, short proj = 0x00ff) where D : IData, new();
 
@@ -66,7 +66,7 @@ namespace Greatbone.Core
 
         IDataInput Let(out string[] v);
 
-        IDataInput Let(out Roll<string, string> v);
+        IDataInput Let(out Map<string, string> v);
 
         IDataInput Let<D>(out D v, short proj = 0x00ff) where D : IData, new();
 

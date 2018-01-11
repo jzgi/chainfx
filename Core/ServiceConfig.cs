@@ -20,7 +20,7 @@ namespace Greatbone.Core
         public Db db;
 
         // cluster members in the form of peerid-address pairs
-        public Roll<string, string> cluster;
+        public Map<string, string> cluster;
 
         // logging level
         public int logging = 3;

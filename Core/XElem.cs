@@ -11,7 +11,7 @@ namespace Greatbone.Core
         readonly string tag;
 
         // attributes, can be null
-        Roll<string, string> attrs;
+        Map<string, string> attrs;
 
         // child elements. can be null
         XElem[] children;
@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         int current;
 
-        public XElem(string tag, Roll<string, string> attrs = null)
+        public XElem(string tag, Map<string, string> attrs = null)
         {
             this.tag = tag;
             this.attrs = attrs;
@@ -28,7 +28,7 @@ namespace Greatbone.Core
 
         public string Tag => tag;
 
-        public Roll<string, string> Attrs => attrs;
+        public Map<string, string> Attrs => attrs;
 
         public string Attr(string attr) => attrs?[attr];
 
@@ -41,7 +41,7 @@ namespace Greatbone.Core
         {
             if (attrs == null)
             {
-                attrs = new Roll<string, string>(8);
+                attrs = new Map<string, string>(8);
             }
             attrs.Add(name, value);
         }
@@ -215,7 +215,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Roll<string, string> v)
+        public bool Get(string name, ref Map<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -300,7 +300,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out Roll<string, string> v)
+        public IDataInput Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }

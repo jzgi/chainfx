@@ -152,7 +152,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Roll<string, string> v)
+        public bool Get(string name, ref Map<string, string> v)
         {
             throw new NotImplementedException();
         }
@@ -236,7 +236,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out Roll<string, string> v)
+        public IDataInput Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }

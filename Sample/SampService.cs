@@ -63,7 +63,7 @@ namespace Greatbone.Samp
     /// </summary>
     public class SampService : Service<User>, IAuthenticateAsync
     {
-        public readonly Cache<string, Shop> Shops;
+        public readonly CacheMap<string, Shop> Shops;
 
         public SampService(ServiceConfig cfg) : base(cfg)
         {
@@ -75,7 +75,7 @@ namespace Greatbone.Samp
 
             Create<AdmWork>("adm"); // administrator
 
-            Shops = new Cache<string, Shop>(c =>
+            Shops = new CacheMap<string, Shop>(c =>
             {
                 using (var dc = NewDbContext())
                 {

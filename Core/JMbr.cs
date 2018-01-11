@@ -5,7 +5,7 @@ namespace Greatbone.Core
     ///
     /// A JSON member that is either a value, or a property if with name.
     ///
-    public struct JMbr : IRollable<string>
+    public struct JMbr : IMappable<string>
     {
         // property name, if not null
         readonly string name;

@@ -7,7 +7,7 @@ namespace Greatbone.Samp
     /// </summary>
     public class City : IData
     {
-        public static Roll<string, City> All;
+        public static Map<string, City> All;
 
         public static Area[] AreasOf(string city) => city == null ? null : All[city]?.areas;
 

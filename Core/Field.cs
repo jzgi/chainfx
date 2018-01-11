@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A field in the form model.
     /// </summary>
-    public struct Field : IRollable<string>
+    public struct Field : IMappable<string>
     {
         readonly string name;
 
