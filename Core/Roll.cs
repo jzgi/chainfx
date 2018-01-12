@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A lightweight alternative to List<T>.
+    /// A lightweight alternative to List<T>. The internal array is created on demand.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public struct Roll<T>
@@ -20,6 +20,10 @@ namespace Greatbone.Core
             array = null;
             count = 0;
         }
+
+        public int Count => count;
+
+        public T this[int idx] => array[idx];
 
         public void Add(T v)
         {

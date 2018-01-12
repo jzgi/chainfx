@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -274,7 +273,7 @@ namespace Greatbone.Samp
 //            decimal cash = 2;
 //            int orderid = 106;
             string city, addr;
-            List<string> wxlst = new List<string>(4);
+            Roll<string> wxroll = new Roll<string>(4);
             using (var dc = ac.NewDbContext(ReadCommitted))
             {
                 if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr, items", (p) => p.Set(cash).Set(orderid)))
@@ -295,19 +294,19 @@ namespace Greatbone.Samp
                     while (dc.Next())
                     {
                         dc.Let(out string wx);
-                        wxlst.Add(wx);
+                        wxroll.Add(wx);
                     }
                 }
-                if (wxlst.Count == 0)
+                if (wxroll.Count == 0)
                 {
                     var oprwx = Shops[shopid].oprwx;
-                    if (oprwx != null) wxlst.Add(oprwx);
+                    if (oprwx != null) wxroll.Add(oprwx);
                 }
             }
             // send messages
-            foreach (var wx in wxlst)
+            for (int i = 0; i < wxroll.Count; i++)
             {
-                await PostSendAsync(wx, "收到新单", "单号: " + orderid + "  地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+                await PostSendAsync(wxroll[i], "收到新单", "单号: " + orderid + "  地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
             }
 
             // return xml to WCPay server

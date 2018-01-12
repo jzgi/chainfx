@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
@@ -56,7 +55,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    fro = (DateTime)dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
+                    fro = (DateTime) dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -92,7 +91,7 @@ namespace Greatbone.Samp
         [Ui("转款", "按结款单转款给网点"), Tool(ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
-            List<Transfer> lst = new List<Transfer>(16);
+            Roll<Transfer> rll = new Roll<Transfer>(16);
             using (var dc = ac.NewDbContext())
             {
                 // retrieve
@@ -102,13 +101,14 @@ namespace Greatbone.Samp
                     {
                         Transfer tr;
                         dc.Let(out tr.id).Let(out tr.shopid).Let(out tr.mgrwx).Let(out tr.mgrname).Let(out tr.cash);
-                        lst.Add(tr);
+                        rll.Add(tr);
                     }
                 }
             }
             // do transfer for each
-            foreach (var tr in lst)
+            for (int i = 0; i < rll.Count; i++)
             {
+                var tr = rll[i];
                 string err = await WeiXinUtility.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
                 // update data records
                 using (var dc = ac.NewDbContext())
@@ -119,7 +119,7 @@ namespace Greatbone.Samp
                     }
                     else
                     {
-                        User prin = (User)ac.Principal;
+                        User prin = (User) ac.Principal;
                         // update repay status
                         dc.Execute("UPDATE repays SET err = NULL, payer = @1, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
                         // add a cash journal entry

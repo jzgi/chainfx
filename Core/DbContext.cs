@@ -418,23 +418,6 @@ namespace Greatbone.Core
             return roll.ToArray();
         }
 
-        public Roll<D> ToRoll<D>(short proj = 0x00ff) where D : IData, new()
-        {
-            Roll<D> roll = new Roll<D>(32);
-            while (Next())
-            {
-                D obj = new D();
-                obj.Read(this, proj);
-                // add shard if any
-                if (obj is IShardable sharded)
-                {
-                    sharded.Shard = service.Shard;
-                }
-                roll.Add(obj);
-            }
-            return roll;
-        }
-
         public Map<K, D> ToMap<K, D>(Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
         {
             Map<K, D> map = new Map<K, D>(32);

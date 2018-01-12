@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -80,17 +79,16 @@ namespace Greatbone.Core
             }
 
             // gather styled actions
-            List<ActionInfo> lst = null;
+            Roll<ActionInfo> roll = new Roll<ActionInfo>(16);
             for (int i = 0; i < actions.Count; i++)
             {
                 ActionInfo ai = actions[i];
                 if (ai.HasTool)
                 {
-                    if (lst == null) lst = new List<ActionInfo>();
-                    lst.Add(ai);
+                    roll.Add(ai);
                 }
             }
-            tooled = lst?.ToArray();
+            tooled = roll.ToArray();
         }
 
         public Service Service => cfg.Service;
