@@ -759,7 +759,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(string v, string label = null, string sign = null)
+        public HtmlContent P(string val, string label = null, string sign = null)
         {
             Add("<p>");
             if (label != null)
@@ -768,7 +768,7 @@ namespace Greatbone.Core
                 Add(label);
                 Add("</span>");
             }
-            Add(v);
+            Add(val);
             if (sign != null)
             {
                 Add(sign);
@@ -859,14 +859,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent QRCODE(string v = null, byte box = 0x0c)
+        public HtmlContent QRCODE(string val = null, byte box = 0x0c)
         {
             BOX_(box, false);
             Add("<div>");
             Add("<script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
             Add("new QRCode(scripte.parentNode, \"");
-            Add(v);
+            Add(val);
             Add("\");");
             Add("</script>");
             Add("</div>");
@@ -979,17 +979,17 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent BUTTON(string value, bool post = true)
+        public HtmlContent BUTTON(string val, bool post = true)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
             Add(post ? "post" : "get");
             Add("\">");
-            AddEsc(value);
+            AddEsc(val);
             Add("</button>");
             return this;
         }
 
-        public HtmlContent BUTTON(string name, int subcmd, string value, bool post = true)
+        public HtmlContent BUTTON(string name, int subcmd, string val, bool post = true)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
             Add(post ? "post" : "get");
@@ -998,7 +998,7 @@ namespace Greatbone.Core
             Add('-');
             Add(subcmd);
             Add("\">");
-            AddEsc(value);
+            AddEsc(val);
             Add("</button>");
             return this;
         }
@@ -1515,34 +1515,24 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent HIDDEN(string name, int value)
+        public HtmlContent HIDDEN<V>(string name, V value)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
+            Print(value);
             Add("\">");
             return this;
         }
 
-        public HtmlContent HIDDEN(string name, decimal value)
-        {
-            Add("<input type=\"hidden\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(value);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent TEXT(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEXT(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
             Add("<input type=\"text\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddEsc(v);
+            AddEsc(val);
             Add("\"");
             if (tip != null)
             {
@@ -1576,19 +1566,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string[] vs, string label = null, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEXT(string name, string[] val, string label = null, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
             Add("<input type=\"text\" name=\"");
             Add(name);
             Add("\" value=\"");
-            if (vs != null)
+            if (val != null)
             {
-                for (int i = 0; i > vs.Length; i++)
+                for (int i = 0; i > val.Length; i++)
                 {
                     if (i > 0) Add(' ');
-                    AddEsc(vs[i]);
+                    AddEsc(val[i]);
                 }
             }
             Add("\"");
@@ -1618,14 +1608,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEL(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEL(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
             Add("<input type=\"tel\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddEsc(v);
+            AddEsc(val);
             Add("\"");
             if (tip != null)
             {
@@ -1659,7 +1649,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte box = 0x0c)
+        public HtmlContent SEARCH(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -1667,7 +1657,7 @@ namespace Greatbone.Core
             Add("<input type=\"search\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddEsc(v);
+            AddEsc(val);
             Add("\"");
 
             if (tip != null)
@@ -1706,14 +1696,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent PASSWORD(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
             Add("<input type=\"password\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddEsc(v);
+            AddEsc(val);
             Add("\"");
 
             if (tip != null)
@@ -1751,14 +1741,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent DATE(string name, DateTime v, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, byte box = 0x0c)
+        public HtmlContent DATE(string name, DateTime val, string label = null, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0, byte box = 0x0c)
         {
             FIELD_(label, box);
 
             Add("<input type=\"date\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(v);
+            Add(val);
             Add("\"");
 
             if (max != default)
@@ -1793,23 +1783,32 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, short v, string label = null, string tip = null, short max = short.MaxValue, short min = short.MinValue, short step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        void Print<V>(V v)
+        {
+            if (v is short shortv) Add(shortv);
+            else if (v is int intv) Add(intv);
+            else if (v is long longv) Add(longv);
+            else if (v is string strv) Add(strv);
+            else if (v is decimal decv) Add(decv);
+            else if (v is double doublev) Add(doublev);
+            else if (v is DateTime dtv) Add(dtv);
+        }
+
+        public HtmlContent NUMBER<V>(string name, V val, string label = null, string tip = null, V max = default, V min = default, V step = default, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
-            bool group = step > 0; // input group with up up and down
+            bool group = step.Equals(default(V)); // input group with up up and down
             if (group)
             {
                 Add("<div class=\"input-group\">");
                 Add("<a class=\"input-group-label round\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
             }
-
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(v);
+            Print(val);
             Add("\"");
-
             if (group)
             {
                 Add(" class=\"input-group-field\"");
@@ -1821,22 +1820,19 @@ namespace Greatbone.Core
                 Add(tip);
                 Add("\"");
             }
-            if (max != short.MaxValue)
+            Add(" min=\"");
+            Print(min);
+            Add("\"");
+            if (!max.Equals(default(V)))
             {
                 Add(" max=\"");
-                Add(max);
+                Print(max);
                 Add("\"");
             }
-            if (min != short.MinValue)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
+            if (!step.Equals(default(V)))
             {
                 Add(" step=\"");
-                Add(step);
+                Print(step);
                 Add("\"");
             }
             if (@readonly) Add(" readonly");
@@ -1854,172 +1850,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent NUMBER(string name, int v, string label = null, string tip = null, int max = int.MaxValue, int min = int.MinValue, int step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-
-            Add("<input type=\"number\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v);
-            Add("\"");
-
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
-            }
-            if (max != int.MaxValue)
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != int.MinValue)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
-            {
-                Add(" step=\"");
-                Add(step);
-                Add("\"");
-            }
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            Add(">");
-
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent NUMBER(string name, long v, string label = null, string tip = null, long max = 0, long min = 0, long step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-
-            Add("<input type=\"number\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v);
-            Add("\"");
-
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
-            }
-            if (max != 0)
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != 0)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (step != 0)
-            {
-                Add(" step=\"");
-                Add(step);
-                Add("\"");
-            }
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            Add(">");
-
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = 0, decimal min = 0, decimal step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-
-            Add("<input type=\"number\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v);
-            Add("\"");
-
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
-            }
-            if (max != 0)
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min != 0)
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-
-            Add(" step=\"");
-            if (step > 0) Add(step);
-            else Add("any");
-            Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            Add(">");
-
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent NUMBER(string name, double v, string label = null, string tip = null, double max = 0, double min = 0, double step = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-
-            Add("<input type=\"number\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v);
-            Add("\"");
-
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
-            }
-            if (!max.Equals(0))
-            {
-                Add(" max=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (!min.Equals(0))
-            {
-                Add(" min=\"");
-                Add(min);
-                Add("\"");
-            }
-
-            Add(" step=\"");
-            if (step > 0) Add(step);
-            else Add("any");
-            Add("\"");
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            Add(">");
-
-            _FIELD(box);
-            return this;
-        }
-
         public HtmlContent RANGE()
         {
             return this;
@@ -2030,7 +1860,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool v, string label = null, bool required = false, byte box = 0x0c)
+        public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false, byte box = 0x0c)
         {
             FIELD_(null, box);
 
@@ -2041,7 +1871,7 @@ namespace Greatbone.Core
             Add("<input type=\"checkbox\" name=\"");
             Add(name);
             Add("\"");
-            if (v) Add(" checked");
+            if (val) Add(" checked");
             if (required) Add(" required");
             Add(">");
             if (label != null)
@@ -2054,185 +1884,74 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOXSET(string name, string[] v, string[] opts, string legend = null, byte box = 0x0c)
+        public HtmlContent CHECKBOXSET(string name, string[] val, string[] opt, string legend = null, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
-            for (int i = 0; i < opts.Length; i++)
+            for (int i = 0; i < opt.Length; i++)
             {
-                var item = opts[i];
+                var e = opt[i];
                 Add(" <label>");
                 Add("<input type=\"checkbox\" name=\"");
                 Add(name);
                 Add("\"");
-                if (v != null && v.Contains(item))
+                if (val != null && val.Contains(e))
                 {
                     Add(" checked");
                 }
                 Add(">");
-                Add(item);
+                Add(e);
                 Add(" </label>");
             }
             _FIELDSET();
             return this;
         }
 
-        public HtmlContent RADIO(string name, short value, string label = null, bool @checked = false)
+        public HtmlContent RADIO<V>(string name, V val, string label = null, bool @checked = false)
         {
             Add("<label>");
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(value);
+            Print(val);
             Add(@checked ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
             return this;
         }
 
-        public HtmlContent RADIO(string name, int value, string label = null, bool @checked = false)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(value);
-            Add(@checked ? "\" checked>" : "\">");
-            Add(label);
-            Add("</label>");
-            return this;
-        }
-
-        public HtmlContent RADIO(string name, long value, string label = null, bool @checked = false)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(value);
-            Add(@checked ? "\" checked>" : "\">");
-            Add(label);
-            Add("</label>");
-            return this;
-        }
-
-        public HtmlContent RADIO(string name, string v, string label = null, bool @checked = false)
-        {
-            Add("<label>");
-            Add("<input type=\"radio\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            Add(v);
-            Add("\"");
-            if (@checked)
-            {
-                Add(" checked");
-            }
-            Add(">");
-            Add(label ?? v);
-            Add("</label>");
-            return this;
-        }
-
-        public HtmlContent RADIOSET<O>(string name, short v, Map<short, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET<K, V>(string name, K val, Map<K, V> opt = null, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
             if (opt != null)
             {
-                opt.EnterRead();
-                try
+                lock (opt)
                 {
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var o = opt.At(i);
+                        var e = opt.At(i);
                         Add("<label>");
                         Add("<input type=\"radio\" name=\"");
                         Add(name);
                         Add("\" id=\"");
                         Add(name);
-                        Add(o.Key);
+                        Print(e.Key);
                         Add("\"");
                         Add("\" value=\"");
-                        Add(o.Key);
+                        Print(e.Key);
                         Add("\"");
-                        if (o.Key.Equals(v)) Add(" checked");
+                        if (e.Key.Equals(val)) Add(" checked");
                         if (required) Add(" required");
                         Add(">");
-                        Add(o.Value.ToString());
+                        Add(e.Value.ToString());
                         Add("</label>");
                     }
                 }
-                finally
-                {
-                    opt.ExitRead();
-                }
             }
             _FIELDSET();
             return this;
         }
 
-        public HtmlContent RADIOSET<O>(string name, string v, O[] opt = null, string legend = null, bool required = false, byte box = 0x0c)
-        {
-            FIELDSET_(legend, box);
-            if (opt != null)
-            {
-                for (int i = 0; i < opt.Length; i++)
-                {
-                    var o = opt[i];
-                    Add("<label>");
-                    Add("<input type=\"radio\" name=\"");
-                    Add(name);
-                    Add("\" value=\"");
-                    Add(o.ToString());
-                    Add("\"");
-                    if (o.ToString().Equals(v)) Add(" checked");
-                    if (required) Add(" required");
-                    Add(">");
-                    Add(o.ToString());
-                    Add("</label>");
-                }
-            }
-            _FIELDSET();
-            return this;
-        }
-
-        public HtmlContent RADIOSET<O>(string name, string v, Map<string, O> opt = null, string legend = null, bool required = false, byte box = 0x0c)
-        {
-            FIELDSET_(legend, box);
-            if (opt != null)
-            {
-                opt.EnterRead();
-                try
-                {
-                    for (int i = 0; i < opt.Count; i++)
-                    {
-                        var o = opt.At(i);
-                        Add("<label>");
-                        Add("<input type=\"radio\" name=\"");
-                        Add(name);
-                        Add("\" id=\"");
-                        Add(name);
-                        Add(o.Key);
-                        Add("\"");
-                        Add("\" value=\"");
-                        Add(o.Key);
-                        Add("\"");
-                        if (o.Key.Equals(v)) Add(" checked");
-                        if (required) Add(" required");
-                        Add(">");
-                        Add(o.Value.ToString());
-                        Add("</label>");
-                    }
-                }
-                finally
-                {
-                    opt.ExitRead();
-                }
-            }
-            _FIELDSET();
-            return this;
-        }
-
-        public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET(string name, string val, string[] opt, string legend = null, bool required = false, byte box = 0x0c)
         {
             FIELDSET_(legend, box);
             for (int i = 0; i < opt.Length; i++)
@@ -2245,7 +1964,7 @@ namespace Greatbone.Core
                 Add(item);
                 Add("\"");
 
-                if (item.Equals(v)) Add(" checked");
+                if (item.Equals(val)) Add(" checked");
                 if (required) Add(" required");
                 Add(">");
 
@@ -2256,7 +1975,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEXTAREA(string name, string val, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
         {
             FIELD_(label, box);
             Add("<textarea name=\"");
@@ -2290,7 +2009,7 @@ namespace Greatbone.Core
             if (required) Add(" required");
 
             Add(">");
-            AddEsc(v);
+            AddEsc(val);
             Add("</textarea>");
             _FIELD(box);
             return this;
@@ -2321,10 +2040,21 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent OPTION(string value, string label, bool selected = false)
+        public HtmlContent OPTION<T>(T val, string label, bool selected = false)
         {
             Add("<option value=\"");
-            Add(value);
+            if (val is short shortv)
+            {
+                Add(shortv);
+            }
+            else if (val is int intv)
+            {
+                Add(intv);
+            }
+            else if (val is string strv)
+            {
+                Add(strv);
+            }
             Add("\"");
             if (selected) Add(" selected");
             Add(">");
@@ -2333,48 +2063,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, short v, Map<short, O> opt, string label = null, bool multiple = false, bool required = false, int size = 0, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            Add("<select name=\"");
-            Add(name);
-            Add("\"");
-            if (multiple) Add(" multiple");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            Add(">");
-
-            opt.EnterRead();
-            try
-            {
-                for (int i = 0; i < opt.Count; i++)
-                {
-                    var e = opt.At(i);
-                    Add("<option value=\"");
-                    Add(e.Key);
-                    Add("\"");
-                    if (e.Key == v) Add(" selected");
-                    Add(">");
-                    Add(e.value?.ToString());
-                    Add("</option>");
-                }
-            }
-            finally
-            {
-                opt.ExitRead();
-            }
-
-            Add("</select>");
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent SELECT<O>(string name, string v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
+        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2393,33 +2082,41 @@ namespace Greatbone.Core
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
             }
             Add(">");
-
-            opt.EnterRead();
-            try
+            if (opt != null)
             {
-                for (int i = 0; i < opt.Count; i++)
+                lock (opt)
                 {
-                    var e = opt.At(i);
-                    Add("<option value=\"");
-                    Add(e.key);
-                    Add("\"");
-                    if (e.key == v) Add(" selected");
-                    Add(">");
-                    Add(e.value.ToString());
-                    Add("</option>");
+                    for (int i = 0; i < opt.Count; i++)
+                    {
+                        var e = opt.At(i);
+                        var key = e.key;
+                        Add("<option value=\"");
+                        if (key is short shortv)
+                        {
+                            Add(shortv);
+                        }
+                        else if (key is int intv)
+                        {
+                            Add(intv);
+                        }
+                        else if (key is string strv)
+                        {
+                            Add(strv);
+                        }
+                        Add("\"");
+                        if (key.Equals(v)) Add(" selected");
+                        Add(">");
+                        Add(e.value?.ToString());
+                        Add("</option>");
+                    }
                 }
             }
-            finally
-            {
-                opt.ExitRead();
-            }
-
             Add("</select>");
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent SELECT<O>(string name, string[] v, Map<string, O> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
+        public HtmlContent SELECT<K, V>(string name, K[] v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2439,27 +2136,36 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            opt.EnterRead();
-            try
+            if (opt != null)
             {
-                for (int i = 0; i < opt.Count; i++)
+                lock (opt)
                 {
-                    var e = opt.At(i);
-                    Add("<option value=\"");
-                    Add(e.key);
-                    Add("\"");
-                    if (v.Contains(e.key)) Add(" selected");
-                    Add(">");
-                    Add(e.value.ToString());
-                    Add("</option>");
+                    for (int i = 0; i < opt.Count; i++)
+                    {
+                        var e = opt.At(i);
+                        var key = e.key;
+                        Add("<option value=\"");
+                        if (key is short shortv)
+                        {
+                            Add(shortv);
+                        }
+                        else if (key is int intv)
+                        {
+                            Add(intv);
+                        }
+                        else if (key is string strv)
+                        {
+                            Add(strv);
+                        }
+                        Add("\"");
+                        if (v.Contains(key)) Add(" selected");
+                        Add(">");
+                        Add(e.value.ToString());
+                        Add("</option>");
+                    }
                 }
             }
-            finally
-            {
-                opt.ExitRead();
-            }
             Add("</select>");
-
             _FIELD(box);
             return this;
         }
@@ -2483,20 +2189,21 @@ namespace Greatbone.Core
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
             }
             Add(">");
-
             if (opt != null)
             {
-                for (int i = 0; i < opt.Length; i++)
+                lock (opt)
                 {
-                    string key = opt[i];
-                    Add("<option value=\"");
-                    Add(key);
-                    Add("\"");
-                    if (key == v) Add(" selected");
-                    Add(">");
-
-                    Add(key);
-                    Add("</option>");
+                    for (int i = 0; i < opt.Length; i++)
+                    {
+                        var e = opt[i];
+                        Add("<option value=\"");
+                        Add(e);
+                        Add("\"");
+                        if (e.Equals(v)) Add(" selected");
+                        Add(">");
+                        Add(e);
+                        Add("</option>");
+                    }
                 }
             }
             Add("</select>");
@@ -2505,48 +2212,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<D>(string name, string v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where D : IData
-        {
-            FIELD_(label, box);
-
-            Add("<select name=\"");
-            Add(name);
-            Add("\"");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            if (refresh)
-            {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
-            }
-            Add(">");
-
-            if (opt != null)
-            {
-                for (int i = 0; i < opt.Length; i++)
-                {
-                    string key = opt[i].ToString();
-                    Add("<option value=\"");
-                    Add(key);
-                    Add("\"");
-                    if (key == v) Add(" selected");
-                    Add(">");
-
-                    Add(key);
-                    Add("</option>");
-                }
-            }
-            Add("</select>");
-
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent SELECT<D>(string name, string[] v, D[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where D : IData
+        public HtmlContent SELECT(string name, string[] v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
             FIELD_(label, box);
 
@@ -2570,14 +2236,103 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < opt.Length; i++)
                 {
-                    string key = opt[i].ToString();
+                    var e = opt[i];
                     Add("<option value=\"");
-                    Add(key);
+                    Add(e);
+                    Add("\"");
+                    if (v.Contains(e)) Add(" selected");
+                    Add(">");
+                    Add(e);
+                    Add("</option>");
+                }
+            }
+            Add("</select>");
+
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent SELECT<K, V>(string name, K v, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IMappable<K>
+        {
+            FIELD_(label, box);
+
+            Add("<select name=\"");
+            Add(name);
+            Add("\" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
+            Add(">");
+
+            if (opt != null)
+            {
+                for (int i = 0; i < opt.Length; i++)
+                {
+                    var e = opt[i];
+                    var key = e.Key;
+                    Add("<option value=\"");
+                    if (key is short shortv) Add(shortv);
+                    else if (key is int intv) Add(intv);
+                    else if (key is string strv) Add(strv);
+                    Add("\"");
+                    if (v.Equals(key)) Add(" selected");
+                    Add(">");
+                    if (key is short shortc) Add(shortc);
+                    else if (key is int intc) Add(intc);
+                    else if (key is string strc) Add(strc);
+                    Add("</option>");
+                }
+            }
+            Add("</select>");
+
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent SELECT<K, V>(string name, K[] v, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IMappable<K>
+        {
+            FIELD_(label, box);
+
+            Add("<select name=\"");
+            Add(name);
+            Add("\" multiple");
+            if (required) Add(" required");
+            if (size > 0)
+            {
+                Add(" size=\"");
+                Add(size);
+                Add("\"");
+            }
+            if (refresh)
+            {
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+            }
+            Add(">");
+
+            if (opt != null)
+            {
+                for (int i = 0; i < opt.Length; i++)
+                {
+                    var e = opt[i];
+                    var key = e.Key;
+                    Add("<option value=\"");
+                    if (key is short shortv) Add(shortv);
+                    else if (key is int intv) Add(intv);
+                    else if (key is string strv) Add(strv);
                     Add("\"");
                     if (v.Contains(key)) Add(" selected");
                     Add(">");
-
-                    Add(key);
+                    if (key is short shortc) Add(shortc);
+                    else if (key is int intc) Add(intc);
+                    else if (key is string strc) Add(strc);
                     Add("</option>");
                 }
             }

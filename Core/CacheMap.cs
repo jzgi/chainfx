@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Greatbone.Core
 {
@@ -19,8 +18,6 @@ namespace Greatbone.Core
         // tick count,   
         int expiry;
 
-        readonly ReaderWriterLockSlim lck = new ReaderWriterLockSlim();
-
         public CacheMap(Action<CacheMap<K, V>> loader, int age = 3600 * 12)
         {
             this.age = age;
@@ -31,13 +28,10 @@ namespace Greatbone.Core
 
         public Exception Excep => excep;
 
-        public override void EnterRead()
+        void Reload()
         {
-            lck.EnterUpgradeableReadLock();
-
             if (Environment.TickCount >= expiry)
             {
-                lck.EnterWriteLock();
                 try
                 {
                     Clear();
@@ -50,83 +44,46 @@ namespace Greatbone.Core
                 finally
                 {
                     expiry = (Environment.TickCount & int.MaxValue) + age * 1000;
-                    lck.ExitWriteLock();
                 }
             }
-        }
-
-        public override void ExitRead()
-        {
-            lck.ExitUpgradeableReadLock();
         }
 
         public override V this[K key]
         {
             get
             {
-                EnterRead();
-                try
+                lock (this)
                 {
+                    Reload();
                     return base[key];
-                }
-                finally
-                {
-                    ExitRead();
                 }
             }
         }
 
         public override V First(Predicate<V> cond = null)
         {
-            EnterRead();
-            try
+            lock (this)
             {
+                Reload();
                 return base.First(cond);
-            }
-            finally
-            {
-                ExitRead();
             }
         }
 
         public override V[] All(Predicate<V> cond = null)
         {
-            EnterRead();
-            try
+            lock (this)
             {
+                Reload();
                 return base.All(cond);
-            }
-            finally
-            {
-                ExitRead();
             }
         }
 
-        public override void ForEach(Func<K, V, bool> cond, Action<K, V> hand, bool write = false)
+        public override void ForEach(Func<K, V, bool> cond, Action<K, V> hand)
         {
-            EnterRead();
-            try
+            lock (this)
             {
-                if (write)
-                {
-                    lck.EnterWriteLock();
-                    try
-                    {
-                        base.ForEach(cond, hand, true);
-                    }
-                    finally
-                    {
-                        lck.ExitWriteLock();
-                    }
-                }
-                else
-                {
-                    base.ForEach(cond, hand, false);
-                }
-            }
-            finally
-            {
-                ExitRead();
+                Reload();
+                base.ForEach(cond, hand);
             }
         }
     }

@@ -69,7 +69,7 @@ namespace Greatbone.Samp
         }
     }
 
-    public struct Area : IData
+    public struct Area : IData, IMappable<string>
     {
         internal string name;
 
@@ -91,5 +91,7 @@ namespace Greatbone.Samp
         {
             return name;
         }
+
+        public string Key => name;
     }
 }

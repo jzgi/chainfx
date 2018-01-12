@@ -172,7 +172,7 @@ namespace Greatbone.Samp
                 {
                     var shop = ((SampService) Service).Shops[shopid];
                     m.FORM_();
-                    m.RADIOSET<string>(nameof(filter), filter, shop.areas);
+                    m.RADIOSET(nameof(filter), filter, shop.areas);
                     m._FORM();
                 });
                 return;

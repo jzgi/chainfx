@@ -152,14 +152,6 @@ namespace Greatbone.Core
         //
         // advanced search operations that can be overridden with concurrency constructs
 
-        public virtual void EnterRead()
-        {
-        }
-
-        public virtual void ExitRead()
-        {
-        }
-
         public virtual V this[K key]
         {
             get
@@ -200,7 +192,7 @@ namespace Greatbone.Core
             return default;
         }
 
-        public virtual void ForEach(Func<K, V, bool> cond, Action<K, V> hand, bool write = false)
+        public virtual void ForEach(Func<K, V, bool> cond, Action<K, V> hand)
         {
             for (int i = 0; i < count; i++)
             {
