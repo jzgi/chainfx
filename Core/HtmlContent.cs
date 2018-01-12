@@ -2252,13 +2252,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K v, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IMappable<K>
+        public HtmlContent SELECT<K, V>(string name, K val, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IMappable<K>
         {
             FIELD_(label, box);
 
             Add("<select name=\"");
             Add(name);
-            Add("\" multiple");
+            Add("\"");
             if (required) Add(" required");
             if (size > 0)
             {
@@ -2283,11 +2283,9 @@ namespace Greatbone.Core
                     else if (key is int intv) Add(intv);
                     else if (key is string strv) Add(strv);
                     Add("\"");
-                    if (v.Equals(key)) Add(" selected");
+                    if (key.Equals(val)) Add(" selected");
                     Add(">");
-                    if (key is short shortc) Add(shortc);
-                    else if (key is int intc) Add(intc);
-                    else if (key is string strc) Add(strc);
+                    Add(e.ToString());
                     Add("</option>");
                 }
             }
@@ -2328,7 +2326,7 @@ namespace Greatbone.Core
                     else if (key is int intv) Add(intv);
                     else if (key is string strv) Add(strv);
                     Add("\"");
-                    if (v.Contains(key)) Add(" selected");
+                    if (v != null && v.Contains(key)) Add(" selected");
                     Add(">");
                     if (key is short shortc) Add(shortc);
                     else if (key is int intc) Add(intc);

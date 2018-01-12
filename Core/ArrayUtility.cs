@@ -69,7 +69,7 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public static E Find<E>(this E[] arr, Predicate<E> cond)
+        public static E First<E>(this E[] arr, Predicate<E> cond)
         {
             if (arr != null)
             {
@@ -83,7 +83,7 @@ namespace Greatbone.Core
             return default;
         }
 
-        public static int FindIndex<E>(this E[] arr, Predicate<E> cond)
+        public static int IndexOf<E>(this E[] arr, Predicate<E> cond)
         {
             if (arr != null)
             {

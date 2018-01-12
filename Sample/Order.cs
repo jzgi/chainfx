@@ -128,7 +128,7 @@ namespace Greatbone.Samp
 
         public void AddItem(string name, string unit, decimal price, short n)
         {
-            int idx = items.FindIndex(o => o.name.Equals(name));
+            int idx = items.IndexOf(o => o.name.Equals(name));
             if (idx != -1)
             {
                 items[idx].qty += n;
@@ -162,7 +162,7 @@ namespace Greatbone.Samp
 
         public void ReceiveItem(string name, string unit, decimal price, short n)
         {
-            int idx = items.FindIndex(o => o.name.Equals(name));
+            int idx = items.IndexOf(o => o.name.Equals(name));
             if (idx != -1)
             {
                 items[idx].load += n;

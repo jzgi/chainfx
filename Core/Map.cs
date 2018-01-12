@@ -167,16 +167,16 @@ namespace Greatbone.Core
 
         public virtual V[] All(Predicate<V> cond = null)
         {
-            Roll<V> lst = new Roll<V>(16);
+            Roll<V> roll = new Roll<V>(16);
             for (int i = 0; i < count; i++)
             {
                 V v = entries[i].value;
                 if (cond == null || cond(v))
                 {
-                    lst.Add(v);
+                    roll.Add(v);
                 }
             }
-            return lst.ToArray();
+            return roll.ToArray();
         }
 
         public virtual V First(Predicate<V> cond = null)
