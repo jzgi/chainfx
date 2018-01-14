@@ -160,7 +160,7 @@ namespace Greatbone.Samp
             bool inner = ac.Query[nameof(inner)];
             if (!inner)
             {
-                ac.GiveFrame(200, false, 60 * 15, "粗粮达人网点操作");
+                ac.GiveFrame(200, false, 60 * 15, "店铺操作");
                 return;
             }
 
@@ -317,7 +317,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("上下班", Group = 1), Tool(ButtonShow), User(OPRSTAFF)]
+        [Ui("上下班"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task status(ActionContext ac)
         {
             User prin = (User) ac.Principal;

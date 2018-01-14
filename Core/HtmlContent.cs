@@ -257,7 +257,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent A(string v, string href, bool? solid_button = null, bool parent = false)
+        public HtmlContent A(string v, string href, bool? hollow = null, bool parent = false)
         {
             Add("<a href=\"");
             Add(href);
@@ -265,15 +265,15 @@ namespace Greatbone.Core
             {
                 Add("\" target=\"_parent");
             }
-            if (solid_button.HasValue)
+            if (hollow.HasValue)
             {
-                if (solid_button == true)
+                if (hollow == true)
                 {
-                    Add("\" class=\"button primary");
+                    Add("\" class=\"button primary hollow");
                 }
                 else
                 {
-                    Add("\" class=\"button primary hollow");
+                    Add("\" class=\"button primary");
                 }
             }
             Add("\">");
@@ -1009,6 +1009,18 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent FOOT_()
+        {
+            Add("<footer class=\"foot grid-x\">");
+            return this;
+        }
+
+        public HtmlContent _FOOT()
+        {
+            Add("</footer>");
+            return this;
+        }
+
         public HtmlContent CALLOUT(string v, bool closable = false)
         {
             Add("<div class=\"callout primary\"");
@@ -1070,11 +1082,11 @@ namespace Greatbone.Core
             for (int i = 0; i < ais?.Length; i++)
             {
                 var ai = ais[i];
-                if (ai.Group != group)
+                if (ai.Group != 0 && ai.Group != group)
                 {
                     continue;
                 }
-                Tool(ais[i], null);
+                Tool(ais[i], null, 0);
             }
             _TOOLBAR(title, refresh);
         }
@@ -1082,7 +1094,7 @@ namespace Greatbone.Core
         public HtmlContent TOOLBAR_()
         {
             Add("<header data-sticky-container>");
-            Add("<form id=\"tool-bar-form\" class=\"sticky tool-bar\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+            Add("<form id=\"tool-bar-form\" class=\"sticky tool-bar\" style=\"width: 100%\" data-sticky data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
             return this;
         }
 
@@ -1328,24 +1340,25 @@ namespace Greatbone.Core
 
         public HtmlContent _TAIL(short group = 0)
         {
-            if (group >= 0)
+            if (model == null)
             {
-                if (model == null)
+                var work = actionCtx.Work;
+                Add("<div style=\"margin-left: auto\">");
+                if (group == 0)
                 {
-                    var work = actionCtx.Work;
-                    Add("<div style=\"margin-left: auto\">");
-                    Tools(work, (short) ordinal, null); // negative orderinal as group
-                    Add("</div>");
+                    group = (short) ordinal;
                 }
-                else
+                Tools(work, group, null);
+                Add("</div>");
+            }
+            else
+            {
+                Work work = actionCtx.Work.VarWork;
+                if (work != null)
                 {
-                    Work work = actionCtx.Work.VarWork;
-                    if (work != null)
-                    {
-                        Add("<div style=\"margin-left: auto\">");
-                        Tools(work, group, model);
-                        Add("</div>");
-                    }
+                    Add("<div style=\"margin-left: auto\">");
+                    Tools(work, group, model);
+                    Add("</div>");
                 }
             }
             Add("</div>");
@@ -1375,32 +1388,38 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 var ai = ais[i];
-                if (ai.Group != group)
+                if (ai.Group != 0 && ai.Group != group)
                 {
                     continue;
                 }
-                Tool(ais[i], obj);
+                Tool(ais[i], obj, ordinal);
             }
         }
 
         public HtmlContent TOOL(string name, int subscript = -1)
         {
-            if (model == null)
-            {
-                var work = actionCtx.Work;
-                var ai = work.GetAction(name);
-                Tool(ai, null, subscript);
-            }
-            else
+            if (model != null)
             {
                 var work = actionCtx.Work.VarWork;
                 var ai = work.GetAction(name);
-                Tool(ai, model, subscript);
+                Tool(ai, model, ordinal, subscript);
+            }
+            else if (ordinal > 0)
+            {
+                var work = actionCtx.Work.VarWork;
+                var ai = work.GetAction(name);
+                Tool(ai, null, ordinal, subscript);
+            }
+            else
+            {
+                var work = actionCtx.Work;
+                var ai = work.GetAction(name);
+                Tool(ai, null, 0, subscript);
             }
             return this;
         }
 
-        void Tool(ActionInfo ai, IData obj, int subscript = -1)
+        void Tool(ActionInfo ai, IData obj, int ordinal, int subscript = -1)
         {
             var tool = ai.Tool;
             bool ok = ai.DoAuthorize(actionCtx) && ai.DoState(actionCtx, obj);
@@ -1412,6 +1431,11 @@ namespace Greatbone.Core
                 if (obj != null)
                 {
                     ai.Work.PutVariableKey(obj, this);
+                    Add('/');
+                }
+                else if (ordinal > 0)
+                {
+                    Add(ordinal);
                     Add('/');
                 }
                 Add(ai.RPath);
@@ -1436,6 +1460,11 @@ namespace Greatbone.Core
                 if (obj != null)
                 {
                     ai.Work.PutVariableKey(obj, this);
+                    Add('/');
+                }
+                else if (ordinal > 0)
+                {
+                    Add(ordinal);
                     Add('/');
                 }
                 Add(ai.Key);

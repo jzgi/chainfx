@@ -54,8 +54,8 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("购买"), Tool(ButtonShow), Item('A')]
-        public async Task Add(ActionContext ac)
+        [Ui("购买"), Tool(ButtonOpen), Item('A')]
+        public async Task add(ActionContext ac)
         {
             User prin = (User) ac.Principal;
             string shopid = ac[-1];
@@ -110,6 +110,8 @@ namespace Greatbone.Samp
                         var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
+
+                        h.FOOT_().BUTTON("确定")._FOOT();
                         h._FORM();
                     }
                 });
@@ -161,7 +163,11 @@ namespace Greatbone.Samp
                         const short proj = -1 ^ Order.KEY ^ Order.LATER;
                         dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
                     }
-                    ac.GivePane(200);
+                    ac.GivePane(200, m =>
+                    {
+                        m.FOOT_().A("继续选购", "", hollow:true).A("订单付款¥","/my//order/", hollow:true, parent:true)._FOOT();
+
+                    });
                 }
             }
         }

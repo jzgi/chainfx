@@ -1228,7 +1228,7 @@ button.button {
 
 .button:hover, .button:focus {
     background-color: midnightblue;
-    color: gainsboro;
+    color: white;
 }
 
 .button.tiny { font-size: 0.6rem; }
@@ -1246,12 +1246,12 @@ button.button {
 
 .button.primary {
     background-color: darkblue;
-    color: #e9e9e9;
+    color: gainsboro;
 }
 
 .button.primary:hover, .button.primary:focus {
     background-color: midnightblue;
-    color: #e9e9e9;
+    color: gainsboro;
 }
 
 .button.alert {
@@ -1400,7 +1400,7 @@ button.button {
 
 .button.hollow.primary:hover, .button.hollow.primary:focus {
     border-color: midnightblue;
-    color: midnightblue;
+    color: darkblue;
 }
 
 .button.hollow.primary:hover.disabled, .button.hollow.primary:hover[disabled], .button.hollow.primary:focus.disabled, .button.hollow.primary:focus[disabled] {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using static System.Environment;
 
 namespace Greatbone.Core
@@ -9,21 +10,17 @@ namespace Greatbone.Core
     public static class BufferUtility
     {
         // we use number ocores as a factor
-        static readonly int factor = ProcessorCount <= 2 ? 1 :
-            ProcessorCount <= 4 ? 2 :
-            ProcessorCount <= 8 ? 3 :
-            ProcessorCount <= 16 ? 4 :
-            ProcessorCount <= 32 ? 5 : 6;
+        static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
 
         // for byte buffers, stuffed only when being used
         static readonly Queue<byte[]>[] bpool =
         {
-            new Queue<byte[]>(512, factor * 32),
+            new Queue<byte[]>(512, factor * 16),
             new Queue<byte[]>(1024 * 2, factor * 16),
-            new Queue<byte[]>(1024 * 8, factor * 16),
+            new Queue<byte[]>(1024 * 8, factor * 8),
             new Queue<byte[]>(1024 * 32, factor * 8),
-            new Queue<byte[]>(1024 * 128, factor * 8),
-            new Queue<byte[]>(1024 * 512, factor * 4)
+            new Queue<byte[]>(1024 * 128, factor * 4),
+            new Queue<byte[]>(1024 * 512, factor * 2)
         };
 
         // for char buffers

@@ -7,8 +7,7 @@
 }
 
 .pane {
-    padding: 0.25rem;
-    background-color: #f5efef;
+    background-color: gainsboro;
 }
 
 .tool-bar {
@@ -24,6 +23,15 @@
     display: flex;
     align-items: center;
     margin-left: auto;
+}
+
+.foot {
+    width: 100%;
+    height: 2.5rem;
+    position: fixed;
+    bottom: 0;
+    padding-top: 0.5rem;
+    background-color: white;
 }
 
 .board-view {

@@ -55,7 +55,7 @@ namespace Greatbone.Samp
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        [Ui("进入该店铺"), Tool(Anchor)]
+        [Ui("进入该网点"), Tool(Anchor)]
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];

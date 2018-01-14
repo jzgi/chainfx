@@ -34,7 +34,6 @@ namespace Greatbone.Samp
         internal string oprwx;
         internal string oprtel;
         internal string oprname;
-        internal Article[] articles;
         internal short status;
 
         internal ArraySegment<byte> icon, img1, img2, img3, img4;
@@ -58,7 +57,6 @@ namespace Greatbone.Samp
                 i.Get(nameof(min), ref min);
                 i.Get(nameof(notch), ref notch);
                 i.Get(nameof(off), ref off);
-                i.Get(nameof(articles), ref articles);
             }
             if ((proj & LATER) == LATER)
             {
@@ -99,7 +97,6 @@ namespace Greatbone.Samp
                 o.Put(nameof(min), min);
                 o.Put(nameof(notch), notch);
                 o.Put(nameof(off), off);
-                o.Put(nameof(articles), articles);
             }
             if ((proj & LATER) == LATER)
             {
@@ -122,34 +119,5 @@ namespace Greatbone.Samp
         }
 
         public string Key => id;
-    }
-
-
-    public struct Article : IData
-    {
-        internal string name;
-
-        internal short qty;
-
-        internal string unit;
-
-        public void Read(IDataInput i, short proj = 0x00ff)
-        {
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(qty), ref qty);
-            i.Get(nameof(unit), ref unit);
-        }
-
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
-        {
-            o.Put(nameof(name), name);
-            o.Put(nameof(qty), qty);
-            o.Put(nameof(unit), unit);
-        }
-
-        public override string ToString()
-        {
-            return name;
-        }
     }
 }

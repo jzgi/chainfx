@@ -82,56 +82,5 @@ namespace Greatbone.Samp
             }
             ac.GiveRedirect();
         }
-
-        [Ui("盘存"), Tool(AnchorOpen), User(OPRSTAFF)]
-        public async Task things(ActionContext ac)
-        {
-            string shopid = ac[-1];
-            var f = await ac.ReadAsync<Form>();
-            if (ac.GET)
-            {
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = ac.NewDbContext())
-                    {
-                        var shop = ((SampService) Service).Shops[shopid];
-                        if (shop.articles != null)
-                        {
-                            for (int i = 0; i < shop.articles.Length; i++)
-                            {
-                                var o = shop.articles[i];
-                                h.FIELD(o.name, box: 5).NUMBER(o.name, (short) 0, min: (short) 0, step: (short) 1, box: 5).INPBUTTON("X", "$(this).closest()");
-                            }
-                        }
-                        h.INPBUTTON("+", "");
-                    }
-                    h._FORM();
-                });
-            }
-//            h.CARD_();
-//            h.CAPTION("盘存");
-//            if (o.articles != null)
-//            {
-//                for (int i = 0; i < o.articles.Length; i++)
-//                {
-//                    var sup = o.articles[i];
-//                    h.FIELD(sup.name, box: 8).FIELD(sup.qty, box: 2).FIELD(sup.unit, box: 2);
-//                }
-//            }
-//            h.TAIL();
-//            h._CARD();
-
-
-            string[] key = f[nameof(key)];
-            if (key != null)
-            {
-                using (var dc = ac.NewDbContext())
-                {
-                    dc.Execute(dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key), p => p.Set(shopid), false);
-                }
-            }
-            ac.GiveRedirect();
-        }
     }
 }
