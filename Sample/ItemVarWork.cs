@@ -111,7 +111,7 @@ namespace Greatbone.Samp
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
 
-                        h.FOOT_().BUTTON("确定")._FOOT();
+                        h.FOOTBAR_().BUTTON("确定")._FOOTBAR();
                         h._FORM();
                     }
                 });
@@ -165,8 +165,8 @@ namespace Greatbone.Samp
                     }
                     ac.GivePane(200, m =>
                     {
-                        m.FOOT_().A("继续选购", "", hollow:true).A("订单付款¥","/my//order/", hollow:true, parent:true)._FOOT();
-
+                        m.T("商品已经成功加入购物车");
+                        m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, parent: true)._FOOTBAR();
                     });
                 }
             }

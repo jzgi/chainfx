@@ -2693,7 +2693,7 @@ input:checked + label > .switch-inactive { display: none; }
     padding: 0.5rem;
     visibility: hidden;
     display: none;
-    background-color: gainsboro;
+    background-color: white;
     box-shadow: 2px 2px 2px 1px gray;
     font-size: 0.875rem;
 }

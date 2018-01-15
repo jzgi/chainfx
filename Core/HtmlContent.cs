@@ -257,6 +257,7 @@ namespace Greatbone.Core
             return this;
         }
 
+   
         public HtmlContent A(string v, string href, bool? hollow = null, bool parent = false)
         {
             Add("<a href=\"");
@@ -269,14 +270,34 @@ namespace Greatbone.Core
             {
                 if (hollow == true)
                 {
-                    Add("\" class=\"button primary hollow");
+                    Add("\" class=\"button primary round hollow");
                 }
                 else
                 {
-                    Add("\" class=\"button primary");
+                    Add("\" class=\"button primary round");
                 }
             }
             Add("\">");
+            Add(v);
+            Add("</a>");
+            return this;
+        }
+
+        public HtmlContent A_CLOSE(string v, bool? hollow = null)
+        {
+            Add("<a href=\"javascript: close(false); return false;\"");
+            if (hollow.HasValue)
+            {
+                if (hollow == true)
+                {
+                    Add(" class=\"button primary round hollow\"");
+                }
+                else
+                {
+                    Add(" class=\"button primary round\"");
+                }
+            }
+            Add(">");
             Add(v);
             Add("</a>");
             return this;
@@ -1009,13 +1030,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FOOT_()
+        public HtmlContent FOOTBAR_()
         {
-            Add("<footer class=\"foot grid-x\">");
+            Add("<footer class=\"footbar\">");
             return this;
         }
 
-        public HtmlContent _FOOT()
+        public HtmlContent _FOOTBAR()
         {
             Add("</footer>");
             return this;

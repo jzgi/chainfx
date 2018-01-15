@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Greatbone.Core
 {
     /// <summary>
     /// An add-only data collection that can act as both list and dictionary.
     /// </summary>
-    public class Map<K, V> : IEnumerable
+    public class Map<K, V> : IEnumerable<Map<K, V>.Entry>
     {
         int[] buckets;
 
@@ -144,9 +145,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new Enumerator(this);
+        }
+
+        public IEnumerator<Entry> GetEnumerator()
+        {
+            return new Enumerator(this);
         }
 
         //
@@ -236,6 +242,38 @@ namespace Greatbone.Core
             public K Key => key;
 
             public V Value => value;
+        }
+
+        public struct Enumerator : IEnumerator<Entry>
+        {
+            readonly Map<K, V> map;
+
+            int current;
+
+            internal Enumerator(Map<K, V> map)
+            {
+                this.map = map;
+                current = 0;
+            }
+
+            public bool MoveNext()
+            {
+                return ++current < map.Count;
+            }
+
+            public void Reset()
+            {
+                current = 0;
+            }
+
+            public Entry Current => map.entries[current];
+
+            object IEnumerator.Current => map.entries[current];
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -143,8 +143,8 @@ namespace Greatbone.Samp
             ac.GiveRedirect("../");
         }
 
-        [Ui("付款", Group = 1), Tool(ButtonScript), Order('P')]
-        public async Task Prepay(ActionContext ac)
+        [Ui("付款 ¥"), Tool(ButtonScript), Order('P')]
+        public async Task prepay(ActionContext ac)
         {
             string wx = ac[-2];
             int orderid = ac[this];

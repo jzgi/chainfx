@@ -200,10 +200,7 @@ namespace Greatbone.Samp
             }
             else // trigger click on the close-button
             {
-                h.Add("var win = window.parent;");
-                h.Add("var dlg = $('#dyndlg', win.document);");
-                h.Add("dlg.find('.close-button').trigger('click');");
-                h.Add("if (dlg.hasClass('button-trig')) win.location.reload(false);");
+                h.Add("close(true);");
             }
             h.Add("});");
             h.Add("</script>");
@@ -265,7 +262,7 @@ namespace Greatbone.Samp
         {
             h.T("</div>"); // top-bar-left
             h.T("<div class=\"top-bar-right\">");
-            h.T("<a class=\"button hollow round float-right\" href=\"/my//order/\">我的订单</a>");
+            h.T("<a class=\"button hollow round float-right\" href=\"/my//order/\">购物车</a>");
             h.T("</div>");
             h.T("</form>");
             h.T("</header>");
