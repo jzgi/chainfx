@@ -131,19 +131,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("删除", Group = 1), Tool(ButtonConfirm)]
-        public void del(ActionContext ac)
-        {
-            string wx = ac[-2];
-            int orderid = ac[this];
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Execute("DELETE FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-            }
-            ac.GiveRedirect("../");
-        }
-
-        [Ui("付款 ¥"), Tool(ButtonScript), Order('P')]
+        [Ui("付款¥"), Tool(ButtonScript), Order('P')]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[-2];

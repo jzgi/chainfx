@@ -257,7 +257,7 @@ namespace Greatbone.Core
             return this;
         }
 
-   
+
         public HtmlContent A(string v, string href, bool? hollow = null, bool parent = false)
         {
             Add("<a href=\"");
@@ -1240,7 +1240,7 @@ namespace Greatbone.Core
             _BOARDVIEW();
         }
 
-        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card, Func<D, bool> on = null) where D : IData
         {
             BOARDVIEW_();
             if (arr != null)
@@ -1248,7 +1248,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    CARD_(obj);
+                    CARD_(obj, on?.Invoke(obj) ?? false);
                     card(this, obj);
                     _CARD();
                 }
@@ -1273,11 +1273,16 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARD_(IData obj = null)
+        public HtmlContent CARD_(IData obj = null, bool on = false)
         {
             Add("<form class=\"cell board-view-cell\" id=\"card-");
             Add(++ordinal);
-            Add("\"><article class=\"card grid-x\">");
+            Add("\"><article class=\"grid-x card");
+            if (on)
+            {
+                Add(" on");
+            }
+            Add("\">");
             if (obj != null)
             {
                 model = obj;
@@ -1293,11 +1298,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CAPTION(string title, string flag = null, bool? on = null)
+        public HtmlContent CAPTION(string title, string sign = null, bool on = false)
         {
             CAPTION_();
             Add(title);
-            _CAPTION(flag, on);
+            _CAPTION(sign, on);
             return this;
         }
 
@@ -1318,42 +1323,42 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CAPTION(string flag = null, bool? on = null)
+        public HtmlContent _CAPTION(string sign = null, bool on = false)
         {
-            if (flag != null)
+            if (sign != null)
             {
-                Add("<span style=\"margin-left: auto\" class=\"card-flag");
-                if (on.HasValue)
+                Add("<span style=\"margin-left: auto\" class=\"sign");
+                if (on)
                 {
-                    Add(on.Value ? "-on" : "-off");
+                    Add(" on");
                 }
                 Add("\">");
-                Add(flag);
+                Add(sign);
                 Add("</span>");
             }
             Add("</div>");
             return this;
         }
 
-        public HtmlContent TAIL(string flag = null, bool? on = null, short group = 0)
+        public HtmlContent TAIL(string sign = null, bool on = false, short group = 0)
         {
-            TAIL_(flag, on);
+            TAIL_(sign, on);
             _TAIL(group);
             return this;
         }
 
-        public HtmlContent TAIL_(string flag = null, bool? on = null)
+        public HtmlContent TAIL_(string sign = null, bool on = false)
         {
             Add("<div class=\"cell card-tail\">");
-            if (flag != null)
+            if (sign != null)
             {
-                Add("<span class=\"float-right card-flag");
-                if (on.HasValue)
+                Add("<span class=\"float-right sign");
+                if (on)
                 {
-                    Add(on.Value ? "-on" : "-off");
+                    Add(" on");
                 }
                 Add("\">");
-                Add(flag);
+                Add(sign);
                 Add("</span>");
             }
             return this;
@@ -1361,28 +1366,17 @@ namespace Greatbone.Core
 
         public HtmlContent _TAIL(short group = 0)
         {
-            if (model == null)
+            Work work = actionCtx.Work?.VarWork;
+            if (work != null)
             {
-                var work = actionCtx.Work;
                 Add("<div style=\"margin-left: auto\">");
                 if (group == 0)
                 {
                     group = (short) ordinal;
                 }
-                Tools(work, group, null);
+                Tools(work, group, model);
                 Add("</div>");
             }
-            else
-            {
-                Work work = actionCtx.Work.VarWork;
-                if (work != null)
-                {
-                    Add("<div style=\"margin-left: auto\">");
-                    Tools(work, group, model);
-                    Add("</div>");
-                }
-            }
-            Add("</div>");
             return this;
         }
 
