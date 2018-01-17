@@ -1,0 +1,12 @@
+[Unit]
+Description=Samp Service
+
+[Service]
+EnvironmentFile=/etc/environment
+Type=forking
+WorkingDirectory=/root
+ExecStart=/usr/bin/dotnet /root/publish/Core.dll deploy
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

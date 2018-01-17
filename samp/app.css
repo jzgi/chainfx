@@ -13,7 +13,7 @@
 
 .tool-bar {
     display: flex;
-    background-color: darkgray;
+    background-color: silver;
     align-items: center;
     height: 3rem;
     font-size: 1rem;
@@ -32,7 +32,7 @@
     position: fixed;
     bottom: 0;
     padding-top: 0.5rem;
-    background-color: white;
+    background-color: silver;
     display: flex;
     justify-content: space-around;
 }

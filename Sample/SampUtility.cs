@@ -200,7 +200,7 @@ namespace Greatbone.Samp
             }
             else // trigger click on the close-button
             {
-                h.Add("close(true);");
+                h.Add("closeup(true);");
             }
             h.Add("});");
             h.Add("</script>");

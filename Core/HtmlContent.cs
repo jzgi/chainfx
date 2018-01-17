@@ -285,7 +285,7 @@ namespace Greatbone.Core
 
         public HtmlContent A_CLOSE(string v, bool? hollow = null)
         {
-            Add("<a href=\"javascript: close(false); return false;\"");
+            Add("<a href=\"#\" onclick=\"closeup(false); return false;\"");
             if (hollow.HasValue)
             {
                 if (hollow == true)
@@ -1848,8 +1848,8 @@ namespace Greatbone.Core
         {
             FIELD_(label, box);
 
-            bool group = step.Equals(default(V)); // input group with up up and down
-            if (group)
+            bool grp = !step.Equals(default(V)); // input group with up and down
+            if (grp)
             {
                 Add("<div class=\"input-group\">");
                 Add("<a class=\"input-group-label round\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
@@ -1859,7 +1859,7 @@ namespace Greatbone.Core
             Add("\" value=\"");
             Print(val);
             Add("\"");
-            if (group)
+            if (grp)
             {
                 Add(" class=\"input-group-field\"");
             }
@@ -1890,7 +1890,7 @@ namespace Greatbone.Core
 
             Add(">");
 
-            if (group)
+            if (grp)
             {
                 Add("<a class=\"input-group-label round\" onclick=\"$(this).prev()[0].stepUp()\">+</a>");
                 Add("</div>");

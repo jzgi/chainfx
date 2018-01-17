@@ -39,7 +39,7 @@ function dialog(trig, mode, pick, siz, title) {
     var bottom = mode == OPEN ? '3.5rem' : '6rem';
     var html =
         '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
+        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-dlg" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
         '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary hollow\" style="display: block; margin-top: 0.625rem; margin-left: auto; margin-right: auto" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
     var dive = $(html);
     $('body').prepend(dive);
@@ -206,11 +206,11 @@ function upload(url, ordinal) {
 }
 
 // click parent's close button
-function close(reload) {
+function closeup(reload) {
     var win =  window.parent;
     var dlg = $('#dyndlg',win.document);
     var btn = dlg.hasClass('button-trig');
-    dlg.find('.close-button').trigger('click'); // close-button click
+    dlg.find('.close-dlg').trigger('click'); // close-button click
     if (reload && btn) {
         win.location.reload(false);
     }

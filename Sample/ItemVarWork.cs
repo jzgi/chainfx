@@ -88,7 +88,7 @@ namespace Greatbone.Samp
                                 b = City.ResolveIn(b, sites);
                                 h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
                                 h.SELECT(nameof(a), a, shop.areas, refresh: true, required: true, box: 4).SELECT(nameof(b), b, sites, required: true, box: 4).TEXT(nameof(c), c, required: true, box: 4);
-                                h.TEL(nameof(tel), tel, "您的随身电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                                h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             }
                             else // free delivery
                             {
@@ -106,7 +106,7 @@ namespace Greatbone.Samp
                             h._FIELDSET();
                         }
                         // quantity
-                        h.FIELDSET_("加入订单");
+                        h.FIELDSET_("加入购物车");
                         var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();

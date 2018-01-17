@@ -860,7 +860,7 @@ fieldset {
     width: calc(100% - 0.25rem);
     padding: 0 0 0.25rem 0;
     margin: 0;
-    border-top: 1px solid darkgray;
+    border-top: 1px solid silver;
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -1051,7 +1051,7 @@ select:focus {
 }
 
 select:disabled {
-    background-color: darkgray;
+    background-color: silver;
     cursor: not-allowed;
 }
 
@@ -2533,7 +2533,7 @@ input:checked + label > .switch-inactive { display: none; }
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
     font-size: 1rem;
-    background-color: darkgray;
+    background-color: silver;
     height: 3rem;
 }
 
@@ -2652,7 +2652,7 @@ input:checked + label > .switch-inactive { display: none; }
     border-radius: 50%;
 }
 
-.pagination a:hover { background: darkgray; }
+.pagination a:hover { background: silver; }
 
 .pagination .current {
     background: darkblue;
@@ -2715,7 +2715,7 @@ input:checked + label > .switch-inactive { display: none; }
 
 .tabs {
     margin: 0;
-    border: 1px solid darkgray;
+    border: 1px solid silver;
     background: gainsboro;
     list-style-type: none;
 }
@@ -2763,12 +2763,12 @@ input:checked + label > .switch-inactive { display: none; }
 }
 
 .tabs-title > a:focus, .tabs-title > a[aria-selected='true'] {
-    background: darkgray;
+    background: silver;
     color: darkblue;
 }
 
 .tabs-content {
-    border: 1px solid darkgray;
+    border: 1px solid silver;
     border-top: 0;
     background: gainsboro;
     color: #0a0a0a;
@@ -2778,7 +2778,7 @@ input:checked + label > .switch-inactive { display: none; }
 }
 
 .tabs-content.vertical {
-    border: 1px solid darkgray;
+    border: 1px solid silver;
     border-left: 0;
 }
 
@@ -2921,9 +2921,9 @@ html.is-reveal-open body {
     margin-right: auto;
     margin-left: auto;
     overflow-y: auto;
-    border-left: 8px solid white;
-    border-right: 8px solid white;
-    background-color: white;
+    border-left: 8px solid silver;
+    border-right: 8px solid silver;
+    background-color: silver;
 }
 
 [data-whatinput='mouse'] .reveal { outline: 0; }
@@ -2986,9 +2986,6 @@ html.is-reveal-open body {
     height: 100vh;
     min-height: 100vh;
     margin-left: 0;
-    border-left: 8px solid darkgray;
-    border-right: 8px solid darkgray;
-    background-color: darkgray;
 }
 
 @media screen and (max-width: 39.9375em) {
@@ -3001,9 +2998,6 @@ html.is-reveal-open body {
         height: 100vh;
         min-height: 100vh;
         margin-left: 0;
-        border-left: 8px solid darkgray;
-        border-right: 8px solid darkgray;
-        background-color: darkgray;
     }
 }
 
