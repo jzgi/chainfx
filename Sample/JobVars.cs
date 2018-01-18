@@ -12,6 +12,8 @@ namespace Greatbone.Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
+            CreateVar<MyVarVarWork, int>();
+
             Create<MyOrderWork>("order");
         }
 
@@ -22,15 +24,14 @@ namespace Greatbone.Samp
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
-                m.BOARDVIEW(
-                    h =>
-                    {
-                        h.CAPTION("我的个人资料");
-                        h.FIELD(prin.name, "姓名");
-                        h.FIELD(prin.tel, "电话");
-                        h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-                        h.TAIL();
-                    });
+                m.BOARDVIEW(h =>
+                {
+                    h.CAPTION("我的个人资料");
+                    h.FIELD(prin.name, "姓名");
+                    h.FIELD(prin.tel, "电话");
+                    h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
+                    h.TAIL();
+                });
             });
         }
 
@@ -53,11 +54,18 @@ namespace Greatbone.Samp
                 }
             }
         }
+    }
 
-        [Ui("修改", Group = 1), Tool(ButtonShow)]
+    public class MyVarVarWork : Work
+    {
+        public MyVarVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        [Ui("修改"), Tool(ButtonShow)]
         public async Task edit(ActionContext ac)
         {
-            string wx = ac[this];
+            string wx = ac[-1];
             var prin = (User) ac.Principal;
             if (ac.GET)
             {
@@ -65,14 +73,13 @@ namespace Greatbone.Samp
                 {
                     ac.Query.Let(out prin.name).Let(out prin.tel).Let(out prin.city);
                 }
-
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
                     h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
                     h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                     string city = prin.city ?? City.All[0].name;
-                    h.SELECT(nameof(prin.city), city, City.All, "城市", refresh: true);
+                    h.SELECT(nameof(prin.city), city, City.All, "城市");
                     h.TEXT(nameof(prin.addr), prin.addr, label: "地址", max: 10, min: 2, required: true);
                     h._FORM();
                 });
@@ -94,11 +101,11 @@ namespace Greatbone.Samp
 
         const string PASS = "0z4R4pX7";
 
-        [Ui("设密码", Group = 1), Tool(ButtonShow)]
+        [Ui("设密码"), Tool(ButtonShow)]
         public async Task pass(ActionContext ac)
         {
             User prin = (User) ac.Principal;
-            string wx = ac[this];
+            string wx = ac[-1];
             string credential;
             string password = null;
             if (ac.GET)
@@ -119,20 +126,21 @@ namespace Greatbone.Samp
                         h._FORM();
                     });
                 }
-                return;
             }
-
-            var f = await ac.ReadAsync<Form>();
-            password = f[nameof(password)];
-            if (password != PASS)
+            else
             {
-                credential = StrUtility.MD5(prin.tel + ":" + password);
-                using (var dc = ac.NewDbContext())
+                var f = await ac.ReadAsync<Form>();
+                password = f[nameof(password)];
+                if (password != PASS)
                 {
-                    dc.Execute("UPDATE users SET credential = @1 WHERE wx = @1", (p) => p.Set(credential).Set(wx));
+                    credential = StrUtility.MD5(prin.tel + ":" + password);
+                    using (var dc = ac.NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET credential = @1 WHERE wx = @1", (p) => p.Set(credential).Set(wx));
+                    }
                 }
+                ac.GivePane(200);
             }
-            ac.GivePane(200);
         }
     }
 

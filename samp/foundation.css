@@ -597,18 +597,12 @@ h3, .h3 {
 }
 
 h4, .h4 {
-    font-size: 1.125rem;
-    line-height: 1.4;
-}
-
-h5, .h5 {
-    font-size: 1.0625rem;
-    line-height: 1.4;
-}
-
-h6, .h6 {
     font-size: 1rem;
-    line-height: 1.4;
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+    cursor: default;
+    color: #f6f6f6;
 }
 
 p {
@@ -2563,7 +2557,7 @@ input:checked + label > .switch-inactive { display: none; }
 }
 
 .pagination {
-    margin: 0.875rem auto 0 auto;
+    margin: 0.25rem auto 0 auto;
     width: 100%;
     display: flex;
     justify-content: center;

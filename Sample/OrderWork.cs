@@ -27,38 +27,55 @@ namespace Greatbone.Samp
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                var orders = dc.Query<Order>(dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 ORDER BY id DESC"), p => p.Set(wx));
+                var arr = dc.Query<Order>(dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 ORDER BY status, id DESC"), p => p.Set(wx));
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.BOARDVIEW(orders, (h, o) =>
-                    {
-                        h.CAPTION_().T("卖方: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status <= PAID);
 
-                        h.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2);
-                        if (o.status == 0) h.TOOL("addr");
-                        h._FIELD();
+                    bool bgn = false;
+                    m.BOARDVIEW_();
+                    foreach (var o in arr)
+                    {
+                        if (!bgn && o.status > 0)
+                        {
+                            bgn = true;
+                            m.T("<h4>历史订单</h4>");
+                        }
+                        m.CARD_(o);
+                        m.CAPTION_().T("卖方: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status <= PAID);
+
+                        m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2);
+                        if (o.status == 0) m.TOOL("addr");
+                        m._FIELD();
 
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            if (o.status <= 1) h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                            h.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
-                            h.BOX_(0x42).P(oi.qty, null, oi.unit);
-                            if (o.status == 0) h.TOOL("item", i);
-                            h._BOX();
-                            h.BOX_(0x42);
-                            if (o.typ == POS) h.P(oi.load, sign: oi.unit);
-                            h._BOX();
+                            if (o.status <= 1)
+                            {
+                                m.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                                m.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
+                                m.BOX_(0x42).P(oi.qty, null, oi.unit);
+                                if (o.status == 0) m.TOOL("item", i);
+                                m._BOX();
+                                m.BOX_(0x42);
+                                if (o.typ == POS) m.P(oi.load, sign: oi.unit);
+                                m._BOX();
+                            }
+                            else
+                            {
+                                m.FIELD_().T(oi.name)._T("¥").T(oi.price).T(oi.qty).T(oi.unit)._FIELD();
+                            }
                         }
-                        h.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
-                        h.FIELD(o.total, "总计", sign: "¥", box: 4);
+                        m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
+                        m.FIELD(o.total, "总计", sign: "¥", box: 4);
 
-                        if (o.status == 0)
-                        {
-                            h.TAIL(o.Err());
-                        }
-                    });
+                        if (o.status == 0) m.TAIL(o.Err(), group: 0);
+                        else m.TAIL();
+
+                        m._CARD();
+                    }
+                    m._BOARDVIEW(arr?.Length ?? 0);
                 }, false, 3);
             }
         }

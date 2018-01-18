@@ -1004,7 +1004,8 @@ namespace Greatbone.Core
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
             Add(post ? "post" : "get");
-            if (top) {
+            if (top)
+            {
                 Add("\" formtarget=\"_top");
             }
             Add("\">");
@@ -1257,8 +1258,7 @@ namespace Greatbone.Core
                 }
             }
             // pagination if any
-            PAGENATE(arr?.Length ?? 0);
-            _BOARDVIEW();
+            _BOARDVIEW(arr?.Length ?? 0);
         }
 
         public HtmlContent BOARDVIEW_()
@@ -1269,10 +1269,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _BOARDVIEW()
+        public HtmlContent _BOARDVIEW(int count = 0)
         {
             Add("</main>");
             ordinal = 0;
+            PAGENATE(count);
             return this;
         }
 

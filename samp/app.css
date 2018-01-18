@@ -81,11 +81,11 @@
 }
 
 .board-view {
-    padding-bottom: 0.875rem;
+    padding-bottom: 0.5rem;
 }
 
 .board-view-cell {
-    padding: 0.875rem 0.25rem 0 0.25rem;
+    padding: 0.5rem 0.25rem 0 0.25rem;
 }
 
 .card {

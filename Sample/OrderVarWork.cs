@@ -131,7 +131,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("付款¥"), Tool(ButtonScript), Order('P')]
+        [Ui("付款¥", Group = 1), Tool(ButtonScript), Order('P')]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[-2];
