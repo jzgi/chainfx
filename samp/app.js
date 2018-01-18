@@ -1,3 +1,40 @@
+
+
+function prepayfunc(trig) {
+    // get prepare id
+    var action;
+    var method = 'post';
+    var tag = trig.tagName;
+    if (tag == 'BUTTON') {
+        action = trig.formAction || trig.name;
+        method = trig.formMethod || method;
+    } else if (tag == 'A') {
+        action = trig.href
+        method = 'get';
+    }
+    $.ajax({
+        url: action,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            WeixinJSBridge.invoke('getBrandWCPayRequest',
+                data,
+                function (res) {
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                        alert('成功支付');
+                        location.reload();
+                    }
+                });
+        },
+        error: function (res) {
+            alert('服务器访问失败');
+        }
+    });
+    //
+    return false;
+}
+
+
 // build and open a reveal dialog
 // trig - a button, input_button or anchor element
 
@@ -207,45 +244,13 @@ function upload(url, ordinal) {
 
 // click parent's close button
 function closeup(reload) {
-    var win =  window.parent;
-    var dlg = $('#dyndlg',win.document);
+    var win = window.parent;
+    var dlg = $('#dyndlg', win.document);
     var btn = dlg.hasClass('button-trig');
     dlg.find('.close-dlg').trigger('click'); // close-button click
     if (reload && btn) {
         win.location.reload(false);
     }
-}
-
-function prepay(trig) {
-    // get prepare id
-    var action;
-    var method = 'post';
-    var tag = trig.tagName;
-    if (tag == 'BUTTON') {
-        action = trig.formAction || trig.name;
-        method = trig.formMethod || method;
-    } else if (tag == 'A') {
-        action = trig.href
-        method = 'get';
-    }
-    $.ajax({
-        url: action,
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            WeixinJSBridge.invoke('getBrandWCPayRequest',
-                data,
-                function (res) {
-                    if (res.err_msg == "get_brand_wcpay_request:ok") {
-                        location.reload();
-                    }
-                });
-        },
-        error: function (res) {
-            alert('服务器访问失败');
-        }
-    });
-    return false;
 }
 
 function checkit(el) {

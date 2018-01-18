@@ -1000,10 +1000,13 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent BUTTON(string val, bool post = true)
+        public HtmlContent BUTTON(string val, bool post = true, bool top = false)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
             Add(post ? "post" : "get");
+            if (top) {
+                Add("\" formtarget=\"_top");
+            }
             Add("\">");
             AddEsc(val);
             Add("</button>");
@@ -1240,7 +1243,7 @@ namespace Greatbone.Core
             _BOARDVIEW();
         }
 
-        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card, Func<D, bool> on = null) where D : IData
+        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             BOARDVIEW_();
             if (arr != null)
@@ -1248,7 +1251,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    CARD_(obj, on?.Invoke(obj) ?? false);
+                    CARD_(obj);
                     card(this, obj);
                     _CARD();
                 }
@@ -1273,16 +1276,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARD_(IData obj = null, bool on = false)
+        public HtmlContent CARD_(IData obj = null)
         {
             Add("<form class=\"cell board-view-cell\" id=\"card-");
             Add(++ordinal);
-            Add("\"><article class=\"grid-x card");
-            if (on)
-            {
-                Add(" on");
-            }
-            Add("\">");
+            Add("\"><article class=\"grid-x card\">");
             if (obj != null)
             {
                 model = obj;
@@ -1467,7 +1465,7 @@ namespace Greatbone.Core
             }
             else if (tool.IsButton)
             {
-                Add("<button class=\"button primary");
+                Add("<button  class=\"button primary");
                 if (!ai.IsCapital) Add(" hollow");
                 Add("\" name=\"");
                 Add(ai.Key);
@@ -1521,7 +1519,7 @@ namespace Greatbone.Core
             {
                 Add(" onclick=\"return ");
                 Add(ai.Lower);
-                Add("(this) || false;\"");
+                Add("func(this);\""); // suffix to avoid js naming conflict
             }
             else if (tool.HasCrop)
             {

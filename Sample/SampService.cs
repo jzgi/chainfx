@@ -254,7 +254,7 @@ namespace Greatbone.Samp
                     h._BOX();
                     h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
                     h.TAIL();
-                }, x => x.status > 1);
+                });
             }, true, 60, "粗狼达人 - " + city);
         }
 

@@ -33,7 +33,7 @@ namespace Greatbone.Samp
                     m.TOOLBAR();
                     m.BOARDVIEW(orders, (h, o) =>
                     {
-                        h.CAPTION_().T("卖方: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status < PAID);
+                        h.CAPTION_().T("卖方: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status <= PAID);
 
                         h.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2);
                         if (o.status == 0) h.TOOL("addr");
@@ -58,7 +58,7 @@ namespace Greatbone.Samp
                         {
                             h.TAIL(o.Err());
                         }
-                    }, x => x.status == 0);
+                    });
                 }, false, 3);
             }
         }

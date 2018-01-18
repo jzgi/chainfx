@@ -97,7 +97,7 @@ namespace Greatbone.Samp
                         h.TAIL();
                         // adjust item availability
                         if (shop.status == 0) o.stock = 0;
-                    }, x => x.status > 0 && x.stock > 0);
+                    });
                 }, true, 60, shop.name);
             }
         }

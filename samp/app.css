@@ -211,19 +211,7 @@
     margin: 0.25rem 0 0 0;
 }
 
-.card.on fieldset {
-    background-color: #f6f6f6;
-    width: calc(100% - 0.25rem);
-    padding: 0;
-    border: none;
-    margin: 0.25rem 0 0 0;
-}
-
-.card .box {
-    background-color: #f6f6f6;
-}
-
-.card.on .box {
+.card  .box {
     background-color: #f5efef;
 }
 
