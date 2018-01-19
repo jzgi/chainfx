@@ -270,43 +270,30 @@ namespace Greatbone.Samp
                 return;
             }
             var (orderid, _) = trade_no.To2Ints();
-//            decimal cash = 2;
-//            int orderid = 106;
             string city, addr;
-            Roll<string> wxroll = new Roll<string>(4);
+            string targetwx = null;
             using (var dc = ac.NewDbContext(ReadCommitted))
             {
-                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr, items", (p) => p.Set(cash).Set(orderid)))
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr", (p) => p.Set(cash).Set(orderid)))
                 {
                     return; // WCPay may send notification more than once
                 }
-                dc.Let(out string shopid).Let(out city).Let(out addr).Let(out OrderItem[] items);
-                for (int i = 0; i < items?.Length; i++) // update in stock
-                {
-                    var o = items[i];
-                    dc.Execute("UPDATE items SET stock = stock - @1 WHERE shopid = @2 AND name = @3", p => p.Set(o.qty).Set(shopid).Set(o.name));
-                }
-
-                if (Shops[shopid].areas != null) // retrieve POS openid(s)
+                dc.Let(out string shopid).Let(out city).Let(out addr);
+                // retrieve a POS openid
+                if (Shops[shopid].areas != null)
                 {
                     var (a, _, _) = addr.ToTriple(SEPCHAR);
-                    dc.Query("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3", p => p.Set(shopid).Set(city).Set(a + "%"));
-                    while (dc.Next())
-                    {
-                        dc.Let(out string wx);
-                        wxroll.Add(wx);
-                    }
+                    targetwx = (string) dc.Scalar("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3 LIMIT 1", p => p.Set(shopid).Set(city).Set(a + "%"));
                 }
-                if (wxroll.Count == 0)
+                if (targetwx == null)
                 {
-                    var oprwx = Shops[shopid].oprwx;
-                    if (oprwx != null) wxroll.Add(oprwx);
+                    targetwx = Shops[shopid].oprwx;
                 }
             }
             // send messages
-            for (int i = 0; i < wxroll.Count; i++)
+            if (targetwx != null)
             {
-                await PostSendAsync(wxroll[i], "收到新单", "单号: " + orderid + "  地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+                await PostSendAsync(targetwx, "收到新单 No. " + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
             }
 
             // return xml to WCPay server

@@ -52,12 +52,6 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TT(string str)
-        {
-            Add(str);
-            return this;
-        }
-
         public HtmlContent T(char v)
         {
             Add(v);
@@ -118,20 +112,20 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent EM(decimal v, string sign = null)
+        public HtmlContent EM(decimal v, string fix = null)
         {
             Add("<em>");
-            if (sign != null)
+            if (fix != null)
             {
-                if (sign == "¥" || sign == "$")
+                if (fix == "¥" || fix == "$")
                 {
-                    Add(sign);
+                    Add(fix);
                     Add(v);
                 }
                 else
                 {
                     Add(v);
-                    Add(sign);
+                    Add(fix);
                 }
             }
             else
@@ -142,20 +136,20 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent EM(string v, string sign = null)
+        public HtmlContent EM(string v, string fix = null)
         {
             Add("<em>");
-            if (sign != null)
+            if (fix != null)
             {
-                if (sign == "¥" || sign == "$")
+                if (fix == "¥" || fix == "$")
                 {
-                    Add(sign);
+                    Add(fix);
                     Add(v);
                 }
                 else
                 {
                     Add(v);
-                    Add(sign);
+                    Add(fix);
                 }
             }
             else
@@ -211,6 +205,35 @@ namespace Greatbone.Core
         {
             Add("&nbsp;");
             Add(v);
+            return this;
+        }
+
+        public HtmlContent _IF(DateTime v)
+        {
+            if (v != default)
+            {
+                Add("&nbsp;");
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent _IF(string v)
+        {
+            if (v != default)
+            {
+                Add("&nbsp;");
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(string v)
+        {
+            if (v != default)
+            {
+                Add(v);
+            }
             return this;
         }
 
@@ -457,91 +480,44 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELD(short v, string label = null, string sign = null, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            _FIELD(box);
-            return this;
-        }
 
-        public HtmlContent FIELD(int v, string label = null, string sign = null, byte box = 0x0c)
+        public HtmlContent FIELD<V>(V v, string label = null, string fix = null, Effect effect = 0, byte box = 0x0c)
         {
             FIELD_(label, box);
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            _FIELD(box);
-            return this;
-        }
 
-        public HtmlContent FIELD(long v, string label = null, string sign = null, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            _FIELD(box);
-            return this;
-        }
+            if (effect == Effect.Emphasis) Add("<em>");
+            else if (effect == Effect.Bold) Add("<bold>");
+            else if (effect == Effect.Strong) Add("<strong>");
+            else if (effect == Effect.Mark) Add("<mark>");
 
-        public HtmlContent FIELD(decimal v, string label = null, string sign = null, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            if (sign != null)
+            if (fix != null)
             {
-                if (sign == "¥" || sign == "$")
+                if (fix == "¥" || fix == "$")
                 {
-                    Add(sign);
-                    Add(v);
+                    Add(fix);
+                    AddPrimitive(v);
                 }
                 else
                 {
-                    Add(v);
-                    Add(sign);
+                    AddPrimitive(v);
+                    Add(fix);
                 }
             }
             else
             {
-                Add(v);
+                AddPrimitive(v);
             }
+
+            if (effect == Effect.Emphasis) Add("</em>");
+            else if (effect == Effect.Bold) Add("</bold>");
+            else if (effect == Effect.Strong) Add("</strong>");
+            else if (effect == Effect.Mark) Add("</mark>");
+
             _FIELD(box);
             return this;
         }
 
-        public HtmlContent FIELD(DateTime v, string label = null, string sign = null, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent FIELD(string v, string label = null, string sign = null, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent FIELD(string[] v, string label = null, string sign = null, byte box = 0x0c)
+        public HtmlContent FIELD(string[] v, string label = null, string fix = null, byte box = 0x0c)
         {
             FIELD_(label, box);
             if (v != null)
@@ -552,9 +528,9 @@ namespace Greatbone.Core
                     Add(v[i]);
                 }
             }
-            if (sign != null)
+            if (fix != null)
             {
-                Add(sign);
+                Add(fix);
             }
             _FIELD(box);
             return this;
@@ -678,44 +654,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent P(short v, string label = null, string sign = null)
-        {
-            Add("<p>");
-            if (label != null)
-            {
-                Add("<span class=\"label\">");
-                Add(label);
-                Add("</span>");
-            }
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            Add("</p>");
-            return this;
-        }
 
-        public HtmlContent P(int v, string label = null, string sign = null)
+        public HtmlContent P<V>(V v, string label = null, string fix = null, Effect sem = 0, bool when = true)
         {
-            Add("<p>");
-            if (label != null)
-            {
-                Add("<span class=\"label\">");
-                Add(label);
-                Add("</span>");
-            }
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
-            Add("</p>");
-            return this;
-        }
+            if (!when) return this;
 
-        public HtmlContent P(decimal v, string label = null, string sign = null, bool em = false)
-        {
             Add("<p>");
             if (label != null)
             {
@@ -723,49 +666,35 @@ namespace Greatbone.Core
                 Add(label);
                 Add("</span>");
             }
-            if (em)
+
+            if (sem == Effect.Emphasis) Add("<em>");
+            else if (sem == Effect.Bold) Add("<bold>");
+            else if (sem == Effect.Strong) Add("<strong>");
+            else if (sem == Effect.Mark) Add("<mark>");
+
+            if (fix != null)
             {
-                Add("<em>");
-            }
-            if (sign != null)
-            {
-                if (sign == "¥" || sign == "$")
+                if (fix == "¥" || fix == "$")
                 {
-                    Add(sign);
-                    Add(v);
+                    Add(fix);
+                    AddPrimitive(v);
                 }
                 else
                 {
-                    Add(v);
-                    Add(sign);
+                    AddPrimitive(v);
+                    Add(fix);
                 }
             }
             else
             {
-                Add(v);
+                AddPrimitive(v);
             }
-            if (em)
-            {
-                Add("</em>");
-            }
-            Add("</p>");
-            return this;
-        }
 
-        public HtmlContent P(DateTime v, string label = null, string sign = null)
-        {
-            Add("<p>");
-            if (label != null)
-            {
-                Add("<span class=\"label\">");
-                Add(label);
-                Add("</span>");
-            }
-            Add(v);
-            if (sign != null)
-            {
-                Add(sign);
-            }
+            if (sem == Effect.Emphasis) Add("</em>");
+            else if (sem == Effect.Bold) Add("</bold>");
+            else if (sem == Effect.Strong) Add("</strong>");
+            else if (sem == Effect.Mark) Add("</mark>");
+
             Add("</p>");
             return this;
         }
@@ -784,24 +713,6 @@ namespace Greatbone.Core
 
         public HtmlContent _P()
         {
-            Add("</p>");
-            return this;
-        }
-
-        public HtmlContent P(string val, string label = null, string sign = null)
-        {
-            Add("<p>");
-            if (label != null)
-            {
-                Add("<span class=\"label\">");
-                Add(label);
-                Add("</span>");
-            }
-            Add(val);
-            if (sign != null)
-            {
-                Add(sign);
-            }
             Add("</p>");
             return this;
         }
@@ -1418,8 +1329,10 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TOOL(string name, int subscript = -1)
+        public HtmlContent TOOL(string name, int subscript = -1, bool when = true)
         {
+            if (!when) return this;
+
             if (model != null)
             {
                 var work = actionCtx.Work.VarWork;
@@ -1526,9 +1439,9 @@ namespace Greatbone.Core
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return $"); // prefix to avoid js naming conflict
+                Add(" onclick=\"return func"); // prefix to avoid js naming conflict
                 Add(ai.Lower);
-                Add("(this);\""); 
+                Add("(this);\"");
             }
             else if (tool.HasCrop)
             {
@@ -1571,7 +1484,7 @@ namespace Greatbone.Core
             Add("<input type=\"hidden\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Print(value);
+            AddPrimitive(value);
             Add("\">");
             return this;
         }
@@ -1834,7 +1747,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Print<V>(V v)
+        void AddPrimitive<V>(V v)
         {
             if (v is short shortv) Add(shortv);
             else if (v is int intv) Add(intv);
@@ -1858,7 +1771,7 @@ namespace Greatbone.Core
             Add("<input type=\"number\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Print(val);
+            AddPrimitive(val);
             Add("\"");
             if (grp)
             {
@@ -1872,18 +1785,18 @@ namespace Greatbone.Core
                 Add("\"");
             }
             Add(" min=\"");
-            Print(min);
+            AddPrimitive(min);
             Add("\"");
             if (!max.Equals(default(V)))
             {
                 Add(" max=\"");
-                Print(max);
+                AddPrimitive(max);
                 Add("\"");
             }
             if (!step.Equals(default(V)))
             {
                 Add(" step=\"");
-                Print(step);
+                AddPrimitive(step);
                 Add("\"");
             }
             if (@readonly) Add(" readonly");
@@ -1963,7 +1876,7 @@ namespace Greatbone.Core
             Add("<input type=\"radio\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Print(val);
+            AddPrimitive(val);
             Add(@checked ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
@@ -1985,10 +1898,10 @@ namespace Greatbone.Core
                         Add(name);
                         Add("\" id=\"");
                         Add(name);
-                        Print(e.Key);
+                        AddPrimitive(e.Key);
                         Add("\"");
                         Add("\" value=\"");
-                        Print(e.Key);
+                        AddPrimitive(e.Key);
                         Add("\"");
                         if (e.Key.Equals(val)) Add(" checked");
                         if (required) Add(" required");

@@ -213,7 +213,7 @@ namespace Greatbone.Samp
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            m.FIELD(name, box: 5).FIELD(stock, sign: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
+                            m.FIELD(name, box: 5).FIELD(stock, fix: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
                         }
                     }
                     m._FORM();

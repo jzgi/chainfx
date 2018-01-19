@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
+using static Greatbone.Core.Effect;
 using static Greatbone.Samp.Order;
 using static Greatbone.Samp.User;
 
@@ -42,25 +43,17 @@ namespace Greatbone.Samp
                             m.H4("历史订单");
                         }
                         m.CARD_(o);
-                        m.CAPTION_().T("卖方: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status <= PAID);
-
-                        m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2);
-                        if (o.status == 0) m.TOOL("addr");
-                        m._FIELD();
-
+                        m.CAPTION_().T(o.shopname)._IF(o.paid)._CAPTION(Statuses[o.status], o.status <= PAID);
+                        m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr", when: o.status == 0)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
                                 m.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                                m.BOX_(0x46).P(oi.name).P(oi.price, sign: "¥")._BOX();
-                                m.BOX_(0x42).P(oi.qty, null, oi.unit);
-                                if (o.status == 0) m.TOOL("item", i);
-                                m._BOX();
-                                m.BOX_(0x42);
-                                if (o.typ == POS) m.P(oi.load, sign: oi.unit);
-                                m._BOX();
+                                m.BOX_(0x46).P(oi.name).P(oi.price, fix: "¥")._BOX();
+                                m.BOX_(0x42).P(oi.qty, fix: oi.unit).TOOL("item", i, when: o.status == 0)._BOX();
+                                m.BOX_(0x42).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
                             }
                             else
                             {
@@ -68,11 +61,8 @@ namespace Greatbone.Samp
                             }
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
-                        m.FIELD(o.total, "总计", sign: "¥", box: 4);
-
-                        if (o.status == 0) m.TAIL(o.Err(), group: 0);
-                        else m.TAIL();
-
+                        m.FIELD(o.total, "总计", fix: "¥", effect: o.status == 0 ? Emphasis : 0, box: 4);
+                        m.TAIL(o.Err(), group: o.status == 0 ? (short) 1 : (short) 0);
                         m._CARD();
                     }
                     m._BOARDVIEW(arr?.Length ?? 0);
@@ -113,7 +103,7 @@ namespace Greatbone.Samp
                         for (int j = 0; j < o.items.Length; j++)
                         {
                             var oi = o.items[j];
-                            h.FIELD(oi.name, box: 6).FIELD(oi.price, box: 0x23, sign: "¥").FIELD(oi.load, null, oi.unit, box: 0x23);
+                            h.FIELD(oi.name, box: 6).FIELD(oi.price, box: 0x23, fix: "¥").FIELD(oi.load, null, oi.unit, box: 0x23);
                         }
                     }
                     h.TAIL();
@@ -286,9 +276,9 @@ namespace Greatbone.Samp
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
-                        h.FIELD(oi.name, box: 6).FIELD(oi.price, sign: "¥", box: 0x23).FIELD(oi.qty, sign: oi.unit, box: 3);
+                        h.FIELD(oi.name, box: 6).FIELD(oi.price, fix: "¥", box: 0x23).FIELD(oi.qty, fix: oi.unit, box: 3);
                     }
-                    h.BOX_(9)._BOX().FIELD(o.total, "总价", sign: "¥", box: 3);
+                    h.BOX_(9)._BOX().FIELD(o.total, "总价", fix: "¥", box: 3);
                     h.TAIL();
                 }, false, 3);
             }
@@ -330,7 +320,7 @@ namespace Greatbone.Samp
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var it = o.items[i];
-                        h.FIELD(it.name, box: 4).FIELD(it.price, box: 4).FIELD(it.qty, sign: it.unit, box: 4);
+                        h.FIELD(it.name, box: 4).FIELD(it.price, box: 4).FIELD(it.qty, fix: it.unit, box: 4);
                     }
                     h.FIELD(o.total, "总价");
                 }, false, 3);

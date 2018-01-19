@@ -1,6 +1,6 @@
 
 
-function $prepay(trig) {
+function funcprepay(trig) {
     // get prepare id
     var action;
     var method = 'post';
