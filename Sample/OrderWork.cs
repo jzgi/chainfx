@@ -39,7 +39,7 @@ namespace Greatbone.Samp
                         if (!bgn && o.status > 0)
                         {
                             bgn = true;
-                            m.T("<h4>历史订单</h4>");
+                            m.H4("历史订单");
                         }
                         m.CARD_(o);
                         m.CAPTION_().T("卖方: ").T(o.shopname)._CAPTION(Statuses[o.status], o.status <= PAID);
@@ -64,7 +64,7 @@ namespace Greatbone.Samp
                             }
                             else
                             {
-                                m.FIELD_().T(oi.name)._T("¥").T(oi.price).T(oi.qty).T(oi.unit)._FIELD();
+                                m.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
                             }
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);

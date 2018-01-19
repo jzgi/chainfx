@@ -599,10 +599,10 @@ h3, .h3 {
 h4, .h4 {
     font-size: 1rem;
     display: inline-block;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.25rem;
     white-space: nowrap;
     cursor: default;
-    color: #f6f6f6;
+    color: white;
 }
 
 p {
@@ -2557,7 +2557,7 @@ input:checked + label > .switch-inactive { display: none; }
 }
 
 .pagination {
-    margin: 0.25rem auto 0 auto;
+    margin: 0 auto 0.5rem auto;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -2965,6 +2965,7 @@ html.is-reveal-open body {
 
 table {
     border-collapse: collapse;
+    margin: 0.25rem 0;
 }
 
 table input[type='checkbox'] {
@@ -2984,7 +2985,7 @@ table caption {
 }
 
 table thead {
-    background: #f8f8f8;
+    background: #f6f6f6;
     color: #0a0a0a;
 }
 
@@ -3001,7 +3002,7 @@ table thead td,
 table tfoot th,
 table tfoot td {
     padding: 0.625rem;
-    font-weight: bold;
+    font-weight: normal;
     text-align: left;
 }
 
@@ -3012,8 +3013,8 @@ table tbody { background-color: gainsboro; }
 
 table tbody tr {
     border-bottom: 0;
-    border-bottom: 1px solid #f1f1f1;
-    background-color: white;
+    border-bottom: 1px solid gainsboro;
+    background-color: #f5efef;
 }
 
 table.scroll {

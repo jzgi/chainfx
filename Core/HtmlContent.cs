@@ -251,6 +251,14 @@ namespace Greatbone.Core
             return this;
         }
 
+        public HtmlContent H4(string v)
+        {
+            Add("<h4 class=\"cell\">");
+            Add(v);
+            Add("</h4>");
+            return this;
+        }
+
         public HtmlContent SP()
         {
             Add("&nbsp;&nbsp;");
@@ -1518,9 +1526,9 @@ namespace Greatbone.Core
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return ");
+                Add(" onclick=\"return $"); // prefix to avoid js naming conflict
                 Add(ai.Lower);
-                Add("func(this);\""); // suffix to avoid js naming conflict
+                Add("(this);\""); 
             }
             else if (tool.HasCrop)
             {
