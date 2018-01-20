@@ -49,9 +49,9 @@ namespace Greatbone.Samp
     }
 
     [User]
-    public class PubShopVarWork : ShopVarWork, IShopVar
+    public class SampVarWork : ShopVarWork, IShopVar
     {
-        public PubShopVarWork(WorkConfig cfg) : base(cfg)
+        public SampVarWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }

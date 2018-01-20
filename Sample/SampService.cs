@@ -66,7 +66,7 @@ namespace Greatbone.Samp
 
         public SampService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<PubShopVarWork, string>(obj => ((Shop) obj).id); // subshop
+            CreateVar<SampVarWork, string>(obj => ((Shop) obj).id); // subshop
 
             Create<MyWork>("my"); // personal
 

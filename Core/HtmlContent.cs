@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.Tracing;
+using static Greatbone.Core.Target;
 
 namespace Greatbone.Core
 {
@@ -289,13 +291,17 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent A(string v, string href, bool? hollow = null, bool parent = false)
+        public HtmlContent A(string v, string href, bool? hollow = null, Target targ = 0)
         {
             Add("<a href=\"");
             Add(href);
-            if (parent)
+            if (targ > 0)
             {
-                Add("\" target=\"_parent");
+                Add("\" target=\"");
+                if (targ == Parent) Add("_parent");
+                else if (targ == Top) Add("_top");
+                else if (targ == Blank) Add("_blank");
+                Add("\"");
             }
             if (hollow.HasValue)
             {

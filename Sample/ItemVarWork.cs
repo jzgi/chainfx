@@ -166,7 +166,7 @@ namespace Greatbone.Samp
                     ac.GivePane(200, m =>
                     {
                         m.T("商品已经成功加入购物车");
-                        m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, parent: true)._FOOTBAR();
+                        m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: Target.Parent)._FOOTBAR();
                     });
                 }
             }

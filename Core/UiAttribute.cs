@@ -12,10 +12,11 @@ namespace Greatbone.Core
 
         readonly string tip;
 
-        public UiAttribute(string label = null, string tip = null)
+        public UiAttribute(string label = null, string tip = null, short group = 0)
         {
             this.label = label;
             this.tip = tip ?? label;
+            Group = group;
         }
 
         public string Label => label;
