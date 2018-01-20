@@ -8,8 +8,6 @@ namespace Greatbone.Samp
     ///
     public class Repay : IData
     {
-        public const short PAY = 1;
-
         public static readonly Repay Empty = new Repay();
 
         // status
@@ -32,7 +30,7 @@ namespace Greatbone.Samp
         internal short status;
         internal string err;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
@@ -46,7 +44,7 @@ namespace Greatbone.Samp
             i.Get(nameof(err), ref err);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(shopid), shopid);

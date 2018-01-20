@@ -41,7 +41,7 @@ namespace Greatbone.Samp
             string wx = ac[this];
             using (var dc = ac.NewDbContext())
             {
-                const short proj = -1 ^ CREDENTIAL;
+                const byte proj = 0xff ^ CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
                 {
                     var o = dc.ToObject<User>(proj);
@@ -86,7 +86,7 @@ namespace Greatbone.Samp
             }
             else
             {
-                const short proj = -1 ^ CREDENTIAL ^ User.LATER;
+                const byte proj = 0xff ^ CREDENTIAL ^ User.LATER;
                 var o = await ac.ReadObjectAsync(obj: prin);
                 o.wx = wx;
                 using (var dc = ac.NewDbContext())
@@ -94,7 +94,7 @@ namespace Greatbone.Samp
                     dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj).T(" ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
                     dc.Execute(p => o.Write(p, proj));
                 }
-                ac.SetTokenCookie(o, -1 ^ CREDENTIAL);
+                ac.SetTokenCookie(o, 0xff ^ CREDENTIAL);
                 ac.GivePane(200); // close dialog
             }
         }

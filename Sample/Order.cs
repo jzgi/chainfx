@@ -10,7 +10,7 @@ namespace Greatbone.Samp
     {
         public static readonly Order Empty = new Order();
 
-        public const short KEY = 1, LATER = 4;
+        public const byte KEY = 1, LATER = 4;
 
         // types
         public const short POS = 1;
@@ -55,7 +55,7 @@ namespace Greatbone.Samp
         internal DateTime finished;
         internal string kick;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             if ((proj & KEY) == KEY)
             {
@@ -87,7 +87,7 @@ namespace Greatbone.Samp
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             if ((proj & KEY) == KEY)
             {
@@ -223,7 +223,7 @@ namespace Greatbone.Samp
 
         public decimal Subtotal => price * qty;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(unit), ref unit);
@@ -232,7 +232,7 @@ namespace Greatbone.Samp
             i.Get(nameof(load), ref load);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(unit), unit);

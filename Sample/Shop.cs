@@ -7,7 +7,7 @@ namespace Greatbone.Samp
     {
         public static readonly Shop Empty = new Shop();
 
-        public const short ADM = 3, ID = 1, NORM = 4, LATER = 8, EXTRA = 0x0100;
+        public const byte ADM = 3, ID = 1, NORM = 4, LATER = 8, EXTRA = 0x20;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -38,7 +38,7 @@ namespace Greatbone.Samp
 
         internal ArraySegment<byte> icon, img1, img2, img3, img4;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             if ((proj & ADM) != 0)
             {
@@ -78,7 +78,7 @@ namespace Greatbone.Samp
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             if ((proj & ADM) != 0)
             {

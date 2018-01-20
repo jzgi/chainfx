@@ -9,7 +9,7 @@ namespace Greatbone.Samp
     {
         public static readonly User Empty = new User();
 
-        public const short
+        public const byte
             WX = 1,
             CREDENTIAL = 2,
             LATER = 4;
@@ -33,7 +33,7 @@ namespace Greatbone.Samp
         internal string oprat; // operator at
         internal bool adm; // adm
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             if ((proj & WX) == WX)
             {
@@ -55,7 +55,7 @@ namespace Greatbone.Samp
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             if ((proj & WX) == WX)
             {

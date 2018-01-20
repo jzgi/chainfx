@@ -8,8 +8,8 @@ namespace Greatbone.Samp
     /// </summary>
     public class Cash : IData
     {
-        public const short ID = 1;
-        
+        public const byte ID = 1;
+
         public static readonly Cash Empty = new Cash();
 
         public static readonly Map<short, string> Codes = new Map<short, string>
@@ -33,7 +33,7 @@ namespace Greatbone.Samp
         internal decimal paid;
         internal string keeper;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             if ((proj & ID) == ID)
             {
@@ -48,7 +48,7 @@ namespace Greatbone.Samp
             i.Get(nameof(keeper), ref keeper);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {

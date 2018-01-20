@@ -284,12 +284,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData v, short proj = 0x00ff)
+        public FormContent Put(string name, IData v, byte proj = 0x1f)
         {
             return this;
         }
 
-        public FormContent Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
+        public FormContent Put<D>(string name, D[] v, byte proj = 0x1f) where D : IData
         {
             return this;
         }

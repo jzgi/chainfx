@@ -21,7 +21,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("修改", Group = -1), Tool(ButtonShow)]
+        [Ui("修改", Flag = 0x20), Tool(ButtonShow)]
         public async Task addr(ActionContext ac)
         {
             int orderid = ac[this];
@@ -91,7 +91,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("修改", Group = -1), Tool(ButtonShow)]
+        [Ui("修改", Flag = 0x20), Tool(ButtonShow)]
         public async Task item(ActionContext ac, int idx)
         {
             int orderid = ac[this];
@@ -131,7 +131,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("付款¥", Group = 1), Tool(ButtonScript), Order('P')]
+        [Ui("付款¥", Flag = 1), Tool(ButtonScript), Order('P')]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[-2];
@@ -147,7 +147,7 @@ namespace Greatbone.Samp
                 {
                     if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = COALESCE(@2, users.name), city = COALESCE(@3, users.city), addr = COALESCE(@4, users.addr), tel = COALESCE(@5, users.tel)", p => p.Set(wx).Set(prin.name).Set(prin.city).Set(prin.addr).Set(prin.tel)) > 0)
                     {
-                        ac.SetTokenCookie(prin, -1 ^ CREDENTIAL); // refresh client token thru cookie
+                        ac.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
                     }
                 }
             }

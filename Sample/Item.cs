@@ -9,7 +9,7 @@ namespace Greatbone.Samp
     {
         public static readonly Item Empty = new Item();
 
-        public const short PK = 1, LATER = 4, IMGG = 0x100;
+        public const byte PK = 1, LATER = 4, IMGG = 0x20;
 
         public const short OFF = 0, ON = 1, HOT = 2;
 
@@ -33,7 +33,7 @@ namespace Greatbone.Samp
 
         internal bool imgg;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             if ((proj & PK) == PK)
             {
@@ -53,7 +53,7 @@ namespace Greatbone.Samp
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             if ((proj & PK) == PK)
             {

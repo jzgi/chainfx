@@ -62,7 +62,7 @@ namespace Greatbone.Samp
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
                         m.FIELD(o.total, "总计", fix: "¥", effect: o.status == 0 ? Emphasis : 0, box: 4);
-                        m.TAIL(o.Err(), group: o.status == 0 ? (short) 1 : (short) 0);
+                        m.TAIL(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
                         m._CARD();
                     }
                     m._BOARDVIEW(arr?.Length ?? 0);
@@ -130,7 +130,7 @@ namespace Greatbone.Samp
                     off = shop.off,
                     created = DateTime.Now
                 };
-                const short proj = -1 ^ KEY ^ Order.LATER;
+                const byte proj = 0xff ^ KEY ^ Order.LATER;
                 dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj), false);
             }
             ac.GiveRedirect();

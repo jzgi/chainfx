@@ -56,7 +56,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             i.Get(nameof(shard), ref shard);
             i.Get(nameof(addrs), ref addrs);
@@ -66,7 +66,7 @@ namespace Greatbone.Core
             i.Get(nameof(cache), ref cache);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             o.Put(nameof(shard), shard);
             o.Put(nameof(addrs), addrs);
@@ -95,7 +95,7 @@ namespace Greatbone.Core
 
         public string password;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             i.Get(nameof(host), ref host);
             i.Get(nameof(port), ref port);
@@ -104,7 +104,7 @@ namespace Greatbone.Core
             i.Get(nameof(password), ref password);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             o.Put(nameof(host), host);
             o.Put(nameof(port), port);

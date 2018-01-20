@@ -455,7 +455,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public JsonContent Put(string name, IData v, short proj = 0x00ff)
+        public JsonContent Put(string name, IData v, byte proj = 0x1f)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -486,7 +486,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData
+        public JsonContent Put<D>(string name, D[] v, byte proj = 0x1f) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)

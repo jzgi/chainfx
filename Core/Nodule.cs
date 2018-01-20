@@ -20,7 +20,7 @@ namespace Greatbone.Core
 
         readonly string tip;
 
-        readonly short group;
+        readonly byte flag;
 
         // access check
         internal readonly AuthorizeAttribute authorize;
@@ -52,7 +52,7 @@ namespace Greatbone.Core
             UiAttribute ui = uis.Length > 0 ? uis[0] : null;
             this.label = ui?.Label ?? name.ToUpper();
             this.tip = ui?.Tip ?? label;
-            this.group = ui?.Group ?? 0;
+            this.flag = ui?.Flag ?? 0;
 
             // authorize
             var auths = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), false);
@@ -84,7 +84,7 @@ namespace Greatbone.Core
 
         public string Tip => tip;
 
-        public short Group => group;
+        public byte Flag => flag;
 
         public AuthorizeAttribute Authorize => authorize;
 

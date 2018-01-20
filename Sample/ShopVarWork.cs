@@ -70,7 +70,7 @@ namespace Greatbone.Samp
 
             using (var dc = ac.NewDbContext())
             {
-                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, -1).T(", COALESCE(img1, img2, img3, img4) IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), -1);
+                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, 0xff).T(", COALESCE(img1, img2, img3, img4) IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), 0xff);
                 ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().A_DROPDOWN_("正在" + Shop.Statuses[shop.status]);
@@ -114,7 +114,7 @@ namespace Greatbone.Samp
         public async Task edit(ActionContext ac)
         {
             string shopid = ac[this];
-            const short proj = Shop.ADM;
+            const byte proj = Shop.ADM;
             if (ac.GET)
             {
                 using (var dc = ac.NewDbContext())

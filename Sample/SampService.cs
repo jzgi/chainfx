@@ -79,7 +79,7 @@ namespace Greatbone.Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM shops WHERE status > 0 ORDER BY id");
-                    while (dc.Next()) c.Add(dc.ToObject<Shop>(-1));
+                    while (dc.Next()) c.Add(dc.ToObject<Shop>(0xff));
                 }
             }, 60 * 30);
         }
@@ -123,7 +123,7 @@ namespace Greatbone.Samp
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
                     {
-                        prin = dc.ToObject<User>(-1 ^ User.CREDENTIAL);
+                        prin = dc.ToObject<User>(0xff ^ User.CREDENTIAL);
                     }
                     else
                     {
@@ -163,7 +163,7 @@ namespace Greatbone.Samp
             {
                 // set token success
                 ac.Principal = prin;
-                ac.SetTokenCookie(prin, -1 ^ User.CREDENTIAL);
+                ac.SetTokenCookie(prin, 0xff ^ User.CREDENTIAL);
             }
             return true;
         }

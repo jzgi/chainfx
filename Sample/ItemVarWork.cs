@@ -160,7 +160,7 @@ namespace Greatbone.Samp
                         };
                         o.AddItem(itemname, unit, price, num);
                         o.TotalUp();
-                        const short proj = -1 ^ Order.KEY ^ Order.LATER;
+                        const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
                     }
                     ac.GivePane(200, m =>
@@ -203,7 +203,7 @@ namespace Greatbone.Samp
             }
             else // POST
             {
-                const short proj = -1 ^ Item.PK;
+                const byte proj = 0xff ^ Item.PK;
                 var o = await ac.ReadObjectAsync<Item>(proj);
                 using (var dc = ac.NewDbContext())
                 {

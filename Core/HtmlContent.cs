@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.Tracing;
 using static Greatbone.Core.Target;
 
 namespace Greatbone.Core
@@ -1032,7 +1031,7 @@ namespace Greatbone.Core
             for (int i = 0; i < ais?.Length; i++)
             {
                 var ai = ais[i];
-                if (ai.Group != 0 && ai.Group != group)
+                if (ai.Flag != 0 && ai.Flag != group)
                 {
                     continue;
                 }
@@ -1264,10 +1263,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TAIL(string sign = null, bool on = false, short group = 0)
+        public HtmlContent TAIL(string sign = null, bool on = false, byte flag = 0)
         {
             TAIL_(sign, on);
-            _TAIL(group);
+            _TAIL(flag);
             return this;
         }
 
@@ -1288,17 +1287,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _TAIL(short group = 0)
+        public HtmlContent _TAIL(byte flag = 0)
         {
             Work work = actionCtx.Work?.VarWork;
             if (work != null)
             {
                 Add("<div style=\"margin-left: auto\">");
-                if (group == 0)
+                if (flag == 0)
                 {
-                    group = (short) ordinal;
+                    flag = (byte) ordinal;
                 }
-                Tools(work, group, model);
+                Tools(work, flag, model);
                 Add("</div>");
             }
             return this;
@@ -1317,7 +1316,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Tools(Work work, short group, IData obj)
+        void Tools(Work work, byte flag, IData obj)
         {
             var ais = work.Tooled;
             if (ais == null)
@@ -1327,11 +1326,10 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 var ai = ais[i];
-                if (ai.Group != 0 && ai.Group != group)
+                if (ai.Flag == 0 || (ai.Flag & flag) == ai.Flag)
                 {
-                    continue;
+                    Tool(ai, obj, ordinal);
                 }
-                Tool(ais[i], obj, ordinal);
             }
         }
 

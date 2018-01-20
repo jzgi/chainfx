@@ -133,7 +133,7 @@ namespace Greatbone.Samp
                             paid = 0,
                             keeper = prin.name
                         };
-                        const short proj = -1 ^ Cash.ID;
+                        const byte proj = 0xff ^ Cash.ID;
                         dc.Execute(dc.Sql("INSERT INTO cashes")._(entry, proj)._VALUES_(entry, proj), p => entry.Write(p, proj));
                     }
                 }

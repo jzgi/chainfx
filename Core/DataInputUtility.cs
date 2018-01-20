@@ -70,19 +70,19 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D StringToObject<D>(string v, short proj = 0x00ff) where D : IData, new()
+        public static D StringToObject<D>(string v, byte proj = 0x1f) where D : IData, new()
         {
             JObj jo = (JObj) new JsonParse(v).Parse();
             return jo.ToObject<D>(proj);
         }
 
-        public static D[] StringToArray<D>(string v, short proj = 0x00ff) where D : IData, new()
+        public static D[] StringToArray<D>(string v, byte proj = 0x1f) where D : IData, new()
         {
             JArr ja = (JArr) new JsonParse(v).Parse();
             return ja.ToArray<D>(proj);
         }
 
-        public static string ToString<D>(D v, short proj = 0x00ff) where D : IData
+        public static string ToString<D>(D v, byte proj = 0x1f) where D : IData
         {
             JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
@@ -91,7 +91,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ToString<D>(D[] v, short proj = 0x00ff) where D : IData
+        public static string ToString<D>(D[] v, byte proj = 0x1f) where D : IData
         {
             JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
@@ -127,7 +127,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToObject<D>(string file, short proj = 0x00ff) where D : IData, new()
+        public static D FileToObject<D>(string file, byte proj = 0x1f) where D : IData, new()
         {
             try
             {
@@ -145,7 +145,7 @@ namespace Greatbone.Core
             return default(D);
         }
 
-        public static D[] FileToArray<D>(string file, short proj = 0x00ff) where D : IData, new()
+        public static D[] FileToArray<D>(string file, byte proj = 0x1f) where D : IData, new()
         {
             try
             {
@@ -163,7 +163,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static Map<K, D> FileToMap<K, D>(string file, Func<D, K> keyer, short proj = 0x00ff) where D : IData, new()
+        public static Map<K, D> FileToMap<K, D>(string file, Func<D, K> keyer, byte proj = 0x1f) where D : IData, new()
         {
             try
             {

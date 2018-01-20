@@ -38,7 +38,7 @@ namespace Greatbone.Samp
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(ActionContext ac)
         {
-            const short proj = Shop.ADM;
+            const byte proj = Shop.ADM;
             if (ac.GET)
             {
                 var o = new Shop {city = City.All[0].name};

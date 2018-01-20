@@ -41,8 +41,8 @@ namespace Greatbone.Core
 
         R Put(string name, Map<string, string> v);
 
-        R Put(string name, IData v, short proj = 0x00ff);
+        R Put(string name, IData v, byte proj = 0x1f);
 
-        R Put<D>(string name, D[] v, short proj = 0x00ff) where D : IData;
+        R Put<D>(string name, D[] v, byte proj = 0x1f) where D : IData;
     }
 }

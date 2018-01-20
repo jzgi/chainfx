@@ -43,7 +43,7 @@ namespace Greatbone.Samp
 
         internal double x1, y1, x2, y2;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(x1), ref x1);
@@ -53,7 +53,7 @@ namespace Greatbone.Samp
             i.Get(nameof(areas), ref areas);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(x1), x1);
@@ -75,13 +75,13 @@ namespace Greatbone.Samp
 
         internal string[] sites;
 
-        public void Read(IDataInput i, short proj = 0x00ff)
+        public void Read(IDataInput i, byte proj = 0x1f)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(sites), ref sites);
         }
 
-        public void Write<R>(IDataOutput<R> o, short proj = 0x00ff) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(sites), sites);

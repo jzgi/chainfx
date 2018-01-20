@@ -34,7 +34,7 @@ namespace Greatbone.Core
                     JsonParse p = new JsonParse(bytes, bytes.Length);
                     JObj jo = (JObj) p.Parse();
                     // this will override values
-                    cfg.Read(jo, -1);
+                    cfg.Read(jo, 0xff);
                 }
                 else
                 {

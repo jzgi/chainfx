@@ -282,7 +282,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(short proj = 0x00ff, D obj = default) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(byte proj = 0x1f, D obj = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -313,7 +313,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(short proj = 0x00ff) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(byte proj = 0x1f) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -374,7 +374,7 @@ namespace Greatbone.Core
             Response.Headers.Add(name, new StringValues(values));
         }
 
-        public void SetTokenCookie<P>(P prin, short proj, int maxage = 0) where P : class, IData, new()
+        public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
             ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
         }
@@ -423,7 +423,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give(int status, IData obj, short proj = 0x00ff, bool? pub = null, int maxage = 60)
+        public void Give(int status, IData obj, byte proj = 0x1f, bool? pub = null, int maxage = 60)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Status = status;
@@ -432,7 +432,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give<D>(int status, D[] arr, short proj = 0x00ff, bool? pub = null, int maxage = 60) where D : IData
+        public void Give<D>(int status, D[] arr, byte proj = 0x1f, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Status = status;
