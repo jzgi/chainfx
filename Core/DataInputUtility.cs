@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -100,6 +101,15 @@ namespace Greatbone.Core
             return str;
         }
 
+        public static string ToString<D>(List<D> v, byte proj = 0x1f) where D : IData
+        {
+            JsonContent cont = new JsonContent(false, 4 * 1024);
+            cont.Put(null, v, proj);
+            string str = cont.ToString();
+            BufferUtility.Return(cont); // return buffer to pool
+            return str;
+        }
+
         public static T FileTo<T>(string file) where T : class, IDataInput
         {
             try
@@ -142,7 +152,7 @@ namespace Greatbone.Core
             {
                 Debug.WriteLine(ex.Message);
             }
-            return default(D);
+            return default;
         }
 
         public static D[] FileToArray<D>(string file, byte proj = 0x1f) where D : IData, new()

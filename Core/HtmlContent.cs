@@ -1268,10 +1268,6 @@ namespace Greatbone.Core
             if (work != null)
             {
                 Add("<div style=\"margin-left: auto\">");
-                if (flag == 0)
-                {
-                    flag = (byte) ordinal;
-                }
                 Tools(work, flag, model);
                 Add("</div>");
             }
@@ -1823,7 +1819,7 @@ namespace Greatbone.Core
                         if (e.Key.Equals(val)) Add(" checked");
                         if (required) Add(" required");
                         Add(">");
-                        Add(e.Value.ToString());
+                        Add(e.Val.ToString());
                         Add("</label>");
                     }
                 }
@@ -1987,7 +1983,7 @@ namespace Greatbone.Core
                         Add("\"");
                         if (key.Equals(v)) Add(" selected");
                         Add(">");
-                        Add(e.value?.ToString());
+                        Add(e.val?.ToString());
                         Add("</option>");
                     }
                 }
@@ -2041,7 +2037,7 @@ namespace Greatbone.Core
                         Add("\"");
                         if (v.Contains(key)) Add(" selected");
                         Add(">");
-                        Add(e.value.ToString());
+                        Add(e.val.ToString());
                         Add("</option>");
                     }
                 }

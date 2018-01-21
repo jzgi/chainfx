@@ -177,11 +177,11 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
-                return ToMap(proj, keyer);
+                return ToMap(proj, keyer, toper);
             }
             return null;
         }
@@ -418,9 +418,9 @@ namespace Greatbone.Core
             return roll.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(byte proj = 0x1f, Func<D, K> keyer = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
-            Map<K, D> map = new Map<K, D>(32);
+            Map<K, D> map = new Map<K, D>(64, toper);
             while (Next())
             {
                 D obj = new D();

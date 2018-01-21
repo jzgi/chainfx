@@ -21,7 +21,38 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("修改", flag: 0x20), Tool(ButtonShow)]
+        [Ui("付款¥", flag: 1), Tool(ButtonScript), Order('P')]
+        public async Task prepay(ActionContext ac)
+        {
+            string wx = ac[-2];
+            int orderid = ac[this];
+            short rev;
+            decimal total;
+            User prin = (User) ac.Principal;
+            using (var dc = ac.NewDbContext())
+            {
+                dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                dc.Let(out rev).Let(out total).Let(out short typ).Let(out prin.name).Let(out prin.city).Let(out prin.addr).Let(out prin.tel);
+                if (typ == 0) // normal order then keep user info
+                {
+                    if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = COALESCE(@2, users.name), city = COALESCE(@3, users.city), addr = COALESCE(@4, users.addr), tel = COALESCE(@5, users.tel)", p => p.Set(wx).Set(prin.name).Set(prin.city).Set(prin.addr).Set(prin.tel)) > 0)
+                    {
+                        ac.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
+                    }
+                }
+            }
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, NETADDR + "/paynotify", "粗粮达人-健康产品");
+            if (prepay_id != null)
+            {
+                ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
+            }
+            else
+            {
+                ac.Give(500);
+            }
+        }
+
+        [Ui("修改", flag: 8), Tool(ButtonShow)]
         public async Task addr(ActionContext ac)
         {
             int orderid = ac[this];
@@ -93,7 +124,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("修改", flag: 0x20), Tool(ButtonShow)]
+        [Ui("修改", flag: 8), Tool(ButtonShow)]
         public async Task item(ActionContext ac, int idx)
         {
             int orderid = ac[this];
@@ -130,37 +161,6 @@ namespace Greatbone.Samp
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
                 ac.GivePane(200);
-            }
-        }
-
-        [Ui("付款¥", flag: 1), Tool(ButtonScript), Order('P')]
-        public async Task prepay(ActionContext ac)
-        {
-            string wx = ac[-2];
-            int orderid = ac[this];
-            short rev;
-            decimal total;
-            User prin = (User) ac.Principal;
-            using (var dc = ac.NewDbContext())
-            {
-                dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                dc.Let(out rev).Let(out total).Let(out short typ).Let(out prin.name).Let(out prin.city).Let(out prin.addr).Let(out prin.tel);
-                if (typ == 0) // normal order then keep user info
-                {
-                    if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = COALESCE(@2, users.name), city = COALESCE(@3, users.city), addr = COALESCE(@4, users.addr), tel = COALESCE(@5, users.tel)", p => p.Set(wx).Set(prin.name).Set(prin.city).Set(prin.addr).Set(prin.tel)) > 0)
-                    {
-                        ac.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
-                    }
-                }
-            }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, NETADDR + "/paynotify", "粗粮达人-健康产品");
-            if (prepay_id != null)
-            {
-                ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
-            }
-            else
-            {
-                ac.Give(500);
             }
         }
 
@@ -231,7 +231,7 @@ namespace Greatbone.Samp
                     {
                         var e = f.At(i);
                         var (name, unit, price) = e.Key.ToTriple('~');
-                        short n = e.Value;
+                        short n = e.Val;
                         if (n != 0) o.ReceiveItem(name, unit, decimal.Parse(price), n);
                     }
                     dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));

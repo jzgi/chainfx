@@ -15,7 +15,11 @@ namespace Greatbone.Core
 
         int count;
 
-        public Map(int capacity = 16)
+        readonly Predicate<K> toper;
+
+        List<V> top;
+
+        public Map(int capacity = 16, Predicate<K> toper = null)
         {
             // find a least power of 2 that is greater than or equal to capacity
             int size = 8;
@@ -24,6 +28,9 @@ namespace Greatbone.Core
                 size <<= 1;
             }
             ReInit(size);
+
+            this.toper = toper;
+            this.top = new List<V>(16);
         }
 
         void ReInit(int size) // size must be power of 2
@@ -44,7 +51,9 @@ namespace Greatbone.Core
 
         public Entry At(int idx) => entries[idx];
 
-        public V this[int idx] => entries[idx].value;
+        public V this[int idx] => entries[idx].val;
+
+        public List<V> Top => top;
 
         public int IndexOf(K key)
         {
@@ -92,7 +101,7 @@ namespace Greatbone.Core
                 // re-add old elements
                 for (int i = 0; i < oldc; i++)
                 {
-                    Add(old[i].key, old[i].value, true);
+                    Add(old[i].key, old[i].val, true);
                 }
             }
 
@@ -104,7 +113,7 @@ namespace Greatbone.Core
                 Entry e = entries[idx];
                 if (e.Match(code, key))
                 {
-                    e.value = value;
+                    e.val = value;
                     return; // replace the old value
                 }
                 idx = entries[idx].next; // adjust for next index
@@ -112,7 +121,13 @@ namespace Greatbone.Core
 
             // add a new entry
             idx = count;
-            entries[idx] = new Entry(code, buckets[buck], key, value);
+            bool istop = toper?.Invoke(key) ?? false; // determine if top or not
+            if (istop)
+            {
+                if (top == null) top = new List<V>(16);
+                top.Add(value);
+            }
+            entries[idx] = new Entry(code, buckets[buck], key, value, istop);
             buckets[buck] = idx;
             count++;
         }
@@ -136,7 +151,7 @@ namespace Greatbone.Core
                 Entry e = entries[idx];
                 if (e.Match(code, key))
                 {
-                    value = e.value;
+                    value = e.val;
                     return true;
                 }
                 idx = entries[idx].next; // adjust for next index
@@ -176,7 +191,7 @@ namespace Greatbone.Core
             Roll<V> roll = new Roll<V>(16);
             for (int i = 0; i < count; i++)
             {
-                V v = entries[i].value;
+                V v = entries[i].val;
                 if (cond == null || cond(v))
                 {
                     roll.Add(v);
@@ -189,7 +204,7 @@ namespace Greatbone.Core
         {
             for (int i = 0; i < count; i++)
             {
-                V v = entries[i].value;
+                V v = entries[i].val;
                 if (cond == null || cond(v))
                 {
                     return v;
@@ -203,10 +218,10 @@ namespace Greatbone.Core
             for (int i = 0; i < count; i++)
             {
                 K key = entries[i].key;
-                V value = entries[i].value;
+                V value = entries[i].val;
                 if (cond == null || cond(key, value))
                 {
-                    hand(entries[i].key, entries[i].value);
+                    hand(entries[i].key, entries[i].val);
                 }
             }
         }
@@ -217,16 +232,19 @@ namespace Greatbone.Core
 
             internal readonly K key; // entry key
 
-            internal V value; // entry value
+            internal V val; // entry value
 
             internal readonly int next; // index of next entry, -1 if last
 
-            internal Entry(int code, int next, K key, V value)
+            internal readonly bool top;
+
+            internal Entry(int code, int next, K key, V val, bool top)
             {
                 this.code = code;
                 this.next = next;
                 this.key = key;
-                this.value = value;
+                this.val = val;
+                this.top = top;
             }
 
             internal bool Match(int code, K key)
@@ -236,12 +254,14 @@ namespace Greatbone.Core
 
             public override string ToString()
             {
-                return value.ToString();
+                return val.ToString();
             }
 
             public K Key => key;
 
-            public V Value => value;
+            public V Val => val;
+
+            public bool IsTop => top;
         }
 
         public struct Enumerator : IEnumerator<Entry>

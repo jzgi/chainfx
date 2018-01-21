@@ -113,7 +113,7 @@ namespace Greatbone.Core
                     {
                         clients = new Map<string, Client>(cluster.Count * 2);
                     }
-                    clients.Add(new Client(this, e.Key, e.Value));
+                    clients.Add(new Client(this, e.Key, e.Val));
 
                     if (queues == null)
                     {
