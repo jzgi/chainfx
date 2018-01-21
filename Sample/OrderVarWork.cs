@@ -21,7 +21,7 @@ namespace Greatbone.Samp
         {
         }
 
-        [Ui("修改", Flag = 0x20), Tool(ButtonShow)]
+        [Ui("修改", flag: 0x20), Tool(ButtonShow)]
         public async Task addr(ActionContext ac)
         {
             int orderid = ac[this];
@@ -29,6 +29,8 @@ namespace Greatbone.Samp
             string name, city, a, b, c, tel; // form values
             if (ac.GET)
             {
+                var shops = Obtain<Map<string, Shop>>();
+
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
@@ -37,7 +39,7 @@ namespace Greatbone.Samp
                         dc.Query1("SELECT shopid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                         dc.Let(out string oshopid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
                         h.FIELDSET_("收货地址");
-                        var shop = ((SampService) Service).Shops[oshopid];
+                        var shop = shops[oshopid];
                         if (shop.areas != null) // limited delivery areas
                         {
                             ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel); // by select refresh
@@ -91,7 +93,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("修改", Flag = 0x20), Tool(ButtonShow)]
+        [Ui("修改", flag: 0x20), Tool(ButtonShow)]
         public async Task item(ActionContext ac, int idx)
         {
             int orderid = ac[this];
@@ -131,7 +133,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("付款¥", Flag = 1), Tool(ButtonScript), Order('P')]
+        [Ui("付款¥", flag: 1), Tool(ButtonScript), Order('P')]
         public async Task prepay(ActionContext ac)
         {
             string wx = ac[-2];
@@ -262,7 +264,7 @@ namespace Greatbone.Samp
                         }
                         m._SELECT();
                         // input addr
-                        var shop = ((SampService) Service).Shops[shopid];
+                        var shop = Obtain<Map<string, Shop>>()[shopid];
                         if (shop.areas != null)
                         {
                             m.SELECT(nameof(addr), addr, shop.areas, "区域");

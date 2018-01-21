@@ -62,8 +62,6 @@ namespace Greatbone.Samp
     /// </summary>
     public class SampService : Service<User>, IAuthenticateAsync
     {
-        public readonly CacheMap<string, Shop> Shops;
-
         public SampService(ServiceConfig cfg) : base(cfg)
         {
             CreateVar<SampVarWork, string>(obj => ((Shop) obj).id); // subshop
@@ -74,12 +72,12 @@ namespace Greatbone.Samp
 
             Create<AdmWork>("adm"); // administrator
 
-            Shops = new CacheMap<string, Shop>(c =>
+            Register(delegate
             {
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM shops WHERE status > 0 ORDER BY id");
-                    while (dc.Next()) c.Add(dc.ToObject<Shop>(0xff));
+                    return dc.ToMap<string, Shop>();
                 }
             }, 60 * 30);
         }
@@ -231,6 +229,8 @@ namespace Greatbone.Samp
         [User] // we are forced to put check here because  weixin auth does't work in iframe
         public void list(ActionContext ac)
         {
+            var shops = Obtain<Map<string, Shop>>();
+
             string city = ac.Query[nameof(city)];
             if (string.IsNullOrEmpty(city))
             {
@@ -239,7 +239,7 @@ namespace Greatbone.Samp
             ac.GiveDoc(200, m =>
             {
                 m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
-                m.BOARDVIEW(Shops.All(x => x.city == city), (h, o) =>
+                m.BOARDVIEW(shops.All(x => x.city == city), (h, o) =>
                 {
                     h.CAPTION_().T(o.name)._CAPTION(Shop.Statuses[o.status], o.status == 2);
                     h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
@@ -263,6 +263,8 @@ namespace Greatbone.Samp
         /// </summary>
         public async Task paynotify(ActionContext ac)
         {
+            var shops = Obtain<Map<string, Shop>>();
+
             XElem xe = await ac.ReadAsync<XElem>();
             if (!Notified(xe, out var trade_no, out var cash))
             {
@@ -280,14 +282,14 @@ namespace Greatbone.Samp
                 }
                 dc.Let(out string shopid).Let(out city).Let(out addr);
                 // retrieve a POS openid
-                if (Shops[shopid].areas != null)
+                if (shops[shopid].areas != null)
                 {
                     var (a, _, _) = addr.ToTriple(SEPCHAR);
                     targetwx = (string) dc.Scalar("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3 LIMIT 1", p => p.Set(shopid).Set(city).Set(a + "%"));
                 }
                 if (targetwx == null)
                 {
-                    targetwx = Shops[shopid].oprwx;
+                    targetwx = shops[shopid].oprwx;
                 }
             }
             // send messages

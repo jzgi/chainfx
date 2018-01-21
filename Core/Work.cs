@@ -155,7 +155,7 @@ namespace Greatbone.Core
             };
             // init sub work
             W work = (W) ci.Invoke(new object[] {wc});
-            work.Attach(attachs);
+            work.Register(attachs);
             works.Add(work.Key, work);
 
             return work;
@@ -193,7 +193,7 @@ namespace Greatbone.Core
                 Keyer = keyer,
             };
             W work = (W) ci.Invoke(new object[] {wc});
-            work.Attach(attachs);
+            work.Register(attachs);
             varwork = work;
             return work;
         }
@@ -451,42 +451,6 @@ namespace Greatbone.Core
             ac.Give(200, cont, @public: true, maxage: 60 * 15);
         }
 
-        //
-        // OBJECT PROVIDER
-
-        object[] attachs;
-
-        int objc;
-
-        public void Attach(object v)
-        {
-            if (attachs == null)
-            {
-                attachs = new object[8];
-            }
-            attachs[objc++] = v;
-        }
-
-        public void Attach(params object[] attachs)
-        {
-            if (this.attachs == null)
-            {
-                this.attachs = attachs;
-            }
-        }
-
-        public T Obtain<T>() where T : class
-        {
-            if (attachs != null)
-            {
-                for (int i = 0; i < objc; i++)
-                {
-                    if (attachs[i] is T v) return v;
-                }
-            }
-            return Parent?.Obtain<T>();
-        }
-
         // LOGGING
 
         public void TRC(string msg, Exception ex = null)
@@ -512,6 +476,110 @@ namespace Greatbone.Core
         public void ERR(string msg, Exception ex = null)
         {
             Service.Log(LogLevel.Error, 0, msg, ex, null);
+        }
+
+        //
+        // OBJECT PROVIDER
+
+        Bucket[] buckets;
+
+        int count;
+
+        public void Register(object val)
+        {
+            if (buckets == null)
+            {
+                buckets = new Bucket[8];
+            }
+            buckets[count++] = new Bucket(val);
+        }
+
+        public void Register<V>(Func<V> loader, int maxage = 3600 * 12) where V : class
+        {
+            if (buckets == null)
+            {
+                buckets = new Bucket[8];
+            }
+            buckets[count++] = new Bucket(loader, maxage);
+        }
+
+        public void Register(params object[] vals)
+        {
+            foreach (var val in vals)
+            {
+                Register(val);
+            }
+        }
+
+        public T Obtain<T>() where T : class
+        {
+            if (buckets != null)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (buckets[i] is T v) return v;
+                }
+            }
+            return Parent?.Obtain<T>();
+        }
+
+        public struct Bucket
+        {
+            readonly Func<object> loader;
+
+            readonly int maxage; //in seconds
+
+            // tick count,   
+            int expiry;
+
+            object val;
+
+            Exception excep;
+
+            public Bucket(object v)
+            {
+                loader = null;
+                maxage = 0;
+                expiry = 0;
+                this.val = v;
+                excep = null;
+            }
+
+            public Bucket(Func<object> loader, int maxage = 3600 * 12)
+            {
+                this.loader = loader;
+                this.maxage = maxage;
+                expiry = 0;
+                this.val = null;
+                excep = null;
+            }
+
+            public int MaxAge => maxage;
+
+            public Exception Excep => excep;
+
+            public object Get
+            {
+                get
+                {
+                    if (Environment.TickCount >= expiry)
+                    {
+                        try
+                        {
+                            val = loader();
+                        }
+                        catch (Exception ex)
+                        {
+                            excep = ex;
+                        }
+                        finally
+                        {
+                            expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                        }
+                    }
+                    return val;
+                }
+            }
         }
     }
 }

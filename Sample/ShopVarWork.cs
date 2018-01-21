@@ -17,7 +17,7 @@ namespace Greatbone.Samp
         public void icon(ActionContext ac)
         {
             string shopid = ac[this];
-            var byteas = ((SampService) Service).Shops[shopid].icon;
+            var byteas = Obtain<Map<string, Shop>>()[shopid].icon;
             if (byteas.Count == 0)
             {
                 ac.Give(204); // no content 
@@ -31,7 +31,7 @@ namespace Greatbone.Samp
         public void img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
-            var shop = ((SampService) Service).Shops[shopid];
+            var shop = Obtain<Map<string, Shop>>()[shopid];
             var byteas =
                 ordinal == 1 ? shop.img1 :
                 ordinal == 2 ? shop.img2 :
@@ -60,7 +60,7 @@ namespace Greatbone.Samp
         public void @default(ActionContext ac)
         {
             string shopid = ac[this];
-            var shop = ((SampService) Service).Shops[shopid];
+            var shop = Obtain<Map<string, Shop>>()[shopid];
             if (shop == null)
             {
                 ac.Give(404, @public: true, maxage: 3600);

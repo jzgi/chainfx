@@ -1,5 +1,4 @@
 using System;
-using static Greatbone.Core.Target;
 
 namespace Greatbone.Core
 {
@@ -137,26 +136,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent EM(string v, string fix = null)
+        public HtmlContent EM_()
         {
             Add("<em>");
-            if (fix != null)
-            {
-                if (fix == "¥" || fix == "$")
-                {
-                    Add(fix);
-                    Add(v);
-                }
-                else
-                {
-                    Add(v);
-                    Add(fix);
-                }
-            }
-            else
-            {
-                Add(v);
-            }
+            return this;
+        }
+
+        public HtmlContent _EM()
+        {
             Add("</em>");
             return this;
         }
@@ -285,21 +272,19 @@ namespace Greatbone.Core
 
         public HtmlContent SP()
         {
-            Add("&nbsp;&nbsp;");
+            Add("&nbsp;");
             return this;
         }
 
 
-        public HtmlContent A(string v, string href, bool? hollow = null, Target targ = 0)
+        public HtmlContent A(string v, string href, bool? hollow = null, string targ = null)
         {
             Add("<a href=\"");
             Add(href);
-            if (targ > 0)
+            if (targ != null)
             {
                 Add("\" target=\"");
-                if (targ == Parent) Add("_parent");
-                else if (targ == Top) Add("_top");
-                else if (targ == Blank) Add("_blank");
+                Add(targ);
                 Add("\"");
             }
             if (hollow.HasValue)
@@ -426,7 +411,7 @@ namespace Greatbone.Core
             Add("<td>");
             Add("<span>");
             AddEsc(v);
-            Add("</span>  <span>");
+            Add("</span><span>");
             AddEsc(v2);
             Add("</span>");
             Add("</td>");
@@ -440,7 +425,7 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < v.Length; i++)
                 {
-                    if (i > 0) Add(" ");
+                    if (i > 0) Add(' ');
                     Add(v[i]);
                 }
             }
@@ -911,19 +896,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent INPBUTTON(string value, string script, byte box = 0x0c)
-        {
-            FIELD_(null, box);
-            Add("<input type=\"button\" class=\"button primary hollow\" value=\"");
-            AddEsc(value);
-            Add("\" onclick=\"");
-            Add(script);
-            Add("\">");
-            _FIELD(box);
-            return this;
-        }
-
-
         public HtmlContent BUTTON(string val, bool post = true, bool top = false)
         {
             Add("<button class=\"button primary hollow\" formmethod=\"");
@@ -1024,18 +996,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void TOOLBAR(short group = 0, string title = null, bool refresh = true)
+        public void TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
         {
             var ais = actionCtx.Work.Tooled;
             TOOLBAR_();
             for (int i = 0; i < ais?.Length; i++)
             {
                 var ai = ais[i];
-                if (ai.Flag != 0 && ai.Flag != group)
+                if (ai.Flag == 0 || (flag & ai.Flag) == ai.Flag)
                 {
-                    continue;
+                    Tool(ai, null, 0);
                 }
-                Tool(ais[i], null, 0);
             }
             _TOOLBAR(title, refresh);
         }
@@ -1326,7 +1297,8 @@ namespace Greatbone.Core
             for (int i = 0; i < ais.Length; i++)
             {
                 var ai = ais[i];
-                if (ai.Flag == 0 || (ai.Flag & flag) == ai.Flag)
+                var aiflag = ai.Flag;
+                if (aiflag == 0 || (flag & aiflag) == aiflag)
                 {
                     Tool(ai, obj, ordinal);
                 }
@@ -1335,25 +1307,14 @@ namespace Greatbone.Core
 
         public HtmlContent TOOL(string name, int subscript = -1, bool when = true)
         {
-            if (!when) return this;
-
-            if (model != null)
+            if (when)
             {
-                var work = actionCtx.Work.VarWork;
-                var ai = work.GetAction(name);
-                Tool(ai, model, ordinal, subscript);
-            }
-            else if (ordinal > 0)
-            {
-                var work = actionCtx.Work.VarWork;
-                var ai = work.GetAction(name);
-                Tool(ai, null, ordinal, subscript);
-            }
-            else
-            {
-                var work = actionCtx.Work;
-                var ai = work.GetAction(name);
-                Tool(ai, null, 0, subscript);
+                var work = actionCtx.Work?.VarWork;
+                var ai = work?.GetAction(name);
+                if (ai != null)
+                {
+                    Tool(ai, model, ordinal, subscript);
+                }
             }
             return this;
         }
@@ -1473,22 +1434,12 @@ namespace Greatbone.Core
         // CONTROLS
         //
 
-        public HtmlContent HIDDEN(string name, string value)
+        public HtmlContent HIDDEN<V>(string name, V val)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddEsc(value);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent HIDDEN<V>(string name, V value)
-        {
-            Add("<input type=\"hidden\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            AddPrimitive(value);
+            AddPrimitive(val);
             Add("\">");
             return this;
         }
@@ -1512,48 +1463,6 @@ namespace Greatbone.Core
             {
                 Add(" pattern=\"");
                 AddEsc(pattern);
-                Add("\"");
-            }
-            if (max > 0)
-            {
-                Add(" maxlength=\"");
-                Add(max);
-                Add("\"");
-            }
-            if (min > 0)
-            {
-                Add(" minlength=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-            Add(">");
-
-            _FIELD(box);
-            return this;
-        }
-
-        public HtmlContent TEXT(string name, string[] val, string label = null, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-
-            Add("<input type=\"text\" name=\"");
-            Add(name);
-            Add("\" value=\"");
-            if (val != null)
-            {
-                for (int i = 0; i > val.Length; i++)
-                {
-                    if (i > 0) Add(' ');
-                    AddEsc(val[i]);
-                }
-            }
-            Add("\"");
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
                 Add("\"");
             }
             if (max > 0)
@@ -2330,17 +2239,29 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent PROGRES()
+        public HtmlContent PROGRES<V>(V max, V val, bool percent = false)
         {
-            T("</tbody>");
+            Add("<progress max=\"");
+            AddPrimitive(max);
+            Add("\" value=\"");
+            AddPrimitive(val);
+            Add("\">");
+            if (percent)
+            {
+                AddPrimitive(val);
+                Add('%');
+            }
+            Add("</progress>");
             return this;
         }
 
-        public HtmlContent OUTPUT(string name)
+        public HtmlContent OUTPUT<V>(string name, V val)
         {
             Add("<output name=\"");
             Add(name);
-            Add("\"></output>");
+            Add("\">");
+            AddPrimitive(val);
+            Add("</output>");
             return this;
         }
 

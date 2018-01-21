@@ -172,11 +172,12 @@ namespace Greatbone.Samp
                 return;
             }
 
+            var shops = Obtain<Map<string, Shop>>();
             string shopid = ac[this];
             ac.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                var o = ((SampService) Service).Shops[shopid];
+                var o = shops[shopid];
                 h.BOARDVIEW_();
 
                 h.CARD_();
@@ -252,8 +253,10 @@ namespace Greatbone.Samp
         [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
         public async Task sets(ActionContext ac)
         {
+            var shops = Obtain<Map<string, Shop>>();
+
             string shopid = ac[this];
-            var o = ((SampService) Service).Shops[shopid];
+            var o = shops[shopid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -287,8 +290,10 @@ namespace Greatbone.Samp
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMGR)]
         public async Task img(ActionContext ac, int ordinal)
         {
+            var shops = Obtain<Map<string, Shop>>();
+
             string shopid = ac[this];
-            var o = ((SampService) Service).Shops[shopid];
+            var o = shops[shopid];
             if (ac.GET)
             {
                 var byteas =
@@ -328,9 +333,11 @@ namespace Greatbone.Samp
         [Ui("上下班"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task status(ActionContext ac)
         {
+            var shops = Obtain<Map<string, Shop>>();
+
             User prin = (User) ac.Principal;
             string shopid = ac[this];
-            var o = ((SampService) Service).Shops[shopid];
+            var o = shops[shopid];
             bool custsvc;
             if (ac.GET)
             {

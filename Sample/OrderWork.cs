@@ -117,7 +117,7 @@ namespace Greatbone.Samp
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                var shop = ((SampService) Service).Shops[shopid];
+                var shop = Obtain<Map<string, Shop>>()[shopid];
                 var o = new Order
                 {
                     rev = 1,
@@ -195,7 +195,7 @@ namespace Greatbone.Samp
             {
                 ac.GivePane(200, m =>
                 {
-                    var shop = ((SampService) Service).Shops[shopid];
+                    var shop = Obtain<Map<string, Shop>>()[shopid];
                     m.FORM_();
                     m.RADIOSET(nameof(filter), filter, shop.areas);
                     m._FORM();

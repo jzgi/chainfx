@@ -409,7 +409,7 @@ namespace Greatbone.Core
             return roll.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, byte proj = 0x1f) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(byte proj = 0x1f, Func<D, K> keyer = null) where D : IData, new()
         {
             Map<K, D> map = new Map<K, D>(32);
             while (Next())
@@ -421,7 +421,15 @@ namespace Greatbone.Core
                 {
                     sharded.Shard = service.Shard;
                 }
-                K key = keyer(obj);
+                K key = default;
+                if (keyer != null)
+                {
+                    key = keyer(obj);
+                }
+                else if (obj is IMappable<K> mappable)
+                {
+                    key = mappable.Key;
+                }
                 map.Add(key, obj);
             }
             return map;

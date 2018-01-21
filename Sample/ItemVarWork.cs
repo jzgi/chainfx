@@ -57,12 +57,14 @@ namespace Greatbone.Samp
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task add(ActionContext ac)
         {
+            var shops = Obtain<Map<string, Shop>>();
+
             User prin = (User) ac.Principal;
             string shopid = ac[-1];
             string itemname = ac[this];
             string name, city, a, b, c, tel; // form values
             short num;
-            var shop = ((SampService) Service).Shops[shopid];
+            var shop = shops[shopid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -166,7 +168,7 @@ namespace Greatbone.Samp
                     ac.GivePane(200, m =>
                     {
                         m.T("商品已经成功加入购物车");
-                        m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: Target.Parent)._FOOTBAR();
+                        m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: "_parent")._FOOTBAR();
                     });
                 }
             }
