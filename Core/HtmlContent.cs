@@ -471,15 +471,16 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent FIELD<V>(V v, string label = null, string fix = null, Effect effect = 0, byte box = 0x0c)
+        public HtmlContent FIELD<V>(V v, string label = null, string fix = null, string tag = null, byte box = 0x0c)
         {
             FIELD_(label, box);
 
-            if (effect == Effect.Emphasis) Add("<em>");
-            else if (effect == Effect.Bold) Add("<bold>");
-            else if (effect == Effect.Strong) Add("<strong>");
-            else if (effect == Effect.Mark) Add("<mark>");
-
+            if (tag != null)
+            {
+                Add('<');
+                Add(tag);
+                Add('>');
+            }
             if (fix != null)
             {
                 if (fix == "¥" || fix == "$")
@@ -497,11 +498,13 @@ namespace Greatbone.Core
             {
                 AddPrimitive(v);
             }
-
-            if (effect == Effect.Emphasis) Add("</em>");
-            else if (effect == Effect.Bold) Add("</bold>");
-            else if (effect == Effect.Strong) Add("</strong>");
-            else if (effect == Effect.Mark) Add("</mark>");
+            if (tag != null)
+            {
+                Add('<');
+                Add('/');
+                Add(tag);
+                Add('>');
+            }
 
             _FIELD(box);
             return this;
@@ -645,7 +648,7 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent P<V>(V v, string label = null, string fix = null, Effect sem = 0, bool when = true)
+        public HtmlContent P<V>(V v, string label = null, string fix = null, string tag = null, bool when = true)
         {
             if (!when) return this;
 
@@ -656,12 +659,12 @@ namespace Greatbone.Core
                 Add(label);
                 Add("</span>");
             }
-
-            if (sem == Effect.Emphasis) Add("<em>");
-            else if (sem == Effect.Bold) Add("<bold>");
-            else if (sem == Effect.Strong) Add("<strong>");
-            else if (sem == Effect.Mark) Add("<mark>");
-
+            if (tag != null)
+            {
+                Add('<');
+                Add(tag);
+                Add('>');
+            }
             if (fix != null)
             {
                 if (fix == "¥" || fix == "$")
@@ -679,12 +682,13 @@ namespace Greatbone.Core
             {
                 AddPrimitive(v);
             }
-
-            if (sem == Effect.Emphasis) Add("</em>");
-            else if (sem == Effect.Bold) Add("</bold>");
-            else if (sem == Effect.Strong) Add("</strong>");
-            else if (sem == Effect.Mark) Add("</mark>");
-
+            if (tag != null)
+            {
+                Add('<');
+                Add('/');
+                Add(tag);
+                Add('>');
+            }
             Add("</p>");
             return this;
         }

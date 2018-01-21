@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Core.Effect;
 using static Greatbone.Samp.Order;
 using static Greatbone.Samp.User;
 
@@ -61,7 +60,7 @@ namespace Greatbone.Samp
                             }
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
-                        m.FIELD(o.total, "总计", fix: "¥", effect: o.status == 0 ? Emphasis : 0, box: 4);
+                        m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, box: 4);
                         m.TAIL(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
                         m._CARD();
                     }

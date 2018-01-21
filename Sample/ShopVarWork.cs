@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Core.Effect;
 using static Greatbone.Samp.Program;
 using static Greatbone.Samp.User;
 
@@ -90,7 +89,7 @@ namespace Greatbone.Samp
                     {
                         h.CAPTION(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
-                        h.BOX_(0x48).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", sem: Emphasis)._BOX();
+                        h.BOX_(0x48).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
                         if (o.imgg)
                         {
                             h.THUMBNAIL(o.name + "/img-1", box: 3).THUMBNAIL(o.name + "/img-2", box: 3).THUMBNAIL(o.name + "/img-3", box: 3).THUMBNAIL(o.name + "/img-4", box: 3);
