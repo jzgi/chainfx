@@ -177,6 +177,16 @@ namespace Greatbone.Core
             return null;
         }
 
+        public Map<K, D> Query<K, D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        {
+            this.sql = sql;
+            if (Query(sql.ToString(), p, prepare))
+            {
+                return ToMap(proj, keyer, toper);
+            }
+            return null;
+        }
+
         public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))

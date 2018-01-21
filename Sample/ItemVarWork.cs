@@ -269,15 +269,17 @@ namespace Greatbone.Samp
                     }
                     else ac.Give(404); // not found
                 }
-                return;
             }
-            var f = await ac.ReadAsync<Form>();
-            ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = ac.NewDbContext())
+            else // POST
             {
-                dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
+                var f = await ac.ReadAsync<Form>();
+                ArraySegment<byte> jpeg = f[nameof(jpeg)];
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
+                }
+                ac.Give(200); // ok
             }
-            ac.Give(200); // ok
         }
 
         [Ui("存量"), Tool(ButtonShow), User(OPRSTAFF)]

@@ -272,17 +272,25 @@ namespace Greatbone.Core
             return arr;
         }
 
-        public Map<K, D> ToMap<K, D>(Func<D, K> keyer, byte proj = 0x1f) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
-            Map<K, D> coll = new Map<K, D>();
+            Map<K, D> map = new Map<K, D>();
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
                 obj.Read((JObj) elements[i], proj);
-                K key = keyer(obj);
-                coll.Add(key, obj);
+                K key = default;
+                if (keyer != null)
+                {
+                    key = keyer(obj);
+                }
+                else if (obj is IMappable<K> mappable)
+                {
+                    key = mappable.Key;
+                }
+                map.Add(key, obj);
             }
-            return coll;
+            return map;
         }
 
         public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>

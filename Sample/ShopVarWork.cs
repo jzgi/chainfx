@@ -16,33 +16,30 @@ namespace Greatbone.Samp
         public void icon(ActionContext ac)
         {
             string shopid = ac[this];
-            var byteas = Obtain<Map<string, Shop>>()[shopid].icon;
-            if (byteas.Count == 0)
+            using (var dc = ac.NewDbContext())
             {
-                ac.Give(204); // no content 
-            }
-            else
-            {
-                ac.Give(200, new StaticContent(byteas), true, 60 * 15);
+                if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
+                {
+                    dc.Let(out ArraySegment<byte> byteas);
+                    if (byteas.Count == 0) ac.Give(204, @public: true, maxage: 3600); // no content 
+                    else ac.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
+                }
+                else ac.Give(404, @public: true, maxage: 3600); // not found
             }
         }
 
         public void img(ActionContext ac, int ordinal)
         {
             string shopid = ac[this];
-            var shop = Obtain<Map<string, Shop>>()[shopid];
-            var byteas =
-                ordinal == 1 ? shop.img1 :
-                ordinal == 2 ? shop.img2 :
-                ordinal == 3 ? shop.img3 :
-                shop.img4;
-            if (byteas.Count == 0)
+            using (var dc = ac.NewDbContext())
             {
-                ac.Give(204); // no content 
-            }
-            else
-            {
-                ac.Give(200, new StaticContent(byteas), true, 60 * 15);
+                if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
+                {
+                    dc.Let(out ArraySegment<byte> byteas);
+                    if (byteas.Count == 0) ac.Give(204, @public: true, maxage: 3600); // no content 
+                    else ac.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
+                }
+                else ac.Give(404, @public: true, maxage: 3600); // not found
             }
         }
     }

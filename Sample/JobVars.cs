@@ -290,41 +290,27 @@ namespace Greatbone.Samp
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMGR)]
         public async Task img(ActionContext ac, int ordinal)
         {
-            var shops = Obtain<Map<string, Shop>>();
-
             string shopid = ac[this];
-            var o = shops[shopid];
             if (ac.GET)
             {
-                var byteas =
-                    ordinal == 1 ? o.img1 :
-                    ordinal == 2 ? o.img2 :
-                    ordinal == 3 ? o.img3 : o.img4;
-                if (byteas.Count == 0) ac.Give(204); // no content 
-                else ac.Give(200, new StaticContent(byteas), true, 60 * 15);
+                using (var dc = ac.NewDbContext())
+                {
+                    if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE shopid = @1", p => p.Set(shopid)))
+                    {
+                        dc.Let(out ArraySegment<byte> byteas);
+                        if (byteas.Count == 0) ac.Give(204); // no content 
+                        else ac.Give(200, new StaticContent(byteas));
+                    }
+                    else ac.Give(404); // not found
+                }
             }
-            else
+            else // POST
             {
                 var f = await ac.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
                 using (var dc = ac.NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
-                    switch (ordinal)
-                    {
-                        case 1:
-                            o.img1 = jpeg;
-                            break;
-                        case 2:
-                            o.img2 = jpeg;
-                            break;
-                        case 3:
-                            o.img3 = jpeg;
-                            break;
-                        case 4:
-                            o.img4 = jpeg;
-                            break;
-                    }
                 }
                 ac.Give(200); // ok
             }

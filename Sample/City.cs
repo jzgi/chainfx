@@ -5,7 +5,7 @@ namespace Greatbone.Samp
     /// <summary>
     /// A city data object.
     /// </summary>
-    public class City : IData
+    public class City : IData, IMappable<string>
     {
         public static Map<string, City> All;
 
@@ -67,6 +67,8 @@ namespace Greatbone.Samp
         {
             return name;
         }
+
+        public string Key => name;
     }
 
     public struct Area : IData, IMappable<string>

@@ -173,7 +173,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static Map<K, D> FileToMap<K, D>(string file, Func<D, K> keyer, byte proj = 0x1f) where D : IData, new()
+        public static Map<K, D> FileToMap<K, D>(string file, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
             try
             {
@@ -181,7 +181,7 @@ namespace Greatbone.Core
                 JArr ja = (JArr) new JsonParse(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
-                    return ja.ToMap(keyer, proj);
+                    return ja.ToMap(proj, keyer, toper);
                 }
             }
             catch (Exception ex)
