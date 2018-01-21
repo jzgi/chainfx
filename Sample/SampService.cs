@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static System.Data.IsolationLevel;
 using static Greatbone.Samp.Order;
-using static Greatbone.Samp.Program;
+using static Greatbone.Samp.SampUtility;
 using static Greatbone.Samp.WeiXinUtility;
 
 namespace Greatbone.Samp
@@ -76,10 +76,9 @@ namespace Greatbone.Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query("SELECT * FROM shops WHERE status > 0 ORDER BY id");
-                    return dc.ToMap<string, Shop>();
+                    return dc.Query<string, Shop>("SELECT * FROM shops WHERE status > 0 ORDER BY id", proj: 0xff);
                 }
-            }, 60 * 30);
+            }, 3600 * 8);
         }
 
         public override void OnStart()

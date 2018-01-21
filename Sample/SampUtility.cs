@@ -5,6 +5,11 @@ namespace Greatbone.Samp
 {
     public static class SampUtility
     {
+        public const string NETADDR = "http://144000.tv";
+
+        // an invisible/unprintable char
+        public const char SEPCHAR = '\u200f';
+
         public static void GiveRedirect(this ActionContext ac, string uri = null, bool? @public = null, int maxage = 60)
         {
             ac.SetHeader("Location", uri ?? "./");

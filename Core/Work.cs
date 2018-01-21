@@ -481,26 +481,26 @@ namespace Greatbone.Core
         //
         // OBJECT PROVIDER
 
-        Bucket[] buckets;
+        Hold[] holds;
 
         int count;
 
         public void Register(object val)
         {
-            if (buckets == null)
+            if (holds == null)
             {
-                buckets = new Bucket[8];
+                holds = new Hold[8];
             }
-            buckets[count++] = new Bucket(val);
+            holds[count++] = new Hold(val);
         }
 
-        public void Register<V>(Func<V> loader, int maxage = 3600 * 12) where V : class
+        public void Register<V>(Func<V> loader, int maxage = 3600) where V : class
         {
-            if (buckets == null)
+            if (holds == null)
             {
-                buckets = new Bucket[8];
+                holds = new Hold[8];
             }
-            buckets[count++] = new Bucket(loader, maxage);
+            holds[count++] = new Hold(loader, maxage);
         }
 
         public void Register(params object[] vals)
@@ -513,17 +513,20 @@ namespace Greatbone.Core
 
         public T Obtain<T>() where T : class
         {
-            if (buckets != null)
+            if (holds != null)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    if (buckets[i] is T v) return v;
+                    if (holds[i].GetValue() is T) // test on possibly-stale value
+                    {
+                        return holds[i].GetValue(true) as T; // reget a fresh value
+                    }
                 }
             }
             return Parent?.Obtain<T>();
         }
 
-        public struct Bucket
+        public struct Hold
         {
             readonly Func<object> loader;
 
@@ -536,7 +539,7 @@ namespace Greatbone.Core
 
             Exception excep;
 
-            public Bucket(object v)
+            public Hold(object v)
             {
                 loader = null;
                 maxage = 0;
@@ -545,7 +548,7 @@ namespace Greatbone.Core
                 excep = null;
             }
 
-            public Bucket(Func<object> loader, int maxage = 3600 * 12)
+            public Hold(Func<object> loader, int maxage = 3600 * 12)
             {
                 this.loader = loader;
                 this.maxage = maxage;
@@ -558,9 +561,18 @@ namespace Greatbone.Core
 
             public Exception Excep => excep;
 
-            public object Get
+            public object GetValue(bool fresh = false)
             {
-                get
+                if (loader == null) // simple object
+                {
+                    return val;
+                }
+                object v = val; // atomic get
+                if (!fresh && v != null) // return possibly-stale value to reduce lock contention
+                {
+                    return v;
+                }
+                lock (loader) // cache object
                 {
                     if (Environment.TickCount >= expiry)
                     {

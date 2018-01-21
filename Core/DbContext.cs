@@ -177,6 +177,15 @@ namespace Greatbone.Core
             return null;
         }
 
+        public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        {
+            if (Query(cmdtext, p, prepare))
+            {
+                return ToMap(proj, keyer);
+            }
+            return null;
+        }
+
         public bool Query(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)

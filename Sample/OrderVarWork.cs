@@ -3,7 +3,7 @@ using Greatbone.Core;
 using static System.Data.IsolationLevel;
 using static Greatbone.Core.Modal;
 using static Greatbone.Samp.Order;
-using static Greatbone.Samp.Program;
+using static Greatbone.Samp.SampUtility;
 using static Greatbone.Samp.User;
 
 namespace Greatbone.Samp
