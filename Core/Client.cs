@@ -48,7 +48,7 @@ namespace Greatbone.Core
             this.service = service;
             this.peerid = peerid;
 
-            Map<string, EventInfo> eis = service?.Events;
+            Map<string, EventDoer> eis = service?.Events;
             if (eis != null)
             {
                 StringBuilder sb = new StringBuilder();
@@ -116,7 +116,7 @@ namespace Greatbone.Core
                     string name = rsp.Headers.GetValue(X_EVENT);
                     string arg = rsp.Headers.GetValue(X_ARG);
                     // DateTime time;
-                    EventInfo ei = null;
+                    EventDoer ei = null;
 
                     using (var dc = ec.NewDbContext(IsolationLevel.ReadUncommitted))
                     {

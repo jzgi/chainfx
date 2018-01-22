@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -29,7 +28,7 @@ namespace Greatbone.Core
         readonly KestrelServer server;
 
         // event consumption
-        readonly Map<string, EventInfo> events;
+        readonly Map<string, EventDoer> events;
 
         // clients to clustered peers
         readonly Map<string, Client> clients;
@@ -39,9 +38,6 @@ namespace Greatbone.Core
 
         // event schesuler thread
         Thread scheduler;
-
-        // cache entries
-        readonly ConcurrentDictionary<string, Entry> entries;
 
         // cache cleaner thread
         readonly Thread cleaner;
@@ -84,20 +80,20 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                EventInfo evt;
+                EventDoer evt;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(EventContext))
                 {
-                    evt = new EventInfo(this, mi, async, false);
+                    evt = new EventDoer(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(EventContext) && pis[1].ParameterType == typeof(string))
                 {
-                    evt = new EventInfo(this, mi, async, true);
+                    evt = new EventDoer(this, mi, async, true);
                 }
                 else continue;
 
                 if (events == null)
                 {
-                    events = new Map<string, EventInfo>(8);
+                    events = new Map<string, EventDoer>(8);
                 }
                 events.Add(evt.Key, evt);
             }
@@ -125,7 +121,6 @@ namespace Greatbone.Core
 
             // response cache
             cleaner = new Thread(Clean) {Name = "Cleaner"};
-            entries = new ConcurrentDictionary<string, Entry>(Environment.ProcessorCount * 2, 1024);
         }
 
         public string Shard => ((ServiceConfig) cfg).shard;
@@ -147,7 +142,7 @@ namespace Greatbone.Core
 
         public Map<string, Client> Clients => clients;
 
-        public Map<string, EventInfo> Events => events;
+        public Map<string, EventDoer> Events => events;
 
         public string Describe()
         {
@@ -251,47 +246,16 @@ namespace Greatbone.Core
             }
         }
 
-        //
-        // RESPONSE CACHE
-
         internal void Clean()
         {
             while (!stop)
             {
                 Thread.Sleep(1000 * 30); // 30 seconds
-
                 int now = Environment.TickCount;
-
-                // a single loop to clean up expired items
-                using (var enm = entries.GetEnumerator())
-                {
-                    while (enm.MoveNext())
-                    {
-                        Entry ca = enm.Current.Value;
-                        ca.TryClear(now);
-                    }
-                }
+                Clean(now);
             }
         }
 
-        internal void Cache(ActionContext ac)
-        {
-            if (!ac.InCache && ac.Public == true && Entry.IsCacheable(ac.Status))
-            {
-                Entry ca = new Entry(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
-                entries.AddOrUpdate(ac.Uri, ca, (k, old) => ca.MergeWith(old));
-                ac.InCache = true;
-            }
-        }
-
-        internal bool TryGiveFromCache(ActionContext ac)
-        {
-            if (entries.TryGetValue(ac.Uri, out var ca))
-            {
-                return ca.TryGive(ac, Environment.TickCount);
-            }
-            return false;
-        }
 
         //
         // CLUSTER
@@ -312,7 +276,6 @@ namespace Greatbone.Core
         {
             stop = true;
             OnStop(); // call custom destruction
-            // todo stop kestrel
         }
 
         public void Start()
@@ -425,87 +388,6 @@ namespace Greatbone.Core
 
             Console.Write(Key);
             Console.WriteLine(".");
-        }
-
-        /// <summary>
-        /// An entry in the service response cache.
-        /// </summary>
-        public class Entry
-        {
-            // response status, 0 means cleared, otherwise one of the cacheable status
-            int status;
-
-            // can be set to null
-            IContent content;
-
-            // maxage in seconds
-            int maxage;
-
-            // time ticks when entered
-            int stamp;
-
-            int hits;
-
-            internal Entry(int status, IContent content, int maxage, int stamp)
-            {
-                this.status = status;
-                this.content = content;
-                this.maxage = maxage;
-                this.stamp = stamp;
-            }
-
-            /// <summary>
-            ///  RFC 7231 cacheable status codes.
-            /// </summary>
-            public static bool IsCacheable(int code)
-            {
-                return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
-            }
-
-            internal void TryClear(int ticks)
-            {
-                lock (this)
-                {
-                    if (status == 0) return;
-
-                    if (((stamp + maxage * 1000) - ticks) / 1000 <= 0)
-                    {
-                        status = 0;
-                        content = null; // NOTE: the buffer won't return to the pool
-                        maxage = 0;
-                        stamp = 0;
-                    }
-                }
-            }
-
-            public int Hits => hits;
-
-            internal bool TryGive(ActionContext ac, int ticks)
-            {
-                lock (this)
-                {
-                    if (status == 0) return false;
-
-                    int remain = ((stamp + maxage * 1000) - ticks) / 1000;
-                    if (remain > 0)
-                    {
-                        ac.InCache = true;
-                        ac.Give(status, content, true, remain);
-
-                        Interlocked.Increment(ref hits);
-
-                        return true;
-                    }
-
-                    return false;
-                }
-            }
-
-            internal Entry MergeWith(Entry old)
-            {
-                Interlocked.Add(ref hits, old.Hits);
-                return this;
-            }
         }
     }
 

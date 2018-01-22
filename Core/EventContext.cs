@@ -6,7 +6,7 @@ namespace Greatbone.Core
     /// <summary>
     /// The processing of an received distributed event. A single instance can be reused.
     /// </summary>
-    public class EventContext : IDoerContext<EventInfo>, IDisposable
+    public class EventContext : IDoerContext<EventDoer>, IDisposable
     {
         readonly Client client;
 
@@ -30,7 +30,7 @@ namespace Greatbone.Core
 
         public Work Work { get; internal set; }
 
-        public EventInfo Doer { get; internal set; }
+        public EventDoer Doer { get; internal set; }
 
         public int Subscript { get; internal set; }
 

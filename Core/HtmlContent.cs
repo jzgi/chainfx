@@ -1043,8 +1043,8 @@ namespace Greatbone.Core
         public void PAGENATE(int count)
         {
             // pagination
-            ActionInfo ai = actionCtx.Doer;
-            if (ai.HasSubscript)
+            ActionDoer ad = actionCtx.Doer;
+            if (ad.HasSubscript)
             {
                 Add("<ul class=\"pagination\" role=\"navigation\">");
                 int subscpt = actionCtx.Subscript;
@@ -1059,7 +1059,7 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<li><a href=\"");
-                        Add(ai.Key);
+                        Add(ad.Key);
                         Add('-');
                         Add(i);
                         Add(actionCtx.QueryString);
@@ -1068,10 +1068,10 @@ namespace Greatbone.Core
                         Add("</a></li>");
                     }
                 }
-                if (count == ai.Limit)
+                if (count == ad.Limit)
                 {
                     Add("<li class=\"pagination-next\"><a href=\"");
-                    Add(ai.Key);
+                    Add(ad.Key);
                     Add('-');
                     Add(subscpt + 1);
                     Add(actionCtx.QueryString);
@@ -1089,7 +1089,7 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
             Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
-            ActionInfo[] ais = varwork?.Tooled;
+            ActionDoer[] ads = varwork?.Tooled;
 
             if (head != null)
             {
@@ -1097,7 +1097,7 @@ namespace Greatbone.Core
                 Add("<tr>");
                 // for checkboxes
                 head(this);
-                if (ais != null)
+                if (ads != null)
                 {
                     Add("<th></th>"); // for triggers
                 }
@@ -1113,7 +1113,7 @@ namespace Greatbone.Core
                     D obj = arr[i];
                     Add("<tr>");
                     row(this, obj);
-                    if (ais != null) // triggers
+                    if (ads != null) // triggers
                     {
                         Add("<td>");
                         Add("<form>");
@@ -1319,18 +1319,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Tool(ActionInfo ai, IData obj, int ordinal, int subscript = -1)
+        void Tool(ActionDoer ad, IData obj, int ordinal, int subscript = -1)
         {
-            var tool = ai.Tool;
-            bool ok = ai.DoAuthorize(actionCtx) && ai.DoState(actionCtx, obj);
+            var tool = ad.Tool;
+            bool ok = ad.DoAuthorize(actionCtx) && ad.DoState(actionCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");
-                Add(ai == actionCtx.Doer ? " hollow" : " clear");
+                Add(ad == actionCtx.Doer ? " hollow" : " clear");
                 Add("\" href=\"");
                 if (obj != null)
                 {
-                    ai.Work.PutVariableKey(obj, this);
+                    ad.Work.PutVariableKey(obj, this);
                     Add('/');
                 }
                 else if (ordinal > 0)
@@ -1338,7 +1338,7 @@ namespace Greatbone.Core
                     Add(ordinal);
                     Add('/');
                 }
-                Add(ai.RPath);
+                Add(ad.RPath);
                 if (subscript >= 0)
                 {
                     Add('-');
@@ -1353,13 +1353,13 @@ namespace Greatbone.Core
             else if (tool.IsButton)
             {
                 Add("<button  class=\"button primary");
-                if (!ai.IsCapital) Add(" hollow");
+                if (!ad.IsCapital) Add(" hollow");
                 Add("\" name=\"");
-                Add(ai.Key);
+                Add(ad.Key);
                 Add("\" formaction=\"");
                 if (obj != null)
                 {
-                    ai.Work.PutVariableKey(obj, this);
+                    ad.Work.PutVariableKey(obj, this);
                     Add('/');
                 }
                 else if (ordinal > 0)
@@ -1367,7 +1367,7 @@ namespace Greatbone.Core
                     Add(ordinal);
                     Add('/');
                 }
-                Add(ai.Key);
+                Add(ad.Key);
                 if (subscript >= 0)
                 {
                     Add('-');
@@ -1387,25 +1387,25 @@ namespace Greatbone.Core
                     Add("!($(this.form).serialize()) ? false : ");
                 }
                 Add("confirm('");
-                Add(ai.Tip ?? ai.Label);
+                Add(ad.Tip ?? ad.Label);
                 Add("');\"");
             }
             else if (tool.HasPrompt)
             {
-                Dialog(2, tool.MustPick, tool.Size, ai.Tip);
+                Dialog(2, tool.MustPick, tool.Size, ad.Tip);
             }
             else if (tool.HasShow)
             {
-                Dialog(4, tool.MustPick, tool.Size, ai.Tip);
+                Dialog(4, tool.MustPick, tool.Size, ad.Tip);
             }
             else if (tool.HasOpen)
             {
-                Dialog(8, tool.MustPick, tool.Size, ai.Tip);
+                Dialog(8, tool.MustPick, tool.Size, ad.Tip);
             }
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return func"); // prefix to avoid js naming conflict
-                Add(ai.Lower);
+                Add(ad.Lower);
                 Add("(this);\"");
             }
             else if (tool.HasCrop)
@@ -1415,11 +1415,11 @@ namespace Greatbone.Core
                 Add(',');
                 Add(tool.Size);
                 Add(",'");
-                Add(ai.Tip);
+                Add(ad.Tip);
                 Add("');\"");
             }
             Add(">");
-            Add(ai.Label);
+            Add(ad.Label);
             if (tool.IsAnchor)
             {
                 Add("</a>");

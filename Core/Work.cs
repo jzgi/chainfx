@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -25,13 +27,13 @@ namespace Greatbone.Core
         readonly Type type;
 
         // declared actions 
-        readonly Map<string, ActionInfo> actions;
+        readonly Map<string, ActionDoer> actions;
 
         // the default action, can be null
-        readonly ActionInfo @default;
+        readonly ActionDoer @default;
 
         // actions with UiToolAttribute
-        readonly ActionInfo[] tooled;
+        readonly ActionDoer[] tooled;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -48,7 +50,7 @@ namespace Greatbone.Core
             this.cfg = cfg;
 
             // gather actions
-            actions = new Map<string, ActionInfo>(32);
+            actions = new Map<string, ActionDoer>(32);
             this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -60,32 +62,32 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                ActionInfo ai;
+                ActionDoer ad;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(ActionContext))
                 {
-                    ai = new ActionInfo(this, mi, async, false);
+                    ad = new ActionDoer(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(int))
                 {
                     LimitAttribute limit = (LimitAttribute) pis[1].GetCustomAttribute(typeof(LimitAttribute));
-                    ai = new ActionInfo(this, mi, async, true, limit?.Value ?? 20);
+                    ad = new ActionDoer(this, mi, async, true, limit?.Value ?? 20);
                 }
                 else continue;
 
-                actions.Add(ai);
-                if (ai.Key == string.Empty) @default = ai;
+                actions.Add(ad);
+                if (ad.Key == string.Empty) @default = ad;
 
-                if (ai.Tool?.MustPick == true) pick = true;
+                if (ad.Tool?.MustPick == true) pick = true;
             }
 
             // gather styled actions
-            Roll<ActionInfo> roll = new Roll<ActionInfo>(16);
+            Roll<ActionDoer> roll = new Roll<ActionDoer>(16);
             for (int i = 0; i < actions.Count; i++)
             {
-                ActionInfo ai = actions[i];
-                if (ai.HasTool)
+                ActionDoer ad = actions[i];
+                if (ad.HasTool)
                 {
-                    roll.Add(ai);
+                    roll.Add(ad);
                 }
             }
             tooled = roll.ToArray();
@@ -103,13 +105,13 @@ namespace Greatbone.Core
 
         public bool HasKeyer => cfg.Keyer != null;
 
-        public Map<string, ActionInfo> Actions => actions;
+        public Map<string, ActionDoer> Actions => actions;
 
-        public ActionInfo[] Tooled => tooled;
+        public ActionDoer[] Tooled => tooled;
 
         public bool HasPick => pick;
 
-        public ActionInfo Default => @default;
+        public ActionDoer Default => @default;
 
         public Map<string, Work> Works => works;
 
@@ -264,7 +266,7 @@ namespace Greatbone.Core
                 {
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        ActionInfo act = actions[i];
+                        ActionDoer act = actions[i];
                         cont.Put(act.Key, "");
                     }
                 },
@@ -284,7 +286,7 @@ namespace Greatbone.Core
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
-        public ActionInfo GetAction(string method)
+        public ActionDoer GetAction(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
@@ -344,11 +346,10 @@ namespace Greatbone.Core
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
             {
-                // try in cache 
-                if (!Service.TryGiveFromCache(ac))
+                if (!TryGiveFromCache(ac)) // try in cache
                 {
                     DoFile(rsc, rsc.Substring(dot), ac);
-                    Service.Cache(ac); // try cache it
+                    CacheUp(ac); // try cache it
                 }
             }
             else // action
@@ -361,36 +362,36 @@ namespace Greatbone.Core
                     name = rsc.Substring(0, dash);
                     ac.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
-                ActionInfo ai = string.IsNullOrEmpty(name) ? @default : GetAction(name);
-                if (ai == null)
+                ActionDoer ad = string.IsNullOrEmpty(name) ? @default : GetAction(name);
+                if (ad == null)
                 {
                     ac.Give(404); // not found
                     return;
                 }
 
-                if (!ai.DoAuthorize(ac)) throw AuthorizeEx;
-                ac.Doer = ai;
+                if (!ad.DoAuthorize(ac)) throw AuthorizeEx;
+                ac.Doer = ad;
                 // any before filterings
-                if (ai.Before?.Do(ac) == false) goto ActionExit;
-                if (ai.BeforeAsync != null && !(await ai.BeforeAsync.DoAsync(ac))) goto ActionExit;
+                if (ad.Before?.Do(ac) == false) goto ActionExit;
+                if (ad.BeforeAsync != null && !(await ad.BeforeAsync.DoAsync(ac))) goto ActionExit;
                 // try in cache
-                if (!Service.TryGiveFromCache(ac))
+                if (!TryGiveFromCache(ac))
                 {
                     // method invocation
-                    if (ai.IsAsync)
+                    if (ad.IsAsync)
                     {
-                        await ai.DoAsync(ac, subscpt); // invoke action method
+                        await ad.DoAsync(ac, subscpt); // invoke action method
                     }
                     else
                     {
-                        ai.Do(ac, subscpt);
+                        ad.Do(ac, subscpt);
                     }
-                    Service.Cache(ac); // try cache it
+                    CacheUp(ac); // try cache it
                 }
                 ActionExit:
                 // action's after filtering
-                ai.After?.Do(ac);
-                if (ai.AfterAsync != null) await ai.AfterAsync.DoAsync(ac);
+                ad.After?.Do(ac);
+                if (ad.AfterAsync != null) await ad.AfterAsync.DoAsync(ac);
                 ac.Doer = null;
             }
             WorkExit:
@@ -449,6 +450,50 @@ namespace Greatbone.Core
                 GZip = gzip
             };
             ac.Give(200, cont, @public: true, maxage: 60 * 15);
+        }
+
+        //
+        // RESPONSE CACHE
+
+        // cache entries
+        readonly ConcurrentDictionary<string, Entry> entries = new ConcurrentDictionary<string, Entry>(Environment.ProcessorCount, 1024);
+
+        internal void Clean(int now)
+        {
+            // a single loop to clean up expired items
+            using (var enm = entries.GetEnumerator())
+            {
+                while (enm.MoveNext())
+                {
+                    Entry ety = enm.Current.Value;
+                    ety.TryClean(now);
+                }
+            }
+            // recursively clean descendants
+            varwork?.Clean(now);
+            for (int i = 0; i < works?.Count; i++)
+            {
+                works[i].Clean(now);
+            }
+        }
+
+        internal void CacheUp(ActionContext ac)
+        {
+            if (!ac.InCache && ac.Public == true && Entry.IsCacheable(ac.Status))
+            {
+                Entry ety = new Entry(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
+                entries.AddOrUpdate(ac.Uri, ety, (k, old) => ety.MergeWith(old));
+                ac.InCache = true;
+            }
+        }
+
+        internal bool TryGiveFromCache(ActionContext ac)
+        {
+            if (entries.TryGetValue(ac.Uri, out var ca))
+            {
+                return ca.TryGive(ac, Environment.TickCount);
+            }
+            return false;
         }
 
         // LOGGING
@@ -591,6 +636,87 @@ namespace Greatbone.Core
                     }
                     return val;
                 }
+            }
+        }
+
+        /// <summary>
+        /// An entry in the service response cache.
+        /// </summary>
+        public class Entry
+        {
+            // response status, 0 means cleared, otherwise one of the cacheable status
+            int status;
+
+            // can be set to null
+            IContent content;
+
+            // maxage in seconds
+            int maxage;
+
+            // time ticks when entered
+            int stamp;
+
+            int hits;
+
+            internal Entry(int status, IContent content, int maxage, int stamp)
+            {
+                this.status = status;
+                this.content = content;
+                this.maxage = maxage;
+                this.stamp = stamp;
+            }
+
+            /// <summary>
+            ///  RFC 7231 cacheable status codes.
+            /// </summary>
+            public static bool IsCacheable(int code)
+            {
+                return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
+            }
+
+            internal void TryClean(int ticks)
+            {
+                lock (this)
+                {
+                    if (status == 0) return;
+
+                    if (((stamp + maxage * 1000) - ticks) / 1000 <= 0)
+                    {
+                        status = 0;
+                        content = null; // NOTE: the buffer won't return to the pool
+                        maxage = 0;
+                        stamp = 0;
+                    }
+                }
+            }
+
+            public int Hits => hits;
+
+            internal bool TryGive(ActionContext ac, int ticks)
+            {
+                lock (this)
+                {
+                    if (status == 0) return false;
+
+                    int remain = ((stamp + maxage * 1000) - ticks) / 1000;
+                    if (remain > 0)
+                    {
+                        ac.InCache = true;
+                        ac.Give(status, content, true, remain);
+
+                        Interlocked.Increment(ref hits);
+
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            internal Entry MergeWith(Entry old)
+            {
+                Interlocked.Add(ref hits, old.Hits);
+                return this;
             }
         }
     }
