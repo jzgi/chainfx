@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// The descriptor & doer for an action method.
+    /// The descriptor and doer for an action method.
     /// </summary>
     public class ActionDoer : Nodule, IDoer
     {

@@ -21,26 +21,34 @@ namespace Greatbone.Core
         //
         // OBJECT PROVIDER
 
-        object[] attached;
+        object[] registry;
 
-        int objcount;
+        int size;
 
-        public void Attach(object v)
+        public void Register(object value)
         {
-            if (attached == null)
+            if (registry == null)
             {
-                attached = new object[8];
+                registry = new object[8];
             }
-            attached[objcount++] = v;
+            registry[size++] = value;
+        }
+
+        public void Register(params object[] values)
+        {
+            for (int i = 0; i < values.Length; i++)
+            {
+                Register(values[i]);
+            }
         }
 
         public T Obtain<T>() where T : class
         {
-            if (attached != null)
+            if (registry != null)
             {
-                for (int i = 0; i < objcount; i++)
+                for (int i = 0; i < size; i++)
                 {
-                    if (attached[i] is T v) return v;
+                    if (registry[i] is T v) return v;
                 }
             }
             return Service.Obtain<T>();

@@ -41,7 +41,7 @@ namespace Greatbone.Core
         Thread scheduler;
 
         // cache of sent replies
-        readonly ConcurrentDictionary<string, Reply> cache;
+        readonly ConcurrentDictionary<string, Resp> cache;
 
         // cache cleaner thread
         readonly Thread cleaner;
@@ -124,7 +124,7 @@ namespace Greatbone.Core
             }
 
             // response cache
-            cache = new ConcurrentDictionary<string, Reply>(Environment.ProcessorCount, 1024);
+            cache = new ConcurrentDictionary<string, Resp>(Environment.ProcessorCount, 1024);
             cleaner = new Thread(Clean) {Name = "Cleaner"};
         }
 
@@ -408,9 +408,9 @@ namespace Greatbone.Core
         {
             if (ac.GET)
             {
-                if (!ac.InCache && ac.Public == true && Reply.IsCacheable(ac.Status))
+                if (!ac.InCache && ac.Public == true && Resp.IsCacheable(ac.Status))
                 {
-                    var re = new Reply(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
+                    var re = new Resp(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
                     cache.AddOrUpdate(ac.Uri, re, (k, old) => re.MergeWith(old));
                     ac.InCache = true;
                 }
@@ -430,9 +430,9 @@ namespace Greatbone.Core
         }
 
         /// <summary>
-        /// A keep of cached response . A reply can be cleared but not removed, for better reusability. 
+        /// A prior response for caching that can be cleared but not removed, for better reusability. 
         /// </summary>
-        public class Reply
+        public class Resp
         {
             // response status, 0 means cleared, otherwise one of the cacheable status
             int status;
@@ -448,7 +448,7 @@ namespace Greatbone.Core
 
             int hits;
 
-            internal Reply(int status, IContent content, int maxage, int stamp)
+            internal Resp(int status, IContent content, int maxage, int stamp)
             {
                 this.status = status;
                 this.content = content;
@@ -513,7 +513,7 @@ namespace Greatbone.Core
                 }
             }
 
-            internal Reply MergeWith(Reply old)
+            internal Resp MergeWith(Resp old)
             {
                 Interlocked.Add(ref hits, old.Hits);
                 return this;
@@ -575,12 +575,11 @@ namespace Greatbone.Core
                     await work.HandleAsync(relative, ac);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Catch(e, ac);
+                Catch(ex, ac);
             }
-            // sending
-            try
+            try // sending
             {
                 await ac.SendAsync();
             }

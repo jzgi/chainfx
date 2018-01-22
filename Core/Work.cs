@@ -483,15 +483,23 @@ namespace Greatbone.Core
 
         Cell[] registry;
 
-        int count;
+        int size;
 
-        public void Register(object val)
+        public void Register(object value)
         {
             if (registry == null)
             {
                 registry = new Cell[8];
             }
-            registry[count++] = new Cell(val);
+            registry[size++] = new Cell(value);
+        }
+
+        public void Register(params object[] values)
+        {
+            foreach (var val in values)
+            {
+                Register(val);
+            }
         }
 
         public void Register<V>(Func<V> loader, int maxage = 3600) where V : class
@@ -500,22 +508,19 @@ namespace Greatbone.Core
             {
                 registry = new Cell[8];
             }
-            registry[count++] = new Cell(loader, maxage);
+            registry[size++] = new Cell(loader, maxage);
         }
 
-        public void Register(params object[] vals)
-        {
-            foreach (var val in vals)
-            {
-                Register(val);
-            }
-        }
-
+        /// <summary>
+        /// Search for typed object in this scope and the scopes of ancestors; 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>the result object or null</returns>
         public T Obtain<T>() where T : class
         {
             if (registry != null)
             {
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < size; i++)
                 {
                     if (registry[i].GetValue() is T) // test on possibly-stale value
                     {
@@ -538,7 +543,7 @@ namespace Greatbone.Core
             // tick count,   
             int expiry;
 
-            object val;
+            object value;
 
             Exception excep;
 
@@ -547,7 +552,7 @@ namespace Greatbone.Core
                 loader = null;
                 maxage = 0;
                 expiry = 0;
-                this.val = v;
+                this.value = v;
                 excep = null;
             }
 
@@ -556,7 +561,7 @@ namespace Greatbone.Core
                 this.loader = loader;
                 this.maxage = maxage;
                 expiry = 0;
-                this.val = null;
+                this.value = null;
                 excep = null;
             }
 
@@ -568,9 +573,9 @@ namespace Greatbone.Core
             {
                 if (loader == null) // simple object
                 {
-                    return val;
+                    return value;
                 }
-                object v = val; // atomic get
+                object v = value; // atomic get
                 if (!fresh && v != null) // return possibly-stale value to reduce lock contention
                 {
                     return v;
@@ -581,7 +586,7 @@ namespace Greatbone.Core
                     {
                         try
                         {
-                            val = loader();
+                            value = loader();
                         }
                         catch (Exception ex)
                         {
@@ -592,7 +597,7 @@ namespace Greatbone.Core
                             expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                         }
                     }
-                    return val;
+                    return value;
                 }
             }
         }

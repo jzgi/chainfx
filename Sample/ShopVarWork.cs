@@ -62,7 +62,7 @@ namespace Greatbone.Samp
                 ac.Give(404, @public: true, maxage: 3600);
                 return;
             }
-            ac.Attach(shop);
+            ac.Register(shop);
 
             using (var dc = ac.NewDbContext())
             {
