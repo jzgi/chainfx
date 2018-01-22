@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -346,10 +344,10 @@ namespace Greatbone.Core
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
             {
-                if (!TryGiveFromCache(ac)) // try in cache
+                if (!Service.TryGiveFromCache(ac)) // try in cache
                 {
                     DoFile(rsc, rsc.Substring(dot), ac);
-                    CacheUp(ac); // try cache it
+                    Service.TryCacheUp(ac);
                 }
             }
             else // action
@@ -374,8 +372,9 @@ namespace Greatbone.Core
                 // any before filterings
                 if (ad.Before?.Do(ac) == false) goto ActionExit;
                 if (ad.BeforeAsync != null && !(await ad.BeforeAsync.DoAsync(ac))) goto ActionExit;
+
                 // try in cache
-                if (!TryGiveFromCache(ac))
+                if (!Service.TryGiveFromCache(ac))
                 {
                     // method invocation
                     if (ad.IsAsync)
@@ -386,7 +385,7 @@ namespace Greatbone.Core
                     {
                         ad.Do(ac, subscpt);
                     }
-                    CacheUp(ac); // try cache it
+                    Service.TryCacheUp(ac);
                 }
                 ActionExit:
                 // action's after filtering
@@ -452,50 +451,6 @@ namespace Greatbone.Core
             ac.Give(200, cont, @public: true, maxage: 60 * 15);
         }
 
-        //
-        // RESPONSE CACHE
-
-        // cache entries
-        readonly ConcurrentDictionary<string, Entry> entries = new ConcurrentDictionary<string, Entry>(Environment.ProcessorCount, 1024);
-
-        internal void Clean(int now)
-        {
-            // a single loop to clean up expired items
-            using (var enm = entries.GetEnumerator())
-            {
-                while (enm.MoveNext())
-                {
-                    Entry ety = enm.Current.Value;
-                    ety.TryClean(now);
-                }
-            }
-            // recursively clean descendants
-            varwork?.Clean(now);
-            for (int i = 0; i < works?.Count; i++)
-            {
-                works[i].Clean(now);
-            }
-        }
-
-        internal void CacheUp(ActionContext ac)
-        {
-            if (!ac.InCache && ac.Public == true && Entry.IsCacheable(ac.Status))
-            {
-                Entry ety = new Entry(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
-                entries.AddOrUpdate(ac.Uri, ety, (k, old) => ety.MergeWith(old));
-                ac.InCache = true;
-            }
-        }
-
-        internal bool TryGiveFromCache(ActionContext ac)
-        {
-            if (entries.TryGetValue(ac.Uri, out var ca))
-            {
-                return ca.TryGive(ac, Environment.TickCount);
-            }
-            return false;
-        }
-
         // LOGGING
 
         public void TRC(string msg, Exception ex = null)
@@ -526,26 +481,26 @@ namespace Greatbone.Core
         //
         // OBJECT PROVIDER
 
-        Hold[] holds;
+        Cell[] registry;
 
         int count;
 
         public void Register(object val)
         {
-            if (holds == null)
+            if (registry == null)
             {
-                holds = new Hold[8];
+                registry = new Cell[8];
             }
-            holds[count++] = new Hold(val);
+            registry[count++] = new Cell(val);
         }
 
         public void Register<V>(Func<V> loader, int maxage = 3600) where V : class
         {
-            if (holds == null)
+            if (registry == null)
             {
-                holds = new Hold[8];
+                registry = new Cell[8];
             }
-            holds[count++] = new Hold(loader, maxage);
+            registry[count++] = new Cell(loader, maxage);
         }
 
         public void Register(params object[] vals)
@@ -558,20 +513,23 @@ namespace Greatbone.Core
 
         public T Obtain<T>() where T : class
         {
-            if (holds != null)
+            if (registry != null)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    if (holds[i].GetValue() is T) // test on possibly-stale value
+                    if (registry[i].GetValue() is T) // test on possibly-stale value
                     {
-                        return holds[i].GetValue(true) as T; // reget a fresh value
+                        return registry[i].GetValue(true) as T; // reget a fresh value
                     }
                 }
             }
             return Parent?.Obtain<T>();
         }
 
-        public struct Hold
+        /// <summary>
+        /// A registry cell.
+        /// </summary>
+        public struct Cell
         {
             readonly Func<object> loader;
 
@@ -584,7 +542,7 @@ namespace Greatbone.Core
 
             Exception excep;
 
-            public Hold(object v)
+            public Cell(object v)
             {
                 loader = null;
                 maxage = 0;
@@ -593,7 +551,7 @@ namespace Greatbone.Core
                 excep = null;
             }
 
-            public Hold(Func<object> loader, int maxage = 3600 * 12)
+            public Cell(Func<object> loader, int maxage = 3600 * 12)
             {
                 this.loader = loader;
                 this.maxage = maxage;
@@ -636,87 +594,6 @@ namespace Greatbone.Core
                     }
                     return val;
                 }
-            }
-        }
-
-        /// <summary>
-        /// An entry in the service response cache.
-        /// </summary>
-        public class Entry
-        {
-            // response status, 0 means cleared, otherwise one of the cacheable status
-            int status;
-
-            // can be set to null
-            IContent content;
-
-            // maxage in seconds
-            int maxage;
-
-            // time ticks when entered
-            int stamp;
-
-            int hits;
-
-            internal Entry(int status, IContent content, int maxage, int stamp)
-            {
-                this.status = status;
-                this.content = content;
-                this.maxage = maxage;
-                this.stamp = stamp;
-            }
-
-            /// <summary>
-            ///  RFC 7231 cacheable status codes.
-            /// </summary>
-            public static bool IsCacheable(int code)
-            {
-                return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
-            }
-
-            internal void TryClean(int ticks)
-            {
-                lock (this)
-                {
-                    if (status == 0) return;
-
-                    if (((stamp + maxage * 1000) - ticks) / 1000 <= 0)
-                    {
-                        status = 0;
-                        content = null; // NOTE: the buffer won't return to the pool
-                        maxage = 0;
-                        stamp = 0;
-                    }
-                }
-            }
-
-            public int Hits => hits;
-
-            internal bool TryGive(ActionContext ac, int ticks)
-            {
-                lock (this)
-                {
-                    if (status == 0) return false;
-
-                    int remain = ((stamp + maxage * 1000) - ticks) / 1000;
-                    if (remain > 0)
-                    {
-                        ac.InCache = true;
-                        ac.Give(status, content, true, remain);
-
-                        Interlocked.Increment(ref hits);
-
-                        return true;
-                    }
-
-                    return false;
-                }
-            }
-
-            internal Entry MergeWith(Entry old)
-            {
-                Interlocked.Add(ref hits, old.Hits);
-                return this;
             }
         }
     }

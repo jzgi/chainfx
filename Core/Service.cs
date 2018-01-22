@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -38,6 +39,9 @@ namespace Greatbone.Core
 
         // event schesuler thread
         Thread scheduler;
+
+        // cache of sent replies
+        readonly ConcurrentDictionary<string, Reply> cache;
 
         // cache cleaner thread
         readonly Thread cleaner;
@@ -120,6 +124,7 @@ namespace Greatbone.Core
             }
 
             // response cache
+            cache = new ConcurrentDictionary<string, Reply>(Environment.ProcessorCount, 1024);
             cleaner = new Thread(Clean) {Name = "Cleaner"};
         }
 
@@ -245,17 +250,6 @@ namespace Greatbone.Core
                 }
             }
         }
-
-        internal void Clean()
-        {
-            while (!stop)
-            {
-                Thread.Sleep(1000 * 30); // 30 seconds
-                int now = Environment.TickCount;
-                Clean(now);
-            }
-        }
-
 
         //
         // CLUSTER
@@ -388,6 +382,142 @@ namespace Greatbone.Core
 
             Console.Write(Key);
             Console.WriteLine(".");
+        }
+
+        //
+        // RESPONSE CACHE
+
+        internal void Clean()
+        {
+            while (!stop)
+            {
+                Thread.Sleep(1000 * 30); // 30 seconds
+                int now = Environment.TickCount;
+                // a single loop to clean up expired items
+                foreach (var re in cache)
+                {
+                    if (!re.Value.TryClean(now))
+                    {
+                        cache.TryRemove(re.Key, out _);
+                    }
+                }
+            }
+        }
+
+        internal void TryCacheUp(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                if (!ac.InCache && ac.Public == true && Reply.IsCacheable(ac.Status))
+                {
+                    var re = new Reply(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
+                    cache.AddOrUpdate(ac.Uri, re, (k, old) => re.MergeWith(old));
+                    ac.InCache = true;
+                }
+            }
+        }
+
+        internal bool TryGiveFromCache(ActionContext ac)
+        {
+            if (ac.GET)
+            {
+                if (cache.TryGetValue(ac.Uri, out var re))
+                {
+                    return re.TryGive(ac, Environment.TickCount);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// A keep of cached response . A reply can be cleared but not removed, for better reusability. 
+        /// </summary>
+        public class Reply
+        {
+            // response status, 0 means cleared, otherwise one of the cacheable status
+            int status;
+
+            // can be set to null
+            IContent content;
+
+            // maxage in seconds
+            int maxage;
+
+            // time ticks when entered or cleared
+            int stamp;
+
+            int hits;
+
+            internal Reply(int status, IContent content, int maxage, int stamp)
+            {
+                this.status = status;
+                this.content = content;
+                this.maxage = maxage;
+                this.stamp = stamp;
+            }
+
+            /// <summary>
+            ///  RFC 7231 cacheable status codes.
+            /// </summary>
+            public static bool IsCacheable(int code)
+            {
+                return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
+            }
+
+            public int Hits => hits;
+
+            public bool IsCleared => status == 0;
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="now"></param>
+            /// <returns>false to indicate a removal of the entry</returns>
+            internal bool TryClean(int now)
+            {
+                lock (this)
+                {
+                    int pass = now - (stamp + maxage * 1000);
+
+                    if (status == 0) return pass < 900 * 1000; // 15 minutes
+
+                    if (pass >= 0) // to clear this reply
+                    {
+                        status = 0; // set to cleared
+                        content = null; // NOTE: the buffer won't return to the pool
+                        maxage = 0;
+                        stamp = now; // time being cleared
+                    }
+                    return true;
+                }
+            }
+
+            internal bool TryGive(ActionContext ac, int now)
+            {
+                lock (this)
+                {
+                    if (status == 0) return false;
+
+                    int remain = ((stamp + maxage * 1000) - now) / 1000; // remaining in seconds
+                    if (remain > 0)
+                    {
+                        ac.InCache = true;
+                        ac.Give(status, content, true, remain);
+
+                        Interlocked.Increment(ref hits);
+
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            internal Reply MergeWith(Reply old)
+            {
+                Interlocked.Add(ref hits, old.Hits);
+                return this;
+            }
         }
     }
 
