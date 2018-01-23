@@ -51,7 +51,7 @@ namespace Greatbone.Core
 
         public Entry At(int idx) => entries[idx];
 
-        public V this[int idx] => entries[idx].val;
+        public V this[int idx] => entries[idx].value;
 
         public List<V> Top => top;
 
@@ -101,7 +101,7 @@ namespace Greatbone.Core
                 // re-add old elements
                 for (int i = 0; i < oldc; i++)
                 {
-                    Add(old[i].key, old[i].val, true);
+                    Add(old[i].key, old[i].value, true);
                 }
             }
 
@@ -113,7 +113,7 @@ namespace Greatbone.Core
                 Entry e = entries[idx];
                 if (e.Match(code, key))
                 {
-                    e.val = value;
+                    e.value = value;
                     return; // replace the old value
                 }
                 idx = entries[idx].next; // adjust for next index
@@ -151,7 +151,7 @@ namespace Greatbone.Core
                 Entry e = entries[idx];
                 if (e.Match(code, key))
                 {
-                    value = e.val;
+                    value = e.value;
                     return true;
                 }
                 idx = entries[idx].next; // adjust for next index
@@ -173,7 +173,7 @@ namespace Greatbone.Core
         //
         // advanced search operations that can be overridden with concurrency constructs
 
-        public virtual V this[K key]
+        public V this[K key]
         {
             get
             {
@@ -186,12 +186,12 @@ namespace Greatbone.Core
             set => Add(key, value);
         }
 
-        public virtual V[] All(Predicate<V> cond = null)
+        public V[] All(Predicate<V> cond = null)
         {
             Roll<V> roll = new Roll<V>(16);
             for (int i = 0; i < count; i++)
             {
-                V v = entries[i].val;
+                V v = entries[i].value;
                 if (cond == null || cond(v))
                 {
                     roll.Add(v);
@@ -200,11 +200,11 @@ namespace Greatbone.Core
             return roll.ToArray();
         }
 
-        public virtual V First(Predicate<V> cond = null)
+        public V Find(Predicate<V> cond = null)
         {
             for (int i = 0; i < count; i++)
             {
-                V v = entries[i].val;
+                V v = entries[i].value;
                 if (cond == null || cond(v))
                 {
                     return v;
@@ -213,15 +213,15 @@ namespace Greatbone.Core
             return default;
         }
 
-        public virtual void ForEach(Func<K, V, bool> cond, Action<K, V> hand)
+        public void ForEach(Func<K, V, bool> cond, Action<K, V> hand)
         {
             for (int i = 0; i < count; i++)
             {
                 K key = entries[i].key;
-                V value = entries[i].val;
+                V value = entries[i].value;
                 if (cond == null || cond(key, value))
                 {
-                    hand(entries[i].key, entries[i].val);
+                    hand(entries[i].key, entries[i].value);
                 }
             }
         }
@@ -232,18 +232,18 @@ namespace Greatbone.Core
 
             internal readonly K key; // entry key
 
-            internal V val; // entry value
+            internal V value; // entry value
 
             internal readonly int next; // index of next entry, -1 if last
 
             internal readonly bool top;
 
-            internal Entry(int code, int next, K key, V val, bool top)
+            internal Entry(int code, int next, K key, V value, bool top)
             {
                 this.code = code;
                 this.next = next;
                 this.key = key;
-                this.val = val;
+                this.value = value;
                 this.top = top;
             }
 
@@ -254,12 +254,12 @@ namespace Greatbone.Core
 
             public override string ToString()
             {
-                return val.ToString();
+                return value.ToString();
             }
 
             public K Key => key;
 
-            public V Val => val;
+            public V Value => value;
 
             public bool IsTop => top;
         }

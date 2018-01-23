@@ -246,7 +246,7 @@ namespace Greatbone.Samp
             // send messages
             if (targetwx != null)
             {
-                await PostSendAsync(targetwx, "收到新单 No. " + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+                await PostSendAsync(targetwx, "收到新单 No." + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
             }
 
             // return xml to WCPay server

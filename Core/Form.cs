@@ -33,7 +33,7 @@ namespace Greatbone.Core
             }
             else
             {
-                entries[idx].val.Add(v);
+                entries[idx].value.Add(v);
             }
         }
 

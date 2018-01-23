@@ -52,27 +52,27 @@ namespace Greatbone.Core
 
             id = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
 
-            // setup logging
+            // setup logging file
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
-            // create kestrel instance
+            // create the embedded kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
-            ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
+            ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {
                 throw new ServiceException("missing 'addrs'");
             }
             foreach (string a in Addrs)
             {
-                addrcoll.Add(a.Trim());
+                addrs.Add(a.Trim());
             }
 
-            // events
+            // initialize events
             Type typ = GetType();
             foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -102,7 +102,7 @@ namespace Greatbone.Core
                 events.Add(evt.Key, evt);
             }
 
-            // cluster connectivity
+            // initialize cluster connectivity
             var cluster = Cluster;
             if (cluster != null)
             {
@@ -113,8 +113,7 @@ namespace Greatbone.Core
                     {
                         clients = new Map<string, Client>(cluster.Count * 2);
                     }
-                    clients.Add(new Client(this, e.Key, e.Val));
-
+                    clients.Add(new Client(this, e.Key, e.Value));
                     if (queues == null)
                     {
                         queues = new Map<string, EventQueue>(cluster.Count * 2);
@@ -123,8 +122,9 @@ namespace Greatbone.Core
                 }
             }
 
-            // response cache
-            cache = new ConcurrentDictionary<string, Resp>(Environment.ProcessorCount, 1024);
+            // create the response cache
+            int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
+            cache = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
             cleaner = new Thread(Clean) {Name = "Cleaner"};
         }
 
@@ -197,9 +197,9 @@ namespace Greatbone.Core
                     await work.HandleAsync(relative, ac);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Catch(e, ac);
+                Catch(ex, ac);
             }
             // sending
             try
@@ -224,7 +224,7 @@ namespace Greatbone.Core
             };
         }
 
-        public void DisposeContext(HttpContext context, Exception exception)
+        public void DisposeContext(HttpContext context, Exception excep)
         {
             // dispose the action context
             ((ActionContext) context).Dispose();
@@ -319,9 +319,8 @@ namespace Greatbone.Core
 
         //
         // LOGGING
-        //
 
-        // sub controllers are already there
+        // subworks are already there
         public ILogger CreateLogger(string name)
         {
             return this;
@@ -375,13 +374,12 @@ namespace Greatbone.Core
 
         public void Dispose()
         {
+            // close server
             server.Dispose();
 
+            // close logger
             logWriter.Flush();
             logWriter.Dispose();
-
-            Console.Write(Key);
-            Console.WriteLine(".");
         }
 
         //
@@ -391,9 +389,11 @@ namespace Greatbone.Core
         {
             while (!stop)
             {
-                Thread.Sleep(1000 * 30); // 30 seconds
+                // cleaning cycle
+                Thread.Sleep(1000 * 30); // 30 seconds 
+
+                // loop to clear or remove each expired items
                 int now = Environment.TickCount;
-                // a single loop to clean up expired items
                 foreach (var re in cache)
                 {
                     if (!re.Value.TryClean(now))
@@ -430,7 +430,7 @@ namespace Greatbone.Core
         }
 
         /// <summary>
-        /// A prior response for caching that can be cleared but not removed, for better reusability. 
+        /// A prior response for caching that might be cleared but not removed, for better reusability. 
         /// </summary>
         public class Resp
         {

@@ -58,7 +58,7 @@ namespace Greatbone.Core
                     Add(ety.Key);
                     Add('=');
                     Add('"');
-                    AddEsc(ety.Val);
+                    AddEsc(ety.Value);
                     Add('"');
                 }
             }

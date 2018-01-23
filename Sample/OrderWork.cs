@@ -96,7 +96,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("#").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
+                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
                     if (o.items != null)
                     {
                         for (int j = 0; j < o.items.Length; j++)
@@ -170,7 +170,7 @@ namespace Greatbone.Samp
                     main.TOOLBAR();
                     main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -184,7 +184,7 @@ namespace Greatbone.Samp
             }, false, 3);
         }
 
-        [Ui("区域"), Tool(AnchorPrompt)]
+        [Ui("按区域"), Tool(AnchorPrompt)]
         public void area(ActionContext ac, int page)
         {
             string shopid = ac[-1];
@@ -209,7 +209,7 @@ namespace Greatbone.Samp
                     main.TOOLBAR(title: filter);
                     main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION();
+                        h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -270,7 +270,7 @@ namespace Greatbone.Samp
                 dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CAPTION_().T("#").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
+                    h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -283,13 +283,29 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("查询")]
+        [Ui("查询"), Tool(AnchorShow)]
         public void send(ActionContext ac)
         {
             long[] key = ac.Query[nameof(key)];
             using (var dc = ac.NewDbContext())
             {
                 dc.Execute(dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key));
+            }
+            ac.GiveRedirect();
+        }
+
+        [Ui("回退", "【警告】把选中的订单回退成新单？"), Tool(ButtonPickConfirm)]
+        public async Task back(ActionContext ac)
+        {
+            string shopid = ac[-2];
+            var f = await ac.ReadAsync<Form>();
+            string[] key = f[nameof(key)];
+            if (key != null)
+            {
+                using (var dc = ac.NewDbContext())
+                {
+                    dc.Execute(dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND shopid = @1 AND id")._IN_(key), p => p.Set(shopid), prepare: false);
+                }
             }
             ac.GiveRedirect();
         }

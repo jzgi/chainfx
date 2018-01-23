@@ -1819,7 +1819,7 @@ namespace Greatbone.Core
                         if (e.Key.Equals(val)) Add(" checked");
                         if (required) Add(" required");
                         Add(">");
-                        Add(e.Val.ToString());
+                        Add(e.Value.ToString());
                         Add("</label>");
                     }
                 }
@@ -1983,7 +1983,7 @@ namespace Greatbone.Core
                         Add("\"");
                         if (key.Equals(v)) Add(" selected");
                         Add(">");
-                        Add(e.val?.ToString());
+                        Add(e.value?.ToString());
                         Add("</option>");
                     }
                 }
@@ -2037,7 +2037,7 @@ namespace Greatbone.Core
                         Add("\"");
                         if (v.Contains(key)) Add(" selected");
                         Add(">");
-                        Add(e.val.ToString());
+                        Add(e.value.ToString());
                         Add("</option>");
                     }
                 }

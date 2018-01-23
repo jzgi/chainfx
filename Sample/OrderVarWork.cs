@@ -231,7 +231,7 @@ namespace Greatbone.Samp
                     {
                         var e = f.At(i);
                         var (name, unit, price) = e.Key.ToTriple('~');
-                        short n = e.Val;
+                        short n = e.Value;
                         if (n != 0) o.ReceiveItem(name, unit, decimal.Parse(price), n);
                     }
                     dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
@@ -390,18 +390,6 @@ namespace Greatbone.Samp
     {
         public OprPastlyVarWork(WorkConfig cfg) : base(cfg)
         {
-        }
-
-        [Ui("回退", "【警告】确认要回退此单吗？回退后将出现在新单列表里"), Tool(ButtonConfirm)]
-        public void reject(ActionContext ac)
-        {
-            string shopid = ac[-2];
-            int orderid = ac[this];
-            using (var dc = ac.NewDbContext(ReadUncommitted))
-            {
-                dc.Execute("UPDATE orders SET status = " + PAID + " WHERE id = @1 AND shopid = @2", p => p.Set(orderid).Set(shopid));
-            }
-            ac.GiveRedirect("../");
         }
     }
 
