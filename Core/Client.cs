@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using static Greatbone.Core.EventQueue;
-using static Greatbone.Core.DataInputUtility;
+using static Greatbone.Core.DataUtility;
 
 namespace Greatbone.Core
 {

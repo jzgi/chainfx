@@ -8,9 +8,9 @@ namespace Greatbone.Samp
     /// </summary>
     public class Cash : IData
     {
-        public const byte ID = 1;
-
         public static readonly Cash Empty = new Cash();
+
+        public const byte ID = 1;
 
         public static readonly Map<short, string> Codes = new Map<short, string>
         {

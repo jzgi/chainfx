@@ -15,7 +15,7 @@ namespace Greatbone.Samp
         }
     }
 
-    [Ui("我的订单")]
+    [Ui("购物车, 订单")]
     public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
         public MyOrderWork(WorkConfig cfg) : base(cfg)
@@ -27,7 +27,7 @@ namespace Greatbone.Samp
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
             {
-                var arr = dc.Query<Order>(dc.Sql("SELECT ").columnlst(Order.Empty).T(" FROM orders WHERE wx = @1 ORDER BY status, id DESC"), p => p.Set(wx));
+                var arr = dc.Query<Order>("(SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC) UNION ALL (SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC)", p => p.Set(wx));
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
@@ -36,7 +36,7 @@ namespace Greatbone.Samp
                     m.BOARDVIEW_();
                     foreach (var o in arr)
                     {
-                        if (!bgn && o.status > 0)
+                        if (!bgn && o.status > 1)
                         {
                             bgn = true;
                             m.H4("历史订单");

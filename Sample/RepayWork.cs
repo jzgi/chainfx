@@ -15,6 +15,7 @@ namespace Greatbone.Samp
         }
     }
 
+
     [Ui("结款")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
@@ -27,9 +28,9 @@ namespace Greatbone.Samp
         {
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM repays WHERE status = " + CREATED + " ORDER BY id DESC, status LIMIT 20 OFFSET @1", p => p.Set(page * 20));
+                dc.Query("SELECT * FROM repays WHERE status = 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Repay>(),
-                    h => h.TH("网点").TH("起始").TH("截至").TH("单数").TH("总额").TH("实付").TH("转款"), (h, o) => h.TD(o.shopid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                    h => h.TH("网点").TH("起始").TH("截至").TH("总数").TH("单额").TH("净额").TH("转款人"), (h, o) => h.TD(o.shopid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                 );
             }
         }
@@ -39,14 +40,14 @@ namespace Greatbone.Samp
         {
             using (var dc = ac.NewDbContext())
             {
-                dc.Query("SELECT * FROM repays ORDER BY id DESC, status = " + PAID + " LIMIT 20 OFFSET @1", p => p.Set(page * 20));
+                dc.Query("SELECT * FROM repays WHERE status = 1 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Repay>(),
-                    h => h.TH("网点").TH("起始").TH("截至").TH("单数").TH("总额").TH("实付").TH("转款"), (h, o) => h.TD(o.shopid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                    h => h.TH("网点").TH("起始").TH("截至").TH("单数").TH("总额").TH("净额").TH("转款人"), (h, o) => h.TD(o.shopid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                 );
             }
         }
 
-        [Ui("结算", "生成各网点的结款单"), Tool(ButtonShow)]
+        [Ui("结算", "生成各网点结款单"), Tool(ButtonShow)]
         public async Task reckon(ActionContext ac)
         {
             DateTime fro; // from date
@@ -72,14 +73,14 @@ namespace Greatbone.Samp
                 till = f[nameof(till)];
                 using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute(@"INSERT INTO repays (shopid, fro, till, orders, total) 
-                    SELECT shopid, @1, @2, COUNT(*), SUM(total) FROM orders WHERE status = " + Order.FINISHED + " AND finished >= @1 AND finished < @2 GROUP BY shopid", p => p.Set(fro).Set(till));
+                    dc.Execute(@"INSERT INTO repays (shopid, fro, till, orders, total, cash) 
+                    SELECT shopid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.FINISHED + " AND finished >= @1 AND finished < @2 GROUP BY shopid", p => p.Set(fro).Set(till));
                 }
                 ac.GivePane(200);
             }
         }
 
-        struct Transfer
+        struct Tran
         {
             internal int id;
             internal string shopid;
@@ -91,7 +92,7 @@ namespace Greatbone.Samp
         [Ui("转款", "按结款单转款给网点"), Tool(ButtonConfirm)]
         public async Task pay(ActionContext ac)
         {
-            Roll<Transfer> rll = new Roll<Transfer>(16);
+            Roll<Tran> trans = new Roll<Tran>(16);
             using (var dc = ac.NewDbContext())
             {
                 // retrieve
@@ -99,16 +100,17 @@ namespace Greatbone.Samp
                 {
                     while (dc.Next())
                     {
-                        Transfer tr;
+                        Tran tr;
                         dc.Let(out tr.id).Let(out tr.shopid).Let(out tr.mgrwx).Let(out tr.mgrname).Let(out tr.cash);
-                        rll.Add(tr);
+                        trans.Add(tr);
                     }
                 }
             }
             // do transfer for each
-            for (int i = 0; i < rll.Count; i++)
+            User prin = (User) ac.Principal;
+            for (int i = 0; i < trans.Count; i++)
             {
-                var tr = rll[i];
+                var tr = trans[i];
                 string err = await WeiXinUtility.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
                 // update data records
                 using (var dc = ac.NewDbContext())
@@ -119,22 +121,21 @@ namespace Greatbone.Samp
                     }
                     else
                     {
-                        User prin = (User) ac.Principal;
                         // update repay status
                         dc.Execute("UPDATE repays SET err = NULL, payer = @1, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
                         // add a cash journal entry
-                        var entry = new Cash()
+                        var ety = new Cash
                         {
                             shopid = tr.shopid,
                             date = DateTime.Now,
-                            txn = 11,
+                            txn = 11, // sales income
                             descr = "订单结款",
                             received = tr.cash,
                             paid = 0,
                             keeper = prin.name
                         };
                         const byte proj = 0xff ^ Cash.ID;
-                        dc.Execute(dc.Sql("INSERT INTO cashes")._(entry, proj)._VALUES_(entry, proj), p => entry.Write(p, proj));
+                        dc.Execute(dc.Sql("INSERT INTO cashes")._(ety, proj)._VALUES_(ety, proj), p => ety.Write(p, proj));
                     }
                 }
             }

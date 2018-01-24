@@ -345,14 +345,17 @@ namespace Greatbone.Samp
                     // check personal pos
                     using (var dc = ac.NewDbContext())
                     {
+                        m.FORM_();
                         if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(shopid).Set(prin.wx)))
                         {
-                            m.FORM_().CHECKBOX(nameof(mycart), true, "从我的摊点里出货")._FORM();
+                            m.P("检测到您当前有分配的摊点");
+                            m.CHECKBOX(nameof(mycart), true, "完成同时扣减摊点里的数目");
                         }
                         else
                         {
-                            m.FORM_().T("按确认完成此单")._FORM();
+                            m.P("确认已经出货并且结束此单吗？");
                         }
+                        m._FORM();
                     }
                 });
             }
@@ -361,7 +364,7 @@ namespace Greatbone.Samp
                 mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = ac.NewDbContext(ReadCommitted))
                 {
-                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + " WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
+                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", finished = localtimestamp WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
                     {
                         var o = dc.ToObject<Order>();
                         if (mycart) // deduce my cart loads

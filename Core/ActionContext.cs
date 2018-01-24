@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
-using static Greatbone.Core.DataInputUtility;
+using static Greatbone.Core.DataUtility;
 
 namespace Greatbone.Core
 {

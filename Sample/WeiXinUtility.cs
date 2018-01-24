@@ -51,7 +51,7 @@ namespace Greatbone.Samp
         public static void Setup(string weixinfile, string p12file, bool deploy)
         {
             // load weixin parameters
-            var wx = DataInputUtility.FileTo<JObj>(weixinfile);
+            var wx = DataUtility.FileTo<JObj>(weixinfile);
             appid = wx[nameof(appid)];
             appsecret = wx[nameof(appsecret)];
             mchid = wx[nameof(mchid)];

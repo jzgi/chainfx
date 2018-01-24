@@ -15,8 +15,6 @@ namespace Greatbone.Core
 
         static readonly List<Service> services = new List<Service>(8);
 
-        public static List<Service> Services => services;
-
         public static S TryCreate<S>(ServiceConfig cfg, bool load) where S : Service
         {
             // initialize config

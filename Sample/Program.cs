@@ -29,7 +29,7 @@ namespace Greatbone.Samp
                     cache = true,
                     db = new Db
                     {
-                        host = "106.14.45.109",
+                        host = "144000.tv",
                         port = 5432,
                         username = "postgres",
                         password = "721004"

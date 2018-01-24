@@ -1,17 +1,17 @@
 /*
 Navicat PGSQL Data Transfer
 
-Source Server         : 106.14.45.109
-Source Server Version : 90505
-Source Host           : 106.14.45.109:5432
+Source Server         : 144000.tv
+Source Server Version : 90606
+Source Host           : 144000.tv:5432
 Source Database       : samp
 Source Schema         : public
 
 Target Server Type    : PGSQL
-Target Server Version : 90505
+Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-01-16 18:14:17
+Date: 2018-01-24 10:41:16
 */
 
 
@@ -23,9 +23,9 @@ CREATE SEQUENCE "public"."cashes_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 4
+ START 5
  CACHE 1;
-SELECT setval('"public"."cashes_id_seq"', 4, true);
+SELECT setval('"public"."cashes_id_seq"', 5, true);
 
 -- ----------------------------
 -- Sequence structure for orders_id_seq
@@ -35,20 +35,21 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 137
+ START 177
  CACHE 4;
-SELECT setval('"public"."orders_id_seq"', 137, true);
+SELECT setval('"public"."orders_id_seq"', 177, true);
 
 -- ----------------------------
--- Sequence structure for repays_id_seq1
+-- Sequence structure for repays_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."repays_id_seq1";
-CREATE SEQUENCE "public"."repays_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."repays_id_seq";
+CREATE SEQUENCE "public"."repays_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
+SELECT setval('"public"."repays_id_seq"', 1, true);
 
 -- ----------------------------
 -- Table structure for cashes
@@ -143,7 +144,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
-"id" int4 DEFAULT nextval('repays_id_seq1'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
 "shopid" varchar(4) COLLATE "default" NOT NULL,
 "fro" date NOT NULL,
 "till" date NOT NULL,
@@ -216,7 +217,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "cashes"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
-ALTER SEQUENCE "public"."repays_id_seq1" OWNED BY "repays"."id";
+ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 
 -- ----------------------------
 -- Indexes structure for table cashes
@@ -263,3 +264,23 @@ CREATE INDEX "users_tel_index" ON "public"."users" USING btree ("tel");
 -- Primary Key structure for table users
 -- ----------------------------
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");
+
+-- ----------------------------
+-- Foreign Key structure for table "public"."cashes"
+-- ----------------------------
+ALTER TABLE "public"."cashes" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Key structure for table "public"."items"
+-- ----------------------------
+ALTER TABLE "public"."items" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Key structure for table "public"."orders"
+-- ----------------------------
+ALTER TABLE "public"."orders" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Key structure for table "public"."repays"
+-- ----------------------------
+ALTER TABLE "public"."repays" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

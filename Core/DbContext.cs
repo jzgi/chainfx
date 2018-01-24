@@ -1401,7 +1401,7 @@ namespace Greatbone.Core
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = DataInputUtility.ToString(v, proj)
+                    Value = DataUtility.ToString(v, proj)
                 });
             }
             return this;
@@ -1424,7 +1424,7 @@ namespace Greatbone.Core
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = DataInputUtility.ToString(v, proj)
+                    Value = DataUtility.ToString(v, proj)
                 });
             }
             return this;
