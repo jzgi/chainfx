@@ -424,7 +424,7 @@ namespace Greatbone.Core
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 int len = (int) fs.Length;
-                if (len > 4024)
+                if (len > 2048)
                 {
                     var ms = new MemoryStream(len);
                     using (GZipStream gzs = new GZipStream(ms, CompressionMode.Compress))

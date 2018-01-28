@@ -449,6 +449,10 @@ namespace Greatbone.Core
                 {
                     key = mappable.Key;
                 }
+                else
+                {
+                    throw new ServiceException("neither keyer nor IMappable<D>");
+                }
                 map.Add(key, obj);
             }
             return map;

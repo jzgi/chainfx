@@ -1002,14 +1002,14 @@ namespace Greatbone.Core
 
         public void TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
         {
-            var ais = actionCtx.Work.Tooled;
+            var ads = actionCtx.Work.Tooled;
             TOOLBAR_();
-            for (int i = 0; i < ais?.Length; i++)
+            for (int i = 0; i < ads?.Length; i++)
             {
-                var ai = ais[i];
-                if (ai.Flag == 0 || (flag & ai.Flag) == ai.Flag)
+                var ad = ads[i];
+                if (ad.Flag == 0 || (flag & ad.Flag) == ad.Flag)
                 {
-                    Tool(ai, null, 0);
+                    Tool(ad, null, 0);
                 }
             }
             _TOOLBAR(title, refresh);

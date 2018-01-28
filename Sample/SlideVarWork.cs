@@ -5,16 +5,16 @@ using static Greatbone.Core.Modal;
 namespace Greatbone.Samp
 {
     [User]
-    public abstract class LessonVarWork : Work
+    public abstract class SlideVarWork : Work
     {
-        protected LessonVarWork(WorkConfig cfg) : base(cfg)
+        protected SlideVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class AdmLessonVarWork : LessonVarWork
+    public class AdmSlideVarWork : SlideVarWork
     {
-        public AdmLessonVarWork(WorkConfig cfg) : base(cfg)
+        public AdmSlideVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

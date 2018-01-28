@@ -28,6 +28,21 @@ namespace Greatbone.Samp
             {
                 using (var dc = NewDbContext())
                 {
+                    dc.Query("SELECT DISTINCT lesson FROM slides WHERE status > 0 ORDER BY lesson");
+                    Roll<string> roll = new Roll<string>(32);
+                    while (dc.Next())
+                    {
+                        dc.Let(out string v);
+                        roll.Add(v);
+                    }
+                    return roll.ToArray();
+                }
+            }, 3600 * 8);
+
+            Register(delegate
+            {
+                using (var dc = NewDbContext())
+                {
                     return dc.Query<string, Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE status > 0 ORDER BY id"), proj: 0xff);
                 }
             }, 3600 * 8);
@@ -157,16 +172,16 @@ namespace Greatbone.Samp
         /// </summary>
         public void @default(ActionContext ac)
         {
+            var lessons = Obtain<string[]>();
+            
             ac.GivePage(200, m =>
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    var lessons = dc.Query<Lesson>("SELECT * FROM lessons");
                     for (int i = 0; i < lessons?.Length; i++)
                     {
                         var lesson = lessons[i];
                         m.T("<div class=\"card\">");
-                        m.T("<embed src=\"http://player.youku.com/player.php/sid/").T(lesson.refid).T("/v.swf\" allowFullScreen=\"true\" quality=\"high\" width=\"480\" height=\"400\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
                         m.T("</div>");
                     }
                 }

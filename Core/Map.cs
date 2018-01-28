@@ -292,7 +292,6 @@ namespace Greatbone.Core
 
             public void Dispose()
             {
-                throw new NotImplementedException();
             }
         }
     }
