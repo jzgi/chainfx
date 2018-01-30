@@ -254,7 +254,6 @@ namespace Greatbone.Samp
         public async Task sets(ActionContext ac)
         {
             var shops = Obtain<Map<string, Shop>>();
-
             string shopid = ac[this];
             var o = shops[shopid];
             if (ac.GET)
@@ -264,7 +263,7 @@ namespace Greatbone.Samp
                     h.FORM_();
                     h.TEXT(nameof(o.schedule), o.schedule, "时间");
                     h.TEXT(nameof(o.delivery), o.delivery, "派送");
-                    h.SELECT(nameof(o.areas), o.areas, City.AreasOf(o.city), "限送");
+                    h.TEXTAREA(nameof(o.areas), o.areas, "限送");
                     h.NUMBER(nameof(o.min), o.min, "起订", box: 4).NUMBER(nameof(o.notch), o.notch, "满额", box: 4).NUMBER(nameof(o.off), o.off, "扣减", box: 4);
                     h._FORM();
                 });
@@ -274,7 +273,8 @@ namespace Greatbone.Samp
                 var f = await ac.ReadAsync<Form>();
                 o.schedule = f[nameof(o.schedule)];
                 o.delivery = f[nameof(o.delivery)];
-                o.areas = f[nameof(o.areas)];
+                string v = f[nameof(o.areas)];
+                o.areas = v.Split('\n');
                 o.min = f[nameof(o.min)];
                 o.notch = f[nameof(o.notch)];
                 o.off = f[nameof(o.off)];

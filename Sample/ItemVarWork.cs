@@ -57,14 +57,12 @@ namespace Greatbone.Samp
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task add(ActionContext ac)
         {
-            var shops = Obtain<Map<string, Shop>>();
-
-            User prin = (User) ac.Principal;
             string shopid = ac[-1];
+            var shop = Obtain<Map<string, Shop>>()[shopid];
+            User prin = (User) ac.Principal;
             string itemname = ac[this];
-            string name, city, a, b, c, tel; // form values
+            string name, city, a, b, tel; // form values
             short num;
-            var shop = shops[shopid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -72,36 +70,26 @@ namespace Greatbone.Samp
                     using (var dc = ac.NewDbContext())
                     {
                         h.FORM_();
-                        if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // new
+                        if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // to create new
                         {
+                            // show addr inputs for order creation
                             h.FIELDSET_("收货地址");
-                            if (shop.areas != null) // dedicated delivery areas
+                            if (shop.areas != null) // dedicated areas
                             {
-                                ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel);
-                                if (a == null) // init from principal
-                                {
-                                    name = prin.name;
-                                    city = shop.city;
-                                    (a, b, c) = prin.addr.ToTriple(SEPCHAR);
-                                    a = City.ResolveIn(a, shop.areas);
-                                    tel = prin.tel;
-                                }
-                                var sites = City.SitesOf(city, a);
-                                b = City.ResolveIn(b, sites);
+                                name = prin.name;
+                                city = shop.city;
+                                (a, b) = prin.addr.ToDual(SEPCHAR);
+                                tel = prin.tel;
                                 h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                                h.SELECT(nameof(a), a, shop.areas, refresh: true, required: true, box: 4).SELECT(nameof(b), b, sites, required: true, box: 4).TEXT(nameof(c), c, required: true, box: 4);
+                                h.SELECT(nameof(a), a, shop.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
                                 h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             }
                             else // free delivery
                             {
-                                ac.Query.Let(out name).Let(out city).Let(out a).Let(out tel);
-                                if (a == null) // init from principal
-                                {
-                                    name = prin.name;
-                                    city = prin.city;
-                                    a = prin.addr;
-                                    tel = prin.tel;
-                                }
+                                name = prin.name;
+                                city = prin.city;
+                                a = prin.addr;
+                                tel = prin.tel;
                                 h.SELECT(nameof(city), city, City.All, required: true, box: 3).TEXT(nameof(a), a, max: 20, required: true, box: 9);
                                 h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, box: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                             }
@@ -125,7 +113,7 @@ namespace Greatbone.Samp
                     dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
                     dc.Let(out string unit).Let(out decimal price);
 
-                    if (dc.Query1("SELECT * FROM orders WHERE  wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add
+                    if (dc.Query1("SELECT * FROM orders WHERE  wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
                         (await ac.ReadAsync<Form>()).Let(out num);
@@ -133,14 +121,13 @@ namespace Greatbone.Samp
                         o.TotalUp();
                         dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                     }
-                    else // create new order
+                    else // create a new order
                     {
                         var f = await ac.ReadAsync<Form>();
                         name = f[nameof(name)];
                         city = f[nameof(city)];
                         a = f[nameof(a)];
                         b = f[nameof(b)];
-                        c = f[nameof(c)];
                         tel = f[nameof(tel)];
                         num = f[nameof(num)];
                         var o = new Order
@@ -153,7 +140,7 @@ namespace Greatbone.Samp
                             wx = prin.wx,
                             name = name,
                             city = city,
-                            addr = shop.areas == null ? a : a + SEPCHAR + b + SEPCHAR + c, // concatenate addr if needed
+                            addr = shop.areas == null ? a : a + SEPCHAR + b, // concatenate addr if needed
                             tel = tel,
                             min = shop.min,
                             notch = shop.notch,

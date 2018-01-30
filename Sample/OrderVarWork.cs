@@ -57,11 +57,10 @@ namespace Greatbone.Samp
         {
             int orderid = ac[this];
             string wx = ac[-2];
-            string name, city, a, b, c, tel; // form values
+            string name, city, a, b, tel; // form values
             if (ac.GET)
             {
                 var shops = Obtain<Map<string, Shop>>();
-
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
@@ -73,31 +72,20 @@ namespace Greatbone.Samp
                         var shop = shops[oshopid];
                         if (shop.areas != null) // limited delivery areas
                         {
-                            ac.Query.Let(out name).Let(out city).Let(out a).Let(out b).Let(out c).Let(out tel); // by select refresh
-                            if (a == null) // init from order
-                            {
-                                name = oname;
-                                city = ocity;
-                                (a, b, c) = oaddr.ToTriple(SEPCHAR);
-                                a = City.ResolveIn(a, shop.areas);
-                                tel = otel;
-                            }
-                            var sites = City.SitesOf(city, a);
-                            b = City.ResolveIn(b, sites);
+                            name = oname;
+                            city = ocity;
+                            (a, b) = oaddr.ToDual(SEPCHAR);
+                            tel = otel;
                             h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                            h.SELECT(nameof(a), a, shop.areas, refresh: true, required: true, box: 4).SELECT(nameof(b), b, sites, required: true, box: 4).TEXT(nameof(c), c, required: true, box: 4);
-                            h.TEL(nameof(tel), tel, "您的随身电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                            h.SELECT(nameof(a), a, shop.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
+                            h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         }
                         else // free delivery
                         {
-                            ac.Query.Let(out name).Let(out city).Let(out a).Let(out tel);
-                            if (a == null)
-                            {
-                                name = oname;
-                                city = ocity;
-                                a = oaddr;
-                                tel = otel;
-                            }
+                            name = oname;
+                            city = ocity;
+                            a = oaddr;
+                            tel = otel;
                             h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, max: 20, required: true, box: 9);
                             h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, box: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                         }
@@ -113,11 +101,10 @@ namespace Greatbone.Samp
                 city = f[nameof(city)];
                 a = f[nameof(a)];
                 b = f[nameof(b)]; // can be null indicating free delivery
-                c = f[nameof(c)];
                 tel = f[nameof(tel)];
                 using (var dc = ac.NewDbContext())
                 {
-                    string addr = b == null ? a : a + SEPCHAR + b + SEPCHAR + c;
+                    string addr = b == null ? a : a + SEPCHAR + b;
                     dc.Execute("UPDATE orders SET name = @1, city = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(name).Set(city).Set(addr).Set(tel).Set(orderid));
                 }
                 ac.GivePane(200);

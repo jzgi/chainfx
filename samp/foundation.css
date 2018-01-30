@@ -457,7 +457,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background: white;
+    background: #fcfcfc;
     font-family: "Microsoft YaHei", Arial, sans-serif;
     font-weight: normal;
     font-size: 0.875rem;
@@ -602,7 +602,7 @@ h4, .h4 {
     padding: 0.25rem 0.25rem;
     white-space: nowrap;
     cursor: default;
-    color: white;
+    color: #fcfcfc;
 }
 
 p {
@@ -848,13 +848,14 @@ label > [type='radio'] {
 
 legend {
     padding: 0.25rem;
+    color: indianred;
 }
 
 fieldset {
     width: calc(100% - 0.25rem);
     padding: 0 0 0.25rem 0;
     margin: 0;
-    border-top: 1px solid silver;
+    border-top: 1px solid indianred;
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -871,7 +872,7 @@ textarea {
     width: inherit;
     line-height: 1.5;
     color: #0a0a0a;
-    background-color: white;
+    background-color: #fcfcfc;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1023,7 +1024,7 @@ select {
     width: inherit;
     height: 2.125rem;
     color: #0a0a0a;
-    background-color: white;
+    background-color: #fcfcfc;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='32' height='24' viewBox='0 0 32 24'><polygon points='0,0 32,0 16,24' style='fill: rgb%28138, 138, 138%29'></polygon></svg>");
     background-origin: content-box;
     background-position: right -1rem center;
@@ -1222,7 +1223,7 @@ button.button {
 
 .button:hover, .button:focus {
     background-color: midnightblue;
-    color: white;
+    color: #fcfcfc;
 }
 
 .button.tiny { font-size: 0.6rem; }
@@ -2636,7 +2637,7 @@ input:checked + label > .switch-inactive { display: none; }
     padding: 0.5rem;
     visibility: hidden;
     display: none;
-    background-color: white;
+    background-color: #fcfcfc;
     box-shadow: 2px 2px 2px 1px gray;
     font-size: 0.875rem;
 }
@@ -2725,7 +2726,7 @@ input:checked + label > .switch-inactive { display: none; }
     margin: 0 0 1rem 0;
     padding: 1rem;
     border: 1px solid rgba(10, 10, 10, 0.25);
-    background-color: white;
+    background-color: #fcfcfc;
     color: #0a0a0a;
 }
 
@@ -2976,7 +2977,7 @@ table thead,
 table tbody,
 table tfoot {
     border: 1px solid #f1f1f1;
-    background-color: white;
+    background-color: #fcfcfc;
 }
 
 table caption {
@@ -2985,7 +2986,7 @@ table caption {
 }
 
 table thead {
-    background: #f6f6f6;
+    background: #f1f1f1;
     color: #0a0a0a;
 }
 
@@ -3014,7 +3015,7 @@ table tbody { background-color: gainsboro; }
 table tbody tr {
     border-bottom: 0;
     border-bottom: 1px solid gainsboro;
-    background-color: #f5efef;
+    background-color: #fcfcfc;
 }
 
 table.scroll {

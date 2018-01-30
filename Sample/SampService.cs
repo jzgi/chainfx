@@ -173,15 +173,16 @@ namespace Greatbone.Samp
         public void @default(ActionContext ac)
         {
             var lessons = Obtain<string[]>();
-            
+
             ac.GivePage(200, m =>
             {
+                m.T("<h1>关于天国的事实真相</h1>");
                 using (var dc = ac.NewDbContext())
                 {
                     for (int i = 0; i < lessons?.Length; i++)
                     {
-                        var lesson = lessons[i];
                         m.T("<div class=\"card\">");
+                        m.T(lessons[i]);
                         m.T("</div>");
                     }
                 }
@@ -229,17 +230,16 @@ namespace Greatbone.Samp
         /// </summary>
         public async Task paynotify(ActionContext ac)
         {
-            var shops = Obtain<Map<string, Shop>>();
-
             XElem xe = await ac.ReadAsync<XElem>();
             if (!Notified(xe, out var trade_no, out var cash))
             {
                 ac.Give(400);
                 return;
             }
+            var shops = Obtain<Map<string, Shop>>();
             var (orderid, _) = trade_no.To2Ints();
             string city, addr;
-            string targetwx = null;
+            string towx = null; // messge to
             using (var dc = ac.NewDbContext(ReadCommitted))
             {
                 if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr", (p) => p.Set(cash).Set(orderid)))
@@ -250,20 +250,19 @@ namespace Greatbone.Samp
                 // retrieve a POS openid
                 if (shops[shopid].areas != null)
                 {
-                    var (a, _, _) = addr.ToTriple(SEPCHAR);
-                    targetwx = (string) dc.Scalar("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3 LIMIT 1", p => p.Set(shopid).Set(city).Set(a + "%"));
+                    var (a, _) = addr.ToDual(SEPCHAR);
+                    towx = (string) dc.Scalar("SELECT wx FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3 LIMIT 1", p => p.Set(shopid).Set(city).Set(a + "%"));
                 }
-                if (targetwx == null)
+                if (towx == null)
                 {
-                    targetwx = shops[shopid].oprwx;
+                    towx = shops[shopid].oprwx;
                 }
             }
             // send messages
-            if (targetwx != null)
+            if (towx != null)
             {
-                await PostSendAsync(targetwx, "收到新单 No." + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+                await PostSendAsync(towx, "收到新单 No." + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
             }
-
             // return xml to WCPay server
             XmlContent x = new XmlContent(true, 1024);
             x.ELEM("xml", null, () =>

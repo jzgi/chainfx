@@ -1095,7 +1095,10 @@ namespace Greatbone.Core
             {
                 Add("<thead>");
                 Add("<tr>");
-                // for checkboxes
+                if (work.HasPick)
+                {
+                    Add("<th></th>"); // 
+                }
                 head(this);
                 if (ads != null)
                 {
@@ -1112,6 +1115,14 @@ namespace Greatbone.Core
                 {
                     D obj = arr[i];
                     Add("<tr>");
+                    if (varwork != null && work.HasPick)
+                    {
+                        Add("<td>");
+                        Add("<input name=\"key\" type=\"checkbox\" value=\"");
+                        varwork.PutVariableKey(obj, this);
+                        Add("\" onchange=\"checkit(this);\">");
+                        Add("</td>");
+                    }
                     row(this, obj);
                     if (ads != null) // triggers
                     {
@@ -1305,11 +1316,25 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent TOOL(string name, int subscript = -1, bool when = true)
+        public HtmlContent VARTOOL(string name, int subscript = -1, bool when = true)
         {
             if (when)
             {
                 var work = actionCtx.Work?.VarWork;
+                var ai = work?.GetAction(name);
+                if (ai != null)
+                {
+                    Tool(ai, model, ordinal, subscript);
+                }
+            }
+            return this;
+        }
+
+        public HtmlContent TOOL(string name, int subscript = -1, bool when = true)
+        {
+            if (when)
+            {
+                var work = actionCtx.Work;
                 var ai = work?.GetAction(name);
                 if (ai != null)
                 {
@@ -1404,7 +1429,7 @@ namespace Greatbone.Core
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return func"); // prefix to avoid js naming conflict
+                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
                 Add(ad.Lower);
                 Add("(this);\"");
             }
@@ -1887,6 +1912,53 @@ namespace Greatbone.Core
 
             Add(">");
             AddEsc(val);
+            Add("</textarea>");
+            _FIELD(box);
+            return this;
+        }
+
+        public HtmlContent TEXTAREA(string name, string[] val, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        {
+            FIELD_(label, box);
+            Add("<textarea name=\"");
+            Add(name);
+            Add("\"");
+
+            if (help != null)
+            {
+                Add(" placeholder=\"");
+                Add(help);
+                Add("\"");
+            }
+            if (max > 0)
+            {
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
+
+                Add(" rows=\"");
+                Add(max < 200 ? 3 :
+                    max < 400 ? 4 : 5);
+                Add("\"");
+            }
+            if (min > 0)
+            {
+                Add(" minlength=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+
+            Add(">");
+            if (val != null)
+            {
+                for (int i = 0; i < val.Length; i++)
+                {
+                    if (i > 0) Add('\n');
+                    AddEsc(val[i]);
+                }
+            }
             Add("</textarea>");
             _FIELD(box);
             return this;

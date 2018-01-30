@@ -66,7 +66,7 @@ namespace Greatbone.Samp
 
             using (var dc = ac.NewDbContext())
             {
-                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, 0xff).T(", COALESCE(img1, img2, img3, img4) IS NOT NULL AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), 0xff);
+                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, 0xff).T(", (img1 IS NOT NULL AND img2 IS NOT NULL AND img3 IS NOT NULL AND img4 IS NOT NULL) AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), 0xff);
                 ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().A_DROPDOWN_("正在" + Shop.Statuses[shop.status]);

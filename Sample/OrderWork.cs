@@ -43,7 +43,7 @@ namespace Greatbone.Samp
                         }
                         m.CARD_(o);
                         m.CAPTION_().T(o.shopname)._IF(o.paid)._CAPTION(Statuses[o.status], o.status <= PAID);
-                        m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2).TOOL("addr", when: o.status == 0)._FIELD();
+                        m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2).VARTOOL("addr", when: o.status == 0)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
@@ -51,7 +51,7 @@ namespace Greatbone.Samp
                             {
                                 m.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                                 m.BOX_(0x46).P(oi.name).P(oi.price, fix: "¥")._BOX();
-                                m.BOX_(0x42).P(oi.qty, fix: oi.unit).TOOL("item", i, when: o.status == 0)._BOX();
+                                m.BOX_(0x42).P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
                                 m.BOX_(0x42).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
                             }
                             else
@@ -65,7 +65,7 @@ namespace Greatbone.Samp
                         m._CARD();
                     }
                     m._BOARDVIEW(arr?.Length ?? 0);
-                }, false, 3);
+                }, false, 2);
             }
         }
 
