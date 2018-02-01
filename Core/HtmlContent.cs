@@ -1955,7 +1955,10 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < val.Length; i++)
                 {
-                    if (i > 0) Add('\n');
+                    if (i > 0)
+                    {
+                        Add('\n');
+                    }
                     AddEsc(val[i]);
                 }
             }

@@ -155,7 +155,7 @@ namespace Greatbone.Samp
                     {
                         m.FORM_();
                         m.FIELDSET_("没有访问权限");
-                        m.BOX_().T("您要访问的功能需要经过管理员授权后才能使用。")._BOX();
+                        m.P("您要访问的功能需要经过管理员授权后才能使用。");
                         m._FIELDSET();
                         m._FORM();
                     });

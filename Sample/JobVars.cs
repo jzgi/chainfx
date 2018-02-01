@@ -19,7 +19,6 @@ namespace Greatbone.Samp
 
         public void @default(ActionContext ac)
         {
-            string wx = ac[this];
             var prin = (User) ac.Principal;
             ac.GivePage(200, m =>
             {
@@ -250,6 +249,8 @@ namespace Greatbone.Samp
             });
         }
 
+        static readonly string[] CRLF = {"\r\n", "\n"};
+
         [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
         public async Task sets(ActionContext ac)
         {
@@ -274,7 +275,7 @@ namespace Greatbone.Samp
                 o.schedule = f[nameof(o.schedule)];
                 o.delivery = f[nameof(o.delivery)];
                 string v = f[nameof(o.areas)];
-                o.areas = v.Split('\n');
+                o.areas = v.Split(CRLF, StringSplitOptions.RemoveEmptyEntries);
                 o.min = f[nameof(o.min)];
                 o.notch = f[nameof(o.notch)];
                 o.off = f[nameof(o.off)];

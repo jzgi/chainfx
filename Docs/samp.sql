@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-01-24 10:41:16
+Date: 2018-02-01 07:57:23
 */
 
 
@@ -23,9 +23,9 @@ CREATE SEQUENCE "public"."cashes_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 5
+ START 7
  CACHE 1;
-SELECT setval('"public"."cashes_id_seq"', 5, true);
+SELECT setval('"public"."cashes_id_seq"', 7, true);
 
 -- ----------------------------
 -- Sequence structure for orders_id_seq
@@ -35,9 +35,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 177
+ START 197
  CACHE 4;
-SELECT setval('"public"."orders_id_seq"', 177, true);
+SELECT setval('"public"."orders_id_seq"', 197, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -47,9 +47,21 @@ CREATE SEQUENCE "public"."repays_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
+ START 3
+ CACHE 1;
+SELECT setval('"public"."repays_id_seq"', 3, true);
+
+-- ----------------------------
+-- Sequence structure for slides_id_seq1
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."slides_id_seq1";
+CREATE SEQUENCE "public"."slides_id_seq1"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."repays_id_seq"', 1, true);
+SELECT setval('"public"."slides_id_seq1"', 1, true);
 
 -- ----------------------------
 -- Table structure for cashes
@@ -88,20 +100,6 @@ CREATE TABLE "public"."items" (
 "img2" bytea,
 "img3" bytea,
 "img4" bytea
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Table structure for lessons
--- ----------------------------
-DROP TABLE IF EXISTS "public"."lessons";
-CREATE TABLE "public"."lessons" (
-"id" varchar(2) COLLATE "default" NOT NULL,
-"name" varchar(20) COLLATE "default",
-"refid" varchar(20) COLLATE "default",
-"modified" timestamp(6)
 )
 WITH (OIDS=FALSE)
 
@@ -194,6 +192,25 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
+-- Table structure for slides
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."slides";
+CREATE TABLE "public"."slides" (
+"id" int2 DEFAULT nextval('slides_id_seq1'::regclass) NOT NULL,
+"lesson" varchar(20) COLLATE "default" NOT NULL,
+"title" varchar(20) COLLATE "default" NOT NULL,
+"text" varchar(200) COLLATE "default",
+"layout" int2,
+"revised" timestamp(6),
+"mp3" bytea,
+"status" int2 DEFAULT 0,
+"svg" text COLLATE "default"
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."users";
@@ -218,6 +235,7 @@ WITH (OIDS=FALSE)
 ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "cashes"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
+ALTER SEQUENCE "public"."slides_id_seq1" OWNED BY "slides"."id";
 
 -- ----------------------------
 -- Indexes structure for table cashes
@@ -256,31 +274,23 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 ALTER TABLE "public"."shops" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
+-- Indexes structure for table slides
+-- ----------------------------
+CREATE INDEX "slides_lesson" ON "public"."slides" USING btree ("lesson");
+ALTER TABLE "public"."slides" CLUSTER ON "slides_lesson";
+
+-- ----------------------------
+-- Primary Key structure for table slides
+-- ----------------------------
+ALTER TABLE "public"."slides" ADD PRIMARY KEY ("id");
+
+-- ----------------------------
 -- Indexes structure for table users
 -- ----------------------------
-CREATE INDEX "users_tel_index" ON "public"."users" USING btree ("tel");
+CREATE INDEX "users_tel_index" ON "public"."users" USING btree ("tel") WHERE tel IS NOT NULL;
+CREATE INDEX "users_opr_index" ON "public"."users" USING btree ("opr") WHERE opr > 0;
 
 -- ----------------------------
 -- Primary Key structure for table users
 -- ----------------------------
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");
-
--- ----------------------------
--- Foreign Key structure for table "public"."cashes"
--- ----------------------------
-ALTER TABLE "public"."cashes" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."items"
--- ----------------------------
-ALTER TABLE "public"."items" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."orders"
--- ----------------------------
-ALTER TABLE "public"."orders" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."repays"
--- ----------------------------
-ALTER TABLE "public"."repays" ADD FOREIGN KEY ("shopid") REFERENCES "public"."shops" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
