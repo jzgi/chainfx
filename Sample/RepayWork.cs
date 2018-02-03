@@ -3,7 +3,6 @@ using System.Data;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Samp.Repay;
 
 namespace Greatbone.Samp
 {

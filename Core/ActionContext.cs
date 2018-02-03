@@ -258,7 +258,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -277,7 +277,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -299,7 +299,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -330,7 +330,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -384,7 +384,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
+            ((Service<P>)Service).SetTokenCookie(this, prin, proj, maxage);
         }
 
         public bool InCache { get; internal set; }

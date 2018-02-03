@@ -9,10 +9,10 @@ namespace Greatbone.Core
     {
         readonly ActionContext actionCtx;
 
-        // used for current level content
+        // ordinal current in output
         int ordinal;
 
-        // used for lower lever (var) content
+        // data model current in output
         IData model;
 
         public HtmlContent(ActionContext actionCtx, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
@@ -382,10 +382,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TD(decimal v)
+        public HtmlContent TD(decimal v, bool zero = false)
         {
             Add("<td style=\"text-align: right\">");
-            Add(v);
+            if (v != 0 || zero)
+            {
+                Add(v);
+            }
             Add("</td>");
             return this;
         }
@@ -773,7 +776,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent ICON(string src, string href = null, byte box = 0x0c)
+        public HtmlContent ICON(string src, string alt = null, string href = null, byte box = 0x0c)
         {
             FIELD_(null, box);
             if (href != null)
@@ -784,6 +787,11 @@ namespace Greatbone.Core
             }
             Add("<img class=\"icon\" src=\"");
             Add(src);
+            if (alt != null)
+            {
+                Add("\" alt=\"");
+                Add(alt);
+            }
             Add("\">");
             if (href != null)
             {

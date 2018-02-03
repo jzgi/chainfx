@@ -17,13 +17,13 @@
                 },
                 {
                     "type": "view",
-                    "name": "订单",
+                    "name": "订单管理",
                     "url": "http://144000.tv/my//order/",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "设置",
+                    "name": "账号设置",
                     "url": "http://144000.tv/my//",
                     "sub_button": []
                 }
@@ -34,20 +34,20 @@
             "sub_button": [
                 {
                     "type": "view",
-                    "name": "关于粗粮达人",
+                    "name": "关于「粗粮达人」",
                     "url": "http://144000.tv/about.html",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "内部功能（网点操作）",
-                    "url": "http://144000.tv/opr//",
+                    "name": "《平安的福音》",
+                    "url": "http://144000.tv/",
                     "sub_button": []
                 },
                 {
                     "type": "view",
-                    "name": "内部功能（平台管理）",
-                    "url": "http://144000.tv/adm/",
+                    "name": "日常操作（限内部使用）",
+                    "url": "http://144000.tv/opr//",
                     "sub_button": []
                 }
             ]

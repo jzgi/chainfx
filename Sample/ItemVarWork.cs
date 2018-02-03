@@ -48,9 +48,9 @@ namespace Greatbone.Samp
         }
     }
 
-    public class PubItemVarWork : ItemVarWork
+    public class SampVarVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkConfig cfg) : base(cfg)
+        public SampVarVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -59,7 +59,7 @@ namespace Greatbone.Samp
         {
             string shopid = ac[-1];
             var shop = Obtain<Map<string, Shop>>()[shopid];
-            User prin = (User) ac.Principal;
+            User prin = (User)ac.Principal;
             string itemname = ac[this];
             string name, city, a, b, tel; // form values
             short num;
@@ -113,7 +113,7 @@ namespace Greatbone.Samp
                     dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
                     dc.Let(out string unit).Let(out decimal price);
 
-                    if (dc.Query1("SELECT * FROM orders WHERE  wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add to existing cart order
+                    if (dc.Query1("SELECT * FROM orders WHERE wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
                         (await ac.ReadAsync<Form>()).Let(out num);
@@ -184,7 +184,7 @@ namespace Greatbone.Samp
                         m.FIELD(o.name, "名称");
                         m.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
                         m.TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
-                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
+                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short)1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short)1, box: 6);
                         m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "可供", box: 6);
                         m._FORM();
                     });
@@ -269,7 +269,7 @@ namespace Greatbone.Samp
             }
         }
 
-        [Ui("存量"), Tool(ButtonShow), User(OPRSTAFF)]
+        [Ui("可供"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task max(ActionContext ac)
         {
             string shopid = ac[-2];
@@ -280,7 +280,7 @@ namespace Greatbone.Samp
                 {
                     dc.Query1("SELECT stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
                     dc.Let(out short stock);
-                    ac.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short) 1)._FORM(); });
+                    ac.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short)1)._FORM(); });
                 }
             }
             else // POST

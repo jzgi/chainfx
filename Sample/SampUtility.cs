@@ -250,7 +250,7 @@ namespace Greatbone.Samp
                 @public, maxage, title
             );
         }
-        
+
         public static HtmlContent TOPBAR_(this HtmlContent h, string title = null)
         {
             h.T("<header data-sticky-container>");

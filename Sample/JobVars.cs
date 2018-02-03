@@ -19,7 +19,7 @@ namespace Greatbone.Samp
 
         public void @default(ActionContext ac)
         {
-            var prin = (User) ac.Principal;
+            var prin = (User)ac.Principal;
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
@@ -65,7 +65,7 @@ namespace Greatbone.Samp
         public async Task edit(ActionContext ac)
         {
             string wx = ac[-1];
-            var prin = (User) ac.Principal;
+            var prin = (User)ac.Principal;
             if (ac.GET)
             {
                 if (ac.Query.Count > 0)
@@ -103,7 +103,7 @@ namespace Greatbone.Samp
         [Ui("设密码"), Tool(ButtonShow)]
         public async Task pass(ActionContext ac)
         {
-            User prin = (User) ac.Principal;
+            User prin = (User)ac.Principal;
             string wx = ac[-1];
             string credential;
             string password = null;
@@ -111,7 +111,7 @@ namespace Greatbone.Samp
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    credential = (string) dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
+                    credential = (string)dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
                     if (credential != null)
                     {
                         password = PASS;
@@ -249,7 +249,7 @@ namespace Greatbone.Samp
             });
         }
 
-        static readonly string[] CRLF = {"\r\n", "\n"};
+        static readonly string[] CRLF = { "\r\n", "\n" };
 
         [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
         public async Task sets(ActionContext ac)
@@ -322,7 +322,7 @@ namespace Greatbone.Samp
         {
             var shops = Obtain<Map<string, Shop>>();
 
-            User prin = (User) ac.Principal;
+            User prin = (User)ac.Principal;
             string shopid = ac[this];
             var o = shops[shopid];
             bool custsvc;

@@ -49,7 +49,7 @@ namespace Greatbone.Samp
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<SampVarVarWork, string>(obj => ((Item) obj).name);
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
