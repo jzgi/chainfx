@@ -31,8 +31,6 @@ namespace Greatbone.Sample
                     {
                         host = "144000.tv",
                         port = 5432,
-                        username = "postgres",
-                        password = "721004"
                     },
                 },
                 deploy
