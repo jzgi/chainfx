@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Samp.SampUtility;
-using static Greatbone.Samp.User;
+using static Greatbone.Sample.GospelUtility;
+using static Greatbone.Sample.User;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     public abstract class ShopVarWork : Work
     {
@@ -45,9 +45,9 @@ namespace Greatbone.Samp
     }
 
     [User]
-    public class SampVarWork : ShopVarWork, IShopVar
+    public class PubShopVarWork : ShopVarWork, IShopVar
     {
-        public SampVarWork(WorkConfig cfg) : base(cfg)
+        public PubShopVarWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<SampVarVarWork, string>(obj => ((Item) obj).name);
         }

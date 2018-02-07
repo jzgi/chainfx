@@ -1,9 +1,9 @@
 using System;
 using Greatbone.Core;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
-    public static class SampUtility
+    public static class GospelUtility
     {
         public const string NETADDR = "http://144000.tv";
 

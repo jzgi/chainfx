@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 using Greatbone.Core;
 using static System.Data.IsolationLevel;
 using static Greatbone.Core.Modal;
-using static Greatbone.Samp.Order;
-using static Greatbone.Samp.SampUtility;
-using static Greatbone.Samp.User;
+using static Greatbone.Sample.Order;
+using static Greatbone.Sample.GospelUtility;
+using static Greatbone.Sample.User;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     public abstract class OrderVarWork : Work
     {
@@ -41,7 +41,7 @@ namespace Greatbone.Samp
                     }
                 }
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, NETADDR + "/paynotify", "粗粮达人-健康产品");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, NETADDR + "/shop/paynotify", "粗粮达人-健康产品");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));

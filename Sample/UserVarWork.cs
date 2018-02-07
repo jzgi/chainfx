@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     public abstract class UserVarWork : Work
     {

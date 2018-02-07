@@ -16,6 +16,10 @@ namespace Greatbone.Core
             this.name = name;
         }
 
+        internal UiAttribute Ui { get; set; }
+
+        internal AccessAttribute Access { get; set; }
+
         public string Name => name;
 
         public Service Service { get; internal set; }

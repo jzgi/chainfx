@@ -13,7 +13,7 @@ namespace Greatbone.Core
     /// <remarks>A work can contain child/sub works.</remarks>
     public abstract class Work : Nodule
     {
-        internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
+        internal static readonly AccessException AccessEx = new AccessException();
 
         // max nesting levels
         const int MaxNesting = 8;
@@ -43,7 +43,7 @@ namespace Greatbone.Core
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig cfg) : base(cfg.Name, null)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
         {
             this.cfg = cfg;
 
@@ -121,14 +121,54 @@ namespace Greatbone.Core
         }
 
         /// <summary>
+        /// Create a variable-key subwork.
+        /// </summary>
+        /// <param name="keyer"></param>
+        /// <param name="ui">to override class-wise UI attribute</param>
+        /// <param name="access">to override class-wise Authorize attribute</param>
+        /// <typeparam name="W"></typeparam>
+        /// <typeparam name="K"></typeparam>
+        /// <returns>The newly created subwork instance.</returns>
+        /// <exception cref="ServiceException">Thrown if error</exception>
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null, UiAttribute ui = null, AccessAttribute access = null) where W : Work
+        {
+            if (cfg.Level >= MaxNesting)
+            {
+                throw new ServiceException("allowed work nesting " + MaxNesting);
+            }
+            // create instance
+            Type typ = typeof(W);
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
+            if (ci == null)
+            {
+                throw new ServiceException(typ + " need public and WorkConfig");
+            }
+            WorkConfig wc = new WorkConfig(VAR)
+            {
+                Ui = ui,
+                Access = access,
+                Service = Service,
+                Parent = this,
+                Level = Level + 1,
+                IsVar = true,
+                Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
+                Keyer = keyer,
+            };
+            W w = (W) ci.Invoke(new object[] {wc});
+            varwork = w;
+            return w;
+        }
+
+        /// <summary>
         /// Create a fixed-key subwork.
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
-        /// <param name="attachs"></param>
+        /// <param name="ui">to override class-wise UI attribute</param>
+        /// <param name="access">to override class-wise Authorize attribute</param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, params object[] attachs) where W : Work
+        protected W Create<W>(string name, UiAttribute ui = null, AccessAttribute access = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -143,10 +183,12 @@ namespace Greatbone.Core
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
-                throw new ServiceException(typ + " constructor missing WorkConfig");
+                throw new ServiceException(typ + " need public and WorkConfig");
             }
             WorkConfig wc = new WorkConfig(name)
             {
+                Ui = ui,
+                Access = access,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -154,48 +196,10 @@ namespace Greatbone.Core
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
             };
             // init sub work
-            W work = (W) ci.Invoke(new object[] {wc});
-            work.Register(attachs);
-            works.Add(work.Key, work);
+            W w = (W) ci.Invoke(new object[] {wc});
+            works.Add(w.Key, w);
 
-            return work;
-        }
-
-        /// <summary>
-        /// Create a variable-key subwork.
-        /// </summary>
-        /// <param name="keyer"></param>
-        /// <param name="attachs"></param>
-        /// <typeparam name="W"></typeparam>
-        /// <typeparam name="K"></typeparam>
-        /// <returns>The newly created subwork instance.</returns>
-        /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null, params object[] attachs) where W : Work
-        {
-            if (cfg.Level >= MaxNesting)
-            {
-                throw new ServiceException("allowed work nesting " + MaxNesting);
-            }
-            // create instance
-            Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
-            if (ci == null)
-            {
-                throw new ServiceException(typ + " constructor missing WorkConfig");
-            }
-            WorkConfig wc = new WorkConfig(VAR)
-            {
-                Service = Service,
-                Parent = this,
-                Level = Level + 1,
-                IsVar = true,
-                Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
-                Keyer = keyer,
-            };
-            W work = (W) ci.Invoke(new object[] {wc});
-            work.Register(attachs);
-            varwork = work;
-            return work;
+            return w;
         }
 
         public object GetVariableKey(IData obj)
@@ -295,7 +299,7 @@ namespace Greatbone.Core
 
         internal Work Resolve(ref string relative, ActionContext ac)
         {
-            if (!DoAuthorize(ac)) throw AuthorizeEx;
+            if (!DoAuthorize(ac)) throw AccessEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -316,10 +320,10 @@ namespace Greatbone.Core
                 object princi = null;
                 if (key.Length == 0) // resolve shortcut
                 {
-                    if (prin == null) throw AuthorizeEx;
+                    if (prin == null) throw AccessEx;
                     if ((princi = varwork.GetVariableKey(prin)) == null)
                     {
-                        throw AuthorizeEx;
+                        throw AccessEx;
                     }
                 }
                 ac.Chain(varwork, key, princi);
@@ -333,8 +337,8 @@ namespace Greatbone.Core
         /// </summary>
         /// <param name="rsc">the resource path</param>
         /// <param name="ac">ActionContext</param>
-        /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
-        /// <seealso cref="AuthorizeAttribute.Check"/>
+        /// <exception cref="AccessException">Thrown when authorization is required and false is returned by checking</exception>
+        /// <seealso cref="AccessAttribute.Check"/>
         internal async Task HandleAsync(string rsc, ActionContext ac)
         {
             ac.Work = this;
@@ -367,7 +371,7 @@ namespace Greatbone.Core
                     return;
                 }
 
-                if (!ad.DoAuthorize(ac)) throw AuthorizeEx;
+                if (!ad.DoAuthorize(ac)) throw AccessEx;
                 ac.Doer = ad;
                 // any before filterings
                 if (ad.Before?.Do(ac) == false) goto ActionExit;

@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Core;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     public static class WeiXinUtility
     {
@@ -48,7 +48,7 @@ namespace Greatbone.Samp
             }
         });
 
-        public static void Setup(string weixinfile, string p12file, bool deploy)
+        public static void Setup(string weixinfile, bool deploy, string p12file = null)
         {
             // load weixin parameters
             var wx = DataUtility.FileTo<JObj>(weixinfile);
@@ -58,23 +58,25 @@ namespace Greatbone.Samp
             noncestr = wx[nameof(noncestr)];
             spbillcreateip = wx[nameof(spbillcreateip)];
             key = wx[nameof(key)];
-
-            // load and init client certificate
-            var handler = new HttpClientHandler
-            {
-                ClientCertificateOptions = ClientCertificateOption.Manual
-            };
-            X509Certificate2 cert = new X509Certificate2(p12file, mchid, X509KeyStorageFlags.MachineKeySet);
-            handler.ClientCertificates.Add(cert);
-            WCPay = new Client(handler)
-            {
-                BaseAddress = new Uri("https://api.mch.weixin.qq.com")
-            };
-
             // start the access token renewer thread
             if (deploy)
             {
                 Renewer.Start();
+            }
+
+            if (p12file != null)
+            {
+                // load and init client certificate
+                var handler = new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual
+                };
+                X509Certificate2 cert = new X509Certificate2(p12file, mchid, X509KeyStorageFlags.MachineKeySet);
+                handler.ClientCertificates.Add(cert);
+                WCPay = new Client(handler)
+                {
+                    BaseAddress = new Uri("https://api.mch.weixin.qq.com")
+                };
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     /// <summary>
     /// For easy sharing code between works.
@@ -18,21 +18,21 @@ namespace Greatbone.Samp
         {
             bool deploy = args.Length > 0;
 
-            WeiXinUtility.Setup("weixin.json", "apiclient_cert.p12", deploy);
+            WeiXinUtility.Setup("weixin.json", deploy, "apiclient_cert.p12");
 
             // the only www service
-            TryCreate<SampService>(
-                new ServiceConfig("samp")
+            TryCreate<GospelService>(
+                new ServiceConfig("gospel")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,
                     cache = true,
                     db = new Db
                     {
-                        host = "localhost",
+                        host = "144000.tv",
                         port = 5432,
                         username = "postgres",
-                        password = "123456"
+                        password = "721004"
                     },
                 },
                 deploy

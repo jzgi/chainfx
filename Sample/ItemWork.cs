@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Samp.User;
+using static Greatbone.Sample.User;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     public abstract class ItemWork<V> : Work where V : ItemVarWork
     {

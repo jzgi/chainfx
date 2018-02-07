@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone.Core;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     /// <summary>
     /// A before filter that ensures city is resolved and given in the URL.

@@ -1,11 +1,11 @@
 ﻿using Greatbone.Core;
 
-namespace Greatbone.Samp
+namespace Greatbone.Sample
 {
     /// <summary>
     /// To check access to an annotated work or actions. 
     /// </summary>
-    public class UserAttribute : AuthorizeAttribute
+    public class UserAttribute : AccessAttribute
     {
         readonly short opr;
 

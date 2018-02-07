@@ -23,7 +23,7 @@ namespace Greatbone.Core
         readonly byte flag;
 
         // access check
-        internal readonly AuthorizeAttribute authorize;
+        internal readonly AccessAttribute access;
 
         // pre- operation
         readonly IBefore before;
@@ -35,33 +35,35 @@ namespace Greatbone.Core
 
         readonly IAfterAsync afterAsync;
 
-        internal Nodule(string name, ICustomAttributeProvider attrp)
+        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AccessAttribute access = null)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
             this.capital = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
             this.lower = name.ToLower();
-
             // either methodinfo or typeinfo
             if (attrp == null)
             {
                 attrp = GetType().GetTypeInfo();
             }
-
-            // ui 
-            var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), false);
-            UiAttribute ui = uis.Length > 0 ? uis[0] : null;
+            // retrieve Ui annotation 
+            if (ui == null)
+            {
+                var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), false);
+                ui = uis.Length > 0 ? uis[0] : null;
+            }
             this.label = ui?.Label ?? name.ToUpper();
             this.tip = ui?.Tip ?? label;
             this.flag = ui?.Flag ?? 0;
-
             // authorize
-            var auths = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), false);
-            if (auths.Length > 0)
+            if (access == null)
             {
-                authorize = auths[0];
-                authorize.Nodule = this;
+                var accs = (AccessAttribute[]) attrp.GetCustomAttributes(typeof(AccessAttribute), false);
+                if (accs.Length > 0)
+                {
+                    access = accs[0];
+                }
             }
-
+            this.access = access;
             // filters
             var attrs = attrp.GetCustomAttributes(false);
             for (int i = 0; i < attrs.Length; i++)
@@ -86,7 +88,7 @@ namespace Greatbone.Core
 
         public byte Flag => flag;
 
-        public AuthorizeAttribute Authorize => authorize;
+        public AccessAttribute Access => access;
 
         public IBefore Before => before;
 
@@ -96,18 +98,18 @@ namespace Greatbone.Core
 
         public IAfterAsync AfterAsync => afterAsync;
 
-        public bool HasAuthorize => authorize != null;
+        public bool HasAuthorize => access != null;
 
         public bool DoAuthorize(ActionContext ac)
         {
-            if (authorize != null)
+            if (access != null)
             {
                 IData prin = ac.Principal;
                 if (prin == null)
                 {
                     return false;
                 }
-                return authorize.Check(ac);
+                return access.Check(ac);
             }
             return true;
         }
