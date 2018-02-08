@@ -13,7 +13,7 @@ namespace Greatbone.Core
     /// <remarks>A work can contain child/sub works.</remarks>
     public abstract class Work : Nodule
     {
-        internal static readonly AccessException AccessEx = new AccessException();
+        internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
 
         // max nesting levels
         const int MaxNesting = 8;
@@ -43,7 +43,7 @@ namespace Greatbone.Core
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Authorize)
         {
             this.cfg = cfg;
 
@@ -125,12 +125,12 @@ namespace Greatbone.Core
         /// </summary>
         /// <param name="keyer"></param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="access">to override class-wise Authorize attribute</param>
+        /// <param name="authorize">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null, UiAttribute ui = null, AccessAttribute access = null) where W : Work
+        protected W CreateVar<W, K>(Func<IData, K> keyer = null, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -146,7 +146,7 @@ namespace Greatbone.Core
             WorkConfig wc = new WorkConfig(VAR)
             {
                 Ui = ui,
-                Access = access,
+                Authorize = authorize,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -164,11 +164,11 @@ namespace Greatbone.Core
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="access">to override class-wise Authorize attribute</param>
+        /// <param name="authorize">to override class-wise Authorize attribute</param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, UiAttribute ui = null, AccessAttribute access = null) where W : Work
+        protected W Create<W>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -188,7 +188,7 @@ namespace Greatbone.Core
             WorkConfig wc = new WorkConfig(name)
             {
                 Ui = ui,
-                Access = access,
+                Authorize = authorize,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -299,7 +299,7 @@ namespace Greatbone.Core
 
         internal Work Resolve(ref string relative, ActionContext ac)
         {
-            if (!DoAuthorize(ac)) throw AccessEx;
+            if (!DoAuthorize(ac)) throw AuthorizeEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -320,10 +320,10 @@ namespace Greatbone.Core
                 object princi = null;
                 if (key.Length == 0) // resolve shortcut
                 {
-                    if (prin == null) throw AccessEx;
+                    if (prin == null) throw AuthorizeEx;
                     if ((princi = varwork.GetVariableKey(prin)) == null)
                     {
-                        throw AccessEx;
+                        throw AuthorizeEx;
                     }
                 }
                 ac.Chain(varwork, key, princi);
@@ -337,8 +337,8 @@ namespace Greatbone.Core
         /// </summary>
         /// <param name="rsc">the resource path</param>
         /// <param name="ac">ActionContext</param>
-        /// <exception cref="AccessException">Thrown when authorization is required and false is returned by checking</exception>
-        /// <seealso cref="AccessAttribute.Check"/>
+        /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
+        /// <seealso cref="AuthorizeAttribute.Check"/>
         internal async Task HandleAsync(string rsc, ActionContext ac)
         {
             ac.Work = this;
@@ -371,7 +371,7 @@ namespace Greatbone.Core
                     return;
                 }
 
-                if (!ad.DoAuthorize(ac)) throw AccessEx;
+                if (!ad.DoAuthorize(ac)) throw AuthorizeEx;
                 ac.Doer = ad;
                 // any before filterings
                 if (ad.Before?.Do(ac) == false) goto ActionExit;
@@ -493,7 +493,7 @@ namespace Greatbone.Core
         {
             if (registry == null)
             {
-                registry = new Cell[8];
+                registry = new Cell[16];
             }
             registry[size++] = new Cell(value);
         }
@@ -512,7 +512,16 @@ namespace Greatbone.Core
             {
                 registry = new Cell[8];
             }
-            registry[size++] = new Cell(loader, maxage);
+            registry[size++] = new Cell(typeof(V), loader, maxage);
+        }
+
+        public void Register<V>(Func<Task<V>> loaderAsync, int maxage = 3600) where V : class
+        {
+            if (registry == null)
+            {
+                registry = new Cell[8];
+            }
+            registry[size++] = new Cell(typeof(V), loaderAsync, maxage);
         }
 
         /// <summary>
@@ -526,21 +535,43 @@ namespace Greatbone.Core
             {
                 for (int i = 0; i < size; i++)
                 {
-                    if (registry[i].GetValue() is T) // test on possibly-stale value
+                    var cell = registry[i];
+                    if (!cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
                     {
-                        return registry[i].GetValue(true) as T; // reget a fresh value
+                        return cell.GetValue() as T;
                     }
                 }
             }
             return Parent?.Obtain<T>();
         }
 
+        public async Task<T> ObtainAsync<T>() where T : class
+        {
+            if (registry != null)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    var cell = registry[i];
+                    if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                    {
+                        return await cell.GetValueAsync() as T;
+                    }
+                }
+            }
+            if (Parent == null) return null;
+            return await Parent.ObtainAsync<T>();
+        }
+
         /// <summary>
         /// A registry cell.
         /// </summary>
-        public struct Cell
+        class Cell
         {
+            readonly Type typ;
+
             readonly Func<object> loader;
+
+            readonly Func<Task<object>> loaderAsync;
 
             readonly int maxage; //in seconds
 
@@ -551,38 +582,39 @@ namespace Greatbone.Core
 
             Exception excep;
 
-            public Cell(object v)
+            internal Cell(object value)
             {
-                loader = null;
-                maxage = 0;
-                expiry = 0;
-                this.value = v;
-                excep = null;
+                this.typ = value.GetType();
+                this.value = value;
             }
 
-            public Cell(Func<object> loader, int maxage = 3600 * 12)
+            internal Cell(Type typ, Func<object> loader, int maxage = 3600 * 12)
             {
-                this.loader = loader;
+                this.typ = typ;
+                if (loader is Func<Task<object>> loader2)
+                {
+                    this.loaderAsync = loader2;
+                }
+                else
+                {
+                    this.loader = loader;
+                }
                 this.maxage = maxage;
-                expiry = 0;
-                this.value = null;
-                excep = null;
             }
+
+            public Type Typ => typ;
+
+            public bool IsAsync => loaderAsync != null;
 
             public int MaxAge => maxage;
 
             public Exception Excep => excep;
 
-            public object GetValue(bool fresh = false)
+            public object GetValue()
             {
                 if (loader == null) // simple object
                 {
                     return value;
-                }
-                object v = value; // atomic get
-                if (!fresh && v != null) // return possibly-stale value to reduce lock contention
-                {
-                    return v;
                 }
                 lock (loader) // cache object
                 {
@@ -603,6 +635,32 @@ namespace Greatbone.Core
                     }
                     return value;
                 }
+            }
+
+            public async Task<object> GetValueAsync()
+            {
+                if (loaderAsync == null) // simple object
+                {
+                    return value;
+                }
+                int lexpiry = this.expiry;
+                int ticks = Environment.TickCount;
+                if (ticks >= lexpiry)
+                {
+                    try
+                    {
+                        value = await loaderAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        excep = ex;
+                    }
+                    finally
+                    {
+                        expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                    }
+                }
+                return value;
             }
         }
     }

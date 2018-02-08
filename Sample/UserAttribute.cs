@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// To check access to an annotated work or actions. 
     /// </summary>
-    public class UserAttribute : AccessAttribute
+    public class UserAttribute : AuthorizeAttribute
     {
         readonly short opr;
 

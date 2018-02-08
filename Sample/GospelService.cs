@@ -134,7 +134,7 @@ namespace Greatbone.Sample
 
         public override void Catch(Exception ex, ActionContext ac)
         {
-            if (ex is AccessException)
+            if (ex is AuthorizeException)
             {
                 if (ac.Principal == null)
                 {

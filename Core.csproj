@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <Description>Greatbone Core</Description>
+    <Description>Greatbone Core Library</Description>
     <VersionPrefix>2.6.3</VersionPrefix>
     <Authors>hismichael</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
@@ -9,7 +9,7 @@
     <DebugType>portable</DebugType>
     <PackageId>Core</PackageId>
     <RuntimeFrameworkVersion>1.1.6</RuntimeFrameworkVersion>
-    <Version>2.5</Version>
+    <Version>2.6.3</Version>
     <LangVersion>7.1</LangVersion>
     <Company>Greatbone</Company>
   </PropertyGroup>
@@ -22,6 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.3" />
     <PackageReference Include="Npgsql" Version="3.2.6" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 </Project>

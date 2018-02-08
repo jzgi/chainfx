@@ -1,5 +1,5 @@
 [Unit]
-Description=Samp Service
+Description=Greatbone Core Sample Service
 
 [Service]
 EnvironmentFile=/etc/environment
