@@ -35,9 +35,9 @@ namespace Greatbone.Core
 
         bool Get(string name, ref Map<string, string> v);
 
-        bool Get<D>(string name, ref D v, byte proj = 0x1f) where D : IData, new();
+        bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new();
 
-        bool Get<D>(string name, ref D[] v, byte proj = 0x1f) where D : IData, new();
+        bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new();
 
 
         IDataInput Let(out bool v);
@@ -68,13 +68,13 @@ namespace Greatbone.Core
 
         IDataInput Let(out Map<string, string> v);
 
-        IDataInput Let<D>(out D v, byte proj = 0x1f) where D : IData, new();
+        IDataInput Let<D>(out D v, byte proj = 0x0f) where D : IData, new();
 
-        IDataInput Let<D>(out D[] v, byte proj = 0x1f) where D : IData, new();
+        IDataInput Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new();
 
-        D ToObject<D>(byte proj = 0x1f) where D : IData, new();
+        D ToObject<D>(byte proj = 0x0f) where D : IData, new();
 
-        D[] ToArray<D>(byte proj = 0x1f) where D : IData, new();
+        D[] ToArray<D>(byte proj = 0x0f) where D : IData, new();
 
         /// <summary>
         /// Write a single (or current) data record into the given output..

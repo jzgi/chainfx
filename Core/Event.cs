@@ -21,7 +21,7 @@ namespace Greatbone.Core
 
         internal DateTime time;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(name), ref name);
@@ -32,7 +32,7 @@ namespace Greatbone.Core
             i.Get(nameof(time), ref time);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(name), name);

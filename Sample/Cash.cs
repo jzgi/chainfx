@@ -33,7 +33,7 @@ namespace Greatbone.Sample
         internal decimal paid;
         internal string keeper;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             if ((proj & ID) == ID)
             {
@@ -48,7 +48,7 @@ namespace Greatbone.Sample
             i.Get(nameof(keeper), ref keeper);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             if ((proj & ID) == ID)
             {

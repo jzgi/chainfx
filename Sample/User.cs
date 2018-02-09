@@ -33,7 +33,7 @@ namespace Greatbone.Sample
         internal string oprat; // operator at
         internal bool adm; // adm
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             if ((proj & WX) == WX)
             {
@@ -55,7 +55,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             if ((proj & WX) == WX)
             {

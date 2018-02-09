@@ -60,7 +60,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             var shop = Obtain<Map<string, Shop>>()[shopid];
             User prin = (User)ac.Principal;
-            string itemname = ac[this];
+            string itemno = ac[this];
             string name, city, a, b, tel; // form values
             short num;
             if (ac.GET)
@@ -97,7 +97,7 @@ namespace Greatbone.Sample
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
+                        var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND no = @2"), p => p.Set(shopid).Set(itemno));
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
 
@@ -110,14 +110,14 @@ namespace Greatbone.Sample
             {
                 using (var dc = ac.NewDbContext())
                 {
-                    dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
+                    dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemno));
                     dc.Let(out string unit).Let(out decimal price);
 
                     if (dc.Query1("SELECT * FROM orders WHERE wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
                         (await ac.ReadAsync<Form>()).Let(out num);
-                        o.AddItem(itemname, unit, price, num);
+                        o.AddItem(itemno, unit, price, num);
                         o.TotalUp();
                         dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                     }
@@ -147,7 +147,7 @@ namespace Greatbone.Sample
                             off = shop.off,
                             created = DateTime.Now
                         };
-                        o.AddItem(itemname, unit, price, num);
+                        o.AddItem(itemno, unit, price, num);
                         o.TotalUp();
                         const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));

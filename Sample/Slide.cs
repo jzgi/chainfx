@@ -18,7 +18,7 @@ namespace Greatbone.Sample
         internal string layout;
         internal DateTime revised;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(lesson), ref lesson);
@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             i.Get(nameof(revised), ref revised);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(title), title);

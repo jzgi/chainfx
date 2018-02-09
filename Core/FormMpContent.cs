@@ -203,7 +203,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public FormMpContent Put(string name, IData v, byte proj = 0x1f)
+        public FormMpContent Put(string name, IData v, byte proj = 0x0f)
         {
             Part(name);
             if (v == null)
@@ -219,7 +219,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put<D>(string name, D[] v, byte proj = 0x1f) where D : IData
+        public FormMpContent Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             Part(name);
             if (v == null)

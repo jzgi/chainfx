@@ -13,7 +13,7 @@ namespace Greatbone.Sample
 
         internal double x1, y1, x2, y2;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(x1), ref x1);
@@ -22,7 +22,7 @@ namespace Greatbone.Sample
             i.Get(nameof(y2), ref y2);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(x1), x1);

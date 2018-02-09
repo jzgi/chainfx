@@ -71,19 +71,19 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D StringToObject<D>(string v, byte proj = 0x1f) where D : IData, new()
+        public static D StringToObject<D>(string v, byte proj = 0x0f) where D : IData, new()
         {
             JObj jo = (JObj) new JsonParse(v).Parse();
             return jo.ToObject<D>(proj);
         }
 
-        public static D[] StringToArray<D>(string v, byte proj = 0x1f) where D : IData, new()
+        public static D[] StringToArray<D>(string v, byte proj = 0x0f) where D : IData, new()
         {
             JArr ja = (JArr) new JsonParse(v).Parse();
             return ja.ToArray<D>(proj);
         }
 
-        public static string ToString<D>(D v, byte proj = 0x1f) where D : IData
+        public static string ToString<D>(D v, byte proj = 0x0f) where D : IData
         {
             JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
@@ -92,7 +92,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ToString<D>(D[] v, byte proj = 0x1f) where D : IData
+        public static string ToString<D>(D[] v, byte proj = 0x0f) where D : IData
         {
             JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
@@ -101,7 +101,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static string ToString<D>(List<D> v, byte proj = 0x1f) where D : IData
+        public static string ToString<D>(List<D> v, byte proj = 0x0f) where D : IData
         {
             JsonContent cont = new JsonContent(false, 4 * 1024);
             cont.Put(null, v, proj);
@@ -137,7 +137,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static D FileToObject<D>(string file, byte proj = 0x1f) where D : IData, new()
+        public static D FileToObject<D>(string file, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -155,7 +155,7 @@ namespace Greatbone.Core
             return default;
         }
 
-        public static D[] FileToArray<D>(string file, byte proj = 0x1f) where D : IData, new()
+        public static D[] FileToArray<D>(string file, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -173,7 +173,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static Map<K, D> FileToMap<K, D>(string file, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public static Map<K, D> FileToMap<K, D>(string file, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
             try
             {

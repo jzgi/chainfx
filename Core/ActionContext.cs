@@ -258,7 +258,7 @@ namespace Greatbone.Core
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -277,7 +277,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -290,7 +290,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(byte proj = 0x1f, D obj = default) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(byte proj = 0x0f, D obj = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -299,7 +299,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -321,7 +321,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(byte proj = 0x1f) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(byte proj = 0x0f) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -330,7 +330,7 @@ namespace Greatbone.Core
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int)clen;
+                    int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
                     while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -384,7 +384,7 @@ namespace Greatbone.Core
 
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
-            ((Service<P>)Service).SetTokenCookie(this, prin, proj, maxage);
+            ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
         }
 
         public bool InCache { get; internal set; }
@@ -431,7 +431,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give(int status, IData obj, byte proj = 0x1f, bool? pub = null, int maxage = 60)
+        public void Give(int status, IData obj, byte proj = 0x0f, bool? pub = null, int maxage = 60)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Status = status;
@@ -440,7 +440,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give<D>(int status, D[] arr, byte proj = 0x1f, bool? pub = null, int maxage = 60) where D : IData
+        public void Give<D>(int status, D[] arr, byte proj = 0x0f, bool? pub = null, int maxage = 60) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Status = status;

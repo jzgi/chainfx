@@ -41,7 +41,7 @@ namespace Greatbone.Core
             return entity as M;
         }
 
-        public D ToObject<D>(byte proj = 0x1f) where D : IData, new()
+        public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
         {
             if (!(entity is IDataInput inp))
             {
@@ -50,7 +50,7 @@ namespace Greatbone.Core
             return inp.ToObject<D>(proj);
         }
 
-        public D[] ToArray<D>(byte proj = 0x1f) where D : IData, new()
+        public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
         {
             IDataInput inp = entity as IDataInput;
             return inp?.ToArray<D>(proj);

@@ -109,7 +109,7 @@ namespace Greatbone.Core
             return Query1(sql.ToString(), p, prepare);
         }
 
-        public D Query1<D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x1f, bool prepare = true) where D : IData, new()
+        public D Query1<D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             this.sql = sql;
             if (Query1(sql.ToString(), p, prepare))
@@ -119,7 +119,7 @@ namespace Greatbone.Core
             return default;
         }
 
-        public D Query1<D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, bool prepare = true) where D : IData, new()
+        public D Query1<D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (Query1(cmdtext, p, prepare))
             {
@@ -158,7 +158,7 @@ namespace Greatbone.Core
             return Query(sql.ToString(), p, prepare);
         }
 
-        public D[] Query<D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x1f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             this.sql = sql;
             if (Query(sql.ToString(), p, prepare))
@@ -168,7 +168,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public D[] Query<D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
@@ -177,7 +177,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Map<K, D> Query<K, D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
         {
             this.sql = sql;
             if (Query(sql.ToString(), p, prepare))
@@ -187,7 +187,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
@@ -399,7 +399,7 @@ namespace Greatbone.Core
         // RESULTSET
         //
 
-        public D ToObject<D>(byte proj = 0x1f) where D : IData, new()
+        public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
@@ -411,7 +411,7 @@ namespace Greatbone.Core
             return obj;
         }
 
-        public D[] ToArray<D>(byte proj = 0x1f) where D : IData, new()
+        public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
         {
             Roll<D> roll = new Roll<D>(32);
             while (Next())
@@ -428,7 +428,7 @@ namespace Greatbone.Core
             return roll.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(byte proj = 0x1f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
             Map<K, D> map = new Map<K, D>(64, toper);
             while (Next())
@@ -648,7 +648,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte proj = 0x1f) where D : IData, new()
+        public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -786,7 +786,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte proj = 0x1f) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -1071,7 +1071,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, byte proj = 0x1f) where D : IData, new()
+        public IDataInput Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -1099,7 +1099,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let<D>(out D[] v, byte proj = 0x1f) where D : IData, new()
+        public IDataInput Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -1391,7 +1391,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDbParams Put(string name, IData v, byte proj = 0x1f)
+        public IDbParams Put(string name, IData v, byte proj = 0x0f)
         {
             if (name == null)
             {
@@ -1411,7 +1411,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put<D>(string name, D[] v, byte proj = 0x1f) where D : IData
+        public IDbParams Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             if (name == null)
             {
@@ -1518,12 +1518,12 @@ namespace Greatbone.Core
             return Put(null, v);
         }
 
-        public IDbParams Set(IData v, byte proj = 0x1f)
+        public IDbParams Set(IData v, byte proj = 0x0f)
         {
             return Put(null, v, proj);
         }
 
-        public IDbParams Set<D>(D[] v, byte proj = 0x1f) where D : IData
+        public IDbParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
             return Put(null, v, proj);
         }
@@ -1539,14 +1539,14 @@ namespace Greatbone.Core
             BufferUtility.Return(dcont); // back to pool
         }
 
-        public void Publish(string name, string shard, int arg, IData obj, byte proj = 0x1f)
+        public void Publish(string name, string shard, int arg, IData obj, byte proj = 0x0f)
         {
             JsonContent cont = new JsonContent(true).Put(null, obj, proj);
             Publish(name, shard, arg, cont);
             BufferUtility.Return(cont); // back to pool
         }
 
-        public void Publish<D>(string name, string shard, int arg, D[] arr, byte proj = 0x1f) where D : IData
+        public void Publish<D>(string name, string shard, int arg, D[] arr, byte proj = 0x0f) where D : IData
         {
             JsonContent cont = new JsonContent(true).Put(null, arr, proj);
             Publish(name, shard, arg, cont);

@@ -55,7 +55,7 @@ namespace Greatbone.Sample
         internal DateTime finished;
         internal string kick;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             if ((proj & KEY) == KEY)
             {
@@ -87,7 +87,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             if ((proj & KEY) == KEY)
             {
@@ -223,7 +223,7 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             i.Get(nameof(name), ref name);
             i.Get(nameof(unit), ref unit);
@@ -232,7 +232,7 @@ namespace Greatbone.Sample
             i.Get(nameof(load), ref load);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             o.Put(nameof(name), name);
             o.Put(nameof(unit), unit);

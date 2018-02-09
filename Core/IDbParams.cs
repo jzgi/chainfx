@@ -36,8 +36,8 @@ namespace Greatbone.Core
 
         IDbParams Set(string[] v);
 
-        IDbParams Set(IData v, byte proj = 0x1f);
+        IDbParams Set(IData v, byte proj = 0x0f);
 
-        IDbParams Set<D>(D[] v, byte proj = 0x1f) where D : IData;
+        IDbParams Set<D>(D[] v, byte proj = 0x0f) where D : IData;
     }
 }

@@ -30,7 +30,7 @@ namespace Greatbone.Sample
         internal short status;
         internal string err;
 
-        public void Read(IDataInput i, byte proj = 0x1f)
+        public void Read(IDataInput i, byte proj = 0x0f)
         {
             i.Get(nameof(id), ref id);
             i.Get(nameof(shopid), ref shopid);
@@ -44,7 +44,7 @@ namespace Greatbone.Sample
             i.Get(nameof(err), ref err);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x1f) where R : IDataOutput<R>
+        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
         {
             o.Put(nameof(id), id);
             o.Put(nameof(shopid), shopid);
