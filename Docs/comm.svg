@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:se="http://svg-edit.googlecode.com">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <defs>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_11">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_9"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_start_svg_11">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m0,50l100,40l-30,-40l30,-40l-100,40z" id="svg_18"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_start_svg_8">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m0,50l100,40l-30,-40l30,-40l-100,40z" id="svg_19"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_8">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_20"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_start_svg_10">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m0,50l100,40l-30,-40l30,-40l-100,40z" id="svg_21"/>
+  </marker>
+  <marker refY="50" refX="50" markerHeight="5" markerWidth="5" viewBox="0 0 100 100" orient="auto" markerUnits="strokeWidth" id="se_marker_end_svg_10">
+   <path stroke-width="10" stroke="#000000" fill="#000000" d="m100,50l-100,40l30,-40l-30,-40l100,40z" id="svg_22"/>
+  </marker>
+ </defs>
+ <title>communication</title>
+ <g>
+  <title>Layer 1</title>
+  <polyline se:connector="svg_4 svg_6" marker-start="url(#se_marker_start_svg_11)" marker-end="url(#se_marker_end_svg_11)" fill="none" stroke-width="2" stroke="#000000" points="223.5,292.037 313.375,292.499 403.25,292.961" id="svg_11"/>
+  <polyline se:connector="svg_1 svg_4" marker-end="url(#se_marker_end_svg_10)" marker-start="url(#se_marker_start_svg_10)" fill="none" stroke-width="2" stroke="#000000" points="275.357,145 238.002,180 200.647,215" id="svg_10"/>
+  <polyline se:connector="svg_1 svg_6" marker-end="url(#se_marker_end_svg_8)" marker-start="url(#se_marker_start_svg_8)" fill="none" stroke-width="2" stroke="#000000" points="363.24,145 398.882,181.5 434.524,218" id="svg_8"/>
+  <ellipse fill="#ffffff" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" cx="-14.66667" cy="198.66667" id="svg_3"/>
+  <rect id="svg_1" height="74" width="133" y="65" x="254.75" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#ffffff"/>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_2" y="109" x="317.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">client</text>
+  <rect ry="12" rx="12" id="svg_4" height="141.000002" width="196.999991" y="221.000006" x="20.50001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#ffffff"/>
+  <text id="svg_5" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="379" x="118.75" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">os service</text>
+  <rect ry="12" rx="12" id="svg_6" height="138.999984" width="198.000009" y="224.000006" x="409.249994" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#ffffff"/>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_12" y="210.499999" x="320.500019" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">HTTP/1.1 &amp; 2</text>
+  <text id="svg_14" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="174.749999" x="139.515644" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">ServerSentEvent</text>
+  <text id="svg_15" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="175.499999" x="469.015644" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">WebSocket</text>
+  <text id="svg_16" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="244.749999" x="314.585956" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">sync call</text>
+  <text id="svg_17" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="334.999999" x="311.710956" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">async data event</text>
+  <g id="svg_27">
+   <rect id="svg_23" height="60" width="132.999994" y="241.999999" x="64.499998" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#ffd4aa"/>
+   <text id="svg_25" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="265" x="129.933334" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">microservice</text>
+   <path id="svg_26" d="m165.654297,282.25705c0,4.172638 -15.221832,7.554108 -33.99884,7.554108m33.99884,-7.554108l0,0c0,4.172638 -15.221832,7.554108 -33.99884,7.554108c-18.776886,0 -33.999191,-3.38147 -33.999191,-7.554108m0,0l0,0c0,-4.173004 15.222305,-7.555878 33.999191,-7.555878c18.777008,0 33.99884,3.382874 33.99884,7.555878l0,30.221436c0,4.172882 -15.221832,7.556061 -33.99884,7.556061c-18.776886,0 -33.999191,-3.383179 -33.999191,-7.556061l0,-30.221436z" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#ffd4aa"/>
+  </g>
+  <g id="svg_28">
+   <rect id="svg_29" height="60" width="132.999994" y="272.982421" x="38.499998" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#0000ff"/>
+   <text id="svg_30" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="295.982422" x="103.933334" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">microservice</text>
+   <path id="svg_31" d="m139.654297,313.239471c0,4.172638 -15.221832,7.554108 -33.99884,7.554108m33.99884,-7.554108l0,0c0,4.172638 -15.221832,7.554108 -33.99884,7.554108c-18.776886,0 -33.999207,-3.38147 -33.999207,-7.554108m0,0l0,0c0,-4.173004 15.222321,-7.555878 33.999207,-7.555878c18.777008,0 33.99884,3.382874 33.99884,7.555878l0,30.221436c0,4.172882 -15.221832,7.556061 -33.99884,7.556061c-18.776886,0 -33.999207,-3.383179 -33.999207,-7.556061l0,-30.221436z" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#0000ff"/>
+  </g>
+  <text id="svg_32" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="380" x="511.933319" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">os service</text>
+  <g id="svg_33">
+   <rect id="svg_34" height="60" width="132.999994" y="260.983397" x="443.499998" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#00ff7f"/>
+   <text id="svg_35" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="283.983398" x="508.933334" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">microservice</text>
+   <path id="svg_36" d="m544.654297,301.240448c0,4.172638 -15.221802,7.554108 -33.99884,7.554108m33.99884,-7.554108l0,0c0,4.172638 -15.221802,7.554108 -33.99884,7.554108c-18.776886,0 -33.999207,-3.38147 -33.999207,-7.554108m0,0l0,0c0,-4.173004 15.222321,-7.555878 33.999207,-7.555878c18.777039,0 33.99884,3.382874 33.99884,7.555878l0,30.221436c0,4.172882 -15.221802,7.556061 -33.99884,7.556061c-18.776886,0 -33.999207,-3.383179 -33.999207,-7.556061l0,-30.221436z" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="2" stroke="#000000" fill="#00ff7f"/>
+  </g>
+ </g>
+</svg>

@@ -1,9 +1,9 @@
 .doc {
-    background-color: darkgray;
+    background-color: gainsboro;
 }
 
 .page {
-    background-color: darkgray;
+    background-color: gainsboro;
 }
 
 .pane {
@@ -20,6 +20,8 @@
     font-size: 1rem;
     background-color: #e8d5d5;
     height: 3rem;
+    box-sizing: border-box;
+    border-bottom: 1px solid darkgray;
 }
 
 .top-bar-title {
@@ -61,6 +63,7 @@
     height: 3rem;
     font-size: 1rem;
     padding: 0.25rem;
+    border-bottom: 1px solid darkgray;
 }
 
 .tool-bar-right {
@@ -90,8 +93,9 @@
 
 .card {
     background-color: #fcfcfc;
-    border-radius: 4px;
+    /* border-radius: 4px; */
     padding: 0 0.375rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
 }
 
 .card.checked {

@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Server.Kestrel;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -59,9 +60,11 @@ namespace Greatbone.Core
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
+            LibuvTransportFactory libuv = null;
+
             // create the embedded kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServiceUtility.Lifetime, factory);
+            server = new KestrelServer(Options.Create(options), ServiceUtility.LibUv, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {
@@ -272,7 +275,7 @@ namespace Greatbone.Core
             OnStop(); // call custom destruction
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
             if (events != null || clients != null)
             {
@@ -280,7 +283,7 @@ namespace Greatbone.Core
             }
             // start the server
             OnStart(); // call custom construction
-            server.Start(this);
+            await server.StartAsync(this, CancellationToken.None);
             DBG(Key + " -> " + Addrs[0] + " started");
             cleaner.Start();
             if (clients != null)

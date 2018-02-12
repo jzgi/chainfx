@@ -4,6 +4,9 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace Greatbone.Core
 {
@@ -12,6 +15,8 @@ namespace Greatbone.Core
         const string CONFIG = "$service.json";
 
         internal static readonly Lifetime Lifetime = new Lifetime();
+
+        internal static readonly LibuvTransportFactory LibUv = new LibuvTransportFactory(Options.Create(new LibuvTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
         static readonly List<Service> services = new List<Service>(8);
 
@@ -68,7 +73,7 @@ namespace Greatbone.Core
                 // start services
                 foreach (Service svc in services)
                 {
-                    svc.Start();
+                    svc.StartAsync();
                 }
 
                 Console.WriteLine("ctrl_c to shut down");

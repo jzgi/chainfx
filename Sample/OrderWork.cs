@@ -49,7 +49,7 @@ namespace Greatbone.Sample
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                m.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                                m.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
                                 m.BOX_(0x46).P(oi.name).P(oi.price, fix: "¥")._BOX();
                                 m.BOX_(0x42).P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
                                 m.BOX_(0x42).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
