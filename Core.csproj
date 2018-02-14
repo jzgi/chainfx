@@ -10,7 +10,7 @@
     <PackageId>Core</PackageId>
     <RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <Version>3.0</Version>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>7.2</LangVersion>
     <Company>Greatbone</Company>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

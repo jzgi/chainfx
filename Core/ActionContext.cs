@@ -1,22 +1,69 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
 using static Greatbone.Core.DataUtility;
 
 namespace Greatbone.Core
 {
     ///
-    /// The encapsulation of a web request/response exchange context.
+    /// The encapsulation of a web request/response exchange context. It supports multiplexity occuring in SSE and WebSocket.
     ///
-    public class ActionContext : DefaultHttpContext, IDoerContext<ActionDoer>, IDisposable
+    public class ActionContext : HttpContext, IDoerContext<ActionDoer>, IDisposable
     {
-        internal ActionContext(IFeatureCollection features) : base(features)
+        readonly IFeatureCollection features;
+
+        private readonly DefaultConnectionInfo connection;
+
+        readonly ActionRequest request;
+
+        readonly ActionResponse response;
+
+        internal ActionContext(IFeatureCollection features)
+        {
+            this.features = features;
+            connection = new DefaultConnectionInfo(features);
+            this.request = new ActionRequest(this);
+            this.response = new ActionResponse(this);
+        }
+
+        public override IFeatureCollection Features => features;
+
+        public override HttpRequest Request => request;
+
+        public override HttpResponse Response => response;
+
+        public override ConnectionInfo Connection => connection;
+
+        public override WebSocketManager WebSockets { get; }
+
+        [Obsolete("This is obsolete and will be removed in a future version. The recommended alternative is to use Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions. See https://go.microsoft.com/fwlink/?linkid=845470.")]
+        public override AuthenticationManager Authentication => null;
+
+        public override ClaimsPrincipal User { get; set; } = null;
+
+        public override IDictionary<object, object> Items { get; set; }
+
+        public override IServiceProvider RequestServices { get; set; }
+
+        public override CancellationToken RequestAborted { get; set; }
+
+        public override string TraceIdentifier { get; set; }
+
+        public override ISession Session { get; set; }
+
+        public override void Abort()
         {
         }
+
 
         //
         // OBJECT PROVIDER
@@ -31,6 +78,7 @@ namespace Greatbone.Core
             {
                 registry = new object[8];
             }
+
             registry[size++] = value;
         }
 
@@ -51,6 +99,7 @@ namespace Greatbone.Core
                     if (registry[i] is T v) return v;
                 }
             }
+
             return Service.Obtain<T>();
         }
 
@@ -85,6 +134,7 @@ namespace Greatbone.Core
             {
                 chain = new Seg[8];
             }
+
             chain[level++] = new Seg(work, key, princi);
         }
 
@@ -99,6 +149,7 @@ namespace Greatbone.Core
                     Seg seg = chain[i];
                     if (seg.Work.IsOf(typ)) return seg;
                 }
+
                 return default;
             }
         }
@@ -112,6 +163,7 @@ namespace Greatbone.Core
                     Seg seg = chain[i];
                     if (seg.Work == work) return seg;
                 }
+
                 return default;
             }
         }
@@ -188,6 +240,7 @@ namespace Greatbone.Core
             {
                 return vs;
             }
+
             return null;
         }
 
@@ -201,6 +254,7 @@ namespace Greatbone.Core
                     return v;
                 }
             }
+
             return null;
         }
 
@@ -214,6 +268,7 @@ namespace Greatbone.Core
                     return v;
                 }
             }
+
             return null;
         }
 
@@ -227,6 +282,7 @@ namespace Greatbone.Core
                     return v;
                 }
             }
+
             return null;
         }
 
@@ -236,6 +292,7 @@ namespace Greatbone.Core
             {
                 return vs;
             }
+
             return null;
         }
 
@@ -265,6 +322,7 @@ namespace Greatbone.Core
                     }
                 }
             }
+
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
@@ -283,10 +341,12 @@ namespace Greatbone.Core
                     {
                     }
                 }
+
                 // parse
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count, typeof(M));
             }
+
             return entity as M;
         }
 
@@ -305,18 +365,22 @@ namespace Greatbone.Core
                     {
                     }
                 }
+
                 // parse
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
+
             if (!(entity is IDataInput inp))
             {
                 return default;
             }
+
             if (obj == null)
             {
                 obj = new D();
             }
+
             obj.Read(inp, proj);
             return obj;
         }
@@ -336,10 +400,12 @@ namespace Greatbone.Core
                     {
                     }
                 }
+
                 // parse
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
+
             return (entity as IDataInput)?.ToArray<D>(proj);
         }
 
@@ -474,6 +540,7 @@ namespace Greatbone.Core
                     Status = 304; // not modified
                     return;
                 }
+
                 SetHeader("ETag", etag);
             }
 
@@ -534,6 +601,7 @@ namespace Greatbone.Core
             {
                 dc.Begin(level.Value);
             }
+
             return dc;
         }
     }

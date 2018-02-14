@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -60,16 +59,15 @@ namespace Greatbone.Core
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
-            LibuvTransportFactory libuv = null;
-
             // create the embedded kestrel instance
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServiceUtility.LibUv, factory);
+            server = new KestrelServer(Options.Create(options), ServiceUtility.Libuv, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {
                 throw new ServiceException("missing 'addrs'");
             }
+
             foreach (string a in Addrs)
             {
                 addrs.Add(a.Trim());
@@ -102,6 +100,7 @@ namespace Greatbone.Core
                 {
                     events = new Map<string, EventDoer>(8);
                 }
+
                 events.Add(evt.Key, evt);
             }
 
@@ -116,11 +115,13 @@ namespace Greatbone.Core
                     {
                         clients = new Map<string, Client>(cluster.Count * 2);
                     }
+
                     clients.Add(new Client(this, e.Key, e.Value));
                     if (queues == null)
                     {
                         queues = new Map<string, EventQueue>(cluster.Count * 2);
                     }
+
                     queues.Add(e.Key, new EventQueue(e.Key));
                 }
             }
@@ -197,6 +198,7 @@ namespace Greatbone.Core
                         ac.Give(404); // not found
                         return;
                     }
+
                     await work.HandleAsync(relative, ac);
                 }
             }
@@ -204,6 +206,7 @@ namespace Greatbone.Core
             {
                 Catch(ex, ac);
             }
+
             // sending
             try
             {
@@ -264,34 +267,43 @@ namespace Greatbone.Core
                 Client cli = clients[i];
                 if (cli.Key.Equals(targetid)) return cli;
             }
+
             return null;
         }
 
         volatile bool stop;
 
-        public void Stop()
+        internal async Task StopAsync(CancellationToken token)
         {
             stop = true;
-            OnStop(); // call custom destruction
+
+            OnStop();
+
+            await server.StopAsync(token);
         }
 
-        public async Task StartAsync()
+        internal async Task StartAsync(CancellationToken token)
         {
             if (events != null || clients != null)
             {
                 EventQueue.Setup(this, clients);
             }
-            // start the server
-            OnStart(); // call custom construction
-            await server.StartAsync(this, CancellationToken.None);
-            DBG(Key + " -> " + Addrs[0] + " started");
+
+            // call custom construction
+            OnStart(); 
+
+            await server.StartAsync(this, token);
+
+            Console.WriteLine(Key + " -> " + Addrs[0] + " started");
+
             cleaner.Start();
+
             if (clients != null)
             {
                 // Run in the scheduler thread to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
                 {
-                    while (!stop)
+                    while (!token.IsCancellationRequested)
                     {
                         // interval
                         Thread.Sleep(5000);
@@ -304,7 +316,7 @@ namespace Greatbone.Core
                         }
                     }
                 });
-                // scheduler.Start();
+                scheduler.Start();
             }
         }
 
@@ -317,6 +329,7 @@ namespace Greatbone.Core
             {
                 dc.Begin(level.Value);
             }
+
             return dc;
         }
 
@@ -429,6 +442,7 @@ namespace Greatbone.Core
                     return re.TryGive(ac, Environment.TickCount);
                 }
             }
+
             return false;
         }
 
@@ -491,6 +505,7 @@ namespace Greatbone.Core
                         maxage = 0;
                         stamp = now; // time being cleared
                     }
+
                     return true;
                 }
             }
@@ -559,6 +574,7 @@ namespace Greatbone.Core
             {
                 DBG(e.Message);
             }
+
             // handling
             try
             {
@@ -575,6 +591,7 @@ namespace Greatbone.Core
                         ac.Give(404); // not found
                         return;
                     }
+
                     await work.HandleAsync(relative, ac);
                 }
             }
@@ -582,6 +599,7 @@ namespace Greatbone.Core
             {
                 Catch(ex, ac);
             }
+
             try // sending
             {
                 await ac.SendAsync();
@@ -602,6 +620,7 @@ namespace Greatbone.Core
             {
                 sb.Append("; Max-Age=").Append(maxage);
             }
+
             // obtain and add the domain attribute
             string host = ac.Header("Host");
             if (host != null)
@@ -611,12 +630,14 @@ namespace Greatbone.Core
                 {
                     dot = host.LastIndexOf('.', dot - 1);
                 }
+
                 if (dot > 0)
                 {
                     string domain = host.Substring(dot);
                     sb.Append("; Domain=").Append(domain);
                 }
             }
+
             sb.Append("; Path=/; HttpOnly");
             ac.SetHeader("Set-Cookie", sb.ToString());
         }
@@ -643,6 +664,7 @@ namespace Greatbone.Core
 
                 // reordering
             }
+
             // return pool
             BufferUtility.Return(bytebuf);
             return new string(charbuf, 0, charbuf.Length);
@@ -664,6 +686,7 @@ namespace Greatbone.Core
                 // masking
                 str.Accept((byte) (b ^ masks[i % 4]));
             }
+
             // deserialize
             try
             {
@@ -689,6 +712,7 @@ namespace Greatbone.Core
             {
                 return v;
             }
+
             v = hex - 'A';
             if (v >= 0 && v <= 5) return 10 + v;
             return 0;

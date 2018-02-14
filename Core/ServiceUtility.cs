@@ -10,13 +10,16 @@ using Microsoft.Extensions.Options;
 
 namespace Greatbone.Core
 {
+    /// <summary>
+    /// The global service host that creates, starts and (gracefully) stops service instances.
+    /// </summary>
     public class ServiceUtility
     {
         const string CONFIG = "$service.json";
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
-        internal static readonly LibuvTransportFactory LibUv = new LibuvTransportFactory(Options.Create(new LibuvTransportOptions()), Lifetime, NullLoggerFactory.Instance);
+        internal static readonly LibuvTransportFactory Libuv = new LibuvTransportFactory(Options.Create(new LibuvTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
         static readonly List<Service> services = new List<Service>(8);
 
@@ -44,6 +47,7 @@ namespace Greatbone.Core
                     return null;
                 }
             }
+
             // create service instance by reflection
             Type typ = typeof(S);
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(ServiceConfig)});
@@ -51,44 +55,55 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " missing ServiceContext");
             }
+
             S inst = (S) ci.Invoke(new object[] {cfg});
             services.Add(inst);
             return inst;
         }
+
+        static readonly CancellationTokenSource Cts = new CancellationTokenSource();
 
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
         public static void StartAll()
         {
-            using (var cts = new CancellationTokenSource())
+            var exit = new ManualResetEventSlim(false);
+
+            // start service instances
+            foreach (Service svc in services)
             {
-                Console.CancelKeyPress += (sender, eventArgs) =>
-                {
-                    cts.Cancel();
-                    // wait for the Main thread to exit gracefully.
-                    eventArgs.Cancel = true;
-                };
-
-                // start services
-                foreach (Service svc in services)
-                {
-                    svc.StartAsync();
-                }
-
-                Console.WriteLine("ctrl_c to shut down");
-
-                cts.Token.Register(state =>
-                {
-                    ((IApplicationLifetime) state).StopApplication();
-                    foreach (Service svc in services) // dispose services
-                    {
-                        svc.OnStop(); // call custom destruction
-                        svc.Dispose();
-                    }
-                }, Lifetime);
-                Lifetime.ApplicationStopping.WaitHandle.WaitOne();
+                svc.StartAsync(Cts.Token).GetAwaiter().GetResult();
             }
+
+            // handle SIGTERM and CTRL_C 
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                Cts.Cancel(false);
+                exit.Set(); // release the Main thread
+            };
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                Cts.Cancel(false);
+                exit.Set(); // release the Main thread
+                // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
+                eventArgs.Cancel = true;
+            };
+            Console.WriteLine("CTRL + C to shut down");
+
+            Lifetime.NotifyStarted();
+
+            // wait on the reset event
+            exit.Wait(Cts.Token);
+
+            Lifetime.StopApplication();
+
+            foreach (Service svc in services)
+            {
+                svc.StopAsync(Cts.Token).GetAwaiter().GetResult();
+            }
+
+            Lifetime.NotifyStopped();
         }
     }
 
@@ -100,48 +115,47 @@ namespace Greatbone.Core
 
         readonly CancellationTokenSource stopped = new CancellationTokenSource();
 
-        /// 
-        /// Triggered when the application host has fully started and is about to wait for a graceful shutdown.
+        /// triggered when the service host has fully started and is about to wait for a graceful shutdown.
         /// 
         public CancellationToken ApplicationStarted => started.Token;
 
-        /// 
-        /// Triggered when the application host is performing a graceful shutdown. Request may still be in flight. Shutdown will block until this event completes.
+        /// triggered when the service host is performing a graceful shutdown. Request may still be in flight. Shutdown will block until this event completes.
         /// 
         public CancellationToken ApplicationStopping => stopping.Token;
 
-        /// 
-        /// Triggered when the application host is performing a graceful shutdown. All requests should be complete at this point. Shutdown will block until this event completes.
+        /// Triggered when the service host is performing a graceful shutdown. All requests should be complete at this point. Shutdown will block until this event completes.
         /// 
         public CancellationToken ApplicationStopped => stopped.Token;
 
-        /// 
-        /// Signals the ApplicationStopping event and blocks until it completes.
+        /// signals the ApplicationStopping event and blocks until it completes.
         /// 
         public void StopApplication()
         {
-            // Lock on CTS to synchronize multiple calls to StopApplication. This guarantees that the first call 
-            // to StopApplication and its callbacks run to completion before subsequent calls to StopApplication, 
-            // which will no-op since the first call already requested cancellation, get a chance to execute.
-            lock (stopping)
+            try
             {
-                try
+                if (stopping.IsCancellationRequested) // already cancelled
                 {
-                    stopping.Cancel(false);
+                    return;
                 }
-                catch (Exception)
-                {
-                }
+
+                stopping.Cancel(false);
+            }
+            catch (Exception)
+            {
             }
         }
 
-        ///
         /// Signals the ApplicationStarted event and blocks until it completes.
         ///
         public void NotifyStarted()
         {
             try
             {
+                if (started.IsCancellationRequested) // already cancelled
+                {
+                    return;
+                }
+
                 started.Cancel(false);
             }
             catch (Exception)
@@ -149,13 +163,17 @@ namespace Greatbone.Core
             }
         }
 
-        /// 
         /// Signals the ApplicationStopped event and blocks until it completes.
         /// 
         public void NotifyStopped()
         {
             try
             {
+                if (stopped.IsCancellationRequested) // already cancelled
+                {
+                    return;
+                }
+
                 stopped.Cancel(false);
             }
             catch (Exception)

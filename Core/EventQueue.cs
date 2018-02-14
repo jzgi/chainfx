@@ -59,6 +59,8 @@ namespace Greatbone.Core
                 {
                     using (var dc = ac.NewDbContext())
                     {
+                        string dd = "select table_name  from INFORMATION_SCHEMA.columns WHERE column_name = 'eventid' AND table_schema = CURRENT_SCHEMA";
+
                         DbSql sql = dc.Sql("SELECT * FROM EVTQ WHERE id > @1 AND name IN (");
                         string[] names = @event.Split(',');
                         for (int i = 0; i < names.Length; i++)
