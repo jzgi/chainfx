@@ -9,7 +9,7 @@ namespace Greatbone.Sample
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class CityAttribute : Attribute, IBefore
     {
-        public bool Do(ActionContext ac)
+        public bool Do(WebContext ac)
         {
             string city = ac.Query[nameof(city)];
             if (city == null) // absent

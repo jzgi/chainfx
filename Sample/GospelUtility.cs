@@ -10,7 +10,7 @@ namespace Greatbone.Sample
         // an invisible/unprintable char
         public const char SEPCHAR = '\u200f';
 
-        public static void GiveRedirect(this ActionContext ac, string uri = null, bool? @public = null, int maxage = 60)
+        public static void GiveRedirect(this WebContext ac, string uri = null, bool? @public = null, int maxage = 60)
         {
             ac.SetHeader("Location", uri ?? "./");
             ac.Give(303);
@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GiveDoc(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
+        public static void GiveDoc(this WebContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
 
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveFrame(this ActionContext ac, int status, bool? @public = null, int maxage = 60, string title = null)
+        public static void GiveFrame(this WebContext ac, int status, bool? @public = null, int maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 
@@ -136,7 +136,7 @@ namespace Greatbone.Sample
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this ActionContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
+        public static void GivePage(this WebContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
 
@@ -173,7 +173,7 @@ namespace Greatbone.Sample
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this ActionContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
+        public static void GivePane(this WebContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
         {
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 
@@ -215,7 +215,7 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveBoardDoc<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveBoardDoc<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GiveDoc(status,
                 main =>
@@ -227,7 +227,7 @@ namespace Greatbone.Sample
             );
         }
 
-        public static void GiveBoardPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveBoardPage<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GivePage(status,
                 main =>
@@ -239,7 +239,7 @@ namespace Greatbone.Sample
             );
         }
 
-        public static void GiveSheetPage<D>(this ActionContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveSheetPage<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GivePage(status,
                 main =>

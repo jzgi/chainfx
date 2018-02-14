@@ -7,19 +7,20 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace Greatbone.Core
 {
-    public class ActionRequest : HttpRequest
+    public class WebRequest : HttpRequest
     {
         private readonly HttpContext context;
 
         readonly IHttpRequestFeature fRequest;
 
-        readonly IRequestCookiesFeature fCookies;
+        readonly RequestCookiesFeature fCookies;
 
-        internal ActionRequest(HttpContext context)
+        internal WebRequest(HttpContext context)
         {
             this.context = context;
-            fRequest = context.Features.Get<IHttpRequestFeature>();
-            fCookies = context.Features.Get<IRequestCookiesFeature>();
+            var features = context.Features;
+            fRequest = features.Get<IHttpRequestFeature>();
+            fCookies = new RequestCookiesFeature(features);
         }
 
         public override HttpContext HttpContext => context;
@@ -44,7 +45,7 @@ namespace Greatbone.Core
 
         public override HostString Host
         {
-            get => throw new Exception();
+            get => new HostString(Headers["Host"]);
             set => throw new Exception();
         }
 
@@ -79,7 +80,7 @@ namespace Greatbone.Core
         public override IRequestCookieCollection Cookies
         {
             get => fCookies.Cookies;
-            set => throw null;
+            set => fCookies.Cookies = value;
         }
 
         public override long? ContentLength
@@ -114,6 +115,7 @@ namespace Greatbone.Core
         [Obsolete]
         public override IFormCollection Form { get; set; } = null;
 
+        [Obsolete]
         public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             throw new NotImplementedException();

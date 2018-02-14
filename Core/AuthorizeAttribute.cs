@@ -8,6 +8,6 @@ namespace Greatbone.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class AuthorizeAttribute : Attribute
     {
-        public abstract bool Check(ActionContext ac);
+        public abstract bool Check(WebContext ac);
     }
 }

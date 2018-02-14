@@ -61,11 +61,11 @@ namespace Greatbone.Core
 
                 ParameterInfo[] pis = mi.GetParameters();
                 ActionDoer ad;
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(ActionContext))
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
                     ad = new ActionDoer(this, mi, async, false);
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(ActionContext) && pis[1].ParameterType == typeof(int))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
                     LimitAttribute limit = (LimitAttribute) pis[1].GetCustomAttribute(typeof(LimitAttribute));
                     ad = new ActionDoer(this, mi, async, true, limit?.Value ?? 20);
@@ -297,7 +297,7 @@ namespace Greatbone.Core
             return actions[method];
         }
 
-        internal Work Resolve(ref string relative, ActionContext ac)
+        internal Work Resolve(ref string relative, WebContext ac)
         {
             if (!DoAuthorize(ac)) throw AuthorizeEx;
 
@@ -339,7 +339,7 @@ namespace Greatbone.Core
         /// <param name="ac">ActionContext</param>
         /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
         /// <seealso cref="AuthorizeAttribute.Check"/>
-        internal async Task HandleAsync(string rsc, ActionContext ac)
+        internal async Task HandleAsync(string rsc, WebContext ac)
         {
             ac.Work = this;
             // any before filterings
@@ -403,7 +403,7 @@ namespace Greatbone.Core
             ac.Work = null;
         }
 
-        public void DoFile(string filename, string ext, ActionContext ac)
+        public void DoFile(string filename, string ext, WebContext ac)
         {
             if (filename.StartsWith("$")) // private resource
             {

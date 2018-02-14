@@ -34,17 +34,14 @@ namespace Greatbone.Core
         // clients to clustered peers
         readonly Map<string, Client> clients;
 
-        // event queues
-        readonly Map<string, EventQueue> queues;
-
-        // event schesuler thread
+        // the event polling schesuler thread
         Thread scheduler;
 
-        // cache of sent replies
+        // cache of sent responses
         readonly ConcurrentDictionary<string, Resp> cache;
 
-        // cache cleaner thread
-        readonly Thread cleaner;
+        // the cache cleaner thread
+        Thread cleaner;
 
         protected Service(ServiceConfig cfg) : base(cfg)
         {
@@ -117,19 +114,15 @@ namespace Greatbone.Core
                     }
 
                     clients.Add(new Client(this, e.Key, e.Value));
-                    if (queues == null)
-                    {
-                        queues = new Map<string, EventQueue>(cluster.Count * 2);
-                    }
-
-                    queues.Add(e.Key, new EventQueue(e.Key));
                 }
             }
 
             // create the response cache
-            int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            cache = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
-            cleaner = new Thread(Clean) {Name = "Cleaner"};
+            if (cfg.cache)
+            {
+                int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
+                cache = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
+            }
         }
 
         public string Shard => ((ServiceConfig) cfg).shard;
@@ -168,10 +161,10 @@ namespace Greatbone.Core
         {
         }
 
-        public virtual void Catch(Exception ex, ActionContext ac)
+        public virtual void Catch(Exception ex, WebContext wc)
         {
             WAR(ex.Message, ex);
-            ac.Give(500, ex.Message);
+            wc.Give(500, ex.Message);
         }
 
         /// <summary>
@@ -179,43 +172,43 @@ namespace Greatbone.Core
         /// </summary>
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext) context;
-            HttpRequest req = ac.Request;
+            WebContext wc = (WebContext) context;
+            HttpRequest req = wc.Request;
             string path = req.Path.Value;
             // handling
             try
             {
                 if ("/*".Equals(path)) // handle an event poll request
                 {
-                    Poll(ac);
+                    Poll(wc);
                 }
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    Work work = Resolve(ref relative, ac);
+                    Work work = Resolve(ref relative, wc);
                     if (work == null)
                     {
-                        ac.Give(404); // not found
+                        wc.Give(404); // not found
                         return;
                     }
 
-                    await work.HandleAsync(relative, ac);
+                    await work.HandleAsync(relative, wc);
                 }
             }
             catch (Exception ex)
             {
-                Catch(ex, ac);
+                Catch(ex, wc);
             }
 
             // sending
             try
             {
-                await ac.SendAsync();
+                await wc.SendAsync();
             }
             catch (Exception e)
             {
                 ERR(e.Message, e);
-                ac.Give(500, e.Message);
+                wc.Give(500, e.Message);
             }
         }
 
@@ -224,7 +217,7 @@ namespace Greatbone.Core
         ///
         public HttpContext CreateContext(IFeatureCollection features)
         {
-            return new ActionContext(features)
+            return new WebContext(features)
             {
                 Service = this
             };
@@ -233,27 +226,16 @@ namespace Greatbone.Core
         public void DisposeContext(HttpContext context, Exception excep)
         {
             // dispose the action context
-            ((ActionContext) context).Dispose();
+            ((WebContext) context).Dispose();
         }
 
-        protected void Poll(ActionContext ac)
+        internal void Poll(WebContext wc)
         {
-            if (queues == null)
+            string from = wc.Header("From");
+            long id = 0;
+            using (var dc = wc.NewDbContext())
             {
-                ac.Give(501); // not implemented
-            }
-            else
-            {
-                EventQueue eq;
-                string from = ac.Header("From");
-                if (from == null || (eq = queues[from]) == null)
-                {
-                    ac.Give(400); // bad request
-                }
-                else
-                {
-                    eq.Poll(ac);
-                }
+                dc.Query(dc.Sql("SELECT * FROM ").T(from).T(" WHERE pubserial > @1 "), p => p.Set(id));
             }
         }
 
@@ -271,12 +253,8 @@ namespace Greatbone.Core
             return null;
         }
 
-        volatile bool stop;
-
         internal async Task StopAsync(CancellationToken token)
         {
-            stop = true;
-
             OnStop();
 
             await server.StopAsync(token);
@@ -284,29 +262,48 @@ namespace Greatbone.Core
 
         internal async Task StartAsync(CancellationToken token)
         {
-            if (events != null || clients != null)
-            {
-                EventQueue.Setup(this, clients);
-            }
-
             // call custom construction
-            OnStart(); 
+            OnStart();
 
             await server.StartAsync(this, token);
 
-            Console.WriteLine(Key + " -> " + Addrs[0] + " started");
+            Console.WriteLine(Key + " started at " + Addrs[0]);
 
-            cleaner.Start();
+            // create and start the cleaner thread
+            if (cache != null)
+            {
+                cleaner = new Thread(() =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        // cleaning cycle
+                        Thread.Sleep(1000 * 30); // 30 seconds 
 
+                        // loop to clear or remove each expired items
+                        int now = Environment.TickCount;
+                        foreach (var re in cache)
+                        {
+                            if (!re.Value.TryClean(now))
+                            {
+                                cache.TryRemove(re.Key, out _);
+                            }
+                        }
+                    }
+                });
+                cleaner.Start();
+            }
+
+            // create and start the scheduler thead
             if (clients != null)
             {
-                // Run in the scheduler thread to repeatedly check and initiate event polling activities.
+                // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
                 {
                     while (!token.IsCancellationRequested)
                     {
                         // interval
                         Thread.Sleep(5000);
+
                         // a schedule cycle
                         int tick = Environment.TickCount;
                         for (int i = 0; i < Clients.Count; i++)
@@ -375,8 +372,8 @@ namespace Greatbone.Core
 
             if (formatter != null) // custom format
             {
-                var message = formatter(state, exception);
-                logWriter.WriteLine(message);
+                var msg = formatter(state, exception);
+                logWriter.WriteLine(msg);
             }
             else // fixed format
             {
@@ -401,26 +398,7 @@ namespace Greatbone.Core
         //
         // RESPONSE CACHE
 
-        internal void Clean()
-        {
-            while (!stop)
-            {
-                // cleaning cycle
-                Thread.Sleep(1000 * 30); // 30 seconds 
-
-                // loop to clear or remove each expired items
-                int now = Environment.TickCount;
-                foreach (var re in cache)
-                {
-                    if (!re.Value.TryClean(now))
-                    {
-                        cache.TryRemove(re.Key, out _);
-                    }
-                }
-            }
-        }
-
-        internal void TryCacheUp(ActionContext ac)
+        internal void TryCacheUp(WebContext ac)
         {
             if (ac.GET)
             {
@@ -433,13 +411,13 @@ namespace Greatbone.Core
             }
         }
 
-        internal bool TryGiveFromCache(ActionContext ac)
+        internal bool TryGiveFromCache(WebContext wc)
         {
-            if (ac.GET)
+            if (wc.GET)
             {
-                if (cache.TryGetValue(ac.Uri, out var re))
+                if (cache.TryGetValue(wc.Uri, out var re))
                 {
-                    return re.TryGive(ac, Environment.TickCount);
+                    return re.TryGive(wc, Environment.TickCount);
                 }
             }
 
@@ -510,7 +488,7 @@ namespace Greatbone.Core
                 }
             }
 
-            internal bool TryGive(ActionContext ac, int now)
+            internal bool TryGive(WebContext wc, int now)
             {
                 lock (this)
                 {
@@ -519,8 +497,8 @@ namespace Greatbone.Core
                     int remain = ((stamp + maxage * 1000) - now) / 1000; // remaining in seconds
                     if (remain > 0)
                     {
-                        ac.InCache = true;
-                        ac.Give(status, content, true, remain);
+                        wc.InCache = true;
+                        wc.Give(status, content, true, remain);
 
                         Interlocked.Increment(ref hits);
 
@@ -554,19 +532,19 @@ namespace Greatbone.Core
         /// </summary>
         public override async Task ProcessRequestAsync(HttpContext context)
         {
-            ActionContext ac = (ActionContext) context;
-            HttpRequest req = ac.Request;
+            WebContext wc = (WebContext) context;
+            HttpRequest req = wc.Request;
             string path = req.Path.Value;
 
             // authentication
             try
             {
                 bool norm = true;
-                if (this is IAuthenticateAsync aasync) norm = await aasync.AuthenticateAsync(ac, true);
-                else if (this is IAuthenticate a) norm = a.Authenticate(ac, true);
+                if (this is IAuthenticateAsync aasync) norm = await aasync.AuthenticateAsync(wc, true);
+                else if (this is IAuthenticate a) norm = a.Authenticate(wc, true);
                 if (!norm)
                 {
-                    ac.Give(403); // forbidden
+                    wc.Give(403); // forbidden
                     return;
                 }
             }
@@ -580,38 +558,38 @@ namespace Greatbone.Core
             {
                 if ("/*".Equals(path)) // handle an event poll request
                 {
-                    Poll(ac);
+                    Poll(wc);
                 }
                 else // handle a regular request
                 {
                     string relative = path.Substring(1);
-                    Work work = Resolve(ref relative, ac);
+                    Work work = Resolve(ref relative, wc);
                     if (work == null)
                     {
-                        ac.Give(404); // not found
+                        wc.Give(404); // not found
                         return;
                     }
 
-                    await work.HandleAsync(relative, ac);
+                    await work.HandleAsync(relative, wc);
                 }
             }
             catch (Exception ex)
             {
-                Catch(ex, ac);
+                Catch(ex, wc);
             }
 
             try // sending
             {
-                await ac.SendAsync();
+                await wc.SendAsync();
             }
             catch (Exception e)
             {
                 ERR(e.Message, e);
-                ac.Give(500, e.Message);
+                wc.Give(500, e.Message);
             }
         }
 
-        internal void SetTokenCookie(ActionContext ac, P prin, byte proj, int maxage = 0)
+        internal void SetTokenCookie(WebContext wc, P prin, byte proj, int maxage = 0)
         {
             StringBuilder sb = new StringBuilder("Token=");
             string token = Encrypt(prin, proj);
@@ -622,7 +600,7 @@ namespace Greatbone.Core
             }
 
             // obtain and add the domain attribute
-            string host = ac.Header("Host");
+            string host = wc.Header("Host");
             if (host != null)
             {
                 int dot = host.LastIndexOf('.');
@@ -639,7 +617,7 @@ namespace Greatbone.Core
             }
 
             sb.Append("; Path=/; HttpOnly");
-            ac.SetHeader("Set-Cookie", sb.ToString());
+            wc.SetHeader("Set-Cookie", sb.ToString());
         }
 
         public string Encrypt(P prin, byte proj)

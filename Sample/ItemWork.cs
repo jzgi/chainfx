@@ -17,17 +17,17 @@ namespace Greatbone.Sample
     [Ui("货品"), User(OPRSTAFF)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
-        public OprItemWork(WorkConfig wc) : base(wc)
+        public OprItemWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(WebContext wc)
         {
-            string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            string shopid = wc[-1];
+            using (var dc = wc.NewDbContext())
             {
                 dc.Query("SELECT * FROM items WHERE shopid = @1 ORDER BY status DESC", p => p.Set(shopid));
-                ac.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
+                wc.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
                     h.CAPTION(o.name, Item.Statuses[o.status], o.status >= Item.ON);
                     h.ICON(o.name + "/icon", box: 3);
@@ -39,12 +39,12 @@ namespace Greatbone.Sample
         }
 
         [Ui("新建"), Tool(ButtonShow, 2), User(OPRSTAFF)]
-        public async Task @new(ActionContext ac)
+        public async Task @new(WebContext wc)
         {
-            if (ac.GET)
+            if (wc.GET)
             {
                 var o = new Item { min = 1, step = 1 };
-                ac.GivePane(200, m =>
+                wc.GivePane(200, m =>
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
@@ -57,30 +57,30 @@ namespace Greatbone.Sample
             }
             else // POST
             {
-                var o = await ac.ReadObjectAsync<Item>();
-                o.shopid = ac[-1];
-                using (var dc = ac.NewDbContext())
+                var o = await wc.ReadObjectAsync<Item>();
+                o.shopid = wc[-1];
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Execute(dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty), p => o.Write(p));
                 }
-                ac.GivePane(200); // close dialog
+                wc.GivePane(200); // close dialog
             }
         }
 
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
-        public async Task del(ActionContext ac)
+        public async Task del(WebContext wc)
         {
-            string shopid = ac[-1];
-            var f = await ac.ReadAsync<Form>();
+            string shopid = wc[-1];
+            var f = await wc.ReadAsync<Form>();
             string[] key = f[nameof(key)];
             if (key != null)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Execute(dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key), p => p.Set(shopid), false);
                 }
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
     }
 }

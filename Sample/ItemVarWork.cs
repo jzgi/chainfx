@@ -15,35 +15,35 @@ namespace Greatbone.Sample
         {
         }
 
-        public void icon(ActionContext ac)
+        public void icon(WebContext wc)
         {
-            string shopid = ac[typeof(IShopVar)];
-            string name = ac[this];
-            using (var dc = ac.NewDbContext())
+            string shopid = wc[typeof(IShopVar)];
+            string name = wc[this];
+            using (var dc = wc.NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
                     dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, PICAGE);
+                    if (byteas.Count == 0) wc.Give(204); // no content 
+                    else wc.Give(200, new StaticContent(byteas), true, PICAGE);
                 }
-                else ac.Give(404, @public: true, maxage: PICAGE); // not found
+                else wc.Give(404, @public: true, maxage: PICAGE); // not found
             }
         }
 
-        public void img(ActionContext ac, int ordinal)
+        public void img(WebContext wc, int ordinal)
         {
-            string shopid = ac[-1];
-            string name = ac[this];
-            using (var dc = ac.NewDbContext())
+            string shopid = wc[-1];
+            string name = wc[this];
+            using (var dc = wc.NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
                     dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) ac.Give(204); // no content 
-                    else ac.Give(200, new StaticContent(byteas), true, PICAGE);
+                    if (byteas.Count == 0) wc.Give(204); // no content 
+                    else wc.Give(200, new StaticContent(byteas), true, PICAGE);
                 }
-                else ac.Give(404, @public: true, maxage: PICAGE); // not found
+                else wc.Give(404, @public: true, maxage: PICAGE); // not found
             }
         }
     }
@@ -55,19 +55,19 @@ namespace Greatbone.Sample
         }
 
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
-        public async Task add(ActionContext ac)
+        public async Task add(WebContext wc)
         {
-            string shopid = ac[-1];
+            string shopid = wc[-1];
             var shop = Obtain<Map<string, Shop>>()[shopid];
-            User prin = (User) ac.Principal;
-            string itemname = ac[this];
+            User prin = (User) wc.Principal;
+            string itemname = wc[this];
             string name, city, a, b, tel; // form values
             short num;
-            if (ac.GET)
+            if (wc.GET)
             {
-                ac.GivePane(200, h =>
+                wc.GivePane(200, h =>
                 {
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = wc.NewDbContext())
                     {
                         h.FORM_();
                         if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // to create new
@@ -108,7 +108,7 @@ namespace Greatbone.Sample
             }
             else // POST
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
                     dc.Let(out string unit).Let(out decimal price);
@@ -116,14 +116,14 @@ namespace Greatbone.Sample
                     if (dc.Query1("SELECT * FROM orders WHERE wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
-                        (await ac.ReadAsync<Form>()).Let(out num);
+                        (await wc.ReadAsync<Form>()).Let(out num);
                         o.AddItem(itemname, unit, price, num);
                         o.TotalUp();
                         dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                     }
                     else // create a new order
                     {
-                        var f = await ac.ReadAsync<Form>();
+                        var f = await wc.ReadAsync<Form>();
                         name = f[nameof(name)];
                         city = f[nameof(city)];
                         a = f[nameof(a)];
@@ -152,7 +152,7 @@ namespace Greatbone.Sample
                         const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
                     }
-                    ac.GivePane(200, m =>
+                    wc.GivePane(200, m =>
                     {
                         m.P("商品已经成功加入购物车");
                         m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: "_parent")._FOOTBAR();
@@ -169,16 +169,16 @@ namespace Greatbone.Sample
         }
 
         [Ui("基本"), Tool(ButtonShow, 2), User(OPRSTAFF)]
-        public async Task basic(ActionContext ac)
+        public async Task basic(WebContext wc)
         {
-            string shopid = ac[-2];
-            string name = ac[this];
-            if (ac.GET)
+            string shopid = wc[-2];
+            string name = wc[this];
+            if (wc.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     var o = dc.Query1<Item>("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
-                    ac.GivePane(200, m =>
+                    wc.GivePane(200, m =>
                     {
                         m.FORM_();
                         m.FIELD(o.name, "名称");
@@ -193,8 +193,8 @@ namespace Greatbone.Sample
             else // POST
             {
                 const byte proj = 0xff ^ Item.PK;
-                var o = await ac.ReadObjectAsync<Item>(proj);
-                using (var dc = ac.NewDbContext())
+                var o = await wc.ReadObjectAsync<Item>(proj);
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Execute(dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2"), p =>
                     {
@@ -202,95 +202,95 @@ namespace Greatbone.Sample
                         p.Set(shopid).Set(name);
                     });
                 }
-                ac.GivePane(200); // close
+                wc.GivePane(200); // close
             }
         }
 
         [Ui("照片"), Tool(ButtonCrop), User(OPRSTAFF)]
-        public new async Task icon(ActionContext ac)
+        public new async Task icon(WebContext wc)
         {
-            string shopid = ac[-2];
-            string name = ac[this];
-            if (ac.GET)
+            string shopid = wc[-2];
+            string name = wc[this];
+            if (wc.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
                         dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content 
-                        else ac.Give(200, new StaticContent(byteas));
+                        if (byteas.Count == 0) wc.Give(204); // no content 
+                        else wc.Give(200, new StaticContent(byteas));
                     }
-                    else ac.Give(404); // not found           
+                    else wc.Give(404); // not found           
                 }
             }
             else // POST
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name)) > 0)
                     {
-                        ac.Give(200); // ok
+                        wc.Give(200); // ok
                     }
-                    else ac.Give(500); // internal server error
+                    else wc.Give(500); // internal server error
                 }
             }
         }
 
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRSTAFF)]
-        public new async Task img(ActionContext ac, int ordinal)
+        public new async Task img(WebContext wc, int ordinal)
         {
-            string shopid = ac[-2];
-            string name = ac[this];
-            if (ac.GET)
+            string shopid = wc[-2];
+            string name = wc[this];
+            if (wc.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
                         dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content 
-                        else ac.Give(200, new StaticContent(byteas));
+                        if (byteas.Count == 0) wc.Give(204); // no content 
+                        else wc.Give(200, new StaticContent(byteas));
                     }
-                    else ac.Give(404); // not found
+                    else wc.Give(404); // not found
                 }
             }
             else // POST
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
                 }
-                ac.Give(200); // ok
+                wc.Give(200); // ok
             }
         }
 
         [Ui("可供"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task max(ActionContext ac)
+        public async Task max(WebContext wc)
         {
-            string shopid = ac[-2];
-            string name = ac[this];
-            if (ac.GET)
+            string shopid = wc[-2];
+            string name = wc[this];
+            if (wc.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Query1("SELECT stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
                     dc.Let(out short stock);
-                    ac.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short) 1)._FORM(); });
+                    wc.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short) 1)._FORM(); });
                 }
             }
             else // POST
             {
-                (await ac.ReadAsync<Form>()).Let(out short stock);
-                using (var dc = ac.NewDbContext())
+                (await wc.ReadAsync<Form>()).Let(out short stock);
+                using (var dc = wc.NewDbContext())
                 {
                     dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
                 }
-                ac.GivePane(200); // close
+                wc.GivePane(200); // close
             }
         }
     }

@@ -23,7 +23,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("新结"), Tool(Anchor)]
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("已转"), Tool(Anchor)]
-        public void old(ActionContext ac, int page)
+        public void old(WebContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -47,7 +47,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("结算", "生成各网点结款单"), Tool(ButtonShow)]
-        public async Task reckon(ActionContext ac)
+        public async Task reckon(WebContext ac)
         {
             DateTime fro; // from date
             DateTime till; // till/before date
@@ -89,7 +89,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("转款", "按结款单转款给网点"), Tool(ButtonConfirm)]
-        public async Task pay(ActionContext ac)
+        public async Task pay(WebContext ac)
         {
             Roll<Tran> trans = new Roll<Tran>(16);
             using (var dc = ac.NewDbContext())

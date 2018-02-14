@@ -17,22 +17,22 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context. It supports multiplexity occuring in SSE and WebSocket.
     ///
-    public class ActionContext : HttpContext, IDoerContext<ActionDoer>, IDisposable
+    public class WebContext : HttpContext, IDoerContext<ActionDoer>, IDisposable
     {
         readonly IFeatureCollection features;
 
         private readonly DefaultConnectionInfo connection;
 
-        readonly ActionRequest request;
+        readonly WebRequest request;
 
-        readonly ActionResponse response;
+        readonly WebResponse response;
 
-        internal ActionContext(IFeatureCollection features)
+        internal WebContext(IFeatureCollection features)
         {
             this.features = features;
             connection = new DefaultConnectionInfo(features);
-            this.request = new ActionRequest(this);
-            this.response = new ActionResponse(this);
+            this.request = new WebRequest(this);
+            this.response = new WebResponse(this);
         }
 
         public override IFeatureCollection Features => features;
@@ -56,12 +56,13 @@ namespace Greatbone.Core
 
         public override CancellationToken RequestAborted { get; set; }
 
-        public override string TraceIdentifier { get; set; }
+        public override string TraceIdentifier { get; set; } = null;
 
-        public override ISession Session { get; set; }
+        public override ISession Session { get; set; } = null;
 
         public override void Abort()
         {
+            features.Get<IHttpRequestLifetimeFeature>().Abort();
         }
 
 
@@ -121,7 +122,7 @@ namespace Greatbone.Core
 
         /// A token string.
         ///
-        public string Token { get; internal set; }
+        internal string Token { get; }
 
         // levels of keys along the URI path
         Seg[] chain;

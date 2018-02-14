@@ -20,7 +20,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("记账"), Tool(ButtonShow)]
-        public async Task entry(ActionContext ac)
+        public async Task entry(WebContext ac)
         {
             string shopid = ac[-1];
             Cash o = null;
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("月报"), Tool(ButtonOpen, 2)]
-        public void monthly(ActionContext ac)
+        public void monthly(WebContext ac)
         {
             string shopid = ac[-1];
             ac.GivePane(200, m =>

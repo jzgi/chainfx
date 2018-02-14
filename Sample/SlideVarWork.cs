@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("回复"), Tool(ButtonShow)]
-        public async Task reply(ActionContext ac)
+        public async Task reply(WebContext ac)
         {
             string shopid = ac[typeof(ShopVarWork)];
             User prin = (User) ac.Principal;

@@ -17,7 +17,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {

@@ -17,7 +17,7 @@ namespace Greatbone.Sample
             Create<MyOrderWork>("order");
         }
 
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             var prin = (User)ac.Principal;
             ac.GivePage(200, m =>
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("身份刷新"), Tool(ButtonOpen)]
-        public void token(ActionContext ac)
+        public void token(WebContext ac)
         {
             string wx = ac[this];
             using (var dc = ac.NewDbContext())
@@ -62,7 +62,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("修改"), Tool(ButtonShow)]
-        public async Task edit(ActionContext ac)
+        public async Task edit(WebContext ac)
         {
             string wx = ac[-1];
             var prin = (User)ac.Principal;
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
         const string PASS = "0z4R4pX7";
 
         [Ui("设密码"), Tool(ButtonShow)]
-        public async Task pass(ActionContext ac)
+        public async Task pass(WebContext ac)
         {
             User prin = (User)ac.Principal;
             string wx = ac[-1];
@@ -162,7 +162,7 @@ namespace Greatbone.Sample
             Create<OprCashWork>("cash");
         }
 
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             bool inner = ac.Query[nameof(inner)];
             if (!inner)
@@ -196,7 +196,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("人员"), Tool(ButtonOpen, 2), User(OPRMGR)]
-        public async Task acl(ActionContext ac, int cmd)
+        public async Task acl(WebContext ac, int cmd)
         {
             string shopid = ac[this];
             string wx;
@@ -252,7 +252,7 @@ namespace Greatbone.Sample
         static readonly string[] CRLF = { "\r\n", "\n" };
 
         [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
-        public async Task sets(ActionContext ac)
+        public async Task sets(WebContext ac)
         {
             var shops = Obtain<Map<string, Shop>>();
             string shopid = ac[this];
@@ -289,7 +289,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMGR)]
-        public async Task img(ActionContext ac, int ordinal)
+        public async Task img(WebContext ac, int ordinal)
         {
             string shopid = ac[this];
             if (ac.GET)
@@ -318,7 +318,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("上下班"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task status(ActionContext ac)
+        public async Task status(WebContext ac)
         {
             var shops = Obtain<Map<string, Shop>>();
 

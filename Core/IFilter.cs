@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     public interface IBefore
     {
-        bool Do(ActionContext ac);
+        bool Do(WebContext ac);
     }
 
     /// <summary>
@@ -15,7 +15,7 @@ namespace Greatbone.Core
     /// </summary>
     public interface IBeforeAsync
     {
-        Task<bool> DoAsync(ActionContext ac);
+        Task<bool> DoAsync(WebContext ac);
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ namespace Greatbone.Core
     /// </summary>
     public interface IAfter
     {
-        void Do(ActionContext ac);
+        void Do(WebContext ac);
     }
 
     /// <summary>
@@ -31,6 +31,6 @@ namespace Greatbone.Core
     /// </summary>
     public interface IAfterAsync
     {
-        Task DoAsync(ActionContext ac);
+        Task DoAsync(WebContext ac);
     }
 }

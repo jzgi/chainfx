@@ -100,7 +100,7 @@ namespace Greatbone.Core
 
         public bool HasAuthorize => authorize != null;
 
-        public bool DoAuthorize(ActionContext ac)
+        public bool DoAuthorize(WebContext ac)
         {
             if (authorize != null)
             {

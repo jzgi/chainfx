@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("清空购物车"), Tool(ButtonConfirm)]
-        public void clear(ActionContext ac)
+        public void clear(WebContext ac)
         {
             string wx = ac[-1];
             using (var dc = ac.NewDbContext())
@@ -88,7 +88,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
@@ -111,7 +111,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("新建"), Tool(ButtonConfirm), User(OPRSTAFF)]
-        public void @new(ActionContext ac)
+        public void @new(WebContext ac)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
@@ -136,7 +136,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
-        public async Task del(ActionContext ac, int page)
+        public async Task del(WebContext ac, int page)
         {
             string shopid = ac[-1];
             int[] key = (await ac.ReadAsync<Form>())[nameof(key)];
@@ -159,7 +159,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("全部"), Tool(Anchor)]
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             string shopid = ac[-1];
             ac.GivePage(200, main =>
@@ -185,7 +185,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("按区域"), Tool(AnchorPrompt)]
-        public void area(ActionContext ac, int page)
+        public void area(WebContext ac, int page)
         {
             string shopid = ac[-1];
             bool inner = ac.Query[nameof(inner)];
@@ -231,7 +231,7 @@ namespace Greatbone.Sample
         };
 
         [Ui("通知"), Tool(ButtonPickShow)]
-        public void send(ActionContext ac)
+        public void send(WebContext ac)
         {
             long[] key = ac.Query[nameof(key)];
             string msg = null;
@@ -262,7 +262,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             string shopid = ac[-1];
             using (var dc = ac.NewDbContext())
@@ -284,7 +284,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("查询"), Tool(AnchorShow)]
-        public void send(ActionContext ac)
+        public void send(WebContext ac)
         {
             long[] key = ac.Query[nameof(key)];
             using (var dc = ac.NewDbContext())
@@ -295,7 +295,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("回退", "【警告】把选中的订单回退成新单？"), Tool(ButtonPickConfirm)]
-        public async Task back(ActionContext ac)
+        public async Task back(WebContext ac)
         {
             string shopid = ac[-2];
             var f = await ac.ReadAsync<Form>();
@@ -319,7 +319,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac, int page)
+        public void @default(WebContext ac, int page)
         {
             using (var dc = ac.NewDbContext())
             {

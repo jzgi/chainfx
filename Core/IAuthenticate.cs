@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     public interface IAuthenticate
     {
-        bool Authenticate(ActionContext ac, bool e);
+        bool Authenticate(WebContext ac, bool e);
     }
 
     /// <summary>
@@ -15,6 +15,6 @@ namespace Greatbone.Core
     /// </summary>
     public interface IAuthenticateAsync
     {
-        Task<bool> AuthenticateAsync(ActionContext ac, bool e);
+        Task<bool> AuthenticateAsync(WebContext ac, bool e);
     }
 }

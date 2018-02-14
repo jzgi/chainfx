@@ -11,7 +11,7 @@ namespace Greatbone.Sample
             this.state = state;
         }
 
-        public override bool Check(ActionContext ac, object obj)
+        public override bool Check(WebContext ac, object obj)
         {
             var o = obj as Item;
             if (state == 'A')

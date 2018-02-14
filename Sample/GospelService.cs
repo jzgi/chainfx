@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             City.All = null;
         }
 
-        public async Task<bool> AuthenticateAsync(ActionContext ac, bool e)
+        public async Task<bool> AuthenticateAsync(WebContext ac, bool e)
         {
             // if principal already in cookie
             if (ac.Cookies.TryGetValue("Token", out var token))
@@ -132,26 +132,26 @@ namespace Greatbone.Sample
             return true;
         }
 
-        public override void Catch(Exception ex, ActionContext ac)
+        public override void Catch(Exception ex, WebContext wc)
         {
             if (ex is AuthorizeException)
             {
-                if (ac.Principal == null)
+                if (wc.Principal == null)
                 {
                     // weixin authorization challenge
-                    if (ac.ByWeiXin) // weixin
+                    if (wc.ByWeiXin) // weixin
                     {
-                        ac.GiveRedirectWeiXinAuthorize(NETADDR);
+                        wc.GiveRedirectWeiXinAuthorize(NETADDR);
                     }
                     else // challenge BASIC scheme
                     {
-                        ac.SetHeader("WWW-Authenticate", "Basic realm=\"APP\"");
-                        ac.Give(401); // unauthorized
+                        wc.SetHeader("WWW-Authenticate", "Basic realm=\"APP\"");
+                        wc.Give(401); // unauthorized
                     }
                 }
                 else
                 {
-                    ac.GivePane(403, m =>
+                    wc.GivePane(403, m =>
                     {
                         m.FORM_();
                         m.FIELDSET_("没有访问权限");
@@ -163,14 +163,14 @@ namespace Greatbone.Sample
             }
             else
             {
-                ac.Give(500, ex.Message);
+                wc.Give(500, ex.Message);
             }
         }
 
         /// <summary>
         /// The home page that lists gospel lessons.
         /// </summary>
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             var lessons = Obtain<string[]>();
 

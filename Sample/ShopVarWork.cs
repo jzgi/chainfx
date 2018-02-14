@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void icon(ActionContext ac)
+        public void icon(WebContext ac)
         {
             string shopid = ac[this];
             using (var dc = ac.NewDbContext())
@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void img(ActionContext ac, int ordinal)
+        public void img(WebContext ac, int ordinal)
         {
             string shopid = ac[this];
             using (var dc = ac.NewDbContext())
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             string shopid = ac[this];
             var shop = Obtain<Map<string, Shop>>()[shopid];
@@ -107,7 +107,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("修改"), Tool(ButtonShow)]
-        public async Task edit(ActionContext ac)
+        public async Task edit(WebContext ac)
         {
             string shopid = ac[this];
             const byte proj = Shop.ADM;
@@ -144,7 +144,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("经理"), Tool(ButtonShow)]
-        public async Task mgr(ActionContext ac)
+        public async Task mgr(WebContext ac)
         {
             string shopid = ac[this];
             string wx_tel_name;
@@ -188,7 +188,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("照片"), Tool(ButtonCrop)]
-        public new async Task icon(ActionContext ac)
+        public new async Task icon(WebContext ac)
         {
             string shopid = ac[this];
             if (ac.GET)

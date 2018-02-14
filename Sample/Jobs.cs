@@ -34,7 +34,7 @@ namespace Greatbone.Sample
             Create<AdmSlideWork>("lesson");
         }
 
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             bool inner = ac.Query[nameof(inner)];
             if (inner)
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("清理"), Tool(Modal.ButtonOpen, 2)]
-        public void clean(ActionContext ac)
+        public void clean(WebContext ac)
         {
             string shopid = ac[1];
             using (var dc = ac.NewDbContext())

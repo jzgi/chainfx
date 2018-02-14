@@ -7,19 +7,20 @@ using Microsoft.Extensions.Primitives;
 
 namespace Greatbone.Core
 {
-    public class ActionResponse : HttpResponse
+    public class WebResponse : HttpResponse
     {
-        readonly ActionContext context;
+        readonly WebContext context;
 
         readonly IHttpResponseFeature fResponse;
 
-        readonly IResponseCookiesFeature fCookies;
+        readonly ResponseCookiesFeature fCookies;
 
-        internal ActionResponse(ActionContext contex)
+        internal WebResponse(WebContext context)
         {
-            this.context = contex;
-            fResponse = contex.Features.Get<IHttpResponseFeature>();
-            fCookies = contex.Features.Get<IResponseCookiesFeature>();
+            this.context = context;
+            var features = context.Features;
+            fResponse = features.Get<IHttpResponseFeature>();
+            fCookies = new ResponseCookiesFeature(features);
         }
 
         public override HttpContext HttpContext => context;

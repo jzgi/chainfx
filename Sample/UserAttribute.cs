@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public bool IsOpr => opr > 0;
 
-        public override bool Check(ActionContext ac)
+        public override bool Check(WebContext ac)
         {
             if (!(ac.Principal is User prin)) return false;
 

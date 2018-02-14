@@ -22,7 +22,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("付款¥", flag: 1), Tool(ButtonScript), Order('P')]
-        public async Task prepay(ActionContext ac)
+        public async Task prepay(WebContext ac)
         {
             string wx = ac[-2];
             int orderid = ac[this];
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("修改", flag: 8), Tool(ButtonShow)]
-        public async Task addr(ActionContext ac)
+        public async Task addr(WebContext ac)
         {
             int orderid = ac[this];
             string wx = ac[-2];
@@ -112,7 +112,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("修改", flag: 8), Tool(ButtonShow)]
-        public async Task item(ActionContext ac, int idx)
+        public async Task item(WebContext ac, int idx)
         {
             int orderid = ac[this];
             string wx = ac[-2];
@@ -152,7 +152,7 @@ namespace Greatbone.Sample
         }
 
         //        [Ui("建议"), Tool(ButtonShow)]
-        public async Task kick(ActionContext ac)
+        public async Task kick(WebContext ac)
         {
             int orderid = ac[this];
             string kick = null;
@@ -187,7 +187,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("加货"), Tool(ButtonShow, 2), User(OPRSTAFF)]
-        public async Task add(ActionContext ac)
+        public async Task add(WebContext ac)
         {
             string shopid = ac[-2];
             int orderid = ac[this];
@@ -228,7 +228,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("分派"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task assign(ActionContext ac)
+        public async Task assign(WebContext ac)
         {
             int orderid = ac[this];
             string shopid = ac[-2];
@@ -285,7 +285,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("撤消", "【警告】确认要撤销此单吗？实收金额将退回给买家"), Tool(ButtonConfirm)]
-        public async Task abort(ActionContext ac)
+        public async Task abort(WebContext ac)
         {
             string shopid = ac[-2];
             int orderid = ac[this];
@@ -319,7 +319,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("完成"), Tool(ButtonShow)]
-        public async Task deliver(ActionContext ac)
+        public async Task deliver(WebContext ac)
         {
             string shopid = ac[-2];
             int orderid = ac[this];

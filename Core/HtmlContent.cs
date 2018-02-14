@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     public class HtmlContent : DynamicContent
     {
-        readonly ActionContext actionCtx;
+        readonly WebContext webCtx;
 
         // ordinal current in output
         int ordinal;
@@ -15,9 +15,9 @@ namespace Greatbone.Core
         // data model current in output
         IData model;
 
-        public HtmlContent(ActionContext actionCtx, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
+        public HtmlContent(WebContext webCtx, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
-            this.actionCtx = actionCtx;
+            this.webCtx = webCtx;
         }
 
         public override string Type => "text/html; charset=utf-8";
@@ -819,7 +819,7 @@ namespace Greatbone.Core
         public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
         {
             // current dropdown - action - ordinal as the id
-            string m = actionCtx.Doer.Lower;
+            string m = webCtx.Doer.Lower;
             Add("<a class=\"primary\" data-toggle=\"dropdown-");
             Add(m);
             Add('-');
@@ -1010,7 +1010,7 @@ namespace Greatbone.Core
 
         public void TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
         {
-            var ads = actionCtx.Work.Tooled;
+            var ads = webCtx.Work.Tooled;
             TOOLBAR_();
             for (int i = 0; i < ads?.Length; i++)
             {
@@ -1051,11 +1051,11 @@ namespace Greatbone.Core
         public void PAGENATE(int count)
         {
             // pagination
-            ActionDoer ad = actionCtx.Doer;
+            ActionDoer ad = webCtx.Doer;
             if (ad.HasSubscript)
             {
                 Add("<ul class=\"pagination\" role=\"navigation\">");
-                int subscpt = actionCtx.Subscript;
+                int subscpt = webCtx.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)
@@ -1070,7 +1070,7 @@ namespace Greatbone.Core
                         Add(ad.Key);
                         Add('-');
                         Add(i);
-                        Add(actionCtx.QueryString);
+                        Add(webCtx.QueryString);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
@@ -1082,7 +1082,7 @@ namespace Greatbone.Core
                     Add(ad.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(actionCtx.QueryString);
+                    Add(webCtx.QueryString);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");
@@ -1093,7 +1093,7 @@ namespace Greatbone.Core
 
         public void SHEETVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
-            Work work = actionCtx.Work;
+            Work work = webCtx.Work;
             Work varwork = work.varwork;
             Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
@@ -1228,7 +1228,7 @@ namespace Greatbone.Core
             Add("<div class=\"cell card-caption small-12\">");
             if (model != null)
             {
-                var work = actionCtx.Work;
+                var work = webCtx.Work;
                 Work varwork = work.VarWork;
                 if (varwork != null && work.HasPick)
                 {
@@ -1283,7 +1283,7 @@ namespace Greatbone.Core
 
         public HtmlContent _TAIL(byte flag = 0)
         {
-            Work work = actionCtx.Work?.VarWork;
+            Work work = webCtx.Work?.VarWork;
             if (work != null)
             {
                 Add("<div style=\"margin-left: auto\">");
@@ -1328,7 +1328,7 @@ namespace Greatbone.Core
         {
             if (when)
             {
-                var work = actionCtx.Work?.VarWork;
+                var work = webCtx.Work?.VarWork;
                 var ai = work?.GetAction(name);
                 if (ai != null)
                 {
@@ -1342,7 +1342,7 @@ namespace Greatbone.Core
         {
             if (when)
             {
-                var work = actionCtx.Work;
+                var work = webCtx.Work;
                 var ai = work?.GetAction(name);
                 if (ai != null)
                 {
@@ -1355,11 +1355,11 @@ namespace Greatbone.Core
         void Tool(ActionDoer ad, IData obj, int ordinal, int subscript = -1)
         {
             var tool = ad.Tool;
-            bool ok = ad.DoAuthorize(actionCtx) && ad.DoState(actionCtx, obj);
+            bool ok = ad.DoAuthorize(webCtx) && ad.DoState(webCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");
-                Add(ad == actionCtx.Doer ? " hollow" : " clear");
+                Add(ad == webCtx.Doer ? " hollow" : " clear");
                 Add("\" href=\"");
                 if (obj != null)
                 {

@@ -27,16 +27,16 @@ namespace Greatbone.Core
         internal readonly StateAttribute state;
 
         // void action(ActionContext)
-        readonly Action<ActionContext> @do;
+        readonly Action<WebContext> @do;
 
         // async Task action(ActionContext)
-        readonly Func<ActionContext, Task> doAsync;
+        readonly Func<WebContext, Task> doAsync;
 
         // void action(ActionContext, int)
-        readonly Action<ActionContext, int> do2;
+        readonly Action<WebContext, int> do2;
 
         // async Task action(ActionContext, int)
-        readonly Func<ActionContext, int, Task> do2Async;
+        readonly Func<WebContext, int, Task> do2Async;
 
         internal ActionDoer(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
             mi.Name == "default" ? string.Empty : mi.Name,
@@ -57,22 +57,22 @@ namespace Greatbone.Core
             {
                 if (subscript)
                 {
-                    do2Async = (Func<ActionContext, int, Task>) mi.CreateDelegate(typeof(Func<ActionContext, int, Task>), work);
+                    do2Async = (Func<WebContext, int, Task>) mi.CreateDelegate(typeof(Func<WebContext, int, Task>), work);
                 }
                 else
                 {
-                    doAsync = (Func<ActionContext, Task>) mi.CreateDelegate(typeof(Func<ActionContext, Task>), work);
+                    doAsync = (Func<WebContext, Task>) mi.CreateDelegate(typeof(Func<WebContext, Task>), work);
                 }
             }
             else
             {
                 if (subscript)
                 {
-                    do2 = (Action<ActionContext, int>) mi.CreateDelegate(typeof(Action<ActionContext, int>), work);
+                    do2 = (Action<WebContext, int>) mi.CreateDelegate(typeof(Action<WebContext, int>), work);
                 }
                 else
                 {
-                    @do = (Action<ActionContext>) mi.CreateDelegate(typeof(Action<ActionContext>), work);
+                    @do = (Action<WebContext>) mi.CreateDelegate(typeof(Action<WebContext>), work);
                 }
             }
         }
@@ -91,12 +91,12 @@ namespace Greatbone.Core
 
         public int Limit => limit;
 
-        public bool DoState(ActionContext ac, object model)
+        public bool DoState(WebContext ac, object model)
         {
             return state == null || model == null || state.Check(ac, model);
         }
 
-        internal void Do(ActionContext ac, int subscpt)
+        internal void Do(WebContext ac, int subscpt)
         {
             if (HasSubscript)
             {
@@ -108,7 +108,7 @@ namespace Greatbone.Core
             }
         }
 
-        internal async Task DoAsync(ActionContext ac, int subscpt)
+        internal async Task DoAsync(WebContext ac, int subscpt)
         {
             // invoke the right action method
             if (HasSubscript)

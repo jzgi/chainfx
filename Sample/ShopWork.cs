@@ -27,7 +27,7 @@ namespace Greatbone.Sample
         /// </summary>
 //        [City]
         [User] // we are forced to put check here because  weixin auth does't work in iframe
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             var shops = Obtain<Map<string, Shop>>();
 
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
         /// <summary>
         /// WCPay notify, placed here due to non-authentic context.
         /// </summary>
-        public async Task paynotify(ActionContext ac)
+        public async Task paynotify(WebContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
             if (!Notified(xe, out var trade_no, out var cash))
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(ActionContext ac)
+        public void @default(WebContext ac)
         {
             using (var dc = ac.NewDbContext())
             {
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
         }
 
         [Ui("新建"), Tool(ButtonShow)]
-        public async Task @new(ActionContext ac)
+        public async Task @new(WebContext ac)
         {
             const byte proj = Shop.ADM;
             if (ac.GET)
