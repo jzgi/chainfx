@@ -25,7 +25,7 @@ namespace Greatbone.Sample
         [Ui("新结"), Tool(Anchor)]
         public void @default(WebContext ac, int page)
         {
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM repays WHERE status = 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Repay>(),
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         [Ui("已转"), Tool(Anchor)]
         public void old(WebContext ac, int page)
         {
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM repays WHERE status = 1 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Repay>(),
@@ -53,7 +53,7 @@ namespace Greatbone.Sample
             DateTime till; // till/before date
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     fro = (DateTime) dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
                     ac.GivePane(200, m =>
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
                 var f = await ac.ReadAsync<Form>();
                 fro = f[nameof(fro)];
                 till = f[nameof(till)];
-                using (var dc = ac.NewDbContext(IsolationLevel.ReadUncommitted))
+                using (var dc = NewDbContext(IsolationLevel.ReadUncommitted))
                 {
                     dc.Execute(@"INSERT INTO repays (shopid, fro, till, orders, total, cash) 
                     SELECT shopid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.FINISHED + " AND finished >= @1 AND finished < @2 GROUP BY shopid", p => p.Set(fro).Set(till));
@@ -92,7 +92,7 @@ namespace Greatbone.Sample
         public async Task pay(WebContext ac)
         {
             Roll<Tran> trans = new Roll<Tran>(16);
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 // retrieve
                 if (dc.Query("SELECT r.id, r.shopid, mgrwx, mgrname, cash FROM repays AS r, shops AS s WHERE r.shopid = s.id AND r.status = 0"))
@@ -112,7 +112,7 @@ namespace Greatbone.Sample
                 var tr = trans[i];
                 string err = await WeiXinUtility.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
                 // update data records
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (err != null) // error occured
                     {

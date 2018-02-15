@@ -3,7 +3,7 @@
 namespace Greatbone.Core
 {
     /// <summary>
-    /// To filter before executing an action.
+    /// To filter before executing a procedure.
     /// </summary>
     public interface IBefore
     {
@@ -11,7 +11,7 @@ namespace Greatbone.Core
     }
 
     /// <summary>
-    /// To filter asynchronously before executing an action.
+    /// To filter asynchronously before executing a procedure.
     /// </summary>
     public interface IBeforeAsync
     {
@@ -19,7 +19,7 @@ namespace Greatbone.Core
     }
 
     /// <summary>
-    /// To filter after executing an action.
+    /// To filter after executing a procedure
     /// </summary>
     public interface IAfter
     {
@@ -27,7 +27,7 @@ namespace Greatbone.Core
     }
 
     /// <summary>
-    /// To filter asynchronously after executing an action.
+    /// To filter asynchronously after executing a procedure
     /// </summary>
     public interface IAfterAsync
     {

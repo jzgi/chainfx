@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,25 +21,25 @@ namespace Greatbone.Core
     /// </summary>
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        // the service instance id
+        // the peer id of this service instance
         readonly string id;
 
         // the embedded server
         readonly KestrelServer server;
 
-        // event consumption
-        readonly Map<string, EventDoer> events;
+        // configured connectors to peers
+        readonly Map<string, Connector> connectors;
 
-        // clients to clustered peers
-        readonly Map<string, Client> clients;
+        // descriptors of subscribed data flows
+        Map<string, FlowDescript> flows;
 
-        // the event polling schesuler thread
+        // the data flow polling schesuler thread
         Thread scheduler;
 
-        // cache of sent responses
+        // the response cache
         readonly ConcurrentDictionary<string, Resp> cache;
 
-        // the cache cleaner thread
+        // the response cache cleaner thread
         Thread cleaner;
 
         protected Service(ServiceConfig cfg) : base(cfg)
@@ -49,7 +48,7 @@ namespace Greatbone.Core
 
             id = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
 
-            // setup logging file
+            // setup file-based logger
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
@@ -70,50 +69,19 @@ namespace Greatbone.Core
                 addrs.Add(a.Trim());
             }
 
-            // initialize events
-            Type typ = GetType();
-            foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                // verify the return type
-                Type ret = mi.ReturnType;
-                bool async;
-                if (ret == typeof(Task)) async = true;
-                else if (ret == typeof(void)) async = false;
-                else continue;
-
-                ParameterInfo[] pis = mi.GetParameters();
-                EventDoer evt;
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(EventContext))
-                {
-                    evt = new EventDoer(this, mi, async, false);
-                }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(EventContext) && pis[1].ParameterType == typeof(string))
-                {
-                    evt = new EventDoer(this, mi, async, true);
-                }
-                else continue;
-
-                if (events == null)
-                {
-                    events = new Map<string, EventDoer>(8);
-                }
-
-                events.Add(evt.Key, evt);
-            }
-
-            // initialize cluster connectivity
+            // initialize connectors
             var cluster = Cluster;
             if (cluster != null)
             {
                 for (int i = 0; i < cluster.Count; i++)
                 {
                     var e = cluster.At(i);
-                    if (clients == null)
+                    if (connectors == null)
                     {
-                        clients = new Map<string, Client>(cluster.Count * 2);
+                        connectors = new Map<string, Connector>(cluster.Count * 2);
                     }
 
-                    clients.Add(new Client(this, e.Key, e.Value));
+                    connectors.Add(new Connector(this, e.Key, e.Value));
                 }
             }
 
@@ -142,9 +110,9 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Map<string, Client> Clients => clients;
+        public Map<string, Connector> Connectors => connectors;
 
-        public Map<string, EventDoer> Events => events;
+        public Map<string, FlowDescript> Flows => flows;
 
         public string Describe()
         {
@@ -225,32 +193,8 @@ namespace Greatbone.Core
 
         public void DisposeContext(HttpContext context, Exception excep)
         {
-            // dispose the action context
+            // dispose the context
             ((WebContext) context).Dispose();
-        }
-
-        internal void Poll(WebContext wc)
-        {
-            string from = wc.Header("From");
-            long id = 0;
-            using (var dc = wc.NewDbContext())
-            {
-                dc.Query(dc.Sql("SELECT * FROM ").T(from).T(" WHERE pubserial > @1 "), p => p.Set(id));
-            }
-        }
-
-        //
-        // CLUSTER
-
-        internal Client GetClient(string targetid)
-        {
-            for (int i = 0; i < clients.Count; i++)
-            {
-                Client cli = clients[i];
-                if (cli.Key.Equals(targetid)) return cli;
-            }
-
-            return null;
         }
 
         internal async Task StopAsync(CancellationToken token)
@@ -294,7 +238,7 @@ namespace Greatbone.Core
             }
 
             // create and start the scheduler thead
-            if (clients != null)
+            if (connectors != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -306,15 +250,47 @@ namespace Greatbone.Core
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < Clients.Count; i++)
+                        for (int i = 0; i < Connectors.Count; i++)
                         {
-                            Client client = Clients[i];
-                            client.TryPoll(tick);
+                            Connector connector = Connectors[i];
+                            connector.TryPoll(tick);
                         }
                     }
                 });
                 scheduler.Start();
             }
+        }
+
+        //
+        // CLUSTER
+
+        internal void Poll(WebContext wc)
+        {
+            string from = wc.Header("From");
+            long id = 0;
+            using (var dc = NewDbContext())
+            {
+                dc.Query(dc.Sql("SELECT * FROM ").T(from).T(" WHERE pubid > @1 "), p => p.Set(id));
+            }
+        }
+
+        public void Subscribe(string source, string dview, Func<object, int> datapack)
+        {
+            if (flows == null)
+            {
+                flows = new Map<string, FlowDescript>(8);
+            }
+        }
+
+        internal Connector GetConnector(string peerid)
+        {
+            for (int i = 0; i < connectors.Count; i++)
+            {
+                Connector cli = connectors[i];
+                if (cli.Key.Equals(peerid)) return cli;
+            }
+
+            return null;
         }
 
         public string ConnectionString => ((ServiceConfig) cfg).ConnectionString;

@@ -16,7 +16,7 @@ namespace Greatbone.Sample
         public void icon(WebContext ac)
         {
             string shopid = ac[this];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
@@ -31,7 +31,7 @@ namespace Greatbone.Sample
         public void img(WebContext ac, int ordinal)
         {
             string shopid = ac[this];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE id = @1", p => p.Set(shopid)))
                 {
@@ -64,7 +64,7 @@ namespace Greatbone.Sample
             }
             ac.Register(shop);
 
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, 0xff).T(", (img1 IS NOT NULL AND img2 IS NOT NULL AND img3 IS NOT NULL AND img4 IS NOT NULL) AS imgg FROM items WHERE shopid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(shopid), 0xff);
                 ac.GiveDoc(200, m =>
@@ -113,7 +113,7 @@ namespace Greatbone.Sample
             const byte proj = Shop.ADM;
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty, proj).T(" FROM shops WHERE id = @1"), p => p.Set(shopid), proj);
                     ac.GivePane(200, m =>
@@ -131,7 +131,7 @@ namespace Greatbone.Sample
             else // post
             {
                 var o = await ac.ReadObjectAsync<Shop>(proj);
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("UPDATE shops")._SET_(Shop.Empty, proj ^ Shop.ID).T(" WHERE id = @1"), p =>
                     {
@@ -159,7 +159,7 @@ namespace Greatbone.Sample
                     m._FIELDSET();
                     if (forid != null)
                     {
-                        using (var dc = ac.NewDbContext())
+                        using (var dc = NewDbContext())
                         {
                             if (dc.Query1("SELECT concat(wx, ' ', tel, ' ', name) FROM users WHERE tel = @1", p => p.Set(forid)))
                             {
@@ -178,7 +178,7 @@ namespace Greatbone.Sample
                 var f = await ac.ReadAsync<Form>();
                 wx_tel_name = f[nameof(wx_tel_name)];
                 (string wx, string tel, string name) = wx_tel_name.ToTriple();
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(@"UPDATE shops SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
                         UPDATE users SET opr = " + OPRMGR + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(shopid));
@@ -193,7 +193,7 @@ namespace Greatbone.Sample
             string shopid = ac[this];
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT icon FROM shops WHERE id = @1", p => p.Set(shopid)))
                     {
@@ -209,7 +209,7 @@ namespace Greatbone.Sample
 
             var f = await ac.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Execute("UPDATE shops SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
             }

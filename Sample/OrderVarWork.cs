@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             short rev;
             decimal total;
             User prin = (User)ac.Principal;
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                 dc.Let(out rev).Let(out total).Let(out short typ).Let(out string name).Let(out string city).Let(out string addr).Let(out string tel);
@@ -64,7 +64,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = NewDbContext())
                     {
                         dc.Query1("SELECT shopid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                         dc.Let(out string oshopid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
@@ -102,7 +102,7 @@ namespace Greatbone.Sample
                 a = f[nameof(a)];
                 b = f[nameof(b)]; // can be null indicating free delivery
                 tel = f[nameof(tel)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     string addr = b == null ? a : a + SEPCHAR + b;
                     dc.Execute("UPDATE orders SET name = @1, city = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(name).Set(city).Set(addr).Set(tel).Set(orderid));
@@ -118,7 +118,7 @@ namespace Greatbone.Sample
             string wx = ac[-2];
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                     var oi = o.items[idx];
@@ -140,7 +140,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 short qty = f[nameof(qty)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                     o.UpdItem(idx, qty);
@@ -171,7 +171,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 kick = f[nameof(kick)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE orders SET kick = @1 WHERE id = @2", p => p.Set(kick).Set(orderid));
                 }
@@ -196,7 +196,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = NewDbContext())
                     {
                         dc.Query("SELECT name, unit, price, stock FROM items WHERE shopid = @1 AND status > 0 AND stock > 0", p => p.Set(shopid));
                         while (dc.Next())
@@ -211,7 +211,7 @@ namespace Greatbone.Sample
             else // POST
             {
                 var f = await ac.ReadAsync<Form>();
-                using (var dc = ac.NewDbContext(ReadUncommitted))
+                using (var dc = NewDbContext(ReadUncommitted))
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
                     for (int i = 0; i < f.Count; i++)
@@ -239,7 +239,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = NewDbContext())
                     {
                         // select operator info
                         dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(shopid));
@@ -268,7 +268,7 @@ namespace Greatbone.Sample
             {
                 (await ac.ReadAsync<Form>()).Let(out opr).Let(out addr);
                 var (wx, name, tel) = opr.ToTriple('~');
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND shopid = @6",
                         p => p.Set(wx).Set(name).Set(tel).Set(addr).Set(orderid).Set(shopid));
@@ -291,7 +291,7 @@ namespace Greatbone.Sample
             int orderid = ac[this];
             short rev = 0;
             decimal total = 0, cash = 0;
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 if (dc.Query1("SELECT rev, total, cash FROM orders WHERE id = @1 AND status = " + PAID, p => p.Set(orderid)))
                 {
@@ -303,7 +303,7 @@ namespace Greatbone.Sample
                 string err = await WeiXinUtility.PostRefundAsync(orderid + "-" + rev, total, cash);
                 if (err == null) // success
                 {
-                    using (var dc = ac.NewDbContext(ReadUncommitted))
+                    using (var dc = NewDbContext(ReadUncommitted))
                     {
                         dc.Query1("UPDATE orders SET status = " + ABORTED + ", aborted = localtimestamp WHERE id = @1 AND shopid = @2 RETURNING items", p => p.Set(orderid).Set(shopid));
                         dc.Let(out OrderItem[] items);
@@ -330,7 +330,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, m =>
                 {
                     // check personal pos
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = NewDbContext())
                     {
                         m.FORM_();
                         if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(shopid).Set(prin.wx)))
@@ -349,7 +349,7 @@ namespace Greatbone.Sample
             else // POST
             {
                 mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
-                using (var dc = ac.NewDbContext(ReadCommitted))
+                using (var dc = NewDbContext(ReadCommitted))
                 {
                     if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", finished = localtimestamp WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
                     {

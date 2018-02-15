@@ -18,8 +18,6 @@ namespace Greatbone.Core
 
         readonly Service service;
 
-        readonly IDoerContext<IDoer> doerCtx;
-
         readonly NpgsqlConnection connection;
 
         readonly NpgsqlCommand command;
@@ -38,10 +36,9 @@ namespace Greatbone.Core
         // current parameter index
         int index;
 
-        internal DbContext(Service service, IDoerContext<IDoer> doerCtx = null)
+        internal DbContext(Service service)
         {
             this.service = service;
-            this.doerCtx = doerCtx;
             connection = new NpgsqlConnection(service.ConnectionString);
             command = new NpgsqlCommand
             {
@@ -56,6 +53,7 @@ namespace Greatbone.Core
                 reader.Close();
                 reader = null;
             }
+
             ordinal = 0;
             command.Parameters.Clear();
             index = 0;
@@ -67,6 +65,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             if (transact == null)
             {
                 transact = connection.BeginTransaction(level);
@@ -95,6 +94,7 @@ namespace Greatbone.Core
                 sql.Clear(); // reset
                 sql.Add(str);
             }
+
             return sql;
         }
 
@@ -116,6 +116,7 @@ namespace Greatbone.Core
             {
                 return ToObject<D>(proj);
             }
+
             return default;
         }
 
@@ -125,6 +126,7 @@ namespace Greatbone.Core
             {
                 return ToObject<D>(proj);
             }
+
             return default;
         }
 
@@ -134,6 +136,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             multi = false;
             command.CommandText = cmdtext;
@@ -143,6 +146,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             reader = command.ExecuteReader();
             return reader.Read();
         }
@@ -165,6 +169,7 @@ namespace Greatbone.Core
             {
                 return ToArray<D>(proj);
             }
+
             return null;
         }
 
@@ -174,6 +179,7 @@ namespace Greatbone.Core
             {
                 return ToArray<D>(proj);
             }
+
             return null;
         }
 
@@ -184,6 +190,7 @@ namespace Greatbone.Core
             {
                 return ToMap(proj, keyer, toper);
             }
+
             return null;
         }
 
@@ -193,6 +200,7 @@ namespace Greatbone.Core
             {
                 return ToMap(proj, keyer, toper);
             }
+
             return null;
         }
 
@@ -202,6 +210,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             multi = true;
             command.CommandText = cmdtext;
@@ -211,6 +220,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             reader = command.ExecuteReader();
             return reader.HasRows;
         }
@@ -227,6 +237,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             multi = true;
             command.CommandText = cmdtext;
@@ -236,6 +247,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
@@ -248,6 +260,7 @@ namespace Greatbone.Core
             {
                 return false;
             }
+
             return reader.Read();
         }
 
@@ -259,6 +272,7 @@ namespace Greatbone.Core
                 {
                     return false;
                 }
+
                 return reader.HasRows;
             }
         }
@@ -273,6 +287,7 @@ namespace Greatbone.Core
             {
                 return false;
             }
+
             return reader.NextResult();
         }
 
@@ -293,6 +308,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
@@ -301,6 +317,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return command.ExecuteNonQuery();
         }
 
@@ -315,6 +332,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
@@ -323,6 +341,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteNonQueryAsync();
         }
 
@@ -343,6 +362,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
@@ -351,6 +371,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             object res = command.ExecuteScalar();
             return res == DBNull.Value ? null : res;
         }
@@ -366,6 +387,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             command.CommandText = cmdtext;
             command.CommandType = CommandType.Text;
@@ -374,6 +396,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteScalarAsync();
         }
 
@@ -384,6 +407,7 @@ namespace Greatbone.Core
             {
                 connection.Open();
             }
+
             Clear();
             command.CommandText = storedproc;
             command.CommandType = CommandType.StoredProcedure;
@@ -392,6 +416,7 @@ namespace Greatbone.Core
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteScalarAsync();
         }
 
@@ -408,6 +433,7 @@ namespace Greatbone.Core
             {
                 sharded.Shard = service.Shard;
             }
+
             return obj;
         }
 
@@ -423,8 +449,10 @@ namespace Greatbone.Core
                 {
                     sharded.Shard = service.Shard;
                 }
+
                 roll.Add(obj);
             }
+
             return roll.ToArray();
         }
 
@@ -440,6 +468,7 @@ namespace Greatbone.Core
                 {
                     sharded.Shard = service.Shard;
                 }
+
                 K key = default;
                 if (keyer != null)
                 {
@@ -453,8 +482,10 @@ namespace Greatbone.Core
                 {
                     throw new ServiceException("neither keyer nor IMappable<D>");
                 }
+
                 map.Add(key, obj);
             }
+
             return map;
         }
 
@@ -475,6 +506,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -492,6 +524,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -509,6 +542,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -526,6 +560,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -543,6 +578,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -560,6 +596,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -577,6 +614,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -594,6 +632,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -640,6 +679,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -666,12 +706,14 @@ namespace Greatbone.Core
                     {
                         sharded.Shard = service.Shard;
                     }
+
                     return true;
                 }
             }
             catch
             {
             }
+
             return false;
         }
 
@@ -691,6 +733,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -710,6 +753,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -732,6 +776,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -749,6 +794,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -766,6 +812,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -783,6 +830,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             return false;
         }
 
@@ -812,12 +860,14 @@ namespace Greatbone.Core
 
                         v[i] = obj;
                     }
+
                     return true;
                 }
             }
             catch
             {
             }
+
             return false;
         }
 
@@ -840,6 +890,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = false;
             return this;
         }
@@ -858,6 +909,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = 0;
             return this;
         }
@@ -876,6 +928,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = 0;
             return this;
         }
@@ -894,6 +947,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = 0;
             return this;
         }
@@ -912,6 +966,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = 0;
             return this;
         }
@@ -930,6 +985,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = 0;
             return this;
         }
@@ -948,6 +1004,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = default;
             return this;
         }
@@ -966,6 +1023,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = null;
             return this;
         }
@@ -990,6 +1048,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = default;
             return this;
         }
@@ -1008,6 +1067,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = null;
             return this;
         }
@@ -1026,6 +1086,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = null;
             return this;
         }
@@ -1044,6 +1105,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = null;
             return this;
         }
@@ -1062,6 +1124,7 @@ namespace Greatbone.Core
             catch
             {
             }
+
             v = null;
             return this;
         }
@@ -1089,12 +1152,14 @@ namespace Greatbone.Core
                     {
                         sharded.Shard = service.Shard;
                     }
+
                     return this;
                 }
             }
             catch
             {
             }
+
             v = default;
             return this;
         }
@@ -1125,12 +1190,14 @@ namespace Greatbone.Core
 
                         v[i] = obj;
                     }
+
                     return this;
                 }
             }
             catch
             {
             }
+
             v = null;
             return this;
         }
@@ -1145,6 +1212,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.AddWithValue(name, DBNull.Value);
             return this;
         }
@@ -1155,6 +1223,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Numeric)
             {
                 Value = v.Decimal
@@ -1173,6 +1242,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
             {
                 Value = v
@@ -1186,6 +1256,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Smallint)
             {
                 Value = v
@@ -1199,6 +1270,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
             {
                 Value = v
@@ -1212,6 +1284,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bigint)
             {
                 Value = v
@@ -1225,6 +1298,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Double)
             {
                 Value = v
@@ -1238,6 +1312,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
             {
                 Value = v
@@ -1267,6 +1342,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             int len = v?.Length ?? 0;
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, len)
             {
@@ -1281,6 +1357,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
             {
                 Value = (v.Array != null) ? (object) v : DBNull.Value
@@ -1294,6 +1371,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -1308,6 +1386,7 @@ namespace Greatbone.Core
                     Value = v.ToString()
                 });
             }
+
             return this;
         }
 
@@ -1317,6 +1396,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -1331,6 +1411,7 @@ namespace Greatbone.Core
                     Value = v.ToString()
                 });
             }
+
             return this;
         }
 
@@ -1340,6 +1421,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1353,6 +1435,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1366,6 +1449,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1379,6 +1463,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1397,6 +1482,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
@@ -1408,6 +1494,7 @@ namespace Greatbone.Core
                     Value = DataUtility.ToString(v, proj)
                 });
             }
+
             return this;
         }
 
@@ -1417,6 +1504,7 @@ namespace Greatbone.Core
             {
                 name = PARAMS[index++];
             }
+
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -1431,6 +1519,7 @@ namespace Greatbone.Core
                     Value = DataUtility.ToString(v, proj)
                 });
             }
+
             return this;
         }
 
@@ -1622,6 +1711,7 @@ namespace Greatbone.Core
                     Clear();
                     transact.Commit();
                 }
+
                 reader?.Close();
                 command.Transaction = null;
                 connection.Close();

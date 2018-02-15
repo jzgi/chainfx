@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac, int page)
         {
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").columnlst(User.Empty).T(" FROM users WHERE opr > 0 ORDER BY city LIMIT 20 OFFSET @1");
                 dc.Query(p => p.Set(page * 20));

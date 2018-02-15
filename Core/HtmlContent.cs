@@ -818,8 +818,8 @@ namespace Greatbone.Core
 
         public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
         {
-            // current dropdown - action - ordinal as the id
-            string m = webCtx.Doer.Lower;
+            // current dropdown - procedure - ordinal as the id
+            string m = webCtx.Procedure.Lower;
             Add("<a class=\"primary\" data-toggle=\"dropdown-");
             Add(m);
             Add('-');
@@ -1051,7 +1051,7 @@ namespace Greatbone.Core
         public void PAGENATE(int count)
         {
             // pagination
-            ActionDoer ad = webCtx.Doer;
+            ProcedureDescript ad = webCtx.Procedure;
             if (ad.HasSubscript)
             {
                 Add("<ul class=\"pagination\" role=\"navigation\">");
@@ -1097,7 +1097,7 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
             Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
-            ActionDoer[] ads = varwork?.Tooled;
+            ProcedureDescript[] ads = varwork?.Tooled;
 
             if (head != null)
             {
@@ -1329,7 +1329,7 @@ namespace Greatbone.Core
             if (when)
             {
                 var work = webCtx.Work?.VarWork;
-                var ai = work?.GetAction(name);
+                var ai = work?.GetProcedure(name);
                 if (ai != null)
                 {
                     Tool(ai, model, ordinal, subscript);
@@ -1343,7 +1343,7 @@ namespace Greatbone.Core
             if (when)
             {
                 var work = webCtx.Work;
-                var ai = work?.GetAction(name);
+                var ai = work?.GetProcedure(name);
                 if (ai != null)
                 {
                     Tool(ai, model, ordinal, subscript);
@@ -1352,14 +1352,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Tool(ActionDoer ad, IData obj, int ordinal, int subscript = -1)
+        void Tool(ProcedureDescript ad, IData obj, int ordinal, int subscript = -1)
         {
             var tool = ad.Tool;
             bool ok = ad.DoAuthorize(webCtx) && ad.DoState(webCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");
-                Add(ad == webCtx.Doer ? " hollow" : " clear");
+                Add(ad == webCtx.Procedure ? " hollow" : " clear");
                 Add("\" href=\"");
                 if (obj != null)
                 {

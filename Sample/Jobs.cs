@@ -60,7 +60,7 @@ namespace Greatbone.Sample
         public void clean(WebContext ac)
         {
             string shopid = ac[1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
                 {

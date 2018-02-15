@@ -83,7 +83,7 @@ namespace Greatbone.Sample
                     return false;
                 }
                 // check in db
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
                     {
@@ -108,7 +108,7 @@ namespace Greatbone.Sample
                 int colon = orig.IndexOf(':');
                 string tel = orig.Substring(0, colon);
                 string credential = StrUtility.MD5(orig);
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", p => p.Set(tel)))
                     {
@@ -177,7 +177,7 @@ namespace Greatbone.Sample
             ac.GivePage(200, m =>
             {
                 m.T("<h1>关于天国的事实真相</h1>");
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     for (int i = 0; i < lessons?.Length; i++)
                     {

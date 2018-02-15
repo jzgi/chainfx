@@ -24,7 +24,7 @@ namespace Greatbone.Sample
         public void @default(WebContext wc)
         {
             string shopid = wc[-1];
-            using (var dc = wc.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM items WHERE shopid = @1 ORDER BY status DESC", p => p.Set(shopid));
                 wc.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
@@ -59,7 +59,7 @@ namespace Greatbone.Sample
             {
                 var o = await wc.ReadObjectAsync<Item>();
                 o.shopid = wc[-1];
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty), p => o.Write(p));
                 }
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
             string[] key = f[nameof(key)];
             if (key != null)
             {
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key), p => p.Set(shopid), false);
                 }

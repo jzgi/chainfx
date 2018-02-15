@@ -27,9 +27,9 @@ namespace Greatbone.Sample
 
         public const string WatchRef = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=110#wechat_redirect";
 
-        static Client WCPay;
+        static Connector WCPay;
 
-        static readonly Client WeiXin = new Client("https://api.weixin.qq.com");
+        static readonly Connector WeiXin = new Connector("https://api.weixin.qq.com");
 
         static volatile string AccessToken;
 
@@ -73,7 +73,7 @@ namespace Greatbone.Sample
                 };
                 X509Certificate2 cert = new X509Certificate2(p12file, mchid, X509KeyStorageFlags.MachineKeySet);
                 handler.ClientCertificates.Add(cert);
-                WCPay = new Client(handler)
+                WCPay = new Connector(handler)
                 {
                     BaseAddress = new Uri("https://api.mch.weixin.qq.com")
                 };

@@ -17,7 +17,7 @@ namespace Greatbone.Core
     ///
     /// The encapsulation of a web request/response exchange context. It supports multiplexity occuring in SSE and WebSocket.
     ///
-    public class WebContext : HttpContext, IDoerContext<ActionDoer>, IDisposable
+    public class WebContext : HttpContext, IDisposable
     {
         readonly IFeatureCollection features;
 
@@ -112,7 +112,7 @@ namespace Greatbone.Core
 
         public Work Work { get; internal set; }
 
-        public ActionDoer Doer { get; internal set; }
+        public ProcedureDescript Procedure { get; internal set; }
 
         public int Subscript { get; internal set; }
 
@@ -574,9 +574,6 @@ namespace Greatbone.Core
             await Response.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
         }
 
-        //
-        //
-
         public void Dispose()
         {
             // request content buffer
@@ -593,17 +590,6 @@ namespace Greatbone.Core
                     BufferUtility.Return(dcont.ByteBuffer);
                 }
             }
-        }
-
-        public DbContext NewDbContext(IsolationLevel? level = null)
-        {
-            DbContext dc = new DbContext(Service, this);
-            if (level != null)
-            {
-                dc.Begin(level.Value);
-            }
-
-            return dc;
         }
     }
 }

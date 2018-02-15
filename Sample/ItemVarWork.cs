@@ -19,7 +19,7 @@ namespace Greatbone.Sample
         {
             string shopid = wc[typeof(IShopVar)];
             string name = wc[this];
-            using (var dc = wc.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
@@ -35,7 +35,7 @@ namespace Greatbone.Sample
         {
             string shopid = wc[-1];
             string name = wc[this];
-            using (var dc = wc.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                 {
@@ -67,7 +67,7 @@ namespace Greatbone.Sample
             {
                 wc.GivePane(200, h =>
                 {
-                    using (var dc = wc.NewDbContext())
+                    using (var dc = NewDbContext())
                     {
                         h.FORM_();
                         if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // to create new
@@ -108,7 +108,7 @@ namespace Greatbone.Sample
             }
             else // POST
             {
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
                     dc.Let(out string unit).Let(out decimal price);
@@ -175,7 +175,7 @@ namespace Greatbone.Sample
             string name = wc[this];
             if (wc.GET)
             {
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Item>("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
                     wc.GivePane(200, m =>
@@ -194,7 +194,7 @@ namespace Greatbone.Sample
             {
                 const byte proj = 0xff ^ Item.PK;
                 var o = await wc.ReadObjectAsync<Item>(proj);
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2"), p =>
                     {
@@ -213,7 +213,7 @@ namespace Greatbone.Sample
             string name = wc[this];
             if (wc.GET)
             {
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
@@ -228,7 +228,7 @@ namespace Greatbone.Sample
             {
                 var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name)) > 0)
                     {
@@ -246,7 +246,7 @@ namespace Greatbone.Sample
             string name = wc[this];
             if (wc.GET)
             {
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
                     {
@@ -261,7 +261,7 @@ namespace Greatbone.Sample
             {
                 var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
                 }
@@ -276,7 +276,7 @@ namespace Greatbone.Sample
             string name = wc[this];
             if (wc.GET)
             {
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Query1("SELECT stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
                     dc.Let(out short stock);
@@ -286,7 +286,7 @@ namespace Greatbone.Sample
             else // POST
             {
                 (await wc.ReadAsync<Form>()).Let(out short stock);
-                using (var dc = wc.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
                 }

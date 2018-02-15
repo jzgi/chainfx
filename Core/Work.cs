@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -24,14 +25,14 @@ namespace Greatbone.Core
 
         readonly Type type;
 
-        // declared actions 
-        readonly Map<string, ActionDoer> actions;
+        // declared procedures 
+        readonly Map<string, ProcedureDescript> procedures;
 
-        // the default action, can be null
-        readonly ActionDoer @default;
+        // the default procedure, can be null
+        readonly ProcedureDescript @default;
 
-        // actions with UiToolAttribute
-        readonly ActionDoer[] tooled;
+        // procedure with UiToolAttribute
+        readonly ProcedureDescript[] tooled;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -39,7 +40,7 @@ namespace Greatbone.Core
         // variable-key subwork, if any
         internal Work varwork;
 
-        // if there is any action that must pick form value
+        // if there is any procedure that must pick form value
         readonly bool pick;
 
         // to obtain a string key from a data object.
@@ -47,8 +48,8 @@ namespace Greatbone.Core
         {
             this.cfg = cfg;
 
-            // gather actions
-            actions = new Map<string, ActionDoer>(32);
+            // gather procedures
+            procedures = new Map<string, ProcedureDescript>(32);
             this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -60,34 +61,35 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                ActionDoer ad;
+                ProcedureDescript ad;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    ad = new ActionDoer(this, mi, async, false);
+                    ad = new ProcedureDescript(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
                     LimitAttribute limit = (LimitAttribute) pis[1].GetCustomAttribute(typeof(LimitAttribute));
-                    ad = new ActionDoer(this, mi, async, true, limit?.Value ?? 20);
+                    ad = new ProcedureDescript(this, mi, async, true, limit?.Value ?? 20);
                 }
                 else continue;
 
-                actions.Add(ad);
+                procedures.Add(ad);
                 if (ad.Key == string.Empty) @default = ad;
 
                 if (ad.Tool?.MustPick == true) pick = true;
             }
 
-            // gather styled actions
-            Roll<ActionDoer> roll = new Roll<ActionDoer>(16);
-            for (int i = 0; i < actions.Count; i++)
+            // gather tooled procedures
+            Roll<ProcedureDescript> roll = new Roll<ProcedureDescript>(16);
+            for (int i = 0; i < procedures.Count; i++)
             {
-                ActionDoer ad = actions[i];
-                if (ad.HasTool)
+                ProcedureDescript pd = procedures[i];
+                if (pd.HasTool)
                 {
-                    roll.Add(ad);
+                    roll.Add(pd);
                 }
             }
+
             tooled = roll.ToArray();
         }
 
@@ -103,13 +105,13 @@ namespace Greatbone.Core
 
         public bool HasKeyer => cfg.Keyer != null;
 
-        public Map<string, ActionDoer> Actions => actions;
+        public Map<string, ProcedureDescript> Procedures => procedures;
 
-        public ActionDoer[] Tooled => tooled;
+        public ProcedureDescript[] Tooled => tooled;
 
         public bool HasPick => pick;
 
-        public ActionDoer Default => @default;
+        public ProcedureDescript Default => @default;
 
         public Map<string, Work> Works => works;
 
@@ -136,6 +138,7 @@ namespace Greatbone.Core
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
+
             // create instance
             Type typ = typeof(W);
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
@@ -143,6 +146,7 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " need public and WorkConfig");
             }
+
             WorkConfig wc = new WorkConfig(VAR)
             {
                 Ui = ui,
@@ -174,10 +178,12 @@ namespace Greatbone.Core
             {
                 throw new ServiceException("allowed work nesting " + MaxNesting);
             }
+
             if (works == null)
             {
                 works = new Map<string, Work>();
             }
+
             // create instance by reflection
             Type typ = typeof(W);
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
@@ -185,6 +191,7 @@ namespace Greatbone.Core
             {
                 throw new ServiceException(typ + " need public and WorkConfig");
             }
+
             WorkConfig wc = new WorkConfig(name)
             {
                 Ui = ui,
@@ -209,34 +216,42 @@ namespace Greatbone.Core
             {
                 return fstr(obj);
             }
+
             if (keyer is Func<IData, int> fint)
             {
                 return fint(obj);
             }
+
             if (keyer is Func<IData, long> flong)
             {
                 return flong(obj);
             }
+
             if (keyer is Func<IData, short> fshort)
             {
                 return fshort(obj);
             }
+
             if (keyer is Func<IData, string[]> fstrs)
             {
                 return fstrs(obj);
             }
+
             if (keyer is Func<IData, int[]> fints)
             {
                 return fints(obj);
             }
+
             if (keyer is Func<IData, long[]> flongs)
             {
                 return flongs(obj);
             }
+
             if (keyer is Func<IData, short[]> fshorts)
             {
                 return fshorts(obj);
             }
+
             return null;
         }
 
@@ -266,9 +281,9 @@ namespace Greatbone.Core
             cont.ELEM(Key,
                 delegate
                 {
-                    for (int i = 0; i < actions.Count; i++)
+                    for (int i = 0; i < procedures.Count; i++)
                     {
-                        ActionDoer act = actions[i];
+                        ProcedureDescript act = procedures[i];
                         cont.Put(act.Key, "");
                     }
                 },
@@ -282,41 +297,45 @@ namespace Greatbone.Core
                             wrk.Describe(cont);
                         }
                     }
+
                     varwork?.Describe(cont);
                 });
         }
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
-        public ActionDoer GetAction(string method)
+        public ProcedureDescript GetProcedure(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
                 return @default;
             }
-            return actions[method];
+
+            return procedures[method];
         }
 
-        internal Work Resolve(ref string relative, WebContext ac)
+        internal Work Resolve(ref string relative, WebContext wc)
         {
-            if (!DoAuthorize(ac)) throw AuthorizeEx;
+            if (!DoAuthorize(wc)) throw AuthorizeEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
             {
                 return this;
             }
+
             // seek subworks/varwork
             string key = relative.Substring(0, slash);
             relative = relative.Substring(slash + 1); // adjust relative
             if (works != null && works.TryGet(key, out var work)) // if child
             {
-                ac.Chain(work, key);
-                return work.Resolve(ref relative, ac);
+                wc.Chain(work, key);
+                return work.Resolve(ref relative, wc);
             }
+
             if (varwork != null) // if variable-key sub
             {
-                IData prin = ac.Principal;
+                IData prin = wc.Principal;
                 object princi = null;
                 if (key.Length == 0) // resolve shortcut
                 {
@@ -326,9 +345,11 @@ namespace Greatbone.Core
                         throw AuthorizeEx;
                     }
                 }
-                ac.Chain(varwork, key, princi);
-                return varwork.Resolve(ref relative, ac);
+
+                wc.Chain(varwork, key, princi);
+                return varwork.Resolve(ref relative, wc);
             }
+
             return null;
         }
 
@@ -336,25 +357,25 @@ namespace Greatbone.Core
         /// To hndle a request/response context. authorize, before/after filters
         /// </summary>
         /// <param name="rsc">the resource path</param>
-        /// <param name="ac">ActionContext</param>
+        /// <param name="wc">WebContext</param>
         /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
         /// <seealso cref="AuthorizeAttribute.Check"/>
-        internal async Task HandleAsync(string rsc, WebContext ac)
+        internal async Task HandleAsync(string rsc, WebContext wc)
         {
-            ac.Work = this;
+            wc.Work = this;
             // any before filterings
-            if (Before?.Do(ac) == false) goto WorkExit;
-            if (BeforeAsync != null && !(await BeforeAsync.DoAsync(ac))) goto WorkExit;
+            if (Before?.Do(wc) == false) goto WorkExit;
+            if (BeforeAsync != null && !(await BeforeAsync.DoAsync(wc))) goto WorkExit;
             int dot = rsc.LastIndexOf('.');
             if (dot != -1) // file
             {
-                if (!Service.TryGiveFromCache(ac)) // try in cache
+                if (!Service.TryGiveFromCache(wc)) // try in cache
                 {
-                    DoFile(rsc, rsc.Substring(dot), ac);
-                    Service.TryCacheUp(ac);
+                    DoFile(rsc, rsc.Substring(dot), wc);
+                    Service.TryCacheUp(wc);
                 }
             }
-            else // action
+            else // procedure
             {
                 string name = rsc;
                 int subscpt = 0;
@@ -362,45 +383,49 @@ namespace Greatbone.Core
                 if (dash != -1)
                 {
                     name = rsc.Substring(0, dash);
-                    ac.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
+                    wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
-                ActionDoer ad = string.IsNullOrEmpty(name) ? @default : GetAction(name);
-                if (ad == null)
+
+                ProcedureDescript pd = string.IsNullOrEmpty(name) ? @default : GetProcedure(name);
+                if (pd == null)
                 {
-                    ac.Give(404); // not found
+                    wc.Give(404); // not found
                     return;
                 }
 
-                if (!ad.DoAuthorize(ac)) throw AuthorizeEx;
-                ac.Doer = ad;
+                if (!pd.DoAuthorize(wc)) throw AuthorizeEx;
+                wc.Procedure = pd;
                 // any before filterings
-                if (ad.Before?.Do(ac) == false) goto ActionExit;
-                if (ad.BeforeAsync != null && !(await ad.BeforeAsync.DoAsync(ac))) goto ActionExit;
+                if (pd.Before?.Do(wc) == false) goto ProcedureExit;
+                if (pd.BeforeAsync != null && !(await pd.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
 
                 // try in cache
-                if (!Service.TryGiveFromCache(ac))
+                if (!Service.TryGiveFromCache(wc))
                 {
                     // method invocation
-                    if (ad.IsAsync)
+                    if (pd.IsAsync)
                     {
-                        await ad.DoAsync(ac, subscpt); // invoke action method
+                        await pd.DoAsync(wc, subscpt); // invoke procedure method
                     }
                     else
                     {
-                        ad.Do(ac, subscpt);
+                        pd.Do(wc, subscpt);
                     }
-                    Service.TryCacheUp(ac);
+
+                    Service.TryCacheUp(wc);
                 }
-                ActionExit:
-                // action's after filtering
-                ad.After?.Do(ac);
-                if (ad.AfterAsync != null) await ad.AfterAsync.DoAsync(ac);
-                ac.Doer = null;
+
+                ProcedureExit:
+                // procedure's after filtering
+                pd.After?.Do(wc);
+                if (pd.AfterAsync != null) await pd.AfterAsync.DoAsync(wc);
+                wc.Procedure = null;
             }
+
             WorkExit:
-            After?.Do(ac);
-            if (AfterAsync != null) await AfterAsync.DoAsync(ac);
-            ac.Work = null;
+            After?.Do(wc);
+            if (AfterAsync != null) await AfterAsync.DoAsync(wc);
+            wc.Work = null;
         }
 
         public void DoFile(string filename, string ext, WebContext ac)
@@ -410,17 +435,20 @@ namespace Greatbone.Core
                 ac.Give(403); // forbidden
                 return;
             }
+
             if (!StaticContent.TryGetType(ext, out var ctyp))
             {
                 ac.Give(415); // unsupported media type
                 return;
             }
+
             string path = Path.Combine(cfg.Directory, filename);
             if (!File.Exists(path))
             {
                 ac.Give(404); // not found
                 return;
             }
+
             DateTime modified = File.GetLastWriteTime(path);
             // load file content
             byte[] bytes;
@@ -435,6 +463,7 @@ namespace Greatbone.Core
                     {
                         fs.CopyTo(gzs);
                     }
+
                     bytes = ms.ToArray();
                     gzip = true;
                 }
@@ -495,6 +524,7 @@ namespace Greatbone.Core
             {
                 registry = new Cell[16];
             }
+
             registry[size++] = new Cell(value);
         }
 
@@ -512,6 +542,7 @@ namespace Greatbone.Core
             {
                 registry = new Cell[8];
             }
+
             registry[size++] = new Cell(typeof(V), loader, maxage);
         }
 
@@ -521,6 +552,7 @@ namespace Greatbone.Core
             {
                 registry = new Cell[8];
             }
+
             registry[size++] = new Cell(typeof(V), loaderAsync, maxage);
         }
 
@@ -542,6 +574,7 @@ namespace Greatbone.Core
                     }
                 }
             }
+
             return Parent?.Obtain<T>();
         }
 
@@ -558,8 +591,20 @@ namespace Greatbone.Core
                     }
                 }
             }
+
             if (Parent == null) return null;
             return await Parent.ObtainAsync<T>();
+        }
+
+        public DbContext NewDbContext(IsolationLevel? level = null)
+        {
+            DbContext dc = new DbContext(Service);
+            if (level != null)
+            {
+                dc.Begin(level.Value);
+            }
+
+            return dc;
         }
 
         /// <summary>
@@ -599,6 +644,7 @@ namespace Greatbone.Core
                 {
                     this.loader = loader;
                 }
+
                 this.maxage = maxage;
             }
 
@@ -616,6 +662,7 @@ namespace Greatbone.Core
                 {
                     return value;
                 }
+
                 lock (loader) // cache object
                 {
                     if (Environment.TickCount >= expiry)
@@ -633,6 +680,7 @@ namespace Greatbone.Core
                             expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                         }
                     }
+
                     return value;
                 }
             }
@@ -643,6 +691,7 @@ namespace Greatbone.Core
                 {
                     return value;
                 }
+
                 int lexpiry = this.expiry;
                 int ticks = Environment.TickCount;
                 if (ticks >= lexpiry)
@@ -660,6 +709,7 @@ namespace Greatbone.Core
                         expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                     }
                 }
+
                 return value;
             }
         }

@@ -25,7 +25,7 @@ namespace Greatbone.Sample
         public void @default(WebContext ac, int page)
         {
             string wx = ac[-1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("(SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC) UNION ALL (SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC)", p => p.Set(wx));
                 ac.GivePage(200, m =>
@@ -73,7 +73,7 @@ namespace Greatbone.Sample
         public void clear(WebContext ac)
         {
             string wx = ac[-1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = 0", p => p.Set(wx));
             }
@@ -91,7 +91,7 @@ namespace Greatbone.Sample
         public void @default(WebContext ac)
         {
             string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1", p => p.Set(shopid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
@@ -114,7 +114,7 @@ namespace Greatbone.Sample
         public void @new(WebContext ac)
         {
             string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 var shop = Obtain<Map<string, Shop>>()[shopid];
                 var o = new Order
@@ -142,7 +142,7 @@ namespace Greatbone.Sample
             int[] key = (await ac.ReadAsync<Form>())[nameof(key)];
             if (key != null)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("DELETE FROM orders WHERE shopid = @1 AND id")._IN_(key), p => p.Set(shopid), false);
                 }
@@ -164,7 +164,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             ac.GivePage(200, main =>
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                     main.TOOLBAR();
@@ -203,7 +203,7 @@ namespace Greatbone.Sample
             }
             ac.GivePage(200, main =>
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
                     main.TOOLBAR(title: filter);
@@ -246,7 +246,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key), prepare: false);
                 }
@@ -265,7 +265,7 @@ namespace Greatbone.Sample
         public void @default(WebContext ac, int page)
         {
             string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
@@ -287,7 +287,7 @@ namespace Greatbone.Sample
         public void send(WebContext ac)
         {
             long[] key = ac.Query[nameof(key)];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Execute(dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key));
             }
@@ -302,7 +302,7 @@ namespace Greatbone.Sample
             string[] key = f[nameof(key)];
             if (key != null)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND shopid = @1 AND id")._IN_(key), p => p.Set(shopid), prepare: false);
                 }
@@ -321,7 +321,7 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac, int page)
         {
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status > 0 AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>

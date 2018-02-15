@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// The descriptor and doer for an action method.
+    /// The descriptor for a web procedure method.
     /// </summary>
-    public class ActionDoer : Nodule, IDoer
+    public class ProcedureDescript : Nodule
     {
         readonly Work work;
 
@@ -26,19 +26,19 @@ namespace Greatbone.Core
         // state check annotation
         internal readonly StateAttribute state;
 
-        // void action(ActionContext)
+        // void procedure(WebContext)
         readonly Action<WebContext> @do;
 
-        // async Task action(ActionContext)
+        // async Task procedure(WebContext)
         readonly Func<WebContext, Task> doAsync;
 
-        // void action(ActionContext, int)
+        // void procedure(WebContext, int)
         readonly Action<WebContext, int> do2;
 
-        // async Task action(ActionContext, int)
+        // async Task procedure(WebContext, int)
         readonly Func<WebContext, int, Task> do2Async;
 
-        internal ActionDoer(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
+        internal ProcedureDescript(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
             mi.Name == "default" ? string.Empty : mi.Name,
             mi
         )
@@ -91,33 +91,33 @@ namespace Greatbone.Core
 
         public int Limit => limit;
 
-        public bool DoState(WebContext ac, object model)
+        public bool DoState(WebContext wc, object model)
         {
-            return state == null || model == null || state.Check(ac, model);
+            return state == null || model == null || state.Check(wc, model);
         }
 
-        internal void Do(WebContext ac, int subscpt)
+        internal void Do(WebContext wc, int subscpt)
         {
             if (HasSubscript)
             {
-                do2(ac, subscpt);
+                do2(wc, subscpt);
             }
             else
             {
-                @do(ac);
+                @do(wc);
             }
         }
 
-        internal async Task DoAsync(WebContext ac, int subscpt)
+        internal async Task DoAsync(WebContext wc, int subscpt)
         {
-            // invoke the right action method
+            // invoke the right procedure method
             if (HasSubscript)
             {
-                await do2Async(ac, subscpt);
+                await do2Async(wc, subscpt);
             }
             else
             {
-                await doAsync(ac);
+                await doAsync(wc);
             }
         }
     }

@@ -38,7 +38,7 @@ namespace Greatbone.Sample
         public void token(WebContext ac)
         {
             string wx = ac[this];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ CREDENTIAL;
                 if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
@@ -88,7 +88,7 @@ namespace Greatbone.Sample
                 const byte proj = 0xff ^ CREDENTIAL ^ User.LATER;
                 var o = await ac.ReadObjectAsync(obj: prin);
                 o.wx = wx;
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj).T(" ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
                     dc.Execute(p => o.Write(p, proj));
@@ -109,7 +109,7 @@ namespace Greatbone.Sample
             string password = null;
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     credential = (string)dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
                     if (credential != null)
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
                 if (password != PASS)
                 {
                     credential = StrUtility.MD5(prin.tel + ":" + password);
-                    using (var dc = ac.NewDbContext())
+                    using (var dc = NewDbContext())
                     {
                         dc.Execute("UPDATE users SET credential = @1 WHERE wx = @1", (p) => p.Set(credential).Set(wx));
                     }
@@ -206,7 +206,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 wx = f[nameof(wx)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE users SET opr = 0, oprat = NULL WHERE wx = @1", p => p.Set(wx));
                 }
@@ -216,7 +216,7 @@ namespace Greatbone.Sample
                 var f = await ac.ReadAsync<Form>();
                 tel = f[nameof(tel)];
                 opr = f[nameof(opr)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(shopid).Set(tel)); // may add multiple
                 }
@@ -225,7 +225,7 @@ namespace Greatbone.Sample
             {
                 m.FORM_();
                 m.FIELDSET_("现有人员");
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query("SELECT wx, name, tel, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
                     {
@@ -279,7 +279,7 @@ namespace Greatbone.Sample
                 o.min = f[nameof(o.min)];
                 o.notch = f[nameof(o.notch)];
                 o.off = f[nameof(o.off)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
                         p => p.Set(o.schedule).Set(o.delivery).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(shopid));
@@ -294,7 +294,7 @@ namespace Greatbone.Sample
             string shopid = ac[this];
             if (ac.GET)
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE shopid = @1", p => p.Set(shopid)))
                     {
@@ -309,7 +309,7 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
                 }
@@ -344,7 +344,7 @@ namespace Greatbone.Sample
                 var f = await ac.ReadAsync<Form>();
                 o.status = f[nameof(o.status)];
                 custsvc = f[nameof(custsvc)];
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(o.status).Set(shopid));
                     if (custsvc)

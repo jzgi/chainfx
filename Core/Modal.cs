@@ -17,12 +17,12 @@ namespace Greatbone.Core
         AnchorShow = 0x1004,
 
         /// <summary>
-        /// To open a free-style dialog without the OK button, where the action can be called a number of times.
+        /// To open a free-style dialog without the OK button, where the procedure can be called a number of times.
         /// </summary>
         AnchorOpen = 0x1008,
 
         /// <summary>
-        /// To execute a script that calls the action asynchronously.
+        /// To execute a script that calls the procedure asynchronously.
         /// </summary>
         AnchorScript = 0x1010,
 

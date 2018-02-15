@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac)
         {
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query(dc.Sql("SELECT  ").columnlst(Slide.Empty).T(" FROM slides"));
                 ac.GiveBoardPage(200, dc.ToArray<Slide>(), (h, o) =>

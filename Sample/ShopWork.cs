@@ -73,7 +73,7 @@ namespace Greatbone.Sample
             var (orderid, _) = trade_no.To2Ints();
             string city, addr;
             string towx = null; // messge to
-            using (var dc = ac.NewDbContext(ReadCommitted))
+            using (var dc = NewDbContext(ReadCommitted))
             {
                 if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = " + PAID + " WHERE id = @2 AND status < " + PAID + " RETURNING shopid, city, addr", (p) => p.Set(cash).Set(orderid)))
                 {
@@ -116,7 +116,7 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac)
         {
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops ORDER BY id"));
                 ac.GiveBoardPage(200, dc.ToArray<Shop>(), (h, o) =>
@@ -152,7 +152,7 @@ namespace Greatbone.Sample
             else // post
             {
                 var o = await ac.ReadObjectAsync<Shop>(proj);
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("INSERT INTO shops")._(Shop.Empty, proj)._VALUES_(Shop.Empty, proj), p => o.Write(p, proj));
                 }

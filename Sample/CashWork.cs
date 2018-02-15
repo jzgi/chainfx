@@ -23,7 +23,7 @@ namespace Greatbone.Sample
         public void @default(WebContext ac, int page)
         {
             string shopid = ac[-1];
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM cashes WHERE shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
                 ac.GiveSheetPage(
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
                 date = DateTime.Now,
                 keeper = ((User)ac.Principal).name
             });
-            using (var dc = ac.NewDbContext())
+            using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ Cash.ID;
                 dc.Execute(dc.Sql("INSERT INTO cashes")._(Cash.Empty, proj)._VALUES_(Cash.Empty, proj), p => o.Write(p, proj));
@@ -75,7 +75,7 @@ namespace Greatbone.Sample
             string shopid = ac[-1];
             ac.GivePane(200, m =>
             {
-                using (var dc = ac.NewDbContext())
+                using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT to_char(date, 'YYYY-MM') as yrmon, txn, SUM(received), SUM(paid) FROM cashes WHERE shopid = @1 GROUP BY yrmon, txn ORDER BY yrmon DESC", p => p.Set(shopid));
                     while (dc.Next())

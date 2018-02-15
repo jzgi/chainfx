@@ -3,7 +3,7 @@
 namespace Greatbone.Sample
 {
     /// <summary>
-    /// To check access to an annotated work or actions. 
+    /// To check access to an annotated work or procedure. 
     /// </summary>
     public class UserAttribute : AuthorizeAttribute
     {
