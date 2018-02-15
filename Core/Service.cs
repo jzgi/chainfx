@@ -661,7 +661,7 @@ namespace Greatbone.Core
             // deserialize
             try
             {
-                JObj jo = (JObj) new JsonParse(str.ToString()).Parse();
+                JObj jo = (JObj) new JsonParser(str.ToString()).Parse();
                 P prin = new P();
                 prin.Read(jo, 0xff);
                 return prin;
