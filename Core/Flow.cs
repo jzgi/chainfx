@@ -7,7 +7,7 @@ namespace Greatbone.Core
     /// </summary>
     /// <param name="flow"></param>
     /// <returns>the last dataid that has been received and handled</returns>
-    delegate long FlowDelegate(Flow flow);
+    public delegate long FlowDelegate(Flow flow);
 
     /// <summary>
     /// The data object of an event in the event queue.
@@ -195,6 +195,7 @@ namespace Greatbone.Core
         }
 
         public bool DataSet { get; }
+
         public bool Next()
         {
             throw new NotImplementedException();

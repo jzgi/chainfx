@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -27,11 +26,14 @@ namespace Greatbone.Core
         // the embedded server
         readonly KestrelServer server;
 
-        // configured connectors to peers
-        readonly Map<string, Connector> connectors;
+        // configured clients to peers
+        readonly Map<string, Client> clients;
 
-        // descriptors of subscribed data flows
-        Map<string, FlowDescript> flows;
+        // the publishes of data flows
+        readonly FlowPub[] pubs;
+
+        // the subscribes of data flows
+        List<FlowSub> subs;
 
         // the data flow polling schesuler thread
         Thread scheduler;
@@ -48,14 +50,14 @@ namespace Greatbone.Core
 
             id = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
 
-            // setup file-based logger
+            // init the file-based logger
             LoggerFactory factory = new LoggerFactory();
             factory.AddProvider(this);
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
             FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
 
-            // create the embedded kestrel instance
+            // init the embedded server
             KestrelServerOptions options = new KestrelServerOptions();
             server = new KestrelServer(Options.Create(options), ServiceUtility.Libuv, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
@@ -63,29 +65,41 @@ namespace Greatbone.Core
             {
                 throw new ServiceException("missing 'addrs'");
             }
-
             foreach (string a in Addrs)
             {
                 addrs.Add(a.Trim());
             }
 
-            // initialize connectors
+            // init client
             var cluster = Cluster;
             if (cluster != null)
             {
                 for (int i = 0; i < cluster.Count; i++)
                 {
                     var e = cluster.At(i);
-                    if (connectors == null)
+                    if (clients == null)
                     {
-                        connectors = new Map<string, Connector>(cluster.Count * 2);
+                        clients = new Map<string, Client>(cluster.Count * 2);
                     }
-
-                    connectors.Add(new Connector(this, e.Key, e.Value));
+                    clients.Add(new Client(this, e.Key, e.Value));
                 }
             }
 
-            // create the response cache
+            // init data flow publishes
+            Roll<FlowPub> roll = new Roll<FlowPub>();
+            using (var dc = NewDbContext())
+            {
+                // tables/views with names in form of pub_* and the pub_id column 
+                dc.Query("SELECT DISTINCT table_name FROM INFORMATION_SCHEMA.columns WHERE table_schema = current_schema AND table_name LIKE 'pub_%' AND column_name = 'pub_id'");
+                while (dc.Next())
+                {
+                    dc.Let(out string tname);
+                    roll.Add(new FlowPub(tname));
+                }
+            }
+            pubs = roll.ToArray();
+
+            // init the response cache
             if (cfg.cache)
             {
                 int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
@@ -110,9 +124,9 @@ namespace Greatbone.Core
         ///
         public string Id => id;
 
-        public Map<string, Connector> Connectors => connectors;
+        public Map<string, Client> Clients => clients;
 
-        public Map<string, FlowDescript> Flows => flows;
+        public List<FlowSub> Subs => subs;
 
         public string Describe()
         {
@@ -238,7 +252,7 @@ namespace Greatbone.Core
             }
 
             // create and start the scheduler thead
-            if (connectors != null)
+            if (clients != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -250,10 +264,10 @@ namespace Greatbone.Core
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < Connectors.Count; i++)
+                        for (int i = 0; i < Clients.Count; i++)
                         {
-                            Connector connector = Connectors[i];
-                            connector.TryPoll(tick);
+                            Client client = Clients[i];
+                            client.TryPoll(tick);
                         }
                     }
                 });
@@ -271,40 +285,39 @@ namespace Greatbone.Core
             using (var dc = NewDbContext())
             {
                 dc.Query(dc.Sql("SELECT * FROM ").T(from).T(" WHERE pubid > @1 "), p => p.Set(id));
+                while (dc.Next())
+                {
+                }
             }
         }
 
-        public void Subscribe(string source, string dview, Func<object, int> datapack)
+        public void Subscribe(string peering, string pubsrc, FlowDelegate handler)
         {
-            if (flows == null)
+            for (int i = 0; i < clients.Count; i++)
             {
-                flows = new Map<string, FlowDescript>(8);
+                var pid = clients[i].PeerId;
+                if (peering.EndsWith('-') && pid.StartsWith(peering) || pid == peering) // wildcast or equal
+                {
+                    if (subs == null)
+                    {
+                        subs = new List<FlowSub>(8);
+                    }
+                    subs.Add(new FlowSub(pid, pubsrc, handler));
+                }
             }
         }
 
-        internal Connector GetConnector(string peerid)
+        internal Client GetClient(string peerId)
         {
-            for (int i = 0; i < connectors.Count; i++)
+            for (int i = 0; i < clients.Count; i++)
             {
-                Connector cli = connectors[i];
-                if (cli.Key.Equals(peerid)) return cli;
+                Client cli = clients[i];
+                if (cli.Key == peerId) return cli;
             }
-
             return null;
         }
 
         public string ConnectionString => ((ServiceConfig) cfg).ConnectionString;
-
-        public DbContext NewDbContext(IsolationLevel? level = null)
-        {
-            DbContext dc = new DbContext(this);
-            if (level != null)
-            {
-                dc.Begin(level.Value);
-            }
-
-            return dc;
-        }
 
         //
         // LOGGING

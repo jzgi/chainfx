@@ -10,7 +10,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class Connector : HttpClient, IMappable<string>
+    public class Client : HttpClient, IMappable<string>
     {
         const int AHEAD = 1000 * 12;
 
@@ -21,8 +21,8 @@ namespace Greatbone.Core
         // prepared header value
         readonly string x_event;
 
-        // peer name
-        readonly string peer;
+        // remote peer id 
+        readonly string peerId;
 
         // this field is only accessed by the scheduler
         Task pollTask;
@@ -32,25 +32,27 @@ namespace Greatbone.Core
 
         internal long evtid;
 
-        public Connector(HttpClientHandler handler) : base(handler)
+        public string PeerId => peerId;
+
+        public Client(HttpClientHandler handler) : base(handler)
         {
         }
 
-        public Connector(string raddr) : this(null, null, raddr)
+        public Client(string raddr) : this(null, null, raddr)
         {
         }
 
-        internal Connector(Service service, string peer, string raddr)
+        internal Client(Service service, string peerId, string raddr)
         {
             this.service = service;
-            this.peer = peer;
+            this.peerId = peerId;
 
 
             BaseAddress = new Uri(raddr);
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Key => peer;
+        public string Key => peerId;
 
 
         public void TryPoll(int ticks)
@@ -103,7 +105,7 @@ namespace Greatbone.Core
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peer != null && ac != null)
+                if (peerId != null && ac != null)
                 {
                     if (ac.Token != null)
                     {
@@ -127,7 +129,7 @@ namespace Greatbone.Core
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peer != null && ac != null)
+                if (peerId != null && ac != null)
                 {
                     if (ac.Token != null)
                     {
@@ -158,7 +160,7 @@ namespace Greatbone.Core
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peer != null && ac != null)
+                if (peerId != null && ac != null)
                 {
                     if (ac.Token != null)
                     {
@@ -192,7 +194,7 @@ namespace Greatbone.Core
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peer != null && ac != null)
+                if (peerId != null && ac != null)
                 {
                     if (ac.Token != null)
                     {
@@ -224,7 +226,7 @@ namespace Greatbone.Core
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-                if (peer != null && ac != null)
+                if (peerId != null && ac != null)
                 {
                     if (ac.Token != null)
                     {

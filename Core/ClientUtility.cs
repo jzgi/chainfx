@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    public static class ConnectorUtility
+    public static class ClientUtility
     {
         public static string GetValue(this HttpHeaders headers, string name)
         {
@@ -17,11 +17,11 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static void CallAny(this Connector[] df)
+        public static void CallAny(this Client[] df)
         {
         }
 
-        public static void CallAll(this Connector[] df)
+        public static void CallAll(this Client[] df)
         {
         }
 
