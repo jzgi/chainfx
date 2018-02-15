@@ -18,9 +18,6 @@ namespace Greatbone.Core
 
         readonly Service service;
 
-        // prepared header value
-        readonly string x_event;
-
         // remote peer id 
         readonly string peerId;
 
@@ -29,8 +26,6 @@ namespace Greatbone.Core
 
         // point of time to retry, set due to timeout or disconnection
         volatile int retryat;
-
-        internal long evtid;
 
         public string PeerId => peerId;
 

@@ -280,18 +280,22 @@ namespace Greatbone.Core
 
         internal void Poll(WebContext wc)
         {
-            string from = wc.Header("From");
-            long id = 0;
+            string x_flow = wc.Header("X-Flow");
+            var pub = pubs.First(x => x.Flow == x_flow);
+            long? x_id = wc.HeaderLong("X-ID");
+            int? limit = wc.HeaderInt("X-Limit");
+            FlowContent cnt = new FlowContent(256 * 1024);
             using (var dc = NewDbContext())
             {
-                dc.Query(dc.Sql("SELECT * FROM ").T(from).T(" WHERE pubid > @1 "), p => p.Set(id));
+                dc.Query(pub.Sql, p => p.Set(x_id.Value).Set(limit.Value));
                 while (dc.Next())
                 {
                 }
             }
+            wc.Give(200, cnt);
         }
 
-        public void Subscribe(string peering, string pubsrc, FlowDelegate handler)
+        public void Subscribe(string peering, string flow, FlowDelegate handler)
         {
             for (int i = 0; i < clients.Count; i++)
             {
@@ -302,7 +306,7 @@ namespace Greatbone.Core
                     {
                         subs = new List<FlowSub>(8);
                     }
-                    subs.Add(new FlowSub(pid, pubsrc, handler));
+                    subs.Add(new FlowSub(pid, flow, handler));
                 }
             }
         }

@@ -4,7 +4,7 @@ namespace Greatbone.Core
 {
     public class FlowContent : DynamicContent, IDataOutput<FlowContent>
     {
-        public FlowContent(bool octet, int capacity) : base(octet, capacity)
+        public FlowContent(int capacity) : base(true, capacity)
         {
         }
 

@@ -109,13 +109,10 @@ namespace Greatbone.Core
             set => fRequest.Body = value;
         }
 
-        [Obsolete]
         public override bool HasFormContentType { get; } = false;
 
-        [Obsolete]
         public override IFormCollection Form { get; set; } = null;
 
-        [Obsolete]
         public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             throw new NotImplementedException();

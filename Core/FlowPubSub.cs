@@ -2,29 +2,33 @@
 {
     public struct FlowPub
     {
-        readonly string view;
+        readonly string flow;
 
         readonly string sql;
 
-        internal FlowPub(string view)
+        internal FlowPub(string flow)
         {
-            this.view = view;
-            this.sql = "SELECT * FROM \"" + view + "\" WHERE pubid > @1 LIMIT @2 OFFSET @3";
+            this.flow = flow;
+            this.sql = "SELECT * FROM \"" + flow + "\" WHERE pub_id > @1 LIMIT @2";
         }
+
+        public string Flow => flow;
+
+        public string Sql => sql;
     }
 
     public struct FlowSub
     {
-        readonly string peer;
+        readonly string peerId;
 
-        readonly string pubname;
+        readonly string flow;
 
         readonly FlowDelegate handler;
 
-        public FlowSub(string peer, string pubname, FlowDelegate handler)
+        public FlowSub(string peerId, string flow, FlowDelegate handler)
         {
-            this.peer = peer;
-            this.pubname = pubname;
+            this.peerId = peerId;
+            this.flow = flow;
             this.handler = handler;
         }
     }
