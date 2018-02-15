@@ -14,6 +14,18 @@ namespace Greatbone.Core
     /// </summary>
     public class Flow : IDataInput
     {
+        private byte[] buffer;
+
+        int length;
+
+        int pos;
+
+        public Flow(ArraySegment<byte> byteas)
+        {
+            this.buffer = byteas.Array;
+            this.length = byteas.Count;
+        }
+
         public bool Get(string name, ref bool v)
         {
             throw new NotImplementedException();
@@ -194,7 +206,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool DataSet { get; }
+        public bool DataSet => true;
 
         public bool Next()
         {

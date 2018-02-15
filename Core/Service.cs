@@ -288,9 +288,7 @@ namespace Greatbone.Core
             using (var dc = NewDbContext())
             {
                 dc.Query(pub.Sql, p => p.Set(x_id.Value).Set(limit.Value));
-                while (dc.Next())
-                {
-                }
+                dc.Write(cnt);
             }
             wc.Give(200, cnt);
         }

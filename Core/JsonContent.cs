@@ -167,7 +167,6 @@ namespace Greatbone.Core
                 Add('"');
                 Add(':');
             }
-
             if (v == null)
             {
                 Add("null");
@@ -197,7 +196,6 @@ namespace Greatbone.Core
                     v.Write(this);
                     Add('}');
                 }
-
                 level--; // exit
             }
             return this;
