@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To set SQL parameters.  
     /// </summary>
-    public interface IParams : ISink<IParams>
+    public interface IParams : ISink
     {
         IParams SetNull();
 

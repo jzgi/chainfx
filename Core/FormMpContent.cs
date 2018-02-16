@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.
     /// </summary>
-    public class FormMpContent : DynamicContent, ISink<FormMpContent>
+    public class FormMpContent : DynamicContent, ISink
     {
         public const string BOUNDARY = "~7^E!3#A&W";
 
@@ -33,32 +33,31 @@ namespace Greatbone.Core
             Add("\"\r\n\r\n");
         }
 
-        public FormMpContent PutOpen()
+        public void PutOpen()
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent PutClose()
+        public void PutClose()
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent PutStart()
+        public void PutStart()
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent PutEnd()
+        public void PutEnd()
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent PutNull(string name)
+        public void PutNull(string name)
         {
-            return this;
         }
 
-        public FormMpContent Put(string name, JNumber v)
+        public void Put(string name, JNumber v)
         {
             Part(name);
             Add(v.bigint);
@@ -67,76 +66,65 @@ namespace Greatbone.Core
                 Add('.');
                 Add(v.fract);
             }
-            return this;
         }
 
-        public FormMpContent Put(string name, ISource v)
+        public void Put(string name, ISource v)
         {
-            return this;
         }
 
-        public FormMpContent Put(string name, bool v)
+        public void Put(string name, bool v)
         {
             Part(name);
             Add(v ? "true" : "false");
-            return this;
         }
 
-        public FormMpContent Put(string name, short v)
+        public void Put(string name, short v)
         {
             Part(name);
             Add(v);
-            return this;
         }
 
-        public FormMpContent Put(string name, int v)
+        public void Put(string name, int v)
         {
             Part(name);
             Add(v);
-            return this;
         }
 
-        public FormMpContent Put(string name, long v)
+        public void Put(string name, long v)
         {
             Part(name);
             Add(v);
-            return this;
         }
 
-        public FormMpContent Put(string name, double v)
+        public void Put(string name, double v)
         {
             Part(name);
             Add(v);
-            return this;
         }
 
-        public FormMpContent Put(string name, decimal v)
+        public void Put(string name, decimal v)
         {
             Part(name);
             Add(v);
-            return this;
         }
 
-        public FormMpContent Put(string name, DateTime v)
+        public void Put(string name, DateTime v)
         {
             Part(name);
             Add(v);
-            return this;
         }
 
-        public FormMpContent Put(string name, string v)
+        public void Put(string name, string v)
         {
             Part(name);
             Add(v ?? "null");
-            return this;
         }
 
-        public virtual FormMpContent Put(string name, ArraySegment<byte> v)
+        public virtual void Put(string name, ArraySegment<byte> v)
         {
-            return this; // ignore ir
         }
 
-        public FormMpContent Put(string name, short[] v)
+        public void Put(string name, short[] v)
         {
             Part(name);
             if (v == null)
@@ -153,11 +141,9 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-
-            return this;
         }
 
-        public FormMpContent Put(string name, int[] v)
+        public void Put(string name, int[] v)
         {
             Part(name);
             if (v == null)
@@ -174,10 +160,9 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-            return this;
         }
 
-        public FormMpContent Put(string name, long[] v)
+        public void Put(string name, long[] v)
         {
             if (v == null)
             {
@@ -193,10 +178,9 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-            return this;
         }
 
-        public FormMpContent Put(string name, string[] v)
+        public void Put(string name, string[] v)
         {
             Part(name);
             if (v == null)
@@ -214,16 +198,14 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-
-            return this;
         }
 
-        public FormMpContent Put(string name, Map<string, string> v)
+        public void Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public FormMpContent Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, byte proj = 0x0f)
         {
             Part(name);
             if (v == null)
@@ -236,10 +218,9 @@ namespace Greatbone.Core
                 v.Write(this, proj);
                 Add('}');
             }
-            return this;
         }
 
-        public FormMpContent Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             Part(name);
             if (v == null)
@@ -255,11 +236,6 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
-            return this;
-        }
-
-        public void PutEvent(long id, string name, string shard, string arg, DateTime time, IContent content)
-        {
         }
     }
 }

@@ -293,7 +293,7 @@ namespace Greatbone.Core
             return map;
         }
 
-        public void Write<R>(ISink<R> o) where R : ISink<R>
+        public void Write(ISink s)
         {
             for (int i = 0; i < count; i++)
             {
@@ -301,31 +301,31 @@ namespace Greatbone.Core
                 JType t = elem.type;
                 if (t == JType.Array)
                 {
-                    o.Put(null, (ISource) (JArr) elem);
+                    s.Put(null, (ISource) (JArr) elem);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(null, (JObj) elem);
+                    s.Put(null, (JObj) elem);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(null, (string) elem);
+                    s.Put(null, (string) elem);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(null, (JNumber) elem);
+                    s.Put(null, (JNumber) elem);
                 }
                 else if (t == JType.True)
                 {
-                    o.Put(null, true);
+                    s.Put(null, true);
                 }
                 else if (t == JType.False)
                 {
-                    o.Put(null, false);
+                    s.Put(null, false);
                 }
                 else if (t == JType.Null)
                 {
-                    o.PutNull(null);
+                    s.PutNull(null);
                 }
             }
         }

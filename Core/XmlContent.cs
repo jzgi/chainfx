@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 
     /// </summary>
-    public class XmlContent : DynamicContent, ISink<XmlContent>
+    public class XmlContent : DynamicContent, ISink
     {
         public XmlContent(bool bin, int capacity = 4096) : base(bin, capacity)
         {
@@ -183,36 +183,27 @@ namespace Greatbone.Core
         }
 
 
-        public XmlContent PutOpen() => this;
-
-        public XmlContent PutClose() => this;
-
-        public XmlContent PutStart() => this;
-
-        public XmlContent PutEnd() => this;
-
-        public XmlContent PutNull(string name)
+        public void PutOpen()
         {
-            return this;
         }
 
-        public XmlContent Put(string name, JNumber v)
+        public void PutClose()
         {
-            Add(' ');
-            Add(name);
-            Add('=');
-            Add('"');
-            Add(v);
-            Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, ISource v)
+        public void PutStart()
         {
-            return this;
         }
 
-        public XmlContent Put(string name, bool v)
+        public void PutEnd()
+        {
+        }
+
+        public void PutNull(string name)
+        {
+        }
+
+        public void Put(string name, JNumber v)
         {
             Add(' ');
             Add(name);
@@ -220,10 +211,13 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, short v)
+        public void Put(string name, ISource v)
+        {
+        }
+
+        public void Put(string name, bool v)
         {
             Add(' ');
             Add(name);
@@ -231,10 +225,9 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, int v)
+        public void Put(string name, short v)
         {
             Add(' ');
             Add(name);
@@ -242,10 +235,9 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, long v)
+        public void Put(string name, int v)
         {
             Add(' ');
             Add(name);
@@ -253,10 +245,9 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, double v)
+        public void Put(string name, long v)
         {
             Add(' ');
             Add(name);
@@ -264,10 +255,9 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, decimal v)
+        public void Put(string name, double v)
         {
             Add(' ');
             Add(name);
@@ -275,10 +265,9 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, DateTime v)
+        public void Put(string name, decimal v)
         {
             Add(' ');
             Add(name);
@@ -286,10 +275,9 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, string v)
+        public void Put(string name, DateTime v)
         {
             Add(' ');
             Add(name);
@@ -297,15 +285,23 @@ namespace Greatbone.Core
             Add('"');
             Add(v);
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, ArraySegment<byte> v)
+        public void Put(string name, string v)
         {
-            return this;
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+            Add(v);
+            Add('"');
         }
 
-        public XmlContent Put(string name, short[] v)
+        public void Put(string name, ArraySegment<byte> v)
+        {
+        }
+
+        public void Put(string name, short[] v)
         {
             Add(' ');
             Add(name);
@@ -319,10 +315,9 @@ namespace Greatbone.Core
             }
 
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, int[] v)
+        public void Put(string name, int[] v)
         {
             Add(' ');
             Add(name);
@@ -336,10 +331,9 @@ namespace Greatbone.Core
             }
 
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, long[] v)
+        public void Put(string name, long[] v)
         {
             Add(' ');
             Add(name);
@@ -353,10 +347,9 @@ namespace Greatbone.Core
             }
 
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, string[] v)
+        public void Put(string name, string[] v)
         {
             Add(' ');
             Add(name);
@@ -370,22 +363,18 @@ namespace Greatbone.Core
             }
 
             Add('"');
-            return this;
         }
 
-        public XmlContent Put(string name, Map<string, string> v)
+        public void Put(string name, Map<string, string> v)
         {
-            return this;
         }
 
-        public XmlContent Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, byte proj = 0x0f)
         {
-            return this;
         }
 
-        public XmlContent Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
-            return this;
         }
     }
 }

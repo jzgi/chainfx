@@ -354,7 +354,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<R>(ISink<R> o) where R : ISink<R>
+        public void Write(ISink s)
         {
             for (int i = 0; i < Count; i++)
             {
@@ -362,38 +362,40 @@ namespace Greatbone.Core
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    o.Put(mbr.Key, (ISource) (JArr) mbr);
+                    s.Put(mbr.Key, (ISource) (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    o.Put(mbr.Key, (JObj) mbr);
+                    s.Put(mbr.Key, (JObj) mbr);
                 }
                 else if (t == JType.String)
                 {
-                    o.Put(mbr.Key, (string) mbr);
+                    s.Put(mbr.Key, (string) mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    o.Put(mbr.Key, (JNumber) mbr);
+                    s.Put(mbr.Key, (JNumber) mbr);
                 }
                 else if (t == JType.True)
                 {
-                    o.Put(mbr.Key, true);
+                    s.Put(mbr.Key, true);
                 }
                 else if (t == JType.False)
                 {
-                    o.Put(mbr.Key, false);
+                    s.Put(mbr.Key, false);
                 }
                 else if (t == JType.Null)
                 {
-                    o.PutNull(mbr.Key);
+                    s.PutNull(mbr.Key);
                 }
             }
         }
 
         public DynamicContent Dump()
         {
-            return new JsonContent(true).Put(null, this);
+            var cnt = new JsonContent(true);
+            cnt.Put(null, this);
+            return cnt;
         }
 
         public bool DataSet => false;

@@ -87,7 +87,7 @@ namespace Greatbone.Sample
             }
         }
 
-        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
+        public void Write(ISink s, byte proj = 0x0f)
         {
             if ((proj & KEY) == KEY)
             {
@@ -232,7 +232,7 @@ namespace Greatbone.Sample
             s.Get(nameof(load), ref load);
         }
 
-        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
+        public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(name), name);
             s.Put(nameof(unit), unit);

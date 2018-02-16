@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a urlencoded byte or char string.
     /// </summary>
-    public class FormContent : DynamicContent, ISink<FormContent>
+    public class FormContent : DynamicContent, ISink
     {
         // hexidecimal characters
         protected static readonly char[] HEX =
@@ -75,30 +75,35 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public FormContent PutOpen() => this;
-
-        public FormContent PutClose() => this;
-
-        public FormContent PutStart() => this;
-
-        public FormContent PutEnd() => this;
-
-        public FormContent PutNull(string name)
+        public void PutOpen()
         {
-            return this;
         }
 
-        public FormContent Put(string name, JNumber v)
+        public void PutClose()
         {
-            return this;
         }
 
-        public FormContent Put(string name, ISource v)
+        public void PutStart()
         {
-            return this;
         }
 
-        public FormContent Put(string name, bool v)
+        public void PutEnd()
+        {
+        }
+
+        public void PutNull(string name)
+        {
+        }
+
+        public void Put(string name, JNumber v)
+        {
+        }
+
+        public void Put(string name, ISource v)
+        {
+        }
+
+        public void Put(string name, bool v)
         {
             ordinal++;
 
@@ -109,10 +114,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v ? "true" : "false");
-            return this;
         }
 
-        public FormContent Put(string name, short v)
+        public void Put(string name, short v)
         {
             ordinal++;
 
@@ -123,10 +127,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v);
-            return this;
         }
 
-        public FormContent Put(string name, int v)
+        public void Put(string name, int v)
         {
             ordinal++;
 
@@ -137,10 +140,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v);
-            return this;
         }
 
-        public FormContent Put(string name, long v)
+        public void Put(string name, long v)
         {
             ordinal++;
 
@@ -151,10 +153,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v);
-            return this;
         }
 
-        public FormContent Put(string name, double v)
+        public void Put(string name, double v)
         {
             ordinal++;
 
@@ -165,10 +166,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v);
-            return this;
         }
 
-        public FormContent Put(string name, decimal v)
+        public void Put(string name, decimal v)
         {
             ordinal++;
 
@@ -179,10 +179,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v);
-            return this;
         }
 
-        public FormContent Put(string name, DateTime v)
+        public void Put(string name, DateTime v)
         {
             ordinal++;
 
@@ -193,10 +192,9 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             Add(v);
-            return this;
         }
 
-        public FormContent Put(string name, string v)
+        public void Put(string name, string v)
         {
             ordinal++;
 
@@ -207,15 +205,13 @@ namespace Greatbone.Core
             Add(name);
             Add('=');
             AddEsc(v);
-            return this;
         }
 
-        public FormContent Put(string name, ArraySegment<byte> v)
+        public void Put(string name, ArraySegment<byte> v)
         {
-            return this; // ignore ir
         }
 
-        public FormContent Put(string name, short[] v)
+        public void Put(string name, short[] v)
         {
             ordinal++;
 
@@ -230,10 +226,9 @@ namespace Greatbone.Core
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
-            return this;
         }
 
-        public FormContent Put(string name, int[] v)
+        public void Put(string name, int[] v)
         {
             ordinal++;
 
@@ -248,10 +243,9 @@ namespace Greatbone.Core
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
-            return this;
         }
 
-        public FormContent Put(string name, long[] v)
+        public void Put(string name, long[] v)
         {
             ordinal++;
 
@@ -266,10 +260,9 @@ namespace Greatbone.Core
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
-            return this;
         }
 
-        public FormContent Put(string name, string[] v)
+        public void Put(string name, string[] v)
         {
             ordinal++;
 
@@ -284,22 +277,19 @@ namespace Greatbone.Core
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
-            return this;
         }
 
-        public FormContent Put(string name, Map<string, string> v)
+        public void Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public FormContent Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, byte proj = 0x0f)
         {
-            return this;
         }
 
-        public FormContent Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
-            return this;
         }
     }
 }

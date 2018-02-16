@@ -7,6 +7,6 @@
     {
         void Read(ISource s, byte proj = 0x0f);
 
-        void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>;
+        void Write(ISink s, byte proj = 0x0f);
     }
 }

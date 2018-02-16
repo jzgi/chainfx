@@ -267,7 +267,7 @@ namespace Greatbone.Core
         }
 
 
-        public void Write<R>(ISink<R> snk) where R : ISink<R>
+        public void Write(ISink s)
         {
         }
 

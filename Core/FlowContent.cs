@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Greatbone.Core
 {
-    public class FlowContent : HttpContent, IContent, ISink<FlowContent>
+    public class FlowContent : HttpContent, IContent, ISink
     {
         // NOTE: HttpResponseStream doesn't have internal buffer
         byte[] bytebuf;
@@ -30,117 +30,117 @@ namespace Greatbone.Core
 
         public int Size => count;
 
-        public FlowContent PutOpen()
+        public void PutOpen()
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent PutClose()
+        public void PutClose()
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent PutStart()
+        public void PutStart()
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent PutEnd()
+        public void PutEnd()
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent PutNull(string name)
+        public void PutNull(string name)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, JNumber v)
+        public void Put(string name, JNumber v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, ISource v)
+        public void Put(string name, ISource v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, bool v)
+        public void Put(string name, bool v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, short v)
+        public void Put(string name, short v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, int v)
+        public void Put(string name, int v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, long v)
+        public void Put(string name, long v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, double v)
+        public void Put(string name, double v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, decimal v)
+        public void Put(string name, decimal v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, DateTime v)
+        public void Put(string name, DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, string v)
+        public void Put(string name, string v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, ArraySegment<byte> v)
+        public void Put(string name, ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, short[] v)
+        public void Put(string name, short[] v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, int[] v)
+        public void Put(string name, int[] v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, long[] v)
+        public void Put(string name, long[] v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, string[] v)
+        public void Put(string name, string[] v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, Map<string, string> v)
+        public void Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put(string name, IData v, byte proj = 15)
+        public void Put(string name, IData v, byte proj = 15)
         {
             throw new NotImplementedException();
         }
 
-        public FlowContent Put<D>(string name, D[] v, byte proj = 15) where D : IData
+        public void Put<D>(string name, D[] v, byte proj = 15) where D : IData
         {
             throw new NotImplementedException();
         }

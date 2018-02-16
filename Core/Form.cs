@@ -381,7 +381,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<R>(ISink<R> @out) where R : ISink<R>
+        public void Write(ISink s)
         {
             throw new NotImplementedException();
         }

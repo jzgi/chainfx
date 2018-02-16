@@ -77,14 +77,13 @@ namespace Greatbone.Core
         D[] ToArray<D>(byte proj = 0x0f) where D : IData, new();
 
         /// <summary>
-        /// Write a single (or current) data record into the given output..
+        /// Write current data object into the given output sink..
         /// </summary>
-        /// <param name="o"></param>
-        /// <typeparam name="R"></typeparam>
-        void Write<R>(ISink<R> o) where R : ISink<R>;
+        /// <param name="s"></param>
+        void Write(ISink s);
 
         /// <summary>
-        /// Dump as dynamic generated content.
+        /// Dump into dynamic generated content.
         /// </summary>
         /// <returns></returns>
         DynamicContent Dump();

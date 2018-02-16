@@ -141,7 +141,9 @@ namespace Greatbone.Sample
             j.OBJ_();
             j.Put("touser", openid);
             j.Put("msgtype", "text");
-            j.OBJ_("text").Put("content", text)._OBJ();
+            j.OBJ_("text");
+            j.Put("content", text);
+            j._OBJ();
             j._OBJ();
             await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, j);
         }

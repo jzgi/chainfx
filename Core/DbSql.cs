@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A specialized string builder for generating SQL commands.
     /// </summary>
-    public class DbSql : DynamicContent, ISink<DbSql>
+    public class DbSql : DynamicContent, ISink
     {
         // contexts
         const sbyte CTX_COLUMNLIST = 1, CTX_PARAMLIST = 2, CTX_SETLIST = 3;
@@ -191,21 +191,28 @@ namespace Greatbone.Core
             ordinal++;
         }
 
-        public DbSql PutOpen() => this;
-
-        public DbSql PutClose() => this;
-
-        public DbSql PutStart() => this;
-
-        public DbSql PutEnd() => this;
-
-        public DbSql PutNull(string name)
+        public void PutOpen()
         {
-            Build(name);
-            return this;
         }
 
-        public DbSql Put(string name, JNumber v)
+        public void PutClose()
+        {
+        }
+
+        public void PutStart()
+        {
+        }
+
+        public void PutEnd()
+        {
+        }
+
+        public void PutNull(string name)
+        {
+            Build(name);
+        }
+
+        public void Put(string name, JNumber v)
         {
             if (name != null)
             {
@@ -215,15 +222,13 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, ISource v)
+        public void Put(string name, ISource v)
         {
-            return this;
         }
 
-        public DbSql Put(string name, bool v)
+        public void Put(string name, bool v)
         {
             if (name != null)
             {
@@ -233,10 +238,9 @@ namespace Greatbone.Core
             {
                 Add(v ? "TRUE" : "FALSE");
             }
-            return this;
         }
 
-        public DbSql Put(string name, short v)
+        public void Put(string name, short v)
         {
             if (name != null)
             {
@@ -246,10 +250,9 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, int v)
+        public void Put(string name, int v)
         {
             if (name != null)
             {
@@ -259,10 +262,9 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, long v)
+        public void Put(string name, long v)
         {
             if (name != null)
             {
@@ -272,10 +274,9 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, double v)
+        public void Put(string name, double v)
         {
             if (name != null)
             {
@@ -285,10 +286,9 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, decimal v)
+        public void Put(string name, decimal v)
         {
             if (name != null)
             {
@@ -298,10 +298,9 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, DateTime v)
+        public void Put(string name, DateTime v)
         {
             if (name != null)
             {
@@ -311,10 +310,9 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-            return this;
         }
 
-        public DbSql Put(string name, string v)
+        public void Put(string name, string v)
         {
             if (name != null)
             {
@@ -326,16 +324,14 @@ namespace Greatbone.Core
                 Add(v);
                 Add('\'');
             }
-            return this;
         }
 
-        public DbSql Put(string name, ArraySegment<byte> v)
+        public void Put(string name, ArraySegment<byte> v)
         {
             Build(name);
-            return this;
         }
 
-        public DbSql Put(string name, short[] v)
+        public void Put(string name, short[] v)
         {
             if (name != null)
             {
@@ -362,10 +358,9 @@ namespace Greatbone.Core
                     }
                 }
             }
-            return this;
         }
 
-        public DbSql Put(string name, int[] v)
+        public void Put(string name, int[] v)
         {
             if (name != null)
             {
@@ -392,10 +387,9 @@ namespace Greatbone.Core
                     }
                 }
             }
-            return this;
         }
 
-        public DbSql Put(string name, long[] v)
+        public void Put(string name, long[] v)
         {
             if (name != null)
             {
@@ -422,10 +416,9 @@ namespace Greatbone.Core
                     }
                 }
             }
-            return this;
         }
 
-        public DbSql Put(string name, string[] v)
+        public void Put(string name, string[] v)
         {
             if (name != null)
             {
@@ -454,15 +447,14 @@ namespace Greatbone.Core
                     }
                 }
             }
-            return this;
         }
 
-        public DbSql Put(string name, Map<string, string> v)
+        public void Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public DbSql Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, byte proj = 0x0f)
         {
             if (name != null)
             {
@@ -478,13 +470,11 @@ namespace Greatbone.Core
                 {
                 }
             }
-            return this;
         }
 
-        public DbSql Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             Build(name);
-            return this;
         }
 
         public override string ToString()

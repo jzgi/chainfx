@@ -1114,25 +1114,32 @@ namespace Greatbone.Core
         //
         // PARAMETERS
 
-        public IParams PutOpen() => this;
+        public void PutOpen()
+        {
+        }
 
-        public IParams PutClose() => this;
+        public void PutClose()
+        {
+        }
 
-        public IParams PutStart() => this;
+        public void PutStart()
+        {
+        }
 
-        public IParams PutEnd() => this;
+        public void PutEnd()
+        {
+        }
 
-        public IParams PutNull(string name)
+        public void PutNull(string name)
         {
             if (name == null)
             {
                 name = PARAMS[index++];
             }
             command.Parameters.AddWithValue(name, DBNull.Value);
-            return this;
         }
 
-        public IParams Put(string name, JNumber v)
+        public void Put(string name, JNumber v)
         {
             if (name == null)
             {
@@ -1142,15 +1149,13 @@ namespace Greatbone.Core
             {
                 Value = v.Decimal
             });
-            return this;
         }
 
-        public IParams Put(string name, ISource v)
+        public void Put(string name, ISource v)
         {
-            return this;
         }
 
-        public IParams Put(string name, bool v)
+        public void Put(string name, bool v)
         {
             if (name == null)
             {
@@ -1160,10 +1165,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, short v)
+        public void Put(string name, short v)
         {
             if (name == null)
             {
@@ -1173,10 +1177,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, int v)
+        public void Put(string name, int v)
         {
             if (name == null)
             {
@@ -1186,10 +1189,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, long v)
+        public void Put(string name, long v)
         {
             if (name == null)
             {
@@ -1199,10 +1201,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, double v)
+        public void Put(string name, double v)
         {
             if (name == null)
             {
@@ -1212,10 +1213,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, decimal v)
+        public void Put(string name, decimal v)
         {
             if (name == null)
             {
@@ -1225,10 +1225,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, DateTime v)
+        public void Put(string name, DateTime v)
         {
             if (name == null)
             {
@@ -1239,10 +1238,9 @@ namespace Greatbone.Core
             {
                 Value = v
             });
-            return this;
         }
 
-        public IParams Put(string name, string v)
+        public void Put(string name, string v)
         {
             if (name == null)
             {
@@ -1253,10 +1251,9 @@ namespace Greatbone.Core
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
-            return this;
         }
 
-        public IParams Put(string name, ArraySegment<byte> v)
+        public void Put(string name, ArraySegment<byte> v)
         {
             if (name == null)
             {
@@ -1266,10 +1263,9 @@ namespace Greatbone.Core
             {
                 Value = (v.Array != null) ? (object) v : DBNull.Value
             });
-            return this;
         }
 
-        public IParams Put(string name, JObj v)
+        public void Put(string name, JObj v)
         {
             if (name == null)
             {
@@ -1289,10 +1285,9 @@ namespace Greatbone.Core
                     Value = v.ToString()
                 });
             }
-            return this;
         }
 
-        public IParams Put(string name, JArr v)
+        public void Put(string name, JArr v)
         {
             if (name == null)
             {
@@ -1312,10 +1307,9 @@ namespace Greatbone.Core
                     Value = v.ToString()
                 });
             }
-            return this;
         }
 
-        public IParams Put(string name, short[] v)
+        public void Put(string name, short[] v)
         {
             if (name == null)
             {
@@ -1325,10 +1319,9 @@ namespace Greatbone.Core
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
-            return this;
         }
 
-        public IParams Put(string name, int[] v)
+        public void Put(string name, int[] v)
         {
             if (name == null)
             {
@@ -1338,10 +1331,9 @@ namespace Greatbone.Core
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
-            return this;
         }
 
-        public IParams Put(string name, long[] v)
+        public void Put(string name, long[] v)
         {
             if (name == null)
             {
@@ -1351,10 +1343,9 @@ namespace Greatbone.Core
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
-            return this;
         }
 
-        public IParams Put(string name, string[] v)
+        public void Put(string name, string[] v)
         {
             if (name == null)
             {
@@ -1364,15 +1355,14 @@ namespace Greatbone.Core
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
-            return this;
         }
 
-        public IParams Put(string name, Map<string, string> v)
+        public void Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public IParams Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, byte proj = 0x0f)
         {
             if (name == null)
             {
@@ -1389,10 +1379,9 @@ namespace Greatbone.Core
                     Value = DataUtility.ToString(v, proj)
                 });
             }
-            return this;
         }
 
-        public IParams Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             if (name == null)
             {
@@ -1412,7 +1401,6 @@ namespace Greatbone.Core
                     Value = DataUtility.ToString(v, proj)
                 });
             }
-            return this;
         }
 
         //
@@ -1421,133 +1409,113 @@ namespace Greatbone.Core
 
         public IParams SetNull()
         {
-            return PutNull(null);
+            PutNull(null);
+            return this;
         }
 
         public IParams Set(ISource v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(bool v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(short v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(int v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(long v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(double v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(decimal v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(JNumber v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(DateTime v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(string v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(ArraySegment<byte> v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(short[] v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(int[] v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(long[] v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(string[] v)
         {
-            return Put(null, v);
+            Put(null, v);
+            return this;
         }
 
         public IParams Set(IData v, byte proj = 0x0f)
         {
-            return Put(null, v, proj);
+            Put(null, v, proj);
+            return this;
         }
 
         public IParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
-            return Put(null, v, proj);
+            Put(null, v, proj);
+            return this;
         }
 
-        //
-        // EVENTS
-        //
-
-        public void Publish(string name, string shard, int arg, ISource inp)
-        {
-            DynamicContent dcont = inp.Dump();
-            Publish(name, shard, arg, dcont);
-            BufferUtility.Return(dcont); // back to pool
-        }
-
-        public void Publish(string name, string shard, int arg, IData obj, byte proj = 0x0f)
-        {
-            JsonContent cont = new JsonContent(true).Put(null, obj, proj);
-            Publish(name, shard, arg, cont);
-            BufferUtility.Return(cont); // back to pool
-        }
-
-        public void Publish<D>(string name, string shard, int arg, D[] arr, byte proj = 0x0f) where D : IData
-        {
-            JsonContent cont = new JsonContent(true).Put(null, arr, proj);
-            Publish(name, shard, arg, cont);
-            BufferUtility.Return(cont); // back to pool
-        }
-
-        public void Publish(string name, string shard, int arg, IContent content)
-        {
-            // convert message to byte buffer
-            var byteas = new ArraySegment<byte>(content.ByteBuffer, 0, content.Size);
-            Execute("INSERT INTO eq (name, shard, arg, body) VALUES (@1, @2, @3, @4)", p =>
-            {
-                p.Set(name);
-                p.Set(shard);
-                p.Set(arg);
-                p.Set(byteas);
-            });
-        }
-
-        public void Write<R>(ISink<R> o) where R : ISink<R>
+        public void Write(ISink o)
         {
             int count = reader.FieldCount;
             for (int i = 0; i < count; i++)
@@ -1595,7 +1563,9 @@ namespace Greatbone.Core
 
         public DynamicContent Dump()
         {
-            return new JsonContent(true).Put(null, this);
+            var cnt = new JsonContent(true);
+            cnt.Put(null, this);
+            return cnt;
         }
 
         public void Rollback()

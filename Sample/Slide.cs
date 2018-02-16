@@ -29,7 +29,7 @@ namespace Greatbone.Sample
             s.Get(nameof(revised), ref revised);
         }
 
-        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
+        public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(id), id);
             s.Put(nameof(title), title);

@@ -66,7 +66,7 @@ namespace Greatbone.Core
             s.Get(nameof(cache), ref cache);
         }
 
-        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
+        public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(shard), shard);
             s.Put(nameof(addrs), addrs);
@@ -104,7 +104,7 @@ namespace Greatbone.Core
             s.Get(nameof(password), ref password);
         }
 
-        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
+        public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(host), host);
             s.Put(nameof(port), port);

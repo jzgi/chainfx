@@ -500,7 +500,8 @@ namespace Greatbone.Core
 
         public void Give(int status, IData obj, byte proj = 0x0f, bool? pub = null, int maxage = 60)
         {
-            JsonContent cont = new JsonContent(true).Put(null, obj, proj);
+            JsonContent cont = new JsonContent(true);
+            cont.Put(null, obj, proj);
             Status = status;
             Content = cont;
             Public = pub;
@@ -509,7 +510,8 @@ namespace Greatbone.Core
 
         public void Give<D>(int status, D[] arr, byte proj = 0x0f, bool? pub = null, int maxage = 60) where D : IData
         {
-            JsonContent cont = new JsonContent(true).Put(null, arr, proj);
+            JsonContent cont = new JsonContent(true);
+            cont.Put(null, arr, proj);
             Status = status;
             Content = cont;
             Public = pub;
