@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Threading;
@@ -112,7 +111,7 @@ namespace Greatbone.Core
 
         public Work Work { get; internal set; }
 
-        public ProcedureDescript Procedure { get; internal set; }
+        public Procedure Procedure { get; internal set; }
 
         public int Subscript { get; internal set; }
 
@@ -195,38 +194,34 @@ namespace Greatbone.Core
 
         public bool ByJQuery => Header("X-Requested-With") != null;
 
-        string path;
-
-        public string Path => path ?? (path = Features.Get<IHttpRequestFeature>().Path);
+        public string Path => request.PathStr;
 
         string uri;
 
-        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryString) ? Path : Path + QueryString);
+        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryStr) ? Path : Path + QueryStr);
 
         string url;
 
-        public string Url => url ?? (url = Features.Get<IHttpRequestFeature>().Scheme + "://" + Header("Host" + Features.Get<IHttpRequestFeature>().RawTarget));
+        public string Url => url ?? (url = request.Scheme + "://" + Header("Host" + request.RawTarget));
 
-        string querystr;
-
-        public string QueryString => querystr ?? (querystr = Features.Get<IHttpRequestFeature>().QueryString);
+        public string QueryStr => request.QueryStr;
 
         // URL query 
         Form query;
 
-        public Form Query => query ?? (query = new FormParser(QueryString).Parse());
+        public Form Query => query ?? (query = new FormParser(QueryStr).Parse());
 
         public void AddParam(string name, string value)
         {
-            string q = QueryString;
+            string q = request.QueryStr;
             if (string.IsNullOrEmpty(q))
             {
-                querystr = "?" + name + "=" + value;
+                request.QueryStr = "?" + name + "=" + value;
                 query = null; // reset parsed form
             }
             else
             {
-                querystr = querystr + "&" + name + "=" + value;
+                request.QueryStr = request.QueryStr + "&" + name + "=" + value;
                 Query.Add(name, value);
             }
         }
@@ -241,7 +236,6 @@ namespace Greatbone.Core
             {
                 return vs;
             }
-
             return null;
         }
 
@@ -255,7 +249,6 @@ namespace Greatbone.Core
                     return v;
                 }
             }
-
             return null;
         }
 
@@ -269,7 +262,6 @@ namespace Greatbone.Core
                     return v;
                 }
             }
-
             return null;
         }
 
@@ -283,7 +275,6 @@ namespace Greatbone.Core
                     return v;
                 }
             }
-
             return null;
         }
 
@@ -293,7 +284,6 @@ namespace Greatbone.Core
             {
                 return vs;
             }
-
             return null;
         }
 
@@ -323,7 +313,6 @@ namespace Greatbone.Core
                     }
                 }
             }
-
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
@@ -347,7 +336,6 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count, typeof(M));
             }
-
             return entity as M;
         }
 
@@ -366,7 +354,6 @@ namespace Greatbone.Core
                     {
                     }
                 }
-
                 // parse
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);

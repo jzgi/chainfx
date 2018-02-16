@@ -26,13 +26,13 @@ namespace Greatbone.Core
         readonly Type type;
 
         // declared procedures 
-        readonly Map<string, ProcedureDescript> procedures;
+        readonly Map<string, Procedure> procedures;
 
         // the default procedure, can be null
-        readonly ProcedureDescript @default;
+        readonly Procedure @default;
 
         // procedure with UiToolAttribute
-        readonly ProcedureDescript[] tooled;
+        readonly Procedure[] tooled;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -49,7 +49,7 @@ namespace Greatbone.Core
             this.cfg = cfg;
 
             // gather procedures
-            procedures = new Map<string, ProcedureDescript>(32);
+            procedures = new Map<string, Procedure>(32);
             this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -61,32 +61,32 @@ namespace Greatbone.Core
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                ProcedureDescript ad;
+                Procedure prc;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    ad = new ProcedureDescript(this, mi, async, false);
+                    prc = new Procedure(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
                     LimitAttribute limit = (LimitAttribute) pis[1].GetCustomAttribute(typeof(LimitAttribute));
-                    ad = new ProcedureDescript(this, mi, async, true, limit?.Value ?? 20);
+                    prc = new Procedure(this, mi, async, true, limit?.Value ?? 20);
                 }
                 else continue;
 
-                procedures.Add(ad);
-                if (ad.Key == string.Empty) @default = ad;
+                procedures.Add(prc);
+                if (prc.Key == string.Empty) @default = prc;
 
-                if (ad.Tool?.MustPick == true) pick = true;
+                if (prc.Tool?.MustPick == true) pick = true;
             }
 
             // gather tooled procedures
-            Roll<ProcedureDescript> roll = new Roll<ProcedureDescript>(16);
+            Roll<Procedure> roll = new Roll<Procedure>(16);
             for (int i = 0; i < procedures.Count; i++)
             {
-                ProcedureDescript pd = procedures[i];
-                if (pd.HasTool)
+                Procedure prc = procedures[i];
+                if (prc.HasTool)
                 {
-                    roll.Add(pd);
+                    roll.Add(prc);
                 }
             }
 
@@ -105,13 +105,13 @@ namespace Greatbone.Core
 
         public bool HasKeyer => cfg.Keyer != null;
 
-        public Map<string, ProcedureDescript> Procedures => procedures;
+        public Map<string, Procedure> Procedures => procedures;
 
-        public ProcedureDescript[] Tooled => tooled;
+        public Procedure[] Tooled => tooled;
 
         public bool HasPick => pick;
 
-        public ProcedureDescript Default => @default;
+        public Procedure Default => @default;
 
         public Map<string, Work> Works => works;
 
@@ -276,15 +276,15 @@ namespace Greatbone.Core
             }
         }
 
-        internal void Describe(XmlContent cont)
+        internal void Describe(XmlContent cnt)
         {
-            cont.ELEM(Key,
+            cnt.ELEM(Key,
                 delegate
                 {
                     for (int i = 0; i < procedures.Count; i++)
                     {
-                        ProcedureDescript act = procedures[i];
-                        cont.Put(act.Key, "");
+                        Procedure prc = procedures[i];
+                        cnt.Put(prc.Key, "");
                     }
                 },
                 delegate
@@ -294,23 +294,22 @@ namespace Greatbone.Core
                         for (int i = 0; i < works.Count; i++)
                         {
                             Work wrk = works[i];
-                            wrk.Describe(cont);
+                            wrk.Describe(cnt);
                         }
                     }
 
-                    varwork?.Describe(cont);
+                    varwork?.Describe(cnt);
                 });
         }
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
-        public ProcedureDescript GetProcedure(string method)
+        public Procedure GetProcedure(string method)
         {
             if (string.IsNullOrEmpty(method))
             {
                 return @default;
             }
-
             return procedures[method];
         }
 
@@ -386,30 +385,30 @@ namespace Greatbone.Core
                     wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
 
-                ProcedureDescript pd = string.IsNullOrEmpty(name) ? @default : GetProcedure(name);
-                if (pd == null)
+                Procedure prc = string.IsNullOrEmpty(name) ? @default : GetProcedure(name);
+                if (prc == null)
                 {
                     wc.Give(404); // not found
                     return;
                 }
 
-                if (!pd.DoAuthorize(wc)) throw AuthorizeEx;
-                wc.Procedure = pd;
+                if (!prc.DoAuthorize(wc)) throw AuthorizeEx;
+                wc.Procedure = prc;
                 // any before filterings
-                if (pd.Before?.Do(wc) == false) goto ProcedureExit;
-                if (pd.BeforeAsync != null && !(await pd.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
+                if (prc.Before?.Do(wc) == false) goto ProcedureExit;
+                if (prc.BeforeAsync != null && !(await prc.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
 
                 // try in cache
                 if (!Service.TryGiveFromCache(wc))
                 {
                     // method invocation
-                    if (pd.IsAsync)
+                    if (prc.IsAsync)
                     {
-                        await pd.DoAsync(wc, subscpt); // invoke procedure method
+                        await prc.DoAsync(wc, subscpt); // invoke procedure method
                     }
                     else
                     {
-                        pd.Do(wc, subscpt);
+                        prc.Do(wc, subscpt);
                     }
 
                     Service.TryCacheUp(wc);
@@ -417,8 +416,8 @@ namespace Greatbone.Core
 
                 ProcedureExit:
                 // procedure's after filtering
-                pd.After?.Do(wc);
-                if (pd.AfterAsync != null) await pd.AfterAsync.DoAsync(wc);
+                prc.After?.Do(wc);
+                if (prc.AfterAsync != null) await prc.AfterAsync.DoAsync(wc);
                 wc.Procedure = null;
             }
 

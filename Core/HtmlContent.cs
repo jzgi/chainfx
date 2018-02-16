@@ -1051,8 +1051,8 @@ namespace Greatbone.Core
         public void PAGENATE(int count)
         {
             // pagination
-            ProcedureDescript ad = webCtx.Procedure;
-            if (ad.HasSubscript)
+            Procedure prc = webCtx.Procedure;
+            if (prc.HasSubscript)
             {
                 Add("<ul class=\"pagination\" role=\"navigation\">");
                 int subscpt = webCtx.Subscript;
@@ -1067,22 +1067,22 @@ namespace Greatbone.Core
                     else
                     {
                         Add("<li><a href=\"");
-                        Add(ad.Key);
+                        Add(prc.Key);
                         Add('-');
                         Add(i);
-                        Add(webCtx.QueryString);
+                        Add(webCtx.QueryStr);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
                     }
                 }
-                if (count == ad.Limit)
+                if (count == prc.Limit)
                 {
                     Add("<li class=\"pagination-next\"><a href=\"");
-                    Add(ad.Key);
+                    Add(prc.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(webCtx.QueryString);
+                    Add(webCtx.QueryStr);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");
@@ -1097,7 +1097,7 @@ namespace Greatbone.Core
             Work varwork = work.varwork;
             Add("<main class=\"sheet-view table-scroll);\">");
             Add("<table>");
-            ProcedureDescript[] ads = varwork?.Tooled;
+            Procedure[] prcs = varwork?.Tooled;
 
             if (head != null)
             {
@@ -1108,7 +1108,7 @@ namespace Greatbone.Core
                     Add("<th></th>"); // 
                 }
                 head(this);
-                if (ads != null)
+                if (prcs != null)
                 {
                     Add("<th></th>"); // for triggers
                 }
@@ -1132,7 +1132,7 @@ namespace Greatbone.Core
                         Add("</td>");
                     }
                     row(this, obj);
-                    if (ads != null) // triggers
+                    if (prcs != null) // triggers
                     {
                         Add("<td>");
                         Add("<form>");
@@ -1352,18 +1352,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Tool(ProcedureDescript ad, IData obj, int ordinal, int subscript = -1)
+        void Tool(Procedure prc, IData obj, int ordinal, int subscript = -1)
         {
-            var tool = ad.Tool;
-            bool ok = ad.DoAuthorize(webCtx) && ad.DoState(webCtx, obj);
+            var tool = prc.Tool;
+            bool ok = prc.DoAuthorize(webCtx) && prc.DoState(webCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"button primary");
-                Add(ad == webCtx.Procedure ? " hollow" : " clear");
+                Add(prc == webCtx.Procedure ? " hollow" : " clear");
                 Add("\" href=\"");
                 if (obj != null)
                 {
-                    ad.Work.PutVariableKey(obj, this);
+                    prc.Work.PutVariableKey(obj, this);
                     Add('/');
                 }
                 else if (ordinal > 0)
@@ -1371,7 +1371,7 @@ namespace Greatbone.Core
                     Add(ordinal);
                     Add('/');
                 }
-                Add(ad.RPath);
+                Add(prc.RPath);
                 if (subscript >= 0)
                 {
                     Add('-');
@@ -1386,13 +1386,13 @@ namespace Greatbone.Core
             else if (tool.IsButton)
             {
                 Add("<button  class=\"button primary");
-                if (!ad.IsCapital) Add(" hollow");
+                if (!prc.IsCapital) Add(" hollow");
                 Add("\" name=\"");
-                Add(ad.Key);
+                Add(prc.Key);
                 Add("\" formaction=\"");
                 if (obj != null)
                 {
-                    ad.Work.PutVariableKey(obj, this);
+                    prc.Work.PutVariableKey(obj, this);
                     Add('/');
                 }
                 else if (ordinal > 0)
@@ -1400,7 +1400,7 @@ namespace Greatbone.Core
                     Add(ordinal);
                     Add('/');
                 }
-                Add(ad.Key);
+                Add(prc.Key);
                 if (subscript >= 0)
                 {
                     Add('-');
@@ -1420,25 +1420,25 @@ namespace Greatbone.Core
                     Add("!($(this.form).serialize()) ? false : ");
                 }
                 Add("confirm('");
-                Add(ad.Tip ?? ad.Label);
+                Add(prc.Tip ?? prc.Label);
                 Add("');\"");
             }
             else if (tool.HasPrompt)
             {
-                Dialog(2, tool.MustPick, tool.Size, ad.Tip);
+                Dialog(2, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasShow)
             {
-                Dialog(4, tool.MustPick, tool.Size, ad.Tip);
+                Dialog(4, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasOpen)
             {
-                Dialog(8, tool.MustPick, tool.Size, ad.Tip);
+                Dialog(8, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return by"); // prefix to avoid js naming conflict
-                Add(ad.Lower);
+                Add(prc.Lower);
                 Add("(this);\"");
             }
             else if (tool.HasCrop)
@@ -1448,11 +1448,11 @@ namespace Greatbone.Core
                 Add(',');
                 Add(tool.Size);
                 Add(",'");
-                Add(ad.Tip);
+                Add(prc.Tip);
                 Add("');\"");
             }
             Add(">");
-            Add(ad.Label);
+            Add(prc.Label);
             if (tool.IsAnchor)
             {
                 Add("</a>");

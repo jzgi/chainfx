@@ -155,10 +155,8 @@ namespace Greatbone.Core
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
             WebContext wc = (WebContext) context;
-            HttpRequest req = wc.Request;
-            string path = req.Path.Value;
-            // handling
-            try
+            string path = wc.Path;
+            try // handling
             {
                 if ("/*".Equals(path)) // handle an event poll request
                 {
@@ -173,7 +171,6 @@ namespace Greatbone.Core
                         wc.Give(404); // not found
                         return;
                     }
-
                     await work.HandleAsync(relative, wc);
                 }
             }
@@ -284,13 +281,12 @@ namespace Greatbone.Core
             var pub = pubs.First(x => x.Flow == x_flow);
             long? x_id = wc.HeaderLong("X-ID");
             int? limit = wc.HeaderInt("X-Limit");
-            FlowContent cnt = new FlowContent(256 * 1024);
             using (var dc = NewDbContext())
             {
                 dc.Query(pub.Sql, p => p.Set(x_id.Value).Set(limit.Value));
-                dc.Write(cnt);
+                var cnt = dc.Dump();
+                wc.Give(200, cnt);
             }
-            wc.Give(200, cnt);
         }
 
         public void Subscribe(string peering, string flow, FlowDelegate handler)
@@ -524,11 +520,8 @@ namespace Greatbone.Core
         public override async Task ProcessRequestAsync(HttpContext context)
         {
             WebContext wc = (WebContext) context;
-            HttpRequest req = wc.Request;
-            string path = req.Path.Value;
-
-            // authentication
-            try
+            string path = wc.Path;
+            try // handling
             {
                 bool norm = true;
                 if (this is IAuthenticateAsync aasync) norm = await aasync.AuthenticateAsync(wc, true);
@@ -560,7 +553,6 @@ namespace Greatbone.Core
                         wc.Give(404); // not found
                         return;
                     }
-
                     await work.HandleAsync(relative, wc);
                 }
             }
@@ -589,7 +581,6 @@ namespace Greatbone.Core
             {
                 sb.Append("; Max-Age=").Append(maxage);
             }
-
             // obtain and add the domain attribute
             string host = wc.Header("Host");
             if (host != null)
@@ -599,14 +590,12 @@ namespace Greatbone.Core
                 {
                     dot = host.LastIndexOf('.', dot - 1);
                 }
-
                 if (dot > 0)
                 {
                     string domain = host.Substring(dot);
                     sb.Append("; Domain=").Append(domain);
                 }
             }
-
             sb.Append("; Path=/; HttpOnly");
             wc.SetHeader("Set-Cookie", sb.ToString());
         }
@@ -681,7 +670,6 @@ namespace Greatbone.Core
             {
                 return v;
             }
-
             v = hex - 'A';
             if (v >= 0 && v <= 5) return 10 + v;
             return 0;

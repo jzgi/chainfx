@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// The descriptor for a web procedure method.
+    /// The descriptor for a procedure method. A procedure public method should have one or two parameters, the first parameter must be of WebContext type.
+    /// The second parameter, if presented, must be an int value.
     /// </summary>
-    public class ProcedureDescript : Nodule
+    public class Procedure : Nodule
     {
         readonly Work work;
 
@@ -38,7 +39,7 @@ namespace Greatbone.Core
         // async Task procedure(WebContext, int)
         readonly Func<WebContext, int, Task> do2Async;
 
-        internal ProcedureDescript(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
+        internal Procedure(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
             mi.Name == "default" ? string.Empty : mi.Name,
             mi
         )

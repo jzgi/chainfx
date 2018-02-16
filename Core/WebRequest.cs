@@ -55,18 +55,23 @@ namespace Greatbone.Core
             set => fRequest.PathBase = value.Value;
         }
 
-        public override PathString Path
+        [Obsolete("We need plain string only")]
+        public override PathString Path { get; set; }
+
+        public string PathStr => fRequest.Path;
+
+        public string RawTarget => fRequest.RawTarget;
+
+        public string QueryStr
         {
-            get => new PathString(fRequest.Path);
-            set => fRequest.Path = value.Value;
+            get => fRequest.QueryString;
+            set => fRequest.QueryString = value;
         }
 
-        public override QueryString QueryString
-        {
-            get => throw new Exception();
-            set => throw new Exception();
-        }
+        [Obsolete("We need plain string only")]
+        public override QueryString QueryString { get; set; }
 
+        [Obsolete("We parse query string by ourselves")]
         public override IQueryCollection Query { get; set; }
 
         public override string Protocol
@@ -109,10 +114,13 @@ namespace Greatbone.Core
             set => fRequest.Body = value;
         }
 
+        [Obsolete("We parse form by ourselves")]
         public override bool HasFormContentType { get; } = false;
 
+        [Obsolete("We parse form by ourselves")]
         public override IFormCollection Form { get; set; } = null;
 
+        [Obsolete("We parse form by ourselves")]
         public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             throw new NotImplementedException();

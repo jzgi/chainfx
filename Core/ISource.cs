@@ -95,6 +95,10 @@ namespace Greatbone.Core
         /// </summary>
         void Write<C>(C cnt) where C : IContent, ISink;
 
+        /// <summary>
+        /// Converts this source into corresponding content object.
+        /// </summary>
+        /// <returns></returns>
         IContent Dump();
     }
 }

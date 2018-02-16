@@ -14,7 +14,7 @@ namespace Greatbone.Core
     /// </summary>
     public class Flow : ISource
     {
-        private byte[] buffer;
+        byte[] buffer;
 
         int length;
 
