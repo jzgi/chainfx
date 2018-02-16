@@ -9,8 +9,6 @@ namespace Greatbone.Core
     {
         IParams SetNull();
 
-        IParams Set(ISource v);
-
         IParams Set(bool v);
 
         IParams Set(short v);
@@ -38,6 +36,10 @@ namespace Greatbone.Core
         IParams Set(long[] v);
 
         IParams Set(string[] v);
+
+        IParams Set(JObj v);
+
+        IParams Set(JArr v);
 
         IParams Set(IData v, byte proj = 0x0f);
 

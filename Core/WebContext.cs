@@ -478,14 +478,14 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give(int status, ISource inp, bool? @public = null, int maxage = 60)
-        {
-            Status = status;
-            Content = inp.Dump();
-            Public = @public;
-            MaxAge = maxage;
-        }
-
+//        public void Give(int status, ISource src, bool? @public = null, int maxage = 60)
+//        {
+//            Status = status;
+//            Content = src.Write();
+//            Public = @public;
+//            MaxAge = maxage;
+//        }
+//
         public void Give(int status, string text, bool? @public = null, int maxage = 60)
         {
             StrContent cont = new StrContent(true);

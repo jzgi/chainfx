@@ -33,26 +33,6 @@ namespace Greatbone.Core
             Add("\"\r\n\r\n");
         }
 
-        public void PutOpen()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PutClose()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PutStart()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PutEnd()
-        {
-            throw new NotImplementedException();
-        }
-
         public void PutNull(string name)
         {
         }
@@ -66,10 +46,6 @@ namespace Greatbone.Core
                 Add('.');
                 Add(v.fract);
             }
-        }
-
-        public void Put(string name, ISource v)
-        {
         }
 
         public void Put(string name, bool v)
@@ -200,7 +176,12 @@ namespace Greatbone.Core
             }
         }
 
-        public void Put(string name, Map<string, string> v)
+        public void Put(string name, JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }
@@ -236,6 +217,11 @@ namespace Greatbone.Core
                 }
                 Add(']');
             }
+        }
+
+        public void PutAll(ISource s)
+        {
+            throw new NotImplementedException();
         }
     }
 }

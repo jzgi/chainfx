@@ -33,12 +33,13 @@ namespace Greatbone.Core
 
         bool Get(string name, ref string[] v);
 
-        bool Get(string name, ref Map<string, string> v);
+        bool Get(string name, ref JObj v);
+
+        bool Get(string name, ref JArr v);
 
         bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new();
 
         bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new();
-
 
         ISource Let(out bool v);
 
@@ -66,7 +67,9 @@ namespace Greatbone.Core
 
         ISource Let(out string[] v);
 
-        ISource Let(out Map<string, string> v);
+        ISource Let(out JObj v);
+
+        ISource Let(out JArr v);
 
         ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new();
 
@@ -75,18 +78,6 @@ namespace Greatbone.Core
         D ToObject<D>(byte proj = 0x0f) where D : IData, new();
 
         D[] ToArray<D>(byte proj = 0x0f) where D : IData, new();
-
-        /// <summary>
-        /// Write current data object into the given output sink..
-        /// </summary>
-        /// <param name="s"></param>
-        void Write(ISink s);
-
-        /// <summary>
-        /// Dump into dynamic generated content.
-        /// </summary>
-        /// <returns></returns>
-        DynamicContent Dump();
 
         /// <summary>
         /// If this input source contains multiple data records.
@@ -98,5 +89,12 @@ namespace Greatbone.Core
         /// </summary>
         /// <returns>True if sucessfully moved to next data record.</returns>
         bool Next();
+
+        /// <summary>
+        /// Outputs current data object.
+        /// </summary>
+        void Write<C>(C cnt) where C : IContent, ISink;
+
+        IContent Dump();
     }
 }

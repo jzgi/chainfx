@@ -237,17 +237,6 @@ namespace Greatbone.Core
             return reader.HasRows;
         }
 
-        public bool Next()
-        {
-            ordinal = 0; // reset column ordinal
-
-            if (reader == null)
-            {
-                return false;
-            }
-            return reader.Read();
-        }
-
         public bool HasRows
         {
             get
@@ -270,6 +259,71 @@ namespace Greatbone.Core
                 return false;
             }
             return reader.NextResult();
+        }
+
+        public bool Next()
+        {
+            ordinal = 0; // reset column ordinal
+
+            if (reader == null)
+            {
+                return false;
+            }
+            return reader.Read();
+        }
+
+        public void Write<C>(C cnt) where C : IContent, ISink
+        {
+            int fc = reader.FieldCount;
+            for (int i = 0; i < fc; i++)
+            {
+                string name = reader.GetName(i);
+                if (reader.IsDBNull(i))
+                {
+                    cnt.PutNull(name);
+                    continue;
+                }
+                var typ = reader.GetFieldType(i);
+                if (typ == typeof(bool))
+                {
+                    cnt.Put(name, reader.GetBoolean(i));
+                }
+                else if (typ == typeof(short))
+                {
+                    cnt.Put(name, reader.GetInt16(i));
+                }
+                else if (typ == typeof(int))
+                {
+                    cnt.Put(name, reader.GetInt32(i));
+                }
+                else if (typ == typeof(long))
+                {
+                    cnt.Put(name, reader.GetInt64(i));
+                }
+                else if (typ == typeof(string))
+                {
+                    cnt.Put(name, reader.GetString(i));
+                }
+                else if (typ == typeof(decimal))
+                {
+                    cnt.Put(name, reader.GetDecimal(i));
+                }
+                else if (typ == typeof(double))
+                {
+                    cnt.Put(name, reader.GetDouble(i));
+                }
+                else if (typ == typeof(DateTime))
+                {
+                    cnt.Put(name, reader.GetDateTime(i));
+                }
+            }
+        }
+
+        public IContent Dump()
+        {
+            var cnt = new FlowContent(512 * 1024);
+            cnt.PutAll(this);
+            return cnt;
         }
 
         public int Execute(Action<IParams> p = null, bool prepare = true)
@@ -1043,7 +1097,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -1114,22 +1173,6 @@ namespace Greatbone.Core
         //
         // PARAMETERS
 
-        public void PutOpen()
-        {
-        }
-
-        public void PutClose()
-        {
-        }
-
-        public void PutStart()
-        {
-        }
-
-        public void PutEnd()
-        {
-        }
-
         public void PutNull(string name)
         {
             if (name == null)
@@ -1149,10 +1192,6 @@ namespace Greatbone.Core
             {
                 Value = v.Decimal
             });
-        }
-
-        public void Put(string name, ISource v)
-        {
         }
 
         public void Put(string name, bool v)
@@ -1265,50 +1304,6 @@ namespace Greatbone.Core
             });
         }
 
-        public void Put(string name, JObj v)
-        {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
-            if (v == null)
-            {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = DBNull.Value
-                });
-            }
-            else
-            {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = v.ToString()
-                });
-            }
-        }
-
-        public void Put(string name, JArr v)
-        {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
-            if (v == null)
-            {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = DBNull.Value
-                });
-            }
-            else
-            {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = v.ToString()
-                });
-            }
-        }
-
         public void Put(string name, short[] v)
         {
             if (name == null)
@@ -1357,9 +1352,48 @@ namespace Greatbone.Core
             });
         }
 
-        public void Put(string name, Map<string, string> v)
+        public void Put(string name, JObj v)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = v.ToString()
+                });
+            }
+        }
+
+        public void Put(string name, JArr v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = v.ToString()
+                });
+            }
         }
 
         public void Put(string name, IData v, byte proj = 0x0f)
@@ -1403,6 +1437,10 @@ namespace Greatbone.Core
             }
         }
 
+        public void PutAll(ISource s)
+        {
+            throw new NotImplementedException();
+        }
         //
         // positional
         //
@@ -1410,12 +1448,6 @@ namespace Greatbone.Core
         public IParams SetNull()
         {
             PutNull(null);
-            return this;
-        }
-
-        public IParams Set(ISource v)
-        {
-            Put(null, v);
             return this;
         }
 
@@ -1503,6 +1535,16 @@ namespace Greatbone.Core
             return this;
         }
 
+        public IParams Set(JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IParams Set(JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
         public IParams Set(IData v, byte proj = 0x0f)
         {
             Put(null, v, proj);
@@ -1513,59 +1555,6 @@ namespace Greatbone.Core
         {
             Put(null, v, proj);
             return this;
-        }
-
-        public void Write(ISink o)
-        {
-            int count = reader.FieldCount;
-            for (int i = 0; i < count; i++)
-            {
-                var typ = reader.GetFieldType(i);
-                string name = reader.GetName(i);
-                if (reader.IsDBNull(i))
-                {
-                    o.PutNull(name);
-                }
-                else if (typ == typeof(bool))
-                {
-                    o.Put(name, reader.GetBoolean(i));
-                }
-                else if (typ == typeof(short))
-                {
-                    o.Put(name, reader.GetInt16(i));
-                }
-                else if (typ == typeof(int))
-                {
-                    o.Put(name, reader.GetInt32(i));
-                }
-                else if (typ == typeof(long))
-                {
-                    o.Put(name, reader.GetInt64(i));
-                }
-                else if (typ == typeof(string))
-                {
-                    o.Put(name, reader.GetString(i));
-                }
-                else if (typ == typeof(decimal))
-                {
-                    o.Put(name, reader.GetDecimal(i));
-                }
-                else if (typ == typeof(double))
-                {
-                    o.Put(name, reader.GetDouble(i));
-                }
-                else if (typ == typeof(DateTime))
-                {
-                    o.Put(name, reader.GetDateTime(i));
-                }
-            }
-        }
-
-        public DynamicContent Dump()
-        {
-            var cnt = new JsonContent(true);
-            cnt.Put(null, this);
-            return cnt;
         }
 
         public void Rollback()

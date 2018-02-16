@@ -146,7 +146,12 @@ namespace Greatbone.Core
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }
@@ -234,7 +239,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -293,50 +303,6 @@ namespace Greatbone.Core
             return map;
         }
 
-        public void Write(ISink s)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                JMbr elem = elements[i];
-                JType t = elem.type;
-                if (t == JType.Array)
-                {
-                    s.Put(null, (ISource) (JArr) elem);
-                }
-                else if (t == JType.Object)
-                {
-                    s.Put(null, (JObj) elem);
-                }
-                else if (t == JType.String)
-                {
-                    s.Put(null, (string) elem);
-                }
-                else if (t == JType.Number)
-                {
-                    s.Put(null, (JNumber) elem);
-                }
-                else if (t == JType.True)
-                {
-                    s.Put(null, true);
-                }
-                else if (t == JType.False)
-                {
-                    s.Put(null, false);
-                }
-                else if (t == JType.Null)
-                {
-                    s.PutNull(null);
-                }
-            }
-        }
-
-        public DynamicContent Dump()
-        {
-            var cont = new JsonContent(true);
-            cont.Put(null, (ISource) this);
-            return cont;
-        }
-
         public bool DataSet => true;
 
         public bool Next()
@@ -344,12 +310,56 @@ namespace Greatbone.Core
             return ++current < count;
         }
 
+        public void Write<C>(C cnt) where C : IContent, ISink
+        {
+            for (int i = 0; i < count; i++)
+            {
+                JMbr e = elements[i];
+                JType t = e.type;
+                if (t == JType.Array)
+                {
+                    cnt.Put(null, (JArr) e);
+                }
+                else if (t == JType.Object)
+                {
+                    cnt.Put(null, (JObj) e);
+                }
+                else if (t == JType.String)
+                {
+                    cnt.Put(null, (string) e);
+                }
+                else if (t == JType.Number)
+                {
+                    cnt.Put(null, (JNumber) e);
+                }
+                else if (t == JType.True)
+                {
+                    cnt.Put(null, true);
+                }
+                else if (t == JType.False)
+                {
+                    cnt.Put(null, false);
+                }
+                else if (t == JType.Null)
+                {
+                    cnt.PutNull(null);
+                }
+            }
+        }
+
+        public IContent Dump()
+        {
+            var cnt = new JsonContent(true);
+            cnt.PutAll(this);
+            return cnt;
+        }
+
         public override string ToString()
         {
-            JsonContent cont = new JsonContent(false);
-            cont.Put(null, (ISource) this);
-            string str = cont.ToString();
-            BufferUtility.Return(cont);
+            JsonContent cnt = new JsonContent(false);
+            cnt.PutAll(this);
+            string str = cnt.ToString();
+            BufferUtility.Return(cnt);
             return str;
         }
 

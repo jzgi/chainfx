@@ -71,15 +71,15 @@ namespace Greatbone.Core
             }
 
             // init client
-            var cluster = Cluster;
-            if (cluster != null)
+            var refs = Refs;
+            if (refs != null)
             {
-                for (int i = 0; i < cluster.Count; i++)
+                for (int i = 0; i < refs.Count; i++)
                 {
-                    var e = cluster.At(i);
+                    var e = refs.At(i);
                     if (clients == null)
                     {
-                        clients = new Map<string, Client>(cluster.Count * 2);
+                        clients = new Map<string, Client>(refs.Count * 2);
                     }
                     clients.Add(new Client(this, e.Key, e.Value));
                 }
@@ -113,7 +113,7 @@ namespace Greatbone.Core
 
         public Db Db => ((ServiceConfig) cfg).db;
 
-        public Map<string, string> Cluster => ((ServiceConfig) cfg).cluster;
+        public JObj Refs => ((ServiceConfig) cfg).refs;
 
         public int Logging => ((ServiceConfig) cfg).logging;
 

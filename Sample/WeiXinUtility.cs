@@ -39,7 +39,7 @@ namespace Greatbone.Sample
         {
             while (!stop)
             {
-                JObj jo = await WeiXin.GetAsync<JObj>(null, "/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret);
+                JObj jo = await WeiXin.GetAsync<JObj>("/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret, null);
                 string access_token = jo?[nameof(access_token)];
                 AccessToken = access_token;
 
@@ -95,7 +95,7 @@ namespace Greatbone.Sample
         public static async Task<(string access_token, string openid)> GetAccessorAsync(string code)
         {
             string url = "/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecret + "&code=" + code + "&grant_type=authorization_code";
-            JObj jo = await WeiXin.GetAsync<JObj>(null, url);
+            JObj jo = await WeiXin.GetAsync<JObj>(url, null);
             if (jo == null)
             {
                 return default((string, string));
@@ -111,7 +111,7 @@ namespace Greatbone.Sample
 
         public static async Task<User> GetUserInfoAsync(string access_token, string openid)
         {
-            JObj jo = await WeiXin.GetAsync<JObj>(null, "/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN");
+            JObj jo = await WeiXin.GetAsync<JObj>("/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN", null);
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
             return new User {wx = openid, name = nickname, city = city};
@@ -145,7 +145,7 @@ namespace Greatbone.Sample
             j.Put("content", text);
             j._OBJ();
             j._OBJ();
-            await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, j);
+            await WeiXin.PostAsync<XElem>("/cgi-bin/message/custom/send?access_token=" + AccessToken, j, null);
         }
 
         public static async Task PostSendAsync(string openid, string title, string descr, string url, string picurl = null)
@@ -161,7 +161,7 @@ namespace Greatbone.Sample
             j.Put("picurl", picurl);
             j._OBJ()._ARR()._OBJ();
             j._OBJ();
-            await WeiXin.PostAsync<XElem>(null, "/cgi-bin/message/custom/send?access_token=" + AccessToken, j);
+            await WeiXin.PostAsync<XElem>("/cgi-bin/message/custom/send?access_token=" + AccessToken, j, null);
         }
 
         public static async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)
@@ -182,7 +182,7 @@ namespace Greatbone.Sample
             string sign = Sign(x);
             x.Add("sign", sign);
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/mmpaymkttransfers/promotion/transfers", x.Dump())).inp;
+            XElem xe = (await WCPay.PostAsync<XElem>("/mmpaymkttransfers/promotion/transfers", x.Dump(), null)).inp;
             string return_code = xe.Child(nameof(return_code));
             if ("SUCCESS" == return_code)
             {
@@ -219,7 +219,7 @@ namespace Greatbone.Sample
             string sign = Sign(x);
             x.Add("sign", sign);
 
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/unifiedorder", x.Dump())).inp;
+            XElem xe = (await WCPay.PostAsync<XElem>("/pay/unifiedorder", x.Dump(), null)).inp;
             string prepay_id = xe.Child(nameof(prepay_id));
             string err_code = null;
             if (prepay_id == null)
@@ -264,7 +264,7 @@ namespace Greatbone.Sample
             };
             string sign = Sign(x);
             x.Add("sign", sign);
-            XElem xe = (await WCPay.PostAsync<XElem>(null, "/pay/orderquery", x.Dump())).inp;
+            XElem xe = (await WCPay.PostAsync<XElem>("/pay/orderquery", x.Dump(), null)).inp;
 
             sign = xe.Child(nameof(sign));
             xe.Sort();
@@ -294,7 +294,7 @@ namespace Greatbone.Sample
             string sign = Sign(xo);
             xo.Add("sign", sign);
 
-            XElem xi = (await WCPay.PostAsync<XElem>(null, "/secapi/pay/refund", xo.Dump())).inp;
+            XElem xi = (await WCPay.PostAsync<XElem>("/secapi/pay/refund", xo.Dump(), null)).inp;
             string return_code = xi.Child(nameof(return_code));
             if (return_code != "SUCCESS")
             {
@@ -322,7 +322,7 @@ namespace Greatbone.Sample
             string sign = Sign(xo);
             xo.Add("sign", sign);
 
-            XElem xi = (await WCPay.PostAsync<XElem>(null, "/pay/refundquery", xo.Dump())).inp;
+            XElem xi = (await WCPay.PostAsync<XElem>("/pay/refundquery", xo.Dump(), null)).inp;
 
             sign = xi.Child(nameof(sign));
             xi.Sort();

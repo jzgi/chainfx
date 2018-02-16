@@ -30,25 +30,9 @@ namespace Greatbone.Core
 
         public int Size => count;
 
-        public void PutOpen()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PutClose()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PutStart()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PutEnd()
-        {
-            throw new NotImplementedException();
-        }
+        //
+        // SINK
+        //
 
         public void PutNull(string name)
         {
@@ -130,7 +114,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Put(string name, Map<string, string> v)
+        public void Put(string name, JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }
@@ -141,6 +130,11 @@ namespace Greatbone.Core
         }
 
         public void Put<D>(string name, D[] v, byte proj = 15) where D : IData
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PutAll(ISource s)
         {
             throw new NotImplementedException();
         }

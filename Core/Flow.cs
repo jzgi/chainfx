@@ -91,7 +91,13 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+
+        public bool Get(string name, ref JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }
@@ -171,7 +177,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -196,19 +207,19 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write(ISink o)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DynamicContent Dump()
-        {
-            throw new NotImplementedException();
-        }
-
         public bool DataSet => true;
 
         public bool Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write<C>(C cnt) where C : IContent, ISink
+        {
+            throw new NotImplementedException();
+        }
+
+        public IContent Dump()
         {
             throw new NotImplementedException();
         }

@@ -26,7 +26,6 @@ namespace Greatbone.Sample
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,
-                    cache = true,
                     db = new Db
                     {
                         host = "144000.tv",

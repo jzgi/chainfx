@@ -191,21 +191,9 @@ namespace Greatbone.Core
             ordinal++;
         }
 
-        public void PutOpen()
-        {
-        }
-
-        public void PutClose()
-        {
-        }
-
-        public void PutStart()
-        {
-        }
-
-        public void PutEnd()
-        {
-        }
+        //
+        // SINK
+        //
 
         public void PutNull(string name)
         {
@@ -222,10 +210,6 @@ namespace Greatbone.Core
             {
                 Add(v);
             }
-        }
-
-        public void Put(string name, ISource v)
-        {
         }
 
         public void Put(string name, bool v)
@@ -449,7 +433,12 @@ namespace Greatbone.Core
             }
         }
 
-        public void Put(string name, Map<string, string> v)
+        public void Put(string name, JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }
@@ -466,15 +455,17 @@ namespace Greatbone.Core
                 {
                     Add("NULL");
                 }
-                else
-                {
-                }
             }
         }
 
         public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             Build(name);
+        }
+
+        public void PutAll(ISource s)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()

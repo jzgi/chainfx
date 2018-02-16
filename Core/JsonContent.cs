@@ -122,23 +122,6 @@ namespace Greatbone.Core
         //
         // SINK
         //
-
-        public void PutOpen()
-        {
-        }
-
-        public void PutClose()
-        {
-        }
-
-        public void PutStart()
-        {
-        }
-
-        public void PutEnd()
-        {
-        }
-
         public void PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
@@ -168,49 +151,6 @@ namespace Greatbone.Core
             {
                 Add('.');
                 Add(v.fract);
-            }
-        }
-
-        public void Put(string name, ISource v)
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                counts[++level] = 0; // enter
-                if (v.DataSet)
-                {
-                    Add('[');
-                    bool bgn = false;
-                    while (v.Next())
-                    {
-                        counts[++level] = 0; // enter an data entry
-                        if (bgn) Add(',');
-                        Add('{');
-                        v.Write(this);
-                        Add('}');
-                        level--;
-                        bgn = true;
-                    }
-                    Add(']');
-                }
-                else
-                {
-                    Add('{');
-                    v.Write(this);
-                    Add('}');
-                }
-                level--; // exit
             }
         }
 
@@ -449,9 +389,62 @@ namespace Greatbone.Core
         }
 
 
-        public void Put(string name, Map<string, string> v)
+        public void Put(string name, JObj v)
         {
-            throw new NotImplementedException();
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                counts[++level] = 0; // enter
+                Add('{');
+                v.Write(this);
+                Add('}');
+                level--; // exit
+            }
+        }
+
+        public void Put(string name, JArr v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                counts[++level] = 0; // enter
+                Add('[');
+                bool bgn = false;
+                while (v.Next())
+                {
+                    counts[++level] = 0; // enter an data entry
+                    if (bgn) Add(',');
+                    Add('{');
+                    v.Write(this);
+                    Add('}');
+                    level--;
+                    bgn = true;
+                }
+                Add(']');
+                level--; // exit
+            }
         }
 
         public void Put(string name, IData v, byte proj = 0x0f)
@@ -534,6 +527,42 @@ namespace Greatbone.Core
                     Put(null, v[i], proj);
                 }
                 Add(']');
+                level--; // exit
+            }
+        }
+
+        public void PutAll(ISource v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (v == null)
+            {
+                Add("null");
+            }
+            else
+            {
+                counts[++level] = 0; // enter
+                if (v.DataSet)
+                {
+                    Add('[');
+                    bool bgn = false;
+                    while (v.Next())
+                    {
+                        counts[++level] = 0; // enter an data entry
+                        if (bgn) Add(',');
+                        Add('{');
+                        v.Write(this);
+                        Add('}');
+                        level--;
+                        bgn = true;
+                    }
+                    Add(']');
+                }
+                else
+                {
+                    Add('{');
+                    v.Write(this);
+                    Add('}');
+                }
                 level--; // exit
             }
         }

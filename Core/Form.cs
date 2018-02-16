@@ -147,11 +147,6 @@ namespace Greatbone.Core
 //            return false;
 //        }
 //
-        public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref short[] v)
         {
             if (TryGet(name, out var fld))
@@ -190,6 +185,27 @@ namespace Greatbone.Core
                 return true;
             }
             return false;
+        }
+
+        public bool Get(string name, ref JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
+        {
+            throw new NotImplementedException();
         }
 
         //
@@ -338,7 +354,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -349,22 +370,6 @@ namespace Greatbone.Core
         }
 
         public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public bool Get(string name, ref Map<string, string> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Get(string name, ref ISource v)
         {
             throw new NotImplementedException();
         }
@@ -381,23 +386,23 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write(ISink s)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DynamicContent Dump()
-        {
-            var cont = new FormContent(true);
-            cont.Put(null, this);
-            return cont;
-        }
-
         public bool DataSet => false;
 
         public bool Next()
         {
             throw new NotImplementedException();
+        }
+
+        public void Write<C>(C cnt) where C : IContent, ISink
+        {
+            throw new NotImplementedException();
+        }
+
+        public IContent Dump()
+        {
+            var cnt = new FormContent(true);
+            cnt.Put(null, this);
+            return cnt;
         }
     }
 }

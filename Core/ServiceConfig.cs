@@ -19,14 +19,14 @@ namespace Greatbone.Core
         // db configuration
         public Db db;
 
-        // cluster members in the form of peerid-address pairs
-        public Map<string, string> cluster;
+        // remote peer references in the form of peerId-url pairs
+        public JObj refs;
 
         // logging level
         public int logging = 3;
 
         // shared cache or not
-        public bool cache;
+        public bool cache = true;
 
         public ServiceConfig(string name) : base(name)
         {
@@ -61,7 +61,7 @@ namespace Greatbone.Core
             s.Get(nameof(shard), ref shard);
             s.Get(nameof(addrs), ref addrs);
             s.Get(nameof(db), ref db);
-            s.Get(nameof(cluster), ref cluster);
+            s.Get(nameof(refs), ref refs);
             s.Get(nameof(logging), ref logging);
             s.Get(nameof(cache), ref cache);
         }
@@ -71,7 +71,7 @@ namespace Greatbone.Core
             s.Put(nameof(shard), shard);
             s.Put(nameof(addrs), addrs);
             s.Put(nameof(db), db);
-            s.Put(nameof(cluster), cluster);
+            s.Put(nameof(refs), refs);
             s.Put(nameof(logging), logging);
             s.Put(nameof(cache), cache);
         }

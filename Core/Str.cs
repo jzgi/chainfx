@@ -152,7 +152,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }
@@ -236,7 +241,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -253,7 +263,7 @@ namespace Greatbone.Core
 
 
         //
-        // ENTIRITY
+        // ENTITY
         //
 
         public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
@@ -266,23 +276,23 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-
-        public void Write(ISink s)
-        {
-        }
-
-        public DynamicContent Dump()
-        {
-            var cont = new StrContent(true, true);
-            cont.Add(charbuf, 0, count);
-            return cont;
-        }
-
         public bool DataSet => false;
 
         public bool Next()
         {
             throw new NotImplementedException();
+        }
+
+        public void Write<C>(C cnt) where C : IContent, ISink
+        {
+            throw new NotImplementedException();
+        }
+
+        public IContent Dump()
+        {
+            var cnt = new StrContent(true, true);
+            cnt.Add(charbuf, 0, count);
+            return cnt;
         }
 
         public bool Equals(string str)

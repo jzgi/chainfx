@@ -75,22 +75,6 @@ namespace Greatbone.Core
         // SINK
         //
 
-        public void PutOpen()
-        {
-        }
-
-        public void PutClose()
-        {
-        }
-
-        public void PutStart()
-        {
-        }
-
-        public void PutEnd()
-        {
-        }
-
         public void PutNull(string name)
         {
         }
@@ -279,7 +263,12 @@ namespace Greatbone.Core
             }
         }
 
-        public void Put(string name, Map<string, string> v)
+        public void Put(string name, JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(string name, JArr v)
         {
             throw new NotImplementedException();
         }
@@ -290,6 +279,11 @@ namespace Greatbone.Core
 
         public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
+        }
+
+        public void PutAll(ISource s)
+        {
+            throw new NotImplementedException();
         }
     }
 }

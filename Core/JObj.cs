@@ -203,25 +203,14 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref JObj v)
         {
-            if (TryGet(name, out var mbr))
-            {
-                if (mbr.type == JType.Object)
-                {
-                    JObj jo = mbr;
-                    int count = jo.Count;
-                    Map<string, string> map = new Map<string, string>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        JMbr e = jo[i];
-                        map.Add(e.Key, e);
-                    }
-                    v = map;
-                    return true;
-                }
-            }
-            return false;
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref JArr v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
@@ -326,7 +315,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -354,7 +348,11 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write(ISink s)
+        public bool DataSet => false;
+
+        public bool Next() => false;
+
+        public void Write<C>(C cnt) where C : IContent, ISink
         {
             for (int i = 0; i < Count; i++)
             {
@@ -362,55 +360,48 @@ namespace Greatbone.Core
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {
-                    s.Put(mbr.Key, (ISource) (JArr) mbr);
+                    cnt.Put(mbr.Key, (JArr) mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    s.Put(mbr.Key, (JObj) mbr);
+                    cnt.Put(mbr.Key, (JObj) mbr);
                 }
                 else if (t == JType.String)
                 {
-                    s.Put(mbr.Key, (string) mbr);
+                    cnt.Put(mbr.Key, (string) mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    s.Put(mbr.Key, (JNumber) mbr);
+                    cnt.Put(mbr.Key, (JNumber) mbr);
                 }
                 else if (t == JType.True)
                 {
-                    s.Put(mbr.Key, true);
+                    cnt.Put(mbr.Key, true);
                 }
                 else if (t == JType.False)
                 {
-                    s.Put(mbr.Key, false);
+                    cnt.Put(mbr.Key, false);
                 }
                 else if (t == JType.Null)
                 {
-                    s.PutNull(mbr.Key);
+                    cnt.PutNull(mbr.Key);
                 }
             }
         }
 
-        public DynamicContent Dump()
+        public IContent Dump()
         {
             var cnt = new JsonContent(true);
-            cnt.Put(null, this);
+            cnt.PutAll(this);
             return cnt;
-        }
-
-        public bool DataSet => false;
-
-        public bool Next()
-        {
-            throw new NotImplementedException();
         }
 
         public override string ToString()
         {
-            JsonContent cont = new JsonContent(false, 4 * 1024);
-            cont.Put(null, this);
-            string str = cont.ToString();
-            BufferUtility.Return(cont);
+            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            cnt.PutAll(this);
+            string str = cnt.ToString();
+            BufferUtility.Return(cnt);
             return str;
         }
     }

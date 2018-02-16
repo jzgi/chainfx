@@ -215,7 +215,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref Map<string, string> v)
+        public bool Get(string name, ref JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref JArr v)
         {
             throw new NotImplementedException();
         }
@@ -300,7 +305,12 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public ISource Let(out Map<string, string> v)
+        public ISource Let(out JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out JArr v)
         {
             throw new NotImplementedException();
         }
@@ -326,16 +336,6 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write(ISink s)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DynamicContent Dump()
-        {
-            return new XmlContent(true).ELEM(this);
-        }
-
         public bool DataSet => false;
 
         public bool Next()
@@ -343,19 +343,16 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref ISource v)
+        public void Write<C>(C cnt) where C : IContent, ISink
         {
             throw new NotImplementedException();
         }
 
-        public static implicit operator int(XElem v)
+        public IContent Dump()
         {
-            return v?.Text.ToInt() ?? 0;
-        }
-
-        public static implicit operator string(XElem v)
-        {
-            return v?.Text;
+            var cnt = new XmlContent(true);
+            cnt.ELEM(this);
+            return cnt;
         }
 
         public int CompareTo(XElem other)
@@ -366,6 +363,16 @@ namespace Greatbone.Core
         public IEnumerator GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+
+        public static implicit operator string(XElem v)
+        {
+            return v?.Text;
+        }
+
+        public static implicit operator int(XElem v)
+        {
+            return v?.Text.ToInt() ?? 0;
         }
     }
 }

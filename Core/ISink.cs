@@ -7,23 +7,9 @@ namespace Greatbone.Core
     /// </summary>
     public interface ISink
     {
-        // put dataset opening, if any
-        void PutOpen();
-
-        // put dataset closing, if any
-        void PutClose();
-
-        // put data object start, if any
-        void PutStart();
-
-        // put data object end, if any
-        void PutEnd();
-
         void PutNull(string name);
 
         void Put(string name, JNumber v);
-
-        void Put(string name, ISource v);
 
         void Put(string name, bool v);
 
@@ -51,10 +37,14 @@ namespace Greatbone.Core
 
         void Put(string name, string[] v);
 
-        void Put(string name, Map<string, string> v);
+        void Put(string name, JObj v); // essentially a map
+
+        void Put(string name, JArr v);
 
         void Put(string name, IData v, byte proj = 0x0f);
 
         void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData;
+
+        void PutAll(ISource s);
     }
 }
