@@ -56,24 +56,24 @@ namespace Greatbone.Core
             }
         }
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(shard), ref shard);
-            i.Get(nameof(addrs), ref addrs);
-            i.Get(nameof(db), ref db);
-            i.Get(nameof(cluster), ref cluster);
-            i.Get(nameof(logging), ref logging);
-            i.Get(nameof(cache), ref cache);
+            s.Get(nameof(shard), ref shard);
+            s.Get(nameof(addrs), ref addrs);
+            s.Get(nameof(db), ref db);
+            s.Get(nameof(cluster), ref cluster);
+            s.Get(nameof(logging), ref logging);
+            s.Get(nameof(cache), ref cache);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
-            o.Put(nameof(shard), shard);
-            o.Put(nameof(addrs), addrs);
-            o.Put(nameof(db), db);
-            o.Put(nameof(cluster), cluster);
-            o.Put(nameof(logging), logging);
-            o.Put(nameof(cache), cache);
+            s.Put(nameof(shard), shard);
+            s.Put(nameof(addrs), addrs);
+            s.Put(nameof(db), db);
+            s.Put(nameof(cluster), cluster);
+            s.Put(nameof(logging), logging);
+            s.Put(nameof(cache), cache);
         }
     }
 
@@ -95,22 +95,22 @@ namespace Greatbone.Core
 
         public string password;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(host), ref host);
-            i.Get(nameof(port), ref port);
-            i.Get(nameof(database), ref database);
-            i.Get(nameof(username), ref username);
-            i.Get(nameof(password), ref password);
+            s.Get(nameof(host), ref host);
+            s.Get(nameof(port), ref port);
+            s.Get(nameof(database), ref database);
+            s.Get(nameof(username), ref username);
+            s.Get(nameof(password), ref password);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
-            o.Put(nameof(host), host);
-            o.Put(nameof(port), port);
-            o.Put(nameof(database), database);
-            o.Put(nameof(username), username);
-            o.Put(nameof(password), password);
+            s.Put(nameof(host), host);
+            s.Put(nameof(port), port);
+            s.Put(nameof(database), database);
+            s.Put(nameof(username), username);
+            s.Put(nameof(password), password);
         }
     }
 }

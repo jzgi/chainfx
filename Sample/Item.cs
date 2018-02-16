@@ -33,40 +33,40 @@ namespace Greatbone.Sample
 
         internal bool imgg;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & PK) == PK)
             {
-                i.Get(nameof(shopid), ref shopid);
-                i.Get(nameof(name), ref name);
+                s.Get(nameof(shopid), ref shopid);
+                s.Get(nameof(name), ref name);
             }
-            i.Get(nameof(descr), ref descr);
-            i.Get(nameof(unit), ref unit);
-            i.Get(nameof(price), ref price);
-            i.Get(nameof(min), ref min);
-            i.Get(nameof(step), ref step);
-            i.Get(nameof(status), ref status);
-            i.Get(nameof(stock), ref stock);
+            s.Get(nameof(descr), ref descr);
+            s.Get(nameof(unit), ref unit);
+            s.Get(nameof(price), ref price);
+            s.Get(nameof(min), ref min);
+            s.Get(nameof(step), ref step);
+            s.Get(nameof(status), ref status);
+            s.Get(nameof(stock), ref stock);
             if ((proj & IMGG) == IMGG)
             {
-                i.Get(nameof(imgg), ref imgg);
+                s.Get(nameof(imgg), ref imgg);
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
             if ((proj & PK) == PK)
             {
-                o.Put(nameof(shopid), shopid);
-                o.Put(nameof(name), name);
+                s.Put(nameof(shopid), shopid);
+                s.Put(nameof(name), name);
             }
-            o.Put(nameof(descr), descr);
-            o.Put(nameof(unit), unit);
-            o.Put(nameof(price), price);
-            o.Put(nameof(min), min);
-            o.Put(nameof(step), step);
-            o.Put(nameof(status), status);
-            o.Put(nameof(stock), stock);
+            s.Put(nameof(descr), descr);
+            s.Put(nameof(unit), unit);
+            s.Put(nameof(price), price);
+            s.Put(nameof(min), min);
+            s.Put(nameof(step), step);
+            s.Put(nameof(status), status);
+            s.Put(nameof(stock), stock);
         }
     }
 }

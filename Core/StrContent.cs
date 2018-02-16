@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// </summary>
     public class StrContent : DynamicContent
     {
-        public StrContent(bool octet, bool pooled = false, int capacity = 512) : base(octet, capacity)
+        public StrContent(bool bin, bool pooled = false, int capacity = 512) : base(bin, capacity)
         {
         }
 

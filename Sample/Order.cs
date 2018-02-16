@@ -55,67 +55,67 @@ namespace Greatbone.Sample
         internal DateTime finished;
         internal string kick;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & KEY) == KEY)
             {
-                i.Get(nameof(id), ref id);
-                i.Get(nameof(rev), ref rev);
+                s.Get(nameof(id), ref id);
+                s.Get(nameof(rev), ref rev);
             }
-            i.Get(nameof(status), ref status);
-            i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(shopname), ref shopname);
-            i.Get(nameof(typ), ref typ);
-            i.Get(nameof(wx), ref wx);
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(addr), ref addr);
-            i.Get(nameof(tel), ref tel);
-            i.Get(nameof(items), ref items);
-            i.Get(nameof(min), ref min);
-            i.Get(nameof(notch), ref notch);
-            i.Get(nameof(off), ref off);
-            i.Get(nameof(total), ref total);
-            i.Get(nameof(created), ref created);
+            s.Get(nameof(status), ref status);
+            s.Get(nameof(shopid), ref shopid);
+            s.Get(nameof(shopname), ref shopname);
+            s.Get(nameof(typ), ref typ);
+            s.Get(nameof(wx), ref wx);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(city), ref city);
+            s.Get(nameof(addr), ref addr);
+            s.Get(nameof(tel), ref tel);
+            s.Get(nameof(items), ref items);
+            s.Get(nameof(min), ref min);
+            s.Get(nameof(notch), ref notch);
+            s.Get(nameof(off), ref off);
+            s.Get(nameof(total), ref total);
+            s.Get(nameof(created), ref created);
             if ((proj & LATER) == LATER)
             {
-                i.Get(nameof(cash), ref cash);
-                i.Get(nameof(paid), ref paid);
-                i.Get(nameof(aborted), ref aborted);
-                i.Get(nameof(finished), ref finished);
-                i.Get(nameof(kick), ref kick);
+                s.Get(nameof(cash), ref cash);
+                s.Get(nameof(paid), ref paid);
+                s.Get(nameof(aborted), ref aborted);
+                s.Get(nameof(finished), ref finished);
+                s.Get(nameof(kick), ref kick);
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
             if ((proj & KEY) == KEY)
             {
-                o.Put(nameof(id), id);
-                o.Put(nameof(rev), rev);
+                s.Put(nameof(id), id);
+                s.Put(nameof(rev), rev);
             }
-            o.Put(nameof(status), status);
-            o.Put(nameof(shopid), shopid);
-            o.Put(nameof(shopname), shopname);
-            o.Put(nameof(typ), typ);
-            o.Put(nameof(wx), wx);
-            o.Put(nameof(name), name);
-            o.Put(nameof(city), city);
-            o.Put(nameof(addr), addr);
-            o.Put(nameof(tel), tel);
-            o.Put(nameof(items), items);
-            o.Put(nameof(min), min);
-            o.Put(nameof(notch), notch);
-            o.Put(nameof(off), off);
-            o.Put(nameof(total), total);
-            o.Put(nameof(created), created);
+            s.Put(nameof(status), status);
+            s.Put(nameof(shopid), shopid);
+            s.Put(nameof(shopname), shopname);
+            s.Put(nameof(typ), typ);
+            s.Put(nameof(wx), wx);
+            s.Put(nameof(name), name);
+            s.Put(nameof(city), city);
+            s.Put(nameof(addr), addr);
+            s.Put(nameof(tel), tel);
+            s.Put(nameof(items), items);
+            s.Put(nameof(min), min);
+            s.Put(nameof(notch), notch);
+            s.Put(nameof(off), off);
+            s.Put(nameof(total), total);
+            s.Put(nameof(created), created);
             if ((proj & LATER) == LATER)
             {
-                o.Put(nameof(cash), cash);
-                o.Put(nameof(paid), paid);
-                o.Put(nameof(aborted), aborted);
-                o.Put(nameof(finished), finished);
-                o.Put(nameof(kick), kick);
+                s.Put(nameof(cash), cash);
+                s.Put(nameof(paid), paid);
+                s.Put(nameof(aborted), aborted);
+                s.Put(nameof(finished), finished);
+                s.Put(nameof(kick), kick);
             }
         }
 
@@ -223,22 +223,22 @@ namespace Greatbone.Sample
 
         public decimal Subtotal => price * qty;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(unit), ref unit);
-            i.Get(nameof(price), ref price);
-            i.Get(nameof(qty), ref qty);
-            i.Get(nameof(load), ref load);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(unit), ref unit);
+            s.Get(nameof(price), ref price);
+            s.Get(nameof(qty), ref qty);
+            s.Get(nameof(load), ref load);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
-            o.Put(nameof(name), name);
-            o.Put(nameof(unit), unit);
-            o.Put(nameof(price), price);
-            o.Put(nameof(qty), qty);
-            o.Put(nameof(load), load);
+            s.Put(nameof(name), name);
+            s.Put(nameof(unit), unit);
+            s.Put(nameof(price), price);
+            s.Put(nameof(qty), qty);
+            s.Put(nameof(load), load);
         }
 
         public void AddQty(short qty)

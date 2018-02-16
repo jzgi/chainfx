@@ -9,7 +9,7 @@ namespace Greatbone.Core
     /// <summary>
     /// An environment for database operations based on current service.
     /// </summary>
-    public class DbContext : IDataInput, IDbParams, IDisposable
+    public class DbContext : ISource, IParams, IDisposable
     {
         static readonly string[] PARAMS =
         {
@@ -95,18 +95,18 @@ namespace Greatbone.Core
             return sql;
         }
 
-        public bool Query1(Action<IDbParams> p = null, bool prepare = true)
+        public bool Query1(Action<IParams> p = null, bool prepare = true)
         {
             return Query1(sql.ToString(), p, prepare);
         }
 
-        public bool Query1(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        public bool Query1(DbSql sql, Action<IParams> p = null, bool prepare = true)
         {
             this.sql = sql;
             return Query1(sql.ToString(), p, prepare);
         }
 
-        public D Query1<D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D Query1<D>(DbSql sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             this.sql = sql;
             if (Query1(sql.ToString(), p, prepare))
@@ -116,7 +116,7 @@ namespace Greatbone.Core
             return default;
         }
 
-        public D Query1<D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D Query1<D>(string cmdtext, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (Query1(cmdtext, p, prepare))
             {
@@ -125,7 +125,7 @@ namespace Greatbone.Core
             return default;
         }
 
-        public bool Query1(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public bool Query1(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -144,18 +144,18 @@ namespace Greatbone.Core
             return reader.Read();
         }
 
-        public bool Query(Action<IDbParams> p = null, bool prepare = true)
+        public bool Query(Action<IParams> p = null, bool prepare = true)
         {
             return Query(sql.ToString(), p, prepare);
         }
 
-        public bool Query(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        public bool Query(DbSql sql, Action<IParams> p = null, bool prepare = true)
         {
             this.sql = sql;
             return Query(sql.ToString(), p, prepare);
         }
 
-        public D[] Query<D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(DbSql sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             this.sql = sql;
             if (Query(sql.ToString(), p, prepare))
@@ -165,7 +165,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public D[] Query<D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(string cmdtext, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
@@ -174,7 +174,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Map<K, D> Query<K, D>(DbSql sql, Action<IDbParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(DbSql sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
         {
             this.sql = sql;
             if (Query(sql.ToString(), p, prepare))
@@ -184,7 +184,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string cmdtext, Action<IDbParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string cmdtext, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
         {
             if (Query(cmdtext, p, prepare))
             {
@@ -193,7 +193,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public bool Query(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public bool Query(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -212,13 +212,13 @@ namespace Greatbone.Core
             return reader.HasRows;
         }
 
-        public async Task<bool> QueryAsync(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        public async Task<bool> QueryAsync(DbSql sql, Action<IParams> p = null, bool prepare = true)
         {
             this.sql = sql;
             return await QueryAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<bool> QueryAsync(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public async Task<bool> QueryAsync(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -272,18 +272,18 @@ namespace Greatbone.Core
             return reader.NextResult();
         }
 
-        public int Execute(Action<IDbParams> p = null, bool prepare = true)
+        public int Execute(Action<IParams> p = null, bool prepare = true)
         {
             return Execute(sql.ToString(), p, prepare);
         }
 
-        public int Execute(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        public int Execute(DbSql sql, Action<IParams> p = null, bool prepare = true)
         {
             this.sql = sql;
             return Execute(sql.ToString(), p, prepare);
         }
 
-        public int Execute(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public int Execute(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -300,12 +300,12 @@ namespace Greatbone.Core
             return command.ExecuteNonQuery();
         }
 
-        public async Task<int> ExecuteAsync(Action<IDbParams> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(Action<IParams> p = null, bool prepare = true)
         {
             return await ExecuteAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<int> ExecuteAsync(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -322,18 +322,18 @@ namespace Greatbone.Core
             return await command.ExecuteNonQueryAsync();
         }
 
-        public object Scalar(Action<IDbParams> p = null, bool prepare = true)
+        public object Scalar(Action<IParams> p = null, bool prepare = true)
         {
             return Scalar(sql.ToString(), p, prepare);
         }
 
-        public object Scalar(DbSql sql, Action<IDbParams> p = null, bool prepare = true)
+        public object Scalar(DbSql sql, Action<IParams> p = null, bool prepare = true)
         {
             this.sql = sql;
             return Scalar(sql.ToString(), p, prepare);
         }
 
-        public object Scalar(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public object Scalar(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -351,12 +351,12 @@ namespace Greatbone.Core
             return res == DBNull.Value ? null : res;
         }
 
-        public async Task<object> ScalarAsync(Action<IDbParams> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(Action<IParams> p = null, bool prepare = true)
         {
             return await ScalarAsync(sql.ToString(), p, prepare);
         }
 
-        public async Task<object> ScalarAsync(string cmdtext, Action<IDbParams> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(string cmdtext, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -689,7 +689,7 @@ namespace Greatbone.Core
             return false;
         }
 
-        public bool Get(string name, ref IDataInput v)
+        public bool Get(string name, ref ISource v)
         {
             throw new NotImplementedException();
         }
@@ -802,7 +802,7 @@ namespace Greatbone.Core
         // LET
         //
 
-        public IDataInput Let(out bool v)
+        public ISource Let(out bool v)
         {
             try
             {
@@ -820,7 +820,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out short v)
+        public ISource Let(out short v)
         {
             try
             {
@@ -838,7 +838,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out int v)
+        public ISource Let(out int v)
         {
             try
             {
@@ -856,7 +856,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out long v)
+        public ISource Let(out long v)
         {
             try
             {
@@ -874,7 +874,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out double v)
+        public ISource Let(out double v)
         {
             try
             {
@@ -893,7 +893,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out decimal v)
+        public ISource Let(out decimal v)
         {
             try
             {
@@ -911,7 +911,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out DateTime v)
+        public ISource Let(out DateTime v)
         {
             try
             {
@@ -929,7 +929,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out string v)
+        public ISource Let(out string v)
         {
             try
             {
@@ -947,7 +947,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out ArraySegment<byte> v)
+        public ISource Let(out ArraySegment<byte> v)
         {
             try
             {
@@ -971,7 +971,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out short[] v)
+        public ISource Let(out short[] v)
         {
             try
             {
@@ -989,7 +989,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out int[] v)
+        public ISource Let(out int[] v)
         {
             try
             {
@@ -1007,7 +1007,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out long[] v)
+        public ISource Let(out long[] v)
         {
             try
             {
@@ -1025,7 +1025,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out string[] v)
+        public ISource Let(out string[] v)
         {
             try
             {
@@ -1043,12 +1043,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public ISource Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
+        public ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -1075,7 +1075,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
+        public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
         {
             try
             {
@@ -1114,7 +1114,15 @@ namespace Greatbone.Core
         //
         // PARAMETERS
 
-        public IDbParams PutNull(string name)
+        public IParams PutOpen() => this;
+
+        public IParams PutClose() => this;
+
+        public IParams PutStart() => this;
+
+        public IParams PutEnd() => this;
+
+        public IParams PutNull(string name)
         {
             if (name == null)
             {
@@ -1124,7 +1132,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, JNumber v)
+        public IParams Put(string name, JNumber v)
         {
             if (name == null)
             {
@@ -1137,12 +1145,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, IDataInput v)
+        public IParams Put(string name, ISource v)
         {
             return this;
         }
 
-        public IDbParams Put(string name, bool v)
+        public IParams Put(string name, bool v)
         {
             if (name == null)
             {
@@ -1155,7 +1163,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, short v)
+        public IParams Put(string name, short v)
         {
             if (name == null)
             {
@@ -1168,7 +1176,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, int v)
+        public IParams Put(string name, int v)
         {
             if (name == null)
             {
@@ -1181,7 +1189,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, long v)
+        public IParams Put(string name, long v)
         {
             if (name == null)
             {
@@ -1194,7 +1202,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, double v)
+        public IParams Put(string name, double v)
         {
             if (name == null)
             {
@@ -1207,7 +1215,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, decimal v)
+        public IParams Put(string name, decimal v)
         {
             if (name == null)
             {
@@ -1220,7 +1228,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, DateTime v)
+        public IParams Put(string name, DateTime v)
         {
             if (name == null)
             {
@@ -1234,7 +1242,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, string v)
+        public IParams Put(string name, string v)
         {
             if (name == null)
             {
@@ -1248,7 +1256,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, ArraySegment<byte> v)
+        public IParams Put(string name, ArraySegment<byte> v)
         {
             if (name == null)
             {
@@ -1261,7 +1269,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, JObj v)
+        public IParams Put(string name, JObj v)
         {
             if (name == null)
             {
@@ -1284,7 +1292,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, JArr v)
+        public IParams Put(string name, JArr v)
         {
             if (name == null)
             {
@@ -1307,7 +1315,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, short[] v)
+        public IParams Put(string name, short[] v)
         {
             if (name == null)
             {
@@ -1320,7 +1328,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, int[] v)
+        public IParams Put(string name, int[] v)
         {
             if (name == null)
             {
@@ -1333,7 +1341,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, long[] v)
+        public IParams Put(string name, long[] v)
         {
             if (name == null)
             {
@@ -1346,7 +1354,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, string[] v)
+        public IParams Put(string name, string[] v)
         {
             if (name == null)
             {
@@ -1359,12 +1367,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put(string name, Map<string, string> v)
+        public IParams Put(string name, Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public IDbParams Put(string name, IData v, byte proj = 0x0f)
+        public IParams Put(string name, IData v, byte proj = 0x0f)
         {
             if (name == null)
             {
@@ -1384,7 +1392,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDbParams Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public IParams Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             if (name == null)
             {
@@ -1411,92 +1419,92 @@ namespace Greatbone.Core
         // positional
         //
 
-        public IDbParams SetNull()
+        public IParams SetNull()
         {
             return PutNull(null);
         }
 
-        public IDbParams Set(IDataInput v)
+        public IParams Set(ISource v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(bool v)
+        public IParams Set(bool v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(short v)
+        public IParams Set(short v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(int v)
+        public IParams Set(int v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(long v)
+        public IParams Set(long v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(double v)
+        public IParams Set(double v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(decimal v)
+        public IParams Set(decimal v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(JNumber v)
+        public IParams Set(JNumber v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(DateTime v)
+        public IParams Set(DateTime v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(string v)
+        public IParams Set(string v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(ArraySegment<byte> v)
+        public IParams Set(ArraySegment<byte> v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(short[] v)
+        public IParams Set(short[] v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(int[] v)
+        public IParams Set(int[] v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(long[] v)
+        public IParams Set(long[] v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(string[] v)
+        public IParams Set(string[] v)
         {
             return Put(null, v);
         }
 
-        public IDbParams Set(IData v, byte proj = 0x0f)
+        public IParams Set(IData v, byte proj = 0x0f)
         {
             return Put(null, v, proj);
         }
 
-        public IDbParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
+        public IParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
             return Put(null, v, proj);
         }
@@ -1505,7 +1513,7 @@ namespace Greatbone.Core
         // EVENTS
         //
 
-        public void Publish(string name, string shard, int arg, IDataInput inp)
+        public void Publish(string name, string shard, int arg, ISource inp)
         {
             DynamicContent dcont = inp.Dump();
             Publish(name, shard, arg, dcont);
@@ -1539,7 +1547,7 @@ namespace Greatbone.Core
             });
         }
 
-        public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> o) where R : ISink<R>
         {
             int count = reader.FieldCount;
             for (int i = 0; i < count; i++)

@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
     /// </summary>
-    public class Form : Map<string, Field>, IDataInput
+    public class Form : Map<string, Field>, ISource
     {
         // if multipart
         readonly bool mp;
@@ -196,7 +196,7 @@ namespace Greatbone.Core
         // LET
         //
 
-        public IDataInput Let(out bool v)
+        public ISource Let(out bool v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -208,7 +208,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out short v)
+        public ISource Let(out short v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -220,7 +220,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out int v)
+        public ISource Let(out int v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -232,7 +232,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out long v)
+        public ISource Let(out long v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -244,7 +244,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out double v)
+        public ISource Let(out double v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -256,7 +256,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out decimal v)
+        public ISource Let(out decimal v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -268,7 +268,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out DateTime v)
+        public ISource Let(out DateTime v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -280,7 +280,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out string v)
+        public ISource Let(out string v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -292,17 +292,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out ArraySegment<byte> v)
+        public ISource Let(out ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out short[] v)
+        public ISource Let(out short[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out int[] v)
+        public ISource Let(out int[] v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -314,7 +314,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out long[] v)
+        public ISource Let(out long[] v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -326,7 +326,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out string[] v)
+        public ISource Let(out string[] v)
         {
             int ord = ordinal++;
             if (ord < Count)
@@ -338,17 +338,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public ISource Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
+        public ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
+        public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -364,7 +364,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public bool Get(string name, ref IDataInput v)
+        public bool Get(string name, ref ISource v)
         {
             throw new NotImplementedException();
         }
@@ -381,7 +381,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<R>(IDataOutput<R> @out) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> @out) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

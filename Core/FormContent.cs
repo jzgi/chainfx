@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a urlencoded byte or char string.
     /// </summary>
-    public class FormContent : DynamicContent, IDataOutput<FormContent>
+    public class FormContent : DynamicContent, ISink<FormContent>
     {
         // hexidecimal characters
         protected static readonly char[] HEX =
@@ -15,7 +15,7 @@ namespace Greatbone.Core
 
         int ordinal = -1;
 
-        public FormContent(bool octet, int capacity = 4092) : base(octet, capacity)
+        public FormContent(bool bin, int capacity = 4092) : base(bin, capacity)
         {
         }
 
@@ -75,6 +75,14 @@ namespace Greatbone.Core
         // SINK
         //
 
+        public FormContent PutOpen() => this;
+
+        public FormContent PutClose() => this;
+
+        public FormContent PutStart() => this;
+
+        public FormContent PutEnd() => this;
+
         public FormContent PutNull(string name)
         {
             return this;
@@ -85,7 +93,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormContent Put(string name, IDataInput v)
+        public FormContent Put(string name, ISource v)
         {
             return this;
         }

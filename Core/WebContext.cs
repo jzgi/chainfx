@@ -327,7 +327,7 @@ namespace Greatbone.Core
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public async Task<M> ReadAsync<M>() where M : class, IDataInput
+        public async Task<M> ReadAsync<M>() where M : class, ISource
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -372,7 +372,7 @@ namespace Greatbone.Core
                 entity = ParseContent(ctyp, buffer, count);
             }
 
-            if (!(entity is IDataInput inp))
+            if (!(entity is ISource inp))
             {
                 return default;
             }
@@ -407,7 +407,7 @@ namespace Greatbone.Core
                 entity = ParseContent(ctyp, buffer, count);
             }
 
-            return (entity as IDataInput)?.ToArray<D>(proj);
+            return (entity as ISource)?.ToArray<D>(proj);
         }
 
         //
@@ -478,7 +478,7 @@ namespace Greatbone.Core
             MaxAge = maxage;
         }
 
-        public void Give(int status, IDataInput inp, bool? @public = null, int maxage = 60)
+        public void Give(int status, ISource inp, bool? @public = null, int maxage = 60)
         {
             Status = status;
             Content = inp.Dump();

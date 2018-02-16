@@ -33,47 +33,47 @@ namespace Greatbone.Sample
         internal string oprat; // operator at
         internal bool adm; // adm
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & WX) == WX)
             {
-                i.Get(nameof(wx), ref wx);
+                s.Get(nameof(wx), ref wx);
             }
-            i.Get(nameof(name), ref name);
+            s.Get(nameof(name), ref name);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
-                i.Get(nameof(credential), ref credential);
+                s.Get(nameof(credential), ref credential);
             }
-            i.Get(nameof(city), ref city);
-            i.Get(nameof(addr), ref addr);
-            i.Get(nameof(tel), ref tel);
+            s.Get(nameof(city), ref city);
+            s.Get(nameof(addr), ref addr);
+            s.Get(nameof(tel), ref tel);
             if ((proj & LATER) == LATER)
             {
-                i.Get(nameof(opr), ref opr);
-                i.Get(nameof(oprat), ref oprat);
-                i.Get(nameof(adm), ref adm);
+                s.Get(nameof(opr), ref opr);
+                s.Get(nameof(oprat), ref oprat);
+                s.Get(nameof(adm), ref adm);
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
             if ((proj & WX) == WX)
             {
-                o.Put(nameof(wx), wx);
+                s.Put(nameof(wx), wx);
             }
-            o.Put(nameof(name), name);
+            s.Put(nameof(name), name);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
-                o.Put(nameof(credential), credential);
+                s.Put(nameof(credential), credential);
             }
-            o.Put(nameof(city), city);
-            o.Put(nameof(addr), addr);
-            o.Put(nameof(tel), tel);
+            s.Put(nameof(city), city);
+            s.Put(nameof(addr), addr);
+            s.Put(nameof(tel), tel);
             if ((proj & LATER) == LATER)
             {
-                o.Put(nameof(opr), opr);
-                o.Put(nameof(oprat), oprat);
-                o.Put(nameof(adm), adm);
+                s.Put(nameof(opr), opr);
+                s.Put(nameof(oprat), oprat);
+                s.Put(nameof(adm), adm);
             }
         }
     }

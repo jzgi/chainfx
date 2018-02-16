@@ -12,7 +12,7 @@ namespace Greatbone.Core
     /// <summary>
     /// The data object of an event in the event queue.
     /// </summary>
-    public class Flow : IDataInput
+    public class Flow : ISource
     {
         private byte[] buffer;
 
@@ -106,82 +106,82 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out bool v)
+        public ISource Let(out bool v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out short v)
+        public ISource Let(out short v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out int v)
+        public ISource Let(out int v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out long v)
+        public ISource Let(out long v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out double v)
+        public ISource Let(out double v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out decimal v)
+        public ISource Let(out decimal v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out DateTime v)
+        public ISource Let(out DateTime v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out string v)
+        public ISource Let(out string v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out ArraySegment<byte> v)
+        public ISource Let(out ArraySegment<byte> v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out short[] v)
+        public ISource Let(out short[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out int[] v)
+        public ISource Let(out int[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out long[] v)
+        public ISource Let(out long[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out string[] v)
+        public ISource Let(out string[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let(out Map<string, string> v)
+        public ISource Let(out Map<string, string> v)
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D v, byte proj = 15) where D : IData, new()
+        public ISource Let<D>(out D v, byte proj = 15) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public IDataInput Let<D>(out D[] v, byte proj = 15) where D : IData, new()
+        public ISource Let<D>(out D[] v, byte proj = 15) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -196,7 +196,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void Write<R>(IDataOutput<R> o) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> o) where R : ISink<R>
         {
             throw new NotImplementedException();
         }

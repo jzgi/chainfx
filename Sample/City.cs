@@ -13,22 +13,22 @@ namespace Greatbone.Sample
 
         internal double x1, y1, x2, y2;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(x1), ref x1);
-            i.Get(nameof(y1), ref y1);
-            i.Get(nameof(x2), ref x2);
-            i.Get(nameof(y2), ref y2);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(x1), ref x1);
+            s.Get(nameof(y1), ref y1);
+            s.Get(nameof(x2), ref x2);
+            s.Get(nameof(y2), ref y2);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
-            o.Put(nameof(name), name);
-            o.Put(nameof(x1), x1);
-            o.Put(nameof(y1), y1);
-            o.Put(nameof(x2), x2);
-            o.Put(nameof(y2), y2);
+            s.Put(nameof(name), name);
+            s.Put(nameof(x1), x1);
+            s.Put(nameof(y1), y1);
+            s.Put(nameof(x2), x2);
+            s.Put(nameof(y2), y2);
         }
 
         public override string ToString()

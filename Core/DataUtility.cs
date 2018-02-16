@@ -10,7 +10,7 @@ namespace Greatbone.Core
         /// <summary>
         /// Used in both client and server to parse received content into model.
         /// </summary>
-        public static IDataInput ParseContent(string ctyp, byte[] buffer, int length, Type typ = null)
+        public static ISource ParseContent(string ctyp, byte[] buffer, int length, Type typ = null)
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
 
@@ -53,7 +53,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public static M StringTo<M>(string v) where M : class, IDataInput
+        public static M StringTo<M>(string v) where M : class, ISource
         {
             Type t = typeof(M);
             if (t == typeof(JArr) || t == typeof(JObj))
@@ -110,7 +110,7 @@ namespace Greatbone.Core
             return str;
         }
 
-        public static T FileTo<T>(string file) where T : class, IDataInput
+        public static T FileTo<T>(string file) where T : class, ISource
         {
             try
             {

@@ -15,7 +15,7 @@ namespace Greatbone.Core
         // data model current in output
         IData model;
 
-        public HtmlContent(WebContext webCtx, bool octet, int capacity = 32 * 1024) : base(octet, capacity)
+        public HtmlContent(WebContext webCtx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
         {
             this.webCtx = webCtx;
         }

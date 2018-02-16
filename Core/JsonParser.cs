@@ -3,7 +3,7 @@ namespace Greatbone.Core
     ///
     /// Parse JSON into object model from either bytes or string.
     ///
-    public struct JsonParser : IParser<IDataInput>
+    public struct JsonParser : IParser<ISource>
     {
         static readonly ParserException ParserEx = new ParserException("error parsing json");
 
@@ -36,7 +36,7 @@ namespace Greatbone.Core
 
         int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
 
-        public IDataInput Parse()
+        public ISource Parse()
         {
             int p = -1;
             for (;;)

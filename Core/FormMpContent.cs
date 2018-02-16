@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.
     /// </summary>
-    public class FormMpContent : DynamicContent, IDataOutput<FormMpContent>
+    public class FormMpContent : DynamicContent, ISink<FormMpContent>
     {
         public const string BOUNDARY = "~7^E!3#A&W";
 
@@ -33,6 +33,26 @@ namespace Greatbone.Core
             Add("\"\r\n\r\n");
         }
 
+        public FormMpContent PutOpen()
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormMpContent PutClose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormMpContent PutStart()
+        {
+            throw new NotImplementedException();
+        }
+
+        public FormMpContent PutEnd()
+        {
+            throw new NotImplementedException();
+        }
+
         public FormMpContent PutNull(string name)
         {
             return this;
@@ -50,7 +70,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public FormMpContent Put(string name, IDataInput v)
+        public FormMpContent Put(string name, ISource v)
         {
             return this;
         }

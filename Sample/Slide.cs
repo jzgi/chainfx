@@ -18,26 +18,26 @@ namespace Greatbone.Sample
         internal string layout;
         internal DateTime revised;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(lesson), ref lesson);
-            i.Get(nameof(title), ref title);
-            i.Get(nameof(text), ref text);
-            i.Get(nameof(svg), ref svg);
-            i.Get(nameof(layout), ref layout);
-            i.Get(nameof(revised), ref revised);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(lesson), ref lesson);
+            s.Get(nameof(title), ref title);
+            s.Get(nameof(text), ref text);
+            s.Get(nameof(svg), ref svg);
+            s.Get(nameof(layout), ref layout);
+            s.Get(nameof(revised), ref revised);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(title), title);
-            o.Put(nameof(lesson), lesson);
-            o.Put(nameof(text), text);
-            o.Put(nameof(svg), svg);
-            o.Put(nameof(layout), layout);
-            o.Put(nameof(revised), revised);
+            s.Put(nameof(id), id);
+            s.Put(nameof(title), title);
+            s.Put(nameof(lesson), lesson);
+            s.Put(nameof(text), text);
+            s.Put(nameof(svg), svg);
+            s.Put(nameof(layout), layout);
+            s.Put(nameof(revised), revised);
         }
     }
 }

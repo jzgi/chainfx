@@ -30,31 +30,31 @@ namespace Greatbone.Sample
         internal short status;
         internal string err;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(id), ref id);
-            i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(fro), ref fro);
-            i.Get(nameof(till), ref till);
-            i.Get(nameof(orders), ref orders);
-            i.Get(nameof(total), ref total);
-            i.Get(nameof(cash), ref cash);
-            i.Get(nameof(payer), ref payer);
-            i.Get(nameof(status), ref status);
-            i.Get(nameof(err), ref err);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(shopid), ref shopid);
+            s.Get(nameof(fro), ref fro);
+            s.Get(nameof(till), ref till);
+            s.Get(nameof(orders), ref orders);
+            s.Get(nameof(total), ref total);
+            s.Get(nameof(cash), ref cash);
+            s.Get(nameof(payer), ref payer);
+            s.Get(nameof(status), ref status);
+            s.Get(nameof(err), ref err);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
-            o.Put(nameof(id), id);
-            o.Put(nameof(shopid), shopid);
-            o.Put(nameof(fro), fro);
-            o.Put(nameof(till), till);
-            o.Put(nameof(orders), orders);
-            o.Put(nameof(total), total);
-            o.Put(nameof(cash), cash);
-            o.Put(nameof(payer), payer);
-            o.Put(nameof(status), status);
+            s.Put(nameof(id), id);
+            s.Put(nameof(shopid), shopid);
+            s.Put(nameof(fro), fro);
+            s.Put(nameof(till), till);
+            s.Put(nameof(orders), orders);
+            s.Put(nameof(total), total);
+            s.Put(nameof(cash), cash);
+            s.Put(nameof(payer), payer);
+            s.Put(nameof(status), status);
         }
     }
 }

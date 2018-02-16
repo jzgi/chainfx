@@ -35,67 +35,67 @@ namespace Greatbone.Sample
         internal string oprname;
         internal short status;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & ADM) != 0)
             {
-                if ((proj & ID) == ID) i.Get(nameof(id), ref id);
-                i.Get(nameof(name), ref name);
-                i.Get(nameof(city), ref city);
-                i.Get(nameof(addr), ref addr);
-                i.Get(nameof(x), ref x);
-                i.Get(nameof(y), ref y);
+                if ((proj & ID) == ID) s.Get(nameof(id), ref id);
+                s.Get(nameof(name), ref name);
+                s.Get(nameof(city), ref city);
+                s.Get(nameof(addr), ref addr);
+                s.Get(nameof(x), ref x);
+                s.Get(nameof(y), ref y);
             }
             if ((proj & NORM) == NORM)
             {
-                i.Get(nameof(schedule), ref schedule);
-                i.Get(nameof(delivery), ref delivery);
-                i.Get(nameof(areas), ref areas);
-                i.Get(nameof(min), ref min);
-                i.Get(nameof(notch), ref notch);
-                i.Get(nameof(off), ref off);
+                s.Get(nameof(schedule), ref schedule);
+                s.Get(nameof(delivery), ref delivery);
+                s.Get(nameof(areas), ref areas);
+                s.Get(nameof(min), ref min);
+                s.Get(nameof(notch), ref notch);
+                s.Get(nameof(off), ref off);
             }
             if ((proj & LATER) == LATER)
             {
-                i.Get(nameof(mgrwx), ref mgrwx);
-                i.Get(nameof(mgrtel), ref mgrtel);
-                i.Get(nameof(mgrname), ref mgrname);
-                i.Get(nameof(oprwx), ref oprwx);
-                i.Get(nameof(oprtel), ref oprtel);
-                i.Get(nameof(oprname), ref oprname);
-                i.Get(nameof(status), ref status);
+                s.Get(nameof(mgrwx), ref mgrwx);
+                s.Get(nameof(mgrtel), ref mgrtel);
+                s.Get(nameof(mgrname), ref mgrname);
+                s.Get(nameof(oprwx), ref oprwx);
+                s.Get(nameof(oprtel), ref oprtel);
+                s.Get(nameof(oprname), ref oprname);
+                s.Get(nameof(status), ref status);
             }
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
             if ((proj & ADM) != 0)
             {
-                if ((proj & ID) == ID) o.Put(nameof(id), id);
-                o.Put(nameof(name), name);
-                o.Put(nameof(city), city);
-                o.Put(nameof(addr), addr);
-                o.Put(nameof(x), x);
-                o.Put(nameof(y), y);
+                if ((proj & ID) == ID) s.Put(nameof(id), id);
+                s.Put(nameof(name), name);
+                s.Put(nameof(city), city);
+                s.Put(nameof(addr), addr);
+                s.Put(nameof(x), x);
+                s.Put(nameof(y), y);
             }
             if ((proj & NORM) == NORM)
             {
-                o.Put(nameof(schedule), schedule);
-                o.Put(nameof(delivery), delivery);
-                o.Put(nameof(areas), areas);
-                o.Put(nameof(min), min);
-                o.Put(nameof(notch), notch);
-                o.Put(nameof(off), off);
+                s.Put(nameof(schedule), schedule);
+                s.Put(nameof(delivery), delivery);
+                s.Put(nameof(areas), areas);
+                s.Put(nameof(min), min);
+                s.Put(nameof(notch), notch);
+                s.Put(nameof(off), off);
             }
             if ((proj & LATER) == LATER)
             {
-                o.Put(nameof(mgrwx), mgrwx);
-                o.Put(nameof(mgrtel), mgrtel);
-                o.Put(nameof(mgrname), mgrname);
-                o.Put(nameof(oprwx), oprwx);
-                o.Put(nameof(oprtel), oprtel);
-                o.Put(nameof(oprname), oprname);
-                o.Put(nameof(status), status);
+                s.Put(nameof(mgrwx), mgrwx);
+                s.Put(nameof(mgrtel), mgrtel);
+                s.Put(nameof(mgrname), mgrname);
+                s.Put(nameof(oprwx), oprwx);
+                s.Put(nameof(oprtel), oprtel);
+                s.Put(nameof(oprname), oprname);
+                s.Put(nameof(status), status);
             }
         }
 

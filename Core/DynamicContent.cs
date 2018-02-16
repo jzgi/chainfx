@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Greatbone.Core
 {
     /// <summary>
-    /// A dynamically generated content of either bytes or characters.
+    /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 
     /// </summary>
     public abstract class DynamicContent : HttpContent, IContent
     {
@@ -83,12 +83,12 @@ namespace Greatbone.Core
         // number of bytes or chars
         protected int count;
 
-        // byte-wise etag checksum, for text-based output only
+        // byte-wise etag checksum, for char-based output only
         protected ulong checksum;
 
-        protected DynamicContent(bool octet, int capacity)
+        protected DynamicContent(bool bin, int capacity)
         {
-            if (octet)
+            if (bin)
             {
                 bytebuf = BufferUtility.GetByteBuffer(capacity);
             }
@@ -101,7 +101,7 @@ namespace Greatbone.Core
 
         public abstract string Type { get; }
 
-        public bool Octet => bytebuf != null;
+        public bool IsBin => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -135,7 +135,7 @@ namespace Greatbone.Core
 
         public void Add(char c)
         {
-            if (Octet) // byte-oriented
+            if (IsBin) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)

@@ -33,34 +33,34 @@ namespace Greatbone.Sample
         internal decimal paid;
         internal string keeper;
 
-        public void Read(IDataInput i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & ID) == ID)
             {
-                i.Get(nameof(id), ref id);
+                s.Get(nameof(id), ref id);
             }
-            i.Get(nameof(shopid), ref shopid);
-            i.Get(nameof(date), ref date);
-            i.Get(nameof(txn), ref txn);
-            i.Get(nameof(descr), ref descr);
-            i.Get(nameof(received), ref received);
-            i.Get(nameof(paid), ref paid);
-            i.Get(nameof(keeper), ref keeper);
+            s.Get(nameof(shopid), ref shopid);
+            s.Get(nameof(date), ref date);
+            s.Get(nameof(txn), ref txn);
+            s.Get(nameof(descr), ref descr);
+            s.Get(nameof(received), ref received);
+            s.Get(nameof(paid), ref paid);
+            s.Get(nameof(keeper), ref keeper);
         }
 
-        public void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>
+        public void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>
         {
             if ((proj & ID) == ID)
             {
-                o.Put(nameof(id), id);
+                s.Put(nameof(id), id);
             }
-            o.Put(nameof(shopid), shopid);
-            o.Put(nameof(date), date);
-            o.Put(nameof(txn), txn);
-            o.Put(nameof(descr), descr);
-            o.Put(nameof(received), received);
-            o.Put(nameof(paid), paid);
-            o.Put(nameof(keeper), keeper);
+            s.Put(nameof(shopid), shopid);
+            s.Put(nameof(date), date);
+            s.Put(nameof(txn), txn);
+            s.Put(nameof(descr), descr);
+            s.Put(nameof(received), received);
+            s.Put(nameof(paid), paid);
+            s.Put(nameof(keeper), keeper);
         }
     }
 }

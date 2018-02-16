@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// A specialized string builder for generating SQL commands.
     /// </summary>
-    public class DbSql : DynamicContent, IDataOutput<DbSql>
+    public class DbSql : DynamicContent, ISink<DbSql>
     {
         // contexts
         const sbyte CTX_COLUMNLIST = 1, CTX_PARAMLIST = 2, CTX_SETLIST = 3;
@@ -136,7 +136,6 @@ namespace Greatbone.Core
                 Add(vals[i]);
             }
             Add(')');
-
             return this;
         }
 
@@ -149,7 +148,6 @@ namespace Greatbone.Core
                 Add(vals[i]);
             }
             Add(')');
-
             return this;
         }
 
@@ -164,7 +162,6 @@ namespace Greatbone.Core
                 Add('\'');
             }
             Add(')');
-
             return this;
         }
 
@@ -191,9 +188,16 @@ namespace Greatbone.Core
                     Add(name);
                     break;
             }
-
             ordinal++;
         }
+
+        public DbSql PutOpen() => this;
+
+        public DbSql PutClose() => this;
+
+        public DbSql PutStart() => this;
+
+        public DbSql PutEnd() => this;
 
         public DbSql PutNull(string name)
         {
@@ -214,7 +218,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql Put(string name, IDataInput v)
+        public DbSql Put(string name, ISource v)
         {
             return this;
         }

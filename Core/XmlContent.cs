@@ -5,9 +5,9 @@ namespace Greatbone.Core
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 
     /// </summary>
-    public class XmlContent : DynamicContent, IDataOutput<XmlContent>
+    public class XmlContent : DynamicContent, ISink<XmlContent>
     {
-        public XmlContent(bool octet, int capacity = 4096) : base(octet, capacity)
+        public XmlContent(bool bin, int capacity = 4096) : base(bin, capacity)
         {
         }
 
@@ -183,6 +183,14 @@ namespace Greatbone.Core
         }
 
 
+        public XmlContent PutOpen() => this;
+
+        public XmlContent PutClose() => this;
+
+        public XmlContent PutStart() => this;
+
+        public XmlContent PutEnd() => this;
+
         public XmlContent PutNull(string name)
         {
             return this;
@@ -199,7 +207,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public XmlContent Put(string name, IDataInput v)
+        public XmlContent Put(string name, ISource v)
         {
             return this;
         }

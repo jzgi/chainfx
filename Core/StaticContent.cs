@@ -1524,39 +1524,22 @@ namespace Greatbone.Core
             }
         };
 
+        // the byte buffer
         readonly byte[] buffer;
 
-        readonly int size;
+        // fixed length
+        readonly int length;
 
-        readonly string etag;
-
-        /// <summary>
-        /// To construct from memory byte array. 
-        /// </summary>
-        public StaticContent(ArraySegment<byte> bytea)
+        public StaticContent(ArraySegment<byte> byteas)
         {
-            this.buffer = bytea.Array;
-            this.size = bytea.Count;
-
-            // calculate checksum
-            ulong checksum = 0;
-            for (int i = 0; i < size; i++)
-            {
-                byte b = buffer[0];
-                ulong cs = checksum;
-                cs ^= b; // XOR
-                checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
-            }
-            etag = StrUtility.ToHex(checksum);
+            this.buffer = byteas.Array;
+            this.length = byteas.Count;
         }
 
-        /// <summary>
-        /// To construct from a file. 
-        /// </summary>
-        public StaticContent(byte[] buffer, int size)
+        public StaticContent(byte[] buffer, int length)
         {
             this.buffer = buffer;
-            this.size = size;
+            this.length = length;
         }
 
         public string Key { get; set; }
@@ -1567,28 +1550,28 @@ namespace Greatbone.Core
 
         public char[] CharBuffer => null;
 
-        public int Size => size;
+        public int Size => length;
 
         public DateTime? Modified { get; set; }
 
-        public string ETag => etag;
+        public string ETag => null;
 
         public bool GZip { get; set; }
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return stream.WriteAsync(buffer, 0, size);
+            return stream.WriteAsync(buffer, 0, length);
         }
 
         protected override bool TryComputeLength(out long length)
         {
-            length = size;
+            length = this.length;
             return true;
         }
 
-        public static bool TryGetType(string extension, out string type)
+        public static bool TryGetType(string ext, out string type)
         {
-            return Types.TryGetValue(extension, out type);
+            return Types.TryGetValue(ext, out type);
         }
     }
 }

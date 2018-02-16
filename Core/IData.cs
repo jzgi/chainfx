@@ -1,12 +1,12 @@
 ﻿namespace Greatbone.Core
 {
     /// <summary>
-    /// A data record that follows certain input/ouput paradigm.
+    /// A data object that reads from input source and writes to output sink.
     /// </summary>
     public interface IData
     {
-        void Read(IDataInput i, byte proj = 0x0f);
+        void Read(ISource s, byte proj = 0x0f);
 
-        void Write<R>(IDataOutput<R> o, byte proj = 0x0f) where R : IDataOutput<R>;
+        void Write<R>(ISink<R> s, byte proj = 0x0f) where R : ISink<R>;
     }
 }

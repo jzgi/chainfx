@@ -119,7 +119,7 @@ namespace Greatbone.Core
             return null;
         }
 
-        public async Task<M> GetAsync<M>(WebContext ac, string uri) where M : class, IDataInput
+        public async Task<M> GetAsync<M>(WebContext ac, string uri) where M : class, ISource
         {
             try
             {
@@ -171,7 +171,7 @@ namespace Greatbone.Core
 
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
+                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
                 D obj = new D();
                 obj.Read(inp, proj);
                 return obj;
@@ -205,7 +205,7 @@ namespace Greatbone.Core
 
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                IDataInput inp = ParseContent(ctyp, bytea, bytea.Length);
+                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
                 return inp.ToArray<D>(proj);
             }
             catch
@@ -251,7 +251,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public async Task<(int code, M inp)> PostAsync<M>(WebContext ctx, string uri, IContent content) where M : class, IDataInput
+        public async Task<(int code, M inp)> PostAsync<M>(WebContext ctx, string uri, IContent content) where M : class, ISource
         {
             try
             {

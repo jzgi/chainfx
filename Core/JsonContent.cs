@@ -6,7 +6,7 @@ namespace Greatbone.Core
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     ///
-    public class JsonContent : DynamicContent, IDataOutput<JsonContent>
+    public class JsonContent : DynamicContent, ISink<JsonContent>
     {
         // starting positions of each level
         readonly int[] counts;
@@ -14,7 +14,7 @@ namespace Greatbone.Core
         // current level
         int level;
 
-        public JsonContent(bool octet, int capacity = 8 * 1024) : base(octet, capacity)
+        public JsonContent(bool bin, int capacity = 8 * 1024) : base(bin, capacity)
         {
             counts = new int[8];
             level = 0;
@@ -123,6 +123,14 @@ namespace Greatbone.Core
         // SINK
         //
 
+        public JsonContent PutOpen() => this;
+
+        public JsonContent PutClose() => this;
+
+        public JsonContent PutStart() => this;
+
+        public JsonContent PutEnd() => this;
+
         public JsonContent PutNull(string name)
         {
             if (counts[level]++ > 0) Add(',');
@@ -157,7 +165,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public JsonContent Put(string name, IDataInput v)
+        public JsonContent Put(string name, ISource v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)

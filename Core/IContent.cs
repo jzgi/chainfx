@@ -1,5 +1,8 @@
 ﻿namespace Greatbone.Core
 {
+    /// <summary>
+    /// Represents a content that is in format of either bytes or chars. Note that only bytes can be sent directly. 
+    /// </summary>
     public interface IContent
     {
         ///
