@@ -68,11 +68,22 @@ namespace Greatbone.Core
             set => fRequest.QueryString = value;
         }
 
-        [Obsolete("We need plain string only")]
-        public override QueryString QueryString { get; set; }
+        static readonly Exception NotImplementedEx = new NotImplementedException();
 
-        [Obsolete("We parse query string by ourselves")]
-        public override IQueryCollection Query { get; set; }
+        // we need plain string only
+        public override QueryString QueryString
+        {
+            get => throw NotImplementedEx;
+            set => throw NotImplementedEx;
+        }
+
+
+        // we parse query string by ourselves
+        public override IQueryCollection Query
+        {
+            get => throw NotImplementedEx;
+            set => throw NotImplementedEx;
+        }
 
         public override string Protocol
         {
@@ -114,16 +125,17 @@ namespace Greatbone.Core
             set => fRequest.Body = value;
         }
 
-        [Obsolete("We parse form by ourselves")]
-        public override bool HasFormContentType { get; } = false;
+        // we parse form by ourselves
+        public override bool HasFormContentType => throw NotImplementedEx;
 
-        [Obsolete("We parse form by ourselves")]
-        public override IFormCollection Form { get; set; } = null;
-
-        [Obsolete("We parse form by ourselves")]
-        public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken())
+        // we parse form by ourselves
+        public override IFormCollection Form
         {
-            throw new NotImplementedException();
+            get => throw NotImplementedEx;
+            set => throw NotImplementedEx;
         }
+
+        // we parse form by ourselves
+        public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = new CancellationToken()) => throw NotImplementedEx;
     }
 }

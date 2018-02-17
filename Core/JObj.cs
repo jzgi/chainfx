@@ -205,12 +205,22 @@ namespace Greatbone.Core
 
         public bool Get(string name, ref JObj v)
         {
-            throw new NotImplementedException();
+            if (TryGet(name, out var mbr))
+            {
+                v = mbr;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            if (TryGet(name, out var mbr))
+            {
+                v = mbr;
+                return true;
+            }
+            return false;
         }
 
         public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
