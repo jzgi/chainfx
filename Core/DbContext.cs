@@ -322,7 +322,7 @@ namespace Greatbone.Core
         public IContent Dump()
         {
             var cnt = new FlowContent(512 * 1024);
-            cnt.PutAll(this);
+            cnt.PutFrom(this);
             return cnt;
         }
 
@@ -1437,7 +1437,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void PutAll(ISource s)
+        public void PutFrom(ISource s)
         {
             throw new NotImplementedException();
         }

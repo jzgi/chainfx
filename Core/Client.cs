@@ -231,7 +231,7 @@ namespace Greatbone.Core
             return 0;
         }
 
-        public async Task<(int code, M inp)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
+        public async Task<(int, M)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
         {
             try
             {

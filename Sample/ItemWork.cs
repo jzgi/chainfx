@@ -23,10 +23,10 @@ namespace Greatbone.Sample
 
         public void @default(WebContext wc)
         {
-            string shopid = wc[-1];
+            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM items WHERE shopid = @1 ORDER BY status DESC", p => p.Set(shopid));
+                dc.Query("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
                 wc.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
                 {
                     h.CAPTION(o.name, Item.Statuses[o.status], o.status >= Item.ON);
@@ -58,7 +58,7 @@ namespace Greatbone.Sample
             else // POST
             {
                 var o = await wc.ReadObjectAsync<Item>();
-                o.shopid = wc[-1];
+                o.orgid = wc[-1];
                 using (var dc = NewDbContext())
                 {
                     dc.Execute(dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty), p => o.Write(p));
@@ -70,14 +70,14 @@ namespace Greatbone.Sample
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
         public async Task del(WebContext wc)
         {
-            string shopid = wc[-1];
+            string orgid = wc[-1];
             var f = await wc.ReadAsync<Form>();
             string[] key = f[nameof(key)];
             if (key != null)
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("DELETE FROM items WHERE shopid = @1 AND name")._IN_(key), p => p.Set(shopid), false);
+                    dc.Execute(dc.Sql("DELETE FROM items WHERE orgid = @1 AND name")._IN_(key), p => p.Set(orgid), false);
                 }
             }
             wc.GiveRedirect();

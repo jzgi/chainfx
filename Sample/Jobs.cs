@@ -25,7 +25,7 @@ namespace Greatbone.Sample
         {
             Create<AdmOprWork>("opr");
 
-            Create<AdmShopWork>("shop");
+            Create<AdmOrgWork>("shop");
 
             Create<AdmRepayWork>("repay");
 
@@ -59,10 +59,10 @@ namespace Greatbone.Sample
         [Ui("清理"), Tool(Modal.ButtonOpen, 2)]
         public void clean(WebContext ac)
         {
-            string shopid = ac[1];
+            string orgid = ac[1];
             using (var dc = NewDbContext())
             {
-                if (dc.Query("SELECT * FROM repays WHERE shopid = @1", p => p.Set(shopid)))
+                if (dc.Query("SELECT * FROM repays WHERE orgid = @1", p => p.Set(orgid)))
                 {
                     ac.GiveBoardPage(200, dc.ToArray<Repay>(), (h, o) => { });
                 }

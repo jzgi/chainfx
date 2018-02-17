@@ -42,14 +42,14 @@ namespace Greatbone.Sample
                             m.H4("历史订单");
                         }
                         m.CARD_(o);
-                        m.CAPTION_().T(o.shopname)._IF(o.paid)._CAPTION(Statuses[o.status], o.status <= PAID);
+                        m.CAPTION_().T(o.orgname)._IF(o.paid)._CAPTION(Statuses[o.status], o.status <= PAID);
                         m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2).VARTOOL("addr", when: o.status == 0)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                m.ICON("/shop/" + o.shopid + "/" + oi.name + "/icon", box: 2);
+                                m.ICON("/shop/" + o.orgid + "/" + oi.name + "/icon", box: 2);
                                 m.BOX_(0x46).P(oi.name).P(oi.price, fix: "¥")._BOX();
                                 m.BOX_(0x42).P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
                                 m.BOX_(0x42).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
@@ -90,10 +90,10 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac)
         {
-            string shopid = ac[-1];
+            string orgid = ac[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status = 0 AND shopid = @1 AND typ = 1", p => p.Set(shopid));
+                dc.Query("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("No.").T(o.id).SEP().T(o.addr)._CAPTION(o.name);
@@ -113,16 +113,16 @@ namespace Greatbone.Sample
         [Ui("新建"), Tool(ButtonConfirm), User(OPRSTAFF)]
         public void @new(WebContext ac)
         {
-            string shopid = ac[-1];
+            string orgid = ac[-1];
             using (var dc = NewDbContext())
             {
-                var shop = Obtain<Map<string, Shop>>()[shopid];
+                var shop = Obtain<Map<string, Org>>()[orgid];
                 var o = new Order
                 {
                     rev = 1,
                     status = 0,
-                    shopid = shopid,
-                    shopname = shop.name,
+                    orgid = orgid,
+                    orgname = shop.name,
                     typ = POS,
                     min = shop.min,
                     notch = shop.notch,
@@ -138,13 +138,13 @@ namespace Greatbone.Sample
         [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
         public async Task del(WebContext ac, int page)
         {
-            string shopid = ac[-1];
+            string orgid = ac[-1];
             int[] key = (await ac.ReadAsync<Form>())[nameof(key)];
             if (key != null)
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("DELETE FROM orders WHERE shopid = @1 AND id")._IN_(key), p => p.Set(shopid), false);
+                    dc.Execute(dc.Sql("DELETE FROM orders WHERE orgid = @1 AND id")._IN_(key), p => p.Set(orgid), false);
                 }
             }
             ac.GiveRedirect();
@@ -161,12 +161,12 @@ namespace Greatbone.Sample
         [Ui("全部"), Tool(Anchor)]
         public void @default(WebContext ac, int page)
         {
-            string shopid = ac[-1];
+            string orgid = ac[-1];
             ac.GivePage(200, main =>
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                     main.TOOLBAR();
                     main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
@@ -187,16 +187,16 @@ namespace Greatbone.Sample
         [Ui("按区域"), Tool(AnchorPrompt)]
         public void area(WebContext ac, int page)
         {
-            string shopid = ac[-1];
+            string orgid = ac[-1];
             bool inner = ac.Query[nameof(inner)];
             string filter = (string) ac.Query[nameof(filter)] ?? string.Empty;
             if (inner)
             {
                 ac.GivePane(200, m =>
                 {
-                    var shop = Obtain<Map<string, Shop>>()[shopid];
+                    var org = Obtain<Map<string, Org>>()[orgid];
                     m.FORM_();
-                    m.RADIOSET(nameof(filter), filter, shop.areas);
+                    m.RADIOSET(nameof(filter), filter, org.areas);
                     m._FORM();
                 });
                 return;
@@ -205,7 +205,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND shopid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(shopid).Set(filter + "%").Set(page * 20));
+                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(orgid).Set(filter + "%").Set(page * 20));
                     main.TOOLBAR(title: filter);
                     main.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
@@ -264,10 +264,10 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac, int page)
         {
-            string shopid = ac[-1];
+            string orgid = ac[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND shopid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(shopid).Set(page * 20));
+                dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.CAPTION_().T("No.").T(o.id).SEP().T(o.paid)._CAPTION(Statuses[o.status], o.status == FINISHED);
@@ -297,14 +297,14 @@ namespace Greatbone.Sample
         [Ui("回退", "【警告】把选中的订单回退成新单？"), Tool(ButtonPickConfirm)]
         public async Task back(WebContext ac)
         {
-            string shopid = ac[-2];
+            string orgid = ac[-2];
             var f = await ac.ReadAsync<Form>();
             string[] key = f[nameof(key)];
             if (key != null)
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND shopid = @1 AND id")._IN_(key), p => p.Set(shopid), prepare: false);
+                    dc.Execute(dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND orgid = @1 AND id")._IN_(key), p => p.Set(orgid), prepare: false);
                 }
             }
             ac.GiveRedirect();

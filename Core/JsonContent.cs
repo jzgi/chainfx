@@ -531,7 +531,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void PutAll(ISource v)
+        public void PutFrom(ISource v)
         {
             if (counts[level]++ > 0) Add(',');
             if (v == null)

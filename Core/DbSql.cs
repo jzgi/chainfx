@@ -463,7 +463,7 @@ namespace Greatbone.Core
             Build(name);
         }
 
-        public void PutAll(ISource s)
+        public void PutFrom(ISource s)
         {
             throw new NotImplementedException();
         }

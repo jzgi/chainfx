@@ -16,7 +16,7 @@ namespace Greatbone.Sample
             var o = obj as Item;
             if (state == 'A')
             {
-                var on = ac.Obtain<Shop>()?.status > 1;
+                var on = ac.Obtain<Org>()?.status > 1;
                 return on && o != null && o.stock > 0;
             }
             return false;

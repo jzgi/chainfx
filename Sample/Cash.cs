@@ -25,13 +25,13 @@ namespace Greatbone.Sample
         };
 
         internal int id;
-        internal string shopid;
+        internal string orgid;
         internal DateTime date;
-        internal short txn;
+        internal short code;
         internal string descr;
-        internal decimal received;
-        internal decimal paid;
-        internal string keeper;
+        internal decimal receive;
+        internal decimal pay;
+        internal string creator;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -39,13 +39,13 @@ namespace Greatbone.Sample
             {
                 s.Get(nameof(id), ref id);
             }
-            s.Get(nameof(shopid), ref shopid);
+            s.Get(nameof(orgid), ref orgid);
             s.Get(nameof(date), ref date);
-            s.Get(nameof(txn), ref txn);
+            s.Get(nameof(code), ref code);
             s.Get(nameof(descr), ref descr);
-            s.Get(nameof(received), ref received);
-            s.Get(nameof(paid), ref paid);
-            s.Get(nameof(keeper), ref keeper);
+            s.Get(nameof(receive), ref receive);
+            s.Get(nameof(pay), ref pay);
+            s.Get(nameof(creator), ref creator);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
@@ -54,13 +54,13 @@ namespace Greatbone.Sample
             {
                 s.Put(nameof(id), id);
             }
-            s.Put(nameof(shopid), shopid);
+            s.Put(nameof(orgid), orgid);
             s.Put(nameof(date), date);
-            s.Put(nameof(txn), txn);
+            s.Put(nameof(code), code);
             s.Put(nameof(descr), descr);
-            s.Put(nameof(received), received);
-            s.Put(nameof(paid), paid);
-            s.Put(nameof(keeper), keeper);
+            s.Put(nameof(receive), receive);
+            s.Put(nameof(pay), pay);
+            s.Put(nameof(creator), creator);
         }
     }
 }

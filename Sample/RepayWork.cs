@@ -14,7 +14,6 @@ namespace Greatbone.Sample
         }
     }
 
-
     [Ui("结款")]
     public class AdmRepayWork : RepayWork<AdmRepayVarWork>
     {
@@ -29,7 +28,7 @@ namespace Greatbone.Sample
             {
                 dc.Query("SELECT * FROM repays WHERE status = 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Repay>(),
-                    h => h.TH("网点").TH("起始").TH("截至").TH("总数").TH("单额").TH("净额").TH("转款人"), (h, o) => h.TD(o.shopid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                    h => h.TH("网点").TH("起始").TH("截至").TH("总数").TH("单额").TH("净额").TH("转款人"), (h, o) => h.TD(o.orgid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                 );
             }
         }
@@ -41,7 +40,7 @@ namespace Greatbone.Sample
             {
                 dc.Query("SELECT * FROM repays WHERE status = 1 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<Repay>(),
-                    h => h.TH("网点").TH("起始").TH("截至").TH("单数").TH("总额").TH("净额").TH("转款人"), (h, o) => h.TD(o.shopid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                    h => h.TH("网点").TH("起始").TH("截至").TH("单数").TH("总额").TH("净额").TH("转款人"), (h, o) => h.TD(o.orgid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                 );
             }
         }
@@ -72,8 +71,8 @@ namespace Greatbone.Sample
                 till = f[nameof(till)];
                 using (var dc = NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute(@"INSERT INTO repays (shopid, fro, till, orders, total, cash) 
-                    SELECT shopid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.FINISHED + " AND finished >= @1 AND finished < @2 GROUP BY shopid", p => p.Set(fro).Set(till));
+                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) 
+                    SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.FINISHED + " AND finished >= @1 AND finished < @2 GROUP BY orgid", p => p.Set(fro).Set(till));
                 }
                 ac.GivePane(200);
             }
@@ -82,7 +81,7 @@ namespace Greatbone.Sample
         struct Tran
         {
             internal int id;
-            internal string shopid;
+            internal string orgid;
             internal string mgrwx;
             internal string mgrname;
             internal decimal cash;
@@ -95,12 +94,12 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 // retrieve
-                if (dc.Query("SELECT r.id, r.shopid, mgrwx, mgrname, cash FROM repays AS r, shops AS s WHERE r.shopid = s.id AND r.status = 0"))
+                if (dc.Query("SELECT r.id, r.orgid, mgrwx, mgrname, cash FROM repays AS r, orgs AS o WHERE r.orgid = o.id AND r.status = 0"))
                 {
                     while (dc.Next())
                     {
                         Tran tr;
-                        dc.Let(out tr.id).Let(out tr.shopid).Let(out tr.mgrwx).Let(out tr.mgrname).Let(out tr.cash);
+                        dc.Let(out tr.id).Let(out tr.orgid).Let(out tr.mgrwx).Let(out tr.mgrname).Let(out tr.cash);
                         trans.Add(tr);
                     }
                 }
@@ -125,13 +124,13 @@ namespace Greatbone.Sample
                         // add a cash journal entry
                         var ety = new Cash
                         {
-                            shopid = tr.shopid,
+                            orgid = tr.orgid,
                             date = DateTime.Now,
-                            txn = 11, // sales income
+                            code = 11, // sales income
                             descr = "订单结款",
-                            received = tr.cash,
-                            paid = 0,
-                            keeper = prin.name
+                            receive = tr.cash,
+                            pay = 0,
+                            creator = prin.name
                         };
                         const byte proj = 0xff ^ Cash.ID;
                         dc.Execute(dc.Sql("INSERT INTO cashes")._(ety, proj)._VALUES_(ety, proj), p => ety.Write(p, proj));

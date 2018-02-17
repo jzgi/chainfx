@@ -17,11 +17,11 @@ namespace Greatbone.Sample
 
         public void icon(WebContext wc)
         {
-            string shopid = wc[typeof(IShopVar)];
+            string orgid = wc[typeof(IShopVar)];
             string name = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                if (dc.Query1("SELECT icon FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) wc.Give(204); // no content 
@@ -33,11 +33,11 @@ namespace Greatbone.Sample
 
         public void img(WebContext wc, int ordinal)
         {
-            string shopid = wc[-1];
+            string orgid = wc[-1];
             string name = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                 {
                     dc.Let(out ArraySegment<byte> byteas);
                     if (byteas.Count == 0) wc.Give(204); // no content 
@@ -57,8 +57,8 @@ namespace Greatbone.Sample
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task add(WebContext wc)
         {
-            string shopid = wc[-1];
-            var shop = Obtain<Map<string, Shop>>()[shopid];
+            string orgid = wc[-1];
+            var shop = Obtain<Map<string, Org>>()[orgid];
             User prin = (User) wc.Principal;
             string itemname = wc[this];
             string name, city, a, b, tel; // form values
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
-                        if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2", p => p.Set(prin.wx).Set(shopid)) == null) // to create new
+                        if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("收货地址");
@@ -97,7 +97,7 @@ namespace Greatbone.Sample
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE shopid = @1 AND name = @2"), p => p.Set(shopid).Set(itemname));
+                        var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2"), p => p.Set(orgid).Set(itemname));
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
 
@@ -110,10 +110,10 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query1("SELECT unit, price FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(itemname));
+                    dc.Query1("SELECT unit, price FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(itemname));
                     dc.Let(out string unit).Let(out decimal price);
 
-                    if (dc.Query1("SELECT * FROM orders WHERE wx = @2 AND status = 0 AND shopid = @1", p => p.Set(shopid).Set(prin.wx))) // add to existing cart order
+                    if (dc.Query1("SELECT * FROM orders WHERE wx = @2 AND status = 0 AND orgid = @1", p => p.Set(orgid).Set(prin.wx))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
                         (await wc.ReadAsync<Form>()).Let(out num);
@@ -134,8 +134,8 @@ namespace Greatbone.Sample
                         {
                             rev = 1,
                             status = 0,
-                            shopid = shopid,
-                            shopname = shop.name,
+                            orgid = orgid,
+                            orgname = shop.name,
                             typ = 0, // ordinal order
                             wx = prin.wx,
                             name = name,
@@ -171,13 +171,13 @@ namespace Greatbone.Sample
         [Ui("基本"), Tool(ButtonShow, 2), User(OPRSTAFF)]
         public async Task basic(WebContext wc)
         {
-            string shopid = wc[-2];
+            string orgid = wc[-2];
             string name = wc[this];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Item>("SELECT * FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+                    var o = dc.Query1<Item>("SELECT * FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name));
                     wc.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -196,10 +196,10 @@ namespace Greatbone.Sample
                 var o = await wc.ReadObjectAsync<Item>(proj);
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE shopid = @1 AND name = @2"), p =>
+                    dc.Execute(dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE orgid = @1 AND name = @2"), p =>
                     {
                         o.Write(p, proj);
-                        p.Set(shopid).Set(name);
+                        p.Set(orgid).Set(name);
                     });
                 }
                 wc.GivePane(200); // close
@@ -209,13 +209,13 @@ namespace Greatbone.Sample
         [Ui("照片"), Tool(ButtonCrop), User(OPRSTAFF)]
         public new async Task icon(WebContext wc)
         {
-            string shopid = wc[-2];
+            string orgid = wc[-2];
             string name = wc[this];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT icon FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    if (dc.Query1("SELECT icon FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                     {
                         dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) wc.Give(204); // no content 
@@ -230,7 +230,7 @@ namespace Greatbone.Sample
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Execute("UPDATE items SET icon = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name)) > 0)
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE orgid = @2 AND name = @3", p => p.Set(jpeg).Set(orgid).Set(name)) > 0)
                     {
                         wc.Give(200); // ok
                     }
@@ -242,13 +242,13 @@ namespace Greatbone.Sample
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRSTAFF)]
         public new async Task img(WebContext wc, int ordinal)
         {
-            string shopid = wc[-2];
+            string orgid = wc[-2];
             string name = wc[this];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name)))
+                    if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                     {
                         dc.Let(out ArraySegment<byte> byteas);
                         if (byteas.Count == 0) wc.Give(204); // no content 
@@ -263,7 +263,7 @@ namespace Greatbone.Sample
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE shopid = @2 AND name = @3", p => p.Set(jpeg).Set(shopid).Set(name));
+                    dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE orgid = @2 AND name = @3", p => p.Set(jpeg).Set(orgid).Set(name));
                 }
                 wc.Give(200); // ok
             }
@@ -272,13 +272,13 @@ namespace Greatbone.Sample
         [Ui("可供"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task max(WebContext wc)
         {
-            string shopid = wc[-2];
+            string orgid = wc[-2];
             string name = wc[this];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query1("SELECT stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(shopid).Set(name));
+                    dc.Query1("SELECT stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name));
                     dc.Let(out short stock);
                     wc.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short) 1)._FORM(); });
                 }
@@ -288,7 +288,7 @@ namespace Greatbone.Sample
                 (await wc.ReadAsync<Form>()).Let(out short stock);
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE items SET stock = @1 WHERE shopid = @2 AND name = @3", p => p.Set(stock).Set(shopid).Set(name));
+                    dc.Execute("UPDATE items SET stock = @1 WHERE orgid = @2 AND name = @3", p => p.Set(stock).Set(orgid).Set(name));
                 }
                 wc.GivePane(200); // close
             }

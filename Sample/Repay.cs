@@ -20,40 +20,41 @@ namespace Greatbone.Sample
         };
 
         internal int id;
-        internal string shopid;
+        internal string orgid;
         internal DateTime fro;
         internal DateTime till;
         internal int orders;
         internal decimal total;
         internal decimal cash;
         internal string payer;
-        internal short status;
         internal string err;
+        internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(id), ref id);
-            s.Get(nameof(shopid), ref shopid);
+            s.Get(nameof(orgid), ref orgid);
             s.Get(nameof(fro), ref fro);
             s.Get(nameof(till), ref till);
             s.Get(nameof(orders), ref orders);
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
             s.Get(nameof(payer), ref payer);
-            s.Get(nameof(status), ref status);
             s.Get(nameof(err), ref err);
+            s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(id), id);
-            s.Put(nameof(shopid), shopid);
+            s.Put(nameof(orgid), orgid);
             s.Put(nameof(fro), fro);
             s.Put(nameof(till), till);
             s.Put(nameof(orders), orders);
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
             s.Put(nameof(payer), payer);
+            s.Put(nameof(err), err);
             s.Put(nameof(status), status);
         }
     }

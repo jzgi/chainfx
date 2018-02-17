@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Greatbone.Core;
 using static Greatbone.Core.Modal;
-using static Greatbone.Sample.Shop;
+using static Greatbone.Sample.Org;
 using static Greatbone.Sample.User;
 
 namespace Greatbone.Sample
@@ -19,7 +19,7 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac)
         {
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
         public async Task edit(WebContext ac)
         {
             string wx = ac[-1];
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             if (ac.GET)
             {
                 if (ac.Query.Count > 0)
@@ -103,7 +103,7 @@ namespace Greatbone.Sample
         [Ui("设密码"), Tool(ButtonShow)]
         public async Task pass(WebContext ac)
         {
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             string wx = ac[-1];
             string credential;
             string password = null;
@@ -111,7 +111,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    credential = (string)dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
+                    credential = (string) dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
                     if (credential != null)
                     {
                         password = PASS;
@@ -171,12 +171,12 @@ namespace Greatbone.Sample
                 return;
             }
 
-            var shops = Obtain<Map<string, Shop>>();
-            string shopid = ac[this];
+            var orgs = Obtain<Map<string, Org>>();
+            string orgid = ac[this];
             ac.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                var o = shops[shopid];
+                var o = orgs[orgid];
                 h.BOARDVIEW_();
 
                 h.CARD_();
@@ -198,7 +198,7 @@ namespace Greatbone.Sample
         [Ui("人员"), Tool(ButtonOpen, 2), User(OPRMGR)]
         public async Task acl(WebContext ac, int cmd)
         {
-            string shopid = ac[this];
+            string orgid = ac[this];
             string wx;
             string tel = null;
             short opr = 0;
@@ -218,7 +218,7 @@ namespace Greatbone.Sample
                 opr = f[nameof(opr)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(shopid).Set(tel)); // may add multiple
+                    dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(orgid).Set(tel)); // may add multiple
                 }
             }
             ac.GivePane(200, m =>
@@ -227,7 +227,7 @@ namespace Greatbone.Sample
                 m.FIELDSET_("现有人员");
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query("SELECT wx, name, tel, opr FROM users WHERE oprat = @1", p => p.Set(shopid)))
+                    if (dc.Query("SELECT wx, name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
                     {
                         m.T("<div>");
                         while (dc.Next())
@@ -249,14 +249,14 @@ namespace Greatbone.Sample
             });
         }
 
-        static readonly string[] CRLF = { "\r\n", "\n" };
+        static readonly string[] CRLF = {"\r\n", "\n"};
 
         [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
         public async Task sets(WebContext ac)
         {
-            var shops = Obtain<Map<string, Shop>>();
-            string shopid = ac[this];
-            var o = shops[shopid];
+            var orgs = Obtain<Map<string, Org>>();
+            string orgid = ac[this];
+            var o = orgs[orgid];
             if (ac.GET)
             {
                 ac.GivePane(200, h =>
@@ -281,50 +281,49 @@ namespace Greatbone.Sample
                 o.off = f[nameof(o.off)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE shops SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
-                        p => p.Set(o.schedule).Set(o.delivery).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(shopid));
+                    dc.Execute("UPDATE orgs SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
+                        p => p.Set(o.schedule).Set(o.delivery).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(orgid));
                 }
                 ac.GivePane(200);
             }
         }
 
         [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMGR)]
-        public async Task img(WebContext ac, int ordinal)
+        public async Task img(WebContext wc, int ordinal)
         {
-            string shopid = ac[this];
-            if (ac.GET)
+            string orgid = wc[this];
+            if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query1("SELECT img" + ordinal + " FROM shops WHERE shopid = @1", p => p.Set(shopid)))
+                    if (dc.Query1("SELECT img" + ordinal + " FROM orgs WHERE orgid = @1", p => p.Set(orgid)))
                     {
                         dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content 
-                        else ac.Give(200, new StaticContent(byteas));
+                        if (byteas.Count == 0) wc.Give(204); // no content 
+                        else wc.Give(200, new StaticContent(byteas));
                     }
-                    else ac.Give(404); // not found
+                    else wc.Give(404); // not found
                 }
             }
             else // POST
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> jpeg = f[nameof(jpeg)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE shops SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(shopid));
+                    dc.Execute("UPDATE orgs SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(orgid));
                 }
-                ac.Give(200); // ok
+                wc.Give(200); // ok
             }
         }
 
         [Ui("上下班"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task status(WebContext ac)
         {
-            var shops = Obtain<Map<string, Shop>>();
-
-            User prin = (User)ac.Principal;
-            string shopid = ac[this];
-            var o = shops[shopid];
+            var orgs = Obtain<Map<string, Org>>();
+            User prin = (User) ac.Principal;
+            string orgid = ac[this];
+            var o = orgs[orgid];
             bool custsvc;
             if (ac.GET)
             {
@@ -346,17 +345,17 @@ namespace Greatbone.Sample
                 custsvc = f[nameof(custsvc)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE shops SET status = @1 WHERE id = @2", p => p.Set(o.status).Set(shopid));
+                    dc.Execute("UPDATE orgs SET status = @1 WHERE id = @2", p => p.Set(o.status).Set(orgid));
                     if (custsvc)
                     {
-                        dc.Execute("UPDATE shops SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(shopid));
+                        dc.Execute("UPDATE orgs SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(orgid));
                         o.oprwx = prin.wx;
                         o.oprtel = prin.tel;
                         o.oprname = prin.name;
                     }
                     else
                     {
-                        dc.Execute("UPDATE shops SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(shopid));
+                        dc.Execute("UPDATE orgs SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(orgid));
                         o.oprwx = null;
                         o.oprtel = null;
                         o.oprname = null;

@@ -134,7 +134,7 @@ namespace Greatbone.Core
             throw new NotImplementedException();
         }
 
-        public void PutAll(ISource s)
+        public void PutFrom(ISource s)
         {
             throw new NotImplementedException();
         }

@@ -34,9 +34,8 @@ namespace Greatbone.Sample
 
         internal int id;
         internal short rev;
-        internal short status;
-        internal string shopid;
-        internal string shopname;
+        internal string orgid;
+        internal string orgname;
         internal short typ; // 
         internal string wx; // weixin openid
         internal string name; // customer name
@@ -51,9 +50,8 @@ namespace Greatbone.Sample
         internal DateTime created;
         internal decimal cash; // amount recieved
         internal DateTime paid;
-        internal DateTime aborted;
-        internal DateTime finished;
-        internal string kick;
+        internal DateTime closed;
+        internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -62,9 +60,8 @@ namespace Greatbone.Sample
                 s.Get(nameof(id), ref id);
                 s.Get(nameof(rev), ref rev);
             }
-            s.Get(nameof(status), ref status);
-            s.Get(nameof(shopid), ref shopid);
-            s.Get(nameof(shopname), ref shopname);
+            s.Get(nameof(orgid), ref orgid);
+            s.Get(nameof(orgname), ref orgname);
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(wx), ref wx);
             s.Get(nameof(name), ref name);
@@ -81,10 +78,9 @@ namespace Greatbone.Sample
             {
                 s.Get(nameof(cash), ref cash);
                 s.Get(nameof(paid), ref paid);
-                s.Get(nameof(aborted), ref aborted);
-                s.Get(nameof(finished), ref finished);
-                s.Get(nameof(kick), ref kick);
+                s.Get(nameof(closed), ref closed);
             }
+            s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
@@ -94,9 +90,8 @@ namespace Greatbone.Sample
                 s.Put(nameof(id), id);
                 s.Put(nameof(rev), rev);
             }
-            s.Put(nameof(status), status);
-            s.Put(nameof(shopid), shopid);
-            s.Put(nameof(shopname), shopname);
+            s.Put(nameof(orgid), orgid);
+            s.Put(nameof(orgname), orgname);
             s.Put(nameof(typ), typ);
             s.Put(nameof(wx), wx);
             s.Put(nameof(name), name);
@@ -113,10 +108,9 @@ namespace Greatbone.Sample
             {
                 s.Put(nameof(cash), cash);
                 s.Put(nameof(paid), paid);
-                s.Put(nameof(aborted), aborted);
-                s.Put(nameof(finished), finished);
-                s.Put(nameof(kick), kick);
+                s.Put(nameof(closed), closed);
             }
+            s.Put(nameof(status), status);
         }
 
         public string Err()

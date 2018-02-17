@@ -14,9 +14,9 @@ namespace Greatbone.Sample
     {
         public GospelService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<GospelVarWork, string>(obj => ((Shop) obj).id); // subshop
+            CreateVar<GospelVarWork, string>(obj => ((Org) obj).id); // subshop
 
-            Create<PubShopWork>("shop"); // personal
+            Create<PubOrgWork>("shop"); // personal
 
             Create<MyWork>("my"); // personal
 
@@ -25,27 +25,27 @@ namespace Greatbone.Sample
             Create<AdmWork>("adm"); // administrator
 
             Register(delegate
-            {
-                using (var dc = NewDbContext())
                 {
-                    dc.Query("SELECT DISTINCT lesson FROM slides WHERE status > 0 ORDER BY lesson");
-                    Roll<string> roll = new Roll<string>(32);
-                    while (dc.Next())
+                    using (var dc = NewDbContext())
                     {
-                        dc.Let(out string v);
-                        roll.Add(v);
+                        dc.Query("SELECT DISTINCT lesson FROM slides WHERE status > 0 ORDER BY lesson");
+                        Roll<string> roll = new Roll<string>(32);
+                        while (dc.Next())
+                        {
+                            dc.Let(out string v);
+                            roll.Add(v);
+                        }
+                        return roll.ToArray();
                     }
-                    return roll.ToArray();
-                }
-            }, 3600 * 8);
+                }, 3600 * 8);
 
             Register(delegate
-            {
-                using (var dc = NewDbContext())
                 {
-                    return dc.Query<string, Shop>(dc.Sql("SELECT ").columnlst(Shop.Empty).T(" FROM shops WHERE status > 0 ORDER BY id"), proj: 0xff);
-                }
-            }, 3600 * 8);
+                    using (var dc = NewDbContext())
+                    {
+                        return dc.Query<string, Org>(dc.Sql("SELECT ").columnlst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id"), proj: 0xff);
+                    }
+                }, 3600 * 8);
         }
 
         public override void OnStart()
@@ -95,7 +95,7 @@ namespace Greatbone.Sample
                     }
                 }
             }
-            else if (ac.ByBrowse)
+            else
             {
                 string h_auth = ac.Header("Authorization");
                 if (h_auth == null || !h_auth.StartsWith("Basic "))
@@ -121,7 +121,6 @@ namespace Greatbone.Sample
                     return true;
                 }
             }
-
             // setup principal and cookie
             if (prin != null)
             {
@@ -139,7 +138,7 @@ namespace Greatbone.Sample
                 if (wc.Principal == null)
                 {
                     // weixin authorization challenge
-                    if (wc.ByWeiXin) // weixin
+                    if (wc.ByWeiXinClient) // weixin
                     {
                         wc.GiveRedirectWeiXinAuthorize(NETADDR);
                     }

@@ -21,15 +21,15 @@ namespace Greatbone.Sample
             {HOT, "推荐"},
         };
 
-        internal string shopid;
+        internal string orgid;
         internal string name;
         internal string descr;
         internal string unit;
         internal decimal price;
         internal short min;
         internal short step;
-        internal short status;
         internal short stock; // remaining capacity
+        internal short status;
 
         internal bool imgg;
 
@@ -37,7 +37,7 @@ namespace Greatbone.Sample
         {
             if ((proj & PK) == PK)
             {
-                s.Get(nameof(shopid), ref shopid);
+                s.Get(nameof(orgid), ref orgid);
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);
@@ -45,8 +45,8 @@ namespace Greatbone.Sample
             s.Get(nameof(price), ref price);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
-            s.Get(nameof(status), ref status);
             s.Get(nameof(stock), ref stock);
+            s.Get(nameof(status), ref status);
             if ((proj & IMGG) == IMGG)
             {
                 s.Get(nameof(imgg), ref imgg);
@@ -57,7 +57,7 @@ namespace Greatbone.Sample
         {
             if ((proj & PK) == PK)
             {
-                s.Put(nameof(shopid), shopid);
+                s.Put(nameof(orgid), orgid);
                 s.Put(nameof(name), name);
             }
             s.Put(nameof(descr), descr);
@@ -65,8 +65,8 @@ namespace Greatbone.Sample
             s.Put(nameof(price), price);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
-            s.Put(nameof(status), status);
             s.Put(nameof(stock), stock);
+            s.Put(nameof(status), status);
         }
     }
 }

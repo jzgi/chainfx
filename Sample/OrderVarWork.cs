@@ -28,7 +28,7 @@ namespace Greatbone.Sample
             int orderid = ac[this];
             short rev;
             decimal total;
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             using (var dc = NewDbContext())
             {
                 dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
@@ -41,7 +41,7 @@ namespace Greatbone.Sample
                     }
                 }
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr, NETADDR + "/shop/paynotify", "粗粮达人-健康产品");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr.ToString(), NETADDR + "/shop/paynotify", "粗粮达人-健康产品");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
@@ -60,24 +60,24 @@ namespace Greatbone.Sample
             string name, city, a, b, tel; // form values
             if (ac.GET)
             {
-                var shops = Obtain<Map<string, Shop>>();
+                var orgs = Obtain<Map<string, Org>>();
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
                     using (var dc = NewDbContext())
                     {
-                        dc.Query1("SELECT shopid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                        dc.Let(out string oshopid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
+                        dc.Query1("SELECT orgid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                        dc.Let(out string oorgid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
                         h.FIELDSET_("收货地址");
-                        var shop = shops[oshopid];
-                        if (shop.areas != null) // limited delivery areas
+                        var org = orgs[oorgid];
+                        if (org.areas != null) // limited delivery areas
                         {
                             name = oname;
                             city = ocity;
                             (a, b) = oaddr.ToDual(SEPCHAR);
                             tel = otel;
                             h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                            h.SELECT(nameof(a), a, shop.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
+                            h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
                             h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         }
                         else // free delivery
@@ -122,14 +122,14 @@ namespace Greatbone.Sample
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                     var oi = o.items[idx];
-                    dc.Query1("SELECT step, stock FROM items WHERE shopid = @1 AND name = @2", p => p.Set(o.shopid).Set(oi.name));
+                    dc.Query1("SELECT step, stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(o.orgid).Set(oi.name));
                     dc.Let(out short step).Let(out short stock);
                     ac.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.ICON("/" + o.shopid + "/" + oi.name + "/icon", box: 2);
-                        h.NUMBER(nameof(oi.qty), oi.qty, min: (short)0, max: stock, step: step, box: 8);
+                        h.ICON("/" + o.orgid + "/" + oi.name + "/icon", box: 2);
+                        h.NUMBER(nameof(oi.qty), oi.qty, min: (short) 0, max: stock, step: step, box: 8);
                         h.FIELD(oi.unit, box: 2);
                         h._FIELDSET();
                         h._FORM();
@@ -186,10 +186,10 @@ namespace Greatbone.Sample
         {
         }
 
-        [Ui("加货"), Tool(ButtonShow, 2), User(OPRSTAFF)]
+        [Ui("加货"), Tool(ButtonShow), User(OPRSTAFF)]
         public async Task add(WebContext ac)
         {
-            string shopid = ac[-2];
+            string orgid = ac[-2];
             int orderid = ac[this];
             if (ac.GET)
             {
@@ -198,11 +198,11 @@ namespace Greatbone.Sample
                     m.FORM_();
                     using (var dc = NewDbContext())
                     {
-                        dc.Query("SELECT name, unit, price, stock FROM items WHERE shopid = @1 AND status > 0 AND stock > 0", p => p.Set(shopid));
+                        dc.Query("SELECT name, unit, price, stock FROM items WHERE orgid = @1 AND status > 0 AND stock > 0", p => p.Set(orgid));
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            m.FIELD(name, box: 5).FIELD(stock, fix: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short)0, min: (short)0, step: (short)1, max: stock, box: 5);
+                            m.FIELD(name, box: 5).FIELD(stock, fix: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
                         }
                     }
                     m._FORM();
@@ -231,7 +231,7 @@ namespace Greatbone.Sample
         public async Task assign(WebContext ac)
         {
             int orderid = ac[this];
-            string shopid = ac[-2];
+            string orgid = ac[-2];
             string opr;
             string addr = null;
             if (ac.GET)
@@ -242,7 +242,7 @@ namespace Greatbone.Sample
                     using (var dc = NewDbContext())
                     {
                         // select operator info
-                        dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(shopid));
+                        dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(orgid));
                         m.SELECT_(nameof(opr), "人员");
                         while (dc.Next())
                         {
@@ -251,7 +251,7 @@ namespace Greatbone.Sample
                         }
                         m._SELECT();
                         // input addr
-                        var shop = Obtain<Map<string, Shop>>()[shopid];
+                        var shop = Obtain<Map<string, Org>>()[orgid];
                         if (shop.areas != null)
                         {
                             m.SELECT(nameof(addr), addr, shop.areas, "区域");
@@ -270,8 +270,8 @@ namespace Greatbone.Sample
                 var (wx, name, tel) = opr.ToTriple('~');
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND shopid = @6",
-                        p => p.Set(wx).Set(name).Set(tel).Set(addr).Set(orderid).Set(shopid));
+                    dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND orgid = @6",
+                        p => p.Set(wx).Set(name).Set(tel).Set(addr).Set(orderid).Set(orgid));
                 }
                 ac.GivePane(200);
             }
@@ -287,7 +287,7 @@ namespace Greatbone.Sample
         [Ui("撤消", "【警告】确认要撤销此单吗？实收金额将退回给买家"), Tool(ButtonConfirm)]
         public async Task abort(WebContext ac)
         {
-            string shopid = ac[-2];
+            string orgid = ac[-2];
             int orderid = ac[this];
             short rev = 0;
             decimal total = 0, cash = 0;
@@ -305,12 +305,12 @@ namespace Greatbone.Sample
                 {
                     using (var dc = NewDbContext(ReadUncommitted))
                     {
-                        dc.Query1("UPDATE orders SET status = " + ABORTED + ", aborted = localtimestamp WHERE id = @1 AND shopid = @2 RETURNING items", p => p.Set(orderid).Set(shopid));
+                        dc.Query1("UPDATE orders SET status = " + ABORTED + ", aborted = localtimestamp WHERE id = @1 AND orgid = @2 RETURNING items", p => p.Set(orderid).Set(orgid));
                         dc.Let(out OrderItem[] items);
                         for (int i = 0; i < items?.Length; i++) // revert stock
                         {
                             var oi = items[i];
-                            dc.Execute("UPDATE items SET stock = stock + @1 WHERE shopid = @2 AND name = @3", p => p.Set(oi.qty).Set(shopid).Set(oi.name));
+                            dc.Execute("UPDATE items SET stock = stock + @1 WHERE orgid = @2 AND name = @3", p => p.Set(oi.qty).Set(orgid).Set(oi.name));
                         }
                     }
                 }
@@ -321,9 +321,9 @@ namespace Greatbone.Sample
         [Ui("完成"), Tool(ButtonShow)]
         public async Task deliver(WebContext ac)
         {
-            string shopid = ac[-2];
+            string orgid = ac[-2];
             int orderid = ac[this];
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             bool mycart;
             if (ac.GET)
             {
@@ -333,7 +333,7 @@ namespace Greatbone.Sample
                     using (var dc = NewDbContext())
                     {
                         m.FORM_();
-                        if (dc.Query1("SELECT TRUE FROM orders WHERE shopid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(shopid).Set(prin.wx)))
+                        if (dc.Query1("SELECT TRUE FROM orders WHERE orgid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(orgid).Set(prin.wx)))
                         {
                             m.P("检测到您当前有分配的摊点");
                             m.CHECKBOX(nameof(mycart), true, "完成同时扣减摊点里的数目");
@@ -351,16 +351,16 @@ namespace Greatbone.Sample
                 mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = NewDbContext(ReadCommitted))
                 {
-                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", finished = localtimestamp WHERE id = @1 AND shopid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(shopid)))
+                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", finished = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
                     {
                         var o = dc.ToObject<Order>();
                         if (mycart) // deduce my cart loads
                         {
-                            dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND shopid = @2 AND typ = 1", p => p.Set(prin.wx).Set(shopid));
+                            dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND orgid = @2 AND typ = 1", p => p.Set(prin.wx).Set(orgid));
                             dc.Let(out int cartid).Let(out OrderItem[] cart);
                             if (Deduce(cart, o.items))
                             {
-                                dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND shopid = @3", p => p.Set(cart).Set(cartid).Set(shopid));
+                                dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND orgid = @3", p => p.Set(cart).Set(cartid).Set(orgid));
                             }
                             else
                             {

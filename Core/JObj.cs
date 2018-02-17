@@ -402,14 +402,14 @@ namespace Greatbone.Core
         public IContent Dump()
         {
             var cnt = new JsonContent(true);
-            cnt.PutAll(this);
+            cnt.PutFrom(this);
             return cnt;
         }
 
         public override string ToString()
         {
             JsonContent cnt = new JsonContent(false, 4 * 1024);
-            cnt.PutAll(this);
+            cnt.PutFrom(this);
             string str = cnt.ToString();
             BufferUtility.Return(cnt);
             return str;

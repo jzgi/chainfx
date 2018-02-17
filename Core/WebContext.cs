@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
 using static Greatbone.Core.DataUtility;
+using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
 namespace Greatbone.Core
 {
@@ -183,21 +184,13 @@ namespace Greatbone.Core
 
         public bool POST => "POST".Equals(fRequest.Method);
 
-        string ua;
+        public string UserAgent => Header("User-Agent");
 
-        public string Ua => ua ?? (ua = Header("User-Agent"));
+        public IPAddress RemoteAddr => connection.RemoteIpAddress;
 
-        string raddr;
+        public bool ByWeiXinClient => UserAgent?.Contains("MicroMessenger/") ?? false;
 
-        public string RemoteAddr => raddr ?? (raddr = Features.Get<IHttpConnectionFeature>().RemoteIpAddress.ToString());
-
-        public bool ByBrowser => Ua?.StartsWith("Mozilla") ?? false;
-
-        public bool ByBrowse => ByBrowser && Header("X-Requested-With") == null;
-
-        public bool ByWeiXin => Ua?.Contains("MicroMessenger/") ?? false;
-
-        public bool ByJQuery => Header("X-Requested-With") != null;
+        public bool ByCall => Header("X-Requested-With") != null;
 
         public string Path => fRequest.Path;
 

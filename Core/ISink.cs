@@ -45,6 +45,6 @@ namespace Greatbone.Core
 
         void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData;
 
-        void PutAll(ISource s);
+        void PutFrom(ISource s);
     }
 }
