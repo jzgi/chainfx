@@ -1070,7 +1070,7 @@ namespace Greatbone.Core
                         Add(prc.Key);
                         Add('-');
                         Add(i);
-                        Add(webCtx.QueryStr);
+                        Add(webCtx.QueryString);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
@@ -1082,7 +1082,7 @@ namespace Greatbone.Core
                     Add(prc.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(webCtx.QueryStr);
+                    Add(webCtx.QueryString);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");

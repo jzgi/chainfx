@@ -22,50 +22,26 @@ namespace Greatbone.Core
 
         private readonly DefaultConnectionInfo connection;
 
-        readonly WebRequest request;
+        readonly IHttpRequestFeature fRequest;
 
-        readonly WebResponse response;
+        readonly RequestCookiesFeature fRequestCookies;
+
+        readonly IHttpResponseFeature fResponse;
+
+        readonly ResponseCookiesFeature fResponseCookies;
 
         internal WebContext(IFeatureCollection features)
         {
             this.features = features;
             connection = new DefaultConnectionInfo(features);
-            this.request = new WebRequest(this);
-            this.response = new WebResponse(this);
+
+            fRequest = features.Get<IHttpRequestFeature>();
+            fRequestCookies = new RequestCookiesFeature(features);
+
+            fResponse = features.Get<IHttpResponseFeature>();
+            fResponseCookies = new ResponseCookiesFeature(features);
         }
 
-        public override IFeatureCollection Features => features;
-
-        public override HttpRequest Request => request;
-
-        public override HttpResponse Response => response;
-
-        public override ConnectionInfo Connection => connection;
-
-        public override WebSocketManager WebSockets { get; }
-
-        [Obsolete("This is obsolete and will be removed in a future version. The recommended alternative is to use Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions. See https://go.microsoft.com/fwlink/?linkid=845470.")]
-        public override AuthenticationManager Authentication => null;
-
-        public override ClaimsPrincipal User { get; set; } = null;
-
-        public override IDictionary<object, object> Items { get; set; }
-
-        public override IServiceProvider RequestServices { get; set; }
-
-        public override CancellationToken RequestAborted { get; set; }
-
-        public override string TraceIdentifier { get; set; } = null;
-
-        public override ISession Session { get; set; } = null;
-
-        public override void Abort()
-        {
-            features.Get<IHttpRequestLifetimeFeature>().Abort();
-        }
-
-
-        //
         // OBJECT PROVIDER
 
         object[] registry;
@@ -104,10 +80,6 @@ namespace Greatbone.Core
         }
 
         public Service Service { get; internal set; }
-
-        /// Whether this is requested from a cluster member.
-        ///
-        public bool Cluster { get; internal set; }
 
         public Work Work { get; internal set; }
 
@@ -168,15 +140,48 @@ namespace Greatbone.Core
             }
         }
 
+        // WEB FEATURES
+
+        public override IFeatureCollection Features => features;
+
+        public override HttpRequest Request => null;
+
+        public override HttpResponse Response => null;
+
+        public override ConnectionInfo Connection => connection;
+
+        public override WebSocketManager WebSockets { get; }
+
+        [Obsolete("This is obsolete and will be removed in a future version. The recommended alternative is to use Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions. See https://go.microsoft.com/fwlink/?linkid=845470.")]
+        public override AuthenticationManager Authentication => null;
+
+        public override ClaimsPrincipal User { get; set; } = null;
+
+        public override IDictionary<object, object> Items { get; set; } = null;
+
+        public override IServiceProvider RequestServices { get; set; } = null;
+
+        public override CancellationToken RequestAborted
+        {
+            get => features.Get<IHttpRequestLifetimeFeature>().RequestAborted;
+            set { }
+        }
+
+        public override void Abort() => features.Get<IHttpRequestLifetimeFeature>().Abort();
+
+        public override string TraceIdentifier { get; set; } = null;
+
+        public override ISession Session { get; set; } = null;
+
         //
         // REQUEST
         //
 
-        public string Method => Request.Method;
+        public string Method => fRequest.Method;
 
-        public bool GET => "GET".Equals(Request.Method);
+        public bool GET => "GET".Equals(fRequest.Method);
 
-        public bool POST => "POST".Equals(Request.Method);
+        public bool POST => "POST".Equals(fRequest.Method);
 
         string ua;
 
@@ -194,34 +199,34 @@ namespace Greatbone.Core
 
         public bool ByJQuery => Header("X-Requested-With") != null;
 
-        public string Path => request.PathStr;
+        public string Path => fRequest.Path;
 
         string uri;
 
-        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryStr) ? Path : Path + QueryStr);
+        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryString) ? Path : Path + QueryString);
 
         string url;
 
-        public string Url => url ?? (url = request.Scheme + "://" + Header("Host" + request.RawTarget));
+        public string Url => url ?? (url = fRequest.Scheme + "://" + Header("Host") + fRequest.RawTarget);
 
-        public string QueryStr => request.QueryStr;
+        public string QueryString => fRequest.QueryString;
 
         // URL query 
         Form query;
 
-        public Form Query => query ?? (query = new FormParser(QueryStr).Parse());
+        public Form Query => query ?? (query = new FormParser(QueryString).Parse());
 
         public void AddParam(string name, string value)
         {
-            string q = request.QueryStr;
+            string q = fRequest.QueryString;
             if (string.IsNullOrEmpty(q))
             {
-                request.QueryStr = "?" + name + "=" + value;
+                fRequest.QueryString = "?" + name + "=" + value;
                 query = null; // reset parsed form
             }
             else
             {
-                request.QueryStr = request.QueryStr + "&" + name + "=" + value;
+                fRequest.QueryString = fRequest.QueryString + "&" + name + "=" + value;
                 Query.Add(name, value);
             }
         }
@@ -232,7 +237,7 @@ namespace Greatbone.Core
 
         public string Header(string name)
         {
-            if (Request.Headers.TryGetValue(name, out var vs))
+            if (fRequest.Headers.TryGetValue(name, out var vs))
             {
                 return vs;
             }
@@ -241,7 +246,7 @@ namespace Greatbone.Core
 
         public int? HeaderInt(string name)
         {
-            if (Request.Headers.TryGetValue(name, out var vs))
+            if (fRequest.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
                 if (int.TryParse(str, out var v))
@@ -254,7 +259,7 @@ namespace Greatbone.Core
 
         public long? HeaderLong(string name)
         {
-            if (Request.Headers.TryGetValue(name, out var vs))
+            if (fRequest.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
                 if (long.TryParse(str, out var v))
@@ -267,7 +272,7 @@ namespace Greatbone.Core
 
         public DateTime? HeaderDateTime(string name)
         {
-            if (Request.Headers.TryGetValue(name, out var vs))
+            if (fRequest.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
                 if (StrUtility.TryParseUtcDate(str, out var v))
@@ -280,14 +285,14 @@ namespace Greatbone.Core
 
         public string[] Headers(string name)
         {
-            if (Request.Headers.TryGetValue(name, out var vs))
+            if (fRequest.Headers.TryGetValue(name, out var vs))
             {
                 return vs;
             }
             return null;
         }
 
-        public IRequestCookieCollection Cookies => Request.Cookies;
+        public IRequestCookieCollection Cookies => fRequestCookies.Cookies;
 
         // request body
         byte[] buffer;
@@ -308,7 +313,7 @@ namespace Greatbone.Core
                     // reading
                     int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
@@ -327,7 +332,7 @@ namespace Greatbone.Core
                 {
                     int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
@@ -350,7 +355,7 @@ namespace Greatbone.Core
                 {
                     int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
@@ -358,18 +363,15 @@ namespace Greatbone.Core
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
-
-            if (!(entity is ISource inp))
+            if (!(entity is ISource src))
             {
                 return default;
             }
-
             if (obj == null)
             {
                 obj = new D();
             }
-
-            obj.Read(inp, proj);
+            obj.Read(src, proj);
             return obj;
         }
 
@@ -384,16 +386,14 @@ namespace Greatbone.Core
                 {
                     int len = (int) clen;
                     buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
-                    while ((count += await Request.Body.ReadAsync(buffer, count, (len - count))) < len)
+                    while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
                 }
-
                 // parse
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count);
             }
-
             return (entity as ISource)?.ToArray<D>(proj);
         }
 
@@ -403,22 +403,22 @@ namespace Greatbone.Core
 
         public void SetHeader(string name, int v)
         {
-            Response.Headers.Add(name, new StringValues(v.ToString()));
+            fResponse.Headers.Add(name, new StringValues(v.ToString()));
         }
 
         public void SetHeader(string name, long v)
         {
-            Response.Headers.Add(name, new StringValues(v.ToString()));
+            fResponse.Headers.Add(name, new StringValues(v.ToString()));
         }
 
         public void SetHeader(string name, string v)
         {
-            Response.Headers.Add(name, new StringValues(v));
+            fResponse.Headers.Add(name, new StringValues(v));
         }
 
         public void SetHeaderAbsent(string name, string v)
         {
-            IHeaderDictionary headers = Response.Headers;
+            IHeaderDictionary headers = fResponse.Headers;
             if (!headers.TryGetValue(name, out _))
             {
                 headers.Add(name, new StringValues(v));
@@ -428,12 +428,12 @@ namespace Greatbone.Core
         public void SetHeader(string name, DateTime v)
         {
             string str = StrUtility.FormatUtcDate(v);
-            Response.Headers.Add(name, new StringValues(str));
+            fResponse.Headers.Add(name, new StringValues(str));
         }
 
         public void SetHeader(string name, params string[] values)
         {
-            Response.Headers.Add(name, new StringValues(values));
+            fResponse.Headers.Add(name, new StringValues(values));
         }
 
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
@@ -445,8 +445,8 @@ namespace Greatbone.Core
 
         public int Status
         {
-            get => Response.StatusCode;
-            set => Response.StatusCode = value;
+            get => fResponse.StatusCode;
+            set => fResponse.StatusCode = value;
         }
 
         public IContent Content { get; internal set; }
@@ -530,7 +530,6 @@ namespace Greatbone.Core
                     Status = 304; // not modified
                     return;
                 }
-
                 SetHeader("ETag", etag);
             }
 
@@ -544,13 +543,11 @@ namespace Greatbone.Core
                     Status = 304; // not modified
                     return;
                 }
-
                 DateTime? last = sta.Modified;
                 if (last != null)
                 {
                     SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
                 }
-
                 if (sta.GZip)
                 {
                     SetHeader("Content-Encoding", "gzip");
@@ -558,9 +555,9 @@ namespace Greatbone.Core
             }
 
             // send out the content async
-            Response.ContentLength = Content.Size;
-            Response.ContentType = Content.Type;
-            await Response.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
+            fResponse.Headers["Content-Length"] = Content.Size.ToString();
+            fResponse.Headers["Content-Type"] = Content.Type;
+            await fResponse.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
         }
 
         public void Dispose()
@@ -570,7 +567,6 @@ namespace Greatbone.Core
             {
                 BufferUtility.Return(buffer);
             }
-
             // pool returning
             if (!InCache)
             {
