@@ -37,10 +37,10 @@ namespace Greatbone.Sample
                 h.T("break;");
                 h.T("}");
                 h.T("}");
-                h.T("window.location.href = '/shop/?city=' + city;");
+                h.T("window.location.href = '/org/?city=' + city;");
                 h.T("},");
                 h.T("function(e) {");
-                h.T("window.location.href = '/shop/?city=' + city;");
+                h.T("window.location.href = '/org/?city=' + city;");
                 h.T("}, {enableHighAccuracy: true,timeout: 1000,maximumAge: 0}");
                 h.T(")");
                 h.T("</script></head></html>");

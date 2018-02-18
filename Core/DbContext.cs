@@ -58,6 +58,26 @@ namespace Greatbone.Core
             index = 0;
         }
 
+        public void Dispose()
+        {
+            if (!disposing)
+            {
+                // indicate disposing the instance 
+                disposing = true;
+                // return to chars pool
+                if (sql != null) BufferUtility.Return(sql);
+                // commit ongoing transaction
+                if (transact != null && !transact.IsCompleted)
+                {
+                    Clear();
+                    transact.Commit();
+                }
+                reader?.Close();
+                command.Transaction = null;
+                connection.Close();
+            }
+        }
+
         public void Begin(IsolationLevel level = IsolationLevel.ReadCommitted)
         {
             if (connection.State != ConnectionState.Open)
@@ -81,171 +101,15 @@ namespace Greatbone.Core
             }
         }
 
-        public DbSql Sql(string str)
+        public void Rollback()
         {
-            if (sql == null)
+            if (transact != null && !transact.IsCompleted)
             {
-                sql = new DbSql(str);
-            }
-            else
-            {
-                sql.Clear(); // reset
-                sql.Add(str);
-            }
-            return sql;
-        }
-
-        public bool Query1(Action<IParams> p = null, bool prepare = true)
-        {
-            return Query1(sql.ToString(), p, prepare);
-        }
-
-        public bool Query1(DbSql sql, Action<IParams> p = null, bool prepare = true)
-        {
-            this.sql = sql;
-            return Query1(sql.ToString(), p, prepare);
-        }
-
-        public D Query1<D>(DbSql sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            this.sql = sql;
-            if (Query1(sql.ToString(), p, prepare))
-            {
-                return ToObject<D>(proj);
-            }
-            return default;
-        }
-
-        public D Query1<D>(string cmdtext, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            if (Query1(cmdtext, p, prepare))
-            {
-                return ToObject<D>(proj);
-            }
-            return default;
-        }
-
-        public bool Query1(string cmdtext, Action<IParams> p = null, bool prepare = true)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-            Clear();
-            multi = false;
-            command.CommandText = cmdtext;
-            command.CommandType = CommandType.Text;
-            if (p != null)
-            {
-                p(this);
-                if (prepare) command.Prepare();
-            }
-            reader = command.ExecuteReader();
-            return reader.Read();
-        }
-
-        public bool Query(Action<IParams> p = null, bool prepare = true)
-        {
-            return Query(sql.ToString(), p, prepare);
-        }
-
-        public bool Query(DbSql sql, Action<IParams> p = null, bool prepare = true)
-        {
-            this.sql = sql;
-            return Query(sql.ToString(), p, prepare);
-        }
-
-        public D[] Query<D>(DbSql sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            this.sql = sql;
-            if (Query(sql.ToString(), p, prepare))
-            {
-                return ToArray<D>(proj);
-            }
-            return null;
-        }
-
-        public D[] Query<D>(string cmdtext, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            if (Query(cmdtext, p, prepare))
-            {
-                return ToArray<D>(proj);
-            }
-            return null;
-        }
-
-        public Map<K, D> Query<K, D>(DbSql sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
-        {
-            this.sql = sql;
-            if (Query(sql.ToString(), p, prepare))
-            {
-                return ToMap(proj, keyer, toper);
-            }
-            return null;
-        }
-
-        public Map<K, D> Query<K, D>(string cmdtext, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
-        {
-            if (Query(cmdtext, p, prepare))
-            {
-                return ToMap(proj, keyer, toper);
-            }
-            return null;
-        }
-
-        public bool Query(string cmdtext, Action<IParams> p = null, bool prepare = true)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-            Clear();
-            multi = true;
-            command.CommandText = cmdtext;
-            command.CommandType = CommandType.Text;
-            if (p != null)
-            {
-                p(this);
-                if (prepare) command.Prepare();
-            }
-            reader = command.ExecuteReader();
-            return reader.HasRows;
-        }
-
-        public async Task<bool> QueryAsync(DbSql sql, Action<IParams> p = null, bool prepare = true)
-        {
-            this.sql = sql;
-            return await QueryAsync(sql.ToString(), p, prepare);
-        }
-
-        public async Task<bool> QueryAsync(string cmdtext, Action<IParams> p = null, bool prepare = true)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-            Clear();
-            multi = true;
-            command.CommandText = cmdtext;
-            command.CommandType = CommandType.Text;
-            if (p != null)
-            {
-                p(this);
-                if (prepare) command.Prepare();
-            }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
-            return reader.HasRows;
-        }
-
-        public bool HasRows
-        {
-            get
-            {
-                if (reader == null)
-                {
-                    return false;
-                }
-                return reader.HasRows;
+                // indicate disposing the instance 
+                Clear();
+                transact.Rollback();
+                command.Transaction = null;
+                transact = null;
             }
         }
 
@@ -272,58 +136,262 @@ namespace Greatbone.Core
             return reader.Read();
         }
 
-        public void Write<C>(C cnt) where C : IContent, ISink
+        public DbSql Sql(string str)
         {
-            int fc = reader.FieldCount;
-            for (int i = 0; i < fc; i++)
+            if (sql == null)
             {
-                string name = reader.GetName(i);
-                if (reader.IsDBNull(i))
-                {
-                    cnt.PutNull(name);
-                    continue;
-                }
-                var typ = reader.GetFieldType(i);
-                if (typ == typeof(bool))
-                {
-                    cnt.Put(name, reader.GetBoolean(i));
-                }
-                else if (typ == typeof(short))
-                {
-                    cnt.Put(name, reader.GetInt16(i));
-                }
-                else if (typ == typeof(int))
-                {
-                    cnt.Put(name, reader.GetInt32(i));
-                }
-                else if (typ == typeof(long))
-                {
-                    cnt.Put(name, reader.GetInt64(i));
-                }
-                else if (typ == typeof(string))
-                {
-                    cnt.Put(name, reader.GetString(i));
-                }
-                else if (typ == typeof(decimal))
-                {
-                    cnt.Put(name, reader.GetDecimal(i));
-                }
-                else if (typ == typeof(double))
-                {
-                    cnt.Put(name, reader.GetDouble(i));
-                }
-                else if (typ == typeof(DateTime))
-                {
-                    cnt.Put(name, reader.GetDateTime(i));
-                }
+                sql = new DbSql(str);
             }
+            else
+            {
+                sql.Clear(); // reset
+                sql.Add(str);
+            }
+            return sql;
         }
 
-        public IContent Dump()
+        public bool Query1(Action<IParams> p = null, bool prepare = true)
         {
-            var cnt = new FlowContent(512 * 1024);
-            cnt.PutFrom(this);
-            return cnt;
+            return Query1(sql.ToString(), p, prepare);
+        }
+
+        public bool Query1(string sql, Action<IParams> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            multi = false;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            reader = command.ExecuteReader();
+            return reader.Read();
+        }
+
+        public async Task<bool> Query1Async(Action<IParams> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            multi = false;
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            return reader.Read();
+        }
+
+        public async Task<bool> Query1Async(string sql, Action<IParams> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            multi = false;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            return reader.Read();
+        }
+
+        public D Query1<D>(Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (Query1(p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+            return default;
+        }
+
+        public D Query1<D>(string sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (Query1(sql, p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+            return default;
+        }
+
+        public async Task<D> Query1Async<D>(Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (await Query1Async(p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+            return default;
+        }
+
+        public async Task<D> Query1Async<D>(string sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (await Query1Async(sql, p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+            return default;
+        }
+
+        public bool Query(Action<IParams> p = null, bool prepare = true)
+        {
+            return Query(sql.ToString(), p, prepare);
+        }
+
+        public bool Query(string sql, Action<IParams> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            multi = true;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            reader = command.ExecuteReader();
+            return reader.HasRows;
+        }
+
+        public async Task<bool> QueryAsync(Action<IParams> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            multi = true;
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            return reader.HasRows;
+        }
+
+        public async Task<bool> QueryAsync(string sql, Action<IParams> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            multi = true;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            return reader.HasRows;
+        }
+
+        public D[] Query<D>(Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (Query(p, prepare))
+            {
+                return ToArray<D>(proj);
+            }
+            return null;
+        }
+
+        public D[] Query<D>(string sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (Query(sql, p, prepare))
+            {
+                return ToArray<D>(proj);
+            }
+            return null;
+        }
+
+        public async Task<D[]> QueryAsync<D>(Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (await QueryAsync(p, prepare))
+            {
+                return ToArray<D>(proj);
+            }
+            return null;
+        }
+
+        public async Task<D[]> QueryAsync<D>(string sql, Action<IParams> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (await QueryAsync(sql, p, prepare))
+            {
+                return ToArray<D>(proj);
+            }
+            return null;
+        }
+
+        public Map<K, D> Query<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        {
+            if (Query(p, prepare))
+            {
+                return ToMap(proj, keyer, toper);
+            }
+            return null;
+        }
+
+        public Map<K, D> Query<K, D>(string sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        {
+            if (Query(sql, p, prepare))
+            {
+                return ToMap(proj, keyer, toper);
+            }
+            return null;
+        }
+
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        {
+            if (await QueryAsync(p, prepare))
+            {
+                return ToMap(proj, keyer, toper);
+            }
+            return null;
+        }
+
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        {
+            if (await QueryAsync(sql, p, prepare))
+            {
+                return ToMap(proj, keyer, toper);
+            }
+            return null;
+        }
+
+        public bool HasRows
+        {
+            get
+            {
+                if (reader == null)
+                {
+                    return false;
+                }
+                return reader.HasRows;
+            }
         }
 
         public int Execute(Action<IParams> p = null, bool prepare = true)
@@ -331,20 +399,14 @@ namespace Greatbone.Core
             return Execute(sql.ToString(), p, prepare);
         }
 
-        public int Execute(DbSql sql, Action<IParams> p = null, bool prepare = true)
-        {
-            this.sql = sql;
-            return Execute(sql.ToString(), p, prepare);
-        }
-
-        public int Execute(string cmdtext, Action<IParams> p = null, bool prepare = true)
+        public int Execute(string sql, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
             Clear();
-            command.CommandText = cmdtext;
+            command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -356,17 +418,29 @@ namespace Greatbone.Core
 
         public async Task<int> ExecuteAsync(Action<IParams> p = null, bool prepare = true)
         {
-            return await ExecuteAsync(sql.ToString(), p, prepare);
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            return await command.ExecuteNonQueryAsync();
         }
 
-        public async Task<int> ExecuteAsync(string cmdtext, Action<IParams> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(string sql, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
             Clear();
-            command.CommandText = cmdtext;
+            command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -381,20 +455,14 @@ namespace Greatbone.Core
             return Scalar(sql.ToString(), p, prepare);
         }
 
-        public object Scalar(DbSql sql, Action<IParams> p = null, bool prepare = true)
-        {
-            this.sql = sql;
-            return Scalar(sql.ToString(), p, prepare);
-        }
-
-        public object Scalar(string cmdtext, Action<IParams> p = null, bool prepare = true)
+        public object Scalar(string sql, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
             Clear();
-            command.CommandText = cmdtext;
+            command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -407,17 +475,29 @@ namespace Greatbone.Core
 
         public async Task<object> ScalarAsync(Action<IParams> p = null, bool prepare = true)
         {
-            return await ScalarAsync(sql.ToString(), p, prepare);
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            Clear();
+            command.CommandText = sql.ToString();
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+            return await command.ExecuteScalarAsync();
         }
 
-        public async Task<object> ScalarAsync(string cmdtext, Action<IParams> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(string sql, Action<IParams> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
             Clear();
-            command.CommandText = cmdtext;
+            command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -1169,6 +1249,60 @@ namespace Greatbone.Core
             return this;
         }
 
+        public void Write<C>(C cnt) where C : IContent, ISink
+        {
+            int fc = reader.FieldCount;
+            for (int i = 0; i < fc; i++)
+            {
+                string name = reader.GetName(i);
+                if (reader.IsDBNull(i))
+                {
+                    cnt.PutNull(name);
+                    continue;
+                }
+                var typ = reader.GetFieldType(i);
+                if (typ == typeof(bool))
+                {
+                    cnt.Put(name, reader.GetBoolean(i));
+                }
+                else if (typ == typeof(short))
+                {
+                    cnt.Put(name, reader.GetInt16(i));
+                }
+                else if (typ == typeof(int))
+                {
+                    cnt.Put(name, reader.GetInt32(i));
+                }
+                else if (typ == typeof(long))
+                {
+                    cnt.Put(name, reader.GetInt64(i));
+                }
+                else if (typ == typeof(string))
+                {
+                    cnt.Put(name, reader.GetString(i));
+                }
+                else if (typ == typeof(decimal))
+                {
+                    cnt.Put(name, reader.GetDecimal(i));
+                }
+                else if (typ == typeof(double))
+                {
+                    cnt.Put(name, reader.GetDouble(i));
+                }
+                else if (typ == typeof(DateTime))
+                {
+                    cnt.Put(name, reader.GetDateTime(i));
+                }
+            }
+        }
+
+        public IContent Dump()
+        {
+            var cnt = new FlowContent(512 * 1024);
+            cnt.PutFrom(this);
+            return cnt;
+        }
+
 
         //
         // PARAMETERS
@@ -1555,38 +1689,6 @@ namespace Greatbone.Core
         {
             Put(null, v, proj);
             return this;
-        }
-
-        public void Rollback()
-        {
-            if (transact != null && !transact.IsCompleted)
-            {
-                // indicate disposing the instance 
-                Clear();
-                transact.Rollback();
-                command.Transaction = null;
-                transact = null;
-            }
-        }
-
-        public void Dispose()
-        {
-            if (!disposing)
-            {
-                // indicate disposing the instance 
-                disposing = true;
-                // return to chars pool
-                if (sql != null) BufferUtility.Return(sql);
-                // commit ongoing transaction
-                if (transact != null && !transact.IsCompleted)
-                {
-                    Clear();
-                    transact.Commit();
-                }
-                reader?.Close();
-                command.Transaction = null;
-                connection.Close();
-            }
         }
     }
 }

@@ -624,8 +624,6 @@ namespace Greatbone.Core
 
             object value;
 
-            Exception excep;
-
             internal Cell(object value)
             {
                 this.typ = value.GetType();
@@ -651,35 +649,19 @@ namespace Greatbone.Core
 
             public bool IsAsync => loaderAsync != null;
 
-            public int MaxAge => maxage;
-
-            public Exception Excep => excep;
-
             public object GetValue()
             {
                 if (loader == null) // simple object
                 {
                     return value;
                 }
-
                 lock (loader) // cache object
                 {
                     if (Environment.TickCount >= expiry)
                     {
-                        try
-                        {
-                            value = loader();
-                        }
-                        catch (Exception ex)
-                        {
-                            excep = ex;
-                        }
-                        finally
-                        {
-                            expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
-                        }
+                        value = loader();
+                        expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                     }
-
                     return value;
                 }
             }
@@ -690,25 +672,13 @@ namespace Greatbone.Core
                 {
                     return value;
                 }
-
                 int lexpiry = this.expiry;
                 int ticks = Environment.TickCount;
                 if (ticks >= lexpiry)
                 {
-                    try
-                    {
-                        value = await loaderAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        excep = ex;
-                    }
-                    finally
-                    {
-                        expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
-                    }
+                    value = await loaderAsync();
+                    expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                 }
-
                 return value;
             }
         }

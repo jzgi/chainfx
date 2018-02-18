@@ -58,7 +58,7 @@ namespace Greatbone.Sample
         public async Task add(WebContext wc)
         {
             string orgid = wc[-1];
-            var shop = Obtain<Map<string, Org>>()[orgid];
+            var org = Obtain<Map<string, Org>>()[orgid];
             User prin = (User) wc.Principal;
             string itemname = wc[this];
             string name, city, a, b, tel; // form values
@@ -74,14 +74,14 @@ namespace Greatbone.Sample
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("收货地址");
-                            if (shop.areas != null) // dedicated areas
+                            if (org.areas != null) // dedicated areas
                             {
                                 name = prin.name;
-                                city = shop.city;
+                                city = org.city;
                                 (a, b) = prin.addr.ToDual(SEPCHAR);
                                 tel = prin.tel;
                                 h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                                h.SELECT(nameof(a), a, shop.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
+                                h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
                                 h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             }
                             else // free delivery
@@ -97,7 +97,8 @@ namespace Greatbone.Sample
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        var it = dc.Query1<Item>(dc.Sql("SELECT ").columnlst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2"), p => p.Set(orgid).Set(itemname));
+                        dc.Sql("SELECT ").lst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
+                        var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
                         h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
 
@@ -135,22 +136,23 @@ namespace Greatbone.Sample
                             rev = 1,
                             status = 0,
                             orgid = orgid,
-                            orgname = shop.name,
+                            orgname = org.name,
                             typ = 0, // ordinal order
                             wx = prin.wx,
                             name = name,
                             city = city,
-                            addr = shop.areas == null ? a : a + SEPCHAR + b, // concatenate addr if needed
+                            addr = org.areas == null ? a : a + SEPCHAR + b, // concatenate addr if needed
                             tel = tel,
-                            min = shop.min,
-                            notch = shop.notch,
-                            off = shop.off,
+                            min = org.min,
+                            notch = org.notch,
+                            off = org.off,
                             created = DateTime.Now
                         };
                         o.AddItem(itemname, unit, price, num);
                         o.TotalUp();
                         const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
-                        dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj));
+                        dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
+                        dc.Execute(p => o.Write(p, proj));
                     }
                     wc.GivePane(200, m =>
                     {
@@ -196,7 +198,8 @@ namespace Greatbone.Sample
                 var o = await wc.ReadObjectAsync<Item>(proj);
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE orgid = @1 AND name = @2"), p =>
+                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE orgid = @1 AND name = @2");
+                    dc.Execute(p =>
                     {
                         o.Write(p, proj);
                         p.Set(orgid).Set(name);
@@ -236,36 +239,6 @@ namespace Greatbone.Sample
                     }
                     else wc.Give(500); // internal server error
                 }
-            }
-        }
-
-        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRSTAFF)]
-        public new async Task img(WebContext wc, int ordinal)
-        {
-            string orgid = wc[-2];
-            string name = wc[this];
-            if (wc.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
-                    {
-                        dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) wc.Give(204); // no content 
-                        else wc.Give(200, new StaticContent(byteas));
-                    }
-                    else wc.Give(404); // not found
-                }
-            }
-            else // POST
-            {
-                var f = await wc.ReadAsync<Form>();
-                ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE items SET img" + ordinal + " = @1 WHERE orgid = @2 AND name = @3", p => p.Set(jpeg).Set(orgid).Set(name));
-                }
-                wc.Give(200); // ok
             }
         }
 

@@ -71,8 +71,7 @@ namespace Greatbone.Sample
                 till = f[nameof(till)];
                 using (var dc = NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) 
-                    SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.FINISHED + " AND finished >= @1 AND finished < @2 GROUP BY orgid", p => p.Set(fro).Set(till));
+                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.FINISHED + " AND closed >= @1 AND closed < @2 GROUP BY orgid", p => p.Set(fro).Set(till));
                 }
                 ac.GivePane(200);
             }
@@ -133,7 +132,8 @@ namespace Greatbone.Sample
                             creator = prin.name
                         };
                         const byte proj = 0xff ^ Cash.ID;
-                        dc.Execute(dc.Sql("INSERT INTO cashes")._(ety, proj)._VALUES_(ety, proj), p => ety.Write(p, proj));
+                        dc.Sql("INSERT INTO cashes")._(ety, proj)._VALUES_(ety, proj);
+                        dc.Execute(p => ety.Write(p, proj));
                     }
                 }
             }

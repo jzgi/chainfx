@@ -22,11 +22,9 @@ namespace Greatbone.Sample
         {
         }
 
-        /// <summary>
         /// Returns a home page pertaining to a related city
-        /// </summary>
-//        [City]
-        [User] // we are forced to put check here because weixin auth does't work in iframe
+        /// We are forced to put auth check here because weixin auth does't work in iframe
+        [City, User]
         public void @default(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();
@@ -44,9 +42,9 @@ namespace Greatbone.Sample
                         h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
                         h.BOX_(0x48);
                         h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
-                        h.P_("派送").T(o.delivery);
-                        if (o.areas != null) h.SEP().T("限送").T(o.areas);
-                        h._P();
+//                        h.P_("派送").T(o.delivery);
+//                        if (o.areas != null) h.SEP().T("限送").T(o.areas);
+//                        h._P();
                         h.P(o.schedule, "营业");
                         if (o.off > 0)
                             h.P_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._P();
@@ -117,7 +115,8 @@ namespace Greatbone.Sample
         {
             using (var dc = NewDbContext())
             {
-                dc.Query(dc.Sql("SELECT ").columnlst(Org.Empty).T(" FROM orgs ORDER BY id"));
+                dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs ORDER BY id");
+                dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
                     h.CAPTION_().T(o.name).T(" / ").T(o.id)._CAPTION();
@@ -153,7 +152,8 @@ namespace Greatbone.Sample
                 var o = await ac.ReadObjectAsync<Org>(proj);
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("INSERT INTO orgs")._(Org.Empty, proj)._VALUES_(Org.Empty, proj), p => o.Write(p, proj));
+                    dc.Sql("INSERT INTO orgs")._(Org.Empty, proj)._VALUES_(Org.Empty, proj);
+                    dc.Execute(p => o.Write(p, proj));
                 }
                 ac.GivePane(200); // created
             }

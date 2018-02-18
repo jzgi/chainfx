@@ -56,29 +56,29 @@ namespace Greatbone.Sample
         public void @default(WebContext ac)
         {
             string orgid = ac[this];
-            var shop = Obtain<Map<string, Org>>()[orgid];
-            if (shop == null)
+            var org = Obtain<Map<string, Org>>()[orgid];
+            if (org == null)
             {
                 ac.Give(404, @public: true, maxage: 3600);
                 return;
             }
-            ac.Register(shop);
+            ac.Register(org);
 
             using (var dc = NewDbContext())
             {
-                var items = dc.Query<Item>(dc.Sql("SELECT ").columnlst(Item.Empty, 0xff).T(", (img1 IS NOT NULL AND img2 IS NOT NULL AND img3 IS NOT NULL AND img4 IS NOT NULL) AS imgg FROM items WHERE orgid = @1 AND status > 0 ORDER BY status DESC"), p => p.Set(orgid), 0xff);
+                var items = dc.Query<Item>("SELECT * FROM items WHERE orgid = @1 AND status > 0 ORDER BY status DESC", p => p.Set(orgid), 0xff);
                 ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().A_DROPDOWN_("正在" + Org.Statuses[shop.status]);
+                    m.TOPBAR_().A_DROPDOWN_("正在" + Org.Statuses[org.status]);
                     m.BOX_(0x4c);
-                    m.P(shop.schedule, "营业");
-                    m.P_("派送").T(shop.delivery);
-                    if (shop.areas != null) m.SEP().T("限送").T(shop.areas);
-                    m._P();
-                    if (shop.off > 0) m.P_("优惠").T(shop.min).T("元起订，每满").T(shop.notch).T("元立减").T(shop.off).T("元")._P();
+                    m.P(org.schedule, "营业");
+//                    m.P_("派送").T(org.delivery);
+//                    if (org.areas != null) m.SEP().T("限送").T(org.areas);
+//                    m._P();
+                    if (org.off > 0) m.P_("优惠").T(org.min).T("元起订，每满").T(org.notch).T("元立减").T(org.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x15);
-                    if (shop.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + shop.oprtel + "#mp.weixin.qq.com", true)._FIELD();
+                    if (org.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._FIELD();
                     m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
@@ -87,15 +87,11 @@ namespace Greatbone.Sample
                         h.CAPTION(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(0x48).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
-                        if (o.imgg)
-                        {
-                            h.THUMBNAIL(o.name + "/img-1", box: 3).THUMBNAIL(o.name + "/img-2", box: 3).THUMBNAIL(o.name + "/img-3", box: 3).THUMBNAIL(o.name + "/img-4", box: 3);
-                        }
                         h.TAIL();
                         // adjust item availability
-                        if (shop.status == 0) o.stock = 0;
+                        if (org.status == 0) o.stock = 0;
                     });
-                }, true, 60, shop.name);
+                }, true, 60, org.name);
             }
         }
     }
@@ -115,7 +111,8 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Org>(dc.Sql("SELECT ").columnlst(Org.Empty, proj).T(" FROM orgs WHERE id = @1"), p => p.Set(orgid), proj);
+                    dc.Sql("SELECT ").lst(Org.Empty, proj).T(" FROM orgs WHERE id = @1");
+                    var o = dc.Query1<Org>(p => p.Set(orgid), proj);
                     ac.GivePane(200, m =>
                     {
                         m.FORM_();
@@ -133,7 +130,8 @@ namespace Greatbone.Sample
                 var o = await ac.ReadObjectAsync<Org>(proj);
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("UPDATE orgs")._SET_(Org.Empty, proj ^ Org.ID).T(" WHERE id = @1"), p =>
+                    dc.Sql("UPDATE orgs")._SET_(Org.Empty, proj ^ Org.ID).T(" WHERE id = @1");
+                    dc.Execute(p =>
                     {
                         o.Write(p, proj ^ Org.ID);
                         p.Set(orgid);

@@ -16,46 +16,24 @@ namespace Greatbone.Sample
         {
             CreateVar<GospelVarWork, string>(obj => ((Org) obj).id); // subshop
 
-            Create<PubOrgWork>("shop"); // personal
+            Create<PubOrgWork>("org"); // personal
 
             Create<MyWork>("my"); // personal
 
-            Create<OprWork>("opr"); // shop operator
+            Create<OprWork>("opr"); // org operator
 
             Create<AdmWork>("adm"); // administrator
 
-            Register(delegate
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Query("SELECT DISTINCT lesson FROM slides WHERE status > 0 ORDER BY lesson");
-                        Roll<string> roll = new Roll<string>(32);
-                        while (dc.Next())
-                        {
-                            dc.Let(out string v);
-                            roll.Add(v);
-                        }
-                        return roll.ToArray();
-                    }
-                }, 3600 * 8);
-
-            Register(delegate
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        return dc.Query<string, Org>(dc.Sql("SELECT ").columnlst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id"), proj: 0xff);
-                    }
-                }, 3600 * 8);
-        }
-
-        public override void OnStart()
-        {
             City.All = DataUtility.FileToMap<string, City>(GetFilePath("$cities.json"));
-        }
 
-        public override void OnStop()
-        {
-            City.All = null;
+            Register(delegate
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
+                        return dc.Query<string, Org>(proj: 0xff);
+                    }
+                }, 3600 * 8);
         }
 
         public async Task<bool> AuthenticateAsync(WebContext ac, bool e)

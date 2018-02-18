@@ -144,7 +144,7 @@ namespace Greatbone.Sample
     }
 
     /// <summary>
-    /// The working folder of shop operators.
+    /// The working folder of org operators.
     /// </summary>
     [Ui("常规"), User(OPR)]
     public class OprVarWork : Work, IShopVar
@@ -181,10 +181,10 @@ namespace Greatbone.Sample
 
                 h.CARD_();
                 h.CAPTION(o.name, Statuses[o.status], o.status == 2);
-                h.FIELD(o.schedule, "时间");
-                h.FIELD_("派送").T(o.delivery);
-                if (o.areas != null) h._T("限送").T(o.areas);
-                h._FIELD();
+                h.FIELD(o.schedule, "营业");
+//                h.FIELD_("派送").T(o.delivery);
+//                if (o.areas != null) h._T("限送").T(o.areas);
+//                h._FIELD();
                 h.FIELD_("计价").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
@@ -262,8 +262,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.TEXT(nameof(o.schedule), o.schedule, "时间");
-                    h.TEXT(nameof(o.delivery), o.delivery, "派送");
+                    h.TEXT(nameof(o.schedule), o.schedule, "营业");
                     h.TEXTAREA(nameof(o.areas), o.areas, "限送");
                     h.NUMBER(nameof(o.min), o.min, "起订", box: 4).NUMBER(nameof(o.notch), o.notch, "满额", box: 4).NUMBER(nameof(o.off), o.off, "扣减", box: 4);
                     h._FORM();
@@ -273,7 +272,6 @@ namespace Greatbone.Sample
             {
                 var f = await ac.ReadAsync<Form>();
                 o.schedule = f[nameof(o.schedule)];
-                o.delivery = f[nameof(o.delivery)];
                 string v = f[nameof(o.areas)];
                 o.areas = v.Split(CRLF, StringSplitOptions.RemoveEmptyEntries);
                 o.min = f[nameof(o.min)];
@@ -281,8 +279,8 @@ namespace Greatbone.Sample
                 o.off = f[nameof(o.off)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orgs SET schedule = @1, delivery = @2, areas = @3, min = @4, notch = @5, off = @6 WHERE id = @7",
-                        p => p.Set(o.schedule).Set(o.delivery).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(orgid));
+                    dc.Execute("UPDATE orgs SET schedule = @1, areas = @2, min = @3, notch = @4, off = @5 WHERE id = @6",
+                        p => p.Set(o.schedule).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(orgid));
                 }
                 ac.GivePane(200);
             }

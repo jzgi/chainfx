@@ -50,7 +50,7 @@ namespace Greatbone.Sample
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND wx = @3", p => p.Set(msgs).Set(orgid).Set(wx));
                     }
                 }
-                await WeiXinUtility.PostSendAsync(wx, "【商家消息】" + prin.name + "：" + text + "（http://shop.144000.tv/pub/" + orgid + "/）");
+                await WeiXinUtility.PostSendAsync(wx, "【商家消息】" + prin.name + "：" + text + "（http://144000.tv/org/" + orgid + "/）");
                 wc.GivePane(200);
             }
         }

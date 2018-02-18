@@ -21,7 +21,7 @@ namespace Greatbone.Sample
         {
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").columnlst(User.Empty).T(" FROM users WHERE opr > 0 ORDER BY city LIMIT 20 OFFSET @1");
+                dc.Sql("SELECT ").lst(User.Empty).T(" FROM users WHERE opr > 0 ORDER BY city LIMIT 20 OFFSET @1");
                 dc.Query(p => p.Set(page * 20));
                 ac.GiveSheetPage(200, dc.ToArray<User>(),
                     h => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),

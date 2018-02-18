@@ -41,7 +41,7 @@ namespace Greatbone.Sample
                     }
                 }
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr.ToString(), NETADDR + "/shop/paynotify", "粗粮达人-健康产品");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr.ToString(), NETADDR + "/org/paynotify", "粗粮达人-健康产品");
             if (prepay_id != null)
             {
                 ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
@@ -251,10 +251,10 @@ namespace Greatbone.Sample
                         }
                         m._SELECT();
                         // input addr
-                        var shop = Obtain<Map<string, Org>>()[orgid];
-                        if (shop.areas != null)
+                        var org = Obtain<Map<string, Org>>()[orgid];
+                        if (org.areas != null)
                         {
-                            m.SELECT(nameof(addr), addr, shop.areas, "区域");
+                            m.SELECT(nameof(addr), addr, org.areas, "区域");
                         }
                         else
                         {
@@ -351,7 +351,7 @@ namespace Greatbone.Sample
                 mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = NewDbContext(ReadCommitted))
                 {
-                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", finished = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
+                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", closed = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
                     {
                         var o = dc.ToObject<Order>();
                         if (mycart) // deduce my cart loads

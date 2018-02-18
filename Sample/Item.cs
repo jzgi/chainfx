@@ -9,16 +9,14 @@ namespace Greatbone.Sample
     {
         public static readonly Item Empty = new Item();
 
-        public const byte PK = 1, LATER = 4, IMGG = 0x20;
-
-        public const short OFF = 0, ON = 1, HOT = 2;
+        public const byte PK = 1, LATER = 2;
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {OFF, "下架"},
-            {ON, "上架"},
-            {HOT, "推荐"},
+            {0, "下架"},
+            {1, "上架"},
+            {2, "推荐"},
         };
 
         internal string orgid;
@@ -28,10 +26,8 @@ namespace Greatbone.Sample
         internal decimal price;
         internal short min;
         internal short step;
-        internal short stock; // remaining capacity
+        internal short stock;
         internal short status;
-
-        internal bool imgg;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -47,10 +43,6 @@ namespace Greatbone.Sample
             s.Get(nameof(step), ref step);
             s.Get(nameof(stock), ref stock);
             s.Get(nameof(status), ref status);
-            if ((proj & IMGG) == IMGG)
-            {
-                s.Get(nameof(imgg), ref imgg);
-            }
         }
 
         public void Write(ISink s, byte proj = 0x0f)

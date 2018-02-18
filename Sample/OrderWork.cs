@@ -49,7 +49,7 @@ namespace Greatbone.Sample
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                m.ICON("/shop/" + o.orgid + "/" + oi.name + "/icon", box: 2);
+                                m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", box: 2);
                                 m.BOX_(0x46).P(oi.name).P(oi.price, fix: "¥")._BOX();
                                 m.BOX_(0x42).P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
                                 m.BOX_(0x42).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
@@ -116,21 +116,22 @@ namespace Greatbone.Sample
             string orgid = ac[-1];
             using (var dc = NewDbContext())
             {
-                var shop = Obtain<Map<string, Org>>()[orgid];
+                var org = Obtain<Map<string, Org>>()[orgid];
                 var o = new Order
                 {
                     rev = 1,
                     status = 0,
                     orgid = orgid,
-                    orgname = shop.name,
+                    orgname = org.name,
                     typ = POS,
-                    min = shop.min,
-                    notch = shop.notch,
-                    off = shop.off,
+                    min = org.min,
+                    notch = org.notch,
+                    off = org.off,
                     created = DateTime.Now
                 };
                 const byte proj = 0xff ^ KEY ^ Order.LATER;
-                dc.Execute(dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj), p => o.Write(p, proj), false);
+                dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
+                dc.Execute(p => o.Write(p, proj), false);
             }
             ac.GiveRedirect();
         }
@@ -144,7 +145,8 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("DELETE FROM orders WHERE orgid = @1 AND id")._IN_(key), p => p.Set(orgid), false);
+                    dc.Sql("DELETE FROM orders WHERE orgid = @1 AND id")._IN_(key);
+                    dc.Execute(p => p.Set(orgid), false);
                 }
             }
             ac.GiveRedirect();
@@ -248,7 +250,8 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key), prepare: false);
+                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
+                    dc.Execute(prepare: false);
                 }
                 ac.GivePane(200);
             }
@@ -289,7 +292,8 @@ namespace Greatbone.Sample
             long[] key = ac.Query[nameof(key)];
             using (var dc = NewDbContext())
             {
-                dc.Execute(dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key));
+                dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
+                dc.Execute();
             }
             ac.GiveRedirect();
         }
@@ -304,42 +308,11 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute(dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND orgid = @1 AND id")._IN_(key), p => p.Set(orgid), prepare: false);
+                    dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND orgid = @1 AND id")._IN_(key);
+                    dc.Execute(p => p.Set(orgid), prepare: false);
                 }
             }
             ac.GiveRedirect();
-        }
-    }
-
-    [Ui("反馈")]
-    [User(adm: true)]
-    public class AdmKickWork : OrderWork<AdmKickVarWork>
-    {
-        public AdmKickWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        public void @default(WebContext ac, int page)
-        {
-            using (var dc = NewDbContext())
-            {
-                dc.Query("SELECT * FROM orders WHERE status > 0 AND kick IS NOT NULL ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(page * 20));
-                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
-                {
-                    h.CAPTION_().T("#")._T(o.id).SEP().T(o.paid)._CAPTION();
-                    if (o.name != null)
-                    {
-                        //                        h.FIELD(o.name, "姓名", box: 6).FIELD(o.city, "城市", box: 6);
-                    }
-                    h.BOX_().T(o.tel)._T(o.addr)._BOX();
-                    for (int i = 0; i < o.items.Length; i++)
-                    {
-                        var it = o.items[i];
-                        h.FIELD(it.name, box: 4).FIELD(it.price, box: 4).FIELD(it.qty, fix: it.unit, box: 4);
-                    }
-                    h.FIELD(o.total, "总价");
-                }, false, 3);
-            }
         }
     }
 }

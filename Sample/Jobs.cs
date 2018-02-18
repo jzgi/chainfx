@@ -25,13 +25,9 @@ namespace Greatbone.Sample
         {
             Create<AdmOprWork>("opr");
 
-            Create<AdmOrgWork>("shop");
+            Create<AdmOrgWork>("org");
 
             Create<AdmRepayWork>("repay");
-
-            Create<AdmKickWork>("kick");
-
-            Create<AdmSlideWork>("lesson");
         }
 
         public void @default(WebContext ac)

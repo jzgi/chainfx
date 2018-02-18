@@ -22,7 +22,6 @@ namespace Greatbone.Sample
         internal double x;
         internal double y;
         internal string schedule;
-        internal string delivery;
         internal string[] areas;
         internal decimal min;
         internal decimal notch;
@@ -49,7 +48,6 @@ namespace Greatbone.Sample
             if ((proj & NORM) == NORM)
             {
                 s.Get(nameof(schedule), ref schedule);
-                s.Get(nameof(delivery), ref delivery);
                 s.Get(nameof(areas), ref areas);
                 s.Get(nameof(min), ref min);
                 s.Get(nameof(notch), ref notch);
@@ -81,7 +79,6 @@ namespace Greatbone.Sample
             if ((proj & NORM) == NORM)
             {
                 s.Put(nameof(schedule), schedule);
-                s.Put(nameof(delivery), delivery);
                 s.Put(nameof(areas), areas);
                 s.Put(nameof(min), min);
                 s.Put(nameof(notch), notch);
