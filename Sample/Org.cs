@@ -17,11 +17,11 @@ namespace Greatbone.Sample
 
         internal string id;
         internal string name;
+        internal string descr;
         internal string city;
         internal string addr;
         internal double x;
         internal double y;
-        internal string schedule;
         internal string[] areas;
         internal decimal min;
         internal decimal notch;
@@ -40,6 +40,7 @@ namespace Greatbone.Sample
             {
                 if ((proj & ID) == ID) s.Get(nameof(id), ref id);
                 s.Get(nameof(name), ref name);
+                s.Get(nameof(descr), ref descr);
                 s.Get(nameof(city), ref city);
                 s.Get(nameof(addr), ref addr);
                 s.Get(nameof(x), ref x);
@@ -47,7 +48,6 @@ namespace Greatbone.Sample
             }
             if ((proj & NORM) == NORM)
             {
-                s.Get(nameof(schedule), ref schedule);
                 s.Get(nameof(areas), ref areas);
                 s.Get(nameof(min), ref min);
                 s.Get(nameof(notch), ref notch);
@@ -71,6 +71,7 @@ namespace Greatbone.Sample
             {
                 if ((proj & ID) == ID) s.Put(nameof(id), id);
                 s.Put(nameof(name), name);
+                s.Put(nameof(descr), descr);
                 s.Put(nameof(city), city);
                 s.Put(nameof(addr), addr);
                 s.Put(nameof(x), x);
@@ -78,7 +79,6 @@ namespace Greatbone.Sample
             }
             if ((proj & NORM) == NORM)
             {
-                s.Put(nameof(schedule), schedule);
                 s.Put(nameof(areas), areas);
                 s.Put(nameof(min), min);
                 s.Put(nameof(notch), notch);

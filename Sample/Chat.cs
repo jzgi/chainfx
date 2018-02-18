@@ -15,17 +15,17 @@ namespace Greatbone.Sample
         internal ChatMsg[] msgs;
         internal DateTime quested;
 
-        public void Read(ISource i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(orgid), ref orgid);
-            i.Get(nameof(wx), ref wx);
-            i.Get(nameof(quested), ref quested);
-            i.Get(nameof(msgs), ref msgs);
+            s.Get(nameof(orgid), ref orgid);
+            s.Get(nameof(wx), ref wx);
+            s.Get(nameof(quested), ref quested);
+            s.Get(nameof(msgs), ref msgs);
         }
 
         public const int NUM = 6;
 
-        public void Write(ISink o, byte proj = 0x0f)
+        public void Write(ISink s, byte proj = 0x0f)
         {
             if (msgs != null && msgs.Length > 0)
             {
@@ -34,7 +34,7 @@ namespace Greatbone.Sample
                 for (int i = start; i < msgs.Length; i++)
                 {
                     ChatMsg msg = msgs[i];
-                    o.Put(nameof(msg.name), msg.text);
+                    s.Put(nameof(msg.name), msg.text);
                 }
             }
         }
@@ -43,19 +43,18 @@ namespace Greatbone.Sample
     public struct ChatMsg : IData
     {
         internal string name;
-
         internal string text;
 
-        public void Read(ISource i, byte proj = 0x0f)
+        public void Read(ISource s, byte proj = 0x0f)
         {
-            i.Get(nameof(name), ref name);
-            i.Get(nameof(text), ref text);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(text), ref text);
         }
 
-        public void Write(ISink o, byte proj = 0x0f)
+        public void Write(ISink s, byte proj = 0x0f)
         {
-            o.Put(nameof(name), name);
-            o.Put(nameof(text), text);
+            s.Put(nameof(name), name);
+            s.Put(nameof(text), text);
         }
     }
 }

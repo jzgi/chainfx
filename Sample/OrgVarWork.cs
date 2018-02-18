@@ -49,7 +49,7 @@ namespace Greatbone.Sample
     {
         public PubOrgVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampVarVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<SampVarVarWork, string>(obj => ((Item)obj).name);
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
@@ -71,10 +71,12 @@ namespace Greatbone.Sample
                 {
                     m.TOPBAR_().A_DROPDOWN_("正在" + Org.Statuses[org.status]);
                     m.BOX_(0x4c);
-                    m.P(org.schedule, "营业");
-//                    m.P_("派送").T(org.delivery);
-//                    if (org.areas != null) m.SEP().T("限送").T(org.areas);
-//                    m._P();
+                    m.P(org.descr, "简介");
+                    m.P_("地址").T(org.city)._T(org.addr)._P();
+                    if (org.areas != null)
+                    {
+                        m.P_("限送").T(org.areas)._P();
+                    }
                     if (org.off > 0) m.P_("优惠").T(org.min).T("元起订，每满").T(org.notch).T("元立减").T(org.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x15);
@@ -118,6 +120,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         m.FIELD(o.id, "编号");
                         m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                        m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 40, required: true);
                         m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                         m.NUMBER(nameof(o.x), o.x, "经度", box: 6).NUMBER(nameof(o.x), o.x, "纬度", box: 6);

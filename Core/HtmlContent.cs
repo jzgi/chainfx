@@ -1730,9 +1730,12 @@ namespace Greatbone.Core
                 Add(tip);
                 Add("\"");
             }
-            Add(" min=\"");
-            AddPrimitive(min);
-            Add("\"");
+            if (!min.Equals(default(V)))
+            {
+                Add(" min=\"");
+                AddPrimitive(min);
+                Add("\"");
+            }
             if (!max.Equals(default(V)))
             {
                 Add(" max=\"");

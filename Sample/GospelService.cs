@@ -14,7 +14,7 @@ namespace Greatbone.Sample
     {
         public GospelService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<GospelVarWork, string>(obj => ((Org) obj).id); // subshop
+            CreateVar<GospelVarWork, string>(obj => ((Org)obj).id); // subshop
 
             Create<PubOrgWork>("org"); // personal
 
@@ -27,13 +27,13 @@ namespace Greatbone.Sample
             City.All = DataUtility.FileToMap<string, City>(GetFilePath("$cities.json"));
 
             Register(delegate
+            {
+                using (var dc = NewDbContext())
                 {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
-                        return dc.Query<string, Org>(proj: 0xff);
-                    }
-                }, 3600 * 8);
+                    dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
+                    return dc.Query<string, Org>(proj: 0xff);
+                }
+            }, 3600 * 8);
         }
 
         public async Task<bool> AuthenticateAsync(WebContext ac, bool e)
@@ -69,7 +69,7 @@ namespace Greatbone.Sample
                     }
                     else
                     {
-                        prin = new User {wx = openid}; // create a minimal principal object
+                        prin = new User { wx = openid }; // create a minimal principal object
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace Greatbone.Sample
 
             ac.GivePage(200, m =>
             {
-                m.T("<h1>关于天国的事实真相</h1>");
+                m.T("<h1>事实真相</h1>");
                 using (var dc = NewDbContext())
                 {
                     for (int i = 0; i < lessons?.Length; i++)

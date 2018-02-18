@@ -1222,8 +1222,8 @@ button.button {
 [data-whatinput='mouse'] .button { outline: 0; }
 
 .button:hover, .button:focus {
-    background-color: midnightblue;
-    color: #fcfcfc;
+    background-color: black;
+    color: gainsboro;
 }
 
 .button.tiny { font-size: 0.6rem; }
@@ -1245,7 +1245,7 @@ button.button {
 }
 
 .button.primary:hover, .button.primary:focus {
-    background-color: midnightblue;
+    background-color: black;
     color: gainsboro;
 }
 
@@ -1370,7 +1370,7 @@ button.button {
 }
 
 .button.hollow {
-    border: 1px solid darkgray;
+    border: 1px solid darkblue;
     color: darkblue;
 }
 
@@ -1379,28 +1379,28 @@ button.button {
 .button.hollow.disabled, .button.hollow.disabled:hover, .button.hollow.disabled:focus, .button.hollow[disabled], .button.hollow[disabled]:hover, .button.hollow[disabled]:focus { background-color: transparent; }
 
 .button.hollow:hover, .button.hollow:focus {
-    border-color: darkblue;
-    color: darkblue;
+    border-color: black;
+    color: black;
 }
 
 .button.hollow:hover.disabled, .button.hollow:hover[disabled], .button.hollow:focus.disabled, .button.hollow:focus[disabled] {
-    border: 1px solid darkgray;
-    color: darkblue;
+    border: 1px solid black;
+    color: black;
 }
 
 .button.hollow.primary {
-    border: 1px solid darkgray;
+    border: 1px solid darkblue;
     color: darkblue;
 }
 
 .button.hollow.primary:hover, .button.hollow.primary:focus {
-    border-color: darkblue;
-    color: darkblue;
+    border-color: black;
+    color: black;
 }
 
 .button.hollow.primary:hover.disabled, .button.hollow.primary:hover[disabled], .button.hollow.primary:focus.disabled, .button.hollow.primary:focus[disabled] {
-    border: 1px solid darkgray;
-    color: darkblue;
+    border: 1px solid black;
+    color: black;
 }
 
 .button.hollow.alert {
@@ -2659,7 +2659,7 @@ input:checked + label > .switch-inactive { display: none; }
 
 .tabs {
     margin: 0;
-    background: gainsboro;
+    background: lightgray;
     list-style-type: none;
 }
 
