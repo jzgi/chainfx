@@ -49,7 +49,7 @@ namespace Greatbone.Sample
     {
         public PubOrgVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampVarVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
@@ -79,8 +79,8 @@ namespace Greatbone.Sample
                     }
                     if (org.off > 0) m.P_("优惠").T(org.min).T("元起订，每满").T(org.notch).T("元立减").T(org.off).T("元")._P();
                     m._BOX();
-                    m.QRCODE(NETADDR + ac.Uri, box: 0x15);
-                    if (org.oprtel != null) m.FIELD_(box: 0x17).A("&#128222; 联系客服", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._FIELD();
+                    m.QRCODE(NETADDR + ac.Uri, box: 0x14);
+                    m.BOX_(box: 0x18).TOOL("msg").A("&#128222; 客服电话", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._BOX();
                     m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
@@ -94,6 +94,23 @@ namespace Greatbone.Sample
                         if (org.status == 0) o.stock = 0;
                     });
                 }, true, 60, org.name);
+            }
+        }
+
+        [Ui("发送消息"), Tool(AnchorOpen)]
+        public void msg(WebContext ac)
+        {
+            string orgid = ac[this];
+            var org = Obtain<Map<string, Org>>()[orgid];
+            if (org == null)
+            {
+                ac.Give(404, @public: true, maxage: 3600);
+                return;
+            }
+            using (var dc = NewDbContext())
+            {
+                dc.Query1();
+
             }
         }
     }
@@ -120,7 +137,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         m.FIELD(o.id, "编号");
                         m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                        m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 40, required: true);
+                        m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                         m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                         m.NUMBER(nameof(o.x), o.x, "经度", box: 6).NUMBER(nameof(o.x), o.x, "纬度", box: 6);

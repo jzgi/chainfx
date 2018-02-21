@@ -48,9 +48,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class SampVarVarWork : ItemVarWork
+    public class PubItemVarWork : ItemVarWork
     {
-        public SampVarVarWork(WorkConfig cfg) : base(cfg)
+        public PubItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

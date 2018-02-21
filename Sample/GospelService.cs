@@ -14,7 +14,7 @@ namespace Greatbone.Sample
     {
         public GospelService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<GospelVarWork, string>(obj => ((Org)obj).id); // subshop
+            CreateVar<GospelVarWork, string>(obj => ((Org) obj).id); // subshop
 
             Create<PubOrgWork>("org"); // personal
 
@@ -26,14 +26,17 @@ namespace Greatbone.Sample
 
             City.All = DataUtility.FileToMap<string, City>(GetFilePath("$cities.json"));
 
+            Register(() => DataUtility.FileToArray<Episode>(GetFilePath("$episodes.json")), 3600 * 8);
+
             Register(delegate
-            {
-                using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
-                    return dc.Query<string, Org>(proj: 0xff);
-                }
-            }, 3600 * 8);
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
+                        return dc.Query<string, Org>(proj: 0xff);
+                    }
+                }, 3600 * 8
+            );
         }
 
         public async Task<bool> AuthenticateAsync(WebContext ac, bool e)
@@ -69,7 +72,7 @@ namespace Greatbone.Sample
                     }
                     else
                     {
-                        prin = new User { wx = openid }; // create a minimal principal object
+                        prin = new User {wx = openid}; // create a minimal principal object
                     }
                 }
             }
@@ -145,21 +148,20 @@ namespace Greatbone.Sample
         }
 
         /// <summary>
-        /// The home page that lists gospel lessons.
+        /// The home page that lists gospel episodes.
         /// </summary>
         public void @default(WebContext ac)
         {
-            var lessons = Obtain<string[]>();
+            var epis = Obtain<Episode[]>();
 
             ac.GivePage(200, m =>
             {
                 m.T("<h1>事实真相</h1>");
                 using (var dc = NewDbContext())
                 {
-                    for (int i = 0; i < lessons?.Length; i++)
+                    for (int i = 0; i < epis?.Length; i++)
                     {
                         m.T("<div class=\"card\">");
-                        m.T(lessons[i]);
                         m.T("</div>");
                     }
                 }

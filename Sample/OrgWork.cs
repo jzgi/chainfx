@@ -141,7 +141,7 @@ namespace Greatbone.Sample
                     m.FORM_();
                     m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
                     m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                    m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 40, required: true);
+                    m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                     m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                     m.NUMBER(nameof(o.x), o.x, "经度", max: 20, box: 6).NUMBER(nameof(o.x), o.x, "纬度", max: 20, box: 6);

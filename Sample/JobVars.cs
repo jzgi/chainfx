@@ -181,11 +181,9 @@ namespace Greatbone.Sample
 
                 h.CARD_();
                 h.CAPTION(o.name, Statuses[o.status], o.status == 2);
-                h.FIELD(o.descr, "营业");
-                //                h.FIELD_("派送").T(o.delivery);
-                //                if (o.areas != null) h._T("限送").T(o.areas);
-                //                h._FIELD();
-                h.FIELD_("计价").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
+                h.FIELD(o.descr, "简介");
+                h.FIELD_("限送").T(o.areas)._FIELD();
+                h.FIELD_("活动").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
                 h.TAIL();
@@ -262,7 +260,7 @@ namespace Greatbone.Sample
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.TEXT(nameof(o.descr), o.descr, "简介");
+                    h.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                     h.TEXTAREA(nameof(o.areas), o.areas, "限送");
                     h.NUMBER(nameof(o.min), o.min, "起订", box: 4).NUMBER(nameof(o.notch), o.notch, "满额", box: 4).NUMBER(nameof(o.off), o.off, "立减", box: 4);
                     h._FORM();
