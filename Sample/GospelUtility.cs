@@ -183,27 +183,27 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.BOARDVIEW(arr, cell);
+                    main.DATAGRID(arr, cell);
                 },
                 @public, maxage, title
             );
         }
 
-        public static void GiveBoardPage<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveBoardPage<D>(this WebContext wc, int status, D[] arr, Action<HtmlContent, D> card, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
-            ac.GivePage(status,
+            wc.GivePage(status,
                 main =>
                 {
                     main.TOOLBAR();
-                    main.BOARDVIEW(arr, cell);
+                    main.DATAGRID(arr, card);
                 },
                 @public, maxage, title
             );
         }
 
-        public static void GiveSheetPage<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveSheetPage<D>(this WebContext wc, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
-            ac.GivePage(status,
+            wc.GivePage(status,
                 main =>
                 {
                     main.TOOLBAR();

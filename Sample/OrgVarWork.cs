@@ -84,12 +84,12 @@ namespace Greatbone.Sample
                     m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
-                    m.BOARDVIEW(items, (h, o) =>
+                    m.DATAGRID(items, (h, o) =>
                     {
-                        h.CAPTION(o.name);
+                        h.HEADER(o.name);
                         h.ICON((o.name) + "/icon", box: 4);
                         h.BOX_(0x48).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
-                        h.TAIL();
+                        h.FOOTER();
                         // adjust item availability
                         if (org.status == 0) o.stock = 0;
                     });

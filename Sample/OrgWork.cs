@@ -36,9 +36,9 @@ namespace Greatbone.Sample
             ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
-                    m.BOARDVIEW(orgs.All(x => x.city == city), (h, o) =>
+                    m.DATAGRID(orgs.All(x => x.city == city), (h, o) =>
                     {
-                        h.CAPTION_().T(o.name)._CAPTION(Org.Statuses[o.status], o.status == 2);
+                        h.HEADER_().T(o.name)._HEADER(Org.Statuses[o.status], o.status == 2);
                         h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
                         h.BOX_(0x48);
                         h.P(o.descr, "简介");
@@ -49,7 +49,7 @@ namespace Greatbone.Sample
                             h.FIELD_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                         }
                         h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
-                        h.TAIL();
+                        h.FOOTER();
                     });
                 }, true, 60, "粗狼达人 - " + city);
         }
@@ -118,12 +118,12 @@ namespace Greatbone.Sample
                 dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
-                    h.CAPTION_().T(o.name).T(" / ").T(o.id)._CAPTION();
+                    h.HEADER_().T(o.name).T(" / ").T(o.id)._HEADER();
                     h.FIELD(o.descr, "简介");
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
                     h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-                    h.TAIL();
+//                    h.TAIL();
                 });
             }
         }

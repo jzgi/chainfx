@@ -32,7 +32,7 @@ namespace Greatbone.Core
 
         public string Directory { get; internal set; }
 
-        // to obtain a string key from a data object.
+        // to obtain a string key from a model object.
         public Delegate Keyer { get; internal set; }
 
         public string GetFilePath(string file)

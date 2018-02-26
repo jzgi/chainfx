@@ -27,13 +27,13 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
-                wc.GiveBoardPage(200, dc.ToArray<Item>(), (h, o) =>
+                wc.GiveBoardPage(200, dc.ToArray<Item>(), (h,o) =>
                 {
-                    h.CAPTION(o.name, Item.Statuses[o.status], o.status >= 1);
+                    h.HEADER(o.name, Item.Statuses[o.status], o.status >= 1);
                     h.ICON(o.name + "/icon", box: 3);
                     h.BOX_(0x49).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
                     h.FIELD(o.unit, "单位", box: 3).FIELD(o.min, "起订", box: 3).FIELD(o.step, "递增", box: 3).FIELD(o.stock, "存量", box: 3);
-                    h.TAIL();
+                    h.FOOTER();
                 });
             }
         }

@@ -13,7 +13,7 @@ namespace Greatbone.Core
         int ordinal;
 
         // data model current in output
-        IData model;
+        object model;
 
         public HtmlContent(WebContext webCtx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
         {
@@ -1334,19 +1334,19 @@ namespace Greatbone.Core
             return this;
         }
 
-        public void PAGENATE(int count)
+        public void PAGENATION(int count)
         {
             // pagination
             Procedure prc = webCtx.Procedure;
             if (prc.HasSubscript)
             {
-                Add("<ul class=\"pagination\" role=\"navigation\">");
+                Add("<ul class=\"uk-pagination uk-flex-center\">");
                 int subscpt = webCtx.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)
                     {
-                        Add("<li class=\"current\">");
+                        Add("<li class=\"uk-active\">");
                         Add(i + 1);
                         Add("</li>");
                     }
@@ -1381,8 +1381,7 @@ namespace Greatbone.Core
         {
             Work work = webCtx.Work;
             Work varwork = work.varwork;
-            Add("<main class=\"sheet-view table-scroll);\">");
-            Add("<table>");
+            Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             Procedure[] prcs = varwork?.Tooled;
 
             if (head != null)
@@ -1432,60 +1431,86 @@ namespace Greatbone.Core
             }
             Add("</table>");
             // pagination controls if any
-            PAGENATE(arr?.Length ?? 0);
-            Add("</main>");
+            PAGENATION(arr?.Length ?? 0);
         }
 
         public void BOARDVIEW(params Action<HtmlContent>[] cards)
         {
-            BOARDVIEW_();
+            DATAGRID_();
             for (int i = 0; i < cards.Length; i++)
             {
                 CARD_();
                 cards[i](this);
                 _CARD();
             }
-            _BOARDVIEW();
+            _DATAGRID();
         }
 
-        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void DATAGRID<D>(D[] arr, Action<HtmlContent,D> card) where D : IData
         {
-            BOARDVIEW_();
+            DATAGRID_();
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    CARD_(obj);
+                    CARD_();
                     card(this, obj);
                     _CARD();
                 }
             }
             // pagination if any
-            _BOARDVIEW(arr?.Length ?? 0);
+            _DATAGRID(arr?.Length ?? 0);
         }
 
-        public HtmlContent BOARDVIEW_()
+        public HtmlContent DATAGRID_()
         {
-            Add("<main class=\"board-view grid-x small-up-1 medium-up-2 large-up-3 xlarge-up-4\">");
+            Add("<main class=\"uk-grid-small uk-grid-match uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\" uk-grid>");
             ordinal = 0;
             model = null;
             return this;
         }
 
-        public HtmlContent _BOARDVIEW(int count = 0)
+        public HtmlContent _DATAGRID(int count = 0)
         {
             Add("</main>");
             ordinal = 0;
-            PAGENATE(count);
+            PAGENATION(count);
+            return this;
+        }
+
+        public HtmlContent CARD<D>(D obj,  Action<D> card, char style = (char)0)
+        {
+            Add("<form class=\"uk-card");
+            if (style == 'd')
+            {
+                Add(" uk-card-default");
+            }
+            else if (style == 'p')
+            {
+                Add(" uk-card-primary");
+            }
+            else if (style == 's')
+            {
+                Add(" uk-card-secondary");
+            }
+            Add("\" id=\"card-");
+
+            Add(++ordinal);
+            Add("\">");
+            if (obj != null)
+            {
+                model = obj;
+                card(obj);
+            }
             return this;
         }
 
         public HtmlContent CARD_(IData obj = null)
         {
-            Add("<form class=\"cell board-view-cell\" id=\"card-");
+            Add("<form class=\"uk-card uk-card-default\" id=\"card-");
             Add(++ordinal);
-            Add("\"><article class=\"grid-x card\">");
+            Add("\">");
             if (obj != null)
             {
                 model = obj;
@@ -1495,23 +1520,22 @@ namespace Greatbone.Core
 
         public HtmlContent _CARD()
         {
-            Add("</article>");
             Add("</form>");
             model = null;
             return this;
         }
 
-        public HtmlContent CAPTION(string title, string sign = null, bool on = false)
+        public HtmlContent HEADER(string title, string sign = null, bool on = false)
         {
-            CAPTION_();
+            HEADER_();
             Add(title);
-            _CAPTION(sign, on);
+            _HEADER(sign, on);
             return this;
         }
 
-        public HtmlContent CAPTION_()
+        public HtmlContent HEADER_()
         {
-            Add("<div class=\"cell card-caption small-12\">");
+            Add("<div class=\"uk-card-header\">");
             if (model != null)
             {
                 var work = webCtx.Work;
@@ -1526,7 +1550,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CAPTION(string sign = null, bool on = false)
+        public HtmlContent _HEADER(string sign = null, bool on = false)
         {
             if (sign != null)
             {
@@ -1543,16 +1567,16 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TAIL(string sign = null, bool on = false, byte flag = 0)
+        public HtmlContent FOOTER(string sign = null, bool on = false, byte flag = 0)
         {
-            TAIL_(sign, on);
-            _TAIL(flag);
+            FOOTER_(sign, on);
+            _FOOTER(flag);
             return this;
         }
 
-        public HtmlContent TAIL_(string sign = null, bool on = false)
+        public HtmlContent FOOTER_(string sign = null, bool on = false)
         {
-            Add("<div class=\"cell card-tail\">");
+            Add("<div class=\"uk-card-footer\">");
             if (sign != null)
             {
                 Add("<span class=\"float-right sign");
@@ -1567,7 +1591,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _TAIL(byte flag = 0)
+        public HtmlContent _FOOTER(byte flag = 0)
         {
             Work work = webCtx.Work?.VarWork;
             if (work != null)
@@ -1576,6 +1600,7 @@ namespace Greatbone.Core
                 Tools(work, flag, model);
                 Add("</div>");
             }
+            Add("</div>");
             return this;
         }
 
@@ -1592,7 +1617,7 @@ namespace Greatbone.Core
             Add("');\"");
         }
 
-        void Tools(Work work, byte flag, IData obj)
+        void Tools(Work work, byte flag, object obj)
         {
             var ais = work.Tooled;
             if (ais == null)
@@ -1638,7 +1663,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Tool(Procedure prc, IData obj, int ordinal, int subscript = -1)
+        void Tool(Procedure prc, object obj, int ordinal, int subscript = -1)
         {
             var tool = prc.Tool;
             bool ok = prc.DoAuthorize(webCtx) && prc.DoState(webCtx, obj);

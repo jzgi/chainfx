@@ -132,7 +132,7 @@ namespace Greatbone.Core
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<IData, K> keyer = null, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : Work
+        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -209,45 +209,45 @@ namespace Greatbone.Core
             return w;
         }
 
-        public object GetVariableKey(IData obj)
+        public object GetVariableKey(object obj)
         {
             Delegate keyer = cfg.Keyer;
-            if (keyer is Func<IData, string> fstr)
+            if (keyer is Func<object, string> fstr)
             {
                 return fstr(obj);
             }
 
-            if (keyer is Func<IData, int> fint)
+            if (keyer is Func<object, int> fint)
             {
                 return fint(obj);
             }
 
-            if (keyer is Func<IData, long> flong)
+            if (keyer is Func<object, long> flong)
             {
                 return flong(obj);
             }
 
-            if (keyer is Func<IData, short> fshort)
+            if (keyer is Func<object, short> fshort)
             {
                 return fshort(obj);
             }
 
-            if (keyer is Func<IData, string[]> fstrs)
+            if (keyer is Func<object, string[]> fstrs)
             {
                 return fstrs(obj);
             }
 
-            if (keyer is Func<IData, int[]> fints)
+            if (keyer is Func<object, int[]> fints)
             {
                 return fints(obj);
             }
 
-            if (keyer is Func<IData, long[]> flongs)
+            if (keyer is Func<object, long[]> flongs)
             {
                 return flongs(obj);
             }
 
-            if (keyer is Func<IData, short[]> fshorts)
+            if (keyer is Func<object, short[]> fshorts)
             {
                 return fshorts(obj);
             }
@@ -255,22 +255,22 @@ namespace Greatbone.Core
             return null;
         }
 
-        public void PutVariableKey(IData obj, DynamicContent cont)
+        public void PutVariableKey(object obj, DynamicContent cont)
         {
             Delegate keyer = cfg.Keyer;
-            if (keyer is Func<IData, string> fstr)
+            if (keyer is Func<object, string> fstr)
             {
                 cont.Add(fstr(obj));
             }
-            else if (keyer is Func<IData, long> flong)
+            else if (keyer is Func<object, long> flong)
             {
                 cont.Add(flong(obj));
             }
-            else if (keyer is Func<IData, int> fint)
+            else if (keyer is Func<object, int> fint)
             {
                 cont.Add(fint(obj));
             }
-            else if (keyer is Func<IData, short> fshort)
+            else if (keyer is Func<object, short> fshort)
             {
                 cont.Add(fshort(obj));
             }
