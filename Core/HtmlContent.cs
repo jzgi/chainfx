@@ -52,6 +52,291 @@ namespace Greatbone.Core
             }
         }
 
+
+        public HtmlContent A_(string href, char style = 'l', char size = (char) 0, char width = (char) 0, char target = (char) 0)
+        {
+            Add("<a href=\"");
+            Add(href);
+            Add("\" class=\"uk-button");
+            switch (style)
+            {
+                case (char) 0:
+                    Add(" uk-button-default");
+                    break;
+                case 'p':
+                    Add(" uk-button-primary");
+                    break;
+                case 's':
+                    Add(" uk-button-secondary");
+                    break;
+                case 'd':
+                    Add(" uk-button-danger");
+                    break;
+                case 't':
+                    Add(" uk-button-text");
+                    break;
+                case 'l':
+                    Add(" uk-button-link");
+                    break;
+            }
+
+            if (size == 's')
+            {
+                Add(" uk-button-small");
+            }
+            else if (size == 'l')
+            {
+                Add(" uk-button-large");
+            }
+
+            Width(width);
+
+            Add("\""); // end of class
+
+            if (target == 'p')
+            {
+                Add(" target=\"_parent\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent BUTTON_(char style = (char) 0, char size = (char) 0, char width = (char) 0, bool disabled = false)
+        {
+            Add("<button class=\"uk-button");
+            switch (style)
+            {
+                case (char) 0:
+                    Add(" uk-button-default");
+                    break;
+                case 'p':
+                    Add(" uk-button-primary");
+                    break;
+                case 's':
+                    Add(" uk-button-secondary");
+                    break;
+                case 'd':
+                    Add(" uk-button-danger");
+                    break;
+                case 't':
+                    Add(" uk-button-text");
+                    break;
+                case 'l':
+                    Add(" uk-button-link");
+                    break;
+            }
+
+            if (size == 's')
+            {
+                Add(" uk-button-small");
+            }
+            else if (size == 'l')
+            {
+                Add(" uk-button-large");
+            }
+
+            Width(width);
+
+            Add("\""); // end of class
+
+            if (disabled)
+            {
+                Add(" disabled");
+            }
+            Add(">");
+            return this;
+        }
+
+        void Width(char c, bool child = false)
+        {
+            switch (c)
+            {
+                case 's':
+                    Add(" uk-width-small");
+                    break;
+                case 'm':
+                    Add(" uk-width-medium");
+                    break;
+                case 'l':
+                    Add(" uk-width-large");
+                    break;
+                case 'x':
+                    Add(" uk-width-xlarge");
+                    break;
+                case 'a':
+                    Add(" uk-width-auto");
+                    break;
+                case 'e':
+                    Add(" uk-width-expand");
+                    break;
+                default:
+                    int la = c & 0x000f;
+                    int lb = c & 0x00f0;
+                    int hi = c >> 8;
+                    Add(child ? " uk-child-width-" : " uk-width-");
+                    Add(lb);
+                    Add('-');
+                    Add(la);
+                    if (hi == 1)
+                    {
+                        Add("@s");
+                    }
+                    else if (hi == 2)
+                    {
+                        Add("@m");
+                    }
+                    else if (hi == 3)
+                    {
+                        Add("@l");
+                    }
+                    else if (hi == 4)
+                    {
+                        Add("@x");
+                    }
+                    break;
+            }
+        }
+
+        public HtmlContent GRID_(char gutter, bool match, bool divider, char width)
+        {
+            Add("<div uk-grid class=\"uk-grid");
+            switch (gutter)
+            {
+                case 's':
+                    Add(" uk-grid-small");
+                    break;
+                case 'm':
+                    Add(" uk-grid-medium");
+                    break;
+                case 'l':
+                    Add(" uk-grid-large");
+                    break;
+                case 'c':
+                    Add(" uk-grid-collapse");
+                    break;
+            }
+            if (match)
+            {
+                Add(" uk-grid-match");
+            }
+            if (divider)
+            {
+                Add(" uk-grid-divider");
+            }
+
+            Width(width, true);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent CARD_(char style, bool hover, char pad = (char) 0, bool body = false)
+        {
+            Add("<div class\"uk-card");
+
+            if (style == 'd')
+            {
+                Add(" uk-card-default");
+            }
+            else if (style == 'p')
+            {
+                Add(" uk-card-primary");
+            }
+            else if (style == 's')
+            {
+                Add(" uk-card-secondary");
+            }
+
+            if (hover)
+            {
+                Add(" uk-card-hover");
+            }
+
+            if (pad == 's')
+            {
+                Add(" uk-card-small");
+            }
+            else if (pad == 'l')
+            {
+                Add(" uk-card-large");
+            }
+
+            if (body)
+            {
+                Add(" uk-card-body");
+            }
+
+            Add(" \">");
+            return this;
+        }
+
+        public HtmlContent MODAL_(string id, char size, char media, char close = 'd', bool body = false)
+        {
+            Add("<div class\"uk-card"); // overlay
+
+            if (media == 'i')
+            {
+                Add(" uk-modal>");
+            }
+
+            Add(" \" uk-modal>");
+
+            Add("<div class\"uk-modal-dialog"); // dialog
+            if (body)
+            {
+                Add("  uk-modal-body");
+            }
+
+            if (close == 'd')
+            {
+                Add("<button class=\"uk-modal-close-default\" type=\"button\" uk-close></button>");
+            } else if (close == 'o')
+            {
+                Add("<button class=\"uk-modal-close-outside\" type=\"button\" uk-close></button>");
+            }
+
+
+            
+            Add(" \">");
+
+            return this;
+        }
+
+        public HtmlContent _MODAL()
+        {
+            Add("</div>"); // dialog
+            Add("</div>"); // overlay
+            return this;
+        }
+
+        public HtmlContent MODAL_HEADER_()
+        {
+            Add("<div class=\"uk-modal-header\">");
+            Add("</div>"); // overlay
+            return this;
+        }
+
+        public HtmlContent _MODAL_HEADER()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent MODAL_HEADER(string title, short h = 2)
+        {
+            MODAL_HEADER_();
+            Add("<h");
+            Add(h);
+            Add(" class=\"uk-modal-title\">");
+            Add(title);
+            Add("</h");
+            Add(h);
+            Add(">");
+            _MODAL_HEADER();
+            return this;
+        }
+
+
         public HtmlContent T(char v)
         {
             Add(v);
@@ -1010,23 +1295,24 @@ namespace Greatbone.Core
 
         public void TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
         {
-            var ads = webCtx.Work.Tooled;
+            var prcs = webCtx.Work.Tooled;
             TOOLBAR_();
-            for (int i = 0; i < ads?.Length; i++)
+            Add("<div class=\"uk-button-group\">");
+            for (int i = 0; i < prcs?.Length; i++)
             {
-                var ad = ads[i];
-                if (ad.Flag == 0 || (flag & ad.Flag) == ad.Flag)
+                var prc = prcs[i];
+                if (prc.Flag == 0 || (flag & prc.Flag) == prc.Flag)
                 {
-                    Tool(ad, null, 0);
+                    Tool(prc, null, 0);
                 }
             }
+            Add("</div>");
             _TOOLBAR(title, refresh);
         }
 
         public HtmlContent TOOLBAR_()
         {
-            Add("<header data-sticky-container>");
-            Add("<form id=\"tool-bar-form\" class=\"sticky tool-bar\" style=\"width: 100%\" data-sticky data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+            Add("<form id=\"tool-bar-form\" class=\"tool-bar\" style=\"width: 100%\">");
             return this;
         }
 
@@ -1044,7 +1330,7 @@ namespace Greatbone.Core
                 Add("</div>");
             }
             Add("</form>");
-            Add("</header>");
+            Add("<div class=\"tool-bar-placeholder\"></div>");
             return this;
         }
 
@@ -1091,7 +1377,7 @@ namespace Greatbone.Core
             }
         }
 
-        public void SHEETVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
+        public void DATATABLE<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
             Work work = webCtx.Work;
             Work varwork = work.varwork;
@@ -1358,7 +1644,7 @@ namespace Greatbone.Core
             bool ok = prc.DoAuthorize(webCtx) && prc.DoState(webCtx, obj);
             if (tool.IsAnchor)
             {
-                Add("<a class=\"button primary");
+                Add("<a class=\"uk-button");
                 Add(prc == webCtx.Procedure ? " hollow" : " clear");
                 Add("\" href=\"");
                 if (obj != null)
@@ -1385,7 +1671,7 @@ namespace Greatbone.Core
             }
             else if (tool.IsButton)
             {
-                Add("<button  class=\"button primary");
+                Add("<button  class=\"uk-button uk-button-small uk-button-default");
                 if (!prc.IsCapital) Add(" hollow");
                 Add("\" name=\"");
                 Add(prc.Key);

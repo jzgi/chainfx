@@ -30,11 +30,10 @@ namespace Greatbone.Sample
             h.Add("<title>");
             h.Add(title ?? ac.Work.Label);
             h.Add("</title>");
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<script src=\"/uikit.min.js\"></script>");
+            h.Add("<script src=\"/uikit-icons.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
@@ -64,11 +63,10 @@ namespace Greatbone.Sample
             h.Add("<title>");
             h.Add(title ?? "粗粮达人");
             h.Add("</title>");
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<script src=\"/uikit.min.js\"></script>");
+            h.Add("<script src=\"/uikit-icons.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
@@ -77,32 +75,28 @@ namespace Greatbone.Sample
             Work work = ac.Work;
             Map<string, Work> subs = work.Works;
             // tabs
-            h.Add("<ul class=\"tabs\" data-tabs id=\"frametabs\">");
-            h.Add("<li class=\"tabs-title is-active\">");
-            h.Add("<a href=\"#tabs_\">");
+            h.Add("<ul class=\"uk-tab uk-margin-remove\" uk-tab>");
+            h.Add("<li class=\"uk-active\"><a href=\"#\">");
             h.Add(work.Label);
-            h.Add("</a>");
-            h.Add("</li>");
+            h.Add("</a></li>");
             if (subs != null)
             {
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(ac)) continue;
-                    h.Add("<li class=\"tabs-title\"><a href=\"#tabs_");
-                    h.Add(sub.Key);
-                    h.Add("\">");
+                    h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
                 }
             }
             h.Add("</ul>");
             // tabs content
-            h.Add("<div class=\"tabs-content\" data-tabs-content=\"frametabs\">");
+            h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 2.5rem); height: -webkit-calc(100% - 2.5rem);\">");
             // the first panel
-            h.Add("<div class=\"tabs-panel is-active\" style=\"height: 100%\" id=\"tabs_\">");
+            h.Add("<li class=\"uk-active\" style=\"height: 100%\">");
             h.Add("<iframe src=\"?inner=true\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
-            h.Add("</div>");
+            h.Add("</li>");
             if (subs != null)
             {
                 // the sub-level panels
@@ -110,22 +104,12 @@ namespace Greatbone.Sample
                 {
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(ac)) continue;
-                    h.Add("<div class=\"tabs-panel\" style=\"height: 100%\" id=\"tabs_");
+                    h.Add("<li style=\"height: 100%\"><iframe src=\"");
                     h.Add(sub.Key);
-                    h.Add("\">");
-                    h.Add("<iframe id=\"");
-                    h.Add(sub.Key);
-                    h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe>");
-                    h.Add("</div>");
+                    h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
                 }
             }
-            h.Add(" </div>");
-
-            // zurb foundation
-            h.Add("<script>");
-            h.Add("$(document).foundation();\n");
-            h.Add("$('#frametabs').on('change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
-            h.Add("</script>");
+            h.Add(" </ul>");
 
             h.Add("</body>");
             h.Add("</html>");
@@ -147,22 +131,16 @@ namespace Greatbone.Sample
             h.Add("<title>");
             h.Add(title ?? ac.Work.Label);
             h.Add("</title>");
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<script src=\"/uikit.min.js\"></script>");
+            h.Add("<script src=\"/uikit-icons.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body class=\"page\">");
 
             main(h);
-
-            // zurb foundation
-            h.Add("<script>");
-            h.Add("$(document).foundation();");
-            h.Add("</script>");
 
             h.Add("</body>");
             h.Add("</html>");
@@ -182,11 +160,10 @@ namespace Greatbone.Sample
 
             h.Add("<head>");
             h.Add("<title>粗粮达人</title>");
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/foundation.min.css\">");
-            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
-            h.Add("<script src=\"//cdn.bootcss.com/jquery/3.2.1/jquery.min.js\"></script>");
-            h.Add("<script src=\"/foundation.min.js\"></script>");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<script src=\"/uikit.min.js\"></script>");
+            h.Add("<script src=\"/uikit-icons.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
@@ -194,21 +171,6 @@ namespace Greatbone.Sample
 
             main?.Invoke(h);
 
-            // zurb foundation
-            h.Add("<script>");
-
-            h.Add("$(document).ready(function(){");
-            h.Add("$(document).foundation();");
-            if (main != null) // enable the ok button
-            {
-                h.Add("$('#dyndlg', window.parent.document).find('button').prop('disabled', document.forms.length == 0);");
-            }
-            else // trigger click on the close-button
-            {
-                h.Add("closeup(true);");
-            }
-            h.Add("});");
-            h.Add("</script>");
             h.Add("</body>");
             h.Add("</html>");
 
@@ -245,7 +207,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.SHEETVIEW(arr, head, row);
+                    main.DATATABLE(arr, head, row);
                 },
                 @public, maxage, title
             );

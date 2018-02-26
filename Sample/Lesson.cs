@@ -5,7 +5,7 @@ namespace Greatbone.Sample
     /// <summary>
     /// An episode of lessons data object.
     /// </summary>
-    public class Episode : IData
+    public class Lesson : IData
     {
         internal string en; // 01 lesson-name
         internal string zh;

@@ -26,7 +26,7 @@ namespace Greatbone.Sample
 
             City.All = DataUtility.FileToMap<string, City>(GetFilePath("$cities.json"));
 
-            Register(() => DataUtility.FileToArray<Episode>(GetFilePath("$episodes.json")), 3600 * 8);
+            Register(() => DataUtility.FileToArray<Lesson>(GetFilePath("$lessons.json")), 3600 * 8);
 
             Register(delegate
                 {
@@ -152,7 +152,7 @@ namespace Greatbone.Sample
         /// </summary>
         public void @default(WebContext ac)
         {
-            var epis = Obtain<Episode[]>();
+            var epis = Obtain<Lesson[]>();
 
             ac.GivePage(200, m =>
             {
