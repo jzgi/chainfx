@@ -1,61 +1,69 @@
 
 
 function byprepay(trig) {
-    // get prepare id
-    var action;
     var method = 'post';
+    var action;
     var tag = trig.tagName;
     if (tag == 'BUTTON') {
-        action = trig.formAction || trig.name;
         method = trig.formMethod || method;
+        action = trig.formAction || trig.name;
     } else if (tag == 'A') {
-        action = trig.href
         method = 'get';
+        action = trig.href
     }
-    $.ajax({
-        url: action,
-        type: method,
-        dataType: 'json',
-        success: function (data) {
-            WeixinJSBridge.invoke('getBrandWCPayRequest',
-                data,
+    // get prepare id
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, action, false);
+    xhr.responseType = 'json';
+    xhr.onload = function (e) {
+        if (this.status == 200) {
+            var data = this.responseText;
+            WeixinJSBridge.invoke('getBrandWCPayRequest', data,
                 function (res) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         alert('支付成功!');
                         location.reload();
                     }
-                });
-        },
-        error: function (res) {
-            alert('服务器访问失败!');
+                }
+            );
         }
-    });
-    //
+    };
+    xhr.send();
+
     return false;
 }
 
+function appendTo(parent, html) {
+    var e = document.createElement('div');
+    e.innerHTML = html;
+    return parent.appendChild(e.firstChild)
+}
+
+function serialize(form) {
+    return new URLSearchParams(new FormData(form)).toString();
+}
 
 // build and open a reveal dialog
 // trig - a button, input_button or anchor element
 
 // mode
-const PROMPT = 2, SHOW = 4, OPEN = 8;
+const CONFIRM = 1, PROMPT = 2, SHOW = 4, OPEN = 8;
 
 function dialog(trig, mode, pick, siz, title) {
-    var sizg = siz == 1 ? 'tiny' : siz == 2 ? 'small' : siz == 3 ? 'medium' : siz == 4 ? 'large' : 'full';
+    var sizc = siz == 'f' ? ' uk-modal-full' : siz == 'c' ? ' uk-modal-container' : '';
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
     var tag = trig.tagName;
     var action;
     var method = 'post';
     var src;
-    var trigclass;
+    var trigc;
     if (tag == 'BUTTON') {
         action = trig.formAction || trig.name;
         method = trig.formMethod || method;
         var qstr;
-        if (pick) { // if must pick form values
-            qstr = $(trig.form).serialize();
+        if (pick) { // if must pick form fields
+            qstr = serialize(trig.form);
             if (!qstr) return false;
         }
         if (qstr) {
@@ -63,84 +71,81 @@ function dialog(trig, mode, pick, siz, title) {
         } else {
             src = action;
         }
-        trigclass = ' button-trig';
+        trigc = ' button-trig';
     } else if (tag == 'A') {
         action = trig.href;
         method = 'get';
         src = action.indexOf('?') == -1 ? action + '?inner=true' : action + '&' + 'inner=true';
-        trigclass = ' anchor-trig';
+        trigc = ' anchor-trig';
     }
 
-    title = title || trig.innerHTML;
-
-    var bottom = mode == OPEN ? '3.5rem' : '6rem';
     var html =
-        '<div id="dyndlg" class="' + sizg + ' reveal' + trigclass + '"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-title">' + title + '</div><div class="title-bar-right"><a class="close-dlg" onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a></div></div>' +
-        '<div style="height: -webkit-calc(100% - ' + bottom + '); height: calc(100% - ' + bottom + ')"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>' + (mode == OPEN ? '' : ('<button class=\"button primary hollow\" style="display: block; margin-top: 0.625rem; margin-left: auto; margin-right: auto" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</botton>')) + '</div>';
-    var dive = $(html);
-    $('body').prepend(dive);
-    // initialize
-    $(dive).foundation();
-    // open
-    $(dive).foundation('open');
-    // abort the onclick
+        '<div class="uk-modal' + sizc + trigc + '" uk-modal="bg-close: false">' +
+        '<div class="uk-modal-dialog" uk-overflow-auto>' +
+        '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>' +
+        '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
+    if (mode != OPEN) {
+        html = html + '<div class="uk-modal-footer uk-text-center"><button class="uk-button uk-button-primary uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
+    }
+    html = html + '</div></div>';
+    var e = appendTo(document.body, html);
+    e.addEventListener('hidden', function () { document.body.removeChild(e); }, false);
+    UIkit.modal(e).show();
     return false;
 }
 
 // when clicked on the OK button
 function ok(okbtn, mode, formid, tag, action, method) {
-    var dlge = $('#dyndlg');
+    var div = parents(okbtn, '.uk-modal');
     if (mode == PROMPT) {
-        iframe = dlge.find('iframe');
-        form = iframe.contents().find('form');
-        if (!form.length || !form[0].reportValidity()) return;
+        iframe = div.querySelector('iframe');
+        form = iframe.contents().querySelector('form');
+        if (form || form.reportValidity()) return;
         if (tag == 'A') { // append to url and switch
-            qstr = $(form[0]).serialize();
+            qstr = serialize(form);
             if (qstr) {
                 uri = action.indexOf('?') == -1 ? action + '?' + qstr : action + qstr;
                 location.href = uri;
             }
         } else if (tag == 'BUTTON') { // merge to the parent and submit
             if (method == 'get') {
-                var qstr = $(form[0]).serialize();
+                var qstr = serialize(form);
                 if (qstr) {
                     // dispose the dialog
-                    dlge.foundation('close');
-                    dlge.foundation('destroy');
-                    dlge.remove();
+                    UIkit.modal(div).hide();
+                    UIkit.remove(div);
                     // load page
                     location.href = action.split("?")[0] + '?' + qstr;
                 }
             } else if (method == 'post') {
-                var theform = $('#' + formid);
-                var pairs = $(form[0]).serializeArray();
-                pairs.forEach(function (e, i) {
-                    $('<input>').attr({ type: 'hidden', name: e.name, value: e.value }).appendTo(theform);
+                var mform = $('#' + formid);
+                for (var pair of new FormData(form).entries) {
+                    var hid = document.createElement('input');
+                    hid.type = 'hidden'; hid.name = pair[0]; hid.value = pair[1];
+                    mform.appendChild(hid);
                 });
                 // dispose the dialog
-                dlge.foundation('close');
-                dlge.foundation('destroy');
-                dlge.remove();
+                UIkit.modal(div).hide();
+                UIkit.remove(div);
                 // submit
-                theform.attr('action', action);
-                theform.attr('method', method);
-                theform.submit();
+                UIkit.attr(mform, 'action', action);
+                UIkit.attr(mform, 'method', method);
+                mform.submit();
             }
         }
     } else if (mode == SHOW) {
-        iframe = dlge.find('iframe');
-        form = iframe.contents().find('form');
-        if (form.length != 0) {
-            if (!form[0].reportValidity()) return;
-            form[0].submit();
+        iframe = div.querySelector('iframe');
+        form = iframe.contents().querySelector('form');
+        if (form) {
+            if (!form.reportValidity()) return;
+            form.submit();
         }
     } else {
         if (mode == OPEN) {
-            iframe = dlge.find('iframe');
-            form = iframe.contents().find('form');
-            if (form.length) {
-                if (!form[0].reportValidity()) return;
+            iframe = div.querySelector('iframe');
+            form = iframe.contents().querySelector('form');
+            if (form) {
+                if (!form.reportValidity()) return;
             }
         }
     }
@@ -150,55 +155,46 @@ function ok(okbtn, mode, formid, tag, action, method) {
 function crop(trig, ordinals, siz, title) {
 
     var wid, hei, sizg;
+    var trigc = trig.tagName == 'BUTTON' ? ' button-trig' : ' anchor-trig';
     title = title || trig.innerHTML;
     var action = trig.href || trig.formAction;
     switch (siz) {
-        case 1:
-            wid = 120; hei = 120; sizg = 'tiny';
+        case 1: wid = 120; hei = 120;
             break;
-        case 2:
-            wid = 240; hei = 240; sizg = 'small';
+        case 2: wid = 240; hei = 240;
             break;
-        case 3:
-            wid = 320; hei = 320; sizg = 'medium';
+        case 3: wid = 320; hei = 320;
             break;
-        case 4:
-            wid = 480; hei = 480; sizg = 'large';
+        case 4: wid = 480; hei = 480;
             break;
-        default:
-            wid = 640; hei = 640; sizg = 'full';
+        default: wid = 640; hei = 640;
             break;
     }
 
     var html =
-        '<div id="dyndlg" class="' + sizg + ' reveal"  data-reveal data-close-on-click="false">' +
-        '<div class="title-bar"><div class="title-bar-left">'
+        '<div class="uk-modal uk-modal-full' + trigc + '" uk-modal="bg-close: false">' +
+        '<form class="uk-modal-dialog" uk-overflow-auto>' +
+        '<div class="uk-modal-header">';
+
     if (ordinals > 0) {
         html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ')">';
         for (var i = 1; i <= ordinals; i++) {
             html += '<option value="' + i + '">' + i + '</option>';
         }
         html += '</select>';
+        html += '<button class="uk-button uk-button-default" onclick="this.form.querySelector(\'#fileinput\').click();">浏览...</button><button class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val());">确定上传</button>';
+        html += '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
     }
-    html +=
-        '<button class="button hollow" onclick="$(\'#fileinput\').click();">浏览...</button><button class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val());">确定上传</button>' +
-        '</div>' +
-        '<div class="title-bar-right">' +
-        '<a onclick="$(\'#dyndlg\').foundation(\'close\').foundation(\'destroy\').remove(); return false;" style="font-size: 1.5rem">&#10060;</a>' +
-        '</div>' +
-        '</div>'; // title-bar
-    html += '<div id="crop" style="height: -webkit-calc(100% - 6.5rem); height: calc(100% - 6.5rem); text-align: center;"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
-    html += '</div>'; // dyndlg
+    html += '</div>'; // header
 
-    var dive = $(html);
+    html += '<div id="uk-modal-body crop"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
+    html += '</form>'; // uk-dialog
+    html += '</div>'; // uk-modal
 
-    $('body').prepend(dive);
-    // initialize
-    $(dive).foundation();
+    var e = appendTo(document.body, html);
+    e.addEventListener('hidden', function () { document.body.removeChild(e); }, false);
     bind(action, 1, wid, hei);
-    // open
-    $(dive).foundation('open');
-    // abort the onclick
+    UIkit.modal(e).show();
     return false;
 }
 
