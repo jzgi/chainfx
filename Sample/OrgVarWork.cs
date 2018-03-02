@@ -49,7 +49,7 @@ namespace Greatbone.Sample
     {
         public PubOrgVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<PubItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         [Ui("进入该网点"), Tool(Anchor)]
@@ -70,7 +70,7 @@ namespace Greatbone.Sample
                 ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().A_DROPDOWN_("正在" + Org.Statuses[org.status]);
-                    m.BOX_(0x4c);
+                    m.BOX_();
                     m.P(org.descr, "简介");
                     m.P_("地址").T(org.city)._T(org.addr)._P();
                     if (org.areas != null)
@@ -80,16 +80,16 @@ namespace Greatbone.Sample
                     if (org.off > 0) m.P_("优惠").T(org.min).T("元起订，每满").T(org.notch).T("元立减").T(org.off).T("元")._P();
                     m._BOX();
                     m.QRCODE(NETADDR + ac.Uri, box: 0x14);
-                    m.BOX_(box: 0x18).TOOL("msg").A("&#128222; 客服电话", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._BOX();
+                    m.TOOL("msg").A("&#128222; 客服电话", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._BOX();
                     m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
                     m.DATAGRID(items, (h, o) =>
                     {
-                        h.HEADER(o.name);
-                        h.ICON((o.name) + "/icon", box: 4);
-                        h.BOX_(0x48).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
-                        h.FOOTER();
+                        h.CARDHEADER(o.name);
+                        h.ICON((o.name) + "/icon");
+                        h.P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
+                        h.CARDFOOTER();
                         // adjust item availability
                         if (org.status == 0) o.stock = 0;
                     });
@@ -110,7 +110,6 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query1();
-
             }
         }
     }

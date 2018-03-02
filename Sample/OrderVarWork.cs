@@ -128,7 +128,7 @@ namespace Greatbone.Sample
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.ICON("/" + o.orgid + "/" + oi.name + "/icon", box: 2);
+                        h.ICON("/" + o.orgid + "/" + oi.name + "/icon");
                         h.NUMBER(nameof(oi.qty), oi.qty, min: (short) 0, max: stock, step: step, box: 8);
                         h.FIELD(oi.unit, box: 2);
                         h._FIELDSET();

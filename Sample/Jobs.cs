@@ -40,9 +40,9 @@ namespace Greatbone.Sample
                     m.TOOLBAR();
                     m.BOARDVIEW(h =>
                     {
-                        h.HEADER("系统运行状况", "运行中", true);
+                        h.CARDHEADER("系统运行状况", "运行中", true);
                         h.FIELD("2.0", "版本");
-                        h.FOOTER();
+                        h.CARDFOOTER();
                     });
                 });
             }

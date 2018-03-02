@@ -39,21 +39,21 @@ namespace Greatbone.Sample
             );
         }
 
-        public async Task<bool> AuthenticateAsync(WebContext ac, bool e)
+        public async Task<bool> AuthenticateAsync(WebContext wc, bool e)
         {
             // if principal already in cookie
-            if (ac.Cookies.TryGetValue("Token", out var token))
+            if (wc.Cookies.TryGetValue("Token", out var token))
             {
-                ac.Principal = Decrypt(token);
+                wc.Principal = Decrypt(token);
                 return true;
             }
 
             // resolve principal thru OAuth2 or HTTP-basic
             User prin = null;
-            string state = ac.Query[nameof(state)];
+            string state = wc.Query[nameof(state)];
             if (WXAUTH.Equals(state)) // if weixin auth
             {
-                string code = ac.Query[nameof(code)];
+                string code = wc.Query[nameof(code)];
                 if (code == null)
                 {
                     return false;
@@ -78,7 +78,7 @@ namespace Greatbone.Sample
             }
             else
             {
-                string h_auth = ac.Header("Authorization");
+                string h_auth = wc.Header("Authorization");
                 if (h_auth == null || !h_auth.StartsWith("Basic "))
                 {
                     return true;
@@ -106,8 +106,8 @@ namespace Greatbone.Sample
             if (prin != null)
             {
                 // set token success
-                ac.Principal = prin;
-                ac.SetTokenCookie(prin, 0xff ^ User.CREDENTIAL);
+                wc.Principal = prin;
+                wc.SetTokenCookie(prin, 0xff ^ User.CREDENTIAL);
             }
             return true;
         }
@@ -150,16 +150,15 @@ namespace Greatbone.Sample
         /// <summary>
         /// The home page that lists gospel episodes.
         /// </summary>
-        public void @default(WebContext ac)
+        public void @default(WebContext wc)
         {
-            var epis = Obtain<Lesson[]>();
-
-            ac.GivePage(200, m =>
+            var lessons = Obtain<Lesson[]>();
+            wc.GivePage(200, m =>
             {
                 m.T("<h1>事实真相</h1>");
                 using (var dc = NewDbContext())
                 {
-                    for (int i = 0; i < epis?.Length; i++)
+                    for (int i = 0; i < lessons?.Length; i++)
                     {
                         m.T("<div class=\"card\">");
                         m.T("</div>");

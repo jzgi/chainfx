@@ -53,7 +53,7 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent A_(string href, char style = 'l', char size = (char) 0, char width = (char) 0, char target = (char) 0)
+        public HtmlContent A_(string href, char style = 'l', char size = (char) 0, byte width = 0, char target = (char) 0)
         {
             Add("<a href=\"");
             Add(href);
@@ -101,7 +101,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTON_(char style = (char) 0, char size = (char) 0, char width = (char) 0, bool disabled = false)
+        public HtmlContent BUTTON_(char style = (char) 0, char size = (char) 0, byte width = 0, bool disabled = false)
         {
             Add("<button class=\"uk-button");
             switch (style)
@@ -147,87 +147,52 @@ namespace Greatbone.Core
             return this;
         }
 
-        void Width(char c, bool child = false)
+        void Width(byte c)
         {
-            switch (c)
+            int lo = c & 0x0f;
+            int hi = c >> 4;
+            switch (lo)
             {
-                case 's':
+                case 1:
+                    Add(" uk-width-1-6");
+                    break;
+                case 2:
+                    Add(" uk-width-1-3");
+                    break;
+                case 3:
+                    Add(" uk-width-1-2");
+                    break;
+                case 4:
+                    Add(" uk-width-2-3");
+                    break;
+                case 5:
+                    Add(" uk-width-5-6");
+                    break;
+                case 6:
+                    Add(" uk-width-1-1");
+                    break;
+            }
+            switch (hi)
+            {
+                case 1:
                     Add(" uk-width-small");
                     break;
-                case 'm':
+                case 2:
                     Add(" uk-width-medium");
                     break;
-                case 'l':
+                case 3:
                     Add(" uk-width-large");
                     break;
-                case 'x':
+                case 4:
                     Add(" uk-width-xlarge");
                     break;
-                case 'a':
+                case 5:
                     Add(" uk-width-auto");
                     break;
-                case 'e':
+                case 6:
                     Add(" uk-width-expand");
                     break;
-                default:
-                    int la = c & 0x000f;
-                    int lb = c & 0x00f0;
-                    int hi = c >> 8;
-                    Add(child ? " uk-child-width-" : " uk-width-");
-                    Add(lb);
-                    Add('-');
-                    Add(la);
-                    if (hi == 1)
-                    {
-                        Add("@s");
-                    }
-                    else if (hi == 2)
-                    {
-                        Add("@m");
-                    }
-                    else if (hi == 3)
-                    {
-                        Add("@l");
-                    }
-                    else if (hi == 4)
-                    {
-                        Add("@x");
-                    }
-                    break;
             }
-        }
-
-        public HtmlContent GRID_(char gutter, bool match, bool divider, char width)
-        {
-            Add("<div uk-grid class=\"uk-grid");
-            switch (gutter)
-            {
-                case 's':
-                    Add(" uk-grid-small");
-                    break;
-                case 'm':
-                    Add(" uk-grid-medium");
-                    break;
-                case 'l':
-                    Add(" uk-grid-large");
-                    break;
-                case 'c':
-                    Add(" uk-grid-collapse");
-                    break;
-            }
-            if (match)
-            {
-                Add(" uk-grid-match");
-            }
-            if (divider)
-            {
-                Add(" uk-grid-divider");
-            }
-
-            Width(width, true);
-
-            Add("\">");
-            return this;
         }
 
         public HtmlContent CARD_(char style, bool hover, char pad = (char) 0, bool body = false)
@@ -290,13 +255,13 @@ namespace Greatbone.Core
             if (close == 'd')
             {
                 Add("<button class=\"uk-modal-close-default\" type=\"button\" uk-close></button>");
-            } else if (close == 'o')
+            }
+            else if (close == 'o')
             {
                 Add("<button class=\"uk-modal-close-outside\" type=\"button\" uk-close></button>");
             }
 
 
-            
             Add(" \">");
 
             return this;
@@ -794,7 +759,7 @@ namespace Greatbone.Core
                 Add('>');
             }
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -813,64 +778,29 @@ namespace Greatbone.Core
             {
                 Add(fix);
             }
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
-        public HtmlContent FIELD_(string label = null, byte box = 0x0c)
+        public HtmlContent FIELD_(string label = null, byte width = 6)
         {
-            BOX_(box, false);
+            Add("<div class=\"");
+            if (width > 0)
+            {
+                Width(width);
+                Add("\"");
+            }
+            Add("\">");
             if (label != null)
             {
-                Add("<span class=\"label\">");
+                Add("<span class=\"uk-form-label\">");
                 Add(label);
                 Add("</span>");
             }
             return this;
         }
 
-        void _FIELD(byte box)
-        {
-            if ((box & 0x0f) > 0)
-            {
-                Add("</div>");
-            }
-        }
-
         public HtmlContent _FIELD()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent GRID_(sbyte small = 0, sbyte medium = 0, sbyte large = 0, sbyte xlarge = 0)
-        {
-            Add("<div class=\"grid-x");
-            if (small > 0)
-            {
-                Add(" small-up-");
-                Add(small);
-            }
-            if (medium > 0)
-            {
-                Add(" medium-up-");
-                Add(medium);
-            }
-            if (large > 0)
-            {
-                Add(" large-up-");
-                Add(large);
-            }
-            if (xlarge > 0)
-            {
-                Add(" xlarge-up-");
-                Add(xlarge);
-            }
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _GRID()
         {
             Add("</div>");
             return this;
@@ -909,23 +839,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BOX_(byte box = 0x0c, bool column = true)
+        public HtmlContent BOX_(byte width = 6)
         {
-            int grid = box & 0x0f;
-            if (grid > 0)
-            {
-                int layout = (box >> 4) & 0x0f;
-                Add("<div class=\"cell small-");
-                Add(grid);
-                Add(" box box-");
-                Add(layout);
-                Add("\"");
-                if (column)
-                {
-                    Add(" style=\"flex-direction: column; padding: 0;\"");
-                }
-                Add(">");
-            }
+            Add("<div class=\"uk-flex uk-flex-column uk-flex-left uk-flex-top");
+            Width(width);
+            Add("\">");
             return this;
         }
 
@@ -934,7 +852,6 @@ namespace Greatbone.Core
             Add("</div>");
             return this;
         }
-
 
         public HtmlContent P<V>(V v, string label = null, string fix = null, string tag = null, bool when = true)
         {
@@ -1037,7 +954,7 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -1057,13 +974,16 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
-        public HtmlContent ICON(string src, string alt = null, string href = null, byte box = 0x0c)
+        public HtmlContent ICON(string src, string alt = null, string href = null, byte width = 2)
         {
-            FIELD_(null, box);
+            Add("<div class=\"");
+            Width(width);
+            Add("\">");
+
             if (href != null)
             {
                 Add("<a href=\"");
@@ -1082,13 +1002,12 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            _FIELD(box);
+            Add("</div>");
             return this;
         }
 
         public HtmlContent QRCODE(string val = null, byte box = 0x0c)
         {
-            BOX_(box, false);
             Add("<div>");
             Add("<script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
@@ -1312,7 +1231,7 @@ namespace Greatbone.Core
 
         public HtmlContent TOOLBAR_()
         {
-            Add("<form id=\"tool-bar-form\" class=\"tool-bar\" style=\"width: 100%\">");
+            Add("<form id=\"tool-bar-form\" class=\"top-bar\" style=\"width: 100%\">");
             return this;
         }
 
@@ -1330,7 +1249,7 @@ namespace Greatbone.Core
                 Add("</div>");
             }
             Add("</form>");
-            Add("<div class=\"tool-bar-placeholder\"></div>");
+            Add("<div class=\"top-bar-placeholder\"></div>");
             return this;
         }
 
@@ -1446,7 +1365,7 @@ namespace Greatbone.Core
             _DATAGRID();
         }
 
-        public void DATAGRID<D>(D[] arr, Action<HtmlContent,D> card) where D : IData
+        public void DATAGRID<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
             DATAGRID_();
             if (arr != null)
@@ -1454,7 +1373,7 @@ namespace Greatbone.Core
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    CARD_();
+                    CARD_(obj);
                     card(this, obj);
                     _CARD();
                 }
@@ -1465,7 +1384,7 @@ namespace Greatbone.Core
 
         public HtmlContent DATAGRID_()
         {
-            Add("<main class=\"uk-grid-small uk-grid-match uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\" uk-grid>");
+            Add("<main class=\"uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\" uk-grid>");
             ordinal = 0;
             model = null;
             return this;
@@ -1479,7 +1398,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARD<D>(D obj,  Action<D> card, char style = (char)0)
+        public HtmlContent CARD<D>(D obj, Action<D> card, char style = (char) 0)
         {
             Add("<form class=\"uk-card");
             if (style == 'd')
@@ -1525,15 +1444,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent HEADER(string title, string sign = null, bool on = false)
+        public HtmlContent CARDHEADER(string title, string sign = null, bool on = false)
         {
-            HEADER_();
+            CH_();
             Add(title);
-            _HEADER(sign, on);
+            _CH(sign, on);
             return this;
         }
 
-        public HtmlContent HEADER_()
+        public HtmlContent CH_()
         {
             Add("<div class=\"uk-card-header\">");
             if (model != null)
@@ -1544,13 +1463,13 @@ namespace Greatbone.Core
                 {
                     Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
                     varwork.PutVariableKey(model, this);
-                    Add("\" onchange=\"checkit(this);\">");
+                    Add("\" onchange=\"checkIt(this);\">");
                 }
             }
             return this;
         }
 
-        public HtmlContent _HEADER(string sign = null, bool on = false)
+        public HtmlContent _CH(string sign = null, bool on = false)
         {
             if (sign != null)
             {
@@ -1567,36 +1486,58 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FOOTER(string sign = null, bool on = false, byte flag = 0)
+        public HtmlContent CARDBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
         {
-            FOOTER_(sign, on);
-            _FOOTER(flag);
+            CARDBODY_();
+            b(this, (D) model);
+            _CARDBODY();
             return this;
         }
 
-        public HtmlContent FOOTER_(string sign = null, bool on = false)
+        public HtmlContent CARDBODY_()
         {
-            Add("<div class=\"uk-card-footer\">");
-            if (sign != null)
+            Add("<div class=\"uk-grid uk-card-body\" uk-grid>");
+            return this;
+        }
+
+        public HtmlContent _CARDBODY()
+        {
+            Add("</div>");
+            return this;
+        }
+
+
+        public HtmlContent CARDFOOTER(string text = null, char color = (char) 0, byte flag = 0)
+        {
+            CARDFOOTER_(text, color);
+            _CARDFOOTER(flag);
+            return this;
+        }
+
+        public HtmlContent CARDFOOTER_(string text = null, char color = (char) 0)
+        {
+            Add("<div class=\"uk-card-footer uk-grid-small uk-flex-between\" uk-grid>");
+            if (text != null)
             {
-                Add("<span class=\"float-right sign");
-                if (on)
-                {
-                    Add(" on");
-                }
+                Add("<span class=\"");
+                if (color == 'm') Add(" uk-text-muted");
+                else if (color == 'p') Add(" uk-text-primary");
+                else if (color == 's') Add(" uk-text-success");
+                else if (color == 'w') Add(" uk-text-warning");
+                else if (color == 'd') Add(" uk-text-danger");
                 Add("\">");
-                Add(sign);
+                Add(text);
                 Add("</span>");
             }
             return this;
         }
 
-        public HtmlContent _FOOTER(byte flag = 0)
+        public HtmlContent _CARDFOOTER(byte flag = 0)
         {
             Work work = webCtx.Work?.VarWork;
             if (work != null)
             {
-                Add("<div style=\"margin-left: auto\">");
+                Add("<div class=\"uk-button-group\">");
                 Tools(work, flag, model);
                 Add("</div>");
             }
@@ -1670,7 +1611,7 @@ namespace Greatbone.Core
             if (tool.IsAnchor)
             {
                 Add("<a class=\"uk-button");
-                Add(prc == webCtx.Procedure ? " hollow" : " clear");
+                Add(prc == webCtx.Procedure ? " uk-button-default" : " uk-button-link");
                 Add("\" href=\"");
                 if (obj != null)
                 {
@@ -1696,7 +1637,7 @@ namespace Greatbone.Core
             }
             else if (tool.IsButton)
             {
-                Add("<button  class=\"uk-button uk-button-small uk-button-default");
+                Add("<button  class=\"uk-button uk-button-default uk-border-rounded");
                 if (!prc.IsCapital) Add(" hollow");
                 Add("\" name=\"");
                 Add(prc.Key);
@@ -1825,7 +1766,7 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -1866,7 +1807,7 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -1913,7 +1854,7 @@ namespace Greatbone.Core
             Add("<button formmethod=\"get\" class=\"input-group-label\">&#128270;</button>");
             Add("</div>");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -1958,7 +1899,7 @@ namespace Greatbone.Core
             if (required) Add(" required");
             Add(">");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -1994,7 +1935,7 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2070,7 +2011,7 @@ namespace Greatbone.Core
                 Add("</div>");
             }
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2104,7 +2045,7 @@ namespace Greatbone.Core
                 Add("</label>");
             }
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2235,7 +2176,7 @@ namespace Greatbone.Core
             Add(">");
             AddEsc(val);
             Add("</textarea>");
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2285,7 +2226,7 @@ namespace Greatbone.Core
                 }
             }
             Add("</textarea>");
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2339,8 +2280,6 @@ namespace Greatbone.Core
 
         public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
         {
-            FIELD_(label, box);
-
             Add("<select name=\"");
             Add(name);
             Add("\"");
@@ -2386,7 +2325,6 @@ namespace Greatbone.Core
                 }
             }
             Add("</select>");
-            _FIELD(box);
             return this;
         }
 
@@ -2440,7 +2378,7 @@ namespace Greatbone.Core
                 }
             }
             Add("</select>");
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2482,7 +2420,7 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2522,7 +2460,7 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2565,7 +2503,7 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 
@@ -2610,7 +2548,7 @@ namespace Greatbone.Core
             }
             Add("</select>");
 
-            _FIELD(box);
+            _FIELD();
             return this;
         }
 

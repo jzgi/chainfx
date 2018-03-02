@@ -25,11 +25,11 @@ namespace Greatbone.Sample
                 m.TOOLBAR();
                 m.BOARDVIEW(h =>
                 {
-                    h.HEADER("账号信息");
+                    h.CARDHEADER("账号信息");
                     h.FIELD(prin.name, "姓名");
                     h.FIELD(prin.tel, "电话");
                     h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-                    h.FOOTER();
+                    h.CARDFOOTER();
                 });
             });
         }
@@ -180,13 +180,13 @@ namespace Greatbone.Sample
                 h.DATAGRID_();
 
                 h.CARD_();
-                h.HEADER(o.name, Statuses[o.status], o.status == 2);
+                h.CARDHEADER(o.name, Statuses[o.status], o.status == 2);
                 h.FIELD(o.descr, "简介");
                 h.FIELD_("限送").T(o.areas)._FIELD();
                 h.FIELD_("活动").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                h.FOOTER();
+                h.CARDFOOTER();
                 h._CARD();
 
                 h._DATAGRID();

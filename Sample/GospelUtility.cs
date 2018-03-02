@@ -19,25 +19,26 @@ namespace Greatbone.Sample
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GiveDoc(this WebContext ac, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
+        public static void GiveDoc(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
         {
-            HtmlContent h = new HtmlContent(ac, true, 32 * 1024);
+            HtmlContent h = new HtmlContent(wc, true, 32 * 1024);
 
             h.Add("<!DOCTYPE html>");
             h.Add("<html>");
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? ac.Work.Label);
+            h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"doc\">");
+            h.Add("<body>");
 
             main(h);
 
@@ -49,7 +50,7 @@ namespace Greatbone.Sample
             h.Add("</body>");
             h.Add("</html>");
 
-            ac.Give(status, h, @public, maxage);
+            wc.Give(status, h, @public, maxage);
         }
 
         public static void GiveFrame(this WebContext ac, int status, bool? @public = null, int maxage = 60, string title = null)
@@ -65,9 +66,10 @@ namespace Greatbone.Sample
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
@@ -133,12 +135,13 @@ namespace Greatbone.Sample
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"page\">");
+            h.Add("<body>");
 
             main(h);
 
@@ -162,12 +165,13 @@ namespace Greatbone.Sample
             h.Add("<title>粗粮达人</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
+            h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"pane\">");
+            h.Add("<body>");
 
             main?.Invoke(h);
 
@@ -215,24 +219,19 @@ namespace Greatbone.Sample
 
         public static HtmlContent TOPBAR_(this HtmlContent h, string title = null)
         {
-            h.T("<header data-sticky-container>");
-            h.T("<form class=\"sticky top-bar\" style=\"width: 100%\" data-sticky  data-options=\"anchor: page; marginTop: 0; stickyOn: small;\">");
+            h.T("<form class=\"top-bar uk-flex-between\">");
             if (title != null)
             {
-                h.T("<div class=\"top-bar-title\">").T(title).T("</div>");
+                h.T("<div>").T(title).T("</div>");
             }
-            h.T("<div class=\"top-bar-left\">");
             return h;
         }
 
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
-            h.T("</div>"); // top-bar-left
-            h.T("<div class=\"top-bar-right\">");
-            h.T("<a class=\"button hollow round float-right\" href=\"/my//order/\">购物车</a>");
-            h.T("</div>");
+            h.T("<a class=\"uk-button uk-button-link uk-border-rounded\" href=\"/my//order/\">购物车</a>");
             h.T("</form>");
-            h.T("</header>");
+            h.T("<div class=\"top-bar-placeholder\"></div>");
             return h;
         }
 

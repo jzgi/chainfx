@@ -42,17 +42,17 @@ namespace Greatbone.Sample
                             m.H4("历史订单");
                         }
                         m.CARD_(o);
-                        m.HEADER_().T(o.orgname)._IF(o.paid)._HEADER(Statuses[o.status], o.status <= PAID);
-                        m.FIELD_("收货", box: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(box: 2).VARTOOL("addr", when: o.status == 0)._FIELD();
+                        m.CH_().T(o.orgname)._IF(o.paid)._CH(Statuses[o.status], o.status <= PAID);
+                        m.FIELD_("收货", width: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(width: 2).VARTOOL("addr", when: o.status == 0)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", box: 2);
-                                m.BOX_(0x46).P(oi.name).P(oi.price, fix: "¥")._BOX();
-                                m.BOX_(0x42).P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
-                                m.BOX_(0x42).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
+                                m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon");
+                                m.P(oi.name).P(oi.price, fix: "¥")._BOX();
+                                m.P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
+                                m.P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
                             }
                             else
                             {
@@ -61,7 +61,7 @@ namespace Greatbone.Sample
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
                         m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, box: 4);
-                        m.FOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
+                        m.CARDFOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
                         m._CARD();
                     }
                     m._DATAGRID(arr?.Length ?? 0);
@@ -96,7 +96,7 @@ namespace Greatbone.Sample
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.HEADER_().T("No.").T(o.id).SEP().T(o.addr)._HEADER(o.name);
+                    h.CH_().T("No.").T(o.id).SEP().T(o.addr)._CH(o.name);
                     if (o.items != null)
                     {
                         for (int j = 0; j < o.items.Length; j++)
@@ -105,7 +105,7 @@ namespace Greatbone.Sample
                             h.FIELD(oi.name, box: 6).FIELD(oi.price, box: 0x23, fix: "¥").FIELD(oi.load, null, oi.unit, box: 0x23);
                         }
                     }
-                    h.FOOTER();
+                    h.CARDFOOTER();
                 });
             }
         }
@@ -172,15 +172,15 @@ namespace Greatbone.Sample
                     main.TOOLBAR();
                     main.DATAGRID(dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER();
+                        h.CH_().T("No.").T(o.id).SEP().T(o.paid)._CH();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
                         }
-                        h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
-                        h.FOOTER(o.Err(), false);
+                        h.FIELD_(width: 8)._FIELD().FIELD(o.total, "总计", box: 4);
+                        h.CARDFOOTER(o.Err(), 'w');
                     });
                 }
             }, false, 3);
@@ -211,15 +211,15 @@ namespace Greatbone.Sample
                     main.TOOLBAR(title: filter);
                     main.DATAGRID(dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER();
+                        h.CH_().T("No.").T(o.id).SEP().T(o.paid)._CH();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             h.FIELD(oi.name, box: 4).FIELD(oi.price, box: 4).FIELD(oi.qty, null, oi.unit, box: 4);
                         }
-                        h.FIELD_(box: 8)._FIELD().FIELD(o.total, "总计", box: 4);
-                        h.FOOTER(o.Err(), false);
+                        h.FIELD_(width: 8)._FIELD().FIELD(o.total, "总计", box: 4);
+                        h.CARDFOOTER(o.Err(), 'w');
                     });
                 }
             }, false, 3);
@@ -273,15 +273,15 @@ namespace Greatbone.Sample
                 dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER(Statuses[o.status], o.status == FINISHED);
+                    h.CH_().T("No.").T(o.id).SEP().T(o.paid)._CH(Statuses[o.status], o.status == FINISHED);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
                         h.FIELD(oi.name, box: 6).FIELD(oi.price, fix: "¥", box: 0x23).FIELD(oi.qty, fix: oi.unit, box: 3);
                     }
-                    h.BOX_(9)._BOX().FIELD(o.total, "总价", fix: "¥", box: 3);
-                    h.FOOTER();
+                    h.FIELD(o.total, "总价", fix: "¥", box: 3);
+                    h.CARDFOOTER();
                 }, false, 3);
             }
         }

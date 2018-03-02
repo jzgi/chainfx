@@ -99,7 +99,7 @@ namespace Greatbone.Sample
                         h.FIELDSET_("加入购物车");
                         dc.Sql("SELECT ").lst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.ICON("icon", box: 3).NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
+                        h.ICON("icon").NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
 
                         h.FOOTBAR_().BUTTON("确定")._FOOTBAR();

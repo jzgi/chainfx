@@ -16,17 +16,15 @@ function byprepay(trig) {
     xhr.open(method, action, false);
     xhr.responseType = 'json';
     xhr.onload = function (e) {
-        if (this.status == 200) {
-            var data = this.responseText;
-            WeixinJSBridge.invoke('getBrandWCPayRequest', data,
-                function (res) {
-                    if (res.err_msg == "get_brand_wcpay_request:ok") {
-                        alert('支付成功!');
-                        location.reload();
-                    }
+        var data = this.responseText;
+        WeixinJSBridge.invoke('getBrandWCPayRequest', data,
+            function (res) {
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    alert('支付成功!');
+                    location.reload();
                 }
-            );
-        }
+            }
+        );
     };
     xhr.send();
 
@@ -50,7 +48,7 @@ function serialize(form) {
 const CONFIRM = 1, PROMPT = 2, SHOW = 4, OPEN = 8;
 
 function dialog(trig, mode, pick, siz, title) {
-    var sizc = siz == 'f' ? ' uk-modal-full' : siz == 'c' ? ' uk-modal-container' : '';
+    var sizc = siz == 2 ? ' uk-modal-full' : siz == 1 ? ' uk-modal-container' : '';
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
     var tag = trig.tagName;
@@ -79,18 +77,18 @@ function dialog(trig, mode, pick, siz, title) {
         trigc = ' anchor-trig';
     }
 
-    var html =
-        '<div class="uk-modal' + sizc + trigc + '" uk-modal="bg-close: false">' +
-        '<div class="uk-modal-dialog" uk-overflow-auto>' +
-        '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>' +
-        '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
+    var html = '<div class="uk-modal' + sizc + trigc + '" uk-modal="bg-close: false">';
+    html += '<div class="uk-modal-dialog" uk-overflow-auto>';
+    html += '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
+    html += '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
     if (mode != OPEN) {
-        html = html + '<div class="uk-modal-footer uk-text-center"><button class="uk-button uk-button-primary uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
+        html += '<div class="uk-modal-footer uk-text-center"><button class="uk-button uk-button-primary uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
     }
-    html = html + '</div></div>';
+    html += '</div></div>';
+
     var e = appendTo(document.body, html);
-    e.addEventListener('hidden', function () { document.body.removeChild(e); }, false);
     UIkit.modal(e).show();
+    e.addEventListener('hidden', function () { document.body.removeChild(e); }, false);
     return false;
 }
 
@@ -123,7 +121,7 @@ function ok(okbtn, mode, formid, tag, action, method) {
                     var hid = document.createElement('input');
                     hid.type = 'hidden'; hid.name = pair[0]; hid.value = pair[1];
                     mform.appendChild(hid);
-                });
+                };
                 // dispose the dialog
                 UIkit.modal(div).hide();
                 UIkit.remove(div);
@@ -159,50 +157,40 @@ function crop(trig, ordinals, siz, title) {
     title = title || trig.innerHTML;
     var action = trig.href || trig.formAction;
     switch (siz) {
-        case 1: wid = 120; hei = 120;
-            break;
-        case 2: wid = 240; hei = 240;
-            break;
-        case 3: wid = 320; hei = 320;
-            break;
-        case 4: wid = 480; hei = 480;
-            break;
-        default: wid = 640; hei = 640;
-            break;
+        case 1: wid = 120; hei = 120; break;
+        case 2: wid = 240; hei = 240; break;
+        case 3: wid = 320; hei = 320; break;
+        case 4: wid = 480; hei = 480; break;
+        default: wid = 640; hei = 640; break;
     }
-
-    var html =
-        '<div class="uk-modal uk-modal-full' + trigc + '" uk-modal="bg-close: false">' +
-        '<form class="uk-modal-dialog" uk-overflow-auto>' +
-        '<div class="uk-modal-header">';
-
+    var html = '<div class="uk-modal uk-modal-full' + trigc + '" uk-modal="bg-close: false">';
+    html += '<form class="uk-modal-dialog">';
+    html += '<div class="uk-modal-header">';
     if (ordinals > 0) {
-        html += '<select id="ordinal" onchange="bind(\'' + action + '\', this.value, ' + wid + ', ' + hei + ')">';
+        html += '<select name="ordinal" onchange="bind(this.form.querySelector(\'.crop\'), \'' + action + '\', this.value, ' + wid + ', ' + hei + ')">';
         for (var i = 1; i <= ordinals; i++) {
             html += '<option value="' + i + '">' + i + '</option>';
         }
         html += '</select>';
-        html += '<button class="uk-button uk-button-default" onclick="this.form.querySelector(\'#fileinput\').click();">浏览...</button><button class="button hollow" onclick="upload(\'' + action + '\', $(\'#ordinal\').val());">确定上传</button>';
-        html += '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
     }
+    html += '<button class="uk-button uk-button-default" onclick="this.form.querySelector(\'input[type="file"]\').click();">浏览...</button>';
+    html += '<button class="uk-button uk-button-default" onclick="upload(this.form.querySelector(\'.crop\'), \'' + action + '\', this.form[\'ordinal\'].value);">确定上传</button>';
+    html += '<button class="uk-modal-close-default" type="button" uk-close></button>';
     html += '</div>'; // header
-
-    html += '<div id="uk-modal-body crop"><input type="file" id="fileinput" style="display: none;" onchange="bind(window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
+    html += '<div class="uk-modal-body uk-padding-remove crop"><input type="file" style="display: none;" onchange="bind(this.parentNode, window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
     html += '</form>'; // uk-dialog
     html += '</div>'; // uk-modal
 
     var e = appendTo(document.body, html);
-    e.addEventListener('hidden', function () { document.body.removeChild(e); }, false);
-    bind(action, 1, wid, hei);
     UIkit.modal(e).show();
+    bind(e.querySelector('.crop'), action, 1, wid, hei);
+    e.addEventListener('hidden', function () { document.body.removeChild(e); }, false);
     return false;
 }
 
-function bind(url, ordinal, width, height) {
+function bind(el, url, ordinal, width, height) {
     if (ordinal) url = url + '-' + ordinal;
-    var mc = $('#crop');
-    mc.croppie('destroy');
-    mc.croppie({
+    new Croppie(el, {
         url: url,
         viewport: {
             width: width,
@@ -212,10 +200,10 @@ function bind(url, ordinal, width, height) {
     });
 }
 
-function upload(url, ordinal) {
+function upload(el, url, ordinal) {
     if (ordinal) url = url + '-' + ordinal;
     // get blob of cropped image
-    $('#crop').croppie('result',
+    new Croppie(el).result(
         {
             type: 'blob',
             size: 'viewport',
@@ -239,17 +227,16 @@ function upload(url, ordinal) {
 }
 
 // click parent's close button
-function closeup(reload) {
-    var win = window.parent;
-    var dlg = $('#dyndlg', win.document);
-    var btn = dlg.hasClass('button-trig');
-    dlg.find('.close-dlg').trigger('click'); // close-button click
+function closeUp(reload) {
+    var ifrme = window.frameElement;
+    var el = UIkit.closest(iframe, '.uk-modal');
+    UIkit.modal(el).hide();
     if (reload && btn) {
         win.location.reload(false);
     }
 }
 
-function checkit(el) {
+function checkIt(el) {
     var rec = $(el).closest('.card')
     if (!rec.length) {
         rec = $(el).closest('tr')

@@ -12,7 +12,7 @@ namespace Greatbone.Sample
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Org)obj).id);
+            CreateVar<V, string>(obj => ((Org) obj).id);
         }
     }
 
@@ -37,21 +37,28 @@ namespace Greatbone.Sample
                 {
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
                     m.DATAGRID(orgs.All(x => x.city == city), (h, o) =>
-                    {
-                        h.HEADER_().T(o.name)._HEADER(Org.Statuses[o.status], o.status == 2);
-                        h.ICON(o.id + "/icon", href: o.id + "/", box: 0x14);
-                        h.BOX_(0x48);
-                        h.P(o.descr, "简介");
-                        h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
-                        h._BOX();
-                        if (o.off > 0)
                         {
-                            h.FIELD_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
+                            h.CH_().T(o.name)._CH(Org.Statuses[o.status], o.status == 2);
+
+                            h.CARDBODY_();
+                            h.ICON(o.id + "/icon", href: o.id + "/", width: 2);
+                            h.BOX_(4);
+                            h.P(o.descr, "简介");
+                            h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                            h._BOX();
+                            if (o.off > 0)
+                            {
+                                h.FIELD_("优惠").T(o.min).T("元起订, 每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
+                            }
+
+                            h.THUMBNAIL(o.id + "/img-1", box: 2).THUMBNAIL(o.id + "/img-2", box: 2).THUMBNAIL(o.id + "/img-3", box: 2);
+                            h._CARDBODY();
+
+                            h.CARDFOOTER();
                         }
-                        h.THUMBNAIL(o.id + "/img-1", box: 3).THUMBNAIL(o.id + "/img-2", box: 3).THUMBNAIL(o.id + "/img-3", box: 3).THUMBNAIL(o.id + "/img-4", box: 3);
-                        h.FOOTER();
-                    });
-                }, true, 60, "粗狼达人 - " + city);
+                    );
+                }, true, 60, "粗狼达人 - " + city
+            );
         }
 
         /// <summary>
@@ -80,7 +87,7 @@ namespace Greatbone.Sample
                 if (orgs[orgid].areas != null)
                 {
                     var (a, _) = addr.ToDual(SEPCHAR);
-                    towx = (string)dc.Scalar("SELECT wx FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3 LIMIT 1", p => p.Set(orgid).Set(city).Set(a + "%"));
+                    towx = (string) dc.Scalar("SELECT wx FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1 AND city = @2 AND addr LIKE @3 LIMIT 1", p => p.Set(orgid).Set(city).Set(a + "%"));
                 }
                 if (towx == null)
                 {
@@ -118,12 +125,12 @@ namespace Greatbone.Sample
                 dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
-                    h.HEADER_().T(o.name).T(" / ").T(o.id)._HEADER();
+                    h.CH_().T(o.name).T(" / ").T(o.id)._CH();
                     h.FIELD(o.descr, "简介");
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
                     h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-//                    h.TAIL();
+                    //                    h.TAIL();
                 });
             }
         }
@@ -134,7 +141,7 @@ namespace Greatbone.Sample
             const byte proj = Org.ADM;
             if (ac.GET)
             {
-                var o = new Org { city = City.All[0].name };
+                var o = new Org {city = City.All[0].name};
                 o.Read(ac.Query, proj);
                 ac.GivePane(200, m =>
                 {

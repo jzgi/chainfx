@@ -18,7 +18,6 @@ html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   /* 3 */
-  background: #fff;
   color: #666;
 }
 /*
@@ -26,7 +25,13 @@ html {
  */
 body {
   margin: 0;
+  background-color: #efeff4;
 }
+
+form {
+  display: block;
+}
+
 /* Links
  ========================================================================== */
 /*
@@ -47,7 +52,7 @@ a:hover {
  */
 a,
 .uk-link {
-  color: #1e87f0;
+  color: #007aff;
   text-decoration: none;
   cursor: pointer;
 }
@@ -459,31 +464,6 @@ textarea {
 }
 
 
-.tool-bar {
-  width: 100%;
-  height: 2.5rem;
-  position: fixed;
-  top: 0;
-  background-color: #e8d5d5;
-  display: flex;
-  justify-content: space-between;
-}
-
-.tool-bar-placeholder {
-  height: 2.5rem;
-}
-
-.foot-bar {
-  width: 100%;
-  height: 2.5rem;
-  position: fixed;
-  bottom: 0;
-  padding-top: 0.5rem;
-  background-color: #e8d5d5;
-  display: flex;
-  justify-content: space-around;
-}
-
 /* ========================================================================
    Component: Link
  ========================================================================== */
@@ -515,7 +495,7 @@ a.uk-link-heading:not(:hover),
 }
 a.uk-link-heading:hover,
 .uk-link-heading a:hover {
-  color: #1e87f0;
+  color: #007aff;
   text-decoration: none;
 }
 /* Reset
@@ -1439,7 +1419,7 @@ button.uk-icon:not(:disabled) {
   outline: none;
   background-color: #fff;
   color: #666;
-  border-color: #1e87f0;
+  border-color: #007aff;
 }
 /* Disabled */
 .uk-input:disabled,
@@ -1612,7 +1592,7 @@ select.uk-form-width-xsmall {
 .uk-radio:focus,
 .uk-checkbox:focus {
   outline: none;
-  border-color: #1e87f0;
+  border-color: #007aff;
 }
 /*
  * Checked
@@ -1620,7 +1600,7 @@ select.uk-form-width-xsmall {
 .uk-radio:checked,
 .uk-checkbox:checked,
 .uk-checkbox:indeterminate {
-  background-color: #1e87f0;
+  background-color: #007aff;
   border-color: transparent;
 }
 /* Focus */
@@ -1835,35 +1815,26 @@ select.uk-form-width-xsmall {
  * 10. Required for `a`.
  */
 .uk-button {
-  /* 1 */
-  margin: 0;
-  /* 2 */
-  border: none;
-  /* 3 */
-  border-radius: 0;
-  /* 4 */
-  overflow: visible;
-  /* 5 */
-  font: inherit;
-  color: inherit;
-  /* 6 */
-  text-transform: none;
-  /* 7 */
-  display: inline-block;
-  box-sizing: border-box;
-  padding: 0 30px;
-  vertical-align: middle;
-  font-size: 0.875rem;
-  /* 8 */
-  line-height: 38px;
-  /* 9 */
-  text-align: center;
-  /* 10 */
   text-decoration: none;
-  text-transform: uppercase;
-  transition: 0.1s ease-in-out;
-  transition-property: color, background-color, border-color;
+  text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: 0 0;
+  padding: 0 10px;
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+  cursor: pointer;
+  outline: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
+
 .uk-button:not(:disabled) {
   cursor: pointer;
 }
@@ -1890,9 +1861,11 @@ select.uk-form-width-xsmall {
  * Default
  */
 .uk-button-default {
-  background-color: transparent;
-  color: #333;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #007aff;
+  color: #007aff;
+  border-radius: 5px;
+  line-height: 27px;
+  height: 29px;
 }
 /* Hover + Focus */
 .uk-button-default:hover,
@@ -1912,7 +1885,7 @@ select.uk-form-width-xsmall {
  * Primary
  */
 .uk-button-primary {
-  background-color: #1e87f0;
+  background-color: #007aff;
   color: #fff;
   border: 1px solid transparent;
 }
@@ -2000,11 +1973,9 @@ select.uk-form-width-xsmall {
  * 2. Style
  */
 .uk-button-text {
-  /* 1 */
-  padding: 0;
-  line-height: 1.5;
+  line-height: 27px;
+  height: 29px;
   background: none;
-  /* 2 */
   color: #333;
   position: relative;
 }
@@ -2039,12 +2010,10 @@ select.uk-form-width-xsmall {
  * 2. Style
  */
 .uk-button-link {
-  /* 1 */
-  padding: 0;
-  line-height: 1.5;
+  line-height: 27px;
+  height: 29px;
   background: none;
-  /* 2 */
-  color: #1e87f0;
+  color: #007aff;
 }
 /* Hover + Focus */
 .uk-button-link:hover,
@@ -2072,6 +2041,11 @@ select.uk-form-width-xsmall {
   /* 3 */
   position: relative;
 }
+
+.uk-button-group > * {
+  margin: 4px;
+}
+
 /* Group
      ========================================================================== */
 /*
@@ -2192,7 +2166,7 @@ select.uk-form-width-xsmall {
  * Primary
  */
 .uk-section-primary {
-  background: #1e87f0;
+  background: #007aff;
 }
 /*
  * Secondary
@@ -2287,301 +2261,7 @@ select.uk-form-width-xsmall {
   padding: 0;
   list-style: none;
 }
-/*
- * Grid cell
- * Note: Space is allocated solely based on content dimensions, but shrinks: 0 1 auto
- * Reset margin for e.g. paragraphs
- */
-.uk-grid > * {
-  margin: 0;
-}
-/*
- * Remove margin from the last-child
- */
-.uk-grid > * > :last-child {
-  margin-bottom: 0;
-}
-/* Gutter
- ========================================================================== */
-/*
- * Default
- */
-/* Horizontal */
-.uk-grid {
-  margin-left: -30px;
-}
-.uk-grid > * {
-  padding-left: 30px;
-}
-/* Vertical */
-.uk-grid + .uk-grid,
-.uk-grid > .uk-grid-margin,
-* + .uk-grid-margin {
-  margin-top: 30px;
-}
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-  /* Horizontal */
-  .uk-grid {
-    margin-left: -40px;
-  }
-  .uk-grid > * {
-    padding-left: 40px;
-  }
-  /* Vertical */
-  .uk-grid + .uk-grid,
-  .uk-grid > .uk-grid-margin,
-  * + .uk-grid-margin {
-    margin-top: 40px;
-  }
-}
-/*
- * Small
- */
-/* Horizontal */
-.uk-grid-small {
-  margin-left: -15px;
-}
-.uk-grid-small > * {
-  padding-left: 15px;
-}
-/* Vertical */
-.uk-grid + .uk-grid-small,
-.uk-grid-small > .uk-grid-margin,
-* + .uk-grid-margin-small {
-  margin-top: 15px;
-}
-/*
- * Medium
- */
-/* Horizontal */
-.uk-grid-medium {
-  margin-left: -30px;
-}
-.uk-grid-medium > * {
-  padding-left: 30px;
-}
-/* Vertical */
-.uk-grid + .uk-grid-medium,
-.uk-grid-medium > .uk-grid-margin,
-* + .uk-grid-margin-medium {
-  margin-top: 30px;
-}
-/*
- * Large
- */
-/* Horizontal */
-.uk-grid-large {
-  margin-left: -40px;
-}
-.uk-grid-large > * {
-  padding-left: 40px;
-}
-/* Vertical */
-.uk-grid + .uk-grid-large,
-.uk-grid-large > .uk-grid-margin,
-* + .uk-grid-margin-large {
-  margin-top: 40px;
-}
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-  /* Horizontal */
-  .uk-grid-large {
-    margin-left: -70px;
-  }
-  .uk-grid-large > * {
-    padding-left: 70px;
-  }
-  /* Vertical */
-  .uk-grid + .uk-grid-large,
-  .uk-grid-large > .uk-grid-margin,
-  * + .uk-grid-margin-large {
-    margin-top: 70px;
-  }
-}
-/*
- * Collapse
- */
-/* Horizontal */
-.uk-grid-collapse {
-  margin-left: 0;
-}
-.uk-grid-collapse > * {
-  padding-left: 0;
-}
-/* Vertical */
-.uk-grid + .uk-grid-collapse,
-.uk-grid-collapse > .uk-grid-margin {
-  margin-top: 0;
-}
-/* Divider
- ========================================================================== */
-.uk-grid-divider > * {
-  position: relative;
-}
-.uk-grid-divider > :not(.uk-first-column)::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-left: 1px solid #e5e5e5;
-}
-/* Vertical */
-.uk-grid-divider.uk-grid-stack > .uk-grid-margin::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  border-top: 1px solid #e5e5e5;
-}
-/*
- * Default
- */
-/* Horizontal */
-.uk-grid-divider {
-  margin-left: -60px;
-}
-.uk-grid-divider > * {
-  padding-left: 60px;
-}
-.uk-grid-divider > :not(.uk-first-column)::before {
-  left: 30px;
-}
-/* Vertical */
-.uk-grid-divider.uk-grid-stack > .uk-grid-margin {
-  margin-top: 60px;
-}
-.uk-grid-divider.uk-grid-stack > .uk-grid-margin::before {
-  top: -30px;
-  left: 60px;
-}
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-  /* Horizontal */
-  .uk-grid-divider {
-    margin-left: -80px;
-  }
-  .uk-grid-divider > * {
-    padding-left: 80px;
-  }
-  .uk-grid-divider > :not(.uk-first-column)::before {
-    left: 40px;
-  }
-  /* Vertical */
-  .uk-grid-divider.uk-grid-stack > .uk-grid-margin {
-    margin-top: 80px;
-  }
-  .uk-grid-divider.uk-grid-stack > .uk-grid-margin::before {
-    top: -40px;
-    left: 80px;
-  }
-}
-/*
- * Small
- */
-/* Horizontal */
-.uk-grid-divider.uk-grid-small {
-  margin-left: -30px;
-}
-.uk-grid-divider.uk-grid-small > * {
-  padding-left: 30px;
-}
-.uk-grid-divider.uk-grid-small > :not(.uk-first-column)::before {
-  left: 15px;
-}
-/* Vertical */
-.uk-grid-divider.uk-grid-small.uk-grid-stack > .uk-grid-margin {
-  margin-top: 30px;
-}
-.uk-grid-divider.uk-grid-small.uk-grid-stack > .uk-grid-margin::before {
-  top: -15px;
-  left: 30px;
-}
-/*
- * Medium
- */
-/* Horizontal */
-.uk-grid-divider.uk-grid-medium {
-  margin-left: -60px;
-}
-.uk-grid-divider.uk-grid-medium > * {
-  padding-left: 60px;
-}
-.uk-grid-divider.uk-grid-medium > :not(.uk-first-column)::before {
-  left: 30px;
-}
-/* Vertical */
-.uk-grid-divider.uk-grid-medium.uk-grid-stack > .uk-grid-margin {
-  margin-top: 60px;
-}
-.uk-grid-divider.uk-grid-medium.uk-grid-stack > .uk-grid-margin::before {
-  top: -30px;
-  left: 60px;
-}
-/*
- * Large
- */
-/* Horizontal */
-.uk-grid-divider.uk-grid-large {
-  margin-left: -80px;
-}
-.uk-grid-divider.uk-grid-large > * {
-  padding-left: 80px;
-}
-.uk-grid-divider.uk-grid-large > :not(.uk-first-column)::before {
-  left: 40px;
-}
-/* Vertical */
-.uk-grid-divider.uk-grid-large.uk-grid-stack > .uk-grid-margin {
-  margin-top: 80px;
-}
-.uk-grid-divider.uk-grid-large.uk-grid-stack > .uk-grid-margin::before {
-  top: -40px;
-  left: 80px;
-}
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-  /* Horizontal */
-  .uk-grid-divider.uk-grid-large {
-    margin-left: -140px;
-  }
-  .uk-grid-divider.uk-grid-large > * {
-    padding-left: 140px;
-  }
-  .uk-grid-divider.uk-grid-large > :not(.uk-first-column)::before {
-    left: 70px;
-  }
-  /* Vertical */
-  .uk-grid-divider.uk-grid-large.uk-grid-stack > .uk-grid-margin {
-    margin-top: 140px;
-  }
-  .uk-grid-divider.uk-grid-large.uk-grid-stack > .uk-grid-margin::before {
-    top: -70px;
-    left: 140px;
-  }
-}
-/* Match child of a grid cell
- ========================================================================== */
-/*
- * Behave like a block element
- * 1. Wrap into the next line
- * 2. Take the full width, at least 100%. Only if no class from the Width component is set.
- * 3. Expand width even if larger than 100%, e.g. because of negative margin (Needed for nested grids)
- */
-.uk-grid-match > *,
-.uk-grid-item-match {
-  display: flex;
-  /* 1 */
-  flex-wrap: wrap;
-}
-.uk-grid-match > * > :not([class*='uk-width']),
-.uk-grid-item-match > :not([class*='uk-width']) {
-  /* 2 */
-  box-sizing: border-box;
-  width: 100%;
-  /* 3 */
-  flex: auto;
-}
+
 /* ========================================================================
    Component: Tile
  ========================================================================== */
@@ -2688,7 +2368,7 @@ select.uk-form-width-xsmall {
  * Primary
  */
 .uk-tile-primary {
-  background: #1e87f0;
+  background: #007aff;
 }
 /*
  * Secondary
@@ -2793,7 +2473,9 @@ select.uk-form-width-xsmall {
 .uk-card-default {
   background: #fff;
   color: #666;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  margin: 10px;
 }
 .uk-card-default .uk-card-title {
   color: #333;
@@ -2812,7 +2494,7 @@ select.uk-form-width-xsmall {
  * Primary
  */
 .uk-card-primary {
-  background: #1e87f0;
+  background: #007aff;
   color: #fff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
@@ -2820,7 +2502,7 @@ select.uk-form-width-xsmall {
   color: #fff;
 }
 .uk-card-primary.uk-card-hover:hover {
-  background-color: #1e87f0;
+  background-color: #007aff;
   box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
 /*
@@ -3085,7 +2767,7 @@ select.uk-form-width-xsmall {
  */
 .uk-alert-primary {
   background: #d8eafc;
-  color: #1e87f0;
+  color: #007aff;
 }
 /*
  * Success
@@ -3142,7 +2824,7 @@ select.uk-form-width-xsmall {
   border-radius: 500px;
   vertical-align: middle;
   /* 1 */
-  background: #1e87f0;
+  background: #007aff;
   color: #fff;
   font-size: 0.875rem;
   /* 2 */
@@ -3165,7 +2847,7 @@ select.uk-form-width-xsmall {
 .uk-label {
   display: inline-block;
   padding: 0 10px;
-  background: #1e87f0;
+  background: #007aff;
   line-height: 1.5;
   font-size: 0.875rem;
   color: #fff;
@@ -4206,7 +3888,7 @@ ul.uk-nav-sub {
 }
 /* Active */
 .uk-subnav-pill > .uk-active > a {
-  background-color: #1e87f0;
+  background-color: #007aff;
   color: #fff;
 }
 /* Disabled
@@ -4358,7 +4040,7 @@ ul.uk-nav-sub {
   /* 1 */
   flex: none;
   /* 2 */
-  padding-left: 20px;
+  padding-left: 15px;
   /* 3 */
   position: relative;
 }
@@ -4390,7 +4072,7 @@ ul.uk-nav-sub {
 /* Active */
 .uk-tab > .uk-active > a {
   color: #333;
-  border-color: #1e87f0;
+  background-color: #f7f7f8;
 }
 /* Disabled */
 .uk-tab > .uk-disabled > a {
@@ -4967,7 +4649,10 @@ ul.uk-nav-sub {
   width: 100%;
   max-width: 100%;
   transform: translateY(0);
+  height: calc(100% - 7.5rem);
+  height: -webkit-calc(100% - 7.5rem);
 }
+
 /* Sections
  ========================================================================== */
 .uk-modal-body {
@@ -5730,7 +5415,7 @@ ul.uk-nav-sub {
  * Primary
  */
 .uk-notification-message-primary {
-  color: #1e87f0;
+  color: #007aff;
 }
 /*
  * Success
@@ -5868,14 +5553,14 @@ ul.uk-nav-sub {
  * 1. Remove right border in IE11 and Edge
  */
 .uk-progress::-webkit-progress-value {
-  background-color: #1e87f0;
+  background-color: #007aff;
   transition: width 0.6s ease;
 }
 .uk-progress::-moz-progress-bar {
-  background-color: #1e87f0;
+  background-color: #007aff;
 }
 .uk-progress::-ms-fill {
-  background-color: #1e87f0;
+  background-color: #007aff;
   transition: width 0.6s ease;
   /* 1 */
   border: 0;
@@ -6917,7 +6602,7 @@ ul.uk-nav-sub {
   color: #999 !important;
 }
 .uk-text-primary {
-  color: #1e87f0 !important;
+  color: #007aff !important;
 }
 .uk-text-success {
   color: #32d296 !important;
@@ -6943,11 +6628,11 @@ ul.uk-nav-sub {
   /* 2 */
   display: inline-block;
   /* 3 */
-  color: #1e87f0 !important;
+  color: #007aff !important;
 }
 @supports (-webkit-background-clip: text) {
   .uk-text-background {
-    background-color: #1e87f0;
+    background-color: #007aff;
   }
 }
 /* Alignment modifiers
@@ -7250,7 +6935,7 @@ iframe.uk-cover {
   background-color: #f8f8f8;
 }
 .uk-background-primary {
-  background-color: #1e87f0;
+  background-color: #007aff;
 }
 .uk-background-secondary {
   background-color: #222;
@@ -7705,7 +7390,7 @@ iframe.uk-cover {
   border-radius: 50%;
 }
 .uk-border-rounded {
-  border-radius: 5px;
+  border-radius: 25px;
 }
 /*
  * Fix `overflow: hidden` to be ignored with border-radius and CSS transforms in Webkit
