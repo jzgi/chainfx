@@ -48,7 +48,7 @@ function serialize(form) {
 const CONFIRM = 1, PROMPT = 2, SHOW = 4, OPEN = 8;
 
 function dialog(trig, mode, pick, siz, title) {
-    var sizc = siz == 2 ? ' uk-modal-full' : siz == 1 ? ' uk-modal-container' : '';
+    var sizc = siz <= 0 ? '' : siz == 1 ? ' uk-modal-container' : ' uk-modal-full';
     // keep the trigger info
     var formid = trig.form ? trig.form.id : '';
     var tag = trig.tagName;
@@ -157,7 +157,7 @@ function crop(trig, ordinals, siz, title) {
     title = title || trig.innerHTML;
     var action = trig.href || trig.formAction;
     switch (siz) {
-        case 1: wid = 120; hei = 120; break;
+        case 1: wid = 160; hei = 160; break;
         case 2: wid = 240; hei = 240; break;
         case 3: wid = 320; hei = 320; break;
         case 4: wid = 480; hei = 480; break;
@@ -166,6 +166,7 @@ function crop(trig, ordinals, siz, title) {
     var html = '<div class="uk-modal uk-modal-full' + trigc + '" uk-modal="bg-close: false">';
     html += '<form class="uk-modal-dialog">';
     html += '<div class="uk-modal-header">';
+    html += '<div class="uk-button-group">';
     if (ordinals > 0) {
         html += '<select name="ordinal" onchange="bind(this.form.querySelector(\'.crop\'), \'' + action + '\', this.value, ' + wid + ', ' + hei + ')">';
         for (var i = 1; i <= ordinals; i++) {
@@ -173,8 +174,9 @@ function crop(trig, ordinals, siz, title) {
         }
         html += '</select>';
     }
-    html += '<button class="uk-button uk-button-default" onclick="this.form.querySelector(\'input[type="file"]\').click();">浏览...</button>';
-    html += '<button class="uk-button uk-button-default" onclick="upload(this.form.querySelector(\'.crop\'), \'' + action + '\', this.form[\'ordinal\'].value);">确定上传</button>';
+    html += '<button class="uk-button uk-button-default uk-border-rounded" onclick="this.form.querySelector(\'input[type="file"]\').click();">浏览...</button>';
+    html += '<button class="uk-button uk-button-default uk-border-rounded" onclick="upload(this.form.querySelector(\'.crop\'), \'' + action + '\', this.form[\'ordinal\'].value);">确定上传</button>';
+    html += '</div>'; // control group
     html += '<button class="uk-modal-close-default" type="button" uk-close></button>';
     html += '</div>'; // header
     html += '<div class="uk-modal-body uk-padding-remove crop"><input type="file" style="display: none;" onchange="bind(this.parentNode, window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';

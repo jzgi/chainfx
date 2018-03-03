@@ -10,7 +10,7 @@
  */
 html {
   /* 1 */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   font-weight: normal;
   line-height: 1.5;
@@ -4649,8 +4649,8 @@ ul.uk-nav-sub {
   width: 100%;
   max-width: 100%;
   transform: translateY(0);
-  height: calc(100% - 7.5rem);
-  height: -webkit-calc(100% - 7.5rem);
+  height: calc(100% - 6.25rem);
+  height: -webkit-calc(100% - 6.25rem);
 }
 
 /* Sections
@@ -4658,8 +4658,11 @@ ul.uk-nav-sub {
 .uk-modal-body {
   padding: 30px 30px;
 }
+
 .uk-modal-header {
-  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
   background: #fff;
   border-bottom: 1px solid #e5e5e5;
 }
