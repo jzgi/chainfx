@@ -38,7 +38,7 @@ namespace Greatbone.Sample
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
                     m.DATAGRID(orgs.All(x => x.city == city), (h, o) =>
                         {
-                            h.CH_().T(o.name)._CH(Org.Statuses[o.status], o.status == 2);
+                            h.CARDHEADER_().T(o.name)._CARDHEADER(Org.Statuses[o.status], o.status == 2);
 
                             h.CARDBODY_();
                             h.ICON(o.id + "/icon", href: o.id + "/", width: 2);
@@ -125,7 +125,7 @@ namespace Greatbone.Sample
                 dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
-                    h.CH_().T(o.name).T(" / ").T(o.id)._CH();
+                    h.CARDHEADER_().T(o.name).T(" / ").T(o.id)._CARDHEADER();
                     h.FIELD(o.descr, "简介");
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();

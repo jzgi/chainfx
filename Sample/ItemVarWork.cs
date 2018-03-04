@@ -81,7 +81,7 @@ namespace Greatbone.Sample
                                 (a, b) = prin.addr.ToDual(SEPCHAR);
                                 tel = prin.tel;
                                 h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                                h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
+                                h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, width: 8);
                                 h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             }
                             else // free delivery
@@ -90,8 +90,8 @@ namespace Greatbone.Sample
                                 city = prin.city;
                                 a = prin.addr;
                                 tel = prin.tel;
-                                h.SELECT(nameof(city), city, City.All, required: true, box: 3).TEXT(nameof(a), a, max: 20, required: true, box: 9);
-                                h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, box: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
+                                h.SELECT(nameof(city), city, City.All, required: true, box: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
+                                h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                             }
                             h._FIELDSET();
                         }
@@ -185,7 +185,7 @@ namespace Greatbone.Sample
                         m.FORM_();
                         m.FIELD(o.name, "名称");
                         m.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
-                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true, box: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
+                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true, width: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
                         m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
                         m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "可供", box: 6);
                         m._FORM();

@@ -79,8 +79,10 @@ namespace Greatbone.Sample
                     }
                     if (org.off > 0) m.P_("优惠").T(org.min).T("元起订，每满").T(org.notch).T("元立减").T(org.off).T("元")._P();
                     m._BOX();
-                    m.QRCODE(NETADDR + ac.Uri, box: 0x14);
-                    m.TOOL("msg").A("&#128222; 客服电话", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._BOX();
+                    m.BOX_();
+                    m.QRCODE(NETADDR + ac.Uri, width: 2);
+                    m.BOX_(4).TOOL("msg").A("&#128222; 客服电话", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._BOX();
+                    m._BOX();
                     m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
@@ -88,7 +90,7 @@ namespace Greatbone.Sample
                     {
                         h.CARDHEADER(o.name);
                         h.ICON((o.name) + "/icon");
-                        h.P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
+                        h.P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em");
                         h.CARDFOOTER();
                         // adjust item availability
                         if (org.status == 0) o.stock = 0;

@@ -529,24 +529,13 @@ namespace Greatbone.Core
 
         public HtmlContent A(string v, string href, bool? hollow = null, string targ = null)
         {
-            Add("<a href=\"");
+            Add("<a class=\"uk-button uk-button-link\" href=\"");
             Add(href);
             if (targ != null)
             {
                 Add("\" target=\"");
                 Add(targ);
                 Add("\"");
-            }
-            if (hollow.HasValue)
-            {
-                if (hollow == true)
-                {
-                    Add("\" class=\"button primary round hollow");
-                }
-                else
-                {
-                    Add("\" class=\"button primary round");
-                }
             }
             Add("\">");
             Add(v);
@@ -784,18 +773,17 @@ namespace Greatbone.Core
 
         public HtmlContent FIELD_(string label = null, byte width = 6)
         {
-            Add("<div class=\"");
+            Add("<div class=\"form-field");
             if (width > 0)
             {
                 Width(width);
-                Add("\"");
             }
             Add("\">");
             if (label != null)
             {
-                Add("<span class=\"uk-form-label\">");
+                Add("<label>");
                 Add(label);
-                Add("</span>");
+                Add("</label>");
             }
             return this;
         }
@@ -860,9 +848,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
-                Add("<span class=\"label\">");
+                Add("<label>");
                 Add(label);
-                Add("</span>");
+                Add("</label>");
             }
             if (tag != null)
             {
@@ -1006,44 +994,27 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent QRCODE(string val = null, byte box = 0x0c)
+        public HtmlContent QRCODE(string val = null, byte width = 6)
         {
-            Add("<div>");
-            Add("<script type=\"text/javascript\">");
+            Add("<div class=\"");
+            Width(width);
+            Add("\"><script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
             Add("new QRCode(scripte.parentNode, \"");
             Add(val);
             Add("\");");
             Add("</script>");
             Add("</div>");
-            _BOX();
             return this;
         }
 
         public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
         {
-            // current dropdown - procedure - ordinal as the id
-            string m = webCtx.Procedure.Lower;
-            Add("<a class=\"primary\" data-toggle=\"dropdown-");
-            Add(m);
-            Add('-');
-            Add(ordinal);
-            Add("\">");
+            Add("<a href=\"#orginfo\" class=\"uk-button ukbutton-link\" uk-toggle>");
             Add(label);
             Add("</a>");
-            Add("<div class=\"dropdown-pane");
-            if (size > 0)
-            {
-                Add(size == 1 ? " tiny" :
-                    size == 2 ? " small" :
-                    size == 3 ? " medium" : " large");
-            }
-            Add("\" id=\"dropdown-");
-            Add(m);
-            Add('-');
-            Add(ordinal);
-            Add("\" data-dropdown data-close-on-click=\"true\">");
-            Add("<div class=\"grid-x\">");
+            Add("<div id=\"orginfo\" class=\"uk-modal\" uk-modal>");
+            Add("<div class=\"uk-modal-dialog uk-modal-body\">");
             return this;
         }
 
@@ -1056,7 +1027,7 @@ namespace Greatbone.Core
 
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
-            Add("<form class=\"grid-x\"");
+            Add("<form uk-grid class=\"uk-grid\"");
             if (action != null)
             {
                 Add(" action=\"");
@@ -1398,38 +1369,12 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARD<D>(D obj, Action<D> card, char style = (char) 0)
-        {
-            Add("<form class=\"uk-card");
-            if (style == 'd')
-            {
-                Add(" uk-card-default");
-            }
-            else if (style == 'p')
-            {
-                Add(" uk-card-primary");
-            }
-            else if (style == 's')
-            {
-                Add(" uk-card-secondary");
-            }
-            Add("\" id=\"card-");
-
-            Add(++ordinal);
-            Add("\">");
-            if (obj != null)
-            {
-                model = obj;
-                card(obj);
-            }
-            return this;
-        }
-
         public HtmlContent CARD_(IData obj = null)
         {
-            Add("<form class=\"uk-card uk-card-default\" id=\"card-");
+            Add("<div class=\"uk-card uk-card-default\" id=\"card-");
             Add(++ordinal);
             Add("\">");
+            Add("<form>");
             if (obj != null)
             {
                 model = obj;
@@ -1440,19 +1385,20 @@ namespace Greatbone.Core
         public HtmlContent _CARD()
         {
             Add("</form>");
+            Add("</div>");
             model = null;
             return this;
         }
 
         public HtmlContent CARDHEADER(string title, string sign = null, bool on = false)
         {
-            CH_();
+            CARDHEADER_();
             Add(title);
-            _CH(sign, on);
+            _CARDHEADER(sign, on);
             return this;
         }
 
-        public HtmlContent CH_()
+        public HtmlContent CARDHEADER_()
         {
             Add("<div class=\"uk-card-header\">");
             if (model != null)
@@ -1469,7 +1415,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CH(string sign = null, bool on = false)
+        public HtmlContent _CARDHEADER(string sign = null, bool on = false)
         {
             if (sign != null)
             {
@@ -1496,7 +1442,7 @@ namespace Greatbone.Core
 
         public HtmlContent CARDBODY_()
         {
-            Add("<div class=\"uk-grid uk-card-body\" uk-grid>");
+            Add("<div class=\"uk-grid uk-card-body uk-grid-small uk-padding-small\" uk-grid>");
             return this;
         }
 
@@ -1637,8 +1583,8 @@ namespace Greatbone.Core
             }
             else if (tool.IsButton)
             {
-                Add("<button  class=\"uk-button uk-button-default uk-border-rounded");
-                if (!prc.IsCapital) Add(" hollow");
+                Add("<button  class=\"uk-button uk-border-rounded");
+                Add(prc.IsCapital ? " uk-button-primary " : " uk-button-default ");
                 Add("\" name=\"");
                 Add(prc.Key);
                 Add("\" formaction=\"");
@@ -1729,9 +1675,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEXT(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte width = 0x0c)
         {
-            FIELD_(label, box);
+            FIELD_(label, width);
 
             Add("<input type=\"text\" name=\"");
             Add(name);

@@ -77,7 +77,7 @@ namespace Greatbone.Sample
                             (a, b) = oaddr.ToDual(SEPCHAR);
                             tel = otel;
                             h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                            h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, box: 8);
+                            h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, width: 8);
                             h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         }
                         else // free delivery
@@ -86,8 +86,8 @@ namespace Greatbone.Sample
                             city = ocity;
                             a = oaddr;
                             tel = otel;
-                            h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, max: 20, required: true, box: 9);
-                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, box: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
+                            h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
+                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                         }
                         h._FIELDSET();
                     }

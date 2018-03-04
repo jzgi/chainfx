@@ -78,7 +78,7 @@ function dialog(trig, mode, pick, siz, title) {
     }
 
     var html = '<div class="uk-modal' + sizc + trigc + '" uk-modal="bg-close: false">';
-    html += '<div class="uk-modal-dialog" uk-overflow-auto>';
+    html += '<div class="uk-modal-dialog">';
     html += '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
     html += '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
     if (mode != OPEN) {
