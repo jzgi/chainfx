@@ -69,7 +69,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
@@ -113,6 +113,10 @@ namespace Greatbone.Sample
             }
             h.Add(" </ul>");
 
+            h.Add("<script>");
+//            h.Add("$('#frametabs').on('change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
+            h.Add("</script>");
+
             h.Add("</body>");
             h.Add("</html>");
 
@@ -138,7 +142,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body>");
@@ -168,12 +172,23 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.js\"></script>");
+            h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body>");
 
             main?.Invoke(h);
+
+            h.Add("<script>");
+            if (main != null) // enable the ok button
+            {
+                h.Add("window.parent.document.getElementById('okbtn').disabled = (document.forms.length == 0);");
+            }
+            else // trigger click on the close-button
+            {
+                h.Add("closeUp(true);");
+            }
+            h.Add("</script>");
 
             h.Add("</body>");
             h.Add("</html>");

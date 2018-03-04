@@ -89,8 +89,10 @@ namespace Greatbone.Sample
                     m.DATAGRID(items, (h, o) =>
                     {
                         h.CARDHEADER(o.name);
+                        h.CARDBODY_();
                         h.ICON((o.name) + "/icon");
-                        h.P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em");
+                        h.BOX_(4).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
+                        h._CARDBODY();
                         h.CARDFOOTER();
                         // adjust item availability
                         if (org.status == 0) o.stock = 0;
@@ -141,7 +143,7 @@ namespace Greatbone.Sample
                         m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                         m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                        m.NUMBER(nameof(o.x), o.x, "经度", box: 6).NUMBER(nameof(o.x), o.x, "纬度", box: 6);
+                        m.NUMBER(nameof(o.x), o.x, "经度", width: 6).NUMBER(nameof(o.x), o.x, "纬度", width: 6);
                         m._FORM();
                     });
                 }

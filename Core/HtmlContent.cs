@@ -794,39 +794,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CELL_(sbyte small = 0, sbyte medium = 0, sbyte large = 0, sbyte xlarge = 0)
-        {
-            Add("<div class=\"cell");
-            if (small > 0)
-            {
-                Add(" small-");
-                Add(small);
-            }
-            if (medium > 0)
-            {
-                Add(" medium-");
-                Add(medium);
-            }
-            if (large > 0)
-            {
-                Add(" large-");
-                Add(large);
-            }
-            if (xlarge > 0)
-            {
-                Add(" xlarge-");
-                Add(xlarge);
-            }
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _CELL()
-        {
-            Add("</div>");
-            return this;
-        }
-
         public HtmlContent BOX_(byte width = 6)
         {
             Add("<div class=\"uk-flex uk-flex-column uk-flex-left uk-flex-top");
@@ -891,9 +858,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
-                Add("<span class=\"label\">");
+                Add("<label>");
                 Add(label);
-                Add("</span>");
+                Add("</label>");
             }
             return this;
         }
@@ -1216,7 +1183,7 @@ namespace Greatbone.Core
                     Add(title);
                     Add("&nbsp;");
                 }
-                Add("<a class=\"primary\" href=\"javascript: location.reload(false);\" style=\"font-size: 1.75rem; line-height: 1;\">&#9851;</a>");
+                Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
                 Add("</div>");
             }
             Add("</form>");
@@ -1462,7 +1429,7 @@ namespace Greatbone.Core
 
         public HtmlContent CARDFOOTER_(string text = null, char color = (char) 0)
         {
-            Add("<div class=\"uk-card-footer uk-grid-small uk-flex-between\" uk-grid>");
+            Add("<div class=\"uk-card-footer uk-grid uk-flex-between\" uk-grid>");
             if (text != null)
             {
                 Add("<span class=\"");
@@ -1679,7 +1646,7 @@ namespace Greatbone.Core
         {
             FIELD_(label, width);
 
-            Add("<input type=\"text\" name=\"");
+            Add("<input type=\"text\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(val);
@@ -1902,9 +1869,9 @@ namespace Greatbone.Core
             else if (v is DateTime dtv) Add(dtv);
         }
 
-        public HtmlContent NUMBER<V>(string name, V val, string label = null, string tip = null, V max = default, V min = default, V step = default, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent NUMBER<V>(string name, V val, string label = null, string tip = null, V max = default, V min = default, V step = default, bool @readonly = false, bool required = false, byte width = 6)
         {
-            FIELD_(label, box);
+            FIELD_(label, width);
 
             bool grp = !step.Equals(default(V)); // input group with up and down
             if (grp)
@@ -1912,7 +1879,7 @@ namespace Greatbone.Core
                 Add("<div class=\"input-group\">");
                 Add("<a class=\"input-group-label round\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
             }
-            Add("<input type=\"number\" name=\"");
+            Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(val);
@@ -2086,10 +2053,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string val, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEXTAREA(string name, string val, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 6)
         {
             FIELD_(label, box);
-            Add("<textarea name=\"");
+            Add("<textarea class=\"uk-textarea\" name=\"");
             Add(name);
             Add("\"");
 
@@ -2126,10 +2093,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string[] val, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEXTAREA(string name, string[] val, string label = null, string help = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte width = 6)
         {
-            FIELD_(label, box);
-            Add("<textarea name=\"");
+            FIELD_(label, width);
+            Add("<textarea class=\"uk-textarea\" name=\"");
             Add(name);
             Add("\"");
 

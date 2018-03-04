@@ -43,16 +43,18 @@ namespace Greatbone.Sample
                         }
                         m.CARD_(o);
                         m.CARDHEADER_().T(o.orgname)._IF(o.paid)._CARDHEADER(Statuses[o.status], o.status <= PAID);
-                        m.FIELD_("收货", width: 0x4a).T(o.city).T(o.addr)._T(o.name).BR().T(o.tel)._FIELD().FIELD_(width: 2).VARTOOL("addr", when: o.status == 0)._FIELD();
+
+                        m.CARDBODY_();
+                        m.P_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._P().P_().VARTOOL("addr", when: o.status == 0)._P();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
                                 m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon");
-                                m.P(oi.name).P(oi.price, fix: "¥")._BOX();
-                                m.P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0)._BOX();
-                                m.P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
+                                m.P(oi.name).P(oi.price, fix: "¥");
+                                m.P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0);
+                                m.P(oi.load, fix: oi.unit, when: o.typ == POS);
                             }
                             else
                             {
@@ -61,7 +63,10 @@ namespace Greatbone.Sample
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", box: 8);
                         m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, box: 4);
+                        m._CARDBODY();
+                        
                         m.CARDFOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
+                        
                         m._CARD();
                     }
                     m._DATAGRID(arr?.Length ?? 0);

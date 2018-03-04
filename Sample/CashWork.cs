@@ -50,7 +50,7 @@ namespace Greatbone.Sample
                     m.FORM_();
                     m.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类型");
                     m.TEXT(nameof(o.descr), o.descr, "简述", max: 20);
-                    m.NUMBER(nameof(o.receive), o.receive, "收入", box: 6).NUMBER(nameof(o.pay), o.pay, "支出", box: 6);
+                    m.NUMBER(nameof(o.receive), o.receive, "收入", width: 6).NUMBER(nameof(o.pay), o.pay, "支出", width: 6);
                     m._FORM();
                 });
                 return;

@@ -99,7 +99,7 @@ namespace Greatbone.Sample
                         h.FIELDSET_("加入购物车");
                         dc.Sql("SELECT ").lst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.ICON("icon").NUMBER(nameof(num), it.min, min: it.min, step: it.step, box: 7).FIELD(it.unit, box: 2);
+                        h.ICON("icon").NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 7).FIELD(it.unit, box: 2);
                         h._FIELDSET();
 
                         h.FOOTBAR_().BUTTON("确定")._FOOTBAR();
@@ -185,9 +185,9 @@ namespace Greatbone.Sample
                         m.FORM_();
                         m.FIELD(o.name, "名称");
                         m.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
-                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true, width: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, box: 6);
-                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, box: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, box: 6);
-                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "可供", box: 6);
+                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true, width: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, width: 6);
+                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, width: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, width: 6);
+                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "可供", width: 6);
                         m._FORM();
                     });
                 }

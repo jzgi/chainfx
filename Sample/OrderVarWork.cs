@@ -129,7 +129,7 @@ namespace Greatbone.Sample
                         h.FORM_();
                         h.FIELDSET_("购买数量");
                         h.ICON("/" + o.orgid + "/" + oi.name + "/icon");
-                        h.NUMBER(nameof(oi.qty), oi.qty, min: (short) 0, max: stock, step: step, box: 8);
+                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short) 0, step: step, width: 8);
                         h.FIELD(oi.unit, box: 2);
                         h._FIELDSET();
                         h._FORM();
@@ -202,7 +202,7 @@ namespace Greatbone.Sample
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            m.FIELD(name, box: 5).FIELD(stock, fix: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, min: (short) 0, step: (short) 1, max: stock, box: 5);
+                            m.FIELD(name, box: 5).FIELD(stock, fix: unit, box: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, max: stock, min: (short) 0, step: (short) 1, width: 5);
                         }
                     }
                     m._FORM();

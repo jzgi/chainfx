@@ -82,7 +82,7 @@ function dialog(trig, mode, pick, siz, title) {
     html += '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
     html += '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
     if (mode != OPEN) {
-        html += '<div class="uk-modal-footer uk-text-center"><button class="uk-button uk-button-primary uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
+        html += '<div class="uk-modal-footer uk-text-center"><button id="okbtn" class="uk-button uk-button-primary uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
     }
     html += '</div></div>';
 

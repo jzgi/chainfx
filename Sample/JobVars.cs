@@ -262,7 +262,7 @@ namespace Greatbone.Sample
                     h.FORM_();
                     h.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                     h.TEXTAREA(nameof(o.areas), o.areas, "限送");
-                    h.NUMBER(nameof(o.min), o.min, "起订", box: 4).NUMBER(nameof(o.notch), o.notch, "满额", box: 4).NUMBER(nameof(o.off), o.off, "立减", box: 4);
+                    h.NUMBER(nameof(o.min), o.min, "起订", width: 2).NUMBER(nameof(o.notch), o.notch, "满额", width: 2).NUMBER(nameof(o.off), o.off, "立减", width: 2);
                     h._FORM();
                 });
             }
