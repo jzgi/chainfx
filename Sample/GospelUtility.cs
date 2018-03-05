@@ -202,7 +202,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.DATAGRID(arr, cell);
+                    main.GRIDVIEW(arr, cell);
                 },
                 @public, maxage, title
             );
@@ -214,7 +214,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.DATAGRID(arr, card);
+                    main.GRIDVIEW(arr, card);
                 },
                 @public, maxage, title
             );
@@ -226,7 +226,7 @@ namespace Greatbone.Sample
                 main =>
                 {
                     main.TOOLBAR();
-                    main.DATATABLE(arr, head, row);
+                    main.TABLEVIEW(arr, head, row);
                 },
                 @public, maxage, title
             );

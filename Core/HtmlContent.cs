@@ -713,9 +713,9 @@ namespace Greatbone.Core
         }
 
 
-        public HtmlContent FIELD<V>(V v, string label = null, string fix = null, string tag = null, byte box = 0x0c)
+        public HtmlContent FIELD<V>(V v, string label = null, string fix = null, string tag = null, byte width = 6)
         {
-            FIELD_(label, box);
+            FIELD_(label, width);
 
             if (tag != null)
             {
@@ -877,9 +877,9 @@ namespace Greatbone.Core
             Add("<p>");
             if (label != null)
             {
-                Add("<span class=\"label\">");
+                Add("<label>");
                 Add(label);
-                Add("</span>");
+                Add("</label>");
             }
             for (int i = 0; i < v.Length; i++)
             {
@@ -1019,27 +1019,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FIELDSET_(string legend = null, byte box = 0x0c)
+        public HtmlContent FIELDSET_(string legend = null, byte width = 6)
         {
-            Add("<fieldset");
-            int grid = box & 0x0f;
-            if (grid > 0)
-            {
-                int layout = (box >> 4) & 0x0f;
-                Add(" class=\"cell small-");
-                Add(grid);
-                Add(" box box-");
-                Add(layout);
-                Add("\"");
-            }
-            Add(">");
+            Add("<fieldset class=\"uk-fieldset");
+            Width(width);
+            Add("\">");
             if (legend != null)
             {
                 Add("<legend>");
                 AddEsc(legend);
                 Add("</legend>");
             }
-            Add("<div class=\"grid-x\">");
+            Add("<div class=\"uk-grid\" uk-grid>");
             return this;
         }
 
@@ -1052,7 +1043,7 @@ namespace Greatbone.Core
 
         public HtmlContent BUTTON(string val, bool post = true, bool top = false)
         {
-            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add("<button class=\"uk-button uk-button-default\" formmethod=\"");
             Add(post ? "post" : "get");
             if (top)
             {
@@ -1064,16 +1055,16 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BUTTON(string name, int subcmd, string val, bool post = true)
+        public HtmlContent BUTTON(string name, int subcmd, string v, bool post = true)
         {
-            Add("<button class=\"button primary hollow\" formmethod=\"");
+            Add("<button class=\"uk-button uk-button-default\" formmethod=\"");
             Add(post ? "post" : "get");
             Add("\" formaction=\"");
             Add(name);
             Add('-');
             Add(subcmd);
             Add("\">");
-            AddEsc(val);
+            AddEsc(v);
             Add("</button>");
             return this;
         }
@@ -1084,13 +1075,13 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent FOOTBAR_()
+        public HtmlContent BOTTOMBAR_()
         {
-            Add("<footer class=\"footbar\">");
+            Add("<footer class=\"bottom-bar\">");
             return this;
         }
 
-        public HtmlContent _FOOTBAR()
+        public HtmlContent _BOTTOMBAR()
         {
             Add("</footer>");
             return this;
@@ -1234,13 +1225,12 @@ namespace Greatbone.Core
             }
         }
 
-        public void DATATABLE<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
+        public void TABLEVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
             Work work = webCtx.Work;
             Work varwork = work.varwork;
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             Procedure[] prcs = varwork?.Tooled;
-
             if (head != null)
             {
                 Add("<thead>");
@@ -1291,21 +1281,21 @@ namespace Greatbone.Core
             PAGENATION(arr?.Length ?? 0);
         }
 
-        public void BOARDVIEW(params Action<HtmlContent>[] cards)
+        public void GRIDVIEW(params Action<HtmlContent>[] cards)
         {
-            DATAGRID_();
+            GRID_();
             for (int i = 0; i < cards.Length; i++)
             {
                 CARD_();
                 cards[i](this);
                 _CARD();
             }
-            _DATAGRID();
+            _GRID();
         }
 
-        public void DATAGRID<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void GRIDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
-            DATAGRID_();
+            GRID_();
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
@@ -1317,10 +1307,10 @@ namespace Greatbone.Core
                 }
             }
             // pagination if any
-            _DATAGRID(arr?.Length ?? 0);
+            _GRID(arr?.Length ?? 0);
         }
 
-        public HtmlContent DATAGRID_()
+        public HtmlContent GRID_()
         {
             Add("<main class=\"uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\" uk-grid>");
             ordinal = 0;
@@ -1328,7 +1318,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _DATAGRID(int count = 0)
+        public HtmlContent _GRID(int count = 0)
         {
             Add("</main>");
             ordinal = 0;
@@ -1357,15 +1347,15 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARDHEADER(string title, string sign = null, bool on = false)
+        public HtmlContent CHEAD(string title, string sign = null, bool on = false)
         {
-            CARDHEADER_();
+            CHEAD_();
             Add(title);
-            _CARDHEADER(sign, on);
+            _CHEAD(sign, on);
             return this;
         }
 
-        public HtmlContent CARDHEADER_()
+        public HtmlContent CHEAD_()
         {
             Add("<div class=\"uk-card-header\">");
             if (model != null)
@@ -1382,7 +1372,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CARDHEADER(string sign = null, bool on = false)
+        public HtmlContent _CHEAD(string sign = null, bool on = false)
         {
             if (sign != null)
             {
@@ -1399,35 +1389,35 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CARDBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
+        public HtmlContent CBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
         {
-            CARDBODY_();
+            CBODY_();
             b(this, (D) model);
-            _CARDBODY();
+            _CBODY();
             return this;
         }
 
-        public HtmlContent CARDBODY_()
+        public HtmlContent CBODY_()
         {
             Add("<div class=\"uk-grid uk-card-body uk-grid-small uk-padding-small\" uk-grid>");
             return this;
         }
 
-        public HtmlContent _CARDBODY()
+        public HtmlContent _CBODY()
         {
             Add("</div>");
             return this;
         }
 
 
-        public HtmlContent CARDFOOTER(string text = null, char color = (char) 0, byte flag = 0)
+        public HtmlContent CFOOT(string text = null, char color = (char) 0, byte flag = 0)
         {
-            CARDFOOTER_(text, color);
-            _CARDFOOTER(flag);
+            CFOOT_(text, color);
+            _CFOOT(flag);
             return this;
         }
 
-        public HtmlContent CARDFOOTER_(string text = null, char color = (char) 0)
+        public HtmlContent CFOOT_(string text = null, char color = (char) 0)
         {
             Add("<div class=\"uk-card-footer uk-grid uk-flex-between\" uk-grid>");
             if (text != null)
@@ -1445,7 +1435,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CARDFOOTER(byte flag = 0)
+        public HtmlContent _CFOOT(byte flag = 0)
         {
             Work work = webCtx.Work?.VarWork;
             if (work != null)
@@ -1876,18 +1866,14 @@ namespace Greatbone.Core
             bool grp = !step.Equals(default(V)); // input group with up and down
             if (grp)
             {
-                Add("<div class=\"input-group\">");
-                Add("<a class=\"input-group-label round\" onclick=\"$(this).next()[0].stepDown()\">-</a>");
+                Add("<div class=\"uk-inline\">");
+                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"minus-circle\" onclick=\"this.nextSibling.stepDown()\"></a>");
             }
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(val);
             Add("\"");
-            if (grp)
-            {
-                Add(" class=\"input-group-field\"");
-            }
 
             if (tip != null)
             {
@@ -1920,7 +1906,7 @@ namespace Greatbone.Core
 
             if (grp)
             {
-                Add("<a class=\"input-group-label round\" onclick=\"$(this).prev()[0].stepUp()\">+</a>");
+                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"plus-circle\" onclick=\"this.previousSibling.stepDown()\"></a>");
                 Add("</div>");
             }
 

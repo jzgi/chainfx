@@ -36,11 +36,11 @@ namespace Greatbone.Sample
             ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
-                    m.DATAGRID(orgs.All(x => x.city == city), (h, o) =>
+                    m.GRIDVIEW(orgs.All(x => x.city == city), (h, o) =>
                         {
-                            h.CARDHEADER_().T(o.name)._CARDHEADER(Org.Statuses[o.status], o.status == 2);
+                            h.CHEAD_().T(o.name)._CHEAD(Org.Statuses[o.status], o.status == 2);
 
-                            h.CARDBODY_();
+                            h.CBODY_();
                             h.ICON(o.id + "/icon", href: o.id + "/", width: 2);
                             h.BOX_(4);
                             h.P(o.descr, "简介");
@@ -52,9 +52,9 @@ namespace Greatbone.Sample
                             }
 
                             h.THUMBNAIL(o.id + "/img-1", box: 2).THUMBNAIL(o.id + "/img-2", box: 2).THUMBNAIL(o.id + "/img-3", box: 2);
-                            h._CARDBODY();
+                            h._CBODY();
 
-                            h.CARDFOOTER();
+                            h.CFOOT();
                         }
                     );
                 }, true, 60, "粗狼达人 - " + city
@@ -125,7 +125,7 @@ namespace Greatbone.Sample
                 dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
-                    h.CARDHEADER_().T(o.name).T(" / ").T(o.id)._CARDHEADER();
+                    h.CHEAD_().T(o.name).T(" / ").T(o.id)._CHEAD();
                     h.FIELD(o.descr, "简介");
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();

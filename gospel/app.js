@@ -78,7 +78,7 @@ function dialog(trig, mode, pick, siz, title) {
     }
 
     var html = '<div class="uk-modal' + sizc + trigc + '" uk-modal="bg-close: false">';
-    html += '<div class="uk-modal-dialog">';
+    html += '<div class="uk-modal-dialog uk-margin-auto-vertical">';
     html += '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
     html += '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
     if (mode != OPEN) {
@@ -94,10 +94,10 @@ function dialog(trig, mode, pick, siz, title) {
 
 // when clicked on the OK button
 function ok(okbtn, mode, formid, tag, action, method) {
-    var div = parents(okbtn, '.uk-modal');
+    var div = okbtn.closest('.uk-modal');
+    iframe = div.querySelector('iframe');
+    form = iframe.contentDocument.querySelector('form');
     if (mode == PROMPT) {
-        iframe = div.querySelector('iframe');
-        form = iframe.contents().querySelector('form');
         if (form || form.reportValidity()) return;
         if (tag == 'A') { // append to url and switch
             qstr = serialize(form);
@@ -116,8 +116,8 @@ function ok(okbtn, mode, formid, tag, action, method) {
                     location.href = action.split("?")[0] + '?' + qstr;
                 }
             } else if (method == 'post') {
-                var mform = $('#' + formid);
-                for (var pair of new FormData(form).entries) {
+                var mform = document.getElementById(formid);
+                for (var pair in new FormData(form).entries) {
                     var hid = document.createElement('input');
                     hid.type = 'hidden'; hid.name = pair[0]; hid.value = pair[1];
                     mform.appendChild(hid);
@@ -126,25 +126,19 @@ function ok(okbtn, mode, formid, tag, action, method) {
                 UIkit.modal(div).hide();
                 UIkit.remove(div);
                 // submit
-                UIkit.attr(mform, 'action', action);
-                UIkit.attr(mform, 'method', method);
+                mform.setAttribute('action', action);
+                mform.setAttribute('method', method);
                 mform.submit();
             }
         }
     } else if (mode == SHOW) {
-        iframe = div.querySelector('iframe');
-        form = iframe.contents().querySelector('form');
         if (form) {
             if (!form.reportValidity()) return;
             form.submit();
         }
-    } else {
-        if (mode == OPEN) {
-            iframe = div.querySelector('iframe');
-            form = iframe.contents().querySelector('form');
-            if (form) {
-                if (!form.reportValidity()) return;
-            }
+    } else if (mode == OPEN) {
+        if (form) {
+            if (!form.reportValidity()) return;
         }
     }
 }
@@ -228,25 +222,26 @@ function upload(el, url, ordinal) {
         });
 }
 
-// click parent's close button
 function closeUp(reload) {
-    var ifrme = window.frameElement;
-    var el = UIkit.closest(iframe, '.uk-modal');
-    UIkit.modal(el).hide();
-    if (reload && btn) {
-        win.location.reload(false);
+    var iframe = window.frameElement;
+    var parent = window.parent;
+    var div = iframe.closest('.uk-modal');
+    UIkit.modal(div).hide();
+    UIkit.remove(div);
+    if (reload) {
+        parent.location.reload(false);
     }
 }
 
-function checkIt(el) {
-    var rec = $(el).closest('.card')
-    if (!rec.length) {
-        rec = $(el).closest('tr')
+function checkIt(trig) {
+    var el = trig.closest('.card')
+    if (!el) {
+        el = trig.closest('tr')
     }
-    if (el.checked) {
-        rec.addClass('checked');
+    if (trig.checked) {
+        el.classList.add('checked');
     } else {
-        rec.removeClass('checked');
+        el.classList.remove('checked');
     }
 }
 

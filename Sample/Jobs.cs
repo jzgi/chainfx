@@ -38,11 +38,11 @@ namespace Greatbone.Sample
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.BOARDVIEW(h =>
+                    m.GRIDVIEW(h =>
                     {
-                        h.CARDHEADER("系统运行状况", "运行中", true);
+                        h.CHEAD("系统运行状况", "运行中", true);
                         h.FIELD("2.0", "版本");
-                        h.CARDFOOTER();
+                        h.CFOOT();
                     });
                 });
             }

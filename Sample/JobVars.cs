@@ -19,17 +19,17 @@ namespace Greatbone.Sample
 
         public void @default(WebContext ac)
         {
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
-                m.BOARDVIEW(h =>
+                m.GRIDVIEW(h =>
                 {
-                    h.CARDHEADER("账号信息");
+                    h.CHEAD("账号信息");
                     h.FIELD(prin.name, "姓名");
                     h.FIELD(prin.tel, "电话");
                     h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-                    h.CARDFOOTER();
+                    h.CFOOT();
                 });
             });
         }
@@ -65,7 +65,7 @@ namespace Greatbone.Sample
         public async Task edit(WebContext ac)
         {
             string wx = ac[-1];
-            var prin = (User)ac.Principal;
+            var prin = (User) ac.Principal;
             if (ac.GET)
             {
                 if (ac.Query.Count > 0)
@@ -103,7 +103,7 @@ namespace Greatbone.Sample
         [Ui("设密码"), Tool(ButtonShow)]
         public async Task pass(WebContext ac)
         {
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             string wx = ac[-1];
             string credential;
             string password = null;
@@ -111,7 +111,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    credential = (string)dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
+                    credential = (string) dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
                     if (credential != null)
                     {
                         password = PASS;
@@ -177,19 +177,19 @@ namespace Greatbone.Sample
             {
                 h.TOOLBAR();
                 var o = orgs[orgid];
-                h.DATAGRID_();
+                h.GRID_();
 
                 h.CARD_();
-                h.CARDHEADER(o.name, Statuses[o.status], o.status == 2);
+                h.CHEAD(o.name, Statuses[o.status], o.status == 2);
                 h.FIELD(o.descr, "简介");
                 h.FIELD_("限送").T(o.areas)._FIELD();
                 h.FIELD_("活动").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                h.CARDFOOTER();
+                h.CFOOT();
                 h._CARD();
 
-                h._DATAGRID();
+                h._GRID();
             });
         }
 
@@ -247,7 +247,7 @@ namespace Greatbone.Sample
             });
         }
 
-        static readonly string[] CRLF = { "\r\n", "\n" };
+        static readonly string[] CRLF = {"\r\n", "\n"};
 
         [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
         public async Task sets(WebContext ac)
@@ -277,7 +277,7 @@ namespace Greatbone.Sample
                 o.off = f[nameof(o.off)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orgs SET schedule = @1, areas = @2, min = @3, notch = @4, off = @5 WHERE id = @6",
+                    dc.Execute("UPDATE orgs SET descr = @1, areas = @2, min = @3, notch = @4, off = @5 WHERE id = @6",
                         p => p.Set(o.descr).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(orgid));
                 }
                 ac.GivePane(200);
@@ -317,7 +317,7 @@ namespace Greatbone.Sample
         public async Task status(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             string orgid = ac[this];
             var o = orgs[orgid];
             bool custsvc;

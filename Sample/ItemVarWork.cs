@@ -99,10 +99,10 @@ namespace Greatbone.Sample
                         h.FIELDSET_("加入购物车");
                         dc.Sql("SELECT ").lst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.ICON("icon").NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 7).FIELD(it.unit, box: 2);
+                        h.ICON("icon", width: 2).NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 2).FIELD(it.unit, width:2);
                         h._FIELDSET();
 
-                        h.FOOTBAR_().BUTTON("确定")._FOOTBAR();
+                        h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
                         h._FORM();
                     }
                 });
@@ -157,7 +157,7 @@ namespace Greatbone.Sample
                     wc.GivePane(200, m =>
                     {
                         m.P("商品已经成功加入购物车");
-                        m.FOOTBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: "_parent")._FOOTBAR();
+                        m.BOTTOMBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: "_parent")._BOTTOMBAR();
                     });
                 }
             }
