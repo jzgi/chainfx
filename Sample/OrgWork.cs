@@ -35,7 +35,7 @@ namespace Greatbone.Sample
             }
             ac.GiveDoc(200, m =>
                 {
-                    m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, box: 0)._TOPBAR();
+                    m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, width: 0)._TOPBAR();
                     m.GRIDVIEW(orgs.All(x => x.city == city), (h, o) =>
                         {
                             h.CHEAD_().T(o.name)._CHEAD(Org.Statuses[o.status], o.status == 2);

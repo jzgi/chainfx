@@ -51,7 +51,7 @@ namespace Greatbone.Sample
                     m.TEXTAREA(nameof(o.descr), o.descr, "简述", min: 20, max: 50, required: true);
                     m.TEXT(nameof(o.unit), o.unit, "单位", required: true, width: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, width: 6);
                     m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, width: 6).NUMBER(nameof(o.step), o.step, "递增", min: (short) 1, width: 6);
-                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", box: 6).NUMBER(nameof(o.stock), o.stock, "可供", width: 6);
+                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", width: 6).NUMBER(nameof(o.stock), o.stock, "可供", width: 6);
                     m._FORM();
                 });
             }

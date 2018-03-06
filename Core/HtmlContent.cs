@@ -1677,7 +1677,7 @@ namespace Greatbone.Core
         {
             FIELD_(label, box);
 
-            Add("<input type=\"tel\" name=\"");
+            Add("<input class=\"uk-input\" type=\"tel\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(val);
@@ -2177,9 +2177,10 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c)
+        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte width = 0x0c)
         {
-            Add("<select name=\"");
+            FIELD_(label, width);
+            Add("<select class=\"uk-select\" name=\"");
             Add(name);
             Add("\"");
             if (required) Add(" required");
@@ -2224,6 +2225,7 @@ namespace Greatbone.Core
                 }
             }
             Add("</select>");
+            _FIELD();
             return this;
         }
 
@@ -2363,11 +2365,11 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K val, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IMappable<K>
+        public HtmlContent SELECT<K, V>(string name, K val, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte width = 6) where V : IMappable<K>
         {
-            FIELD_(label, box);
+            FIELD_(label, width);
 
-            Add("<select name=\"");
+            Add("<select class=\"uk-select\" name=\"");
             Add(name);
             Add("\"");
             if (required) Add(" required");
@@ -2379,7 +2381,7 @@ namespace Greatbone.Core
             }
             if (refresh)
             {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
 

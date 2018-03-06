@@ -86,7 +86,7 @@ namespace Greatbone.Sample
                             city = ocity;
                             a = oaddr;
                             tel = otel;
-                            h.SELECT(nameof(city), city, City.All, box: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
+                            h.SELECT(nameof(city), city, City.All, width: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
                             h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                         }
                         h._FIELDSET();

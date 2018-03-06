@@ -53,7 +53,7 @@ namespace Greatbone.Core
 
         public V this[int idx] => entries[idx].value;
 
-        public List<V> Top => top;
+        public V[] Top => top.ToArray();
 
         public int IndexOf(K key)
         {

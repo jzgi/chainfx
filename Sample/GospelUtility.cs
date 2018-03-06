@@ -42,11 +42,6 @@ namespace Greatbone.Sample
 
             main(h);
 
-            // zurb foundation
-            h.Add("<script>");
-            h.Add("$(document).foundation();");
-            h.Add("</script>");
-
             h.Add("</body>");
             h.Add("</html>");
 
@@ -93,7 +88,6 @@ namespace Greatbone.Sample
                 }
             }
             h.Add("</ul>");
-            // tabs content
             h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 2.5rem); height: -webkit-calc(100% - 2.5rem);\">");
             // the first panel
             h.Add("<li class=\"uk-active\" style=\"height: 100%\">");
@@ -112,10 +106,6 @@ namespace Greatbone.Sample
                 }
             }
             h.Add(" </ul>");
-
-            h.Add("<script>");
-//            h.Add("$('#frametabs').on('change.zf.tabs', function(e){\nvar ifr = $('.tabs-panel.is-active').find('iframe'); \nif (ifr && !ifr[0].src) ifr[0].src = ifr[0].id;});");
-            h.Add("</script>");
 
             h.Add("</body>");
             h.Add("</html>");

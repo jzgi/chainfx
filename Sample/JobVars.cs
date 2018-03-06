@@ -240,7 +240,7 @@ namespace Greatbone.Sample
                 m._FIELDSET();
 
                 m.FIELDSET_("添加人员");
-                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, width: 8).SELECT(nameof(opr), opr, Oprs, box: 4);
+                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, width: 8).SELECT(nameof(opr), opr, Oprs, width: 4);
                 m.BUTTON(nameof(acl), 2, "添加");
                 m._FIELDSET();
                 m._FORM();
@@ -284,7 +284,7 @@ namespace Greatbone.Sample
             }
         }
 
-        [Ui("图示"), Tool(ButtonCrop, Ordinals = 4), User(OPRMGR)]
+        [Ui("图示"), Tool(ButtonCrop, Ordinals = 3), User(OPRMGR)]
         public async Task img(WebContext wc, int ordinal)
         {
             string orgid = wc[this];
