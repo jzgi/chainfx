@@ -38,9 +38,9 @@ namespace Greatbone.Sample
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, width: 0)._TOPBAR();
                     m.GRIDVIEW(orgs.All(x => x.city == city), (h, o) =>
                         {
-                            h.CHEAD_().T(o.name)._CHEAD(Org.Statuses[o.status], o.status == 2);
+                            h.HEADER(o.name, Org.Statuses[o.status], o.status == 2);
 
-                            h.CBODY_();
+                            h.BODY_();
                             h.ICON(o.id + "/icon", href: o.id + "/", width: 2);
                             h.BOX_(4);
                             h.P(o.descr, "简介");
@@ -52,9 +52,9 @@ namespace Greatbone.Sample
                             }
 
                             h.THUMBNAIL(o.id + "/img-1", box: 2).THUMBNAIL(o.id + "/img-2", box: 2).THUMBNAIL(o.id + "/img-3", box: 2);
-                            h._CBODY();
+                            h._BODY();
 
-                            h.CFOOT();
+                            h.FOOTER();
                         }
                     );
                 }, true, 60, "粗狼达人 - " + city
@@ -125,7 +125,7 @@ namespace Greatbone.Sample
                 dc.Query();
                 ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
-                    h.CHEAD_().T(o.name).T(" / ").T(o.id)._CHEAD();
+                    h.HEADER_().T(o.name).T(" / ").T(o.id)._HEADER();
                     h.FIELD(o.descr, "简介");
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();

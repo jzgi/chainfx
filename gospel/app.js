@@ -186,6 +186,7 @@ function crop(trig, ordinals, siz, title) {
 
 function bind(el, url, ordinal, width, height) {
     if (ordinal) url = url + '-' + ordinal;
+    new Croppie(el).destroy();
     new Croppie(el, {
         url: url,
         viewport: {
@@ -1797,47 +1798,6 @@ function checkIt(trig) {
                 self.element.removeChild(self.elements.zoomerWrap);
             }
             delete self.elements;
-        }
-
-        if (window.jQuery) {
-            var $ = window.jQuery;
-            $.fn.croppie = function (opts) {
-                var ot = typeof opts;
-
-                if (ot === 'string') {
-                    var args = Array.prototype.slice.call(arguments, 1);
-                    var singleInst = $(this).data('croppie');
-
-                    if (opts === 'get') {
-                        return singleInst.get();
-                    } else if (opts === 'result') {
-                        return singleInst.result.apply(singleInst, args);
-                    } else if (opts === 'bind') {
-                        return singleInst.bind.apply(singleInst, args);
-                    }
-
-                    return this.each(function () {
-                        var i = $(this).data('croppie');
-                        if (!i) return;
-
-                        var method = i[opts];
-                        if ($.isFunction(method)) {
-                            method.apply(i, args);
-                            if (opts === 'destroy') {
-                                $(this).removeData('croppie');
-                            }
-                        } else {
-                            throw 'Croppie ' + opts + ' method not found';
-                        }
-                    });
-                } else {
-                    return this.each(function () {
-                        var i = new Croppie(this, opts);
-                        i.$ = $;
-                        $(this).data('croppie', i);
-                    });
-                }
-            };
         }
 
         function Croppie(element, opts) {

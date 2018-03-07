@@ -35,7 +35,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body>");
@@ -64,7 +64,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
@@ -132,7 +132,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body>");
@@ -162,7 +162,7 @@ namespace Greatbone.Sample
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
             h.Add("<script src=\"/uikit-icons.min.js\"></script>");
-            h.Add("<script src=\"/app.min.js\"></script>");
+            h.Add("<script src=\"/app.js\"></script>");
             h.Add("</head>");
 
             h.Add("<body>");

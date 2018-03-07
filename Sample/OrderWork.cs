@@ -42,9 +42,9 @@ namespace Greatbone.Sample
                             m.H4("历史订单");
                         }
                         m.CARD_(o);
-                        m.CHEAD_().T(o.orgname)._IF(o.paid)._CHEAD(Statuses[o.status], o.status <= PAID);
+                        m.HEADER_().T(o.orgname)._IF(o.paid)._HEADER(Statuses[o.status], o.status <= PAID);
 
-                        m.CBODY_();
+                        m.BODY_();
                         m.P_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._P().P_().VARTOOL("addr", when: o.status == 0)._P();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -63,9 +63,9 @@ namespace Greatbone.Sample
                         }
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", width: 8);
                         m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, width: 4);
-                        m._CBODY();
+                        m._BODY();
                         
-                        m.CFOOT(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
+                        m.FOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
                         
                         m._CARD();
                     }
@@ -101,7 +101,7 @@ namespace Greatbone.Sample
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CHEAD_().T("No.").T(o.id).SEP().T(o.addr)._CHEAD(o.name);
+                    h.HEADER_().T("No.").T(o.id).SEP().T(o.addr)._HEADER(o.name);
                     if (o.items != null)
                     {
                         for (int j = 0; j < o.items.Length; j++)
@@ -110,7 +110,7 @@ namespace Greatbone.Sample
                             h.FIELD(oi.name, width: 6).FIELD(oi.price, fix: "¥", width: 0x23).FIELD(oi.load, null, oi.unit, width: 0x23);
                         }
                     }
-                    h.CFOOT();
+                    h.FOOTER();
                 });
             }
         }
@@ -177,7 +177,7 @@ namespace Greatbone.Sample
                     main.TOOLBAR();
                     main.GRIDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CHEAD_().T("No.").T(o.id).SEP().T(o.paid)._CHEAD();
+                        h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -185,7 +185,7 @@ namespace Greatbone.Sample
                             h.FIELD(oi.name, width: 4).FIELD(oi.price, width: 4).FIELD(oi.qty, null, oi.unit, width: 4);
                         }
                         h.FIELD_(width: 8)._FIELD().FIELD(o.total, "总计", width: 4);
-                        h.CFOOT(o.Err(), 'w');
+                        h.FOOTER(o.Err(), 'w');
                     });
                 }
             }, false, 3);
@@ -216,7 +216,7 @@ namespace Greatbone.Sample
                     main.TOOLBAR(title: filter);
                     main.GRIDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
-                        h.CHEAD_().T("No.").T(o.id).SEP().T(o.paid)._CHEAD();
+                        h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
@@ -224,7 +224,7 @@ namespace Greatbone.Sample
                             h.FIELD(oi.name, width: 4).FIELD(oi.price, width: 4).FIELD(oi.qty, null, oi.unit, width: 4);
                         }
                         h.FIELD_(width: 8)._FIELD().FIELD(o.total, "总计", width: 4);
-                        h.CFOOT(o.Err(), 'w');
+                        h.FOOTER(o.Err(), 'w');
                     });
                 }
             }, false, 3);
@@ -278,7 +278,7 @@ namespace Greatbone.Sample
                 dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                 ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
-                    h.CHEAD_().T("No.").T(o.id).SEP().T(o.paid)._CHEAD(Statuses[o.status], o.status == FINISHED);
+                    h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER(Statuses[o.status], o.status == FINISHED);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
@@ -286,7 +286,7 @@ namespace Greatbone.Sample
                         h.FIELD(oi.name, width: 6).FIELD(oi.price, fix: "¥", width: 0x23).FIELD(oi.qty, fix: oi.unit, width: 3);
                     }
                     h.FIELD(o.total, "总价", fix: "¥", width: 3);
-                    h.CFOOT();
+                    h.FOOTER();
                 }, false, 3);
             }
         }

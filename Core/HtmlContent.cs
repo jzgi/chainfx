@@ -1347,15 +1347,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHEAD(string title, string sign = null, bool on = false)
+        public HtmlContent HEADER(string title, string sign = null, bool on = false)
         {
-            CHEAD_();
+            HEADER_();
+            Add("<h3 class=\"uk-card-title\">");
             Add(title);
-            _CHEAD(sign, on);
+            Add("</h3>");
+            _HEADER(sign, on);
             return this;
         }
 
-        public HtmlContent CHEAD_()
+        public HtmlContent HEADER_()
         {
             Add("<div class=\"uk-card-header\">");
             if (model != null)
@@ -1372,18 +1374,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CHEAD(string sign = null, bool on = false)
+        public HtmlContent _HEADER(string sign = null, bool on = false)
         {
             if (sign != null)
             {
-                Add("<span style=\"margin-left: auto\" class=\"sign");
+                Add(" <div class=\"uk-card-badge uk-label");
                 if (on)
                 {
-                    Add(" on");
+                    Add(" uk-label-success");
                 }
                 Add("\">");
                 Add(sign);
-                Add("</span>");
+                Add("</div>");
             }
             Add("</div>");
             return this;
@@ -1391,26 +1393,26 @@ namespace Greatbone.Core
 
         public HtmlContent CBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
         {
-            CBODY_();
+            BODY_();
             b(this, (D) model);
-            _CBODY();
+            _BODY();
             return this;
         }
 
-        public HtmlContent CBODY_()
+        public HtmlContent BODY_()
         {
             Add("<div class=\"uk-grid uk-card-body uk-grid-small uk-padding-small\" uk-grid>");
             return this;
         }
 
-        public HtmlContent _CBODY()
+        public HtmlContent _BODY()
         {
             Add("</div>");
             return this;
         }
 
 
-        public HtmlContent CFOOT(string text = null, char color = (char) 0, byte flag = 0)
+        public HtmlContent FOOTER(string text = null, char color = (char) 0, byte flag = 0)
         {
             CFOOT_(text, color);
             _CFOOT(flag);
@@ -2192,7 +2194,7 @@ namespace Greatbone.Core
             }
             if (refresh)
             {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
             if (opt != null)
@@ -2245,7 +2247,7 @@ namespace Greatbone.Core
             }
             if (refresh)
             {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
 
@@ -2299,7 +2301,7 @@ namespace Greatbone.Core
             }
             if (refresh)
             {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
             if (opt != null)
@@ -2341,7 +2343,7 @@ namespace Greatbone.Core
             }
             if (refresh)
             {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
+                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
 

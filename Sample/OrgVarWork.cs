@@ -88,12 +88,12 @@ namespace Greatbone.Sample
                     if (items == null) return;
                     m.GRIDVIEW(items, (h, o) =>
                     {
-                        h.CHEAD(o.name);
-                        h.CBODY_();
+                        h.HEADER(o.name);
+                        h.BODY_();
                         h.ICON((o.name) + "/icon");
                         h.BOX_(4).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
-                        h._CBODY();
-                        h.CFOOT();
+                        h._BODY();
+                        h.FOOTER();
                         // adjust item availability
                         if (org.status == 0) o.stock = 0;
                     });
