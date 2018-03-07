@@ -60,11 +60,11 @@ namespace Greatbone.Sample
             {
                 if (dc.Query("SELECT * FROM repays WHERE orgid = @1", p => p.Set(orgid)))
                 {
-                    ac.GiveBoardPage(200, dc.ToArray<Repay>(), (h, o) => { });
+                    ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) => { });
                 }
                 else
                 {
-                    ac.GiveBoardPage(200, (Repay[]) null, null);
+                    ac.GiveGridPage(200, (Repay[]) null, null);
                 }
             }
         }

@@ -99,7 +99,7 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
-                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
+                ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.HEADER_().T("No.").T(o.id).SEP().T(o.addr)._HEADER(o.name);
                     if (o.items != null)
@@ -276,7 +276,7 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status > " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                ac.GiveBoardPage(200, dc.ToArray<Order>(), (h, o) =>
+                ac.GiveGridPage(200, dc.ToArray<Order>(), (h, o) =>
                 {
                     h.HEADER_().T("No.").T(o.id).SEP().T(o.paid)._HEADER(Statuses[o.status], o.status == FINISHED);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();

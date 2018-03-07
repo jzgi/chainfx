@@ -123,7 +123,7 @@ namespace Greatbone.Sample
             {
                 dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs ORDER BY id");
                 dc.Query();
-                ac.GiveBoardPage(200, dc.ToArray<Org>(), (h, o) =>
+                ac.GiveGridPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
                     h.HEADER_().T(o.name).T(" / ").T(o.id)._HEADER();
                     h.FIELD(o.descr, "简介");

@@ -1374,9 +1374,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _HEADER(string sign = null, bool on = false)
+        public HtmlContent _HEADER(string badge = null, bool on = false)
         {
-            if (sign != null)
+            if (badge != null)
             {
                 Add(" <div class=\"uk-card-badge uk-label");
                 if (on)
@@ -1384,14 +1384,14 @@ namespace Greatbone.Core
                     Add(" uk-label-success");
                 }
                 Add("\">");
-                Add(sign);
+                Add(badge);
                 Add("</div>");
             }
             Add("</div>");
             return this;
         }
 
-        public HtmlContent CBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
+        public HtmlContent BODY<D>(Action<HtmlContent, D> b, byte flag = 0)
         {
             BODY_();
             b(this, (D) model);
@@ -1414,12 +1414,12 @@ namespace Greatbone.Core
 
         public HtmlContent FOOTER(string text = null, char color = (char) 0, byte flag = 0)
         {
-            CFOOT_(text, color);
-            _CFOOT(flag);
+            FOOTER_(text, color);
+            _FOOTER(flag);
             return this;
         }
 
-        public HtmlContent CFOOT_(string text = null, char color = (char) 0)
+        public HtmlContent FOOTER_(string text = null, char color = (char) 0)
         {
             Add("<div class=\"uk-card-footer uk-grid uk-flex-between\" uk-grid>");
             if (text != null)
@@ -1437,7 +1437,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CFOOT(byte flag = 0)
+        public HtmlContent _FOOTER(byte flag = 0)
         {
             Work work = webCtx.Work?.VarWork;
             if (work != null)

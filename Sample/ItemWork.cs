@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
-                wc.GiveBoardPage(200, dc.ToArray<Item>(), (h,o) =>
+                wc.GiveGridPage(200, dc.ToArray<Item>(), (h,o) =>
                 {
                     h.HEADER(o.name, Item.Statuses[o.status], o.status >= 1);
                     h.ICON(o.name + "/icon");

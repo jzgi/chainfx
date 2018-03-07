@@ -186,7 +186,7 @@ namespace Greatbone.Sample
             ac.Give(status, h, @public, maxage);
         }
 
-        public static void GiveBoardDoc<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveGridDoc<D>(this WebContext ac, int status, D[] arr, Action<HtmlContent, D> cell, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             ac.GiveDoc(status,
                 main =>
@@ -198,7 +198,7 @@ namespace Greatbone.Sample
             );
         }
 
-        public static void GiveBoardPage<D>(this WebContext wc, int status, D[] arr, Action<HtmlContent, D> card, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveGridPage<D>(this WebContext wc, int status, D[] arr, Action<HtmlContent, D> card, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             wc.GivePage(status,
                 main =>
@@ -210,7 +210,7 @@ namespace Greatbone.Sample
             );
         }
 
-        public static void GiveSheetPage<D>(this WebContext wc, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
+        public static void GiveTablePage<D>(this WebContext wc, int status, D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row, bool? @public = null, int maxage = 60, string title = null) where D : IData
         {
             wc.GivePage(status,
                 main =>
@@ -234,7 +234,7 @@ namespace Greatbone.Sample
 
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
-            h.T("<a class=\"uk-button uk-button-link uk-border-rounded\" href=\"/my//order/\">购物车</a>");
+            h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//order/\">购物车</a>");
             h.T("</form>");
             h.T("<div class=\"top-bar-placeholder\"></div>");
             return h;

@@ -27,7 +27,7 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM repays WHERE status = 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
-                ac.GiveSheetPage(200, dc.ToArray<Repay>(),
+                ac.GiveTablePage(200, dc.ToArray<Repay>(),
                     h => h.TH("网点").TH("起始").TH("截至").TH("总数").TH("单额").TH("净额").TH("转款人"), (h, o) => h.TD(o.orgid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                 );
             }
@@ -39,7 +39,7 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM repays WHERE status = 1 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
-                ac.GiveSheetPage(200, dc.ToArray<Repay>(),
+                ac.GiveTablePage(200, dc.ToArray<Repay>(),
                     h => h.TH("网点").TH("起始").TH("截至").TH("单数").TH("总额").TH("净额").TH("转款人"), (h, o) => h.TD(o.orgid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                 );
             }

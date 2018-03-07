@@ -26,7 +26,7 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM cashes WHERE orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                ac.GiveSheetPage(
+                ac.GiveTablePage(
                     200,
                     dc.ToArray<Cash>(),
                     h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),

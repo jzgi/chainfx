@@ -1544,7 +1544,7 @@ select.uk-form-width-xsmall {
 .form-field {
   display: flex;
   align-items: center;
-  padding: 0 0 0 1rem;
+  padding: 0;
   background-color: white;
   margin: 1px 0;
 }
@@ -2458,18 +2458,18 @@ select.uk-form-width-xsmall {
 /* Sections
  ========================================================================== */
 .uk-card-body {
-  padding: 30px 30px;
+  padding: 10px 10px;
 }
 .uk-card-header {
-  padding: 15px 30px;
+  padding: 15px 10px;
 }
 .uk-card-footer {
-  padding: 15px 30px;
+  padding: 15px 10px;
 }
 /* Desktop and bigger */
 @media (min-width: 1200px) {
   .uk-card-body {
-    padding: 40px 40px;
+    padding: 20px 40px;
   }
   .uk-card-header {
     padding: 20px 40px;
@@ -2512,7 +2512,7 @@ select.uk-form-width-xsmall {
 .uk-card-badge {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 6px;
   z-index: 1;
 }
 
@@ -2581,29 +2581,12 @@ select.uk-form-width-xsmall {
   background-color: #222;
   box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
-/* Size modifier
- ========================================================================== */
-/*
- * Small
- */
-.uk-card-small.uk-card-body,
-.uk-card-small .uk-card-body {
-  padding: 20px 20px;
-}
-.uk-card-small .uk-card-header {
-  padding: 13px 20px;
-}
-.uk-card-small .uk-card-footer {
-  padding: 13px 20px;
-}
-/*
- * Large
- */
-/* Desktop and bigger */
+
+
 @media (min-width: 1200px) {
   .uk-card-large.uk-card-body,
   .uk-card-large .uk-card-body {
-    padding: 70px 70px;
+    padding: 50px 70px;
   }
   .uk-card-large .uk-card-header {
     padding: 35px 70px;
@@ -2912,7 +2895,6 @@ select.uk-form-width-xsmall {
   color: #fff;
   vertical-align: middle;
   white-space: nowrap;
-  border-radius: 2px;
   text-transform: uppercase;
 }
 

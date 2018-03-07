@@ -1,6 +1,6 @@
 .top-bar {
     position: fixed;
-    height: 2.5rem;
+    height: 2.75rem;
     width: 100%;
     top: 0;
     font-size: 1rem;
@@ -29,16 +29,16 @@
 }
   
 .top-bar-placeholder {
-    height: 2.5rem;
+    height: 2.75rem;
 }
   
 .bottom-bar-placeholder {
-    height: 2.5rem;
+    height: 2.75rem;
 }
   
 .bottom-bar {
     position: fixed;
-    height: 2.5rem;
+    height: 2.75rem;
     width: 100%;
     bottom: 0;
     font-size: 1rem;
