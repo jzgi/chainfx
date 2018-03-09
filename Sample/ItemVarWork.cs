@@ -97,7 +97,7 @@ namespace Greatbone.Sample
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        dc.Sql("SELECT ").lst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
                         h.ICON("icon", width: 2).NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 2).FIELD(it.unit, width:2);
                         h._FIELDSET();

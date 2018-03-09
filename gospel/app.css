@@ -10,24 +10,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid #c4c4c4;
 }
 
-.top-bar::after {
-    content: '';
-    position: absolute;
-    background-color: #c4c4c4;
-    display: block;
-    z-index: 15;
-    top: auto;
-    right: auto;
-    bottom: 0;
-    left: 0;
-    height: 1px;
-    width: 100%;
-    -webkit-transform-origin: 50% 100%;
-    transform-origin: 50% 100%;
-}
-  
 .top-bar-placeholder {
     height: 2.75rem;
 }
@@ -47,7 +32,10 @@
     display: flex;
     justify-content: space-around;
 }
-  
+
+.pane {
+    padding: 0.5rem;
+}
 /* CROPPIE */
 
 .croppie-container {

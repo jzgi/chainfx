@@ -56,7 +56,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public DbSql lst(IData obj, byte proj = 0x0f)
+        public DbSql collst(IData obj, byte proj = 0x0f)
         {
             ctx = CTX_COLUMNLIST;
             ordinal = 1;
@@ -75,7 +75,7 @@ namespace Greatbone.Core
         public DbSql _(IData obj, byte proj = 0x0f, string extra = null)
         {
             Add(" (");
-            lst(obj, proj);
+            collst(obj, proj);
             if (extra != null)
             {
                 Add(",");

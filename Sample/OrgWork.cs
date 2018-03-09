@@ -40,7 +40,7 @@ namespace Greatbone.Sample
                         {
                             h.HEADER(o.name, Org.Statuses[o.status], o.status == 2);
 
-                            h.BODY_();
+                            h.CARDBODY_();
                             h.ICON(o.id + "/icon", href: o.id + "/", width: 2);
                             h.BOX_(4);
                             h.P(o.descr, "简介");
@@ -52,9 +52,9 @@ namespace Greatbone.Sample
                             }
 
                             h.THUMBNAIL(o.id + "/img-1", box: 2).THUMBNAIL(o.id + "/img-2", box: 2).THUMBNAIL(o.id + "/img-3", box: 2);
-                            h._BODY();
+                            h._CARDBODY();
 
-                            h.FOOTER();
+                            h.CARDFOOTER();
                         }
                     );
                 }, true, 60, "粗狼达人 - " + city
@@ -121,11 +121,11 @@ namespace Greatbone.Sample
         {
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs ORDER BY id");
+                dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
                 dc.Query();
                 ac.GiveGridPage(200, dc.ToArray<Org>(), (h, o) =>
                 {
-                    h.HEADER_().T(o.name).T(" / ").T(o.id)._HEADER();
+                    h.CARDHEADER_().T(o.name).T(" / ").T(o.id)._CARDHEADER();
                     h.FIELD(o.descr, "简介");
                     h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
                     h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();

@@ -32,7 +32,7 @@ namespace Greatbone.Sample
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").lst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
+                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
                         return dc.Query<string, Org>(proj: 0xff);
                     }
                 }, 3600 * 8

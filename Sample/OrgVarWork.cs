@@ -89,11 +89,11 @@ namespace Greatbone.Sample
                     m.GRIDVIEW(items, (h, o) =>
                     {
                         h.HEADER(o.name);
-                        h.BODY_();
+                        h.CARDBODY_();
                         h.ICON((o.name) + "/icon");
                         h.BOX_(4).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
-                        h._BODY();
-                        h.FOOTER();
+                        h._CARDBODY();
+                        h.CARDFOOTER();
                         // adjust item availability
                         if (org.status == 0) o.stock = 0;
                     });
@@ -133,7 +133,7 @@ namespace Greatbone.Sample
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").lst(Org.Empty, proj).T(" FROM orgs WHERE id = @1");
+                    dc.Sql("SELECT ").collst(Org.Empty, proj).T(" FROM orgs WHERE id = @1");
                     var o = dc.Query1<Org>(p => p.Set(orgid), proj);
                     ac.GivePane(200, m =>
                     {

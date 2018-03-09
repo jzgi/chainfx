@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                     h.ICON(o.name + "/icon");
                     h.P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
                     h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
-                    h.FOOTER();
+                    h.CARDFOOTER();
                 });
             }
         }

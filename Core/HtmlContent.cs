@@ -512,11 +512,93 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent H4(string v)
+        public HtmlContent H3(string v, char line = (char) 0)
         {
-            Add("<h4 class=\"cell\">");
-            Add(v);
+            Add("<h3 class=\"uk-h3");
+            if (line == 'b')
+            {
+                Add(" uk-heading-divider");
+            }
+            else if (line == 'c')
+            {
+                Add(" uk-heading-line uk-text-center");
+            }
+            else if (line == 'r')
+            {
+                Add(" uk-heading-line uk-text-right");
+            }
+            Add("\">");
+            if (line == 'c' || line == 'r')
+            {
+                Add("<span>");
+                Add(v);
+                Add("</span>");
+            }
+            else
+            {
+                Add(v);
+            }
+            Add("</h3>");
+            return this;
+        }
+
+        public HtmlContent H4(string v, char line = (char) 0)
+        {
+            Add("<h4 class=\"uk-h4");
+            if (line == 'b')
+            {
+                Add(" uk-heading-divider");
+            }
+            else if (line == 'c')
+            {
+                Add(" uk-heading-line uk-text-center");
+            }
+            else if (line == 'r')
+            {
+                Add(" uk-heading-line uk-text-right");
+            }
+            Add("\">");
+            if (line == 'c' || line == 'r')
+            {
+                Add("<span>");
+                Add(v);
+                Add("</span>");
+            }
+            else
+            {
+                Add(v);
+            }
             Add("</h4>");
+            return this;
+        }
+
+        public HtmlContent H5(string v, char line = (char) 0)
+        {
+            Add("<h5 class=\"uk-h5");
+            if (line == 'b')
+            {
+                Add(" uk-heading-divider");
+            }
+            else if (line == 'c')
+            {
+                Add(" uk-heading-line uk-text-center");
+            }
+            else if (line == 'r')
+            {
+                Add(" uk-heading-line uk-text-right");
+            }
+            Add("\">");
+            if (line == 'c' || line == 'r')
+            {
+                Add("<span>");
+                Add(v);
+                Add("</span>");
+            }
+            else
+            {
+                Add(v);
+            }
+            Add("</h5>");
             return this;
         }
 
@@ -1312,7 +1394,7 @@ namespace Greatbone.Core
 
         public HtmlContent GRID_()
         {
-            Add("<main class=\"uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\" uk-grid>");
+            Add("<main class=\"uk-grid uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
             ordinal = 0;
             model = null;
             return this;
@@ -1349,15 +1431,15 @@ namespace Greatbone.Core
 
         public HtmlContent HEADER(string title, string sign = null, bool on = false)
         {
-            HEADER_();
+            CARDHEADER_();
             Add("<h3 class=\"uk-card-title\">");
             Add(title);
             Add("</h3>");
-            _HEADER(sign, on);
+            _CARDHEADER(sign, on);
             return this;
         }
 
-        public HtmlContent HEADER_()
+        public HtmlContent CARDHEADER_()
         {
             Add("<div class=\"uk-card-header\">");
             if (model != null)
@@ -1374,7 +1456,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _HEADER(string badge = null, bool on = false)
+        public HtmlContent _CARDHEADER(string badge = null, bool on = false)
         {
             if (badge != null)
             {
@@ -1393,26 +1475,26 @@ namespace Greatbone.Core
 
         public HtmlContent BODY<D>(Action<HtmlContent, D> b, byte flag = 0)
         {
-            BODY_();
+            CARDBODY_();
             b(this, (D) model);
-            _BODY();
+            _CARDBODY();
             return this;
         }
 
-        public HtmlContent BODY_()
+        public HtmlContent CARDBODY_()
         {
-            Add("<div class=\"uk-grid uk-card-body uk-grid-small uk-padding-small\" uk-grid>");
+            Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
             return this;
         }
 
-        public HtmlContent _BODY()
+        public HtmlContent _CARDBODY()
         {
             Add("</div>");
             return this;
         }
 
 
-        public HtmlContent FOOTER(string text = null, char color = (char) 0, byte flag = 0)
+        public HtmlContent CARDFOOTER(string text = null, char color = (char) 0, byte flag = 0)
         {
             FOOTER_(text, color);
             _FOOTER(flag);
@@ -1869,7 +1951,7 @@ namespace Greatbone.Core
             if (grp)
             {
                 Add("<div class=\"uk-inline\">");
-                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"minus-circle\" onclick=\"this.nextSibling.stepDown()\"></a>");
+                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown()\"></a>");
             }
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
@@ -1908,7 +1990,7 @@ namespace Greatbone.Core
 
             if (grp)
             {
-                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"plus-circle\" onclick=\"this.previousSibling.stepDown()\"></a>");
+                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp()\"></a>");
                 Add("</div>");
             }
 

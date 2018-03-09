@@ -19,14 +19,14 @@ namespace Greatbone.Sample
 
         public bool IsOpr => opr > 0;
 
-        public override bool Check(WebContext ac)
+        public override bool Check(WebContext wc)
         {
-            if (!(ac.Principal is User prin)) return false;
+            if (!(wc.Principal is User prin)) return false;
 
             if (opr > 0)
             {
                 if ((prin.opr & opr) != opr) return false; // inclusive check
-                return prin.oprat == ac[typeof(OprVarWork)];
+                return prin.oprat == wc[typeof(OprVarWork)];
             }
             return !adm || prin.adm;
         }
