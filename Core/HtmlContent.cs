@@ -1076,7 +1076,7 @@ namespace Greatbone.Core
 
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false)
         {
-            Add("<form uk-grid class=\"uk-grid\"");
+            Add("<form class=\"uk-grid\"");
             if (action != null)
             {
                 Add(" action=\"");
@@ -1112,7 +1112,7 @@ namespace Greatbone.Core
                 AddEsc(legend);
                 Add("</legend>");
             }
-            Add("<div class=\"uk-grid\" uk-grid>");
+            Add("<div class=\"uk-grid\">");
             return this;
         }
 
@@ -1242,7 +1242,7 @@ namespace Greatbone.Core
 
         public HtmlContent TOOLBAR_()
         {
-            Add("<form id=\"tool-bar-form\" class=\"top-bar\" style=\"width: 100%\">");
+            Add("<form id=\"tool-bar-form\" class=\"top-bar\">");
             return this;
         }
 
@@ -1307,6 +1307,65 @@ namespace Greatbone.Core
             }
         }
 
+        public HtmlContent ACCORDION_()
+        {
+            Add("<ul uk-accordion=\"multiple: true\">");
+            return this;
+        }
+
+        public HtmlContent _ACCORDION(string title = null, bool refresh = true)
+        {
+            Add("</ul>");
+            return this;
+        }
+
+        public HtmlContent ACCORDION_SECT_(string title = null)
+        {
+            Add("<li>");
+            Add("<div class=\"uk-accordion-title\">");
+            if (model != null)
+            {
+                var work = webCtx.Work;
+                Work varwork = work.VarWork;
+                if (varwork != null && work.HasPick)
+                {
+                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" class=\"uk-checkbox\" onclick=\"event.stopPropagation();\" value=\"");
+                    varwork.PutVariableKey(model, this);
+                    Add("\" onchange=\"checkIt(this);\">");
+                }
+            }
+            Add(title);
+            Add("</div>");
+            Add("<form class=\"uk-accordion-content uk-grid\">");
+            return this;
+        }
+
+        public HtmlContent _ACCORDION_SECT()
+        {
+            Add("</form>");
+            Add("</li>");
+            return this;
+        }
+
+        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<HtmlContent, D> sect) where D : IData
+        {
+            ACCORDION_();
+            if (arr != null)
+            {
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    D obj = arr[i];
+                    model = obj;
+                    ACCORDION_SECT_();
+                    sect(this, obj);
+                    _ACCORDION_SECT();
+                }
+            }
+            // pagination if any
+            _GRID(arr?.Length ?? 0);
+            return this;
+        }
+
         public void TABLEVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
         {
             Work work = webCtx.Work;
@@ -1340,7 +1399,7 @@ namespace Greatbone.Core
                     if (varwork != null && work.HasPick)
                     {
                         Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" value=\"");
+                        Add("<input name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
                         varwork.PutVariableKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</td>");
@@ -1429,17 +1488,17 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent HEADER(string title, string sign = null, bool on = false)
+        public HtmlContent CARD_HEADER(string title, string sign = null, bool on = false)
         {
-            CARDHEADER_();
-            Add("<h3 class=\"uk-card-title\">");
+            CARD_HEADER_();
+            Add("<span class=\"uk-card-title\">");
             Add(title);
-            Add("</h3>");
-            _CARDHEADER(sign, on);
+            Add("</span>");
+            _CARD_HEADER(sign, on);
             return this;
         }
 
-        public HtmlContent CARDHEADER_()
+        public HtmlContent CARD_HEADER_()
         {
             Add("<div class=\"uk-card-header\">");
             if (model != null)
@@ -1448,7 +1507,7 @@ namespace Greatbone.Core
                 Work varwork = work.VarWork;
                 if (varwork != null && work.HasPick)
                 {
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" value=\"");
+                    Add("<input name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" form=\"tool-bar-form\" value=\"");
                     varwork.PutVariableKey(model, this);
                     Add("\" onchange=\"checkIt(this);\">");
                 }
@@ -1456,7 +1515,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent _CARDHEADER(string badge = null, bool on = false)
+        public HtmlContent _CARD_HEADER(string badge = null, bool on = false)
         {
             if (badge != null)
             {
@@ -1473,28 +1532,28 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BODY<D>(Action<HtmlContent, D> b, byte flag = 0)
+        public HtmlContent CARDBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
         {
-            CARDBODY_();
+            CARD_BODY_();
             b(this, (D) model);
-            _CARDBODY();
+            _CARD_BODY();
             return this;
         }
 
-        public HtmlContent CARDBODY_()
+        public HtmlContent CARD_BODY_()
         {
             Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
             return this;
         }
 
-        public HtmlContent _CARDBODY()
+        public HtmlContent _CARD_BODY()
         {
             Add("</div>");
             return this;
         }
 
 
-        public HtmlContent CARDFOOTER(string text = null, char color = (char) 0, byte flag = 0)
+        public HtmlContent CARD_FOOTER(string text = null, char color = (char) 0, byte flag = 0)
         {
             FOOTER_(text, color);
             _FOOTER(flag);
@@ -1543,6 +1602,20 @@ namespace Greatbone.Core
             Add(",'");
             Add(tip);
             Add("');\"");
+        }
+
+        public HtmlContent TOOLS(byte flag = 0, byte width = 6)
+        {
+            FIELD_(null, width);
+            Work work = webCtx.Work?.VarWork;
+            if (work != null)
+            {
+                Add("<div class=\"uk-button-group\">");
+                Tools(work, flag, model);
+                Add("</div>");
+            }
+            _FIELD();
+            return this;
         }
 
         void Tools(Work work, byte flag, object obj)
@@ -1594,7 +1667,7 @@ namespace Greatbone.Core
         void Tool(Procedure prc, object obj, int ordinal, int subscript = -1)
         {
             var tool = prc.Tool;
-            bool ok = prc.DoAuthorize(webCtx) && prc.DoState(webCtx, obj);
+            bool ok = prc.DoAuthorize(webCtx, false) && prc.DoState(webCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"uk-button");
@@ -1716,10 +1789,9 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent TEXT(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte width = 0x0c)
+        public HtmlContent TEXT(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte width = 6)
         {
             FIELD_(label, width);
-
             Add("<input type=\"text\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1752,15 +1824,13 @@ namespace Greatbone.Core
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
-
             _FIELD();
             return this;
         }
 
-        public HtmlContent TEL(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent TEL(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 6)
         {
             FIELD_(label, box);
-
             Add("<input class=\"uk-input\" type=\"tel\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1793,17 +1863,15 @@ namespace Greatbone.Core
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
-
             _FIELD();
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte box = 0x0c)
+        public HtmlContent SEARCH(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte width = 6)
         {
-            FIELD_(label, box);
+            FIELD_(label, width);
 
-            Add("<div class=\"input-group\">");
-            Add("<input type=\"search\" name=\"");
+            Add("<input type=\"search\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(val);
@@ -1838,18 +1906,17 @@ namespace Greatbone.Core
             }
             Add(">");
 
-            Add("<button formmethod=\"get\" class=\"input-group-label\">&#128270;</button>");
-            Add("</div>");
+            Add("<button formmethod=\"get\" class=\"uk-icon-button\" uk-icon=\"search\"></button>");
 
             _FIELD();
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte box = 0x0c)
+        public HtmlContent PASSWORD(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, byte width = 6)
         {
-            FIELD_(label, box);
+            FIELD_(label, width);
 
-            Add("<input type=\"password\" name=\"");
+            Add("<input type=\"password\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(val);
@@ -2008,15 +2075,14 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false, byte box = 0x0c)
+        public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false, byte width = 6)
         {
-            FIELD_(null, box);
-
+            FIELD_(null, width);
             if (label != null)
             {
                 Add("<label>");
             }
-            Add("<input type=\"checkbox\" name=\"");
+            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (val) Add(" checked");
@@ -2027,7 +2093,6 @@ namespace Greatbone.Core
                 Add(label);
                 Add("</label>");
             }
-
             _FIELD();
             return this;
         }
@@ -2054,16 +2119,18 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent RADIO<V>(string name, V val, string label = null, bool @checked = false)
+        public HtmlContent RADIO<V>(string name, V val, string label = null, bool @checked = false, byte width = 6)
         {
+            FIELD_(null, width);
             Add("<label>");
-            Add("<input type=\"radio\" name=\"");
+            Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(val);
             Add(@checked ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
+            _FIELD();
             return this;
         }
 
@@ -2078,7 +2145,7 @@ namespace Greatbone.Core
                     {
                         var e = opt.At(i);
                         Add("<label>");
-                        Add("<input type=\"radio\" name=\"");
+                        Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
                         Add(name);
                         Add("\" id=\"");
                         Add(name);
@@ -2261,7 +2328,7 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte width = 0x0c)
+        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte width = 6)
         {
             FIELD_(label, width);
             Add("<select class=\"uk-select\" name=\"");
@@ -2283,28 +2350,49 @@ namespace Greatbone.Core
             {
                 lock (opt)
                 {
+                    bool grpopen = false;
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
-                        var key = e.key;
-                        Add("<option value=\"");
-                        if (key is short shortv)
+                        if (e.top)
                         {
-                            Add(shortv);
+                            if (grpopen)
+                            {
+                                Add("</optgroup>");
+                                grpopen = false;
+                            }
+                            Add("<optgroup label=\"");
+                            Add(e.value?.ToString());
+                            Add("\">");
+                            grpopen = true;
                         }
-                        else if (key is int intv)
+                        else
                         {
-                            Add(intv);
+                            var key = e.key;
+                            Add("<option value=\"");
+                            if (key is short shortv)
+                            {
+                                Add(shortv);
+                            }
+                            else if (key is int intv)
+                            {
+                                Add(intv);
+                            }
+                            else if (key is string strv)
+                            {
+                                Add(strv);
+                            }
+                            Add("\"");
+                            if (key.Equals(v)) Add(" selected");
+                            Add(">");
+                            Add(e.value?.ToString());
+                            Add("</option>");
                         }
-                        else if (key is string strv)
-                        {
-                            Add(strv);
-                        }
-                        Add("\"");
-                        if (key.Equals(v)) Add(" selected");
-                        Add(">");
-                        Add(e.value?.ToString());
-                        Add("</option>");
+                    }
+                    if (grpopen)
+                    {
+                        Add("</optgroup>");
+                        grpopen = false;
                     }
                 }
             }

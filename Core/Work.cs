@@ -315,7 +315,7 @@ namespace Greatbone.Core
 
         internal Work Resolve(ref string relative, WebContext wc)
         {
-            if (!DoAuthorize(wc)) throw AuthorizeEx;
+            if (!DoAuthorize(wc, true)) throw AuthorizeEx;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -392,7 +392,7 @@ namespace Greatbone.Core
                     return;
                 }
 
-                if (!prc.DoAuthorize(wc)) throw AuthorizeEx;
+                if (!prc.DoAuthorize(wc, true)) throw AuthorizeEx;
                 wc.Procedure = prc;
                 // any before filterings
                 if (prc.Before?.Do(wc) == false) goto ProcedureExit;

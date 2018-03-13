@@ -1149,11 +1149,17 @@ button.uk-icon:not(:disabled) {
 
 .uk-input,
 .uk-select,
-.uk-textarea,
+.uk-textarea {
+  box-sizing: border-box;
+  margin: 0;
+  border-radius: 0;
+  font: inherit;
+}
+
 .uk-radio,
 .uk-checkbox {
   box-sizing: border-box;
-  margin: 0;
+  margin: 0 0.375rem 0 0;
   border-radius: 0;
   font: inherit;
 }
@@ -1429,7 +1435,7 @@ select.uk-form-width-xsmall {
   display: flex;
   align-items: center;
   background-color: white;
-  margin: 2px 0;
+  margin: 1px 0;
   padding: 2px;
   min-height: 2.25rem;
 }
@@ -2319,9 +2325,15 @@ select.uk-form-width-xsmall {
 }
 .uk-card-header {
   padding: 15px 10px;
+  vertical-align: middle;
+}
+.uk-card-header .uk-checkbox {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 .uk-card-footer {
   padding: 15px 10px;
+  vertical-align: middle;
 }
 
 .uk-card-body::before,
@@ -2348,8 +2360,8 @@ select.uk-form-width-xsmall {
 }
 
 .uk-card-title {
-  font-size: 1.5rem;
-  line-height: 1.4;
+  font-size: 1.25rem;
+  line-height: 1.2;
 }
 
 .uk-card-badge {
@@ -3783,14 +3795,8 @@ ul.uk-nav-sub {
   margin: 0 20px;
   color: #999;
 }
-/* ========================================================================
-   Component: Pagination
- ========================================================================== */
-/*
- * 1. Allow items to wrap into the next line
- * 2. Gutter
- * 3. Reset list
- */
+
+
 .uk-pagination {
   display: flex;
   /* 1 */
@@ -3801,11 +3807,7 @@ ul.uk-nav-sub {
   padding: 0;
   list-style: none;
 }
-/*
- * 1. Space is allocated solely based on content dimensions: 0 0 auto
- * 2. Gutter
- * 3. Create position context for dropdowns
- */
+
 .uk-pagination > * {
   /* 1 */
   flex: none;
@@ -3814,12 +3816,7 @@ ul.uk-nav-sub {
   /* 3 */
   position: relative;
 }
-/* Items
- ========================================================================== */
-/*
- * 1. Prevent gap if child element is `inline-block`, e.g. an icon
- * 2. Style
- */
+
 .uk-pagination > * > * {
   /* 1 */
   display: block;
@@ -3841,21 +3838,12 @@ ul.uk-nav-sub {
 .uk-pagination > .uk-disabled > * {
   color: #999;
 }
-/* ========================================================================
-   Component: Tab
- ========================================================================== */
-/*
- * 1. Allow items to wrap into the next line
- * 2. Gutter
- * 3. Reset list
- */
+
+
 .uk-tab {
   display: flex;
-  /* 1 */
   flex-wrap: wrap;
-  /* 2 */
   margin-left: -20px;
-  /* 3 */
   padding: 0;
   list-style: none;
   position: relative;
@@ -3868,58 +3856,38 @@ ul.uk-nav-sub {
   right: 0;
   border-bottom: 1px solid #e5e5e5;
 }
-/*
- * 1. Space is allocated solely based on content dimensions: 0 0 auto
- * 2. Gutter
- * 3. Create position context for dropdowns
- */
+
 .uk-tab > * {
-  /* 1 */
   flex: none;
-  /* 2 */
   padding-left: 15px;
-  /* 3 */
   position: relative;
 }
-/* Items
- ========================================================================== */
-/*
- * Items must target `a` elements to exclude other elements (e.g. dropdowns)
- * 1. Center text if a width is set
- * 2. Style
- */
+
 .uk-tab > * > a {
-  /* 1 */
   display: block;
   text-align: center;
-  /* 2 */
   padding: 5px 10px;
   color: #999;
   border-bottom: 1px solid transparent;
-  font-size: 0.875rem;
   text-transform: uppercase;
   transition: color 0.1s ease-in-out;
 }
-/* Hover + Focus */
+
 .uk-tab > * > a:hover,
 .uk-tab > * > a:focus {
   color: #333;
   text-decoration: none;
 }
-/* Active */
+
 .uk-tab > .uk-active > a {
   color: #333;
   background-color: #f7f7f8;
 }
-/* Disabled */
+
 .uk-tab > .uk-disabled > a {
   color: #999;
 }
-/* Position modifier
- ========================================================================== */
-/*
- * Bottom
- */
+
 .uk-tab-bottom::before {
   top: 0;
   bottom: auto;
@@ -3928,21 +3896,18 @@ ul.uk-nav-sub {
   border-top: 1px solid transparent;
   border-bottom: none;
 }
-/*
- * Left + Right
- * 1. Reset Gutter
- */
+
 .uk-tab-left,
 .uk-tab-right {
   flex-direction: column;
-  /* 1 */
   margin-left: 0;
 }
-/* 1 */
+
 .uk-tab-left > *,
 .uk-tab-right > * {
   padding-left: 0;
 }
+
 .uk-tab-left::before {
   top: 0;
   bottom: 0;
@@ -3972,12 +3937,9 @@ ul.uk-nav-sub {
 .uk-tab .uk-dropdown {
   margin-left: 30px;
 }
-/* ========================================================================
-   Component: Slidenav
- ========================================================================== */
-/*
- * Adopts `uk-icon`
- */
+
+
+
 .uk-slidenav {
   padding: 5px 10px;
   color: rgba(102, 102, 102, 0.5);
@@ -4175,26 +4137,24 @@ ul.uk-nav-sub {
   padding-left: 0;
   padding-top: 15px;
 }
-/* ========================================================================
-   Component: Accordion
- ========================================================================== */
+
 .uk-accordion {
-  padding: 0;
+  padding: 10px;
   list-style: none;
 }
-/* Item
- ========================================================================== */
+
 .uk-accordion > :nth-child(n+2) {
   margin-top: 20px;
 }
-/* Title
- ========================================================================== */
+
 .uk-accordion-title {
   display: block;
   font-size: 1.25rem;
   line-height: 1.4;
   color: #333;
+  background-color: white;
   overflow: hidden;
+  cursor: pointer;
 }
 .uk-accordion-title::after {
   content: "";
@@ -4218,7 +4178,7 @@ ul.uk-nav-sub {
 /* Content
  ========================================================================== */
 .uk-accordion-content {
-  margin-top: 20px;
+  margin-top: 0;
 }
 /*
  * Micro clearfix
@@ -4487,8 +4447,9 @@ ul.uk-nav-sub {
   max-width: 100%;
   max-height: 100%;
   transform: translateY(0);
-  height: calc(100% - 0.01px);
-  height: -webkit-calc(100% - 0.01px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .uk-modal-full .uk-modal-body {
@@ -4497,12 +4458,10 @@ ul.uk-nav-sub {
   max-width: 100%;
   max-height: 100%;
   transform: translateY(0);
-  height: calc(100% - 5.25rem);
-  height: -webkit-calc(100% - 5.25rem);
+  flex: 1;
 }
 
-/* Sections
- ========================================================================== */
+
 .uk-modal-body {
   padding: 30px 30px;
 }
@@ -10855,70 +10814,8 @@ iframe.uk-cover {
 .uk-offcanvas-bar .uk-tab::before {
   border-color: rgba(255, 255, 255, 0.2);
 }
-.uk-light .uk-tab > * > a,
-.uk-section-primary:not(.uk-preserve-color) .uk-tab > * > a,
-.uk-section-secondary:not(.uk-preserve-color) .uk-tab > * > a,
-.uk-tile-primary:not(.uk-preserve-color) .uk-tab > * > a,
-.uk-tile-secondary:not(.uk-preserve-color) .uk-tab > * > a,
-.uk-card-primary.uk-card-body .uk-tab > * > a,
-.uk-card-primary > :not([class*='uk-card-media']) .uk-tab > * > a,
-.uk-card-secondary.uk-card-body .uk-tab > * > a,
-.uk-card-secondary > :not([class*='uk-card-media']) .uk-tab > * > a,
-.uk-overlay-primary .uk-tab > * > a,
-.uk-offcanvas-bar .uk-tab > * > a {
-  color: rgba(255, 255, 255, 0.5);
-}
-.uk-light .uk-tab > * > a:hover,
-.uk-light .uk-tab > * > a:focus,
-.uk-section-primary:not(.uk-preserve-color) .uk-tab > * > a:hover,
-.uk-section-primary:not(.uk-preserve-color) .uk-tab > * > a:focus,
-.uk-section-secondary:not(.uk-preserve-color) .uk-tab > * > a:hover,
-.uk-section-secondary:not(.uk-preserve-color) .uk-tab > * > a:focus,
-.uk-tile-primary:not(.uk-preserve-color) .uk-tab > * > a:hover,
-.uk-tile-primary:not(.uk-preserve-color) .uk-tab > * > a:focus,
-.uk-tile-secondary:not(.uk-preserve-color) .uk-tab > * > a:hover,
-.uk-tile-secondary:not(.uk-preserve-color) .uk-tab > * > a:focus,
-.uk-card-primary.uk-card-body .uk-tab > * > a:hover,
-.uk-card-primary.uk-card-body .uk-tab > * > a:focus,
-.uk-card-primary > :not([class*='uk-card-media']) .uk-tab > * > a:hover,
-.uk-card-primary > :not([class*='uk-card-media']) .uk-tab > * > a:focus,
-.uk-card-secondary.uk-card-body .uk-tab > * > a:hover,
-.uk-card-secondary.uk-card-body .uk-tab > * > a:focus,
-.uk-card-secondary > :not([class*='uk-card-media']) .uk-tab > * > a:hover,
-.uk-card-secondary > :not([class*='uk-card-media']) .uk-tab > * > a:focus,
-.uk-overlay-primary .uk-tab > * > a:hover,
-.uk-overlay-primary .uk-tab > * > a:focus,
-.uk-offcanvas-bar .uk-tab > * > a:hover,
-.uk-offcanvas-bar .uk-tab > * > a:focus {
-  color: rgba(255, 255, 255, 0.7);
-}
-.uk-light .uk-tab > .uk-active > a,
-.uk-section-primary:not(.uk-preserve-color) .uk-tab > .uk-active > a,
-.uk-section-secondary:not(.uk-preserve-color) .uk-tab > .uk-active > a,
-.uk-tile-primary:not(.uk-preserve-color) .uk-tab > .uk-active > a,
-.uk-tile-secondary:not(.uk-preserve-color) .uk-tab > .uk-active > a,
-.uk-card-primary.uk-card-body .uk-tab > .uk-active > a,
-.uk-card-primary > :not([class*='uk-card-media']) .uk-tab > .uk-active > a,
-.uk-card-secondary.uk-card-body .uk-tab > .uk-active > a,
-.uk-card-secondary > :not([class*='uk-card-media']) .uk-tab > .uk-active > a,
-.uk-overlay-primary .uk-tab > .uk-active > a,
-.uk-offcanvas-bar .uk-tab > .uk-active > a {
-  color: #fff;
-  border-color: #fff;
-}
-.uk-light .uk-tab > .uk-disabled > a,
-.uk-section-primary:not(.uk-preserve-color) .uk-tab > .uk-disabled > a,
-.uk-section-secondary:not(.uk-preserve-color) .uk-tab > .uk-disabled > a,
-.uk-tile-primary:not(.uk-preserve-color) .uk-tab > .uk-disabled > a,
-.uk-tile-secondary:not(.uk-preserve-color) .uk-tab > .uk-disabled > a,
-.uk-card-primary.uk-card-body .uk-tab > .uk-disabled > a,
-.uk-card-primary > :not([class*='uk-card-media']) .uk-tab > .uk-disabled > a,
-.uk-card-secondary.uk-card-body .uk-tab > .uk-disabled > a,
-.uk-card-secondary > :not([class*='uk-card-media']) .uk-tab > .uk-disabled > a,
-.uk-overlay-primary .uk-tab > .uk-disabled > a,
-.uk-offcanvas-bar .uk-tab > .uk-disabled > a {
-  color: rgba(255, 255, 255, 0.5);
-}
+
+
 .uk-light .uk-slidenav,
 .uk-section-primary:not(.uk-preserve-color) .uk-slidenav,
 .uk-section-secondary:not(.uk-preserve-color) .uk-slidenav,

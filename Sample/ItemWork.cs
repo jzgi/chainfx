@@ -14,7 +14,7 @@ namespace Greatbone.Sample
     }
 
 
-    [Ui("货品"), User(OPRSTAFF)]
+    [Ui("货品管理"), User(OPRSTAFF)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkConfig cfg) : base(cfg)
@@ -26,14 +26,20 @@ namespace Greatbone.Sample
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
-                wc.GiveGridPage(200, dc.ToArray<Item>(), (h,o) =>
+                var arr = dc.Query<Item>("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
+                wc.GivePage(200, m =>
                 {
-                    h.HEADER(o.name, Item.Statuses[o.status], o.status >= 1);
-                    h.ICON(o.name + "/icon");
-                    h.P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
-                    h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
-                    h.CARDFOOTER();
+                    m.TOOLBAR();
+                    m.GRIDVIEW(arr, (h, o) =>
+                    {
+                        h.CARD_HEADER(o.name, Item.Statuses[o.status], o.status >= 1);
+                        h.CARD_BODY_();
+                        h.ICON(o.name + "/icon", width: 2);
+                        h.BOX_(4).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
+                        h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
+                        h._CARD_BODY();
+                        h.CARD_FOOTER();
+                    });
                 });
             }
         }

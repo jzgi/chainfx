@@ -13,7 +13,7 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("财务"), User(OPRMGR)]
+    [Ui("财务记账"), User(OPRMGR)]
     public class OprCashWork : CashWork
     {
         public OprCashWork(WorkConfig cfg) : base(cfg)
@@ -25,14 +25,14 @@ namespace Greatbone.Sample
             string orgid = ac[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM cashes WHERE orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                ac.GiveTablePage(
-                    200,
-                    dc.ToArray<Cash>(),
-                    h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
-                    (h, o) => h.TD(o.date).TD(Cash.Codes[o.code]).TD(o.receive).TD(o.pay).TD(o.creator),
-                    false, 3
-                );
+                var arr = dc.Query<Cash>("SELECT * FROM cashes WHERE orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
+                ac.GivePage(200, m =>
+                {
+                    m.TOOLBAR();
+                    m.TABLEVIEW(arr, 
+                        h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
+                        (h, o) => h.TD(o.date).TD(Cash.Codes[o.code]).TD(o.receive).TD(o.pay).TD(o.creator));
+                }, false, 2);
             }
         }
 

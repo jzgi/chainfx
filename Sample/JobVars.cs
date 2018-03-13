@@ -25,11 +25,11 @@ namespace Greatbone.Sample
                 m.TOOLBAR();
                 m.GRIDVIEW(h =>
                 {
-                    h.HEADER("账号信息");
+                    h.CARD_HEADER("账号信息");
                     h.FIELD(prin.name, "姓名");
                     h.FIELD(prin.tel, "电话");
                     h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-                    h.CARDFOOTER();
+                    h.CARD_FOOTER();
                 });
             });
         }
@@ -151,9 +151,9 @@ namespace Greatbone.Sample
     {
         public OprVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<OprNewlyWork>("newly");
+            Create<OprNewoWork>("newo");
 
-            Create<OprPastlyWork>("pastly");
+            Create<OprOldoWork>("oldo");
 
             Create<OprCartWork>("cart");
 
@@ -167,7 +167,7 @@ namespace Greatbone.Sample
             bool inner = ac.Query[nameof(inner)];
             if (!inner)
             {
-                ac.GiveFrame(200, false, 60 * 15, "内部操作");
+                ac.GiveOffCanvas(200, false, 60 * 15, "内部操作");
                 return;
             }
 
@@ -180,13 +180,13 @@ namespace Greatbone.Sample
                 h.GRID_();
 
                 h.CARD_();
-                h.HEADER(o.name, Statuses[o.status], o.status == 2);
+                h.CARD_HEADER(o.name, Statuses[o.status], o.status == 2);
                 h.FIELD(o.descr, "简介");
                 h.FIELD_("限送").T(o.areas)._FIELD();
                 h.FIELD_("活动").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                h.CARDFOOTER();
+                h.CARD_FOOTER();
                 h._CARD();
 
                 h._GRID();
@@ -227,20 +227,19 @@ namespace Greatbone.Sample
                 {
                     if (dc.Query("SELECT wx, name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
                     {
-                        m.T("<div>");
                         while (dc.Next())
                         {
                             dc.Let(out wx).Let(out string uname).Let(out string utel).Let(out short uopr);
                             m.RADIO(nameof(wx), wx, label: utel + ' ' + uname + ' ' + Oprs[uopr]);
                         }
-                        m.T("</div>");
                         m.BUTTON(nameof(acl), 1, "删除");
                     }
                 }
                 m._FIELDSET();
 
                 m.FIELDSET_("添加人员");
-                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, width: 8).SELECT(nameof(opr), opr, Oprs, width: 4);
+                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
+                m.SELECT(nameof(opr), opr, Oprs, label: "角色");
                 m.BUTTON(nameof(acl), 2, "添加");
                 m._FIELDSET();
                 m._FORM();

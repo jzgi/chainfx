@@ -82,7 +82,7 @@ function dialog(trig, mode, pick, siz, title) {
     html += '<div class="uk-modal-header uk-modal-title">' + title + '<button class="uk-modal-close-default" type="button" uk-close></button></div>';
     html += '<div class="uk-modal-body uk-padding-remove"><iframe src="' + src + '" style="width: 100%; height: 100%; border: 0"></iframe></div>';
     if (mode != OPEN) {
-        html += '<div class="uk-modal-footer uk-text-center"><button id="okbtn" class="uk-button uk-button-primary uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
+        html += '<div class="uk-modal-footer uk-text-center"><button id="okbtn" class="uk-button uk-button-primary uk-border-rounded uk-button-small" type="button" onclick="ok(this,' + mode + ',\'' + formid + '\',\'' + tag + '\',\'' + action + '\',\'' + method + '\');" disabled>确定</button></div>'
     }
     html += '</div></div>';
 
@@ -168,12 +168,12 @@ function crop(trig, ordinals, siz, title) {
         }
         html += '</select>';
     }
-    html += '<button class="uk-button uk-button-default uk-border-rounded" onclick="this.form.querySelector(\'input[type="file"]\').click();">浏览...</button>';
+    html += '<button class="uk-button uk-button-default uk-border-rounded" onclick="this.form.imginp.click();">浏览...</button>';
     html += '<button class="uk-button uk-button-default uk-border-rounded" onclick="upload(this.form.querySelector(\'.crop\'), \'' + action + '\', this.form[\'ordinal\'].value);">确定上传</button>';
     html += '</div>'; // control group
     html += '<button class="uk-modal-close-default" type="button" uk-close></button>';
     html += '</div>'; // header
-    html += '<div class="uk-modal-body uk-padding-remove crop"><input type="file" style="display: none;" onchange="bind(this.parentNode, window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
+    html += '<div class="uk-modal-body uk-padding-remove crop"><input type="file" name="imginp" style="display: none;" onchange="bind(this.parentNode, window.URL.createObjectURL(this.files[0]), 0,' + wid + ',' + hei + ');"></div>';
     html += '</form>'; // uk-dialog
     html += '</div>'; // uk-modal
 
@@ -184,17 +184,23 @@ function crop(trig, ordinals, siz, title) {
     return false;
 }
 
+var croppie;
+
 function bind(el, url, ordinal, width, height) {
     if (ordinal) url = url + '-' + ordinal;
-    new Croppie(el).destroy();
-    new Croppie(el, {
-        url: url,
-        viewport: {
-            width: width,
-            height: height
-        },
-        enforceBoundary: true
-    });
+    if (croppie) {
+        croppie.destroy();
+    } else {
+        croppie = new Croppie(el, {
+            url: url,
+            viewport: {
+                width: width,
+                height: height
+            },
+            enforceBoundary: true,
+            showZoomer: false
+        });
+    }
 }
 
 function upload(el, url, ordinal) {
@@ -238,6 +244,9 @@ function checkIt(trig) {
     var el = trig.closest('.card')
     if (!el) {
         el = trig.closest('tr')
+    }
+    if (!el) {
+        el = trig.closest('.uk-accordion-title')
     }
     if (trig.checked) {
         el.classList.add('checked');

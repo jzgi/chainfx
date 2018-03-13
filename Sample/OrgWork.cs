@@ -38,9 +38,9 @@ namespace Greatbone.Sample
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, width: 0)._TOPBAR();
                     m.GRIDVIEW(orgs.All(x => x.city == city), (h, o) =>
                         {
-                            h.HEADER(o.name, Org.Statuses[o.status], o.status == 2);
+                            h.CARD_HEADER(o.name, Org.Statuses[o.status], o.status == 2);
 
-                            h.CARDBODY_();
+                            h.CARD_BODY_();
                             h.ICON(o.id + "/icon", href: o.id + "/", width: 2);
                             h.BOX_(4);
                             h.P(o.descr, "简介");
@@ -52,9 +52,9 @@ namespace Greatbone.Sample
                             }
 
                             h.THUMBNAIL(o.id + "/img-1", box: 2).THUMBNAIL(o.id + "/img-2", box: 2).THUMBNAIL(o.id + "/img-3", box: 2);
-                            h._CARDBODY();
+                            h._CARD_BODY();
 
-                            h.CARDFOOTER();
+                            h.CARD_FOOTER();
                         }
                     );
                 }, true, 60, "粗狼达人 - " + city
@@ -122,15 +122,19 @@ namespace Greatbone.Sample
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
-                dc.Query();
-                ac.GiveGridPage(200, dc.ToArray<Org>(), (h, o) =>
+                var arr = dc.Query<Org>();
+                ac.GivePage(200, m =>
                 {
-                    h.CARDHEADER_().T(o.name).T(" / ").T(o.id)._CARDHEADER();
-                    h.FIELD(o.descr, "简介");
-                    h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
-                    h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
-                    h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-                    //                    h.TAIL();
+                    m.TOOLBAR();
+                    m.GRIDVIEW(arr, (h, o) =>
+                    {
+                        h.CARD_HEADER_().T(o.name).T(" / ").T(o.id)._CARD_HEADER();
+                        h.FIELD(o.descr, "简介");
+                        h.FIELD_("地址").T(o.city)._T(o.addr)._FIELD();
+                        h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
+                        h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
+                        //                    h.TAIL();
+                    });
                 });
             }
         }

@@ -40,9 +40,9 @@ namespace Greatbone.Sample
                     m.TOOLBAR();
                     m.GRIDVIEW(h =>
                     {
-                        h.HEADER("系统运行状况", "运行中", true);
+                        h.CARD_HEADER("系统运行状况", "运行中", true);
                         h.FIELD("2.0", "版本");
-                        h.CARDFOOTER();
+                        h.CARD_FOOTER();
                     });
                 });
             }
@@ -55,18 +55,6 @@ namespace Greatbone.Sample
         [Ui("清理"), Tool(Modal.ButtonOpen, 2)]
         public void clean(WebContext ac)
         {
-            string orgid = ac[1];
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query("SELECT * FROM repays WHERE orgid = @1", p => p.Set(orgid)))
-                {
-                    ac.GiveGridPage(200, dc.ToArray<Repay>(), (h, o) => { });
-                }
-                else
-                {
-                    ac.GiveGridPage(200, (Repay[]) null, null);
-                }
-            }
         }
     }
 }

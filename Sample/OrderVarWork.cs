@@ -278,9 +278,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprNewlyVarWork : OrderVarWork
+    public class OprNewoVarWork : OrderVarWork
     {
-        public OprNewlyVarWork(WorkConfig cfg) : base(cfg)
+        public OprNewoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -376,9 +376,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprPastlyVarWork : OrderVarWork
+    public class OprOldoVarWork : OrderVarWork
     {
-        public OprPastlyVarWork(WorkConfig cfg) : base(cfg)
+        public OprOldoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
