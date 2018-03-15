@@ -17,8 +17,14 @@
                 },
                 {
                     "type": "view",
-                    "name": "订单管理",
-                    "url": "http://144000.tv/my//order/",
+                    "name": "当前订单",
+                    "url": "http://144000.tv/my//newo/",
+                    "sub_button": []
+                },
+                {
+                    "type": "view",
+                    "name": "历史订单",
+                    "url": "http://144000.tv/my//oldo/",
                     "sub_button": []
                 },
                 {

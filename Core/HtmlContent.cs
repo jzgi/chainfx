@@ -1017,17 +1017,14 @@ namespace Greatbone.Core
 
         public HtmlContent ICON(string src, string alt = null, string href = null, byte width = 2)
         {
-            Add("<div class=\"");
-            Width(width);
-            Add("\">");
-
+            FIELD_(null, width);
             if (href != null)
             {
                 Add("<a href=\"");
                 Add(href);
                 Add("\">");
             }
-            Add("<img class=\"icon\" src=\"");
+            Add("<img class=\"icon uk-border-circle\" src=\"");
             Add(src);
             if (alt != null)
             {
@@ -1039,21 +1036,20 @@ namespace Greatbone.Core
             {
                 Add("</a>");
             }
-            Add("</div>");
+            _FIELD();
             return this;
         }
 
         public HtmlContent QRCODE(string val = null, byte width = 6)
         {
-            Add("<div class=\"");
-            Width(width);
-            Add("\"><script type=\"text/javascript\">");
+            FIELD_(null, width);
+            Add("<script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
             Add("new QRCode(scripte.parentNode, \"");
             Add(val);
             Add("\");");
             Add("</script>");
-            Add("</div>");
+            _FIELD();
             return this;
         }
 

@@ -14,7 +14,9 @@ namespace Greatbone.Sample
         {
             CreateVar<MyVarVarWork, int>();
 
-            Create<MyOrderWork>("order");
+            Create<MyNewoWork>("newo");
+
+            Create<MyOldoWork>("oldo");
         }
 
         public void @default(WebContext ac)

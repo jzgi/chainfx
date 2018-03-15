@@ -35,10 +35,55 @@ namespace Greatbone.Sample
         }
     }
 
-    [Ui("购物车, 订单")]
-    public class MyOrderWork : OrderWork<MyOrderVarWork>
+    public class MyNewoWork : OrderWork<MyNewoVarWork>
     {
-        public MyOrderWork(WorkConfig cfg) : base(cfg)
+        public MyNewoWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        public void @default(WebContext wc)
+        {
+            string wx = wc[-1];
+            using (var dc = NewDbContext())
+            {
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC", p => p.Set(wx));
+                wc.GivePage(200, m =>
+                {
+                    m.TOOLBAR();
+                    m.BOARDVIEW(arr, (h, o) =>
+                    {
+                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status], o.status <= PAID);
+                        m.CARD_BODY_();
+                        m.FIELD_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var oi = o.items[i];
+                            if (o.status <= 1)
+                            {
+                                m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
+                                m.BOX_(3).P(oi.name).P(oi.price, fix: "¥").P(oi.qty, fix: oi.unit)._BOX();
+                                m.VARTOOL(nameof(MyNewoVarWork.edit), i, when: o.status == 0, width: 1);
+                                m.BOX_(1).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
+                            }
+                            else
+                            {
+                                m.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
+                            }
+                        }
+                        m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", width: 8);
+                        m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, width: 4);
+                        m._CARD_BODY();
+
+                        m.CARD_FOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
+                    });
+                }, false, 2);
+            }
+        }
+    }
+
+    public class MyOldoWork : OrderWork<MyNewoVarWork>
+    {
+        public MyOldoWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -47,25 +92,15 @@ namespace Greatbone.Sample
             string wx = ac[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("(SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC) UNION ALL (SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC)", p => p.Set(wx));
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC", p => p.Set(wx));
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-
-                    bool bgn = false;
-                    m.BOARDVIEW_();
-                    foreach (var o in arr)
+                    m.BOARDVIEW(arr, (h, o) =>
                     {
-                        if (!bgn && o.status > 1)
-                        {
-                            bgn = true;
-                            m.H4("历史订单");
-                        }
-                        m.CARD_(o);
                         m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status], o.status <= PAID);
-
                         m.CARD_BODY_();
-                        m.P_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._P().P_().VARTOOL("addr", when: o.status == 0)._P();
+                        m.FIELD_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
@@ -84,25 +119,9 @@ namespace Greatbone.Sample
                         m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", width: 8);
                         m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, width: 4);
                         m._CARD_BODY();
-
-                        m.CARD_FOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
-
-                        m._CARD();
-                    }
-                    m._BOARDVIEW(arr?.Length ?? 0);
+                    });
                 }, false, 2);
             }
-        }
-
-        [Ui("清空购物车"), Tool(ButtonConfirm)]
-        public void clear(WebContext wc)
-        {
-            string wx = wc[-1];
-            using (var dc = NewDbContext())
-            {
-                dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = 0", p => p.Set(wx));
-            }
-            wc.GiveRedirect();
         }
     }
 

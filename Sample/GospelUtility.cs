@@ -278,7 +278,7 @@ namespace Greatbone.Sample
 
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
-            h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//order/\">我的订单</a>");
+            h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//newo/\">我的订单</a>");
             h.T("</form>");
             h.T("<div class=\"top-bar-placeholder\"></div>");
             return h;

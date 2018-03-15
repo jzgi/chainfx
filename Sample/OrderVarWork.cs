@@ -15,13 +15,13 @@ namespace Greatbone.Sample
         }
     }
 
-    public class MyOrderVarWork : OrderVarWork
+    public class MyNewoVarWork : OrderVarWork
     {
-        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
+        public MyNewoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("付款¥", flag: 1), Tool(ButtonScript), Order('P')]
+        [Ui("付款", flag: 1), Tool(ButtonScript), Order('P')]
         public async Task prepay(WebContext ac)
         {
             string wx = ac[-2];
@@ -53,70 +53,11 @@ namespace Greatbone.Sample
         }
 
         [Ui("修改", flag: 8), Tool(ButtonShow)]
-        public async Task addr(WebContext ac)
+        public async Task edit(WebContext wc, int idx)
         {
-            int orderid = ac[this];
-            string wx = ac[-2];
-            string name, city, a, b, tel; // form values
-            if (ac.GET)
-            {
-                var orgs = Obtain<Map<string, Org>>();
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Query1("SELECT orgid, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                        dc.Let(out string oorgid).Let(out string oname).Let(out string ocity).Let(out string oaddr).Let(out string otel);
-                        h.FIELDSET_("收货地址");
-                        var org = orgs[oorgid];
-                        if (org.areas != null) // limited delivery areas
-                        {
-                            name = oname;
-                            city = ocity;
-                            (a, b) = oaddr.ToDual(SEPCHAR);
-                            tel = otel;
-                            h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                            h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, width: 8);
-                            h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                        }
-                        else // free delivery
-                        {
-                            name = oname;
-                            city = ocity;
-                            a = oaddr;
-                            tel = otel;
-                            h.SELECT(nameof(city), city, City.All, width: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
-                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
-                        }
-                        h._FIELDSET();
-                    }
-                    h._FORM();
-                });
-            }
-            else // POST
-            {
-                var f = await ac.ReadAsync<Form>();
-                name = f[nameof(name)];
-                city = f[nameof(city)];
-                a = f[nameof(a)];
-                b = f[nameof(b)]; // can be null indicating free delivery
-                tel = f[nameof(tel)];
-                using (var dc = NewDbContext())
-                {
-                    string addr = b == null ? a : a + SEPCHAR + b;
-                    dc.Execute("UPDATE orders SET name = @1, city = @2, addr = @3, tel = @4 WHERE id = @5", p => p.Set(name).Set(city).Set(addr).Set(tel).Set(orderid));
-                }
-                ac.GivePane(200);
-            }
-        }
-
-        [Ui("修改", flag: 8), Tool(ButtonShow)]
-        public async Task item(WebContext ac, int idx)
-        {
-            int orderid = ac[this];
-            string wx = ac[-2];
-            if (ac.GET)
+            int orderid = wc[this];
+            string wx = wc[-2];
+            if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
@@ -124,13 +65,14 @@ namespace Greatbone.Sample
                     var oi = o.items[idx];
                     dc.Query1("SELECT step, stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(o.orgid).Set(oi.name));
                     dc.Let(out short step).Let(out short stock);
-                    ac.GivePane(200, h =>
+                    wc.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.ICON("/" + o.orgid + "/" + oi.name + "/icon");
-                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short) 0, step: step, width: 8);
-                        h.FIELD(oi.unit, width: 2);
+                        h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
+                        h.FIELD_(width: 2)._FIELD();
+                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short) 0, step: step, width: 2);
+                        h.FIELD(oi.unit, width: 1);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -138,7 +80,7 @@ namespace Greatbone.Sample
             }
             else // POST
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 short qty = f[nameof(qty)];
                 using (var dc = NewDbContext())
                 {
@@ -147,36 +89,15 @@ namespace Greatbone.Sample
                     o.TotalUp();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
+    }
 
-        //        [Ui("建议"), Tool(ButtonShow)]
-        public async Task kick(WebContext ac)
+    public class MyOldoVarWork : OrderVarWork
+    {
+        public MyOldoVarWork(WorkConfig cfg) : base(cfg)
         {
-            int orderid = ac[this];
-            string kick = null;
-            if (ac.GET)
-            {
-                ac.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.FIELDSET_("我的建议");
-                    m.TEXTAREA(nameof(kick), kick, null, max: 40, required: true);
-                    m._FIELDSET();
-                    m._FORM();
-                });
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                kick = f[nameof(kick)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE orders SET kick = @1 WHERE id = @2", p => p.Set(kick).Set(orderid));
-                }
-                ac.GivePane(200);
-            }
         }
     }
 
