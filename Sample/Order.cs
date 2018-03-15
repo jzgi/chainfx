@@ -22,14 +22,14 @@ namespace Greatbone.Sample
         };
 
         // status
-        public const short CARTED = 0, PAID = 1, ABORTED = 3, FINISHED = 4;
+        public const short CARTED = 0, PAID = 1, ABORTED = 3, ENDED = 4;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {CARTED, "未付款"},
             {PAID, "已付款"},
             {ABORTED, "已撤单"},
-            {FINISHED, "已完成"}
+            {ENDED, "已完成"}
         };
 
         internal int id;

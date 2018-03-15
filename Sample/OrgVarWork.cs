@@ -86,7 +86,7 @@ namespace Greatbone.Sample
                     m._A_DROPDOWN()._TOPBAR();
 
                     if (items == null) return;
-                    m.GRIDVIEW(items, (h, o) =>
+                    m.BOARDVIEW(items, (h, o) =>
                     {
                         h.CARD_HEADER(o.name);
                         h.CARD_BODY_();

@@ -30,7 +30,7 @@ namespace Greatbone.Sample
                 wc.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.GRIDVIEW(arr, (h, o) =>
+                    m.BOARDVIEW(arr, (h, o) =>
                     {
                         h.CARD_HEADER(o.name, Item.Statuses[o.status], o.status >= 1);
                         h.CARD_BODY_();

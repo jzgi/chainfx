@@ -1157,72 +1157,6 @@ namespace Greatbone.Core
             return this;
         }
 
-        public HtmlContent BOTTOMBAR_()
-        {
-            Add("<footer class=\"bottom-bar\">");
-            return this;
-        }
-
-        public HtmlContent _BOTTOMBAR()
-        {
-            Add("</footer>");
-            return this;
-        }
-
-        public HtmlContent CALLOUT(string v, bool closable = false)
-        {
-            Add("<div class=\"callout primary\"");
-            if (closable)
-            {
-                Add(" data-closable");
-            }
-            Add("><p class=\"text-center\">");
-            Add(v);
-            Add("</p>");
-            if (closable)
-            {
-                Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
-            }
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CALLOUT_(string v, bool closable = false)
-        {
-            Add("<div class=\"callout primary\"");
-            if (closable)
-            {
-                Add(" data-closable");
-            }
-            Add("><p class=\"text-center\">");
-            Add(v);
-            Add("</p>");
-            if (closable)
-            {
-                Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
-            }
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CALLOUT(Action<HtmlContent> m, bool closable)
-        {
-            Add("<div class=\"callout primary\"");
-            if (closable)
-            {
-                Add(" data-closable");
-            }
-            Add("><p class=\"text-center\">");
-            m?.Invoke(this);
-            Add("</p>");
-            if (closable)
-            {
-                Add("<button class=\"close-button\" type=\"button\" data-close><span>&times;</span></button>");
-            }
-            Add("</div>");
-            return this;
-        }
-
         public void TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
         {
             var prcs = webCtx.Work.Tooled;
@@ -1261,6 +1195,18 @@ namespace Greatbone.Core
             }
             Add("</form>");
             Add("<div class=\"top-bar-placeholder\"></div>");
+            return this;
+        }
+
+        public HtmlContent BOTTOMBAR_()
+        {
+            Add("<footer class=\"bottom-bar\">");
+            return this;
+        }
+
+        public HtmlContent _BOTTOMBAR()
+        {
+            Add("</footer>");
             return this;
         }
 
@@ -1307,15 +1253,33 @@ namespace Greatbone.Core
             }
         }
 
+        public HtmlContent LISTVIEW_()
+        {
+            Add("<ul class=\"uk-list uk-list-divider uk-list-striped\">");
+            ordinal = 0;
+            model = null;
+            return this;
+        }
+
+        public HtmlContent _LISTVIEW(int count = 0)
+        {
+            Add("</main>");
+            ordinal = 0;
+            PAGENATION(count);
+            return this;
+        }
+
         public HtmlContent ACCORDION_()
         {
             Add("<ul uk-accordion=\"multiple: true\">");
             return this;
         }
 
-        public HtmlContent _ACCORDION(string title = null, bool refresh = true)
+        public HtmlContent _ACCORDION(int count = 0)
         {
             Add("</ul>");
+            ordinal = 0;
+            PAGENATION(count);
             return this;
         }
 
@@ -1362,7 +1326,7 @@ namespace Greatbone.Core
                 }
             }
             // pagination if any
-            _GRID(arr?.Length ?? 0);
+            _ACCORDION(arr?.Length ?? 0);
             return this;
         }
 
@@ -1422,21 +1386,21 @@ namespace Greatbone.Core
             PAGENATION(arr?.Length ?? 0);
         }
 
-        public void GRIDVIEW(params Action<HtmlContent>[] cards)
+        public void BOARDVIEW(params Action<HtmlContent>[] cards)
         {
-            GRID_();
+            BOARDVIEW_();
             for (int i = 0; i < cards.Length; i++)
             {
                 CARD_();
                 cards[i](this);
                 _CARD();
             }
-            _GRID();
+            _BOARDVIEW();
         }
 
-        public void GRIDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
-            GRID_();
+            BOARDVIEW_();
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
@@ -1448,20 +1412,20 @@ namespace Greatbone.Core
                 }
             }
             // pagination if any
-            _GRID(arr?.Length ?? 0);
+            _BOARDVIEW(arr?.Length ?? 0);
         }
 
-        public HtmlContent GRID_()
+        public HtmlContent BOARDVIEW_()
         {
-            Add("<main class=\"uk-grid uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
+            Add("<div class=\"board\">");
             ordinal = 0;
             model = null;
             return this;
         }
 
-        public HtmlContent _GRID(int count = 0)
+        public HtmlContent _BOARDVIEW(int count = 0)
         {
-            Add("</main>");
+            Add("</div>");
             ordinal = 0;
             PAGENATION(count);
             return this;
@@ -1469,10 +1433,10 @@ namespace Greatbone.Core
 
         public HtmlContent CARD_(IData obj = null)
         {
-            Add("<div class=\"uk-card uk-card-default\" id=\"card-");
+            Add("<form class=\"uk-card uk-card-default\" id=\"card-");
             Add(++ordinal);
             Add("\">");
-            Add("<form>");
+//            Add("<form>");
             if (obj != null)
             {
                 model = obj;
@@ -1482,8 +1446,8 @@ namespace Greatbone.Core
 
         public HtmlContent _CARD()
         {
+//            Add("</form>");
             Add("</form>");
-            Add("</div>");
             model = null;
             return this;
         }
@@ -1555,12 +1519,12 @@ namespace Greatbone.Core
 
         public HtmlContent CARD_FOOTER(string text = null, char color = (char) 0, byte flag = 0)
         {
-            FOOTER_(text, color);
+            CARD_FOOTER_(text, color);
             _FOOTER(flag);
             return this;
         }
 
-        public HtmlContent FOOTER_(string text = null, char color = (char) 0)
+        public HtmlContent CARD_FOOTER_(string text = null, char color = (char) 0)
         {
             Add("<div class=\"uk-card-footer uk-grid uk-flex-between\" uk-grid>");
             if (text != null)
@@ -1636,8 +1600,9 @@ namespace Greatbone.Core
             }
         }
 
-        public HtmlContent VARTOOL(string name, int subscript = -1, bool when = true)
+        public HtmlContent VARTOOL(string name, int subscript = -1, bool when = true, byte width = 6)
         {
+            FIELD_(null, width);
             if (when)
             {
                 var work = webCtx.Work?.VarWork;
@@ -1647,6 +1612,7 @@ namespace Greatbone.Core
                     Tool(ai, model, ordinal, subscript);
                 }
             }
+            _FIELD();
             return this;
         }
 

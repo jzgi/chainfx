@@ -180,9 +180,9 @@ namespace Greatbone.Sample
         }
     }
 
-    public class OprCartVarWork : OrderVarWork
+    public class OprPosVarWork : OrderVarWork
     {
-        public OprCartVarWork(WorkConfig cfg) : base(cfg)
+        public OprPosVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -351,7 +351,7 @@ namespace Greatbone.Sample
                 mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = NewDbContext(ReadCommitted))
                 {
-                    if (dc.Query1("UPDATE orders SET status = " + FINISHED + ", closed = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
+                    if (dc.Query1("UPDATE orders SET status = " + ENDED + ", closed = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
                     {
                         var o = dc.ToObject<Order>();
                         if (mycart) // deduce my cart loads
@@ -365,7 +365,7 @@ namespace Greatbone.Sample
                             else
                             {
                                 dc.Rollback();
-                                ac.GivePane(200, m => { m.CALLOUT("摊点上的数目不够扣减"); });
+                                ac.GivePane(200, m => { m.P("摊点上的数目不够扣减"); });
                                 return;
                             }
                         }

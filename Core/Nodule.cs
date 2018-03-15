@@ -48,7 +48,7 @@ namespace Greatbone.Core
             // retrieve Ui annotation 
             if (ui == null)
             {
-                var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), false);
+                var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), true);
                 ui = uis.Length > 0 ? uis[0] : null;
             }
             this.label = ui?.Label ?? name.ToUpper();
@@ -57,7 +57,7 @@ namespace Greatbone.Core
             // authorize
             if (authorize == null)
             {
-                var accs = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), false);
+                var accs = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), true);
                 if (accs.Length > 0)
                 {
                     authorize = accs[0];
@@ -65,7 +65,7 @@ namespace Greatbone.Core
             }
             this.authorize = authorize;
             // filters
-            var attrs = attrp.GetCustomAttributes(false);
+            var attrs = attrp.GetCustomAttributes(true);
             for (int i = 0; i < attrs.Length; i++)
             {
                 var attr = attrs[i];

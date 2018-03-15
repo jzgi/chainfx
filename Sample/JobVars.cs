@@ -23,16 +23,34 @@ namespace Greatbone.Sample
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
-                m.GRIDVIEW(h =>
-                {
-                    h.CARD_HEADER("账号信息");
-                    h.FIELD(prin.name, "姓名");
-                    h.FIELD(prin.tel, "电话");
-                    h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-                    h.CARD_FOOTER();
-                });
+                m.BOARDVIEW(h =>
+                    {
+                        h.CARD_HEADER("账号信息");
+                        h.CARD_BODY_();
+                        h.FIELD(prin.name, "姓名");
+                        h.FIELD(prin.tel, "电话");
+                        h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
+                        h.BOX_();
+                        h.QRCODE(GospelUtility.NETADDR + "/my//join?refwx=" + prin.wx, 3).P("让好友扫分享码，一同享用健康产品。");
+                        h._BOX();
+                        h._CARD_BODY();
+                        h.CARD_FOOTER();
+                    }
+                );
             });
         }
+
+        public void join(WebContext wc)
+        {
+            string wx = wc[this];
+            string refwx = wc.Query[nameof(refwx)];
+            using (var dc = NewDbContext())
+            {
+                dc.Execute("INSERT INTO users (wx, refwx) VALUES (@1, @2) ON CONFLICT (wx) DO NOTHING", p => p.Set(wx).Set(refwx));
+            }
+            wc.GiveRedirect("https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect");
+        }
+
 
         [Ui("身份刷新"), Tool(ButtonOpen)]
         public void token(WebContext ac)
@@ -155,9 +173,11 @@ namespace Greatbone.Sample
 
             Create<OprOldoWork>("oldo");
 
-            Create<OprCartWork>("cart");
+            Create<OprPosWork>("pos");
 
             Create<OprItemWork>("item");
+
+            Create<OprOprWork>("opr");
 
             Create<OprCashWork>("cash");
         }
@@ -177,72 +197,21 @@ namespace Greatbone.Sample
             {
                 h.TOOLBAR();
                 var o = orgs[orgid];
-                h.GRID_();
+                h.BOARDVIEW_();
 
                 h.CARD_();
                 h.CARD_HEADER(o.name, Statuses[o.status], o.status == 2);
+                h.CARD_BODY_();
                 h.FIELD(o.descr, "简介");
                 h.FIELD_("限送").T(o.areas)._FIELD();
                 h.FIELD_("活动").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                h.CARD_FOOTER();
+                h._CARD_BODY();
+
                 h._CARD();
 
-                h._GRID();
-            });
-        }
-
-        [Ui("人员"), Tool(ButtonOpen, 2), User(OPRMGR)]
-        public async Task acl(WebContext ac, int cmd)
-        {
-            string orgid = ac[this];
-            string wx;
-            string tel = null;
-            short opr = 0;
-            if (cmd == 1) // remove
-            {
-                var f = await ac.ReadAsync<Form>();
-                wx = f[nameof(wx)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE users SET opr = 0, oprat = NULL WHERE wx = @1", p => p.Set(wx));
-                }
-            }
-            else if (cmd == 2) // add
-            {
-                var f = await ac.ReadAsync<Form>();
-                tel = f[nameof(tel)];
-                opr = f[nameof(opr)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE users SET opr = @1, oprat = @2 WHERE tel = @3", p => p.Set(opr).Set(orgid).Set(tel)); // may add multiple
-                }
-            }
-            ac.GivePane(200, m =>
-            {
-                m.FORM_();
-                m.FIELDSET_("现有人员");
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query("SELECT wx, name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
-                    {
-                        while (dc.Next())
-                        {
-                            dc.Let(out wx).Let(out string uname).Let(out string utel).Let(out short uopr);
-                            m.RADIO(nameof(wx), wx, label: utel + ' ' + uname + ' ' + Oprs[uopr]);
-                        }
-                        m.BUTTON(nameof(acl), 1, "删除");
-                    }
-                }
-                m._FIELDSET();
-
-                m.FIELDSET_("添加人员");
-                m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                m.SELECT(nameof(opr), opr, Oprs, label: "角色");
-                m.BUTTON(nameof(acl), 2, "添加");
-                m._FIELDSET();
-                m._FORM();
+                h._BOARDVIEW();
             });
         }
 

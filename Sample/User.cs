@@ -32,6 +32,8 @@ namespace Greatbone.Sample
         internal short opr; // 
         internal string oprat; // operator at
         internal bool adm; // adm
+        internal int score;
+        internal string refwx;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -47,6 +49,7 @@ namespace Greatbone.Sample
             s.Get(nameof(city), ref city);
             s.Get(nameof(addr), ref addr);
             s.Get(nameof(tel), ref tel);
+            s.Get(nameof(score), ref score);
             if ((proj & LATER) == LATER)
             {
                 s.Get(nameof(opr), ref opr);
@@ -69,6 +72,7 @@ namespace Greatbone.Sample
             s.Put(nameof(city), city);
             s.Put(nameof(addr), addr);
             s.Put(nameof(tel), tel);
+            s.Put(nameof(score), score);
             if ((proj & LATER) == LATER)
             {
                 s.Put(nameof(opr), opr);

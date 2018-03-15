@@ -13,6 +13,26 @@ namespace Greatbone.Sample
         {
             CreateVar<V, long>((obj) => ((Order) obj).id);
         }
+
+        protected void PrinOrders(Order[] arr, WebContext wc)
+        {
+            wc.GivePage(200, m =>
+            {
+                m.TOOLBAR();
+                m.BOARDVIEW(arr, (h, o) =>
+                {
+                    h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER(Statuses[o.status], o.status == ENDED);
+                    h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
+                    for (int i = 0; i < o.items.Length; i++)
+                    {
+                        var oi = o.items[i];
+                        h.FIELD(oi.name, width: 6).FIELD(oi.price, fix: "¥", width: 0x23).FIELD(oi.qty, fix: oi.unit, width: 3);
+                    }
+                    h.FIELD(o.total, "总价", fix: "¥", width: 3);
+                    h.CARD_FOOTER();
+                });
+            }, false, 2);
+        }
     }
 
     [Ui("购物车, 订单")]
@@ -33,7 +53,7 @@ namespace Greatbone.Sample
                     m.TOOLBAR();
 
                     bool bgn = false;
-                    m.GRID_();
+                    m.BOARDVIEW_();
                     foreach (var o in arr)
                     {
                         if (!bgn && o.status > 1)
@@ -69,50 +89,52 @@ namespace Greatbone.Sample
 
                         m._CARD();
                     }
-                    m._GRID(arr?.Length ?? 0);
+                    m._BOARDVIEW(arr?.Length ?? 0);
                 }, false, 2);
             }
         }
 
         [Ui("清空购物车"), Tool(ButtonConfirm)]
-        public void clear(WebContext ac)
+        public void clear(WebContext wc)
         {
-            string wx = ac[-1];
+            string wx = wc[-1];
             using (var dc = NewDbContext())
             {
                 dc.Execute("DELETE FROM orders WHERE wx = @1 AND status = 0", p => p.Set(wx));
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
     }
 
-    [Ui("销售摊点管理")]
-    public class OprCartWork : OrderWork<OprCartVarWork>
+    [Ui("销售点管理")]
+    public class OprPosWork : OrderWork<OprPosVarWork>
     {
-        public OprCartWork(WorkConfig cfg) : base(cfg)
+        public OprPosWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        public void @default(WebContext ac)
+        public void @default(WebContext wc)
         {
-            string orgid = ac[-1];
+            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
-                ac.GivePage(200, m =>
+                wc.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.GRIDVIEW(arr, (h, o) =>
+                    m.BOARDVIEW(arr, (h, o) =>
                     {
-                        h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.addr)._CARD_HEADER(o.name);
+                        h.CARD_HEADER_().T(o.id).SEP().T(o.addr)._CARD_HEADER(o.name);
+                        h.CARD_BODY_();
                         if (o.items != null)
                         {
                             for (int j = 0; j < o.items.Length; j++)
                             {
                                 var oi = o.items[j];
-                                h.FIELD(oi.name, width: 6).FIELD(oi.price, fix: "¥", width: 0x23).FIELD(oi.load, null, oi.unit, width: 0x23);
+                                h.FIELD(oi.name, width: 3).FIELD(oi.price, fix: "¥", width: 2).FIELD(oi.load, null, oi.unit, width: 1);
                             }
                         }
+                        h._CARD_BODY();
                         h.CARD_FOOTER();
                     });
                 });
@@ -120,9 +142,9 @@ namespace Greatbone.Sample
         }
 
         [Ui("新建"), Tool(ButtonConfirm), User(OPRSTAFF)]
-        public void @new(WebContext ac)
+        public void @new(WebContext wc)
         {
-            string orgid = ac[-1];
+            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
                 var org = Obtain<Map<string, Org>>()[orgid];
@@ -142,14 +164,14 @@ namespace Greatbone.Sample
                 dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                 dc.Execute(p => o.Write(p, proj), false);
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
 
         [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
-        public async Task del(WebContext ac, int page)
+        public async Task del(WebContext wc, int page)
         {
-            string orgid = ac[-1];
-            int[] key = (await ac.ReadAsync<Form>())[nameof(key)];
+            string orgid = wc[-1];
+            int[] key = (await wc.ReadAsync<Form>())[nameof(key)];
             if (key != null)
             {
                 using (var dc = NewDbContext())
@@ -158,7 +180,7 @@ namespace Greatbone.Sample
                     dc.Execute(p => p.Set(orgid), false);
                 }
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
     }
 
@@ -170,16 +192,16 @@ namespace Greatbone.Sample
         }
 
         [Ui("全部"), Tool(Anchor)]
-        public void @default(WebContext ac, int page)
+        public void @default(WebContext wc, int page)
         {
-            string orgid = ac[-1];
-            ac.GivePage(200, main =>
+            string orgid = wc[-1];
+            wc.GivePage(200, m =>
             {
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                    main.TOOLBAR();
-                    main.GRIDVIEW(dc.ToArray<Order>(), (h, o) =>
+                    m.TOOLBAR();
+                    m.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
@@ -196,14 +218,14 @@ namespace Greatbone.Sample
         }
 
         [Ui("按区域"), Tool(AnchorPrompt)]
-        public void area(WebContext ac, int page)
+        public void area(WebContext wc, int page)
         {
-            string orgid = ac[-1];
-            bool inner = ac.Query[nameof(inner)];
-            string filter = (string) ac.Query[nameof(filter)] ?? string.Empty;
+            string orgid = wc[-1];
+            bool inner = wc.Query[nameof(inner)];
+            string filter = (string) wc.Query[nameof(filter)] ?? string.Empty;
             if (inner)
             {
-                ac.GivePane(200, m =>
+                wc.GivePane(200, m =>
                 {
                     var org = Obtain<Map<string, Org>>()[orgid];
                     m.FORM_();
@@ -212,13 +234,13 @@ namespace Greatbone.Sample
                 });
                 return;
             }
-            ac.GivePage(200, main =>
+            wc.GivePage(200, m =>
             {
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(orgid).Set(filter + "%").Set(page * 20));
-                    main.TOOLBAR(title: filter);
-                    main.GRIDVIEW(dc.ToArray<Order>(), (h, o) =>
+                    m.TOOLBAR(title: filter);
+                    m.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
                     {
                         h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER();
                         h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
@@ -274,28 +296,13 @@ namespace Greatbone.Sample
         {
         }
 
-        public void @default(WebContext ac, int page)
+        public void @default(WebContext wc, int page)
         {
-            string orgid = ac[-1];
+            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status > " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                ac.GivePage(200, m =>
-                {
-                    m.TOOLBAR();
-                    m.GRIDVIEW(arr, (h, o) =>
-                    {
-                        h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER(Statuses[o.status], o.status == FINISHED);
-                        h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            h.FIELD(oi.name, width: 6).FIELD(oi.price, fix: "¥", width: 0x23).FIELD(oi.qty, fix: oi.unit, width: 3);
-                        }
-                        h.FIELD(o.total, "总价", fix: "¥", width: 3);
-                        h.CARD_FOOTER();
-                    });
-                }, false, 2);
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status > 4 AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
+                PrinOrders(arr, wc);
             }
         }
 

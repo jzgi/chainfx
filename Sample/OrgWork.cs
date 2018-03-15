@@ -36,7 +36,7 @@ namespace Greatbone.Sample
             ac.GiveDoc(200, m =>
                 {
                     m.TOPBAR_().SELECT(nameof(city), city, City.All, refresh: true, width: 0)._TOPBAR();
-                    m.GRIDVIEW(orgs.All(x => x.city == city), (h, o) =>
+                    m.BOARDVIEW(orgs.All(x => x.city == city), (h, o) =>
                         {
                             h.CARD_HEADER(o.name, Org.Statuses[o.status], o.status == 2);
 
@@ -126,7 +126,7 @@ namespace Greatbone.Sample
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.GRIDVIEW(arr, (h, o) =>
+                    m.BOARDVIEW(arr, (h, o) =>
                     {
                         h.CARD_HEADER_().T(o.name).T(" / ").T(o.id)._CARD_HEADER();
                         h.FIELD(o.descr, "简介");

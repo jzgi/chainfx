@@ -50,8 +50,8 @@ namespace Greatbone.Core
             this.subscript = subscript;
             this.limit = limit;
 
-            this.tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), false);
-            this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), false);
+            this.tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
+            this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), true);
 
             // create a doer delegate
             if (async)

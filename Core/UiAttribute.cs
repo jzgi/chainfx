@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To specify basic user interface-related information for a nodule (work or procedure) object.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class UiAttribute : Attribute
     {
         readonly string label;

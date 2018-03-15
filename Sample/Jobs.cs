@@ -38,7 +38,7 @@ namespace Greatbone.Sample
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.GRIDVIEW(h =>
+                    m.BOARDVIEW(h =>
                     {
                         h.CARD_HEADER("系统运行状况", "运行中", true);
                         h.FIELD("2.0", "版本");

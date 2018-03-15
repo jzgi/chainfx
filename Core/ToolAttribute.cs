@@ -5,7 +5,7 @@ namespace Greatbone.Core
     /// <summary>
     /// To specify a user interface tool(set) that works in a particular pattern.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method)]
     public class ToolAttribute : Attribute
     {
         readonly int element; // ui element
