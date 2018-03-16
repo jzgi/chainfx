@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Greatbone.Core;
-using static Greatbone.Core.Modal;
+using Greatbone;
+using static Greatbone.Modal;
 
-namespace Greatbone.Sample
+namespace Core
 {
     [User]
     public abstract class ChatVarWork : Work

@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
-using Greatbone.Core;
-using static Greatbone.Core.Modal;
-using static Greatbone.Sample.GospelUtility;
+using Greatbone;
+using static Greatbone.Modal;
+using static Core.CoreUtility;
 using static System.Data.IsolationLevel;
-using static Greatbone.Sample.Order;
-using static Greatbone.Sample.WeiXinUtility;
+using static Core.Order;
+using static Core.WeiXinUtility;
 
-namespace Greatbone.Sample
+namespace Core
 {
     public abstract class OrgWork<V> : Work where V : OrgVarWork
     {

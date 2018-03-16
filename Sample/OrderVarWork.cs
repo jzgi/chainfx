@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
-using Greatbone.Core;
+using Greatbone;
 using static System.Data.IsolationLevel;
-using static Greatbone.Core.Modal;
-using static Greatbone.Sample.Order;
-using static Greatbone.Sample.GospelUtility;
-using static Greatbone.Sample.User;
+using static Greatbone.Modal;
+using static Core.Order;
+using static Core.CoreUtility;
+using static Core.User;
 
-namespace Greatbone.Sample
+namespace Core
 {
     public abstract class OrderVarWork : Work
     {

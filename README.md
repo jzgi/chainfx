@@ -1,4 +1,4 @@
-# Core
+# The Greatbone framework and the Core sample app  
 
 As in 1990's, dBase had let many people become highly productive programmers, by its simple working environment and powerful data operability.
 

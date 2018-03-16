@@ -1,6 +1,6 @@
-﻿using Greatbone.Core;
+﻿using Greatbone;
 
-namespace Greatbone.Sample
+namespace Core
 {
     /// <summary>
     /// An item data object, that represents a product or service.

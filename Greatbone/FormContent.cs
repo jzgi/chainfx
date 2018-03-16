@@ -1,0 +1,289 @@
+﻿using System;
+
+namespace Greatbone
+{
+    /// <summary>
+    /// To generate a urlencoded byte or char string.
+    /// </summary>
+    public class FormContent : DynamicContent, ISink
+    {
+        // hexidecimal characters
+        protected static readonly char[] HEX =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+
+        int ordinal = -1;
+
+        public FormContent(bool bin, int capacity = 4092) : base(bin, capacity)
+        {
+        }
+
+        public override string Type => "application/x-www-form-urlencoded";
+
+        void AddEsc(string v)
+        {
+            if (v == null) return;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                char c = v[i];
+                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9') // alphabetic and decimal digits
+                {
+                    Add(c);
+                }
+                else if (c == '.' || c == '-' || c == '*' || c == '_')
+                {
+                    Add(c);
+                }
+                else if (c == ' ')
+                {
+                    Add('+');
+                }
+                else
+                {
+                    if (c < 0x80)
+                    {
+                        // have at most seven bits
+                        AddEscByte((byte) c);
+                    }
+                    else if (c < 0x800)
+                    {
+                        // 2 char, 11 bits
+                        AddEscByte((byte) (0xc0 | (c >> 6)));
+                        AddEscByte((byte) (0x80 | (c & 0x3f)));
+                    }
+                    else
+                    {
+                        // 3 char, 16 bits
+                        AddEscByte((byte) (0xe0 | ((c >> 12))));
+                        AddEscByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+                        AddEscByte((byte) (0x80 | (c & 0x3f)));
+                    }
+                }
+            }
+        }
+
+        void AddEscByte(byte b)
+        {
+            Add('%');
+            Add(HEX[(b >> 4) & 0x0f]);
+            Add(HEX[b & 0x0f]);
+        }
+
+        //
+        // SINK
+        //
+
+        public void PutNull(string name)
+        {
+        }
+
+        public void Put(string name, JNumber v)
+        {
+        }
+
+        public void Put(string name, ISource v)
+        {
+        }
+
+        public void Put(string name, bool v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v ? "true" : "false");
+        }
+
+        public void Put(string name, short v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
+        public void Put(string name, int v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
+        public void Put(string name, long v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
+        public void Put(string name, double v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
+        public void Put(string name, decimal v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
+        public void Put(string name, DateTime v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
+        public void Put(string name, string v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            AddEsc(v);
+        }
+
+        public void Put(string name, ArraySegment<byte> v)
+        {
+        }
+
+        public void Put(string name, short[] v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(v[i]);
+            }
+        }
+
+        public void Put(string name, int[] v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(v[i]);
+            }
+        }
+
+        public void Put(string name, long[] v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(v[i]);
+            }
+        }
+
+        public void Put(string name, string[] v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(v[i]);
+            }
+        }
+
+        public void Put(string name, JObj v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(string name, JArr v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(string name, IData v, byte proj = 0x0f)
+        {
+        }
+
+        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        {
+        }
+
+        public void PutFrom(ISource s)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

@@ -1,6 +1,6 @@
-﻿using Greatbone.Core;
+﻿using Greatbone;
 
-namespace Greatbone.Sample
+namespace Core
 {
     /// <summary>
     /// For easy sharing code between works.
@@ -21,7 +21,7 @@ namespace Greatbone.Sample
             WeiXinUtility.Setup("weixin.json", deploy, "apiclient_cert.p12");
 
             // the only www service
-            TryCreate<GospelService>(
+            TryCreate<CoreService>(
                 new ServiceConfig("gospel")
                 {
                     addrs = new[] {"http://localhost:8080"},

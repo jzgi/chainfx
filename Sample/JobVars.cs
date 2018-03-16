@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using Greatbone.Core;
-using static Greatbone.Core.Modal;
-using static Greatbone.Sample.Org;
-using static Greatbone.Sample.User;
+using Greatbone;
+using static Greatbone.Modal;
+using static Core.Org;
+using static Core.User;
 
-namespace Greatbone.Sample
+namespace Core
 {
     [Ui("设置"), User]
     public class MyVarWork : Work
@@ -33,7 +33,7 @@ namespace Greatbone.Sample
                         h.FIELD(prin.tel, "电话");
                         h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
                         h.BOX_();
-                        h.QRCODE(GospelUtility.NETADDR + "/my//join?refwx=" + prin.wx, 3).P("让好友扫分享码，一同享用健康产品。");
+                        h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx, 3).P("让好友扫分享码，一同享用健康产品。");
                         h._BOX();
                         h._CARD_BODY();
                         h.CARD_FOOTER();
