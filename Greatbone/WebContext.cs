@@ -76,7 +76,6 @@ namespace Greatbone
                     if (registry[i] is T v) return v;
                 }
             }
-
             return Service.Obtain<T>();
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone;
@@ -14,9 +15,7 @@ namespace Core
     {
         public CoreService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<CoreVarWork, string>(obj => ((Org) obj).id); // subshop
-
-            Create<PubOrgWork>("org"); // personal
+            CreateVar<CoreVarWork, string>(obj => ((Org) obj).id);
 
             Create<MyWork>("my"); // personal
 
@@ -24,7 +23,7 @@ namespace Core
 
             Create<AdmWork>("adm"); // administrator
 
-            City.All = DataUtility.FileToMap<string, City>(GetFilePath("$cities.json"));
+            City.All = DataUtility.FileToArray<City>(GetFilePath("$cities.json"));
 
             Register(() => DataUtility.FileToArray<Lesson>(GetFilePath("$lessons.json")), 3600 * 8);
 
@@ -147,24 +146,129 @@ namespace Core
             }
         }
 
+
+        const string Aliyun = "http://aliyun.com/";
+
         /// <summary>
-        /// The home page that lists gospel episodes.
+        /// The home page that lists gospel lessons.
         /// </summary>
         public void @default(WebContext wc)
         {
             var lessons = Obtain<Lesson[]>();
             wc.GivePage(200, m =>
             {
-                m.T("<h1>事实真相</h1>");
+                m.TOPBAR_()._TOOLBAR("天国近了", false);
                 using (var dc = NewDbContext())
                 {
+                    m.T("<main class=\"uk-grid uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-4@xl\">");
                     for (int i = 0; i < lessons?.Length; i++)
                     {
-                        m.T("<div class=\"card\">");
-                        m.T("</div>");
+                        var lesson = lessons[i];
+
+                        m.T("<article class=\"uk-card\">");
+                        m.T("<video controls playsinline uk-video=\"automute: true\">");
+                        m.T("<source src=\"http://aliyun.com/").T(lesson.zh).T("\" type=\"video/mp4\">");
+                        m.T("</video>");
+                        m.T("<div>").T(lesson.zh).T("</div>");
+                        m.T("</article>");
                     }
+                    m.T("</main>");
                 }
+            }, true, 3600, "劝世福音");
+        }
+
+        /// Returns a home page pertaining to a related city
+        /// We are forced to put auth check here because weixin auth does't work in iframe
+        [CityId, User]
+        public void list(WebContext ac)
+        {
+            string cityid = ac.Query[nameof(cityid)];
+            if (string.IsNullOrEmpty(cityid))
+            {
+                cityid = City.All?[0].id;
+            }
+
+            var orgs = Obtain<Map<string, Org>>();
+            var shops = orgs.All(x => x.id.StartsWith(cityid));
+            Item[] items = null;
+            using (var dc = NewDbContext())
+            {
+                items = dc.Query<Item>("SELECT * FROM items WHERE orgid LIKE @1 AND status > 0 ORDER BY orgid, status", p => p.Set(cityid + "%"));
+            }
+            ac.GiveDoc(200, m =>
+                {
+                    m.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true, width: 0)._TOPBAR();
+
+                    m.BOARDVIEW(shops, (h, o) =>
+                    {
+                        m.CARD_HEADER_();
+                        m.H3(o.name);
+//                        m.ICON(o.id + "/icon", href: o.id + "/", width: 2);
+                        m.P(o.descr, "简介");
+                        m.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                        m._CARD_HEADER();
+
+                        m.CARD_BODY_();
+                        m.LISTVIEW(items, (h2, itm) =>
+                        {
+                            m.ICON("/" + itm.orgid + "/" + itm.name + "/icon", width: 0x15);
+                            m.BOX_(0x35);
+                            m.T(itm.descr);
+                            m._BOX();
+                            m.TOOL(nameof(CoreItemVarWork.buy));
+                        });
+                        m._CARD_BODY();
+                        
+
+                        m.CARD_FOOTER_();
+
+                        m._CARD_FOOTER();
+                    });
+                }, true, 60, "粗狼达人 - " + cityid
+            );
+        }
+
+        /// <summary>
+        /// WCPay notify, placed here due to non-authentic context.
+        /// </summary>
+        public async Task paynotify(WebContext ac)
+        {
+            XElem xe = await ac.ReadAsync<XElem>();
+            if (!Notified(xe, out var trade_no, out var cash))
+            {
+                ac.Give(400);
+                return;
+            }
+            var orgs = Obtain<Map<string, Org>>();
+            var (orderid, _) = trade_no.To2Ints();
+            string city, addr;
+            string towx = null; // messge to
+            using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
+            {
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status < 2 RETURNING orgid, city, addr", (p) => p.Set(cash).Set(orderid)))
+                {
+                    return; // WCPay may send notification more than once
+                }
+                dc.Let(out string orgid).Let(out city).Let(out addr);
+                // retrieve a POS openid
+                if (towx == null)
+                {
+                    towx = orgs[orgid].oprwx;
+                }
+            }
+            // send messages
+            if (towx != null)
+            {
+                await PostSendAsync(towx, "收到新单 No." + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+            }
+            // return xml to WCPay server
+            XmlContent x = new XmlContent(true, 1024);
+            x.ELEM("xml", null, () =>
+            {
+                x.ELEM("return_code", "SUCCESS");
+                x.ELEM("return_msg", "OK");
             });
+            ac.Give(200, x);
         }
     }
 }

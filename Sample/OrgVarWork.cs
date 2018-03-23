@@ -2,15 +2,22 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Core.CoreUtility;
 using static Core.User;
 
 namespace Core
 {
-    public abstract class OrgVarWork : Work
+    public abstract class OrgVarWork : Work, IOrgVar
     {
         protected OrgVarWork(WorkConfig cfg) : base(cfg)
         {
+        }
+    }
+
+    public class CoreVarWork : OrgVarWork
+    {
+        public CoreVarWork(WorkConfig cfg) : base(cfg)
+        {
+            CreateVar<CoreItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void icon(WebContext ac)
@@ -25,95 +32,6 @@ namespace Core
                     else ac.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
                 }
                 else ac.Give(404, @public: true, maxage: 3600); // not found
-            }
-        }
-
-        public void img(WebContext ac, int ordinal)
-        {
-            string orgid = ac[this];
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query1("SELECT img" + ordinal + " FROM orgs WHERE id = @1", p => p.Set(orgid)))
-                {
-                    dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) ac.Give(204, @public: true, maxage: 3600); // no content 
-                    else ac.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
-                }
-                else ac.Give(404, @public: true, maxage: 3600); // not found
-            }
-        }
-    }
-
-    [User]
-    public class PubOrgVarWork : OrgVarWork, IShopVar
-    {
-        public PubOrgVarWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<PubItemVarWork, string>(obj => ((Item) obj).name);
-        }
-
-        [Ui("进入该网点"), Tool(Anchor)]
-        public void @default(WebContext ac)
-        {
-            string orgid = ac[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            if (org == null)
-            {
-                ac.Give(404, @public: true, maxage: 3600);
-                return;
-            }
-            ac.Register(org);
-
-            using (var dc = NewDbContext())
-            {
-                var items = dc.Query<Item>("SELECT * FROM items WHERE orgid = @1 AND status > 0 ORDER BY status DESC", p => p.Set(orgid), 0xff);
-                ac.GiveDoc(200, m =>
-                {
-                    m.TOPBAR_().A_DROPDOWN_("正在" + Org.Statuses[org.status]);
-                    m.BOX_();
-                    m.P(org.descr, "简介");
-                    m.P_("地址").T(org.city)._T(org.addr)._P();
-                    if (org.areas != null)
-                    {
-                        m.P_("限送").T(org.areas)._P();
-                    }
-                    if (org.off > 0) m.P_("优惠").T(org.min).T("元起订，每满").T(org.notch).T("元立减").T(org.off).T("元")._P();
-                    m._BOX();
-                    m.BOX_();
-                    m.QRCODE(NETADDR + ac.Uri, width: 2);
-                    m.BOX_(4).TOOL("msg").A("&#128222; 客服电话", "tel:" + org.oprtel + "#mp.weixin.qq.com", true)._BOX();
-                    m._BOX();
-                    m._A_DROPDOWN()._TOPBAR();
-
-                    if (items == null) return;
-                    m.BOARDVIEW(items, (h, o) =>
-                    {
-                        h.CARD_HEADER(o.name);
-                        h.CARD_BODY_();
-                        h.ICON((o.name) + "/icon");
-                        h.BOX_(4).P(o.descr, "特色").P(o.stock, "可供", o.unit).P(o.price, fix: "¥", tag: "em")._BOX();
-                        h._CARD_BODY();
-                        h.CARD_FOOTER();
-                        // adjust item availability
-                        if (org.status == 0) o.stock = 0;
-                    });
-                }, true, 60, org.name);
-            }
-        }
-
-        [Ui("发送消息"), Tool(AnchorOpen)]
-        public void msg(WebContext ac)
-        {
-            string orgid = ac[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            if (org == null)
-            {
-                ac.Give(404, @public: true, maxage: 3600);
-                return;
-            }
-            using (var dc = NewDbContext())
-            {
-                dc.Query1();
             }
         }
     }
@@ -141,7 +59,6 @@ namespace Core
                         m.FIELD(o.id, "编号");
                         m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
                         m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
-                        m.SELECT(nameof(o.city), o.city, City.All, "城市", refresh: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
                         m.NUMBER(nameof(o.x), o.x, "经度", width: 6).NUMBER(nameof(o.x), o.x, "纬度", width: 6);
                         m._FORM();

@@ -7,7 +7,7 @@ namespace Greatbone
     /// </summary>
     public interface IBefore
     {
-        bool Do(WebContext ac);
+        bool Do(WebContext wc);
     }
 
     /// <summary>

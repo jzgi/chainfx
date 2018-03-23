@@ -70,13 +70,11 @@ namespace Core
                     {
                         ChatMsg[] msgs;
                         dc.Let(out msgs);
-                        m.CARD_();
                         for (int i = 0; i < msgs.Length; i++)
                         {
                             ChatMsg msg = msgs[i];
 //                            m.CARDITEM(msg.name, msg.text);
                         }
-                        m._CARD();
                     }
                 }
             });

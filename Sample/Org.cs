@@ -10,22 +10,17 @@ namespace Core
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "停业中"},
-            {1, "休息中"},
-            {2, "营业中"}
+            {0, "停业状态"},
+            {1, "暂缓接单"},
+            {2, "正常接单"}
         };
 
         internal string id;
         internal string name;
         internal string descr;
-        internal string city;
         internal string addr;
         internal double x;
         internal double y;
-        internal string[] areas;
-        internal decimal min;
-        internal decimal notch;
-        internal decimal off;
         internal string mgrwx;
         internal string mgrtel;
         internal string mgrname;
@@ -41,17 +36,9 @@ namespace Core
                 if ((proj & ID) == ID) s.Get(nameof(id), ref id);
                 s.Get(nameof(name), ref name);
                 s.Get(nameof(descr), ref descr);
-                s.Get(nameof(city), ref city);
                 s.Get(nameof(addr), ref addr);
                 s.Get(nameof(x), ref x);
                 s.Get(nameof(y), ref y);
-            }
-            if ((proj & NORM) == NORM)
-            {
-                s.Get(nameof(areas), ref areas);
-                s.Get(nameof(min), ref min);
-                s.Get(nameof(notch), ref notch);
-                s.Get(nameof(off), ref off);
             }
             if ((proj & LATER) == LATER)
             {
@@ -72,17 +59,9 @@ namespace Core
                 if ((proj & ID) == ID) s.Put(nameof(id), id);
                 s.Put(nameof(name), name);
                 s.Put(nameof(descr), descr);
-                s.Put(nameof(city), city);
                 s.Put(nameof(addr), addr);
                 s.Put(nameof(x), x);
                 s.Put(nameof(y), y);
-            }
-            if ((proj & NORM) == NORM)
-            {
-                s.Put(nameof(areas), areas);
-                s.Put(nameof(min), min);
-                s.Put(nameof(notch), notch);
-                s.Put(nameof(off), off);
             }
             if ((proj & LATER) == LATER)
             {

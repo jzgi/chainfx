@@ -32,7 +32,7 @@ namespace Core
                     m.TOOLBAR();
                     m.BOARDVIEW(arr, (h, o) =>
                     {
-                        h.CARD_HEADER(o.name, Item.Statuses[o.status], o.status >= 1);
+                        h.CARD_HEADER(o.name, Item.Statuses[o.status]);
                         h.CARD_BODY_();
                         h.ICON(o.name + "/icon", width: 2);
                         h.BOX_(4).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();

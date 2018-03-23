@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Core.CoreUtility;
 using static Core.User;
 
 namespace Core
@@ -17,7 +16,7 @@ namespace Core
 
         public void icon(WebContext wc)
         {
-            string orgid = wc[typeof(IShopVar)];
+            string orgid = wc[typeof(IOrgVar)];
             string name = wc[this];
             using (var dc = NewDbContext())
             {
@@ -48,14 +47,14 @@ namespace Core
         }
     }
 
-    public class PubItemVarWork : ItemVarWork
+    public class CoreItemVarWork : ItemVarWork
     {
-        public PubItemVarWork(WorkConfig cfg) : base(cfg)
+        public CoreItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
-        public async Task add(WebContext wc)
+        public async Task buy(WebContext wc)
         {
             string orgid = wc[-1];
             var org = Obtain<Map<string, Org>>()[orgid];
@@ -74,32 +73,19 @@ namespace Core
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("收货地址");
-                            if (org.areas != null) // dedicated areas
-                            {
-                                name = prin.name;
-                                city = org.city;
-                                (a, b) = prin.addr.ToDual(SEPCHAR);
-                                tel = prin.tel;
-                                h.HIDDEN(nameof(name), name).HIDDEN(nameof(city), city);
-                                h.SELECT(nameof(a), a, org.areas, required: true, box: 4).TEXT(nameof(b), b, required: true, width: 8);
-                                h.TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                            }
-                            else // free delivery
-                            {
-                                name = prin.name;
-                                city = prin.city;
-                                a = prin.addr;
-                                tel = prin.tel;
-                                h.SELECT(nameof(city), city, City.All, required: true, width: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
-                                h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
-                            }
+                            name = prin.name;
+                            city = prin.city;
+                            a = prin.addr;
+                            tel = prin.tel;
+                            h.SELECT(nameof(city), city, City.All, required: true, width: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
+                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
                             h._FIELDSET();
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.ICON("icon", width: 2).NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 2).FIELD(it.unit, width:2);
+                        h.ICON("icon", width: 2).NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 2).FIELD(it.unit, width: 2);
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -140,12 +126,8 @@ namespace Core
                             typ = 0, // ordinal order
                             wx = prin.wx,
                             name = name,
-                            city = city,
-                            addr = org.areas == null ? a : a + SEPCHAR + b, // concatenate addr if needed
+                            addr = a,
                             tel = tel,
-                            min = org.min,
-                            notch = org.notch,
-                            off = org.off,
                             created = DateTime.Now
                         };
                         o.AddItem(itemname, unit, price, num);

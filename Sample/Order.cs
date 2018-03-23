@@ -39,13 +39,9 @@ namespace Core
         internal short typ; // 
         internal string wx; // weixin openid
         internal string name; // customer name
-        internal string city;
         internal string addr; // may include area and site
         internal string tel;
         internal OrderItem[] items;
-        internal decimal min;
-        internal decimal notch;
-        internal decimal off;
         internal decimal total; // total price
         internal DateTime created;
         internal decimal cash; // amount recieved
@@ -65,13 +61,9 @@ namespace Core
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(wx), ref wx);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(city), ref city);
             s.Get(nameof(addr), ref addr);
             s.Get(nameof(tel), ref tel);
             s.Get(nameof(items), ref items);
-            s.Get(nameof(min), ref min);
-            s.Get(nameof(notch), ref notch);
-            s.Get(nameof(off), ref off);
             s.Get(nameof(total), ref total);
             s.Get(nameof(created), ref created);
             if ((proj & LATER) == LATER)
@@ -95,13 +87,9 @@ namespace Core
             s.Put(nameof(typ), typ);
             s.Put(nameof(wx), wx);
             s.Put(nameof(name), name);
-            s.Put(nameof(city), city);
             s.Put(nameof(addr), addr);
             s.Put(nameof(tel), tel);
             s.Put(nameof(items), items);
-            s.Put(nameof(min), min);
-            s.Put(nameof(notch), notch);
-            s.Put(nameof(off), off);
             s.Put(nameof(total), total);
             s.Put(nameof(created), created);
             if ((proj & LATER) == LATER)
@@ -115,7 +103,6 @@ namespace Core
 
         public string Err()
         {
-            if (total < min) return "不足最低金额，请继续选购！";
             if (addr == null) return "您尚未填写地址哦！";
             return null;
         }
@@ -177,10 +164,6 @@ namespace Core
                     sum += items[i].qty * items[i].price;
                 }
                 total = sum;
-                if (notch > 0)
-                {
-                    total = total - (decimal.Floor(total / notch) * off);
-                }
             }
         }
 

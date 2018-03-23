@@ -15,6 +15,6 @@ namespace Greatbone
     /// </summary>
     public interface IAuthenticateAsync
     {
-        Task<bool> AuthenticateAsync(WebContext ac, bool e);
+        Task<bool> AuthenticateAsync(WebContext wc, bool e);
     }
 }

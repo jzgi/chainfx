@@ -5,26 +5,23 @@
     top: 0;
     font-size: 1rem;
     background: #f7f7f8;
-    content: '';
     z-index: 9;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-sizing: border-box;
+    padding: 0 4px;
     border-bottom: 1px solid #c4c4c4;
-}
-
-.top-bar.top-bar-gap {
-    padding-left: 2rem;
 }
 
 .top-bar-placeholder {
     height: 2.75rem;
 }
-  
+
 .bottom-bar-placeholder {
     height: 2.75rem;
 }
-  
+
 .bottom-bar {
     position: fixed;
     height: 2.75rem;
@@ -32,13 +29,10 @@
     bottom: 0;
     font-size: 1rem;
     background: #f7f7f8;
-    padding-top: 0.5rem;
     display: flex;
     justify-content: space-around;
-}
-
-.pane {
-    padding: 0.5rem;
+    align-items: center;
+    border-top: 1px solid #c4c4c4;
 }
 
 .checked {

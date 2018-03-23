@@ -15,9 +15,9 @@ namespace Core
         }
     }
 
-    public class MyNewoVarWork : OrderVarWork
+    public class MyOrderVarWork : OrderVarWork
     {
-        public MyNewoVarWork(WorkConfig cfg) : base(cfg)
+        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -94,13 +94,6 @@ namespace Core
         }
     }
 
-    public class MyOldoVarWork : OrderVarWork
-    {
-        public MyOldoVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-    }
-
     public class OprPosVarWork : OrderVarWork
     {
         public OprPosVarWork(WorkConfig cfg) : base(cfg)
@@ -123,7 +116,7 @@ namespace Core
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            m.FIELD(name, width: 5).FIELD(stock, fix: unit, width: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, max: stock, min: (short) 0, step: (short) 1, width: 5);
+                            m.FIELD(name, width: 5).FIELD(stock, pre: unit, width: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, max: stock, min: (short) 0, step: (short) 1, width: 5);
                         }
                     }
                     m._FORM();
@@ -173,14 +166,7 @@ namespace Core
                         m._SELECT();
                         // input addr
                         var org = Obtain<Map<string, Org>>()[orgid];
-                        if (org.areas != null)
-                        {
-                            m.SELECT(nameof(addr), addr, org.areas, "区域");
-                        }
-                        else
-                        {
-                            m.TEXT(nameof(addr), addr, "区域");
-                        }
+                        m.TEXT(nameof(addr), addr, "区域");
                     }
                     m._FORM();
                 });

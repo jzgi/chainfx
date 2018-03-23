@@ -7,13 +7,13 @@ namespace Core
     /// </summary>
     public class Lesson : IData
     {
-        internal string en; // 01 lesson-name
         internal string zh;
+        internal string en; 
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            s.Get(nameof(en), ref en);
             s.Get(nameof(zh), ref zh);
+            s.Get(nameof(en), ref en);
         }
 
         public void Write(ISink s, byte proj = 0x0f)

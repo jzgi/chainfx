@@ -5,7 +5,7 @@ namespace Core
     /// <summary>
     /// For easy sharing code between works.
     /// </summary>
-    public interface IShopVar
+    public interface IOrgVar
     {
     }
 
@@ -20,9 +20,8 @@ namespace Core
 
             WeiXinUtility.Setup("weixin.json", deploy, "apiclient_cert.p12");
 
-            // the only www service
             TryCreate<CoreService>(
-                new ServiceConfig("gospel")
+                new ServiceConfig("core")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,

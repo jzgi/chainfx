@@ -304,14 +304,7 @@ namespace Greatbone
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
-        public Procedure GetProcedure(string method)
-        {
-            if (string.IsNullOrEmpty(method))
-            {
-                return @default;
-            }
-            return procedures[method];
-        }
+        public Procedure this[string method] => string.IsNullOrEmpty(method) ? @default : procedures[method];
 
         internal Work Resolve(ref string relative, WebContext wc)
         {
@@ -385,7 +378,7 @@ namespace Greatbone
                     wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
 
-                Procedure prc = string.IsNullOrEmpty(name) ? @default : GetProcedure(name);
+                Procedure prc = this[name];
                 if (prc == null)
                 {
                     wc.Give(404); // not found
@@ -573,7 +566,6 @@ namespace Greatbone
                     }
                 }
             }
-
             return Parent?.Obtain<T>();
         }
 
@@ -590,7 +582,6 @@ namespace Greatbone
                     }
                 }
             }
-
             if (Parent == null) return null;
             return await Parent.ObtainAsync<T>();
         }

@@ -12,11 +12,7 @@ namespace Core
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyVarVarWork, int>();
-
-            Create<MyNewoWork>("newo");
-
-            Create<MyOldoWork>("oldo");
+            Create<MyOrderWork>("ord");
         }
 
         public void @default(WebContext ac)
@@ -25,20 +21,19 @@ namespace Core
             ac.GivePage(200, m =>
             {
                 m.TOOLBAR();
-                m.BOARDVIEW(h =>
-                    {
-                        h.CARD_HEADER("账号信息");
-                        h.CARD_BODY_();
-                        h.FIELD(prin.name, "姓名");
-                        h.FIELD(prin.tel, "电话");
-                        h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-                        h.BOX_();
-                        h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx, 3).P("让好友扫分享码，一同享用健康产品。");
-                        h._BOX();
-                        h._CARD_BODY();
-                        h.CARD_FOOTER();
-                    }
-                );
+//                m.BOARDVIEW(h =>
+//                    {
+//                        h.CARD_HEADER("账号信息");
+//                        h.CARD_BODY_();
+//                        h.FIELD(prin.name, "姓名");
+//                        h.FIELD(prin.tel, "电话");
+//                        h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
+//                        h.BOX_();
+//                        h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
+//                        h._BOX();
+//                        h._CARD_BODY();
+//                    }
+//                );
             });
         }
 
@@ -53,6 +48,65 @@ namespace Core
             wc.GiveRedirect("https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect");
         }
 
+        const string VOIDPASS = "t#0^0z4R4pX7";
+
+        [Ui("设置"), Tool(ButtonShow)]
+        public async Task edit(WebContext wc)
+        {
+            string wx = wc[this];
+            var prin = (User) wc.Principal;
+            string password = null;
+            if (wc.GET)
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE wx = @1");
+                    var o = dc.Query1<User>(p => p.Set(wx));
+                    if (o.credential != null) password = VOIDPASS;
+                    wc.GivePane(200, h =>
+                    {
+                        h.FORM_();
+                        h.FIELDSET_("用户基本信息（必填）");
+                        h.TEXT(nameof(o.name), o.name, label: "姓名", max: 4, min: 2, required: true);
+                        h.TEXT(nameof(o.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                        h._FIELDSET();
+                        h.FIELDSET_("用于从APP登录（可选）");
+                        h.PASSWORD(nameof(password), password, label: "密码", max: 12, min: 3);
+                        h._FIELDSET();
+                        h._FORM();
+                    });
+                }
+            }
+            else
+            {
+                var f = await wc.ReadAsync<Form>();
+                string name = f[nameof(name)];
+                string tel = f[nameof(tel)];
+                password = f[nameof(password)];
+                using (var dc = NewDbContext())
+                {
+                    if (password != VOIDPASS) // password being changed
+                    {
+                        string credential = StrUtility.MD5(prin.tel + ":" + password);
+                        dc.Execute(
+                            "INSERT INTO users (wx, name, tel, credential) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, credential = @4",
+                            p => p.Set(prin.wx).Set(name).Set(tel).Set(credential)
+                        );
+                    }
+                    else // password no change
+                    {
+                        dc.Execute(
+                            "INSERT INTO users (wx, name, tel) VALUES (@1, @2, @3) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3",
+                            p => p.Set(prin.wx).Set(name).Set(tel)
+                        );
+                    }
+                    prin.name = name;
+                    prin.tel = tel;
+                    wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL);
+                    wc.GivePane(200); // close dialog
+                }
+            }
+        }
 
         [Ui("身份刷新"), Tool(ButtonOpen)]
         public void token(WebContext ac)
@@ -75,99 +129,11 @@ namespace Core
         }
     }
 
-    public class MyVarVarWork : Work
-    {
-        public MyVarVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        [Ui("修改"), Tool(ButtonShow)]
-        public async Task edit(WebContext ac)
-        {
-            string wx = ac[-1];
-            var prin = (User) ac.Principal;
-            if (ac.GET)
-            {
-                if (ac.Query.Count > 0)
-                {
-                    ac.Query.Let(out prin.name).Let(out prin.tel).Let(out prin.city);
-                }
-                ac.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
-                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                    string city = prin.city ?? City.All[0].name;
-                    h.SELECT(nameof(prin.city), city, City.All, "城市");
-                    h.TEXT(nameof(prin.addr), prin.addr, label: "地址", max: 10, min: 2, required: true);
-                    h._FORM();
-                });
-            }
-            else
-            {
-                const byte proj = 0xff ^ CREDENTIAL ^ User.LATER;
-                var o = await ac.ReadObjectAsync(obj: prin);
-                o.wx = wx;
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("INSERT INTO users")._(o, proj)._VALUES_(o, proj).T(" ON CONFLICT (wx) DO UPDATE")._SET_(o, proj ^ WX);
-                    dc.Execute(p => o.Write(p, proj));
-                }
-                ac.SetTokenCookie(o, 0xff ^ CREDENTIAL);
-                ac.GivePane(200); // close dialog
-            }
-        }
-
-        const string PASS = "0z4R4pX7";
-
-        [Ui("设密码"), Tool(ButtonShow)]
-        public async Task pass(WebContext ac)
-        {
-            User prin = (User) ac.Principal;
-            string wx = ac[-1];
-            string credential;
-            string password = null;
-            if (ac.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    credential = (string) dc.Scalar("SELECT credential FROM users WHERE wx = @1", (p) => p.Set(wx));
-                    if (credential != null)
-                    {
-                        password = PASS;
-                    }
-                    ac.GivePane(200, h =>
-                    {
-                        h.FORM_();
-                        h.FIELDSET_("用于微信以外登录");
-                        h.PASSWORD(nameof(password), password, label: "密码", max: 10, min: 3, required: true);
-                        h._FIELDSET();
-                        h._FORM();
-                    });
-                }
-            }
-            else
-            {
-                var f = await ac.ReadAsync<Form>();
-                password = f[nameof(password)];
-                if (password != PASS)
-                {
-                    credential = StrUtility.MD5(prin.tel + ":" + password);
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET credential = @1 WHERE wx = @1", (p) => p.Set(credential).Set(wx));
-                    }
-                }
-                ac.GivePane(200);
-            }
-        }
-    }
-
     /// <summary>
     /// The working folder of org operators.
     /// </summary>
     [Ui("常规"), User(OPR)]
-    public class OprVarWork : Work, IShopVar
+    public class OprVarWork : Work, IOrgVar
     {
         public OprVarWork(WorkConfig cfg) : base(cfg)
         {
@@ -199,21 +165,13 @@ namespace Core
             {
                 h.TOOLBAR();
                 var o = orgs[orgid];
-                h.BOARDVIEW_();
 
-                h.CARD_();
-                h.CARD_HEADER(o.name, Statuses[o.status], o.status == 2);
+                h.CARD_HEADER(o.name, Statuses[o.status]);
                 h.CARD_BODY_();
                 h.FIELD(o.descr, "简介");
-                h.FIELD_("限送").T(o.areas)._FIELD();
-                h.FIELD_("活动").T(o.min).T("元起订，每满").T(o.notch).T("元立减").T(o.off).T("元")._FIELD();
                 h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
                 h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
                 h._CARD_BODY();
-
-                h._CARD();
-
-                h._BOARDVIEW();
             });
         }
 
@@ -231,8 +189,6 @@ namespace Core
                 {
                     h.FORM_();
                     h.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
-                    h.TEXTAREA(nameof(o.areas), o.areas, "限送");
-                    h.NUMBER(nameof(o.min), o.min, "起订", width: 2).NUMBER(nameof(o.notch), o.notch, "满额", width: 2).NUMBER(nameof(o.off), o.off, "立减", width: 2);
                     h._FORM();
                 });
             }
@@ -240,15 +196,10 @@ namespace Core
             {
                 var f = await ac.ReadAsync<Form>();
                 o.descr = f[nameof(o.descr)];
-                string v = f[nameof(o.areas)];
-                o.areas = v.Split(CRLF, StringSplitOptions.RemoveEmptyEntries);
-                o.min = f[nameof(o.min)];
-                o.notch = f[nameof(o.notch)];
-                o.off = f[nameof(o.off)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orgs SET descr = @1, areas = @2, min = @3, notch = @4, off = @5 WHERE id = @6",
-                        p => p.Set(o.descr).Set(o.areas).Set(o.min).Set(o.notch).Set(o.off).Set(orgid));
+                    dc.Execute("UPDATE orgs SET descr = @1 WHERE id = @2",
+                        p => p.Set(o.descr).Set(orgid));
                 }
                 ac.GivePane(200);
             }

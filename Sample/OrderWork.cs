@@ -21,23 +21,23 @@ namespace Core
                 m.TOOLBAR();
                 m.BOARDVIEW(arr, (h, o) =>
                 {
-                    h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER(Statuses[o.status], o.status == ENDED);
+                    h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER(Statuses[o.status]);
                     h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
                     for (int i = 0; i < o.items.Length; i++)
                     {
                         var oi = o.items[i];
-                        h.FIELD(oi.name, width: 6).FIELD(oi.price, fix: "¥", width: 0x23).FIELD(oi.qty, fix: oi.unit, width: 3);
+                        h.FIELD(oi.name, width: 6).FIELD(oi.price, pre: "¥", width: 0x23).FIELD(oi.qty, pre: oi.unit, width: 3);
                     }
-                    h.FIELD(o.total, "总价", fix: "¥", width: 3);
+                    h.FIELD(o.total, "总价", pre: "¥", width: 3);
                     h.CARD_FOOTER();
                 });
             }, false, 2);
         }
     }
 
-    public class MyNewoWork : OrderWork<MyNewoVarWork>
+    public class MyOrderWork : OrderWork<MyOrderVarWork>
     {
-        public MyNewoWork(WorkConfig cfg) : base(cfg)
+        public MyOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -52,26 +52,30 @@ namespace Core
                     m.TOOLBAR();
                     m.BOARDVIEW(arr, (h, o) =>
                     {
-                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status], o.status <= PAID);
+                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status]);
                         m.CARD_BODY_();
-                        m.FIELD_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._FIELD();
+                        m.FIELD_("收货").T(o.addr)._T(o.name).T(o.tel)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
                                 m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
-                                m.BOX_(3).P(oi.name).P(oi.price, fix: "¥").P(oi.qty, fix: oi.unit)._BOX();
-                                m.VARTOOL(nameof(MyNewoVarWork.edit), i, when: o.status == 0, width: 1);
-                                m.BOX_(1).P(oi.load, fix: oi.unit, when: o.typ == POS)._BOX();
+                                m.BOX_(3).P(oi.name).P(oi.price, pre: "¥").P(oi.qty, pre: oi.unit)._BOX();
+                                m.TOOL(nameof(MyOrderVarWork.edit));
+                                m.BOX_(1);
+                                if (o.typ == POS)
+                                {
+                                    m.P(oi.load, pre: oi.unit);
+                                }
+                                m._BOX();
                             }
                             else
                             {
                                 m.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
                             }
                         }
-                        m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", width: 8);
-                        m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, width: 4);
+                        m.FIELD(o.total, "总计", pre: "¥", tag: o.status == 0 ? "em" : null, width: 4);
                         m._CARD_BODY();
 
                         m.CARD_FOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
@@ -79,45 +83,42 @@ namespace Core
                 }, false, 2);
             }
         }
-    }
 
-    public class MyOldoWork : OrderWork<MyNewoVarWork>
-    {
-        public MyOldoWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        public void @default(WebContext ac, int page)
+        [Ui("历史订单"), Tool(ButtonOpen)]
+        public void old(WebContext ac, int page)
         {
             string wx = ac[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC", p => p.Set(wx));
-                ac.GivePage(200, m =>
+                ac.GivePane(200, m =>
                 {
-                    m.TOOLBAR();
                     m.BOARDVIEW(arr, (h, o) =>
                     {
-                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status], o.status <= PAID);
+                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status]);
                         m.CARD_BODY_();
-                        m.FIELD_("收货").T(o.city).T(o.addr)._T(o.name).T(o.tel)._FIELD();
+                        m.FIELD_("收货").T(o.addr)._T(o.name).T(o.tel)._FIELD();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
                                 m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon");
-                                m.P(oi.name).P(oi.price, fix: "¥");
-                                m.P(oi.qty, fix: oi.unit).VARTOOL("item", i, when: o.status == 0);
-                                m.P(oi.load, fix: oi.unit, when: o.typ == POS);
+                                m.P(oi.name).P(oi.price, pre: "¥");
+                                m.P(oi.qty, pre: oi.unit).TOOL("item", i);
+                                m.BOX_(1);
+                                if (o.typ == POS)
+                                {
+                                    m.P(oi.load, pre: oi.unit);
+                                }
+                                m._BOX();
                             }
                             else
                             {
                                 m.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
                             }
                         }
-                        m.FIELD(o.min + "元起订，每满" + o.notch + "元立减" + o.off + "元", width: 8);
-                        m.FIELD(o.total, "总计", fix: "¥", tag: o.status == 0 ? "em" : null, width: 4);
+                        m.FIELD(o.total, "总计", pre: "¥", tag: o.status == 0 ? "em" : null, width: 4);
                         m._CARD_BODY();
                     });
                 }, false, 2);
@@ -150,7 +151,7 @@ namespace Core
                             for (int j = 0; j < o.items.Length; j++)
                             {
                                 var oi = o.items[j];
-                                h.FIELD(oi.name, width: 3).FIELD(oi.price, fix: "¥", width: 2).FIELD(oi.load, null, oi.unit, width: 1);
+                                h.FIELD(oi.name, width: 3).FIELD(oi.price, pre: "¥", width: 2).FIELD(oi.load, null, oi.unit, width: 1);
                             }
                         }
                         h._CARD_BODY();
@@ -174,9 +175,6 @@ namespace Core
                     orgid = orgid,
                     orgname = org.name,
                     typ = POS,
-                    min = org.min,
-                    notch = org.notch,
-                    off = org.off,
                     created = DateTime.Now
                 };
                 const byte proj = 0xff ^ KEY ^ Order.LATER;
@@ -248,7 +246,7 @@ namespace Core
                 {
                     var org = Obtain<Map<string, Org>>()[orgid];
                     m.FORM_();
-                    m.RADIOSET(nameof(filter), filter, org.areas);
+//                    m.RADIOSET(nameof(filter), filter, org.areas);
                     m._FORM();
                 });
                 return;
@@ -292,7 +290,7 @@ namespace Core
                 ac.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", box: 0x4c);
+                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", width: 0x4c);
                     m._FORM();
                 });
             }

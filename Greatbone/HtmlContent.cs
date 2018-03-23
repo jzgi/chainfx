@@ -9,11 +9,15 @@ namespace Greatbone
     {
         readonly WebContext webCtx;
 
-        // ordinal current in output
-        int ordinal;
+        struct Ctx
+        {
+            internal int ordinal;
+            internal object obj;
+        }
 
-        // data model current in output
-        object model;
+        // data output contenxt in levels, if any
+        Ctx[] ctxs;
+        int level = -1;
 
         public HtmlContent(WebContext webCtx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
         {
@@ -89,7 +93,7 @@ namespace Greatbone
                 Add(" uk-button-large");
             }
 
-            Width(width);
+//            Width(width);
 
             Add("\""); // end of class
 
@@ -135,7 +139,7 @@ namespace Greatbone
                 Add(" uk-button-large");
             }
 
-            Width(width);
+//            Width(width);
 
             Add("\""); // end of class
 
@@ -145,54 +149,6 @@ namespace Greatbone
             }
             Add(">");
             return this;
-        }
-
-        void Width(byte c)
-        {
-            int lo = c & 0x0f;
-            int hi = c >> 4;
-            switch (lo)
-            {
-                case 1:
-                    Add(" uk-width-1-6");
-                    break;
-                case 2:
-                    Add(" uk-width-1-3");
-                    break;
-                case 3:
-                    Add(" uk-width-1-2");
-                    break;
-                case 4:
-                    Add(" uk-width-2-3");
-                    break;
-                case 5:
-                    Add(" uk-width-5-6");
-                    break;
-                case 6:
-                    Add(" uk-width-1-1");
-                    break;
-            }
-            switch (hi)
-            {
-                case 1:
-                    Add(" uk-width-small");
-                    break;
-                case 2:
-                    Add(" uk-width-medium");
-                    break;
-                case 3:
-                    Add(" uk-width-large");
-                    break;
-                case 4:
-                    Add(" uk-width-xlarge");
-                    break;
-                case 5:
-                    Add(" uk-width-auto");
-                    break;
-                case 6:
-                    Add(" uk-width-expand");
-                    break;
-            }
         }
 
         public HtmlContent CARD_(char style, bool hover, char pad = (char) 0, bool body = false)
@@ -515,7 +471,7 @@ namespace Greatbone
         public HtmlContent H3(string v, char line = (char) 0)
         {
             Add("<h3 class=\"uk-h3");
-            if (line == 'b')
+            if (line == 'd')
             {
                 Add(" uk-heading-divider");
             }
@@ -795,75 +751,22 @@ namespace Greatbone
         }
 
 
-        public HtmlContent FIELD<V>(V v, string label = null, string fix = null, string tag = null, byte width = 6)
+        public HtmlContent FIELD_(string label = null, byte width = 0x11)
         {
-            FIELD_(label, width);
-
-            if (tag != null)
-            {
-                Add('<');
-                Add(tag);
-                Add('>');
-            }
-            if (fix != null)
-            {
-                if (fix == "¥" || fix == "$")
-                {
-                    Add(fix);
-                    AddPrimitive(v);
-                }
-                else
-                {
-                    AddPrimitive(v);
-                    Add(fix);
-                }
-            }
-            else
-            {
-                AddPrimitive(v);
-            }
-            if (tag != null)
-            {
-                Add('<');
-                Add('/');
-                Add(tag);
-                Add('>');
-            }
-
-            _FIELD();
-            return this;
-        }
-
-        public HtmlContent FIELD(string[] v, string label = null, string fix = null, byte box = 0x0c)
-        {
-            FIELD_(label, box);
-            if (v != null)
-            {
-                for (int i = 0; i < v.Length; i++)
-                {
-                    if (i > 0) Add(" ");
-                    Add(v[i]);
-                }
-            }
-            if (fix != null)
-            {
-                Add(fix);
-            }
-            _FIELD();
-            return this;
-        }
-
-        public HtmlContent FIELD_(string label = null, byte width = 6)
-        {
-            Add("<div class=\"form-field");
+            Add("<div class=\"uk-field");
             if (width > 0)
             {
-                Width(width);
+                int lo = width & 0x0f;
+                int hi = width >> 4;
+                Add(" uk-width-");
+                Add(hi);
+                Add('-');
+                Add(lo);
             }
             Add("\">");
             if (label != null)
             {
-                Add("<label>");
+                Add("<label class=\"uk-label\">");
                 Add(label);
                 Add("</label>");
             }
@@ -876,10 +779,47 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BOX_(byte width = 6)
+        public HtmlContent FIELD<V>(V v, string label = null, string pre = null, string pst = null, string tag = null, byte width = 0x11)
         {
-            Add("<div class=\"uk-flex uk-flex-column uk-flex-left uk-flex-top");
-            Width(width);
+            FIELD_(label, width);
+            if (tag != null)
+            {
+                Add('<');
+                Add(tag);
+                Add('>');
+            }
+            if (pre != null)
+            {
+                Add(pre);
+            }
+            AddPrimitive(v);
+            if (pst != null)
+            {
+                Add(pst);
+            }
+            if (tag != null)
+            {
+                Add('<');
+                Add('/');
+                Add(tag);
+                Add('>');
+            }
+            _FIELD();
+            return this;
+        }
+
+        public HtmlContent BOX_(byte width = 0x11)
+        {
+            Add("<div class=\"uk-box");
+            if (width > 0)
+            {
+                int lo = width & 0x0f;
+                int hi = width >> 4;
+                Add(" uk-width-");
+                Add(hi);
+                Add('-');
+                Add(lo);
+            }
             Add("\">");
             return this;
         }
@@ -890,57 +830,23 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent P<V>(V v, string label = null, string fix = null, string tag = null, bool when = true)
+        public HtmlContent P_(string label = null, byte width = 0x11)
         {
-            if (!when) return this;
-
-            Add("<p>");
+            Add("<p");
+            if (width > 0)
+            {
+                int lo = width & 0x0f;
+                int hi = width >> 4;
+                Add(" class=\"uk-width-");
+                Add(hi);
+                Add('-');
+                Add(lo);
+                Add("\"");
+            }
+            Add(">");
             if (label != null)
             {
-                Add("<label>");
-                Add(label);
-                Add("</label>");
-            }
-            if (tag != null)
-            {
-                Add('<');
-                Add(tag);
-                Add('>');
-            }
-            if (fix != null)
-            {
-                if (fix == "¥" || fix == "$")
-                {
-                    Add(fix);
-                    AddPrimitive(v);
-                }
-                else
-                {
-                    AddPrimitive(v);
-                    Add(fix);
-                }
-            }
-            else
-            {
-                AddPrimitive(v);
-            }
-            if (tag != null)
-            {
-                Add('<');
-                Add('/');
-                Add(tag);
-                Add('>');
-            }
-            Add("</p>");
-            return this;
-        }
-
-        public HtmlContent P_(string label = null)
-        {
-            Add("<p>");
-            if (label != null)
-            {
-                Add("<label>");
+                Add("<label class=\"uk-label\">");
                 Add(label);
                 Add("</label>");
             }
@@ -953,25 +859,32 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent P(string[] v, string label = null)
+        public HtmlContent P<V>(V v, string label = null, string pre = null, string pst = null, string tag = null, byte width = 0x11)
         {
-            if (v == null) return this;
-            Add("<p>");
-            if (label != null)
+            P_(label, width);
+            if (tag != null)
             {
-                Add("<label>");
-                Add(label);
-                Add("</label>");
+                Add('<');
+                Add(tag);
+                Add('>');
             }
-            for (int i = 0; i < v.Length; i++)
+            if (pre != null)
             {
-                if (i > 0)
-                {
-                    Add("&nbsp;");
-                }
-                Add(v[i]);
+                Add(pre);
             }
-            Add("</p>");
+            AddPrimitive(v);
+            if (pst != null)
+            {
+                Add(pst);
+            }
+            if (tag != null)
+            {
+                Add('<');
+                Add('/');
+                Add(tag);
+                Add('>');
+            }
+            _P();
             return this;
         }
 
@@ -1015,7 +928,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ICON(string src, string alt = null, string href = null, byte width = 2)
+        public HtmlContent ICON(string src, string alt = null, string href = null, byte width = 0)
         {
             FIELD_(null, width);
             if (href != null)
@@ -1040,14 +953,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent QRCODE(string val = null, byte width = 6)
+        public HtmlContent QRCODE(string val = null)
         {
-            Add("<div class=\"form-field uk-padding");
-            if (width > 0)
-            {
-                Width(width);
-            }
-            Add("\">");
+            Add("<div class=\"uk-qrcode\">");
             Add("<script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
             Add("new QRCode(scripte.parentNode, \"");
@@ -1060,7 +968,7 @@ namespace Greatbone
 
         public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
         {
-            Add("<a href=\"#orginfo\" class=\"uk-button ukbutton-link\" uk-toggle>");
+            Add("<a href=\"#orginfo\" class=\"uk-button uk-button-link\" uk-toggle>");
             Add(label);
             Add("</a>");
             Add("<div id=\"orginfo\" class=\"uk-modal\" uk-modal>");
@@ -1105,7 +1013,15 @@ namespace Greatbone
         public HtmlContent FIELDSET_(string legend = null, byte width = 6)
         {
             Add("<fieldset class=\"uk-fieldset");
-            Width(width);
+            if (width > 0)
+            {
+                int lo = width & 0x0f;
+                int hi = width >> 4;
+                Add(" uk-width-");
+                Add(hi);
+                Add('-');
+                Add(lo);
+            }
             Add("\">");
             if (legend != null)
             {
@@ -1158,7 +1074,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
+        public void TOOLBAR(string title = null, bool refresh = true)
         {
             var prcs = webCtx.Work.Tooled;
             TOOLBAR_();
@@ -1166,9 +1082,9 @@ namespace Greatbone
             for (int i = 0; i < prcs?.Length; i++)
             {
                 var prc = prcs[i];
-                if (prc.Flag == 0 || (flag & prc.Flag) == prc.Flag)
+                if (!prc.IsCapital)
                 {
-                    Tool(prc, null, 0);
+                    Tool(prc);
                 }
             }
             Add("</div>");
@@ -1183,16 +1099,13 @@ namespace Greatbone
 
         public HtmlContent _TOOLBAR(string title = null, bool refresh = true)
         {
+            if (title != null)
+            {
+                Add(title);
+            }
             if (refresh)
             {
-                Add("<div class=\"tool-bar-right\">");
-                if (title != null)
-                {
-                    Add(title);
-                    Add("&nbsp;");
-                }
                 Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
-                Add("</div>");
             }
             Add("</form>");
             Add("<div class=\"top-bar-placeholder\"></div>");
@@ -1254,80 +1167,76 @@ namespace Greatbone
             }
         }
 
-        public HtmlContent LISTVIEW_()
+        public HtmlContent LISTVIEW<D>(D[] arr, Action<HtmlContent, D> item)
         {
             Add("<ul class=\"uk-list uk-list-divider uk-list-striped\">");
-            ordinal = 0;
-            model = null;
+            if (arr != null)
+            {
+                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                level++; // enter a new level
+
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    D obj = arr[i];
+                    ctxs[level].ordinal = i + 1;
+                    ctxs[level].obj = obj;
+
+                    item(this, obj);
+
+                    ctxs[level].ordinal = 0; // clear the level
+                    ctxs[level].obj = null;
+                }
+
+                level--; // exit the level
+            }
+
+            Add("</ul>");
             return this;
         }
 
         public HtmlContent _LISTVIEW(int count = 0)
         {
             Add("</main>");
-            ordinal = 0;
             PAGENATION(count);
             return this;
         }
 
-        public HtmlContent ACCORDION_()
+
+        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<HtmlContent, D> title, Action<HtmlContent, D> content) where D : IData
         {
             Add("<ul uk-accordion=\"multiple: true\">");
-            return this;
-        }
-
-        public HtmlContent _ACCORDION(int count = 0)
-        {
-            Add("</ul>");
-            ordinal = 0;
-            PAGENATION(count);
-            return this;
-        }
-
-        public HtmlContent ACCORDION_SECT_(string title = null)
-        {
-            Add("<li>");
-            Add("<div class=\"uk-accordion-title\">");
-            if (model != null)
-            {
-                var work = webCtx.Work;
-                Work varwork = work.VarWork;
-                if (varwork != null && work.HasPick)
-                {
-                    Add("<input name=\"key\" type=\"checkbox\" form=\"tool-bar-form\" class=\"uk-checkbox\" onclick=\"event.stopPropagation();\" value=\"");
-                    varwork.PutVariableKey(model, this);
-                    Add("\" onchange=\"checkIt(this);\">");
-                }
-            }
-            Add(title);
-            Add("</div>");
-            Add("<form class=\"uk-accordion-content uk-grid\">");
-            return this;
-        }
-
-        public HtmlContent _ACCORDION_SECT()
-        {
-            Add("</form>");
-            Add("</li>");
-            return this;
-        }
-
-        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<HtmlContent, D> sect) where D : IData
-        {
-            ACCORDION_();
             if (arr != null)
             {
+                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                level++; // enter a new level
+
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    model = obj;
-                    ACCORDION_SECT_();
-                    sect(this, obj);
-                    _ACCORDION_SECT();
+                    ctxs[level].ordinal = i + 1;
+                    ctxs[level].obj = obj;
+
+                    Add("<li>");
+                    // title
+                    Add("<div class=\"uk-accordion-title\">");
+                    title(this, obj);
+                    Add("</div>");
+                    // content
+                    Add("<form class=\"uk-accordion-content uk-grid\">");
+                    content(this, obj);
+                    Add("</form>");
+
+                    Add("</li>");
+
+                    ctxs[level].ordinal = 0; // clear the level
+                    ctxs[level].obj = null;
                 }
+
+                level--; // exit the level
             }
             // pagination if any
-            _ACCORDION(arr?.Length ?? 0);
+            Add("</ul>");
+            PAGENATION(count);
             return this;
         }
 
@@ -1356,10 +1265,16 @@ namespace Greatbone
 
             if (arr != null && row != null) // tbody if having data objects
             {
+                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                level++; // enter a new level
+
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
+                    ctxs[level].ordinal = i + 1;
+                    ctxs[level].obj = obj;
+
                     Add("<tr>");
                     if (varwork != null && work.HasPick)
                     {
@@ -1374,134 +1289,95 @@ namespace Greatbone
                     {
                         Add("<td>");
                         Add("<form>");
-                        Tools(varwork, 0, obj);
+                        Tools(varwork);
                         Add("</form>");
                         Add("</td>");
                     }
                     Add("</tr>");
+
+                    ctxs[level].ordinal = 0; // clear the level
+                    ctxs[level].obj = null;
                 }
                 Add("</tbody>");
+
+                level--; // exit the level
             }
             Add("</table>");
             // pagination controls if any
             PAGENATION(arr?.Length ?? 0);
         }
 
-        public void BOARDVIEW(params Action<HtmlContent>[] cards)
-        {
-            BOARDVIEW_();
-            for (int i = 0; i < cards.Length; i++)
-            {
-                CARD_();
-                cards[i](this);
-                _CARD();
-            }
-            _BOARDVIEW();
-        }
-
         public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
         {
-            BOARDVIEW_();
+            Add("<div class=\"board\">");
             if (arr != null)
             {
+                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                level++; // enter a new level
+
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    CARD_(obj);
+                    ctxs[level].ordinal = i + 1;
+                    ctxs[level].obj = obj;
+
+                    Add("<form class=\"uk-card uk-card-default\" id=\"card-");
+                    Add(i + 1);
+                    Add("\">");
                     card(this, obj);
-                    _CARD();
+                    Add("</form>");
+
+                    ctxs[level].ordinal = 0; // clear the level
+                    ctxs[level].obj = null;
                 }
+
+                level--; // exit the level
             }
-            // pagination if any
-            _BOARDVIEW(arr?.Length ?? 0);
-        }
-
-        public HtmlContent BOARDVIEW_()
-        {
-            Add("<div class=\"board\">");
-            ordinal = 0;
-            model = null;
-            return this;
-        }
-
-        public HtmlContent _BOARDVIEW(int count = 0)
-        {
             Add("</div>");
-            ordinal = 0;
-            PAGENATION(count);
-            return this;
+
+            // pagination if any
+            PAGENATION(arr?.Length ?? 0);
         }
 
-        public HtmlContent CARD_(IData obj = null)
-        {
-            Add("<form class=\"uk-card uk-card-default\" id=\"card-");
-            Add(++ordinal);
-            Add("\">");
-//            Add("<form>");
-            if (obj != null)
-            {
-                model = obj;
-            }
-            return this;
-        }
 
-        public HtmlContent _CARD()
-        {
-//            Add("</form>");
-            Add("</form>");
-            model = null;
-            return this;
-        }
-
-        public HtmlContent CARD_HEADER(string title, string sign = null, bool on = false)
+        public HtmlContent CARD_HEADER(string title, string badge = null, char style = '\0')
         {
             CARD_HEADER_();
             Add("<span class=\"uk-card-title\">");
             Add(title);
             Add("</span>");
-            _CARD_HEADER(sign, on);
+            _CARD_HEADER(badge, style);
             return this;
         }
 
         public HtmlContent CARD_HEADER_()
         {
             Add("<div class=\"uk-card-header\">");
-            if (model != null)
-            {
-                var work = webCtx.Work;
-                Work varwork = work.VarWork;
-                if (varwork != null && work.HasPick)
-                {
-                    Add("<input name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" form=\"tool-bar-form\" value=\"");
-                    varwork.PutVariableKey(model, this);
-                    Add("\" onchange=\"checkIt(this);\">");
-                }
-            }
             return this;
         }
 
-        public HtmlContent _CARD_HEADER(string badge = null, bool on = false)
+        public HtmlContent _CARD_HEADER(string badge = null, char style = (char) 0)
         {
             if (badge != null)
             {
                 Add(" <div class=\"uk-card-badge uk-label");
-                if (on)
+                if (style == 's')
                 {
                     Add(" uk-label-success");
+                }
+                else if (style == 'w')
+                {
+                    Add(" uk-label-warning");
+                }
+                else if (style == 'd')
+                {
+                    Add(" uk-label-danger");
                 }
                 Add("\">");
                 Add(badge);
                 Add("</div>");
             }
             Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CARDBODY<D>(Action<HtmlContent, D> b, byte flag = 0)
-        {
-            CARD_BODY_();
-            b(this, (D) model);
-            _CARD_BODY();
             return this;
         }
 
@@ -1517,11 +1393,10 @@ namespace Greatbone
             return this;
         }
 
-
         public HtmlContent CARD_FOOTER(string text = null, char color = (char) 0, byte flag = 0)
         {
             CARD_FOOTER_(text, color);
-            _FOOTER(flag);
+            _CARD_FOOTER(flag);
             return this;
         }
 
@@ -1543,13 +1418,13 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent _FOOTER(byte flag = 0)
+        public HtmlContent _CARD_FOOTER(byte flag = 0)
         {
             Work work = webCtx.Work?.VarWork;
             if (work != null)
             {
                 Add("<div class=\"uk-button-group\">");
-                Tools(work, flag, model);
+                Tools(work);
                 Add("</div>");
             }
             Add("</div>");
@@ -1569,86 +1444,62 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLS(byte flag = 0, byte width = 6)
+        public HtmlContent TOOL(string name, int subscript = -1)
         {
-            FIELD_(null, width);
-            Work work = webCtx.Work?.VarWork;
-            if (work != null)
+            Work w = webCtx.Work;
+            for (int i = -1; i < level; i++)
             {
-                Add("<div class=\"uk-button-group\">");
-                Tools(work, flag, model);
-                Add("</div>");
+                w = w.varwork;
             }
-            _FIELD();
+            var prc = w[name];
+            if (prc != null)
+            {
+                Tool(prc, subscript);
+            }
             return this;
         }
 
-        void Tools(Work work, byte flag, object obj)
+        void Tools(Work work)
         {
-            var ais = work.Tooled;
-            if (ais == null)
+            var prcs = work.Tooled;
+            if (prcs == null)
             {
                 return;
             }
-            for (int i = 0; i < ais.Length; i++)
+            for (int i = 0; i < prcs.Length; i++)
             {
-                var ai = ais[i];
-                var aiflag = ai.Flag;
-                if (aiflag == 0 || (flag & aiflag) == aiflag)
+                var prc = prcs[i];
+                if (!prc.IsCapital)
                 {
-                    Tool(ai, obj, ordinal);
+                    Tool(prc);
                 }
             }
         }
 
-        public HtmlContent VARTOOL(string name, int subscript = -1, bool when = true, byte width = 6)
+        void Tool(Procedure prc, int subscript = -1)
         {
-            FIELD_(null, width);
-            if (when)
+            // check procedure's availability
+            bool ok = prc.DoAuthorize(webCtx, false);
+            if (ok && level >= 0)
             {
-                var work = webCtx.Work?.VarWork;
-                var ai = work?.GetProcedure(name);
-                if (ai != null)
-                {
-                    Tool(ai, model, ordinal, subscript);
-                }
+                ok = prc.DoState(webCtx, ctxs[level].obj);
             }
-            _FIELD();
-            return this;
-        }
 
-        public HtmlContent TOOL(string name, int subscript = -1, bool when = true)
-        {
-            if (when)
-            {
-                var work = webCtx.Work;
-                var ai = work?.GetProcedure(name);
-                if (ai != null)
-                {
-                    Tool(ai, model, ordinal, subscript);
-                }
-            }
-            return this;
-        }
-
-        void Tool(Procedure prc, object obj, int ordinal, int subscript = -1)
-        {
             var tool = prc.Tool;
-            bool ok = prc.DoAuthorize(webCtx, false) && prc.DoState(webCtx, obj);
             if (tool.IsAnchor)
             {
                 Add("<a class=\"uk-button");
                 Add(prc == webCtx.Procedure ? " uk-button-default" : " uk-button-link");
                 Add("\" href=\"");
-                if (obj != null)
+                if (level >= 0)
                 {
-                    prc.Work.PutVariableKey(obj, this);
-                    Add('/');
-                }
-                else if (ordinal > 0)
-                {
-                    Add(ordinal);
-                    Add('/');
+                    Work w = webCtx.Work;
+                    for (int i = 0; i <= level; i++)
+                    {
+                        w = w.varwork;
+                        w.PutVariableKey(ctxs[i].obj, this);
+                        Add('/');
+                    }
                 }
                 Add(prc.RPath);
                 if (subscript >= 0)
@@ -1669,15 +1520,15 @@ namespace Greatbone
                 Add("\" name=\"");
                 Add(prc.Key);
                 Add("\" formaction=\"");
-                if (obj != null)
+                if (level >= 0)
                 {
-                    prc.Work.PutVariableKey(obj, this);
-                    Add('/');
-                }
-                else if (ordinal > 0)
-                {
-                    Add(ordinal);
-                    Add('/');
+                    Work w = webCtx.Work;
+                    for (int i = 0; i <= level; i++)
+                    {
+                        w = w.varwork;
+                        w.PutVariableKey(ctxs[i].obj, this);
+                        Add('/');
+                    }
                 }
                 Add(prc.Key);
                 if (subscript >= 0)
@@ -2086,14 +1937,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIO<V>(string name, V val, string label = null, bool @checked = false, byte width = 6)
+        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, byte width = 0x11)
         {
             FIELD_(null, width);
             Add("<label>");
             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddPrimitive(val);
+            AddPrimitive(v);
             Add(@checked ? "\" checked>" : "\">");
             Add(label);
             Add("</label>");
@@ -2101,9 +1952,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIOSET<K, V>(string name, K val, Map<K, V> opt = null, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET<K, V>(string name, K val, Map<K, V> opt = null, string legend = null, bool required = false, byte width = 0x0c)
         {
-            FIELDSET_(legend, box);
+            FIELDSET_(legend, width);
             if (opt != null)
             {
                 lock (opt)
@@ -2133,25 +1984,13 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIOSET(string name, string val, string[] opt, string legend = null, bool required = false, byte box = 0x0c)
+        public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, bool required = false, byte width = 0x11)
         {
-            FIELDSET_(legend, box);
+            FIELDSET_(legend, width);
             for (int i = 0; i < opt.Length; i++)
             {
-                var item = opt[i];
-                Add("<label>");
-                Add("<input type=\"radio\" name=\"");
-                Add(name);
-                Add("\" value=\"");
-                Add(item);
-                Add("\"");
-
-                if (item.Equals(val)) Add(" checked");
-                if (required) Add(" required");
-                Add(">");
-
-                Add(item);
-                Add("</label>");
+                var o = opt[i];
+                RADIO(name, o, o, o.Equals(v));
             }
             _FIELDSET();
             return this;

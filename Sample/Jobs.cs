@@ -38,12 +38,12 @@ namespace Core
                 ac.GivePage(200, m =>
                 {
                     m.TOOLBAR();
-                    m.BOARDVIEW(h =>
-                    {
-                        h.CARD_HEADER("系统运行状况", "运行中", true);
-                        h.FIELD("2.0", "版本");
-                        h.CARD_FOOTER();
-                    });
+//                    m.BOARDVIEW(h =>
+//                    {
+//                        h.CARD_HEADER("系统运行状况", "运行中", 's');
+//                        h.FIELD("2.0", "版本");
+//                        h.CARD_FOOTER();
+//                    });
                 });
             }
             else
