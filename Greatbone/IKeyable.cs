@@ -3,7 +3,7 @@ namespace Greatbone
     /// <summary>
     /// An object with an key name so that can be a map element.
     /// </summary>
-    public interface IMappable<out K>
+    public interface IKeyable<out K>
     {
         K Key { get; }
     }

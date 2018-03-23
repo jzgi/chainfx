@@ -68,8 +68,7 @@ namespace Greatbone
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
-                    LimitAttribute limit = (LimitAttribute) pis[1].GetCustomAttribute(typeof(LimitAttribute));
-                    prc = new Procedure(this, mi, async, true, limit?.Value ?? 20);
+                    prc = new Procedure(this, mi, async, true);
                 }
                 else continue;
 

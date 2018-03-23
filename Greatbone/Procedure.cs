@@ -19,8 +19,6 @@ namespace Greatbone
 
         readonly bool subscript;
 
-        readonly int limit;
-
         // ui tool annotation
         internal readonly ToolAttribute tool;
 
@@ -39,16 +37,12 @@ namespace Greatbone
         // async Task procedure(WebContext, int)
         readonly Func<WebContext, int, Task> do2Async;
 
-        internal Procedure(Work work, MethodInfo mi, bool async, bool subscript, int limit = 0) : base(
-            mi.Name == "default" ? string.Empty : mi.Name,
-            mi
-        )
+        internal Procedure(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
             this.work = work;
             this.rpath = Key == string.Empty ? "./" : Key;
             this.async = async;
             this.subscript = subscript;
-            this.limit = limit;
 
             this.tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
             this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), true);
@@ -89,8 +83,6 @@ namespace Greatbone
         public bool HasTool => tool != null;
 
         public ToolAttribute Tool => tool;
-
-        public int Limit => limit;
 
         public bool DoState(WebContext wc, object model)
         {

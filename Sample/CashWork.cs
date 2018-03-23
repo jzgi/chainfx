@@ -26,12 +26,12 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Cash>("SELECT * FROM cashes WHERE orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                ac.GivePage(200, m =>
+                ac.GivePage(200, h =>
                 {
-                    m.TOOLBAR();
-                    m.TABLEVIEW(arr, 
-                        h => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
-                        (h, o) => h.TD(o.date).TD(Cash.Codes[o.code]).TD(o.receive).TD(o.pay).TD(o.creator));
+                    h.TOOLBAR();
+                    h.TABLEVIEW(arr,
+                        () => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
+                        o => h.TD(o.date).TD(Cash.Codes[o.code]).TD(o.receive).TD(o.pay).TD(o.creator));
                 }, false, 2);
             }
         }
@@ -45,13 +45,13 @@ namespace Core
             {
                 o = new Cash() { };
                 o.Read(ac.Query);
-                ac.GivePane(200, m =>
+                ac.GivePane(200, h =>
                 {
-                    m.FORM_();
-                    m.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类型");
-                    m.TEXT(nameof(o.descr), o.descr, "简述", max: 20);
-                    m.NUMBER(nameof(o.receive), o.receive, "收入", width: 6).NUMBER(nameof(o.pay), o.pay, "支出", width: 6);
-                    m._FORM();
+                    h.FORM_();
+                    h.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类型");
+                    h.TEXT(nameof(o.descr), o.descr, "简述", max: 20);
+                    h.NUMBER(nameof(o.receive), o.receive, "收入", width: 6).NUMBER(nameof(o.pay), o.pay, "支出", width: 6);
+                    h._FORM();
                 });
                 return;
             }

@@ -10,7 +10,7 @@ namespace Greatbone
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class Client : HttpClient, IMappable<string>
+    public class Client : HttpClient, IKeyable<string>
     {
         const int AHEAD = 1000 * 12;
 

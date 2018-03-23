@@ -294,7 +294,7 @@ namespace Greatbone
                 {
                     key = keyer(obj);
                 }
-                else if (obj is IMappable<K> mappable)
+                else if (obj is IKeyable<K> mappable)
                 {
                     key = mappable.Key;
                 }

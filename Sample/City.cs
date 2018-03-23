@@ -5,7 +5,7 @@ namespace Core
     /// <summary>
     /// A city data object.
     /// </summary>
-    public class City : IData, IMappable<string>
+    public class City : IData, IKeyable<string>
     {
         public static City[] All;
 

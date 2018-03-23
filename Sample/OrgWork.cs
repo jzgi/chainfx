@@ -25,21 +25,22 @@ namespace Core
             {
                 dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
                 var arr = dc.Query<Org>();
-                ac.GivePage(200, m =>
+                ac.GivePage(200, h =>
                 {
-                    m.TOOLBAR();
-                    m.BOARDVIEW(arr, (h, o) =>
-                    {
-                        h.CARD_HEADER_().T(o.name).T(" / ").T(o.id)._CARD_HEADER();
-                        h.FIELD(o.descr, "简介");
-                        h.FIELD_("地址").T(o.addr)._FIELD();
-                        h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
-                        h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-                        //                    h.TAIL();
-                    });
+                    h.TOOLBAR();
+                    h.BOARDVIEW(arr,
+                        o => { h.T(o.name).T(" / ").T(o.id); },
+                        o =>
+                        {
+                            h.FIELD(o.descr, "简介");
+                            h.FIELD_("地址").T(o.addr)._FIELD();
+                            h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
+                            h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
+                        });
                 });
             }
         }
+
 
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext ac)
@@ -60,6 +61,7 @@ namespace Core
                     m._FORM();
                 });
             }
+
             else // post
             {
                 var o = await ac.ReadObjectAsync<Org>(proj);

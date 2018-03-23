@@ -85,7 +85,7 @@ namespace Greatbone
             Add(key, value, false);
         }
 
-        public void Add<M>(M v) where M : V, IMappable<K>
+        public void Add<M>(M v) where M : V, IKeyable<K>
         {
             Add(v.Key, v, false);
         }

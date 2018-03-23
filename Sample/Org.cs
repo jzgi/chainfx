@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    public class Org : IData, IMappable<string>
+    public class Org : IData, IKeyable<string>
     {
         public static readonly Org Empty = new Org();
 

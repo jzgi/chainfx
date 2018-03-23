@@ -155,24 +155,20 @@ namespace Core
         public void @default(WebContext wc)
         {
             var lessons = Obtain<Lesson[]>();
-            wc.GivePage(200, m =>
+            wc.GivePage(200, h =>
             {
-                m.TOPBAR_()._TOOLBAR("天国近了", false);
+                h.TOPBAR_()._TOOLBAR("天国近了", false);
                 using (var dc = NewDbContext())
                 {
-                    m.T("<main class=\"uk-grid uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-4@xl\">");
-                    for (int i = 0; i < lessons?.Length; i++)
+                    h.GRIDVIEW(lessons, o =>
                     {
-                        var lesson = lessons[i];
-
-                        m.T("<article class=\"uk-card\">");
-                        m.T("<video controls playsinline uk-video=\"automute: true\">");
-                        m.T("<source src=\"http://aliyun.com/").T(lesson.zh).T("\" type=\"video/mp4\">");
-                        m.T("</video>");
-                        m.T("<div>").T(lesson.zh).T("</div>");
-                        m.T("</article>");
-                    }
-                    m.T("</main>");
+                        h.T("<article class=\"uk-card\">");
+                        h.T("<video controls playsinline uk-video=\"automute: true\">");
+                        h.T("<source src=\"http://aliyun.com/").T(o.zh).T("\" type=\"video/mp4\">");
+                        h.T("</video>");
+                        h.T("<div>").T(o.zh).T("</div>");
+                        h.T("</article>");
+                    });
                 }
             }, true, 3600, "劝世福音");
         }
@@ -199,31 +195,24 @@ namespace Core
                 {
                     m.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true, width: 0)._TOPBAR();
 
-                    m.BOARDVIEW(shops, (h, o) =>
-                    {
-                        m.CARD_HEADER_();
-                        m.H3(o.name);
-//                        m.ICON(o.id + "/icon", href: o.id + "/", width: 2);
-                        m.P(o.descr, "简介");
-                        m.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
-                        m._CARD_HEADER();
-
-                        m.CARD_BODY_();
-                        m.LISTVIEW(items, (h2, itm) =>
+                    m.BOARDVIEW(shops,
+                        o =>
                         {
-                            m.ICON("/" + itm.orgid + "/" + itm.name + "/icon", width: 0x15);
-                            m.BOX_(0x35);
-                            m.T(itm.descr);
-                            m._BOX();
-                            m.TOOL(nameof(CoreItemVarWork.buy));
+                            m.H3(o.name);
+                            m.P(o.descr, "简介");
+                            m.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                        },
+                        o =>
+                        {
+                            m.LISTVIEW(items, itm =>
+                            {
+                                m.ICON("/" + itm.orgid + "/" + itm.name + "/icon", width: 0x15);
+                                m.BOX_(0x35);
+                                m.T(itm.descr);
+                                m._BOX();
+                                m.TOOL(nameof(CoreItemVarWork.buy));
+                            });
                         });
-                        m._CARD_BODY();
-                        
-
-                        m.CARD_FOOTER_();
-
-                        m._CARD_FOOTER();
-                    });
                 }, true, 60, "粗狼达人 - " + cityid
             );
         }

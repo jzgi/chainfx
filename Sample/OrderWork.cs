@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Security;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
@@ -16,21 +17,56 @@ namespace Core
 
         protected void PrinOrders(Order[] arr, WebContext wc)
         {
-            wc.GivePage(200, m =>
+            wc.GivePage(200, h =>
             {
-                m.TOOLBAR();
-                m.BOARDVIEW(arr, (h, o) =>
-                {
-                    h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER(Statuses[o.status]);
-                    h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
-                    for (int i = 0; i < o.items.Length; i++)
+                h.TOOLBAR();
+                h.BOARDVIEW(arr,
+                    o => { h.T("No.").T(o.id).SEP().T(o.paid); },
+                    o =>
                     {
-                        var oi = o.items[i];
-                        h.FIELD(oi.name, width: 6).FIELD(oi.price, pre: "¥", width: 0x23).FIELD(oi.qty, pre: oi.unit, width: 3);
-                    }
-                    h.FIELD(o.total, "总价", pre: "¥", width: 3);
-                    h.CARD_FOOTER();
-                });
+                        h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var oi = o.items[i];
+                            h.FIELD(oi.name, width: 6).FIELD(oi.price, pre: "¥", width: 0x23).FIELD(oi.qty, pre: oi.unit, width: 3);
+                        }
+                        h.FIELD(o.total, "总价", pre: "¥", width: 3);
+                    });
+            }, false, 2);
+        }
+
+        protected void PrintOrdersPage2(WebContext wc, Order[] arr)
+        {
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                h.BOARDVIEW(arr,
+                    o => { h.T(o.orgname)._IF(o.paid); },
+                    o =>
+                    {
+                        h.FIELD_("收货").T(o.addr)._T(o.name).T(o.tel)._FIELD();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var oi = o.items[i];
+                            if (o.status <= 1)
+                            {
+                                h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
+                                h.BOX_(3).P(oi.name).P(oi.price, pre: "¥").P(oi.qty, pre: oi.unit)._BOX();
+                                h.TOOL(nameof(MyOrderVarWork.edit));
+                                h.BOX_(1);
+                                if (o.typ == POS)
+                                {
+                                    h.P(oi.load, pre: oi.unit);
+                                }
+                                h._BOX();
+                            }
+                            else
+                            {
+                                h.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
+                            }
+                        }
+                        h.FIELD(o.total, "总计", pre: "¥", tag: o.status == 0 ? "em" : null, width: 4);
+                    });
             }, false, 2);
         }
     }
@@ -47,81 +83,17 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC", p => p.Set(wx));
-                wc.GivePage(200, m =>
-                {
-                    m.TOOLBAR();
-                    m.BOARDVIEW(arr, (h, o) =>
-                    {
-                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status]);
-                        m.CARD_BODY_();
-                        m.FIELD_("收货").T(o.addr)._T(o.name).T(o.tel)._FIELD();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            if (o.status <= 1)
-                            {
-                                m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
-                                m.BOX_(3).P(oi.name).P(oi.price, pre: "¥").P(oi.qty, pre: oi.unit)._BOX();
-                                m.TOOL(nameof(MyOrderVarWork.edit));
-                                m.BOX_(1);
-                                if (o.typ == POS)
-                                {
-                                    m.P(oi.load, pre: oi.unit);
-                                }
-                                m._BOX();
-                            }
-                            else
-                            {
-                                m.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
-                            }
-                        }
-                        m.FIELD(o.total, "总计", pre: "¥", tag: o.status == 0 ? "em" : null, width: 4);
-                        m._CARD_BODY();
-
-                        m.CARD_FOOTER(o.Err(), flag: o.status == 0 ? (byte) 1 : (byte) 0);
-                    });
-                }, false, 2);
             }
         }
 
         [Ui("历史订单"), Tool(ButtonOpen)]
-        public void old(WebContext ac, int page)
+        public void old(WebContext wc, int page)
         {
-            string wx = ac[-1];
+            string wx = wc[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC", p => p.Set(wx));
-                ac.GivePane(200, m =>
-                {
-                    m.BOARDVIEW(arr, (h, o) =>
-                    {
-                        m.CARD_HEADER_().T(o.orgname)._IF(o.paid)._CARD_HEADER(Statuses[o.status]);
-                        m.CARD_BODY_();
-                        m.FIELD_("收货").T(o.addr)._T(o.name).T(o.tel)._FIELD();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            if (o.status <= 1)
-                            {
-                                m.ICON("/org/" + o.orgid + "/" + oi.name + "/icon");
-                                m.P(oi.name).P(oi.price, pre: "¥");
-                                m.P(oi.qty, pre: oi.unit).TOOL("item", i);
-                                m.BOX_(1);
-                                if (o.typ == POS)
-                                {
-                                    m.P(oi.load, pre: oi.unit);
-                                }
-                                m._BOX();
-                            }
-                            else
-                            {
-                                m.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
-                            }
-                        }
-                        m.FIELD(o.total, "总计", pre: "¥", tag: o.status == 0 ? "em" : null, width: 4);
-                        m._CARD_BODY();
-                    });
-                }, false, 2);
+                PrintOrdersPage2(wc, arr);
             }
         }
     }
@@ -139,25 +111,7 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
-                wc.GivePage(200, m =>
-                {
-                    m.TOOLBAR();
-                    m.BOARDVIEW(arr, (h, o) =>
-                    {
-                        h.CARD_HEADER_().T(o.id).SEP().T(o.addr)._CARD_HEADER(o.name);
-                        h.CARD_BODY_();
-                        if (o.items != null)
-                        {
-                            for (int j = 0; j < o.items.Length; j++)
-                            {
-                                var oi = o.items[j];
-                                h.FIELD(oi.name, width: 3).FIELD(oi.price, pre: "¥", width: 2).FIELD(oi.load, null, oi.unit, width: 1);
-                            }
-                        }
-                        h._CARD_BODY();
-                        h.CARD_FOOTER();
-                    });
-                });
+                PrintOrdersPage2(wc, arr);
             }
         }
 
@@ -212,26 +166,11 @@ namespace Core
         public void @default(WebContext wc, int page)
         {
             string orgid = wc[-1];
-            wc.GivePage(200, m =>
+            using (var dc = NewDbContext())
             {
-                using (var dc = NewDbContext())
-                {
-                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                    m.TOOLBAR();
-                    m.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
-                    {
-                        h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER();
-                        h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            h.FIELD(oi.name, width: 4).FIELD(oi.price, width: 4).FIELD(oi.qty, null, oi.unit, width: 4);
-                        }
-                        h.FIELD_(width: 8)._FIELD().FIELD(o.total, "总计", width: 4);
-                        h.CARD_FOOTER(o.Err(), 'w');
-                    });
-                }
-            }, false, 3);
+                dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
+//                    PrintOrdersPage2(wc, arr);
+            }
         }
 
         [Ui("按区域"), Tool(AnchorPrompt)]
@@ -251,24 +190,11 @@ namespace Core
                 });
                 return;
             }
-            wc.GivePage(200, m =>
+            wc.GivePage(200, h =>
             {
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(orgid).Set(filter + "%").Set(page * 20));
-                    m.TOOLBAR(title: filter);
-                    m.BOARDVIEW(dc.ToArray<Order>(), (h, o) =>
-                    {
-                        h.CARD_HEADER_().T("No.").T(o.id).SEP().T(o.paid)._CARD_HEADER();
-                        h.FIELD_("收货").T(o.name)._T(o.addr)._FIELD();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            h.FIELD(oi.name, width: 4).FIELD(oi.price, width: 4).FIELD(oi.qty, null, oi.unit, width: 4);
-                        }
-                        h.FIELD_(width: 8)._FIELD().FIELD(o.total, "总计", width: 4);
-                        h.CARD_FOOTER(o.Err(), 'w');
-                    });
                 }
             }, false, 3);
         }

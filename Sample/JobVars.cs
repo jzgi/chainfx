@@ -150,28 +150,30 @@ namespace Core
             Create<OprCashWork>("cash");
         }
 
-        public void @default(WebContext ac)
+        public void @default(WebContext wc)
         {
-            bool inner = ac.Query[nameof(inner)];
+            bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
-                ac.GiveOffCanvas(200, false, 60 * 15, "内部操作");
+                wc.GiveOffCanvas(200, false, 60 * 15, "内部操作");
                 return;
             }
 
             var orgs = Obtain<Map<string, Org>>();
-            string orgid = ac[this];
-            ac.GivePage(200, h =>
+            string orgid = wc[this];
+            wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                var o = orgs[orgid];
+                var org = orgs[orgid];
 
-                h.CARD_HEADER(o.name, Statuses[o.status]);
-                h.CARD_BODY_();
-                h.FIELD(o.descr, "简介");
-                h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-                h.FIELD_("客服").T(o.oprname)._T(o.oprtel)._FIELD();
-                h._CARD_BODY();
+                h.CARDVIEW(org,
+                    o => { h.T(o.name); },
+                    o =>
+                    {
+                        h.FIELD(org.descr, "简介");
+                        h.FIELD_("经理").T(org.mgrname)._T(org.mgrtel)._FIELD();
+                        h.FIELD_("客服").T(org.oprname)._T(org.oprtel)._FIELD();
+                    });
             });
         }
 

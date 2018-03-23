@@ -5,7 +5,7 @@ namespace Greatbone
     /// <summary>
     /// A field in the form model.
     /// </summary>
-    public struct Field : IMappable<string>
+    public struct Field : IKeyable<string>
     {
         readonly string name;
 

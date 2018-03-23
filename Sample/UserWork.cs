@@ -27,12 +27,12 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<User>("SELECT * FROM users WHERE oprat = @1", p => p.Set(orgid));
-                wc.GivePage(200, m =>
+                wc.GivePage(200, h =>
                 {
-                    m.TOOLBAR();
-                    m.TABLEVIEW(arr,
-                        h => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                        (h, o) => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(Oprs[o.opr])
+                    h.TOOLBAR();
+                    h.TABLEVIEW(arr,
+                        () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
+                        o => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(Oprs[o.opr])
                     );
                 });
             }
@@ -47,14 +47,14 @@ namespace Core
             short opr = 0;
             if (wc.GET)
             {
-                wc.GivePane(200, m =>
+                wc.GivePane(200, h =>
                 {
-                    m.FORM_();
-                    m.FIELDSET_("添加人员");
-                    m.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                    m.SELECT(nameof(opr), opr, Oprs, label: "角色");
-                    m._FIELDSET();
-                    m._FORM();
+                    h.FORM_();
+                    h.FIELDSET_("添加人员");
+                    h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
+                    h.SELECT(nameof(opr), opr, Oprs, label: "角色");
+                    h._FIELDSET();
+                    h._FORM();
                 });
             }
             else
@@ -89,18 +89,18 @@ namespace Core
         {
         }
 
-        public void @default(WebContext ac, int page)
+        public void @default(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE opr > 0 ORDER BY city LIMIT 20 OFFSET @1");
                 var arr = dc.Query<User>(p => p.Set(page * 20));
-                ac.GivePage(200, m =>
+                wc.GivePage(200, h =>
                 {
-                    m.TOOLBAR();
-                    m.TABLEVIEW(arr,
-                        h => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                        (h, o) => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(Oprs[o.opr])
+                    h.TOOLBAR();
+                    h.TABLEVIEW(arr,
+                        () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
+                        o => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(Oprs[o.opr])
                     );
                 });
             }

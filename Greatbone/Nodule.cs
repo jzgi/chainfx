@@ -5,7 +5,7 @@ namespace Greatbone
     /// <summary>
     /// A certain node of resources along URI path.
     /// </summary>
-    public abstract class Nodule : IMappable<string>
+    public abstract class Nodule : IKeyable<string>
     {
         // identifier as appeared in URI
         readonly string name;

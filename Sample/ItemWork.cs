@@ -27,19 +27,17 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Item>("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
-                wc.GivePage(200, m =>
+                wc.GivePage(200, h =>
                 {
-                    m.TOOLBAR();
-                    m.BOARDVIEW(arr, (h, o) =>
-                    {
-                        h.CARD_HEADER(o.name, Item.Statuses[o.status]);
-                        h.CARD_BODY_();
-                        h.ICON(o.name + "/icon", width: 2);
-                        h.BOX_(4).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
-                        h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
-                        h._CARD_BODY();
-                        h.CARD_FOOTER();
-                    });
+                    h.TOOLBAR();
+                    h.BOARDVIEW(arr,
+                        o => { h.T(o.name).T(Item.Statuses[o.status]); },
+                        o =>
+                        {
+                            h.ICON(o.name + "/icon", width: 2);
+                            h.BOX_(4).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
+                            h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
+                        });
                 });
             }
         }

@@ -9,14 +9,8 @@ namespace Greatbone
     {
         readonly WebContext webCtx;
 
-        struct Ctx
-        {
-            internal int ordinal;
-            internal object obj;
-        }
-
-        // data output contenxt in levels, if any
-        Ctx[] ctxs;
+        // data output context in levels, if any
+        object[] chain;
         int level = -1;
 
         public HtmlContent(WebContext webCtx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
@@ -1124,7 +1118,7 @@ namespace Greatbone
             return this;
         }
 
-        public void PAGENATION(int count)
+        public void PAGENATION(int count, int limit = 20)
         {
             // pagination
             Procedure prc = webCtx.Procedure;
@@ -1152,7 +1146,7 @@ namespace Greatbone
                         Add("</a></li>");
                     }
                 }
-                if (count == prc.Limit)
+                if (count == limit)
                 {
                     Add("<li class=\"pagination-next\"><a href=\"");
                     Add(prc.Key);
@@ -1167,24 +1161,24 @@ namespace Greatbone
             }
         }
 
-        public HtmlContent LISTVIEW<D>(D[] arr, Action<HtmlContent, D> item)
+        public HtmlContent LISTVIEW<D>(D[] arr, Action<D> item)
         {
             Add("<ul class=\"uk-list uk-list-divider uk-list-striped\">");
             if (arr != null)
             {
-                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                if (chain == null) chain = new object[4]; // init contexts
                 level++; // enter a new level
 
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    ctxs[level].ordinal = i + 1;
-                    ctxs[level].obj = obj;
+                    chain[level] = obj;
 
-                    item(this, obj);
+                    Add("<li>");
+                    item(obj);
+                    Add("</li>");
 
-                    ctxs[level].ordinal = 0; // clear the level
-                    ctxs[level].obj = null;
+                    chain[level] = null;
                 }
 
                 level--; // exit the level
@@ -1194,53 +1188,42 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent _LISTVIEW(int count = 0)
-        {
-            Add("</main>");
-            PAGENATION(count);
-            return this;
-        }
-
-
-        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<HtmlContent, D> title, Action<HtmlContent, D> content) where D : IData
+        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<D> title, Action<D> content)
         {
             Add("<ul uk-accordion=\"multiple: true\">");
             if (arr != null)
             {
-                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                if (chain == null) chain = new object[4]; // init contexts
                 level++; // enter a new level
 
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    ctxs[level].ordinal = i + 1;
-                    ctxs[level].obj = obj;
+                    chain[level] = obj;
 
                     Add("<li>");
                     // title
                     Add("<div class=\"uk-accordion-title\">");
-                    title(this, obj);
+                    title(obj);
                     Add("</div>");
                     // content
                     Add("<form class=\"uk-accordion-content uk-grid\">");
-                    content(this, obj);
+                    content(obj);
                     Add("</form>");
 
                     Add("</li>");
 
-                    ctxs[level].ordinal = 0; // clear the level
-                    ctxs[level].obj = null;
+                    chain[level] = null;
                 }
 
                 level--; // exit the level
             }
             // pagination if any
             Add("</ul>");
-            PAGENATION(count);
             return this;
         }
 
-        public void TABLEVIEW<D>(D[] arr, Action<HtmlContent> head, Action<HtmlContent, D> row) where D : IData
+        public void TABLEVIEW<D>(D[] arr, Action head, Action<D> row)
         {
             Work work = webCtx.Work;
             Work varwork = work.varwork;
@@ -1254,7 +1237,7 @@ namespace Greatbone
                 {
                     Add("<th></th>"); // 
                 }
-                head(this);
+                head();
                 if (prcs != null)
                 {
                     Add("<th></th>"); // for triggers
@@ -1265,15 +1248,14 @@ namespace Greatbone
 
             if (arr != null && row != null) // tbody if having data objects
             {
-                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                if (chain == null) chain = new object[4]; // init contexts
                 level++; // enter a new level
 
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    ctxs[level].ordinal = i + 1;
-                    ctxs[level].obj = obj;
+                    chain[level] = obj;
 
                     Add("<tr>");
                     if (varwork != null && work.HasPick)
@@ -1284,7 +1266,7 @@ namespace Greatbone
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</td>");
                     }
-                    row(this, obj);
+                    row(obj);
                     if (prcs != null) // triggers
                     {
                         Add("<td>");
@@ -1295,141 +1277,107 @@ namespace Greatbone
                     }
                     Add("</tr>");
 
-                    ctxs[level].ordinal = 0; // clear the level
-                    ctxs[level].obj = null;
+                    chain[level] = null;
                 }
                 Add("</tbody>");
 
                 level--; // exit the level
             }
             Add("</table>");
-            // pagination controls if any
-            PAGENATION(arr?.Length ?? 0);
         }
 
-        public void BOARDVIEW<D>(D[] arr, Action<HtmlContent, D> card) where D : IData
+        public void GRIDVIEW<D>(D[] arr, Action<D> block)
         {
-            Add("<div class=\"board\">");
+            Add("<div class=\"uk-grid uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-4@xl\">");
             if (arr != null)
             {
-                if (ctxs == null) ctxs = new Ctx[4]; // init contexts
+                if (chain == null) chain = new object[4]; // init contexts
                 level++; // enter a new level
 
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    ctxs[level].ordinal = i + 1;
-                    ctxs[level].obj = obj;
+                    chain[level] = obj;
 
-                    Add("<form class=\"uk-card uk-card-default\" id=\"card-");
-                    Add(i + 1);
-                    Add("\">");
-                    card(this, obj);
-                    Add("</form>");
+                    Add("<section>");
+                    block(obj);
+                    Add("</section>");
 
-                    ctxs[level].ordinal = 0; // clear the level
-                    ctxs[level].obj = null;
+                    chain[level] = null;
                 }
 
                 level--; // exit the level
             }
             Add("</div>");
-
-            // pagination if any
-            PAGENATION(arr?.Length ?? 0);
         }
 
 
-        public HtmlContent CARD_HEADER(string title, string badge = null, char style = '\0')
+        public void CARDVIEW<D>(D obj, Action<D> header, Action<D> body, Action<D> footer = null)
         {
-            CARD_HEADER_();
-            Add("<span class=\"uk-card-title\">");
-            Add(title);
-            Add("</span>");
-            _CARD_HEADER(badge, style);
-            return this;
-        }
-
-        public HtmlContent CARD_HEADER_()
-        {
-            Add("<div class=\"uk-card-header\">");
-            return this;
-        }
-
-        public HtmlContent _CARD_HEADER(string badge = null, char style = (char) 0)
-        {
-            if (badge != null)
+            Add("<article class=\"uk-card uk-card-default\">");
+            if (obj != null)
             {
-                Add(" <div class=\"uk-card-badge uk-label");
-                if (style == 's')
-                {
-                    Add(" uk-label-success");
-                }
-                else if (style == 'w')
-                {
-                    Add(" uk-label-warning");
-                }
-                else if (style == 'd')
-                {
-                    Add(" uk-label-danger");
-                }
-                Add("\">");
-                Add(badge);
+                if (chain == null) chain = new object[4]; // init contexts
+                level++; // enter a new level
+
+                chain[level] = obj;
+
+                // header
+                Add("<div class=\"uk-card-header\">");
+                header?.Invoke(obj);
                 Add("</div>");
-            }
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CARD_BODY_()
-        {
-            Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
-            return this;
-        }
-
-        public HtmlContent _CARD_BODY()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent CARD_FOOTER(string text = null, char color = (char) 0, byte flag = 0)
-        {
-            CARD_FOOTER_(text, color);
-            _CARD_FOOTER(flag);
-            return this;
-        }
-
-        public HtmlContent CARD_FOOTER_(string text = null, char color = (char) 0)
-        {
-            Add("<div class=\"uk-card-footer uk-grid uk-flex-between\" uk-grid>");
-            if (text != null)
-            {
-                Add("<span class=\"");
-                if (color == 'm') Add(" uk-text-muted");
-                else if (color == 'p') Add(" uk-text-primary");
-                else if (color == 's') Add(" uk-text-success");
-                else if (color == 'w') Add(" uk-text-warning");
-                else if (color == 'd') Add(" uk-text-danger");
-                Add("\">");
-                Add(text);
-                Add("</span>");
-            }
-            return this;
-        }
-
-        public HtmlContent _CARD_FOOTER(byte flag = 0)
-        {
-            Work work = webCtx.Work?.VarWork;
-            if (work != null)
-            {
-                Add("<div class=\"uk-button-group\">");
-                Tools(work);
+                // body
+                Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
+                body(obj);
                 Add("</div>");
+                // footer
+                Add("<div class=\"uk-card-header\">");
+                footer?.Invoke(obj);
+                Add("</div>");
+
+                chain[level] = null;
+
+                level--; // exit the level
             }
-            Add("</div>");
-            return this;
+            Add("</article>");
         }
+
+        public void BOARDVIEW<D>(D[] arr, Action<D> header, Action<D> body, Action<D> footer = null)
+        {
+            Add("<main class=\"board\">");
+            if (arr != null)
+            {
+                if (chain == null) chain = new object[4]; // init contexts
+                level++; // enter a new level
+
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    D obj = arr[i];
+                    chain[level] = obj;
+
+                    Add("<article class=\"uk-card uk-card-default\" id=\"card-");
+                    // header
+                    Add("<div class=\"uk-card-header\">");
+                    header(obj);
+                    Add("</div>");
+                    // body
+                    Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
+                    body(obj);
+                    Add("</div>");
+                    // footer
+                    Add("<div class=\"uk-card-header\">");
+                    footer?.Invoke(obj);
+                    Add("</div>");
+                    Add("</article>");
+
+                    chain[level] = null;
+                }
+
+                level--; // exit the level
+            }
+            Add("</main>");
+        }
+
 
         void Dialog(sbyte mode, bool pick, sbyte size, string tip)
         {
@@ -1482,7 +1430,7 @@ namespace Greatbone
             bool ok = prc.DoAuthorize(webCtx, false);
             if (ok && level >= 0)
             {
-                ok = prc.DoState(webCtx, ctxs[level].obj);
+                ok = prc.DoState(webCtx, chain[level]);
             }
 
             var tool = prc.Tool;
@@ -1497,7 +1445,7 @@ namespace Greatbone
                     for (int i = 0; i <= level; i++)
                     {
                         w = w.varwork;
-                        w.PutVariableKey(ctxs[i].obj, this);
+                        w.PutVariableKey(chain[i], this);
                         Add('/');
                     }
                 }
@@ -1526,7 +1474,7 @@ namespace Greatbone
                     for (int i = 0; i <= level; i++)
                     {
                         w = w.varwork;
-                        w.PutVariableKey(ctxs[i].obj, this);
+                        w.PutVariableKey(chain[i], this);
                         Add('/');
                     }
                 }
@@ -2343,7 +2291,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K val, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte width = 6) where V : IMappable<K>
+        public HtmlContent SELECT<K, V>(string name, K val, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte width = 6) where V : IKeyable<K>
         {
             FIELD_(label, width);
 
@@ -2386,7 +2334,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K[] v, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IMappable<K>
+        public HtmlContent SELECT<K, V>(string name, K[] v, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false, byte box = 0x0c) where V : IKeyable<K>
         {
             FIELD_(label, box);
 

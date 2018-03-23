@@ -5,7 +5,7 @@ namespace Greatbone
     ///
     /// A JSON member that is either a value, or a property if with name.
     ///
-    public struct JMbr : IMappable<string>
+    public struct JMbr : IKeyable<string>
     {
         // property name, if not null
         readonly string name;
