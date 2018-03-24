@@ -19,13 +19,13 @@ namespace Core
         {
         }
 
-        public void @default(WebContext ac)
+        public void @default(WebContext wc)
         {
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
                 var arr = dc.Query<Org>();
-                ac.GivePage(200, h =>
+                wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.BOARDVIEW(arr,
@@ -43,14 +43,14 @@ namespace Core
 
 
         [Ui("新建"), Tool(ButtonShow)]
-        public async Task @new(WebContext ac)
+        public async Task @new(WebContext wc)
         {
             const byte proj = Org.ADM;
-            if (ac.GET)
+            if (wc.GET)
             {
                 var o = new Org { };
-                o.Read(ac.Query, proj);
-                ac.GivePane(200, m =>
+                o.Read(wc.Query, proj);
+                wc.GivePane(200, m =>
                 {
                     m.FORM_();
                     m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
@@ -64,13 +64,13 @@ namespace Core
 
             else // post
             {
-                var o = await ac.ReadObjectAsync<Org>(proj);
+                var o = await wc.ReadObjectAsync<Org>(proj);
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("INSERT INTO orgs")._(Org.Empty, proj)._VALUES_(Org.Empty, proj);
                     dc.Execute(p => o.Write(p, proj));
                 }
-                ac.GivePane(200); // created
+                wc.GivePane(200); // created
             }
         }
     }

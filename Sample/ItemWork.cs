@@ -35,7 +35,7 @@ namespace Core
                         o =>
                         {
                             h.ICON(o.name + "/icon", width: 2);
-                            h.BOX_(4).P(o.descr, "描述").P(o.price, "单价", "¥")._BOX();
+                            h.BOX_(4).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._BOX();
                             h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
                         });
                 });

@@ -24,13 +24,13 @@ namespace Core
                     o => { h.T("No.").T(o.id).SEP().T(o.paid); },
                     o =>
                     {
-                        h.FIELD_("收货").T(o.name)._T(o.addr)._T(o.tel)._FIELD();
+                        h.P_("收货").T(o.name)._T(o.addr)._T(o.tel)._P();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            h.FIELD(oi.name, width: 6).FIELD(oi.price, pre: "¥", width: 0x23).FIELD(oi.qty, pre: oi.unit, width: 3);
+                            h.P(oi.name, width: 6).P_(width: 0x23).T("¥").T(oi.price)._P().P_(width: 0x1).T(oi.qty)._P();
                         }
-                        h.FIELD(o.total, "总价", pre: "¥", width: 3);
+                        h.P_("总价").T("¥").T(o.total)._P();
                     });
             }, false, 2);
         }
@@ -51,12 +51,12 @@ namespace Core
                             if (o.status <= 1)
                             {
                                 h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
-                                h.BOX_(3).P(oi.name).P(oi.price, pre: "¥").P(oi.qty, pre: oi.unit)._BOX();
+                                h.BOX_(3).P(oi.name).P(oi.price).P(oi.qty)._BOX();
                                 h.TOOL(nameof(MyOrderVarWork.edit));
                                 h.BOX_(1);
                                 if (o.typ == POS)
                                 {
-                                    h.P(oi.load, pre: oi.unit);
+                                    h.P(oi.load);
                                 }
                                 h._BOX();
                             }
@@ -65,7 +65,7 @@ namespace Core
                                 h.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
                             }
                         }
-                        h.FIELD(o.total, "总计", pre: "¥", tag: o.status == 0 ? "em" : null, width: 4);
+                        h.P_("总计").T("¥").T(o.total)._P();
                     });
             }, false, 2);
         }
@@ -207,13 +207,13 @@ namespace Core
         };
 
         [Ui("通知"), Tool(ButtonPickShow)]
-        public void send(WebContext ac)
+        public void send(WebContext wc)
         {
-            long[] key = ac.Query[nameof(key)];
+            long[] key = wc.Query[nameof(key)];
             string msg = null;
-            if (ac.GET)
+            if (wc.GET)
             {
-                ac.GivePane(200, m =>
+                wc.GivePane(200, m =>
                 {
                     m.FORM_();
                     m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", width: 0x4c);
@@ -227,7 +227,7 @@ namespace Core
                     dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
                     dc.Execute(prepare: false);
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
     }
@@ -250,22 +250,22 @@ namespace Core
         }
 
         [Ui("查询"), Tool(AnchorShow)]
-        public void send(WebContext ac)
+        public void send(WebContext wc)
         {
-            long[] key = ac.Query[nameof(key)];
+            long[] key = wc.Query[nameof(key)];
             using (var dc = NewDbContext())
             {
                 dc.Sql("UPDATE orders SET status = @1 WHERE id")._IN_(key);
                 dc.Execute();
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
 
         [Ui("回退", "【警告】把选中的订单回退成新单？"), Tool(ButtonPickConfirm)]
-        public async Task back(WebContext ac)
+        public async Task back(WebContext wc)
         {
-            string orgid = ac[-2];
-            var f = await ac.ReadAsync<Form>();
+            string orgid = wc[-2];
+            var f = await wc.ReadAsync<Form>();
             string[] key = f[nameof(key)];
             if (key != null)
             {
@@ -275,7 +275,7 @@ namespace Core
                     dc.Execute(p => p.Set(orgid), prepare: false);
                 }
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
     }
 }

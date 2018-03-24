@@ -22,13 +22,13 @@ namespace Core
         }
 
         [Ui("付款", flag: 1), Tool(ButtonScript), Order('P')]
-        public async Task prepay(WebContext ac)
+        public async Task prepay(WebContext wc)
         {
-            string wx = ac[-2];
-            int orderid = ac[this];
+            string wx = wc[-2];
+            int orderid = wc[this];
             short rev;
             decimal total;
-            User prin = (User) ac.Principal;
+            User prin = (User)wc.Principal;
             using (var dc = NewDbContext())
             {
                 dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
@@ -37,18 +37,18 @@ namespace Core
                 {
                     if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, addr = @4, tel = @5", p => p.Set(wx).Set(prin.name = name).Set(prin.city = city).Set(prin.addr = addr).Set(prin.tel = tel)) > 0)
                     {
-                        ac.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
+                        wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
                     }
                 }
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, ac.RemoteAddr.ToString(), NETADDR + "/org/paynotify", "粗粮达人-健康产品");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, wc.RemoteAddr.ToString(), NETADDR + "/org/paynotify", "粗粮达人-健康产品");
             if (prepay_id != null)
             {
-                ac.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
+                wc.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
             }
             else
             {
-                ac.Give(500);
+                wc.Give(500);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Core
                         h.FIELDSET_("购买数量");
                         h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
                         h.FIELD_(width: 2)._FIELD();
-                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short) 0, step: step, width: 2);
+                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short)0, step: step, width: 2);
                         h.FIELD(oi.unit, width: 1);
                         h._FIELDSET();
                         h._FORM();
@@ -101,30 +101,30 @@ namespace Core
         }
 
         [Ui("加货"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task add(WebContext ac)
+        public async Task add(WebContext wc)
         {
-            string orgid = ac[-2];
-            int orderid = ac[this];
-            if (ac.GET)
+            string orgid = wc[-2];
+            int orderid = wc[this];
+            if (wc.GET)
             {
-                ac.GivePane(200, m =>
+                wc.GivePane(200, h =>
                 {
-                    m.FORM_();
+                    h.FORM_();
                     using (var dc = NewDbContext())
                     {
                         dc.Query("SELECT name, unit, price, stock FROM items WHERE orgid = @1 AND status > 0 AND stock > 0", p => p.Set(orgid));
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            m.FIELD(name, width: 5).FIELD(stock, pre: unit, width: 0x22).NUMBER(name + '~' + unit + '~' + price, (short) 0, max: stock, min: (short) 0, step: (short) 1, width: 5);
+                            h.FIELD(name, width: 5).FIELD(stock, width: 0x22).NUMBER(name + '~' + unit + '~' + price, (short)0, max: stock, min: (short)0, step: (short)1, width: 5);
                         }
                     }
-                    m._FORM();
+                    h._FORM();
                 });
             }
             else // POST
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 using (var dc = NewDbContext(ReadUncommitted))
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
@@ -137,50 +137,50 @@ namespace Core
                     }
                     dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
 
         [Ui("分派"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task assign(WebContext ac)
+        public async Task assign(WebContext wc)
         {
-            int orderid = ac[this];
-            string orgid = ac[-2];
+            int orderid = wc[this];
+            string orgid = wc[-2];
             string opr;
             string addr = null;
-            if (ac.GET)
+            if (wc.GET)
             {
-                ac.GivePane(200, m =>
+                wc.GivePane(200, h =>
                 {
-                    m.FORM_();
+                    h.FORM_();
                     using (var dc = NewDbContext())
                     {
                         // select operator info
                         dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(orgid));
-                        m.SELECT_(nameof(opr), "人员");
+                        h.SELECT_(nameof(opr), "人员");
                         while (dc.Next())
                         {
                             dc.Let(out string wx).Let(out string name).Let(out string tel);
-                            m.OPTION(wx + '~' + name + '~' + tel, name);
+                            h.OPTION(wx + '~' + name + '~' + tel, name);
                         }
-                        m._SELECT();
+                        h._SELECT();
                         // input addr
                         var org = Obtain<Map<string, Org>>()[orgid];
-                        m.TEXT(nameof(addr), addr, "区域");
+                        h.TEXT(nameof(addr), addr, "区域");
                     }
-                    m._FORM();
+                    h._FORM();
                 });
             }
             else
             {
-                (await ac.ReadAsync<Form>()).Let(out opr).Let(out addr);
+                (await wc.ReadAsync<Form>()).Let(out opr).Let(out addr);
                 var (wx, name, tel) = opr.ToTriple('~');
                 using (var dc = NewDbContext())
                 {
                     dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND orgid = @6",
                         p => p.Set(wx).Set(name).Set(tel).Set(addr).Set(orderid).Set(orgid));
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
     }
@@ -192,10 +192,10 @@ namespace Core
         }
 
         [Ui("撤消", "【警告】确认要撤销此单吗？实收金额将退回给买家"), Tool(ButtonConfirm)]
-        public async Task abort(WebContext ac)
+        public async Task abort(WebContext wc)
         {
-            string orgid = ac[-2];
-            int orderid = ac[this];
+            string orgid = wc[-2];
+            int orderid = wc[this];
             short rev = 0;
             decimal total = 0, cash = 0;
             using (var dc = NewDbContext())
@@ -222,40 +222,40 @@ namespace Core
                     }
                 }
             }
-            ac.GiveRedirect("../");
+            wc.GiveRedirect("../");
         }
 
         [Ui("完成"), Tool(ButtonShow)]
-        public async Task deliver(WebContext ac)
+        public async Task deliver(WebContext wc)
         {
-            string orgid = ac[-2];
-            int orderid = ac[this];
-            User prin = (User) ac.Principal;
+            string orgid = wc[-2];
+            int orderid = wc[this];
+            User prin = (User)wc.Principal;
             bool mycart;
-            if (ac.GET)
+            if (wc.GET)
             {
-                ac.GivePane(200, m =>
+                wc.GivePane(200, h =>
                 {
                     // check personal pos
                     using (var dc = NewDbContext())
                     {
-                        m.FORM_();
+                        h.FORM_();
                         if (dc.Query1("SELECT TRUE FROM orders WHERE orgid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(orgid).Set(prin.wx)))
                         {
-                            m.P("检测到您当前有分配的摊点");
-                            m.CHECKBOX(nameof(mycart), true, "完成同时扣减摊点里的数目");
+                            h.P("检测到您当前有分配的摊点");
+                            h.CHECKBOX(nameof(mycart), true, "完成同时扣减摊点里的数目");
                         }
                         else
                         {
-                            m.P("确认已经出货并且结束此单吗？");
+                            h.P("确认已经出货并且结束此单吗？");
                         }
-                        m._FORM();
+                        h._FORM();
                     }
                 });
             }
             else // POST
             {
-                mycart = (await ac.ReadAsync<Form>())[nameof(mycart)];
+                mycart = (await wc.ReadAsync<Form>())[nameof(mycart)];
                 using (var dc = NewDbContext(ReadCommitted))
                 {
                     if (dc.Query1("UPDATE orders SET status = " + ENDED + ", closed = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
@@ -272,13 +272,13 @@ namespace Core
                             else
                             {
                                 dc.Rollback();
-                                ac.GivePane(200, m => { m.P("摊点上的数目不够扣减"); });
+                                wc.GivePane(200, m => { m.P("摊点上的数目不够扣减"); });
                                 return;
                             }
                         }
                     }
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
     }

@@ -9,7 +9,7 @@ namespace Core
     {
         protected UserWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>((obj) => ((User) obj).wx);
+            CreateVar<V, string>((obj) => ((User)obj).wx);
         }
     }
 

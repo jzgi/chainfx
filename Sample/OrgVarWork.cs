@@ -17,21 +17,21 @@ namespace Core
     {
         public CoreVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CoreItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<CoreItemVarWork, string>(obj => ((Item)obj).name);
         }
 
-        public void icon(WebContext ac)
+        public void icon(WebContext wc)
         {
-            string orgid = ac[this];
+            string orgid = wc[this];
             using (var dc = NewDbContext())
             {
                 if (dc.Query1("SELECT icon FROM orgs WHERE id = @1", p => p.Set(orgid)))
                 {
                     dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) ac.Give(204, @public: true, maxage: 3600); // no content 
-                    else ac.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
+                    if (byteas.Count == 0) wc.Give(204, @public: true, maxage: 3600); // no content 
+                    else wc.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
                 }
-                else ac.Give(404, @public: true, maxage: 3600); // not found
+                else wc.Give(404, @public: true, maxage: 3600); // not found
             }
         }
     }
@@ -43,17 +43,17 @@ namespace Core
         }
 
         [Ui("修改"), Tool(ButtonShow)]
-        public async Task edit(WebContext ac)
+        public async Task edit(WebContext wc)
         {
-            string orgid = ac[this];
+            string orgid = wc[this];
             const byte proj = Org.ADM;
-            if (ac.GET)
+            if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("SELECT ").collst(Org.Empty, proj).T(" FROM orgs WHERE id = @1");
                     var o = dc.Query1<Org>(p => p.Set(orgid), proj);
-                    ac.GivePane(200, m =>
+                    wc.GivePane(200, m =>
                     {
                         m.FORM_();
                         m.FIELD(o.id, "编号");
@@ -67,7 +67,7 @@ namespace Core
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Org>(proj);
+                var o = await wc.ReadObjectAsync<Org>(proj);
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("UPDATE orgs")._SET_(Org.Empty, proj ^ Org.ID).T(" WHERE id = @1");
@@ -77,19 +77,19 @@ namespace Core
                         p.Set(orgid);
                     });
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
 
         [Ui("经理"), Tool(ButtonShow)]
-        public async Task mgr(WebContext ac)
+        public async Task mgr(WebContext wc)
         {
-            string orgid = ac[this];
+            string orgid = wc[this];
             string wx_tel_name;
-            if (ac.GET)
+            if (wc.GET)
             {
-                string forid = ac.Query[nameof(forid)];
-                ac.GivePane(200, m =>
+                string forid = wc.Query[nameof(forid)];
+                wc.GivePane(200, m =>
                 {
                     m.FORM_();
                     m.FIELDSET_("查询帐号（手机号）");
@@ -113,7 +113,7 @@ namespace Core
             }
             else // post
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 wx_tel_name = f[nameof(wx_tel_name)];
                 (string wx, string tel, string name) = wx_tel_name.ToTriple();
                 using (var dc = NewDbContext())
@@ -121,37 +121,37 @@ namespace Core
                     dc.Execute(@"UPDATE orgs SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
                         UPDATE users SET opr = " + OPRMGR + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
 
         [Ui("照片"), Tool(ButtonCrop)]
-        public new async Task icon(WebContext ac)
+        public async Task icon(WebContext wc)
         {
-            string orgid = ac[this];
-            if (ac.GET)
+            string orgid = wc[this];
+            if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT icon FROM orgs WHERE id = @1", p => p.Set(orgid)))
                     {
                         dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) ac.Give(204); // no content 
+                        if (byteas.Count == 0) wc.Give(204); // no content 
                         else
-                            ac.Give(200, new StaticContent(byteas));
+                            wc.Give(200, new StaticContent(byteas));
                     }
-                    else ac.Give(404); // not found           
+                    else wc.Give(404); // not found           
                 }
                 return;
             }
 
-            var f = await ac.ReadAsync<Form>();
+            var f = await wc.ReadAsync<Form>();
             ArraySegment<byte> jpeg = f[nameof(jpeg)];
             using (var dc = NewDbContext())
             {
                 dc.Execute("UPDATE orgs SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(orgid));
             }
-            ac.Give(200); // ok
+            wc.Give(200); // ok
         }
     }
 }
