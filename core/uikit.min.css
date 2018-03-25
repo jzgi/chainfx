@@ -2981,7 +2981,6 @@ select.uk-form-width-xsmall {
 }
 
 .uk-label {
-    vertical-align: middle;
     text-transform: uppercase;
     white-space: nowrap;
     color: indianred;

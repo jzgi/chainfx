@@ -513,7 +513,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_HREF(Style style = 0, bool? size = null, byte width = 0, char target = (char) 0)
+        public HtmlContent A_HREF_(Style style = 0, bool? size = null, byte width = 0, char target = (char) 0)
         {
             Add("<a class=\"uk-button");
             if (style == 0) Add(" uk-button-default");
@@ -792,7 +792,7 @@ namespace Greatbone
 
         public HtmlContent FIELD_(string label = null, byte width = 0x11)
         {
-            Add("<div class=\"uk-field");
+            Add("<li class=\"uk-field");
             if (width > 0)
             {
                 int lo = width & 0x0f;
@@ -814,7 +814,7 @@ namespace Greatbone
 
         public HtmlContent _FIELD()
         {
-            Add("</div>");
+            Add("</li>");
             return this;
         }
 
@@ -1166,7 +1166,7 @@ namespace Greatbone
 
         public HtmlContent LISTVIEW<D>(D[] arr, Action<D> item)
         {
-            Add("<ul class=\"uk-list uk-list-divider uk-list-striped\">");
+            Add("<ul class=\"uk-list uk-list-divider\">");
             if (arr != null)
             {
                 if (chain == null) chain = new object[4]; // init contexts
@@ -1177,7 +1177,7 @@ namespace Greatbone
                     D obj = arr[i];
                     chain[level] = obj;
 
-                    Add("<li>");
+                    Add("<li class=\"uk-grid\">");
                     item(obj);
                     Add("</li>");
 
@@ -1326,17 +1326,23 @@ namespace Greatbone
                 chain[level] = obj;
 
                 // header
-                Add("<div class=\"uk-card-header\">");
-                header?.Invoke(obj);
-                Add("</div>");
+                if (header != null)
+                {
+                    Add("<div class=\"uk-card-header\">");
+                    header(obj);
+                    Add("</div>");
+                }
                 // body
                 Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
                 body(obj);
                 Add("</div>");
                 // footer
-                Add("<div class=\"uk-card-header\">");
-                footer?.Invoke(obj);
-                Add("</div>");
+                if (footer != null)
+                {
+                    Add("<div class=\"uk-card-header\">");
+                    footer(obj);
+                    Add("</div>");
+                }
 
                 chain[level] = null;
 
@@ -1360,17 +1366,23 @@ namespace Greatbone
 
                     Add("<article class=\"uk-card uk-card-default\">");
                     // header
-                    Add("<div class=\"uk-card-header\">");
-                    header(obj);
-                    Add("</div>");
+                    if (header != null)
+                    {
+                        Add("<div class=\"uk-card-header\">");
+                        header(obj);
+                        Add("</div>");
+                    }
                     // body
-                    Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
+                    Add("<div class=\"uk-card-body uk-grid uk-padding-small\">");
                     body(obj);
                     Add("</div>");
                     // footer
-                    Add("<div class=\"uk-card-footer\">");
-                    footer?.Invoke(obj);
-                    Add("</div>");
+                    if (footer != null)
+                    {
+                        Add("<div class=\"uk-card-footer\">");
+                        footer(obj);
+                        Add("</div>");
+                    }
                     Add("</article>");
 
                     chain[level] = null;
@@ -1382,7 +1394,7 @@ namespace Greatbone
         }
 
 
-        void Dialog(sbyte mode, bool pick, sbyte size, string tip)
+        void OnClickDialog(sbyte mode, bool pick, sbyte size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
@@ -1409,14 +1421,14 @@ namespace Greatbone
                 Add(lo);
             }
             Add("\">");
-            
+
             Work w = webCtx.Work;
             for (int i = -1; i < level; i++)
             {
                 w = w.varwork;
             }
             var prcs = w.Tooled;
-            for (int i = 0; i < prcs.Length; i++)
+            for (int i = 0; i < prcs?.Length; i++)
             {
                 var prc = prcs[i];
                 if (!prc.IsCapital)
@@ -1493,10 +1505,6 @@ namespace Greatbone
                     Add(subscript);
                 }
                 Add("\"");
-                if (!ok)
-                {
-                    Add(" disabled onclick=\"return false;\"");
-                }
             }
             else if (tool.IsButton)
             {
@@ -1522,17 +1530,18 @@ namespace Greatbone
                     Add(subscript);
                 }
                 Add("\" formmethod=\"post\"");
-                if (!ok)
-                {
-                    Add(" disabled");
-                }
             }
-            if (tool.HasConfirm)
+
+            if (!ok)
+            {
+                Add(" disabled onclick=\"return false;\"");
+            }
+            else if (tool.HasConfirm)
             {
                 Add(" onclick=\"return ");
                 if (tool.MustPick)
                 {
-                    Add("!($(this.form).serialize()) ? false : ");
+                    Add("!serialize(this.form) ? false : ");
                 }
                 Add("confirm('");
                 Add(prc.Tip ?? prc.Label);
@@ -1540,15 +1549,15 @@ namespace Greatbone
             }
             else if (tool.HasPrompt)
             {
-                Dialog(2, tool.MustPick, tool.Size, prc.Tip);
+                OnClickDialog(2, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasShow)
             {
-                Dialog(4, tool.MustPick, tool.Size, prc.Tip);
+                OnClickDialog(4, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasOpen)
             {
-                Dialog(8, tool.MustPick, tool.Size, prc.Tip);
+                OnClickDialog(8, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasScript)
             {
@@ -1567,7 +1576,9 @@ namespace Greatbone
                 Add("');\"");
             }
             Add(">");
+
             Add(prc.Label);
+
             if (tool.IsAnchor)
             {
                 Add("</a>");

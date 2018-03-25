@@ -3,6 +3,7 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using static Core.CoreUtility;
 using static Core.WeiXinUtility;
 
@@ -191,28 +192,30 @@ namespace Core
             {
                 items = dc.Query<Item>("SELECT * FROM items WHERE orgid LIKE @1 AND status > 0 ORDER BY orgid, status", p => p.Set(cityid + "%"));
             }
-            ac.GiveDoc(200, m =>
+            ac.GiveDoc(200, h =>
                 {
-                    m.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true, width: 0)._TOPBAR();
+                    h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true, width: 0)._TOPBAR();
 
-                    m.BOARDVIEW(shops,
+                    h.BOARDVIEW(shops,
                         o =>
                         {
-                            m.H3(o.name);
-                            m.P(o.descr, "简介");
-                            m.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                            h.H3(o.name);
+                            h.P(o.descr, "简介");
+                            h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
                         },
                         o =>
                         {
-                            m.LISTVIEW(items, itm =>
+                            h.LISTVIEW(items, itm =>
                             {
-                                m.ICON("/" + itm.orgid + "/" + itm.name + "/icon", width: 0x15);
-                                m.BOX_(0x35);
-                                m.T(itm.descr);
-                                m._BOX();
-                                m.TOOL(nameof(CoreItemVarWork.buy));
+                                h.ICON("/" + itm.orgid + "/" + itm.name + "/icon", width: 0x13);
+                                h.BOX_(0x23);
+                                h.T(itm.descr);
+                                h._BOX();
+                                h.P_().TOOL(nameof(CoreItemVarWork.buy))._P();
                             });
-                        });
+                        }
+                        , o => h.TOOLPAD()
+                    );
                 }, true, 60, "粗狼达人 - " + cityid
             );
         }

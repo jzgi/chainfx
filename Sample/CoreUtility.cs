@@ -123,7 +123,7 @@ namespace Core
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? "全粮派");
+            h.Add(title ?? "护陪尔护理");
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -136,7 +136,7 @@ namespace Core
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
 
             h.Add("<div class=\"uk-offcanvas-content uk-height-1-1\">");
-            h.Add("<a class=\"uk-icon-link\" uk-icon=\"icon: menu; ratio: 1.5\" uk-toggle=\"target: #offcanvas-push\" style=\"position: absolute; top: 0.5rem\"></a>");
+            h.Add("<a class=\"uk-icon-link uk-offcanvas-toggle\" uk-icon=\"icon: chevron-right; ratio: 1.5\" uk-toggle=\"target: #offcanvas-push\"></a>");
             h.Add("<div id=\"offcanvas-push\" uk-offcanvas=\"mode: push; overlay: true\">");
             h.Add("<div class=\"uk-offcanvas-bar\">");
             h.Add("<button class=\"uk-offcanvas-close\" type=\"button\" uk-close></button>");
@@ -192,6 +192,7 @@ namespace Core
 
             wc.Give(status, h, @public, maxage);
         }
+
 
         /// <summary>
         /// Gives a frame page.
