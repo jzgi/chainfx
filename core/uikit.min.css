@@ -1316,6 +1316,10 @@ button.uk-icon:not(:disabled) {
     transition-property: color, background-color, border;
 }
 
+.uk-static {
+    color: indianred;
+}
+
 .uk-input,
 .uk-select:not([multiple]):not([size]) {
     height: 2rem;
