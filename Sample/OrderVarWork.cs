@@ -28,7 +28,7 @@ namespace Core
             int orderid = wc[this];
             short rev;
             decimal total;
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             using (var dc = NewDbContext())
             {
                 dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
@@ -70,9 +70,8 @@ namespace Core
                         h.FORM_();
                         h.FIELDSET_("购买数量");
                         h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
-                        h.FIELD_(width: 2)._FIELD();
-                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short)0, step: step, width: 2);
-                        h.FIELD(oi.unit, width: 1);
+                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short) 0, step: step);
+                        h.STATIC(oi.unit, "");
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -116,7 +115,7 @@ namespace Core
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            h.FIELD(name, width: 5).FIELD(stock, width: 0x22).NUMBER(name + '~' + unit + '~' + price, (short)0, max: stock, min: (short)0, step: (short)1, width: 5);
+                            h.P(name).P(stock).NUMBER(name + '~' + unit + '~' + price, (short) 0, max: stock, min: (short) 0, step: (short) 1);
                         }
                     }
                     h._FORM();
@@ -230,7 +229,7 @@ namespace Core
         {
             string orgid = wc[-2];
             int orderid = wc[this];
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             bool mycart;
             if (wc.GET)
             {

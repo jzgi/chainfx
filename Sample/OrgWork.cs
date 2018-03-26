@@ -32,7 +32,7 @@ namespace Core
                         o => { h.T(o.name).T(" / ").T(o.id); },
                         o =>
                         {
-                            h.FIELD(o.descr, "简介");
+                            h.STATIC(o.descr, "简介");
                             h.FIELD_("地址").T(o.addr)._FIELD();
                             h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
                             h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
@@ -57,7 +57,7 @@ namespace Core
                     m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
                     m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20, width: 6).NUMBER(nameof(o.x), o.x, "纬度", max: 20, width: 6);
+                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20).NUMBER(nameof(o.x), o.x, "纬度", max: 20);
                     m._FORM();
                 });
             }

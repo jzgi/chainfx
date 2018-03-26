@@ -72,20 +72,21 @@ namespace Core
                         if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
                         {
                             // show addr inputs for order creation
-                            h.FIELDSET_("收货地址");
+                            h.FIELDSET_("填写收货信息");
                             name = prin.name;
                             city = prin.city;
                             a = prin.addr;
                             tel = prin.tel;
-                            h.SELECT(nameof(city), city, City.All, required: true, width: 3).TEXT(nameof(a), a, max: 20, required: true, width: 9);
-                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true, width: 6).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true, box: 6);
+                            h.FIELD_("地址").SELECT(nameof(city), city, City.All, required: true).TEXT(nameof(a), a, max: 20, required: true)._FIELD();
+                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             h._FIELDSET();
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.ICON("icon", width: 2).NUMBER(nameof(num), it.min, min: it.min, step: it.step, width: 2).FIELD(it.unit, width: 2);
+                        h.FIELD_("货品").ICON("icon", width: 0x16)._T(it.name)._FIELD();
+                        h.FIELD_("数量").NUMBER(nameof(num), it.min, min: it.min, step: it.step)._T(it.unit)._FIELD();
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -165,11 +166,11 @@ namespace Core
                     wc.GivePane(200, m =>
                     {
                         m.FORM_();
-                        m.FIELD(o.name, "名称");
+                        m.STATIC(o.name, "名称");
                         m.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
-                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true, width: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, width: 6);
-                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, width: 6).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1, width: 6);
-                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", width: 6).NUMBER(nameof(o.stock), o.stock, "可供", width: 6);
+                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true).NUMBER(nameof(o.price), o.price, "单价", required: true);
+                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
+                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态").NUMBER(nameof(o.stock), o.stock, "可供");
                         m._FORM();
                     });
                 }

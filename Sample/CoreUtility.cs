@@ -5,6 +5,8 @@ namespace Core
 {
     public static class CoreUtility
     {
+        public const string BIZ = "粗粮达人";
+
         public const string NETADDR = "http://144000.tv";
 
         // an invisible/unprintable char
@@ -28,7 +30,7 @@ namespace Core
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? "全粮派");
+            h.Add(title ?? BIZ);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -57,7 +59,7 @@ namespace Core
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? "全粮派");
+            h.Add(title ?? BIZ);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -123,7 +125,7 @@ namespace Core
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? "护陪尔护理");
+            h.Add(title ?? BIZ);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -206,7 +208,7 @@ namespace Core
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? "全粮派");
+            h.Add(title ?? BIZ);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -237,7 +239,9 @@ namespace Core
             h.Add("<html>");
 
             h.Add("<head>");
-            h.Add("<title>全粮派</title>");
+            h.Add("<title>");
+            h.Add(BIZ);
+            h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -274,11 +278,13 @@ namespace Core
             {
                 h.T("<div>").T(title).T("</div>");
             }
+            h.T("<div>");
             return h;
         }
 
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
+            h.T("</div>");
             h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//ord/\">我的订单</a>");
             h.T("</form>");
             h.T("<div class=\"top-bar-placeholder\"></div>");

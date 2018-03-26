@@ -17,7 +17,7 @@ namespace Core
     {
         public CoreVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CoreItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<CoreItemVarWork, string>(obj => ((Item) obj).name);
         }
 
         public void icon(WebContext wc)
@@ -56,11 +56,11 @@ namespace Core
                     wc.GivePane(200, m =>
                     {
                         m.FORM_();
-                        m.FIELD(o.id, "编号");
+                        m.STATIC(o.id, "编号");
                         m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
                         m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                         m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                        m.NUMBER(nameof(o.x), o.x, "经度", width: 6).NUMBER(nameof(o.x), o.x, "纬度", width: 6);
+                        m.NUMBER(nameof(o.x), o.x, "经度").NUMBER(nameof(o.x), o.x, "纬度");
                         m._FORM();
                     });
                 }

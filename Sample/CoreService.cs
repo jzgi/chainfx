@@ -3,7 +3,6 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using static Core.CoreUtility;
 using static Core.WeiXinUtility;
 
@@ -177,9 +176,9 @@ namespace Core
         /// Returns a home page pertaining to a related city
         /// We are forced to put auth check here because weixin auth does't work in iframe
         [CityId, User]
-        public void list(WebContext ac)
+        public void list(WebContext wc)
         {
-            string cityid = ac.Query[nameof(cityid)];
+            string cityid = wc.Query[nameof(cityid)];
             if (string.IsNullOrEmpty(cityid))
             {
                 cityid = City.All?[0].id;
@@ -192,9 +191,9 @@ namespace Core
             {
                 items = dc.Query<Item>("SELECT * FROM items WHERE orgid LIKE @1 AND status > 0 ORDER BY orgid, status", p => p.Set(cityid + "%"));
             }
-            ac.GiveDoc(200, h =>
+            wc.GiveDoc(200, h =>
                 {
-                    h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true, width: 0)._TOPBAR();
+                    h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
 
                     h.BOARDVIEW(shops,
                         o =>
@@ -205,18 +204,22 @@ namespace Core
                         },
                         o =>
                         {
-                            h.LISTVIEW(items, itm =>
+                            h.LISTVIEW(items, m =>
                             {
-                                h.ICON("/" + itm.orgid + "/" + itm.name + "/icon", width: 0x13);
-                                h.BOX_(0x23);
-                                h.T(itm.descr);
-                                h._BOX();
-                                h.P_().TOOL(nameof(CoreItemVarWork.buy))._P();
+                                h.ICON("/" + m.orgid + "/" + m.name + "/icon", width: 0x13);
+                                h.COL_(0x23);
+                                h.H4(m.name);
+                                h.P(m.descr, "描述");
+                                h.ROW_();
+                                h.P_("价格").EM_().T('¥').T(m.price)._EM()._P();
+                                h.TOOL(nameof(CoreItemVarWork.buy));
+                                h._ROW();
+                                h._COL();
                             });
                         }
                         , o => h.TOOLPAD()
                     );
-                }, true, 60, "粗狼达人 - " + cityid
+                }, true, 60
             );
         }
 

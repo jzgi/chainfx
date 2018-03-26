@@ -67,7 +67,8 @@ strong {
 }
 
 em {
-    color: #f0506e;
+    font-style: normal;
+    color: #ff3b30;
 }
 
 ins {
@@ -156,27 +157,10 @@ h5,
 .uk-h5,
 h6,
 .uk-h6 {
-    margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-weight: normal;
     color: #333;
     text-transform: none;
-}
-
-/* Add margin if adjacent element */
-* + h1,
-* + .uk-h1,
-* + h2,
-* + .uk-h2,
-* + h3,
-* + .uk-h3,
-* + h4,
-* + .uk-h4,
-* + h5,
-* + .uk-h5,
-* + h6,
-* + .uk-h6 {
-    margin-top: 40px;
 }
 
 /*
@@ -184,38 +168,38 @@ h6,
  */
 h1,
 .uk-h1 {
-    font-size: 2.625rem;
-    line-height: 1.2;
+    font-size: 2.25rem;
+    margin: 0.5rem 0;
 }
 
 h2,
 .uk-h2 {
     font-size: 2rem;
-    line-height: 1.3;
+    margin: 0.5rem 0;
 }
 
 h3,
 .uk-h3 {
     font-size: 1.5rem;
-    line-height: 1.4;
+    margin: 0.375rem 0;
 }
 
 h4,
 .uk-h4 {
     font-size: 1.25rem;
-    line-height: 1.4;
+    margin: 0.375rem 0;
 }
 
 h5,
 .uk-h5 {
     font-size: 16px;
-    line-height: 1.4;
+    margin: 0.25rem 0;
 }
 
 h6,
 .uk-h6 {
     font-size: 0.875rem;
-    line-height: 1.4;
+    margin: 0.25rem 0;
 }
 
 /*
@@ -584,9 +568,6 @@ a.uk-link-reset:hover,
     list-style: none;
 }
 
-/*
- * Micro clearfix
- */
 .uk-list > li::before,
 .uk-list > li::after {
     content: "";
@@ -597,9 +578,6 @@ a.uk-link-reset:hover,
     clear: both;
 }
 
-/*
- * Remove margin from the last-child
- */
 .uk-list > li > :last-child {
     margin-bottom: 0;
 }
@@ -1239,13 +1217,40 @@ button.uk-icon:not(:disabled) {
    Component: Form
  ========================================================================== */
 
-.uk-input,
-.uk-select,
-.uk-textarea {
+.uk-fieldset {
+    border: none;
+    margin: 1rem 0;
+    padding: 0;
+}
+
+.uk-fieldset > legend {
+    text-transform: uppercase;
+    color: #6d6d72;
+    padding: 0.5rem;
+    line-height: 16px;
+}
+
+.uk-fieldset li {
+    margin: 1px 0;
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.uk-fieldset > ul {
+    border-top: 1px solid #c4c4c4;
+    border-bottom: 1px solid #c4c4c4;
+    padding: 0;
+    background-color: #fff;
+}
+
+.uk-fieldset > ul > li {
     box-sizing: border-box;
-    margin: 0;
-    border-radius: 0;
-    font: inherit;
+    margin-left: 10px;
+}
+
+.uk-fieldset > ul > li:nth-child(n+2) {
+    border-top: 1px solid #c4c4c4;
 }
 
 .uk-radio,
@@ -1293,26 +1298,24 @@ button.uk-icon:not(:disabled) {
     cursor: pointer;
 }
 
-.uk-fieldset {
-    border: none;
-    margin: 0.5rem 0;
-    padding: 0.375rem;
-}
-
 .uk-input,
 .uk-textarea {
     -webkit-appearance: none;
 }
 
+.uk-static,
+.uk-output,
 .uk-input,
 .uk-select,
 .uk-textarea {
+    box-sizing: border-box;
     max-width: 100%;
     width: 100%;
-    padding: 0;
+    padding: 4px;
     background: white;
     color: black;
     border: 0;
+    font-size: inherit;
     transition: 0.2s ease-in-out;
     transition-property: color, background-color, border;
 }
@@ -1470,7 +1473,7 @@ select.uk-form-width-xsmall {
     height: 16px;
     width: 16px;
     overflow: hidden;
-    margin-top: -4px;
+    margin-top: -2px;
     vertical-align: middle;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1535,33 +1538,28 @@ select.uk-form-width-xsmall {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23999%22%20x%3D%223%22%20y%3D%228%22%20width%3D%2210%22%20height%3D%221%22%20%2F%3E%0A%3C%2Fsvg%3E");
 }
 
-.uk-legend {
-    text-transform: uppercase;
-    color: #6d6d72;
-    margin: 1rem 0 0;
-    line-height: 16px;
-}
-
-.uk-field {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    margin: 1px 0;
-    padding: 2px;
-    min-height: 2.25rem;
-}
-
-.uk-box {
+.uk-col {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
 }
 
+.uk-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .uk-qrcode {
     margin: auto;
-    padding: 10px;
+    padding: 0.5rem;
     background-color: white;
+}
+
+.uk-qrcode > img {
+    margin: auto;
 }
 
 .uk-form-custom {
@@ -2552,11 +2550,11 @@ select.uk-form-width-xsmall {
 }
 
 .uk-card-body {
-    padding: 10px 10px;
+    padding: 8px 8px;
 }
 
 .uk-card-header {
-    padding: 10px 10px;
+    padding: 8px;
     vertical-align: middle;
 }
 
@@ -2615,7 +2613,7 @@ select.uk-form-width-xsmall {
     color: #333;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
     box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
-    margin: 10px;
+    margin: 12px 4px;
 }
 
 .uk-card-default .uk-card-title {
@@ -2760,7 +2758,7 @@ select.uk-form-width-xsmall {
 }
 
 .uk-close {
-    color: #999;
+    color: #007aff;
     transition: 0.1s ease-in-out;
     transition-property: color, opacity;
 }
@@ -2847,6 +2845,36 @@ select.uk-form-width-xsmall {
 .uk-marker:focus {
     color: #fff;
     outline: none;
+}
+
+.uk-msg {
+    margin: 0.5rem;
+    background-color: #fff;
+    padding: 0.5rem;
+}
+
+.uk-msg > header {
+    display: flex;
+    padding: .5rem;
+    align-items: center;
+}
+
+.uk-msg > div {
+    display: flex;
+    padding: .5rem;
+    align-items: center;
+}
+
+.uk-msg-yes > span {
+    color: #4cd964;
+    border: 2px solid #4cd964;
+    border-radius: 50%;
+}
+
+.uk-msg-no > span {
+    color: #ff3b30;
+    border: 2px solid #ff3b30;
+    border-radius: 50%;
 }
 
 /* ========================================================================
@@ -2986,6 +3014,7 @@ select.uk-form-width-xsmall {
     color: indianred;
     margin-right: 0.5rem;
 }
+
 .uk-label::after {
     content: ":";
 }
@@ -4585,14 +4614,14 @@ ul.uk-nav-sub {
 
 .uk-accordion > li {
     display: block;
-    margin: 10px;
+    margin: 8px 4px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
 }
 
 .uk-accordion-title {
     display: block;
     font-size: 1.125rem;
-    padding: 10px;
+    padding: 8px;
     color: #333;
     background-color: white;
     overflow: hidden;

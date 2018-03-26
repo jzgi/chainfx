@@ -43,42 +43,6 @@ namespace Greatbone
             fResponseCookies = new ResponseCookiesFeature(features);
         }
 
-        // OBJECT PROVIDER
-
-        object[] registry;
-
-        int size;
-
-        public void Register(object value)
-        {
-            if (registry == null)
-            {
-                registry = new object[8];
-            }
-
-            registry[size++] = value;
-        }
-
-        public void Register(params object[] values)
-        {
-            for (int i = 0; i < values.Length; i++)
-            {
-                Register(values[i]);
-            }
-        }
-
-        public T Obtain<T>() where T : class
-        {
-            if (registry != null)
-            {
-                for (int i = 0; i < size; i++)
-                {
-                    if (registry[i] is T v) return v;
-                }
-            }
-            return Service.Obtain<T>();
-        }
-
         public Service Service { get; internal set; }
 
         public Work Work { get; internal set; }

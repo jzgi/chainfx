@@ -11,11 +11,16 @@ namespace Core
             this.state = state;
         }
 
-        public override bool Check(WebContext ac, object obj)
+        public override bool Check(WebContext ac, object[] stack, int level)
         {
-            var o = obj as Order;
-            if (state == 'A')
-                return o.addr != null;
+            for (int i = 0; i < level; i++)
+            {
+                if (stack[i] is Order o)
+                {
+                    if (state == 'A')
+                        return o.addr != null;
+                }
+            }
             return false;
         }
     }

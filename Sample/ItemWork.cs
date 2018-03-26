@@ -35,8 +35,8 @@ namespace Core
                         o =>
                         {
                             h.ICON(o.name + "/icon", width: 2);
-                            h.BOX_(4).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._BOX();
-                            h.FIELD(o.unit, "单位", width: 3).FIELD(o.min, "起订", width: 3).FIELD(o.step, "递增", width: 3).FIELD(o.stock, "存量", width: 3);
+                            h.COL_(4).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._COL();
+                            h.STATIC(o.unit, "单位").STATIC(o.min, "起订").STATIC(o.step, "递增").STATIC(o.stock, "存量");
                         });
                 });
             }
@@ -48,15 +48,17 @@ namespace Core
             if (wc.GET)
             {
                 var o = new Item {min = 1, step = 1};
-                wc.GivePane(200, m =>
+                wc.GivePane(200, h =>
                 {
-                    m.FORM_();
-                    m.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
-                    m.TEXTAREA(nameof(o.descr), o.descr, "简述", min: 20, max: 50, required: true);
-                    m.TEXT(nameof(o.unit), o.unit, "单位", required: true, width: 6).NUMBER(nameof(o.price), o.price, "单价", required: true, width: 6);
-                    m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1, width: 6).NUMBER(nameof(o.step), o.step, "递增", min: (short) 1, width: 6);
-                    m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态", width: 6).NUMBER(nameof(o.stock), o.stock, "可供", width: 6);
-                    m._FORM();
+                    h.FORM_();
+                    h.FIELDSET_("填写货品信息");
+                    h.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
+                    h.TEXTAREA(nameof(o.descr), o.descr, "简述", min: 20, max: 50, required: true);
+                    h.TEXT(nameof(o.unit), o.unit, "单位", required: true).NUMBER(nameof(o.price), o.price, "单价", required: true);
+                    h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1).NUMBER(nameof(o.step), o.step, "递增", min: (short) 1);
+                    h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态").NUMBER(nameof(o.stock), o.stock, "可供");
+                    h._FIELDSET();
+                    h._FORM();
                 });
             }
             else // POST

@@ -48,9 +48,13 @@ namespace Core
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类型");
-                    h.TEXT(nameof(o.descr), o.descr, "简述", max: 20);
-                    h.NUMBER(nameof(o.receive), o.receive, "收入", width: 6).NUMBER(nameof(o.pay), o.pay, "支出", width: 6);
+
+                    h.FIELDSET_("填写交易信息");
+                    h.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类　型");
+                    h.TEXT(nameof(o.descr), o.descr, "简　述", max: 20);
+                    h.FIELD_("收／支").NUMBER(nameof(o.receive), o.receive, tip: "收入").NUMBER(nameof(o.pay), o.pay, tip: "支出")._FIELD();
+                    h._FIELDSET();
+
                     h._FORM();
                 });
                 return;

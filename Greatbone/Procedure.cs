@@ -84,9 +84,9 @@ namespace Greatbone
 
         public ToolAttribute Tool => tool;
 
-        public bool DoState(WebContext wc, object model)
+        public bool DoState(WebContext wc, object[] stack, int level)
         {
-            return state == null || model == null || state.Check(wc, model);
+            return state == null || stack == null || state.Check(wc, stack, level);
         }
 
         internal void Do(WebContext wc, int subscpt)

@@ -102,9 +102,9 @@ namespace Greatbone
 
         public bool DoAuthorize(WebContext wc, bool strict)
         {
-            if (authorize != null)
+            if (authorize != null && strict)
             {
-                if (wc.Principal == null && strict)
+                if (wc.Principal == null)
                 {
                     return false;
                 }

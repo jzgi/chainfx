@@ -18,22 +18,21 @@ namespace Core
         public void @default(WebContext ac)
         {
             var prin = (User) ac.Principal;
-            ac.GivePage(200, m =>
+            ac.GivePage(200, h =>
             {
-                m.TOOLBAR();
-//                m.BOARDVIEW(h =>
-//                    {
-//                        h.CARD_HEADER("账号信息");
-//                        h.CARD_BODY_();
-//                        h.FIELD(prin.name, "姓名");
-//                        h.FIELD(prin.tel, "电话");
-//                        h.FIELD_("地址").T(prin.city)._T(prin.addr)._FIELD();
-//                        h.BOX_();
-//                        h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
-//                        h._BOX();
-//                        h._CARD_BODY();
-//                    }
-//                );
+                h.TOOLBAR();
+                h.CARDVIEW(prin,
+                    o => h.H4("账号信息"),
+                    o =>
+                    {
+                        h.P(prin.name, "姓名");
+                        h.P(prin.tel, "电话");
+                        h.P_("地址").T(prin.city)._T(prin.addr)._P();
+                        h.COL_();
+                        h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
+                        h._COL();
+                    }
+                );
             });
         }
 
@@ -167,12 +166,12 @@ namespace Core
                 var org = orgs[orgid];
 
                 h.CARDVIEW(org,
-                    o => { h.T(o.name); },
+                    o => { h.H4(o.name); },
                     o =>
                     {
-                        h.FIELD(org.descr, "简介");
-                        h.FIELD_("经理").T(org.mgrname)._T(org.mgrtel)._FIELD();
-                        h.FIELD_("客服").T(org.oprname)._T(org.oprtel)._FIELD();
+                        h.P(org.descr, "简介");
+                        h.P_("经理").T(org.mgrname)._T(org.mgrtel)._P();
+                        h.P_("客服").T(org.oprname)._T(org.oprtel)._P();
                     });
             });
         }

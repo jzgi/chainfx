@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Security;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
@@ -35,34 +34,37 @@ namespace Core
             }, false, 2);
         }
 
-        protected void PrintOrdersPage2(WebContext wc, Order[] arr)
+        protected void PrintOrdersPage2(WebContext wc, Order[] arr, bool tools = true)
         {
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR();
+                if (tools)
+                {
+                    h.TOOLBAR();
+                }
                 h.BOARDVIEW(arr,
                     o => { h.T(o.orgname)._IF(o.paid); },
                     o =>
                     {
-                        h.FIELD_("收货").T(o.addr)._T(o.name).T(o.tel)._FIELD();
+                        h.P_("收货").T(o.addr)._T(o.name).T(o.tel)._P();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
                                 h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
-                                h.BOX_(3).P(oi.name).P(oi.price).P(oi.qty)._BOX();
+                                h.COL_(3).P(oi.name).P(oi.price).P(oi.qty)._COL();
                                 h.TOOL(nameof(MyOrderVarWork.edit));
-                                h.BOX_(1);
+                                h.COL_(1);
                                 if (o.typ == POS)
                                 {
                                     h.P(oi.load);
                                 }
-                                h._BOX();
+                                h._COL();
                             }
                             else
                             {
-                                h.FIELD_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._FIELD();
+                                h.P_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._P();
                             }
                         }
                         h.P_("总计").T("¥").T(o.total)._P();
@@ -83,17 +85,18 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC", p => p.Set(wx));
+                PrinOrders(arr, wc);
             }
         }
 
-        [Ui("历史订单"), Tool(ButtonOpen)]
+        [Ui("已往订单"), Tool(ButtonOpen)]
         public void old(WebContext wc, int page)
         {
             string wx = wc[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC", p => p.Set(wx));
-                PrintOrdersPage2(wc, arr);
+                PrintOrdersPage2(wc, arr, false);
             }
         }
     }
