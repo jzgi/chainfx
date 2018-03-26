@@ -231,6 +231,17 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent HR(bool icon = false)
+        {
+            Add("<hr");
+            if (icon)
+            {
+                Add(" class=\"uk-divider-icon\"");
+            }
+            Add(">");
+            return this;
+        }
+
         public HtmlContent EM_()
         {
             Add("<em>");
@@ -1476,7 +1487,7 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLPAD(byte width = 0)
+        public HtmlContent TOOLPAD(byte width = 0x11)
         {
             // locate the proper work
             Add("<div class=\"uk-button-group uk-flex uk-flex-center");

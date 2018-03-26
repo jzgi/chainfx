@@ -153,7 +153,7 @@ namespace Core
         {
         }
 
-        [Ui("基本"), Tool(ButtonShow, 2), User(OPRSTAFF)]
+        [Ui("修改"), Tool(ButtonShow, 2), User(OPRSTAFF)]
         public async Task basic(WebContext wc)
         {
             string orgid = wc[-2];
@@ -163,15 +163,20 @@ namespace Core
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Item>("SELECT * FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name));
-                    wc.GivePane(200, m =>
+                    wc.GivePane(200, h =>
                     {
-                        m.FORM_();
-                        m.STATIC(o.name, "名称");
-                        m.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
-                        m.TEXT(nameof(o.unit), o.unit, "单位", required: true).NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        m.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1).NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
-                        m.SELECT(nameof(o.status), o.status, Item.Statuses, "状态").NUMBER(nameof(o.stock), o.stock, "可供");
-                        m._FORM();
+                        h.FORM_();
+                        h.FIELDSET_("填写货品信息");
+                        h.STATIC(o.name, "名称");
+                        h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
+                        h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
+                        h.NUMBER(nameof(o.price), o.price, "单价", required: true);
+                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
+                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
+                        h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
+                        h.NUMBER(nameof(o.stock), o.stock, "可供");
+                        h._FIELDSET();
+                        h._FORM();
                     });
                 }
             }
@@ -222,31 +227,6 @@ namespace Core
                     }
                     else wc.Give(500); // internal server error
                 }
-            }
-        }
-
-        [Ui("可供"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task max(WebContext wc)
-        {
-            string orgid = wc[-2];
-            string name = wc[this];
-            if (wc.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Query1("SELECT stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name));
-                    dc.Let(out short stock);
-                    wc.GivePane(200, h => { h.FORM_().NUMBER(nameof(stock), stock, step: (short) 1)._FORM(); });
-                }
-            }
-            else // POST
-            {
-                (await wc.ReadAsync<Form>()).Let(out short stock);
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE items SET stock = @1 WHERE orgid = @2 AND name = @3", p => p.Set(stock).Set(orgid).Set(name));
-                }
-                wc.GivePane(200); // close
             }
         }
     }

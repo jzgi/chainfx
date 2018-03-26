@@ -30,13 +30,15 @@ namespace Core
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.BOARDVIEW(arr,
-                        o => { h.T(o.name).T(Item.Statuses[o.status]); },
+                    h.ACCORDIONVIEW(arr,
+                        o => h.T(o.name),
                         o =>
                         {
-                            h.ICON(o.name + "/icon", width: 2);
-                            h.COL_(4).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._COL();
-                            h.STATIC(o.unit, "单位").STATIC(o.min, "起订").STATIC(o.step, "递增").STATIC(o.stock, "存量");
+                            h.ICON(o.name + "/icon", width: 0x14);
+                            h.COL_(0x34).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._COL();
+                            h.P(o.unit, "单位", 0x14).P(o.min, "起订", 0x14).P(o.step, "递增", 0x14).P(o.stock, "存量", 0x14);
+                            h.HR();
+                            h.TOOLPAD();
                         });
                 });
             }

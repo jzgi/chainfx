@@ -222,15 +222,11 @@ dd {
 
 hr,
 .uk-hr {
-    /* 1 */
     box-sizing: content-box;
     height: 0;
-    /* 2 */
+    width: 100%;
     overflow: visible;
-    /* 3 */
     text-align: inherit;
-    /* 4 */
-    margin: 0 0 20px 0;
     border: 0;
     border-top: 1px solid #e5e5e5;
 }
@@ -238,7 +234,7 @@ hr,
 /* Add margin if adjacent element */
 * + hr,
 * + .uk-hr {
-    margin-top: 20px;
+    margin-top: 8px;
 }
 
 address {
