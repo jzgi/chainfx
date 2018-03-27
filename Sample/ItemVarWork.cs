@@ -218,10 +218,10 @@ namespace Core
             else // POST
             {
                 var f = await wc.ReadAsync<Form>();
-                ArraySegment<byte> jpeg = f[nameof(jpeg)];
+                ArraySegment<byte> img = f[nameof(img)];
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Execute("UPDATE items SET icon = @1 WHERE orgid = @2 AND name = @3", p => p.Set(jpeg).Set(orgid).Set(name)) > 0)
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE orgid = @2 AND name = @3", p => p.Set(img).Set(orgid).Set(name)) > 0)
                     {
                         wc.Give(200); // ok
                     }
