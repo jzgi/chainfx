@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Greatbone
 {
     /// <summary>
-    /// An add-only data collection that can act as both list and dictionary.
+    /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
     /// </summary>
     public class Map<K, V> : IEnumerable<Map<K, V>.Entry>
     {
@@ -17,7 +17,9 @@ namespace Greatbone
 
         readonly Predicate<K> toper;
 
-        List<V> top;
+        // indices of top entries
+        int[] top;
+        int topCount;
 
         public Map(int capacity = 16, Predicate<K> toper = null)
         {
@@ -28,9 +30,12 @@ namespace Greatbone
                 size <<= 1;
             }
             ReInit(size);
-
-            this.toper = toper;
-            this.top = new List<V>(16);
+            // init toper 
+            if (toper != null)
+            {
+                this.toper = toper;
+                this.top = new int[16];
+            }
         }
 
         void ReInit(int size) // size must be power of 2
@@ -47,13 +52,53 @@ namespace Greatbone
             count = 0;
         }
 
+        void AddTop(int idx)
+        {
+            int len = top.Length;
+            if (len <= topCount)
+            {
+                int[] alloc = new int[len * 2];
+                Array.Copy(top, alloc, topCount);
+                top = alloc;
+            }
+            top[topCount++] = idx;
+        }
+
         public int Count => count;
 
         public Entry At(int idx) => entries[idx];
 
         public V this[int idx] => entries[idx].value;
 
-        public V[] Top => top.ToArray();
+        public int TopCount => topCount;
+
+        public Entry TopAt(int idx) => entries[top[idx]];
+
+        public V Top(int idx, out int open, out int close)
+        {
+            int i = top[idx];
+            if (idx < topCount - 1)
+            {
+                open = i + 1;
+                close = top[idx + 1] - 1;
+            }
+            else
+            {
+                open = i + 1;
+                close = count - 1;
+            }
+            return entries[i].value;
+        }
+
+        public V[] Top()
+        {
+            V[] arr = new V[topCount];
+            for (int i = 0; i < topCount; i++)
+            {
+                arr[i] = entries[top[i]].value;
+            }
+            return arr;
+        }
 
         public int IndexOf(K key)
         {
@@ -124,8 +169,7 @@ namespace Greatbone
             bool istop = toper?.Invoke(key) ?? false; // determine if top or not
             if (istop)
             {
-                if (top == null) top = new List<V>(16);
-                top.Add(value);
+                AddTop(idx);
             }
             entries[idx] = new Entry(code, buckets[buck], key, value, istop);
             buckets[buck] = idx;
@@ -214,6 +258,19 @@ namespace Greatbone
         }
 
         public void ForEach(Func<K, V, bool> cond, Action<K, V> hand)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                K key = entries[i].key;
+                V value = entries[i].value;
+                if (cond == null || cond(key, value))
+                {
+                    hand(entries[i].key, entries[i].value);
+                }
+            }
+        }
+
+        public void ForEachTop(Func<K, V, bool> cond, Action<K, V> hand)
         {
             for (int i = 0; i < count; i++)
             {

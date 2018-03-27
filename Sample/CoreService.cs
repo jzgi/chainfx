@@ -130,13 +130,13 @@ namespace Core
                 }
                 else
                 {
-                    wc.GivePane(403, m =>
+                    wc.GivePane(403, h =>
                     {
-                        m.FORM_();
-                        m.FIELDSET_("没有访问权限");
-                        m.P("您要访问的功能需要经过管理员授权后才能使用。");
-                        m._FIELDSET();
-                        m._FORM();
+                        h.FORM_();
+                        h.FIELDSET_("没有访问权限");
+                        h.P("您要访问的功能需要经过管理员授权后才能使用。");
+                        h._FIELDSET();
+                        h._FORM();
                     });
                 }
             }
@@ -215,7 +215,7 @@ namespace Core
                                 h.TOOL(nameof(CoreItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
-                            });
+                            }, m => m.orgid == o.id);
                         }
                         , o => h.TOOLPAD()
                     );

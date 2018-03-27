@@ -1246,7 +1246,7 @@ namespace Greatbone
             }
         }
 
-        public HtmlContent LISTVIEW<D>(D[] arr, Action<D> item)
+        public HtmlContent LISTVIEW<D>(D[] arr, Action<D> item, Predicate<D> filter = null)
         {
             Add("<ul class=\"uk-list uk-list-divider\">");
             if (arr != null)
@@ -1257,13 +1257,16 @@ namespace Greatbone
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    stack[level] = obj;
+                    if (filter != null && filter(obj))
+                    {
+                        stack[level] = obj;
 
-                    Add("<li class=\"uk-grid\">");
-                    item(obj);
-                    Add("</li>");
+                        Add("<li class=\"uk-grid\">");
+                        item(obj);
+                        Add("</li>");
 
-                    stack[level] = null;
+                        stack[level] = null;
+                    }
                 }
 
                 level--; // exit the level
