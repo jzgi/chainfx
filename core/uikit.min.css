@@ -716,25 +716,14 @@ a.uk-link-reset:hover,
     /* 1 */
     border-collapse: collapse;
     border-spacing: 0;
-    /* 2 */
-    width: 100%;
-    /* 3 */
+    width: -webkit-fill-available;
     margin-bottom: 20px;
+    background-color: #fff;
+    margin: 8px 4px;
 }
 
-/* Add margin if adjacent element */
-* + .uk-table {
-    margin-top: 20px;
-}
-
-/* Header cell
- ========================================================================== */
-/*
- * 1. Style
- */
 .uk-table th {
-    padding: 16px 12px;
-    text-align: left;
+    padding: 8px 4px;
     vertical-align: bottom;
     /* 1 */
     font-size: 0.875rem;
@@ -743,10 +732,8 @@ a.uk-link-reset:hover,
     text-transform: uppercase;
 }
 
-/* Cell
- ========================================================================== */
 .uk-table td {
-    padding: 16px 12px;
+    padding: 4px 4px;
     vertical-align: top;
 }
 

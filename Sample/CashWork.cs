@@ -30,7 +30,7 @@ namespace Core
                 {
                     h.TOOLBAR();
                     h.TABLEVIEW(arr,
-                        () => h.TH("日期").TH("项目").TH("收入").TH("支出").TD("记账"),
+                        () => h.TH("日期").TH("项目").TH("收入").TH("支出").TH("记账"),
                         o => h.TD(o.date).TD(Cash.Codes[o.code]).TD(o.receive).TD(o.pay).TD(o.creator));
                 }, false, 2);
             }
@@ -50,9 +50,9 @@ namespace Core
                     h.FORM_();
 
                     h.FIELDSET_("填写交易信息");
-                    h.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类　型");
-                    h.TEXT(nameof(o.descr), o.descr, "简　述", max: 20);
-                    h.FIELD_("收／支").NUMBER(nameof(o.receive), o.receive, tip: "收入").NUMBER(nameof(o.pay), o.pay, tip: "支出")._FIELD();
+                    h.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类型");
+                    h.TEXT(nameof(o.descr), o.descr, "简述", max: 20);
+                    h.FIELD_().LABEL("收入").NUMBER(nameof(o.receive), o.receive).LABEL("支出").NUMBER(nameof(o.pay), o.pay)._FIELD();
                     h._FIELDSET();
 
                     h._FORM();

@@ -189,7 +189,7 @@ namespace Core
                 ac.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
+                    h.FIELDSET_("填写网点信息").TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true)._FIELDSET();
                     h._FORM();
                 });
             }
@@ -203,35 +203,6 @@ namespace Core
                         p => p.Set(o.descr).Set(orgid));
                 }
                 ac.GivePane(200);
-            }
-        }
-
-        [Ui("图示"), Tool(ButtonCrop, Ordinals = 3), User(OPRMGR)]
-        public async Task img(WebContext wc, int ordinal)
-        {
-            string orgid = wc[this];
-            if (wc.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query1("SELECT img" + ordinal + " FROM orgs WHERE id = @1", p => p.Set(orgid)))
-                    {
-                        dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) wc.Give(204); // no content 
-                        else wc.Give(200, new StaticContent(byteas));
-                    }
-                    else wc.Give(404); // not found
-                }
-            }
-            else // POST
-            {
-                var f = await wc.ReadAsync<Form>();
-                ArraySegment<byte> jpeg = f[nameof(jpeg)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE orgs SET img" + ordinal + " = @1 WHERE id = @2", p => p.Set(jpeg).Set(orgid));
-                }
-                wc.Give(200); // ok
             }
         }
 

@@ -172,7 +172,7 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-//                    PrintOrdersPage2(wc, arr);
+                PrintOrdersPage2(wc, dc.ToArray<Order>());
             }
         }
 

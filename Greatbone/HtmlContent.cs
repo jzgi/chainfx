@@ -582,6 +582,36 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent H2(string v, char line = (char) 0)
+        {
+            Add("<h2 class=\"uk-h3");
+            if (line == 'd')
+            {
+                Add(" uk-heading-divider");
+            }
+            else if (line == 'c')
+            {
+                Add(" uk-heading-line uk-text-center");
+            }
+            else if (line == 'r')
+            {
+                Add(" uk-heading-line uk-text-right");
+            }
+            Add("\">");
+            if (line == 'c' || line == 'r')
+            {
+                Add("<span>");
+                Add(v);
+                Add("</span>");
+            }
+            else
+            {
+                Add(v);
+            }
+            Add("</h2>");
+            return this;
+        }
+
         public HtmlContent H3(string v, char line = (char) 0)
         {
             Add("<h3 class=\"uk-h3");
@@ -851,21 +881,27 @@ namespace Greatbone
         }
 
 
-        public HtmlContent FIELD_(string label)
+        public HtmlContent FIELD_(string label = null)
         {
             Add("<li>");
-            if (label != null)
-            {
-                Add("<label class=\"uk-label\">");
-                Add(label);
-                Add("</label>");
-            }
+            LABEL(label);
             return this;
         }
 
         public HtmlContent _FIELD()
         {
             Add("</li>");
+            return this;
+        }
+
+        public HtmlContent LABEL(string label)
+        {
+            if (label != null)
+            {
+                Add("<label class=\"uk-label\">");
+                Add(label);
+                Add("</label>");
+            }
             return this;
         }
 
@@ -1399,6 +1435,30 @@ namespace Greatbone
             Add("</div>");
         }
 
+        public void CARD(Action header, Action body, Action footer = null)
+        {
+            Add("<article class=\"uk-card uk-card-default\">");
+            // header
+            if (header != null)
+            {
+                Add("<div class=\"uk-card-header\">");
+                header();
+                Add("</div>");
+            }
+            // body
+            Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
+            body();
+            Add("</div>");
+            // footer
+            if (footer != null)
+            {
+                Add("<div class=\"uk-card-header\">");
+                footer();
+                Add("</div>");
+            }
+            Add("</article>");
+        }
+
 
         public void CARDVIEW<D>(D obj, Action<D> header, Action<D> body, Action<D> footer = null)
         {
@@ -1770,6 +1830,7 @@ namespace Greatbone
         {
             if (label != null) FIELD_(label);
 
+            Add("<div class=\"uk-inline\">");
             Add("<input type=\"search\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1805,7 +1866,8 @@ namespace Greatbone
             }
             Add(">");
 
-            Add("<button formmethod=\"get\" class=\"uk-icon-button\" uk-icon=\"search\"></button>");
+            Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" onclick=\"this.previousSibling.form.submit();\" uk-icon=\"search\"></a>");
+            Add("</div>");
 
             if (label != null) _FIELD();
             return this;
@@ -1976,6 +2038,7 @@ namespace Greatbone
 
         public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false, byte width = 6)
         {
+            Add("<li>");
             if (label != null)
             {
                 Add("<label>");
@@ -1991,6 +2054,7 @@ namespace Greatbone
                 Add(label);
                 Add("</label>");
             }
+            Add("</li>");
             return this;
         }
 
@@ -2041,6 +2105,7 @@ namespace Greatbone
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
+                        FIELD_(null);
                         Add("<label>");
                         Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
                         Add(name);
@@ -2056,6 +2121,7 @@ namespace Greatbone
                         Add(">");
                         Add(e.Value.ToString());
                         Add("</label>");
+                        _FIELD();
                     }
                 }
             }
