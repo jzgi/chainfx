@@ -56,11 +56,13 @@ namespace Core
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task buy(WebContext wc)
         {
-            string orgid = wc[-1];
-            var org = Obtain<Map<string, Org>>()[orgid];
             User prin = (User) wc.Principal;
+
+            string orgid = wc[-1];
             string itemname = wc[this];
-            string name, city, a, b, tel; // form values
+
+            var org = Obtain<Map<string, Org>>()[orgid];
+
             short num;
             if (wc.GET)
             {
@@ -69,23 +71,20 @@ namespace Core
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
-                        if (dc.Scalar("SELECT 1 FROM orders WHERE wx = @1 AND status = 0 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
+                        if (dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("填写收货信息");
-                            name = prin.name;
-                            city = prin.city;
-                            a = prin.addr;
-                            tel = prin.tel;
-                            h.FIELD_("地址").SELECT(nameof(city), city, City.All, required: true).TEXT(nameof(a), a, max: 20, required: true)._FIELD();
-                            h.TEXT(nameof(name), name, "姓名", max: 4, min: 2, required: true).TEL(nameof(tel), tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                            h.TEXT(nameof(Order.custaddr), prin.addr, "地址", max: 20, required: true);
+                            h.TEXT(nameof(Order.custname), prin.name, "姓名", max: 4, min: 2, required: true);
+                            h.TEL(nameof(Order.custtel), prin.tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
                             h._FIELDSET();
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.FIELD_("货品").ICON("icon", width: 0x16)._T(it.name)._FIELD();
+                        h.FIELD_("货品").ICON("icon", wid: 0x16)._T(it.name)._FIELD();
                         h.FIELD_("数量").NUMBER(nameof(num), it.min, min: it.min, step: it.step)._T(it.unit)._FIELD();
                         h._FIELDSET();
 
@@ -101,7 +100,7 @@ namespace Core
                     dc.Query1("SELECT unit, price FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(itemname));
                     dc.Let(out string unit).Let(out decimal price);
 
-                    if (dc.Query1("SELECT * FROM orders WHERE wx = @2 AND status = 0 AND orgid = @1", p => p.Set(orgid).Set(prin.wx))) // add to existing cart order
+                    if (dc.Query1("SELECT * FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
                         (await wc.ReadAsync<Form>()).Let(out num);
@@ -111,36 +110,27 @@ namespace Core
                     }
                     else // create a new order
                     {
+                        const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         var f = await wc.ReadAsync<Form>();
-                        name = f[nameof(name)];
-                        city = f[nameof(city)];
-                        a = f[nameof(a)];
-                        b = f[nameof(b)];
-                        tel = f[nameof(tel)];
-                        num = f[nameof(num)];
                         var o = new Order
                         {
-                            rev = 1,
-                            status = 0,
                             orgid = orgid,
                             orgname = org.name,
-                            typ = 0, // ordinal order
-                            wx = prin.wx,
-                            name = name,
-                            addr = a,
-                            tel = tel,
+                            custwx = prin.wx,
                             created = DateTime.Now
                         };
+                        o.Read(f, proj);
+                        num = f[nameof(num)];
+
                         o.AddItem(itemname, unit, price, num);
                         o.TotalUp();
-                        const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
                     }
                     wc.GivePane(200, m =>
                     {
-                        m.P("商品已经成功加入购物车");
-                        m.BOTTOMBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//order/", true, targ: "_parent")._BOTTOMBAR();
+                        m.MSG_(true, "加入购物车成功", "商品已经成功加入购物车");
+                        m.BOTTOMBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//ord/", true, targ: "_parent")._BOTTOMBAR();
                     });
                 }
             }
@@ -153,7 +143,7 @@ namespace Core
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow, 2), User(OPRSTAFF)]
+        [Ui("修改"), Tool(ButtonShow), User(OPRMEM)]
         public async Task basic(WebContext wc)
         {
             string orgid = wc[-2];
@@ -197,7 +187,7 @@ namespace Core
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop), User(OPRSTAFF)]
+        [Ui("照片"), Tool(ButtonCrop), User(OPRMEM)]
         public new async Task icon(WebContext wc)
         {
             string orgid = wc[-2];

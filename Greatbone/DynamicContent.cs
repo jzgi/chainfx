@@ -228,6 +228,11 @@ namespace Greatbone
             Add((short) v);
         }
 
+        public void Add(byte v)
+        {
+            Add((short) v);
+        }
+
         public void Add(short v)
         {
             if (v == 0)

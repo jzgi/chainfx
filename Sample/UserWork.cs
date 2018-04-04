@@ -9,7 +9,7 @@ namespace Core
     {
         protected UserWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>((obj) => ((User)obj).wx);
+            CreateVar<V, string>((obj) => ((User) obj).wx);
         }
     }
 
@@ -32,13 +32,13 @@ namespace Core
                     h.TOOLBAR();
                     h.TABLEVIEW(arr,
                         () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                        o => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(Oprs[o.opr])
+                        o => h.TD(o.name).TD(o.tel).TD(o.oprat).TD(Oprs[o.opr])
                     );
                 });
             }
         }
 
-        [Ui("添加"), Tool(ButtonShow, 2)]
+        [Ui("添加"), Tool(ButtonShow)]
         public async Task add(WebContext wc, int cmd)
         {
             string orgid = wc[-1];
@@ -70,7 +70,7 @@ namespace Core
         }
 
 
-        [Ui("移除"), Tool(ButtonPickConfirm, 2)]
+        [Ui("移除"), Tool(ButtonPickConfirm)]
         public async Task rm(WebContext wc, int cmd)
         {
             var f = await wc.ReadAsync<Form>();
@@ -100,7 +100,7 @@ namespace Core
                     h.TOOLBAR();
                     h.TABLEVIEW(arr,
                         () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                        o => h.TD(o.name).TD(o.tel).TD(o.city, o.oprat).TD(Oprs[o.opr])
+                        o => h.TD(o.name).TD(o.tel).TD(o.oprat).TD(Oprs[o.opr])
                     );
                 });
             }

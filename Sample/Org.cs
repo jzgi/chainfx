@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Greatbone;
+﻿using Greatbone;
 
 namespace Core
 {
@@ -23,11 +22,11 @@ namespace Core
         internal double x;
         internal double y;
         internal string mgrwx;
-        internal string mgrtel;
         internal string mgrname;
+        internal string mgrtel;
         internal string oprwx;
-        internal string oprtel;
         internal string oprname;
+        internal string oprtel;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -43,12 +42,12 @@ namespace Core
             }
             if ((proj & LATER) == LATER)
             {
+                s.Get(nameof(mgrname), ref mgrname);
                 s.Get(nameof(mgrwx), ref mgrwx);
                 s.Get(nameof(mgrtel), ref mgrtel);
-                s.Get(nameof(mgrname), ref mgrname);
+                s.Get(nameof(oprname), ref oprname);
                 s.Get(nameof(oprwx), ref oprwx);
                 s.Get(nameof(oprtel), ref oprtel);
-                s.Get(nameof(oprname), ref oprname);
                 s.Get(nameof(status), ref status);
             }
         }
@@ -66,12 +65,12 @@ namespace Core
             }
             if ((proj & LATER) == LATER)
             {
+                s.Put(nameof(mgrname), mgrname);
                 s.Put(nameof(mgrwx), mgrwx);
                 s.Put(nameof(mgrtel), mgrtel);
-                s.Put(nameof(mgrname), mgrname);
+                s.Put(nameof(oprname), oprname);
                 s.Put(nameof(oprwx), oprwx);
                 s.Put(nameof(oprtel), oprtel);
-                s.Put(nameof(oprname), oprname);
                 s.Put(nameof(status), status);
             }
         }

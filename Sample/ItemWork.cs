@@ -14,7 +14,7 @@ namespace Core
     }
 
 
-    [Ui("货品管理"), User(OPRSTAFF)]
+    [Ui("货品管理"), User(OPRMEM)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkConfig cfg) : base(cfg)
@@ -34,7 +34,7 @@ namespace Core
                         o => h.T(o.name),
                         o =>
                         {
-                            h.ICON(o.name + "/icon", width: 0x14);
+                            h.ICON(o.name + "/icon", wid: 0x14);
                             h.COL_(0x34).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._COL();
                             h.P(o.unit, "单位", 0x14).P(o.min, "起订", 0x14).P(o.step, "递增", 0x14).P(o.stock, "存量", 0x14);
                             h.HR();
@@ -44,7 +44,7 @@ namespace Core
             }
         }
 
-        [Ui("新建"), Tool(ButtonShow, 2), User(OPRSTAFF)]
+        [Ui("新建"), Tool(ButtonShow), User(OPRMEM)]
         public async Task @new(WebContext wc)
         {
             if (wc.GET)
@@ -76,7 +76,7 @@ namespace Core
             }
         }
 
-        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
+        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), User(OPRMEM)]
         public async Task del(WebContext wc)
         {
             string orgid = wc[-1];

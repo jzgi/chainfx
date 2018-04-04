@@ -14,27 +14,8 @@ namespace Core
             CreateVar<V, long>((obj) => ((Order) obj).id);
         }
 
-        protected void PrinOrders(Order[] arr, WebContext wc)
-        {
-            wc.GivePage(200, h =>
-            {
-                h.TOOLBAR();
-                h.BOARDVIEW(arr,
-                    o => { h.T("No.").T(o.id).SEP().T(o.paid); },
-                    o =>
-                    {
-                        h.P_("收货").T(o.name)._T(o.addr)._T(o.tel)._P();
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            h.P(oi.name, width: 6).P_(width: 0x23).T("¥").T(oi.price)._P().P_(width: 0x1).T(oi.qty)._P();
-                        }
-                        h.P_("总价").T("¥").T(o.total)._P();
-                    });
-            }, false, 2);
-        }
-
-        protected void PrintOrdersPage2(WebContext wc, Order[] arr, bool tools = true)
+        // for customer side viewing
+        protected void GiveBoardOrderPage(WebContext wc, Order[] arr, bool tools = true)
         {
             wc.GivePage(200, h =>
             {
@@ -43,23 +24,55 @@ namespace Core
                     h.TOOLBAR();
                 }
                 h.BOARDVIEW(arr,
-                    o => { h.T(o.orgname)._IF(o.paid); },
+                    o => { h.H5(o.orgname); },
                     o =>
                     {
-                        h.P_("收货").T(o.addr)._T(o.name).T(o.tel)._P();
+                        h.P_("收货").T(o.custaddr)._T(o.custname).T(o.custtel)._P();
+
+                        h.P("品名", wid: 0x12).P("单价", wid: 0x16).P("购量", wid: 0x16).P("到货", wid: 0x16);
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
+                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P_(wid:0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._LINK()._P().P(oi.load, wid: 0x16);
+                            }
+                            else
+                            {
+                                h.P_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._P();
+                            }
+                        }
+                        h.P_("总计").T("¥").T(o.total)._P();
+                    },
+                    tools ? o => h.TOOLPAD() : (Action<Order>) null
+                );
+            }, false, 2);
+        }
+
+        // for org side viewing
+        protected void GiveAccordionOrderPage(WebContext wc, Order[] arr, bool tools = true)
+        {
+            wc.GivePage(200, h =>
+            {
+                if (tools)
+                {
+                    h.TOOLBAR();
+                }
+                h.ACCORDIONVIEW(arr,
+                    o => { h.T(o.orgname)._IF(o.paid); },
+                    o =>
+                    {
+                        h.P_("收货").T(o.custaddr)._T(o.custname).T(o.custtel)._P();
+                        for (int i = 0; i < o.items.Length; i++)
+                        {
+                            var oi = o.items[i];
+                            if (o.status <= 1)
+                            {
+                                h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", wid: 1);
                                 h.COL_(3).P(oi.name).P(oi.price).P(oi.qty)._COL();
-                                h.TOOL(nameof(MyOrderVarWork.edit));
+                                h.TOOL(nameof(MyOrderVarWork.Upd));
                                 h.COL_(1);
-                                if (o.typ == POS)
-                                {
-                                    h.P(oi.load);
-                                }
+                                h.P(oi.load);
                                 h._COL();
                             }
                             else
@@ -68,6 +81,7 @@ namespace Core
                             }
                         }
                         h.P_("总计").T("¥").T(o.total)._P();
+                        h.TOOLPAD();
                     });
             }, false, 2);
         }
@@ -84,8 +98,8 @@ namespace Core
             string wx = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status <= 1 ORDER BY id DESC", p => p.Set(wx));
-                PrinOrders(arr, wc);
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND custwx = @1 ORDER BY id DESC", p => p.Set(wx));
+                GiveBoardOrderPage(wc, arr);
             }
         }
 
@@ -95,66 +109,9 @@ namespace Core
             string wx = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE wx = @1 AND status > 1 ORDER BY id DESC", p => p.Set(wx));
-                PrintOrdersPage2(wc, arr, false);
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND custwx = @1 ORDER BY id DESC", p => p.Set(wx));
+                GiveBoardOrderPage(wc, arr, false);
             }
-        }
-    }
-
-    [Ui("销售点管理")]
-    public class OprPosWork : OrderWork<OprPosVarWork>
-    {
-        public OprPosWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        public void @default(WebContext wc)
-        {
-            string orgid = wc[-1];
-            using (var dc = NewDbContext())
-            {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status = 0 AND orgid = @1 AND typ = 1", p => p.Set(orgid));
-                PrintOrdersPage2(wc, arr);
-            }
-        }
-
-        [Ui("新建"), Tool(ButtonConfirm), User(OPRSTAFF)]
-        public void @new(WebContext wc)
-        {
-            string orgid = wc[-1];
-            using (var dc = NewDbContext())
-            {
-                var org = Obtain<Map<string, Org>>()[orgid];
-                var o = new Order
-                {
-                    rev = 1,
-                    status = 0,
-                    orgid = orgid,
-                    orgname = org.name,
-                    typ = POS,
-                    created = DateTime.Now
-                };
-                const byte proj = 0xff ^ KEY ^ Order.LATER;
-                dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
-                dc.Execute(p => o.Write(p, proj), false);
-            }
-            wc.GiveRedirect();
-        }
-
-        [Ui("删除"), Tool(ButtonPickConfirm), User(OPRSTAFF)]
-        public async Task del(WebContext wc, int page)
-        {
-            string orgid = wc[-1];
-            int[] key = (await wc.ReadAsync<Form>())[nameof(key)];
-            if (key != null)
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("DELETE FROM orders WHERE orgid = @1 AND id")._IN_(key);
-                    dc.Execute(p => p.Set(orgid), false);
-                }
-            }
-            wc.GiveRedirect();
         }
     }
 
@@ -165,41 +122,14 @@ namespace Core
         {
         }
 
-        [Ui("全部"), Tool(Anchor)]
-        public void @default(WebContext wc, int page)
+        public void @default(WebContext wc)
         {
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                PrintOrdersPage2(wc, dc.ToArray<Order>());
+                dc.Query("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND orgid = @1 ORDER BY id DESC", p => p.Set(orgid));
+                GiveAccordionOrderPage(wc, dc.ToArray<Order>());
             }
-        }
-
-        [Ui("按区域"), Tool(AnchorPrompt)]
-        public void area(WebContext wc, int page)
-        {
-            string orgid = wc[-1];
-            bool inner = wc.Query[nameof(inner)];
-            string filter = (string) wc.Query[nameof(filter)] ?? string.Empty;
-            if (inner)
-            {
-                wc.GivePane(200, m =>
-                {
-                    var org = Obtain<Map<string, Org>>()[orgid];
-                    m.FORM_();
-//                    m.RADIOSET(nameof(filter), filter, org.areas);
-                    m._FORM();
-                });
-                return;
-            }
-            wc.GivePage(200, h =>
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Query("SELECT * FROM orders WHERE status = " + PAID + " AND orgid = @1 AND addr LIKE @2 ORDER BY id DESC LIMIT 20 OFFSET @3", p => p.Set(orgid).Set(filter + "%").Set(page * 20));
-                }
-            }, false, 3);
         }
 
         static readonly Map<string, string> MSGS = new Map<string, string>
@@ -248,11 +178,11 @@ namespace Core
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE status > 4 AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                PrinOrders(arr, wc);
+                GiveAccordionOrderPage(wc, arr);
             }
         }
 
-        [Ui("查询"), Tool(AnchorShow)]
+        [Ui("查询"), Tool(LinkShow)]
         public void send(WebContext wc)
         {
             long[] key = wc.Query[nameof(key)];

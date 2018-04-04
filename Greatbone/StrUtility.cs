@@ -454,6 +454,10 @@ namespace Greatbone
 
         public static (string, string) ToDual(this string str, char sep = '-')
         {
+            if (str == null)
+            {
+                return (null, null);
+            }
             int len = str.Length;
             int p = 0;
             while (p < len && str[p] != sep) p++;

@@ -114,7 +114,7 @@ namespace Core
             JObj jo = await WeiXin.GetAsync<JObj>("/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN", null);
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User {wx = openid, name = nickname, city = city};
+            return new User {wx = openid, name = nickname};
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);

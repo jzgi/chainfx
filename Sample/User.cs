@@ -10,46 +10,45 @@ namespace Core
         public static readonly User Empty = new User();
 
         public const byte
-            WX = 1,
+            PK = 1,
             CREDENTIAL = 2,
             LATER = 4;
 
-        public const short OPR = 1, OPRSTAFF = 3, OPRMGR = 7;
+        public const short OPR = 1, OPRMEM = 3, OPRMGR = 7;
 
         public static readonly Map<short, string> Oprs = new Map<short, string>
         {
-            {OPR, "客串"},
-            {OPRSTAFF, "成员"},
+            {OPR, "基础"},
+            {OPRMEM, "成员"},
             {OPRMGR, "经理"},
         };
 
         internal string wx; // wexin openid
         internal string name;
-        internal string credential;
-        internal string city; // 
-        internal string addr;
         internal string tel;
-        internal short opr; // 
-        internal string oprat; // operator at
-        internal bool adm; // adm
+        internal string addr;
+        internal string credential;
         internal int score;
-        internal string refwx;
+        internal int refid;
+        internal string oprat;
+        internal short opr;
+        internal bool adm; // adm
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & WX) == WX)
+            if ((proj & PK) == PK)
             {
                 s.Get(nameof(wx), ref wx);
             }
             s.Get(nameof(name), ref name);
+            s.Get(nameof(tel), ref tel);
+            s.Get(nameof(addr), ref addr);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 s.Get(nameof(credential), ref credential);
             }
-            s.Get(nameof(city), ref city);
-            s.Get(nameof(addr), ref addr);
-            s.Get(nameof(tel), ref tel);
             s.Get(nameof(score), ref score);
+            s.Get(nameof(refid), ref refid);
             if ((proj & LATER) == LATER)
             {
                 s.Get(nameof(opr), ref opr);
@@ -60,19 +59,19 @@ namespace Core
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & WX) == WX)
+            if ((proj & PK) == PK)
             {
                 s.Put(nameof(wx), wx);
             }
             s.Put(nameof(name), name);
+            s.Put(nameof(tel), tel);
+            s.Put(nameof(addr), addr);
             if ((proj & CREDENTIAL) == CREDENTIAL)
             {
                 s.Put(nameof(credential), credential);
             }
-            s.Put(nameof(city), city);
-            s.Put(nameof(addr), addr);
-            s.Put(nameof(tel), tel);
             s.Put(nameof(score), score);
+            s.Put(nameof(refid), refid);
             if ((proj & LATER) == LATER)
             {
                 s.Put(nameof(opr), opr);

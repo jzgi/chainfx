@@ -3,40 +3,40 @@ using Greatbone;
 
 namespace Core
 {
-    ///
+    /// <summary>
     /// A chatting conversation.
-    /// 
+    /// </summary>
     public class Chat : IData
     {
         public static readonly Chat Empty = new Chat();
 
         internal string orgid;
-        internal string wx;
+        internal string orgname;
+        internal string custwx;
+        internal string custname;
         internal ChatMsg[] msgs;
         internal DateTime quested;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(orgid), ref orgid);
-            s.Get(nameof(wx), ref wx);
-            s.Get(nameof(quested), ref quested);
+            s.Get(nameof(orgname), ref orgname);
+            s.Get(nameof(custname), ref custname);
+            s.Get(nameof(custwx), ref custwx);
             s.Get(nameof(msgs), ref msgs);
+            s.Get(nameof(quested), ref quested);
         }
 
         public const int NUM = 6;
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if (msgs != null && msgs.Length > 0)
-            {
-                int start = msgs.Length - NUM;
-                if (start < 0) start = 0;
-                for (int i = start; i < msgs.Length; i++)
-                {
-                    ChatMsg msg = msgs[i];
-                    s.Put(nameof(msg.name), msg.text);
-                }
-            }
+            s.Put(nameof(orgid), orgid);
+            s.Put(nameof(orgname), orgname);
+            s.Put(nameof(custname), custname);
+            s.Put(nameof(custwx), custwx);
+            s.Put(nameof(msgs), msgs);
+            s.Put(nameof(quested), quested);
         }
     }
 

@@ -196,17 +196,17 @@ namespace Core
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
 
                     h.BOARDVIEW(shops,
-                        o =>
+                        o => // header
                         {
                             h.H3(o.name);
                             h.P(o.descr, "简介");
                             h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
                         },
-                        o =>
+                        o => // body
                         {
                             h.LISTVIEW(items, m =>
                             {
-                                h.ICON("/" + m.orgid + "/" + m.name + "/icon", width: 0x13);
+                                h.ICON("/" + m.orgid + "/" + m.name + "/icon", wid: 0x13);
                                 h.COL_(0x23);
                                 h.H4(m.name);
                                 h.P(m.descr, "描述");

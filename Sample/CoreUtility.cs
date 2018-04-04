@@ -250,7 +250,7 @@ namespace Core
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"pane\">");
+            h.Add("<body class=\"uk-pane\">");
 
             main?.Invoke(h);
 

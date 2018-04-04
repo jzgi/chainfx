@@ -74,7 +74,7 @@ namespace Core
             ac.GivePane(200);
         }
 
-        [Ui("月报"), Tool(ButtonOpen, 2)]
+        [Ui("月报"), Tool(ButtonOpen)]
         public void monthly(WebContext ac)
         {
             string orgid = ac[-1];

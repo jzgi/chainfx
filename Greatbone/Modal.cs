@@ -2,31 +2,31 @@ namespace Greatbone
 {
     public enum Modal
     {
-        Anchor = 0x1000,
+        Link = 0x1000,
 
-        AnchorConfirm = 0x1001,
+        LinkConfirm = 0x1001,
 
         /// <summary>
         /// To prompt with a dialog for gathering additional data to continue the location switch.
         /// </summary>
-        AnchorPrompt = 0x1002,
+        LinkPrompt = 0x1002,
 
         /// <summary>
         /// To show a dialog with the OK button for execution of an standalone activity
         /// </summary>
-        AnchorShow = 0x1004,
+        LinkShow = 0x1004,
 
         /// <summary>
         /// To open a free-style dialog without the OK button, where the procedure can be called a number of times.
         /// </summary>
-        AnchorOpen = 0x1008,
+        LinkOpen = 0x1008,
 
         /// <summary>
         /// To execute a script that calls the procedure asynchronously.
         /// </summary>
-        AnchorScript = 0x1010,
+        LinkScript = 0x1010,
 
-        AnchorCrop = 0x1020,
+        LinkCrop = 0x1020,
 
         Button = 0x2000,
 

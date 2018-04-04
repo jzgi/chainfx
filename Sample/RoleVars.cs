@@ -27,7 +27,7 @@ namespace Core
                     {
                         h.P(prin.name, "姓名");
                         h.P(prin.tel, "电话");
-                        h.P_("地址").T(prin.city)._T(prin.addr)._P();
+                        h.P_("地址")._T(prin.addr)._P();
                         h.COL_();
                         h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
                         h._COL();
@@ -140,8 +140,6 @@ namespace Core
 
             Create<OprOldoWork>("oldo");
 
-            Create<OprPosWork>("pos");
-
             Create<OprItemWork>("item");
 
             Create<OprOprWork>("opr");
@@ -178,7 +176,7 @@ namespace Core
 
         static readonly string[] CRLF = {"\r\n", "\n"};
 
-        [Ui("设置"), Tool(ButtonShow, 2), User(OPRMGR)]
+        [Ui("设置"), Tool(ButtonShow), User(OPRMGR)]
         public async Task sets(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();
@@ -206,7 +204,7 @@ namespace Core
             }
         }
 
-        [Ui("上下班"), Tool(ButtonShow), User(OPRSTAFF)]
+        [Ui("上下班"), Tool(ButtonShow), User(OPRMEM)]
         public async Task status(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();

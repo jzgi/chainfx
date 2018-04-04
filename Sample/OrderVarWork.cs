@@ -33,9 +33,9 @@ namespace Core
             {
                 dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
                 dc.Let(out rev).Let(out total).Let(out short typ).Let(out string name).Let(out string city).Let(out string addr).Let(out string tel);
-                if (typ == 0 && (prin.name != name || prin.city != null || prin.addr != addr || prin.tel != tel)) // normal order then save user info
+                if (typ == 0 && (prin.name != name || prin.addr != addr || prin.tel != tel)) // normal order then save user info
                 {
-                    if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, addr = @4, tel = @5", p => p.Set(wx).Set(prin.name = name).Set(prin.city = city).Set(prin.addr = addr).Set(prin.tel = tel)) > 0)
+                    if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, addr = @4, tel = @5", p => p.Set(wx).Set(prin.name = name).Set(prin.addr = addr).Set(prin.tel = tel)) > 0)
                     {
                         wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
                     }
@@ -52,8 +52,8 @@ namespace Core
             }
         }
 
-        [Ui("修改", flag: 8), Tool(ButtonShow)]
-        public async Task edit(WebContext wc, int idx)
+        [Ui("修改"), Tool(ButtonShow, Style.None, 1)]
+        public async Task Upd(WebContext wc, int idx)
         {
             int orderid = wc[this];
             string wx = wc[-2];
@@ -61,17 +61,16 @@ namespace Core
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                    var oi = o.items[idx];
-                    dc.Query1("SELECT step, stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(o.orgid).Set(oi.name));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
+                    var it = o.items[idx];
+                    dc.Query1("SELECT step, stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(o.orgid).Set(it.name));
                     dc.Let(out short step).Let(out short stock);
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", width: 1);
-                        h.NUMBER(nameof(oi.qty), oi.qty, max: stock, min: (short) 0, step: step);
-                        h.STATIC(oi.unit, "");
+                        h.FIELD_("货品").ICON("/" + o.orgid + "/" + it.name + "/icon", wid: 0x16)._T(it.name)._FIELD();
+                        h.NUMBER(nameof(it.qty), it.qty, "购量", max: stock, min: (short) 0, step: step);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -83,101 +82,10 @@ namespace Core
                 short qty = f[nameof(qty)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
                     o.UpdItem(idx, qty);
                     o.TotalUp();
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
-                }
-                wc.GivePane(200);
-            }
-        }
-    }
-
-    public class OprPosVarWork : OrderVarWork
-    {
-        public OprPosVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        [Ui("加货"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task add(WebContext wc)
-        {
-            string orgid = wc[-2];
-            int orderid = wc[this];
-            if (wc.GET)
-            {
-                wc.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Query("SELECT name, unit, price, stock FROM items WHERE orgid = @1 AND status > 0 AND stock > 0", p => p.Set(orgid));
-                        while (dc.Next())
-                        {
-                            dc.Let(out string name).Let(out string unit).Let(out decimal price).Let(out short stock);
-                            h.P(name).P(stock).NUMBER(name + '~' + unit + '~' + price, (short) 0, max: stock, min: (short) 0, step: (short) 1);
-                        }
-                    }
-                    h._FORM();
-                });
-            }
-            else // POST
-            {
-                var f = await wc.ReadAsync<Form>();
-                using (var dc = NewDbContext(ReadUncommitted))
-                {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1", p => p.Set(orderid));
-                    for (int i = 0; i < f.Count; i++)
-                    {
-                        var e = f.At(i);
-                        var (name, unit, price) = e.Key.ToTriple('~');
-                        short n = e.Value;
-                        if (n != 0) o.ReceiveItem(name, unit, decimal.Parse(price), n);
-                    }
-                    dc.Execute("UPDATE orders SET items = @1 WHERE id = @2", p => p.Set(o.items).Set(o.id));
-                }
-                wc.GivePane(200);
-            }
-        }
-
-        [Ui("分派"), Tool(ButtonShow), User(OPRSTAFF)]
-        public async Task assign(WebContext wc)
-        {
-            int orderid = wc[this];
-            string orgid = wc[-2];
-            string opr;
-            string addr = null;
-            if (wc.GET)
-            {
-                wc.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    using (var dc = NewDbContext())
-                    {
-                        // select operator info
-                        dc.Query("SELECT wx, name, tel FROM users WHERE oprat = @1", p => p.Set(orgid));
-                        h.SELECT_(nameof(opr), "人员");
-                        while (dc.Next())
-                        {
-                            dc.Let(out string wx).Let(out string name).Let(out string tel);
-                            h.OPTION(wx + '~' + name + '~' + tel, name);
-                        }
-                        h._SELECT();
-                        // input addr
-                        var org = Obtain<Map<string, Org>>()[orgid];
-                        h.TEXT(nameof(addr), addr, "区域");
-                    }
-                    h._FORM();
-                });
-            }
-            else
-            {
-                (await wc.ReadAsync<Form>()).Let(out opr).Let(out addr);
-                var (wx, name, tel) = opr.ToTriple('~');
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE orders SET wx = @1, name = @2, tel = @3, addr = @4 WHERE id = @5 AND orgid = @6",
-                        p => p.Set(wx).Set(name).Set(tel).Set(addr).Set(orderid).Set(orgid));
                 }
                 wc.GivePane(200);
             }

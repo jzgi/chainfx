@@ -52,7 +52,7 @@ namespace Core
             }
         }
 
-        [Ui("清理"), Tool(Modal.ButtonOpen, 2)]
+        [Ui("清理"), Tool(Modal.ButtonOpen)]
         public void clean(WebContext ac)
         {
         }

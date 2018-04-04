@@ -11,8 +11,12 @@ html {
 
 body {
     margin: 0;
-    background-color: #efeff4;
+    background-color: #dcdcdc;
     font-size: 0.875rem;
+}
+
+.uk-pane {
+    background-color: #efeff4;
 }
 
 form {
@@ -161,6 +165,7 @@ h6,
     font-weight: normal;
     color: #333;
     text-transform: none;
+    display: inline-block;
 }
 
 /*
@@ -716,25 +721,28 @@ a.uk-link-reset:hover,
     /* 1 */
     border-collapse: collapse;
     border-spacing: 0;
+    border-color: #c8c7cc;
     width: -webkit-fill-available;
     margin-bottom: 20px;
     background-color: #fff;
     margin: 8px 4px;
+    overflow-x: auto;
 }
 
 .uk-table th {
-    padding: 8px 4px;
+    padding: 4px 8px;
     vertical-align: bottom;
     /* 1 */
     font-size: 0.875rem;
     font-weight: normal;
-    color: #999;
+    color: #8e8e93;
     text-transform: uppercase;
 }
 
 .uk-table td {
-    padding: 4px 4px;
+    padding: 8px 8px;
     vertical-align: top;
+    color: #000;
 }
 
 /*
@@ -1537,6 +1545,7 @@ select.uk-form-width-xsmall {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 
 .uk-qrcode {
@@ -1887,8 +1896,7 @@ select.uk-form-width-xsmall {
  * 2. Style
  */
 .uk-button-link {
-    line-height: 27px;
-    height: 29px;
+    line-height: 28px;
     background: none;
     color: #007aff;
 }
@@ -2537,7 +2545,7 @@ select.uk-form-width-xsmall {
 }
 
 .uk-card-body {
-    padding: 8px 8px;
+    padding: 8px;
 }
 
 .uk-card-header {
@@ -2551,7 +2559,7 @@ select.uk-form-width-xsmall {
 }
 
 .uk-card-footer {
-    padding: 10px 10px;
+    padding: 8px;
     vertical-align: middle;
 }
 
@@ -2586,7 +2594,6 @@ select.uk-form-width-xsmall {
 
 .uk-card-badge {
     font-size: 0.875rem;
-    line-height: 1.8;
     float: right;
 }
 
@@ -4954,8 +4961,36 @@ ul.uk-nav-sub {
     flex: 1;
 }
 
+.uk-modal-half {
+    padding: 0;
+    background: none;
+}
+
+/* 2 */
+.uk-modal-half .uk-modal-dialog {
+    position: fixed;
+    bottom: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 50%;
+    transform: translateY(0);
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.uk-modal-half .uk-modal-body {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    transform: translateY(0);
+    flex: 1;
+}
+
 .uk-modal-body {
-    padding: 30px 30px;
+    padding: 16px 16px;
 }
 
 .uk-modal-header {
@@ -7878,8 +7913,6 @@ iframe.uk-cover {
  * 6. Clip child elements
  */
 [class*='uk-inline'] {
-    /* 1 */
-    display: inline-block;
     /* 2 */
     position: relative;
     /* 3 */

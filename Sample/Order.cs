@@ -15,20 +15,14 @@ namespace Core
         // types
         public const short POS = 1;
 
-        public static readonly Map<short, string> Types = new Map<short, string>
-        {
-            {0, "普通"},
-            {POS, "摊点"},
-        };
-
         // status
-        public const short CARTED = 0, PAID = 1, ABORTED = 3, ENDED = 4;
+        public const short ABORTED = -1, CREATED = 0, PAID = 1, ENDED = 2;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CARTED, "未付款"},
-            {PAID, "已付款"},
             {ABORTED, "已撤单"},
+            {CREATED, null},
+            {PAID, "已付款"},
             {ENDED, "已完成"}
         };
 
@@ -36,17 +30,16 @@ namespace Core
         internal short rev;
         internal string orgid;
         internal string orgname;
-        internal short typ; // 
-        internal string wx; // weixin openid
-        internal string name; // customer name
-        internal string addr; // may include area and site
-        internal string tel;
+        internal string custwx; // weixin openid
+        internal string custname; // customer name
+        internal string custtel;
+        internal string custaddr; // may include area and site
         internal OrderItem[] items;
         internal decimal total; // total price
         internal DateTime created;
         internal decimal cash; // amount recieved
         internal DateTime paid;
-        internal DateTime closed;
+        internal DateTime ended;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -58,11 +51,10 @@ namespace Core
             }
             s.Get(nameof(orgid), ref orgid);
             s.Get(nameof(orgname), ref orgname);
-            s.Get(nameof(typ), ref typ);
-            s.Get(nameof(wx), ref wx);
-            s.Get(nameof(name), ref name);
-            s.Get(nameof(addr), ref addr);
-            s.Get(nameof(tel), ref tel);
+            s.Get(nameof(custwx), ref custwx);
+            s.Get(nameof(custname), ref custname);
+            s.Get(nameof(custtel), ref custtel);
+            s.Get(nameof(custaddr), ref custaddr);
             s.Get(nameof(items), ref items);
             s.Get(nameof(total), ref total);
             s.Get(nameof(created), ref created);
@@ -70,7 +62,7 @@ namespace Core
             {
                 s.Get(nameof(cash), ref cash);
                 s.Get(nameof(paid), ref paid);
-                s.Get(nameof(closed), ref closed);
+                s.Get(nameof(ended), ref ended);
             }
             s.Get(nameof(status), ref status);
         }
@@ -84,11 +76,10 @@ namespace Core
             }
             s.Put(nameof(orgid), orgid);
             s.Put(nameof(orgname), orgname);
-            s.Put(nameof(typ), typ);
-            s.Put(nameof(wx), wx);
-            s.Put(nameof(name), name);
-            s.Put(nameof(addr), addr);
-            s.Put(nameof(tel), tel);
+            s.Put(nameof(custwx), custwx);
+            s.Put(nameof(custname), custname);
+            s.Put(nameof(custtel), custtel);
+            s.Put(nameof(custaddr), custaddr);
             s.Put(nameof(items), items);
             s.Put(nameof(total), total);
             s.Put(nameof(created), created);
@@ -96,14 +87,14 @@ namespace Core
             {
                 s.Put(nameof(cash), cash);
                 s.Put(nameof(paid), paid);
-                s.Put(nameof(closed), closed);
+                s.Put(nameof(ended), ended);
             }
             s.Put(nameof(status), status);
         }
 
         public string Err()
         {
-            if (addr == null) return "您尚未填写地址哦！";
+            if (custaddr == null) return "您尚未填写地址哦！";
             return null;
         }
 
@@ -113,7 +104,6 @@ namespace Core
             if (idx != -1)
             {
                 items[idx].qty += n;
-                if (typ == POS) items[idx].load -= n; // deduce pos load
             }
             else
             {
@@ -123,21 +113,14 @@ namespace Core
 
         public void UpdItem(int idx, short n)
         {
-            if (typ == POS)
+            items[idx].qty = n;
+            if (n <= 0)
             {
-                items[idx].load += (short) (items[idx].qty - n); // affect load
-                items[idx].qty = n;
+                items = items.RemovedOf(idx);
             }
             else
             {
-                if (n <= 0)
-                {
-                    items = items.RemovedOf(idx);
-                }
-                else
-                {
-                    items[idx].qty = n;
-                }
+                items[idx].qty = n;
             }
         }
 
@@ -196,7 +179,7 @@ namespace Core
         internal string unit;
         internal decimal price;
         internal short qty;
-        internal short load; // work order kept
+        internal short load;
 
         public decimal Subtotal => price * qty;
 

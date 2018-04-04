@@ -221,6 +221,8 @@ namespace Greatbone
         {
             get
             {
+                if (key == null) return default;
+
                 if (TryGet(key, out var val))
                 {
                     return val;

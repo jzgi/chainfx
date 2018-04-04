@@ -14,23 +14,28 @@ namespace Greatbone
 
         readonly int pick; // form value pick
 
-        readonly sbyte size;
+        readonly Style style; // trigger style
 
-        public ToolAttribute(Modal modal, sbyte size = 2)
+        readonly byte size;
+
+        public ToolAttribute(Modal modal, Style style = Style.Default, byte size = 2)
         {
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0f00;
             this.size = size;
+            this.style = style;
         }
 
-        public sbyte Size => size;
+        public byte Size => size;
+
+        public Style Style => style;
 
         public int Ordinals { get; set; }
 
-        public bool IsAnchor => element == 0x1000;
+        public bool IsAnchorTag => element == 0x1000;
 
-        public bool IsButton => element == 0x2000;
+        public bool IsButtonTag => element == 0x2000;
 
         public bool MustPick => pick == 0x0100;
 

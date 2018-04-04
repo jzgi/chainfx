@@ -21,7 +21,7 @@ namespace Core
         {
         }
 
-        [Ui("新结"), Tool(Anchor)]
+        [Ui("新结"), Tool(Link)]
         public void @default(WebContext ac, int page)
         {
             using (var dc = NewDbContext())
@@ -38,7 +38,7 @@ namespace Core
             }
         }
 
-        [Ui("已转"), Tool(Anchor)]
+        [Ui("已转"), Tool(Link)]
         public void old(WebContext ac, int page)
         {
             using (var dc = NewDbContext())

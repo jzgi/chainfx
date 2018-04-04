@@ -18,7 +18,7 @@ namespace Core
                 if (stack[i] is Order o)
                 {
                     if (state == 'A')
-                        return o.addr != null;
+                        return o.custaddr != null;
                 }
             }
             return false;

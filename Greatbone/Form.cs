@@ -189,23 +189,23 @@ namespace Greatbone
 
         public bool Get(string name, ref JObj v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
 
         public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         //
