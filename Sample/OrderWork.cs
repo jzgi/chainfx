@@ -59,21 +59,17 @@ namespace Core
                     h.TOOLBAR();
                 }
                 h.ACCORDIONVIEW(arr,
-                    o => { h.T(o.orgname)._IF(o.paid); },
+                    o => { h.T(o.custname); },
                     o =>
                     {
-                        h.P_("收货").T(o.custaddr)._T(o.custname).T(o.custtel)._P();
+                        h.P_("收货").T(o.custname)._T(o.custaddr).T(o.custtel)._P();
+                        h.P("品名", wid: 0x12).P("单价", wid: 0x16).P("购量", wid: 0x16).P("到货", wid: 0x16);
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                h.ICON("/org/" + o.orgid + "/" + oi.name + "/icon", wid: 1);
-                                h.COL_(3).P(oi.name).P(oi.price).P(oi.qty)._COL();
-                                h.TOOL(nameof(MyOrderVarWork.Upd));
-                                h.COL_(1);
-                                h.P(oi.load);
-                                h._COL();
+                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P(oi.qty,wid:0x16).P(oi.load, wid: 0x16);
                             }
                             else
                             {

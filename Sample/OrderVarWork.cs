@@ -21,7 +21,7 @@ namespace Core
         {
         }
 
-        [Ui("付款", flag: 1), Tool(ButtonScript), Order('P')]
+        [Ui("付款"), Tool(ButtonScript), Order('P')]
         public async Task prepay(WebContext wc)
         {
             string wx = wc[-2];
@@ -31,11 +31,11 @@ namespace Core
             User prin = (User) wc.Principal;
             using (var dc = NewDbContext())
             {
-                dc.Query1("SELECT rev, total, typ, name, city, addr, tel FROM orders WHERE id = @1 AND wx = @2", p => p.Set(orderid).Set(wx));
-                dc.Let(out rev).Let(out total).Let(out short typ).Let(out string name).Let(out string city).Let(out string addr).Let(out string tel);
-                if (typ == 0 && (prin.name != name || prin.addr != addr || prin.tel != tel)) // normal order then save user info
+                dc.Query1("SELECT rev, total, custname, custtel, custaddr FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
+                dc.Let(out rev).Let(out total).Let(out string name).Let(out string tel).Let(out string addr);
+                if (prin.name != name || prin.addr != addr || prin.tel != tel) // if need to save user info
                 {
-                    if (dc.Execute("INSERT INTO users (wx, name, city, addr, tel) VALUES (@1, @2, @3, @4, @5) ON CONFLICT (wx) DO UPDATE SET name = @2, city = @3, addr = @4, tel = @5", p => p.Set(wx).Set(prin.name = name).Set(prin.addr = addr).Set(prin.tel = tel)) > 0)
+                    if (dc.Execute("INSERT INTO users (wx, name, tel, addr) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, addr = @4", p => p.Set(wx).Set(prin.name = name).Set(prin.tel = tel).Set(prin.addr = addr)) > 0)
                     {
                         wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
                     }
@@ -132,8 +132,17 @@ namespace Core
             wc.GiveRedirect("../");
         }
 
-        [Ui("完成"), Tool(ButtonShow)]
+        [Ui("出货"), Tool(ButtonShow)]
         public async Task deliver(WebContext wc)
+        {
+            string orgid = wc[-2];
+            int orderid = wc[this];
+            User prin = (User) wc.Principal;
+        }
+
+
+        [Ui("完成"), Tool(ButtonShow)]
+        public async Task end(WebContext wc)
         {
             string orgid = wc[-2];
             int orderid = wc[this];

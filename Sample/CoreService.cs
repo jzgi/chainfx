@@ -175,7 +175,8 @@ namespace Core
 
         /// Returns a home page pertaining to a related city
         /// We are forced to put auth check here because weixin auth does't work in iframe
-        [CityId, User]
+//        [CityId]
+        [User]
         public void list(WebContext wc)
         {
             string cityid = wc.Query[nameof(cityid)];
@@ -211,7 +212,7 @@ namespace Core
                                 h.H4(m.name);
                                 h.P(m.descr, "描述");
                                 h.ROW_();
-                                h.P_("价格").EM_().T('¥').T(m.price)._EM()._P();
+                                h.P_("价格", wid: 0x23).EM_().T('¥').T(m.price)._EM()._P();
                                 h.TOOL(nameof(CoreItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
@@ -236,25 +237,20 @@ namespace Core
             }
             var orgs = Obtain<Map<string, Org>>();
             var (orderid, _) = trade_no.To2Ints();
-            string city, addr;
-            string towx = null; // messge to
+            string orgid, addr;
             using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
             {
-                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status < 2 RETURNING orgid, city, addr", (p) => p.Set(cash).Set(orderid)))
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING orgid, addr", (p) => p.Set(cash).Set(orderid)))
                 {
                     return; // WCPay may send notification more than once
                 }
-                dc.Let(out string orgid).Let(out city).Let(out addr);
-                // retrieve a POS openid
-                if (towx == null)
-                {
-                    towx = orgs[orgid].oprwx;
-                }
+                dc.Let(out orgid).Let(out addr);
             }
             // send messages
+            var towx = orgs[orgid].oprwx;
             if (towx != null)
             {
-                await PostSendAsync(towx, "收到新单 No." + orderid, "地址: " + city + addr + "  付款: ¥" + cash, NETADDR + "/opr//newly/");
+                await PostSendAsync(towx, "订单收款", "¥" + cash, addr, NETADDR + "/opr//newo/");
             }
             // return xml to WCPay server
             XmlContent x = new XmlContent(true, 1024);

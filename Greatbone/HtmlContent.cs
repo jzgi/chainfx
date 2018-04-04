@@ -194,7 +194,7 @@ namespace Greatbone
         {
             if (str != null)
             {
-                Add(' ');
+                Add("&nbsp;");
                 Add(str);
             }
             return this;

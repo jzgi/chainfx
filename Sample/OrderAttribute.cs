@@ -13,13 +13,12 @@ namespace Core
 
         public override bool Check(WebContext ac, object[] stack, int level)
         {
-            for (int i = 0; i < level; i++)
+            if (stack[0] is Order o)
             {
-                if (stack[i] is Order o)
-                {
-                    if (state == 'A')
-                        return o.custaddr != null;
-                }
+                if (state == 'P')
+                    return o.status < Order.PAID;
+                if (state == 'A')
+                    return o.custaddr != null;
             }
             return false;
         }
