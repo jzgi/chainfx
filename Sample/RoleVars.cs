@@ -13,14 +13,14 @@ namespace Core
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<MyOrderWork>("ord");
-            
+
             Create<MyChatWork>("chat");
         }
 
-        public void @default(WebContext ac)
+        public void @default(WebContext wc)
         {
-            var prin = (User) ac.Principal;
-            ac.GivePage(200, h =>
+            var prin = (User)wc.Principal;
+            wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
                 h.CARDVIEW(prin,
@@ -55,7 +55,7 @@ namespace Core
         public async Task edit(WebContext wc)
         {
             string wx = wc[this];
-            var prin = (User) wc.Principal;
+            var prin = (User)wc.Principal;
             string password = null;
             if (wc.GET)
             {
@@ -151,22 +151,20 @@ namespace Core
 
         public void @default(WebContext wc)
         {
+            var orgs = Obtain<Map<string, Org>>();
+            string orgid = wc[this];
+            var org = orgs[orgid];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
-                wc.GiveOffCanvas(200, false, 60 * 15, "内部操作");
+                wc.GiveFrame(200, false, 60 * 15, org?.name);
                 return;
             }
 
-            var orgs = Obtain<Map<string, Org>>();
-            string orgid = wc[this];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                var org = orgs[orgid];
-
-                h.CARDVIEW(org,
-                    o => { h.H4(o.name); },
+                h.CARDVIEW(org, null,
                     o =>
                     {
                         h.P(org.descr, "简介");
@@ -176,7 +174,7 @@ namespace Core
             });
         }
 
-        static readonly string[] CRLF = {"\r\n", "\n"};
+        static readonly string[] CRLF = { "\r\n", "\n" };
 
         [Ui("设置"), Tool(ButtonShow), User(OPRMGR)]
         public async Task sets(WebContext ac)
@@ -210,7 +208,7 @@ namespace Core
         public async Task status(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();
-            User prin = (User) ac.Principal;
+            User prin = (User)ac.Principal;
             string orgid = ac[this];
             var o = orgs[orgid];
             bool custsvc;

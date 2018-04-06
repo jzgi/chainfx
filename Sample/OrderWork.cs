@@ -111,7 +111,7 @@ namespace Core
         }
     }
 
-    [Ui("新订单")]
+    [Ui("新单")]
     public class OprNewoWork : OrderWork<OprNewoVarWork>
     {
         public OprNewoWork(WorkConfig cfg) : base(cfg)
@@ -161,7 +161,7 @@ namespace Core
         }
     }
 
-    [Ui("旧订单"), User(OPR)]
+    [Ui("旧单"), User(OPR)]
     public class OprOldoWork : OrderWork<OprOldoVarWork>
     {
         public OprOldoWork(WorkConfig cfg) : base(cfg)

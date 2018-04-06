@@ -22,68 +22,68 @@ namespace Core
         }
 
         [Ui("新结"), Tool(Link)]
-        public void @default(WebContext ac, int page)
+        public void @default(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
-                ac.GivePage(200, h =>
+                wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLEVIEW(arr,
-                        () => h.TH("网点").TH("起始").TH("截至").TH("总数").TH("单额").TH("净额").TH("转款人"),
-                        o => h.TD(o.orgid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                        () => h.TH("网点").TH("期间").TH("总数").TH("单额").TH("净额").TH("转款"),
+                        o => h.TD(o.orgid).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                     );
                 });
             }
         }
 
         [Ui("已转"), Tool(Link)]
-        public void old(WebContext ac, int page)
+        public void old(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 1 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
-                ac.GivePage(200, h =>
+                wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLEVIEW(arr,
-                        () => h.TH("网点").TH("起始").TH("截至").TH("总数").TH("单额").TH("净额").TH("转款人"),
-                        o => h.TD(o.orgid).TD(o.fro).TD(o.till).TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                        () => h.TH("网点").TH("期间").TH("总数").TH("单额").TH("净额").TH("转款"),
+                        o => h.TD(o.orgid).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                     );
                 });
             }
         }
 
         [Ui("结算", "生成各网点结款单"), Tool(ButtonShow)]
-        public async Task reckon(WebContext ac)
+        public async Task reckon(WebContext wc)
         {
             DateTime fro; // from date
             DateTime till; // till/before date
-            if (ac.GET)
+            if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    fro = (DateTime) dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
-                    ac.GivePane(200, m =>
+                    fro = (DateTime)dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
+                    wc.GivePane(200, h =>
                     {
-                        m.FORM_();
-                        m.DATE(nameof(fro), fro, "起始", @readonly: true);
-                        m.DATE(nameof(till), DateTime.Today, "截至", max: DateTime.Today);
-                        m._FORM();
+                        h.FORM_().FIELDSET_("选择截至日期（不包含）");
+                        h.DATE(nameof(fro), fro, "起始", @readonly: true);
+                        h.DATE(nameof(till), DateTime.Today, "截至", max: DateTime.Today);
+                        h._FIELDSET()._FORM();
                     });
                 }
             }
             else
             {
-                var f = await ac.ReadAsync<Form>();
+                var f = await wc.ReadAsync<Form>();
                 fro = f[nameof(fro)];
                 till = f[nameof(till)];
                 using (var dc = NewDbContext(IsolationLevel.ReadUncommitted))
                 {
                     dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.ENDED + " AND closed >= @1 AND closed < @2 GROUP BY orgid", p => p.Set(fro).Set(till));
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Core
         }
 
         [Ui("转款", "按结款单转款给网点"), Tool(ButtonConfirm)]
-        public async Task pay(WebContext ac)
+        public async Task pay(WebContext wc)
         {
             Roll<Tran> trans = new Roll<Tran>(16);
             using (var dc = NewDbContext())
@@ -114,7 +114,7 @@ namespace Core
                 }
             }
             // do transfer for each
-            User prin = (User) ac.Principal;
+            User prin = (User)wc.Principal;
             for (int i = 0; i < trans.Count; i++)
             {
                 var tr = trans[i];
@@ -147,7 +147,7 @@ namespace Core
                     }
                 }
             }
-            ac.GiveRedirect();
+            wc.GiveRedirect();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Core
     }
 
 
-    [Ui("货品管理"), User(OPRMEM)]
+    [Ui("货品"), User(OPRMEM)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkConfig cfg) : base(cfg)

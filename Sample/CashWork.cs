@@ -13,20 +13,20 @@ namespace Core
         }
     }
 
-    [Ui("财务记账"), User(OPRMGR)]
+    [Ui("财务"), User(OPRMGR)]
     public class OprCashWork : CashWork
     {
         public OprCashWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        public void @default(WebContext ac, int page)
+        public void @default(WebContext wc, int page)
         {
-            string orgid = ac[-1];
+            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Cash>("SELECT * FROM cashes WHERE orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                ac.GivePage(200, h =>
+                wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLEVIEW(arr,
@@ -37,15 +37,15 @@ namespace Core
         }
 
         [Ui("记账"), Tool(ButtonShow)]
-        public async Task entry(WebContext ac)
+        public async Task entry(WebContext wc)
         {
-            string orgid = ac[-1];
+            string orgid = wc[-1];
             Cash o = null;
-            if (ac.GET)
+            if (wc.GET)
             {
                 o = new Cash() { };
-                o.Read(ac.Query);
-                ac.GivePane(200, h =>
+                o.Read(wc.Query);
+                wc.GivePane(200, h =>
                 {
                     h.FORM_();
 
@@ -59,11 +59,11 @@ namespace Core
                 });
                 return;
             }
-            o = await ac.ReadObjectAsync(obj: new Cash
+            o = await wc.ReadObjectAsync(obj: new Cash
             {
                 orgid = orgid,
                 date = DateTime.Now,
-                creator = ((User) ac.Principal).name
+                creator = ((User) wc.Principal).name
             });
             using (var dc = NewDbContext())
             {
@@ -71,14 +71,14 @@ namespace Core
                 dc.Sql("INSERT INTO cashes")._(Cash.Empty, proj)._VALUES_(Cash.Empty, proj);
                 dc.Execute(p => o.Write(p, proj));
             }
-            ac.GivePane(200);
+            wc.GivePane(200);
         }
 
         [Ui("月报"), Tool(ButtonOpen)]
-        public void monthly(WebContext ac)
+        public void monthly(WebContext wc)
         {
-            string orgid = ac[-1];
-            ac.GivePane(200, m =>
+            string orgid = wc[-1];
+            wc.GivePane(200, m =>
             {
                 using (var dc = NewDbContext())
                 {

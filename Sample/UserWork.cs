@@ -14,7 +14,7 @@ namespace Core
     }
 
     [User(opr: OPRMGR)]
-    [Ui("人员管理")]
+    [Ui("人员")]
     public class OprOprWork : UserWork<OprOprVarWork>
     {
         public OprOprWork(WorkConfig cfg) : base(cfg)

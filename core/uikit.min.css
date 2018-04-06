@@ -4291,21 +4291,21 @@ ul.uk-nav-sub {
     content: "";
     position: absolute;
     bottom: 0;
-    left: 20px;
+    left: 0;
     right: 0;
     border-bottom: 1px solid #e5e5e5;
 }
 
 .uk-tab > * {
     flex: none;
-    padding-left: 15px;
+    padding-left: 8px;
     position: relative;
 }
 
 .uk-tab > * > a {
     display: block;
     text-align: center;
-    padding: 5px 10px;
+    padding: 6px 12px;
     color: #999;
     border-bottom: 1px solid transparent;
     text-transform: uppercase;
