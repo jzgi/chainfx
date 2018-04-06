@@ -93,7 +93,7 @@ namespace Core
         {
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE opr > 0 ORDER BY city LIMIT 20 OFFSET @1");
+                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE oprat IS NOT NULL ORDER BY oprat LIMIT 20 OFFSET @1");
                 var arr = dc.Query<User>(p => p.Set(page * 20));
                 wc.GivePage(200, h =>
                 {

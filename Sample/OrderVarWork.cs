@@ -28,7 +28,7 @@ namespace Core
             int orderid = wc[this];
             short rev;
             decimal total;
-            User prin = (User) wc.Principal;
+            User prin = (User)wc.Principal;
             using (var dc = NewDbContext())
             {
                 dc.Query1("SELECT rev, total, custname, custtel, custaddr FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
@@ -70,7 +70,7 @@ namespace Core
                         h.FORM_();
                         h.FIELDSET_("购买数量");
                         h.FIELD_("货品").ICON("/" + o.orgid + "/" + it.name + "/icon", wid: 0x16)._T(it.name)._FIELD();
-                        h.NUMBER(nameof(it.qty), it.qty, "购量", max: stock, min: (short) 0, step: step);
+                        h.NUMBER(nameof(it.qty), it.qty, "购量", max: stock, min: (short)0, step: step);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -132,12 +132,25 @@ namespace Core
             wc.GiveRedirect("../");
         }
 
-        [Ui("出货"), Tool(ButtonShow)]
+        [Ui("给货"), Tool(ButtonShow, size: 1)]
         public async Task deliver(WebContext wc)
         {
             string orgid = wc[-2];
             int orderid = wc[this];
-            User prin = (User) wc.Principal;
+            bool comp = false;
+            if (wc.GET)
+            {
+                wc.GivePane(200, h => { h.FORM_().FIELDSET_("是否采用提成").CHECKBOX(nameof(comp), comp, "采用销售提成")._FIELDSET()._FORM(); });
+            }
+            else
+            {
+                var f = await wc.ReadAsync<Form>();
+                comp = f[nameof(comp)];
+                using (var dc = NewDbContext())
+                {
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                }
+            }
         }
 
 
@@ -146,7 +159,7 @@ namespace Core
         {
             string orgid = wc[-2];
             int orderid = wc[this];
-            User prin = (User) wc.Principal;
+            User prin = (User)wc.Principal;
             bool mycart;
             if (wc.GET)
             {

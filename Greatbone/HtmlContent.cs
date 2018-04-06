@@ -1437,13 +1437,13 @@ namespace Greatbone
 
                     Add("<li>");
                     // title
-                    Add("<div class=\"uk-accordion-title\">");
+                    Add("<section class=\"uk-accordion-title\">");
                     title(obj);
-                    Add("</div>");
+                    Add("</section>");
                     // content
-                    Add("<form class=\"uk-accordion-content uk-grid\">");
+                    Add("<section class=\"uk-accordion-content uk-grid\">");
                     content(obj);
-                    Add("</form>");
+                    Add("</section>");
 
                     Add("</li>");
 
@@ -1524,7 +1524,7 @@ namespace Greatbone
 
         public void GRIDVIEW<D>(D[] arr, Action<D> block)
         {
-            Add("<div class=\"uk-grid uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-4@xl\">");
+            Add("<div class=\"uk-grid uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@xll\">");
             if (arr != null)
             {
                 if (stack == null) stack = new object[4]; // init contexts
@@ -1535,7 +1535,7 @@ namespace Greatbone
                     D obj = arr[i];
                     stack[level] = obj;
 
-                    Add("<section>");
+                    Add("<section class=\"uk-text-center uk-padding-small\">");
                     block(obj);
                     Add("</section>");
 

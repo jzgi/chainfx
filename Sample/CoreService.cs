@@ -38,7 +38,7 @@ namespace Core
             );
         }
 
-        public async Task<bool> AuthenticateAsync(WebContext wc, bool e)
+        public async Task<bool> AuthenticateAsync(WebContext wc)
         {
             // if principal already in cookie
             if (wc.Cookies.TryGetValue("Token", out var token))
@@ -157,20 +157,20 @@ namespace Core
             var lessons = Obtain<Lesson[]>();
             wc.GivePage(200, h =>
             {
-                h.TOPBAR_()._TOOLBAR("天国近了", false);
                 using (var dc = NewDbContext())
                 {
+                    h.ALERT("　　这里所报告的都是客观存在的事实真相，并非主观的理论或捏造的说教。假以良知、耐心和洞察力，您就一定能像我们一样认知到这关于生命和敬虔的奥秘。");
+
                     h.GRIDVIEW(lessons, o =>
                     {
-                        h.T("<article class=\"uk-card\">");
-                        h.T("<video controls playsinline uk-video=\"automute: true\">");
-                        h.T("<source src=\"http://aliyun.com/").T(o.zh).T("\" type=\"video/mp4\">");
+                        // h.T("<div class=\"uk-inline\">");
+                        h.T("<video class=\"uk-width-1-1\" controls playsinline uk-video src=\"http://aliyun.com/").T(o.zh).T("\" type=\"video/mp4\">");
                         h.T("</video>");
                         h.T("<div>").T(o.zh).T("</div>");
-                        h.T("</article>");
+                        // h.T("</div>");
                     });
                 }
-            }, true, 3600, "劝世福音");
+            }, true, 3600, "《生命的奥秘》系列");
         }
 
         /// Returns a home page pertaining to a related city
@@ -200,6 +200,11 @@ namespace Core
                         o => // header
                         {
                             h.H3(o.name);
+                            if (o.oprtel != null)
+                            {
+//                                h.BADGE_LINK( "/a/", "commenting");
+                                h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
+                            }
                             h.P(o.descr, "简介");
                             h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
                         },

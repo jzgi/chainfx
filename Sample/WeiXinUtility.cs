@@ -114,7 +114,7 @@ namespace Core
             JObj jo = await WeiXin.GetAsync<JObj>("/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN", null);
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User {wx = openid, name = nickname};
+            return new User { wx = openid, name = nickname };
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
@@ -122,7 +122,7 @@ namespace Core
         public static IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
             JObj jo = new JObj
             {
                 {"appId", appid},
@@ -248,7 +248,7 @@ namespace Core
             if (sign != Sign(xe, "sign")) return false;
 
             int cash_fee = xe.Child(nameof(cash_fee)); // in cent
-            cash = ((decimal) cash_fee) / 100;
+            cash = ((decimal)cash_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }
@@ -379,7 +379,7 @@ namespace Core
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Key).Append('=').Append((string) mbr);
+                sb.Append(mbr.Key).Append('=').Append((string)mbr);
             }
             sb.Append("&key=").Append(key);
             return StrUtility.MD5(sb.ToString());

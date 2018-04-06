@@ -1,56 +1,50 @@
 {
-    "button": [
+  "button": [
+    {
+      "type": "view",
+      "name": "产品/下单",
+      "url": "http://144000.tv/list",
+      "sub_button": []
+    },
+    {
+      "name": "我的...",
+      "sub_button": [
         {
-            "type": "view",
-            "name": "产品/下单",
-            "url": "http://144000.tv/list",
-            "sub_button": []
+          "type": "view",
+          "name": "《生命的奥秘》系列",
+          "url": "http://144000.tv/",
+          "sub_button": []
         },
         {
-            "name": "我的...",
-            "sub_button": [
-                {
-                    "type": "view",
-                    "name": "《身体的奥秘》",
-                    "url": "http://144000.tv/health.html",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "我的订单",
-                    "url": "http://144000.tv/my//ord/",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "账号设置",
-                    "url": "http://144000.tv/my//",
-                    "sub_button": []
-                }
-            ]
+          "type": "view",
+          "name": "我的订单",
+          "url": "http://144000.tv/my//ord/",
+          "sub_button": []
         },
         {
-            "name": "平台...",
-            "sub_button": [
-                {
-                    "type": "view",
-                    "name": "关于「粗粮达人」",
-                    "url": "http://144000.tv/about.html",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "《平安的福音》",
-                    "url": "http://144000.tv/",
-                    "sub_button": []
-                },
-                {
-                    "type": "view",
-                    "name": "日常操作（限内部使用）",
-                    "url": "http://144000.tv/opr//",
-                    "sub_button": []
-                }
-            ]
+          "type": "view",
+          "name": "账号设置",
+          "url": "http://144000.tv/my//",
+          "sub_button": []
         }
-    ]
+      ]
+    },
+    {
+      "name": "平台...",
+      "sub_button": [
+        {
+          "type": "view",
+          "name": "关于「粗粮达人」",
+          "url": "http://144000.tv/about.html",
+          "sub_button": []
+        },
+        {
+          "type": "view",
+          "name": "（内部人员操作）",
+          "url": "http://144000.tv/opr//",
+          "sub_button": []
+        }
+      ]
+    }
+  ]
 }

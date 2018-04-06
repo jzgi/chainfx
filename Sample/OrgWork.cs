@@ -8,7 +8,7 @@ namespace Core
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Org) obj).id);
+            CreateVar<V, string>(obj => ((Org)obj).id);
         }
     }
 
@@ -29,14 +29,16 @@ namespace Core
                 {
                     h.TOOLBAR();
                     h.BOARDVIEW(arr,
-                        o => { h.T(o.name).T(" / ").T(o.id); },
+                        o => h.T(o.id)._T(o.name),
                         o =>
                         {
-                            h.STATIC(o.descr, "简介");
-                            h.FIELD_("地址").T(o.addr)._FIELD();
-                            h.FIELD_("坐标").T(o.x)._T(o.y)._FIELD();
-                            h.FIELD_("经理").T(o.mgrname)._T(o.mgrtel)._FIELD();
-                        });
+                            h.P(o.descr, "简介");
+                            h.P_("地址").T(o.addr)._P();
+                            h.P_("坐标").T(o.x)._T(o.y)._P();
+                            h.P_("经理").T(o.mgrname)._T(o.mgrtel)._P();
+                        },
+                        o => h.TOOLPAD()
+                    );
                 });
             }
         }

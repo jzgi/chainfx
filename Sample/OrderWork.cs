@@ -11,7 +11,7 @@ namespace Core
     {
         protected OrderWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, long>((obj) => ((Order) obj).id);
+            CreateVar<V, long>((obj) => ((Order)obj).id);
         }
 
         // for customer side viewing
@@ -35,7 +35,7 @@ namespace Core
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P_(wid:0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._LINK()._P().P(oi.load, wid: 0x16);
+                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P_(wid: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._LINK()._P().P(oi.load, wid: 0x16);
                             }
                             else
                             {
@@ -44,7 +44,7 @@ namespace Core
                         }
                         h.P_("总计").T("¥").T(o.total)._P();
                     },
-                    tools ? o => h.TOOLPAD() : (Action<Order>) null
+                    tools ? o => h.TOOLPAD() : (Action<Order>)null
                 );
             }, false, 2);
         }
@@ -69,7 +69,7 @@ namespace Core
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P(oi.qty,wid:0x16).P(oi.load, wid: 0x16);
+                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P(oi.qty, wid: 0x16).P(oi.load, wid: 0x16);
                             }
                             else
                             {

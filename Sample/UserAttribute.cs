@@ -9,9 +9,9 @@ namespace Core
     {
         readonly short opr;
 
-        readonly bool adm;
+        readonly short adm;
 
-        public UserAttribute(short opr = 0, bool adm = false)
+        public UserAttribute(short opr = 0, short adm = 0)
         {
             this.opr = opr;
             this.adm = adm;
@@ -28,7 +28,7 @@ namespace Core
                 if ((prin.opr & opr) != opr) return false; // inclusive check
                 return prin.oprat == wc[typeof(OprVarWork)];
             }
-            return !adm || prin.adm;
+            return (prin.adm & adm) != adm;
         }
     }
 }

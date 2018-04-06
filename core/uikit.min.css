@@ -1222,7 +1222,6 @@ button.uk-icon:not(:disabled) {
 }
 
 .uk-fieldset li {
-    margin: 1px 0;
     min-height: 2rem;
     display: flex;
     align-items: center;
@@ -1237,7 +1236,7 @@ button.uk-icon:not(:disabled) {
 
 .uk-fieldset > ul > li {
     box-sizing: border-box;
-    margin-left: 10px;
+    margin-left: 8px;
 }
 
 .uk-fieldset > ul > li:nth-child(n+2) {
@@ -5043,8 +5042,7 @@ ul.uk-nav-sub {
  ========================================================================== */
 .uk-modal-title {
     font-size: 1rem;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 8px;
 }
 
 /* Close

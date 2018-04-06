@@ -17,7 +17,7 @@ namespace Core
     {
         public CoreVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CoreItemVarWork, string>(obj => ((Item) obj).name);
+            CreateVar<CoreItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         public void icon(WebContext wc)
@@ -53,15 +53,15 @@ namespace Core
                 {
                     dc.Sql("SELECT ").collst(Org.Empty, proj).T(" FROM orgs WHERE id = @1");
                     var o = dc.Query1<Org>(p => p.Set(orgid), proj);
-                    wc.GivePane(200, m =>
+                    wc.GivePane(200, h =>
                     {
-                        m.FORM_();
-                        m.STATIC(o.id, "编号");
-                        m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                        m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
-                        m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                        m.NUMBER(nameof(o.x), o.x, "经度").NUMBER(nameof(o.x), o.x, "纬度");
-                        m._FORM();
+                        h.FORM_().FIELDSET_("填写网点信息");
+                        h.STATIC(o.id, "编号");
+                        h.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                        h.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
+                        h.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                        h.NUMBER(nameof(o.x), o.x, "经度").NUMBER(nameof(o.x), o.x, "纬度");
+                        h._FIELDSET()._FORM();
                     });
                 }
             }

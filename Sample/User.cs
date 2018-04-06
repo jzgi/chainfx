@@ -29,10 +29,10 @@ namespace Core
         internal string addr;
         internal string credential;
         internal int score;
-        internal int refid;
+        internal int refwx;
         internal string oprat;
         internal short opr;
-        internal bool adm; // adm
+        internal short adm;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -48,7 +48,7 @@ namespace Core
                 s.Get(nameof(credential), ref credential);
             }
             s.Get(nameof(score), ref score);
-            s.Get(nameof(refid), ref refid);
+            s.Get(nameof(refwx), ref refwx);
             if ((proj & LATER) == LATER)
             {
                 s.Get(nameof(opr), ref opr);
@@ -71,7 +71,7 @@ namespace Core
                 s.Put(nameof(credential), credential);
             }
             s.Put(nameof(score), score);
-            s.Put(nameof(refid), refid);
+            s.Put(nameof(refwx), refwx);
             if ((proj & LATER) == LATER)
             {
                 s.Put(nameof(opr), opr);

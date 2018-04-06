@@ -6,7 +6,7 @@ namespace Core
     {
         public MyWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyVarWork, string>((obj) => ((User) obj).wx);
+            CreateVar<MyVarWork, string>((obj) => ((User)obj).wx);
         }
     }
 
@@ -14,11 +14,11 @@ namespace Core
     {
         public OprWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<OprVarWork, string>(prin => ((User) prin).oprat);
+            CreateVar<OprVarWork, string>(prin => ((User)prin).oprat);
         }
     }
 
-    [Ui("常规"), User(adm: true)]
+    [Ui("常规"), User(adm: 1)]
     public class AdmWork : Work
     {
         public AdmWork(WorkConfig cfg) : base(cfg)
@@ -30,25 +30,25 @@ namespace Core
             Create<AdmRepayWork>("repay");
         }
 
-        public void @default(WebContext ac)
+        public void @default(WebContext wc)
         {
-            bool inner = ac.Query[nameof(inner)];
+            bool inner = wc.Query[nameof(inner)];
             if (inner)
             {
-                ac.GivePage(200, m =>
+                wc.GivePage(200, h =>
                 {
-                    m.TOOLBAR();
-//                    m.BOARDVIEW(h =>
-//                    {
-//                        h.CARD_HEADER("系统运行状况", "运行中", 's');
-//                        h.FIELD("2.0", "版本");
-//                        h.CARD_FOOTER();
-//                    });
+                    h.TOOLBAR();
+                    h.CARD(() => h.H4("系统运行状况"),
+                        () =>
+                        {
+                            h.P("2.0", "版本");
+                        }
+                    );
                 });
             }
             else
             {
-                ac.GiveFrame(200, false, 60 * 15, "粗粮达人平台管理");
+                wc.GiveFrame(200, false, 60 * 15, "平台管理");
             }
         }
 

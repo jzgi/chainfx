@@ -13,6 +13,8 @@ namespace Core
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<MyOrderWork>("ord");
+            
+            Create<MyChatWork>("chat");
         }
 
         public void @default(WebContext ac)

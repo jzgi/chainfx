@@ -523,12 +523,11 @@ namespace Greatbone
             string path = wc.Path;
             try // handling
             {
-                bool norm = true;
-                if (this is IAuthenticateAsync aasync) norm = await aasync.AuthenticateAsync(wc, true);
-                else if (this is IAuthenticate a) norm = a.Authenticate(wc, true);
-                if (!norm)
+                bool cont = true;
+                if (this is IAuthenticateAsync aasync) cont = await aasync.AuthenticateAsync(wc);
+                else if (this is IAuthenticate a) cont = a.Authenticate(wc);
+                if (!cont)
                 {
-                    wc.Give(403); // forbidden
                     return;
                 }
             }
