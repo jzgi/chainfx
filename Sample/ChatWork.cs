@@ -71,7 +71,7 @@ namespace Core
         }
     }
 
-    [Ui("客服消息")]
+    [Ui("客服")]
     [User(OPR)]
     public class OprChatWork : ChatWork<OprChatVarWork>
     {

@@ -138,13 +138,13 @@ namespace Core
     {
         public OprVarWork(WorkConfig cfg) : base(cfg)
         {
+            Create<OprChatWork>("chat");
+
             Create<OprNewoWork>("newo");
 
             Create<OprOldoWork>("oldo");
 
             Create<OprItemWork>("item");
-
-            Create<OprOprWork>("opr");
 
             Create<OprCashWork>("cash");
         }
@@ -174,37 +174,60 @@ namespace Core
             });
         }
 
-        static readonly string[] CRLF = { "\r\n", "\n" };
-
-        [Ui("设置"), Tool(ButtonShow), User(OPRMGR)]
-        public async Task sets(WebContext ac)
+        [Ui("人员"), Tool(ButtonOpen), User(OPRMGR)]
+        public async Task access(WebContext wc, int cmd)
         {
-            var orgs = Obtain<Map<string, Org>>();
-            string orgid = ac[this];
-            var o = orgs[orgid];
-            if (ac.GET)
+            string orgid = wc[this];
+            string tel = null;
+            short opr = 0;
+            var f = await wc.ReadAsync<Form>();
+            if (f != null)
             {
-                ac.GivePane(200, h =>
+                tel = f[nameof(tel)];
+                opr = f[nameof(opr)];
+                if (cmd == 1) // remove
                 {
-                    h.FORM_();
-                    h.FIELDSET_("填写网点信息").TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true)._FIELDSET();
-                    h._FORM();
-                });
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(tel));
+                    }
+                }
+                else if (cmd == 2) // add
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(orgid).Set(opr).Set(tel));
+                    }
+                }
             }
-            else
+            wc.GivePane(200, h =>
             {
-                var f = await ac.ReadAsync<Form>();
-                o.descr = f[nameof(o.descr)];
+                h.FORM_();
+                h.FIELDSET_("现有人员");
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orgs SET descr = @1 WHERE id = @2",
-                        p => p.Set(o.descr).Set(orgid));
+                    if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
+                    {
+                        while (dc.Next())
+                        {
+                            dc.Let(out string name).Let(out tel).Let(out opr);
+                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Oprs[opr], false);
+                        }
+                    }
                 }
-                ac.GivePane(200);
-            }
+                h._FIELDSET();
+                h.BUTTON(nameof(access), 1, "删除");
+
+                h.FIELDSET_("添加人员");
+                h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
+                h.SELECT(nameof(opr), opr, Oprs, "角色");
+                h._FIELDSET();
+                h.BUTTON(nameof(access), 2, "添加");
+                h._FORM();
+            });
         }
 
-        [Ui("上下班"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("状态"), Tool(ButtonShow), User(OPRMEM)]
         public async Task status(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();

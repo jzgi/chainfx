@@ -10,9 +10,9 @@ namespace Core
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "停业状态"},
-            {1, "暂缓接单"},
-            {2, "正常接单"}
+            {0, "已停业"},
+            {1, "休息中"},
+            {2, "营业中"}
         };
 
         internal string id;
