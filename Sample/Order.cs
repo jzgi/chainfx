@@ -10,7 +10,7 @@ namespace Core
     {
         public static readonly Order Empty = new Order();
 
-        public const byte KEY = 1, LATER = 4;
+        public const byte KEY = 1, DETAIL = 2, LATER = 4;
 
         // types
         public const short POS = 1;
@@ -36,7 +36,9 @@ namespace Core
         internal string custaddr; // may include area and site
         internal OrderItem[] items;
         internal decimal total; // total price
+        internal decimal net; // total intra price
         internal DateTime created;
+        internal bool comp; // compensation
         internal decimal cash; // amount recieved
         internal DateTime paid;
         internal DateTime ended;
@@ -55,11 +57,16 @@ namespace Core
             s.Get(nameof(custname), ref custname);
             s.Get(nameof(custtel), ref custtel);
             s.Get(nameof(custaddr), ref custaddr);
-            s.Get(nameof(items), ref items);
+            if ((proj & DETAIL) == DETAIL)
+            {
+                s.Get(nameof(items), ref items);
+            }
             s.Get(nameof(total), ref total);
+            s.Get(nameof(net), ref net);
             s.Get(nameof(created), ref created);
             if ((proj & LATER) == LATER)
             {
+                s.Get(nameof(comp), ref comp);
                 s.Get(nameof(cash), ref cash);
                 s.Get(nameof(paid), ref paid);
                 s.Get(nameof(ended), ref ended);
@@ -80,11 +87,16 @@ namespace Core
             s.Put(nameof(custname), custname);
             s.Put(nameof(custtel), custtel);
             s.Put(nameof(custaddr), custaddr);
-            s.Put(nameof(items), items);
+            if ((proj & DETAIL) == DETAIL)
+            {
+                s.Put(nameof(items), items);
+            }
             s.Put(nameof(total), total);
+            s.Put(nameof(net), net);
             s.Put(nameof(created), created);
             if ((proj & LATER) == LATER)
             {
+                s.Put(nameof(comp), comp);
                 s.Put(nameof(cash), cash);
                 s.Put(nameof(paid), paid);
                 s.Put(nameof(ended), ended);
@@ -98,78 +110,56 @@ namespace Core
             return null;
         }
 
-        public void AddItem(string name, string unit, decimal price, short n)
+        public void AddItem(string name, string unit, decimal price, decimal comp, short num)
         {
             int idx = items.IndexOf(o => o.name.Equals(name));
             if (idx != -1)
             {
-                items[idx].qty += n;
+                items[idx].qty += num;
             }
             else
             {
-                items = items.AddOf(new OrderItem {name = name, unit = unit, price = price, qty = n});
+                items = items.AddOf(new OrderItem
+                {
+                    name = name,
+                    unit = unit,
+                    price = price,
+                    comp = comp,
+                    qty = num
+                });
             }
+            Calc();
         }
 
-        public void UpdItem(int idx, short n)
+        public void UpdItem(int idx, short num)
         {
-            items[idx].qty = n;
-            if (n <= 0)
+            items[idx].qty = num;
+            if (num <= 0)
             {
                 items = items.RemovedOf(idx);
             }
             else
             {
-                items[idx].qty = n;
+                items[idx].qty = num;
             }
+            Calc();
         }
 
-        public void ReceiveItem(string name, string unit, decimal price, short n)
+        // calculate total price and net price
+        public void Calc()
         {
-            int idx = items.IndexOf(o => o.name.Equals(name));
-            if (idx != -1)
-            {
-                items[idx].load += n;
-            }
-            else
-            {
-                items = items.AddOf(new OrderItem {name = name, unit = unit, price = price, load = n});
-            }
-        }
-
-        public void TotalUp()
-        {
+            decimal sum = 0;
+            decimal deduct = 0;
             if (items != null)
             {
-                decimal sum = 0;
                 for (int i = 0; i < items.Length; i++)
                 {
                     sum += items[i].qty * items[i].price;
+                    deduct += items[i].qty * items[i].comp;
                 }
-                total = sum;
             }
-        }
-
-        public static bool Deduce(OrderItem[] a, OrderItem[] b)
-        {
-            for (var i = 0; i < b.Length; i++)
-            {
-                bool match = false;
-                for (var j = 0; j < a.Length; j++)
-                {
-                    if (a[j].name == b[i].name)
-                    {
-                        a[j].load -= b[i].qty;
-                        if (a[j].load >= 0)
-                        {
-                            match = true;
-                            break;
-                        }
-                    }
-                }
-                if (!match) return false;
-            }
-            return true;
+            total = sum;
+            net = sum - deduct;
         }
     }
 
@@ -178,8 +168,9 @@ namespace Core
         internal string name;
         internal string unit;
         internal decimal price;
+        internal decimal comp;
         internal short qty;
-        internal short load;
+        internal short ship;
 
         public decimal Subtotal => price * qty;
 
@@ -188,8 +179,9 @@ namespace Core
             s.Get(nameof(name), ref name);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
+            s.Get(nameof(comp), ref comp);
             s.Get(nameof(qty), ref qty);
-            s.Get(nameof(load), ref load);
+            s.Get(nameof(ship), ref ship);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
@@ -197,13 +189,19 @@ namespace Core
             s.Put(nameof(name), name);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
+            s.Put(nameof(comp), comp);
             s.Put(nameof(qty), qty);
-            s.Put(nameof(load), load);
+            s.Put(nameof(ship), ship);
         }
 
-        public void AddQty(short qty)
+        // set actual load numbers according to qtys
+        public static void Ship(OrderItem[] items)
         {
-            this.qty += qty;
+            for (int i = 0; i < items.Length; i++)
+            {
+                items[i].ship = items[i].qty;
+            }
         }
+
     }
 }

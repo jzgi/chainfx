@@ -562,7 +562,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_(string href, Style style = 0, bool? size = null, byte width = 0, char target = (char) 0)
+        public HtmlContent A_(string href, Style style = 0, bool? size = null, byte width = 0, char target = (char)0)
         {
             Add("<a href=\"");
             Add(href);
@@ -592,7 +592,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_HREF_(Style style = 0, bool? size = null, byte width = 0, char target = (char) 0)
+        public HtmlContent A_HREF_(Style style = 0, bool? size = null, byte width = 0, char target = (char)0)
         {
             Add("<a class=\"uk-button");
             if (style == 0) Add(" uk-button-default");
@@ -637,7 +637,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H2(string v, char line = (char) 0)
+        public HtmlContent H2(string v, char line = (char)0)
         {
             Add("<h2 class=\"uk-h3");
             if (line == 'd')
@@ -667,7 +667,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H3(string v, char line = (char) 0)
+        public HtmlContent H3(string v, char line = (char)0)
         {
             Add("<h3 class=\"uk-h3");
             if (line == 'd')
@@ -697,7 +697,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H4(string v, char line = (char) 0)
+        public HtmlContent H4(string v, char line = (char)0)
         {
             Add("<h4 class=\"uk-h4");
             if (line == 'b')
@@ -727,7 +727,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H5(string v, char line = (char) 0)
+        public HtmlContent H5(string v, char line = (char)0)
         {
             Add("<h5 class=\"uk-h5");
             if (line == 'b')
@@ -2231,12 +2231,9 @@ namespace Greatbone
                 Add(tip);
                 Add("\"");
             }
-            if (!min.Equals(default(V)))
-            {
-                Add(" min=\"");
-                AddPrimitive(min);
-                Add("\"");
-            }
+            Add(" min=\"");
+            AddPrimitive(min);
+            Add("\"");
             if (!max.Equals(default(V)))
             {
                 Add(" max=\"");
@@ -2258,6 +2255,54 @@ namespace Greatbone
             {
                 Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp()\"></a>");
                 Add("</div>");
+            }
+
+            if (label != null) _FIELD();
+            return this;
+        }
+
+        public HtmlContent NUMBER(string name, decimal v, string label = null, string tip = null, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool @readonly = false, bool required = false)
+        {
+            if (label != null) FIELD_(label);
+
+            Add("<input type=\"number\" class=\"uk-input\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddPrimitive(v);
+            Add("\"");
+
+            if (min != decimal.MinValue)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (max != decimal.MaxValue)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            Add(" step=\"");
+            if (step > 0)
+            {
+                Add(step);
+            }
+            else
+            {
+                Add("any");
+            }
+            Add("\"");
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+
+            Add(">");
+
+            if (tip != null)
+            {
+                Add("<mark>");
+                Add(tip);
+                Add("</mark>");
             }
 
             if (label != null) _FIELD();

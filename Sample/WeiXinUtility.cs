@@ -201,7 +201,7 @@ namespace Core
             return null;
         }
 
-        public static async Task<(string, string)> PostUnifiedOrderAsync(string trade_no, decimal total, string openid, string ip, string notifyurl, string descr)
+        public static async Task<(string, string)> PostUnifiedOrderAsync(string trade_no, decimal amount, string openid, string ip, string notifyurl, string descr)
         {
             XElem x = new XElem("xml")
             {
@@ -213,7 +213,7 @@ namespace Core
                 {"openid", openid},
                 {"out_trade_no", trade_no},
                 {"spbill_create_ip", ip},
-                {"total_fee", ((int) (total * 100)).ToString()},
+                {"total_fee", ((int) (amount * 100)).ToString()},
                 {"trade_type", "JSAPI"}
             };
             string sign = Sign(x);

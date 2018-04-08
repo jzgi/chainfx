@@ -35,14 +35,18 @@ namespace Core
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P_(wid: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._LINK()._P().P(oi.load, wid: 0x16);
+                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P_(wid: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._LINK()._P().P(oi.ship, wid: 0x16);
                             }
                             else
                             {
                                 h.P_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._P();
                             }
                         }
-                        h.P_("总计").T("¥").T(o.total)._P();
+                        h.P_("总额", wid: 0x12).T("¥").T(o.total)._P();
+                        if (o.comp)
+                        {
+                            h.P_("净额", wid: 0x12).T("¥").T(o.net)._P();
+                        }
                     },
                     tools ? o => h.TOOLPAD() : (Action<Order>)null
                 );
@@ -69,14 +73,18 @@ namespace Core
                             var oi = o.items[i];
                             if (o.status <= 1)
                             {
-                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P(oi.qty, wid: 0x16).P(oi.load, wid: 0x16);
+                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P(oi.qty, wid: 0x16).P(oi.ship, wid: 0x16);
                             }
                             else
                             {
                                 h.P_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._P();
                             }
                         }
-                        h.P_("总计").T("¥").T(o.total)._P();
+                        h.P_("总额", wid: 0x12).T("¥").T(o.total)._P();
+                        if (o.comp)
+                        {
+                            h.P_("净额", wid: 0x12).T("¥").T(o.net)._P();
+                        }
                         h.TOOLPAD();
                     });
             }, false, 2);

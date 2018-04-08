@@ -53,16 +53,14 @@ namespace Core
         {
         }
 
+        [User]
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User) wc.Principal;
-
+            User prin = (User)wc.Principal;
             string orgid = wc[-1];
             string itemname = wc[this];
-
             var org = Obtain<Map<string, Org>>()[orgid];
-
             short num;
             if (wc.GET)
             {
@@ -85,7 +83,7 @@ namespace Core
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
                         var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
                         h.FIELD_("货品").ICON("icon", wid: 0x16)._T(it.name)._FIELD();
-                        h.FIELD_("数量").NUMBER(nameof(num), it.min, min: it.min, step: it.step)._T(it.unit)._FIELD();
+                        h.FIELD_("数量").NUMBER(nameof(num), it.min, min: it.min, max: it.stock, step: it.step)._T(it.unit)._FIELD();
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -97,16 +95,15 @@ namespace Core
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query1("SELECT unit, price FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(itemname));
-                    dc.Let(out string unit).Let(out decimal price);
+                    dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
+                    var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
 
                     if (dc.Query1("SELECT * FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid))) // add to existing cart order
                     {
                         var o = dc.ToObject<Order>();
                         (await wc.ReadAsync<Form>()).Let(out num);
-                        o.AddItem(itemname, unit, price, num);
-                        o.TotalUp();
-                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                        o.AddItem(itemname, it.unit, it.price, it.comp, num);
+                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.net).Set(o.id));
                     }
                     else // create a new order
                     {
@@ -121,9 +118,7 @@ namespace Core
                         };
                         o.Read(f, proj);
                         num = f[nameof(num)];
-
-                        o.AddItem(itemname, unit, price, num);
-                        o.TotalUp();
+                        o.AddItem(itemname, it.unit, it.price, it.comp, num);
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
                     }
@@ -144,7 +139,7 @@ namespace Core
         }
 
         [Ui("修改"), Tool(ButtonShow), User(OPRMEM)]
-        public async Task basic(WebContext wc)
+        public async Task upd(WebContext wc)
         {
             string orgid = wc[-2];
             string name = wc[this];
@@ -161,8 +156,9 @@ namespace Core
                         h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                         h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
+                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal)0.00, step: (decimal)0.01);
+                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short)1);
+                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short)1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         h.NUMBER(nameof(o.stock), o.stock, "可供");
                         h._FIELDSET();

@@ -26,22 +26,21 @@ namespace Core
         {
             string wx = wc[-2];
             int orderid = wc[this];
-            short rev;
-            decimal total;
-            User prin = (User)wc.Principal;
+            Order o = null;
             using (var dc = NewDbContext())
             {
-                dc.Query1("SELECT rev, total, custname, custtel, custaddr FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
-                dc.Let(out rev).Let(out total).Let(out string name).Let(out string tel).Let(out string addr);
-                if (prin.name != name || prin.addr != addr || prin.tel != tel) // if need to save user info
-                {
-                    if (dc.Execute("INSERT INTO users (wx, name, tel, addr) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, addr = @4", p => p.Set(wx).Set(prin.name = name).Set(prin.tel = tel).Set(prin.addr = addr)) > 0)
-                    {
-                        wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
-                    }
-                }
+                const byte proj = 0xff ^ Order.DETAIL;
+                dc.Sql("SELECT ").collst(Order.Empty, proj).T(" FROM orders WHERE id = @1 AND custwx = @2");
+                o = dc.Query1<Order>(p => p.Set(orderid).Set(wx), proj);
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(orderid + "-" + rev, total, wx, wc.RemoteAddr.ToString(), NETADDR + "/org/paynotify", "粗粮达人-健康产品");
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(
+                orderid + "-" + o.rev,
+                (o.comp ? o.net : o.total),
+                wx,
+                wc.RemoteAddr.ToString(),
+                NETADDR + "/org/paynotify",
+                "粗粮达人-健康产品"
+            );
             if (prepay_id != null)
             {
                 wc.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
@@ -84,8 +83,7 @@ namespace Core
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
                     o.UpdItem(idx, qty);
-                    o.TotalUp();
-                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2 WHERE id = @3", p => p.Set(o.items).Set(o.total).Set(o.id));
+                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.net).Set(o.id));
                 }
                 wc.GivePane(200);
             }
@@ -132,7 +130,7 @@ namespace Core
             wc.GiveRedirect("../");
         }
 
-        [Ui("给货"), Tool(ButtonShow, size: 1)]
+        [Ui("发货"), Tool(ButtonShow, size: 1)]
         public async Task deliver(WebContext wc)
         {
             string orgid = wc[-2];
@@ -140,7 +138,12 @@ namespace Core
             bool comp = false;
             if (wc.GET)
             {
-                wc.GivePane(200, h => { h.FORM_().FIELDSET_("是否采用提成").CHECKBOX(nameof(comp), comp, "采用销售提成")._FIELDSET()._FORM(); });
+                using (var dc = NewDbContext())
+                {
+                    dc.Query1("SELECT comp FROM orders WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                    dc.Let(out comp);
+                }
+                wc.GivePane(200, h => { h.FORM_().FIELDSET_("是否适用佣金").CHECKBOX(nameof(comp), comp, "计算销售佣金")._FIELDSET()._FORM(); });
             }
             else
             {
@@ -148,8 +151,12 @@ namespace Core
                 comp = f[nameof(comp)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                    dc.Query1("SELECT items FROM orders WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                    dc.Let(out OrderItem[] items);
+                    OrderItem.Ship(items);
+                    dc.Execute("UPDATE orders SET items = @1, comp = @2 WHERE id = @3 AND orgid = @4", p => p.Set(items).Set(comp).Set(orderid).Set(orgid));
                 }
+                wc.GivePane(200);
             }
         }
 
@@ -194,16 +201,7 @@ namespace Core
                         {
                             dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND orgid = @2 AND typ = 1", p => p.Set(prin.wx).Set(orgid));
                             dc.Let(out int cartid).Let(out OrderItem[] cart);
-                            if (Deduce(cart, o.items))
-                            {
-                                dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND orgid = @3", p => p.Set(cart).Set(cartid).Set(orgid));
-                            }
-                            else
-                            {
-                                dc.Rollback();
-                                wc.GivePane(200, m => { m.P("摊点上的数目不够扣减"); });
-                                return;
-                            }
+                            dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND orgid = @3", p => p.Set(cart).Set(cartid).Set(orgid));
                         }
                     }
                 }

@@ -28,7 +28,11 @@ namespace Core
                 if ((prin.opr & opr) != opr) return false; // inclusive check
                 return prin.oprat == wc[typeof(OprVarWork)];
             }
-            return (prin.adm & adm) != adm;
+            if (adm > 0)
+            {
+                return (prin.adm & adm) != adm;
+            }
+            return true;
         }
     }
 }
