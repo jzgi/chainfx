@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone;
@@ -240,22 +239,25 @@ namespace Core
                 ac.Give(400);
                 return;
             }
+
             var orgs = Obtain<Map<string, Org>>();
             var (orderid, _) = trade_no.To2Ints();
-            string orgid, addr;
-            using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
+
+            string orgid, custname, custaddr;
+            using (var dc = NewDbContext())
             {
-                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING orgid, addr", (p) => p.Set(cash).Set(orderid)))
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING orgid, custname, custaddr", (p) => p.Set(cash).Set(orderid)))
                 {
                     return; // WCPay may send notification more than once
                 }
-                dc.Let(out orgid).Let(out addr);
+                dc.Let(out orgid).Let(out custname).Let(out custaddr);
             }
+
             // send messages
             var towx = orgs[orgid].oprwx;
             if (towx != null)
             {
-                await PostSendAsync(towx, "订单收款", "¥" + cash, addr, NETADDR + "/opr//newo/");
+                await PostSendAsync(towx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");
             }
             // return xml to WCPay server
             XmlContent x = new XmlContent(true, 1024);

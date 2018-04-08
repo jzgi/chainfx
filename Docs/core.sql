@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-04-06 23:27:13
+Date: 2018-04-08 14:17:47
 */
 
 
@@ -28,16 +28,16 @@ CREATE SEQUENCE "public"."cashes_id_seq"
 SELECT setval('"public"."cashes_id_seq"', 20, true);
 
 -- ----------------------------
--- Sequence structure for orders_id_seq1
+-- Sequence structure for orders_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
-CREATE SEQUENCE "public"."orders_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
+CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
+ START 212
  CACHE 1;
-SELECT setval('"public"."orders_id_seq1"', 1, true);
+SELECT setval('"public"."orders_id_seq"', 212, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -109,7 +109,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-"id" int4 DEFAULT nextval('orders_id_seq1'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "rev" int2 DEFAULT 0 NOT NULL,
 "orgid" varchar(4) COLLATE "default" NOT NULL,
 "orgname" varchar(10) COLLATE "default",
@@ -119,9 +119,12 @@ CREATE TABLE "public"."orders" (
 "custaddr" varchar(20) COLLATE "default",
 "items" jsonb,
 "total" money,
+"net" money,
 "created" timestamp(6),
+"comp" bool,
 "cash" money DEFAULT 0,
 "paid" timestamp(6),
+"aborted" timestamp(6),
 "ended" timestamp(6),
 "status" int2
 )
@@ -197,7 +200,7 @@ WITH (OIDS=FALSE)
 -- Alter Sequences Owned By 
 -- ----------------------------
 ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "cashes"."id";
-ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 
 -- ----------------------------
@@ -218,8 +221,8 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("orgid", "name");
 -- ----------------------------
 -- Indexes structure for table orders
 -- ----------------------------
-CREATE INDEX "orders_statusorgid" ON "public"."orders" USING btree ("status", "orgid");
 CREATE INDEX "orders_statuscustwx" ON "public"."orders" USING btree ("status", "custwx");
+CREATE INDEX "orders_statusorgid" ON "public"."orders" USING btree ("status", "orgid");
 
 -- ----------------------------
 -- Primary Key structure for table orders

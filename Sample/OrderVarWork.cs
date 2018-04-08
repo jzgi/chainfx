@@ -4,7 +4,6 @@ using static System.Data.IsolationLevel;
 using static Greatbone.Modal;
 using static Core.Order;
 using static Core.CoreUtility;
-using static Core.User;
 
 namespace Core
 {
@@ -29,8 +28,8 @@ namespace Core
             Order o = null;
             using (var dc = NewDbContext())
             {
-                const byte proj = 0xff ^ Order.DETAIL;
-                dc.Sql("SELECT ").collst(Order.Empty, proj).T(" FROM orders WHERE id = @1 AND custwx = @2");
+                const byte proj = 0xff ^ DETAIL;
+                dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custwx = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(wx), proj);
             }
             var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(
@@ -38,7 +37,7 @@ namespace Core
                 (o.comp ? o.net : o.total),
                 wx,
                 wc.RemoteAddr.ToString(),
-                NETADDR + "/org/paynotify",
+                NETADDR + "/" + nameof(CoreService.paynotify),
                 "粗粮达人-健康产品"
             );
             if (prepay_id != null)
@@ -69,7 +68,7 @@ namespace Core
                         h.FORM_();
                         h.FIELDSET_("购买数量");
                         h.FIELD_("货品").ICON("/" + o.orgid + "/" + it.name + "/icon", wid: 0x16)._T(it.name)._FIELD();
-                        h.NUMBER(nameof(it.qty), it.qty, "购量", max: stock, min: (short)0, step: step);
+                        h.NUMBER(nameof(it.qty), it.qty, "购量", max: stock, min: (short) 0, step: step);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -96,34 +95,28 @@ namespace Core
         {
         }
 
-        [Ui("撤消", "【警告】确认要撤销此单吗？实收金额将退回给买家"), Tool(ButtonConfirm)]
+        [Ui("撤消", "确认要撤销此单吗？实收款项将退回给买家"), Tool(ButtonConfirm)]
         public async Task abort(WebContext wc)
         {
             string orgid = wc[-2];
             int orderid = wc[this];
             short rev = 0;
-            decimal total = 0, cash = 0;
+            decimal cash = 0;
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT rev, total, cash FROM orders WHERE id = @1 AND status = " + PAID, p => p.Set(orderid)))
+                if (dc.Query1("SELECT rev, cash FROM orders WHERE id = @1 AND status = 1", p => p.Set(orderid)))
                 {
-                    dc.Let(out rev).Let(out total).Let(out cash);
+                    dc.Let(out rev).Let(out cash);
                 }
             }
             if (cash > 0)
             {
-                string err = await WeiXinUtility.PostRefundAsync(orderid + "-" + rev, total, cash);
+                string err = await WeiXinUtility.PostRefundAsync(orderid + "-" + rev, cash, cash);
                 if (err == null) // success
                 {
-                    using (var dc = NewDbContext(ReadUncommitted))
+                    using (var dc = NewDbContext())
                     {
-                        dc.Query1("UPDATE orders SET status = " + ABORTED + ", aborted = localtimestamp WHERE id = @1 AND orgid = @2 RETURNING items", p => p.Set(orderid).Set(orgid));
-                        dc.Let(out OrderItem[] items);
-                        for (int i = 0; i < items?.Length; i++) // revert stock
-                        {
-                            var oi = items[i];
-                            dc.Execute("UPDATE items SET stock = stock + @1 WHERE orgid = @2 AND name = @3", p => p.Set(oi.qty).Set(orgid).Set(oi.name));
-                        }
+                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
                     }
                 }
             }
@@ -166,7 +159,7 @@ namespace Core
         {
             string orgid = wc[-2];
             int orderid = wc[this];
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             bool mycart;
             if (wc.GET)
             {
