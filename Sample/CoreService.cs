@@ -194,14 +194,14 @@ namespace Core
                 cityid = City.All?[0].id;
             }
 
-            var shops = Obtain<Map<string, Org>>().FindGroup(cityid);
+            var cityorgs = Obtain<Map<string, Org>>().FindGroup(cityid);
             var items = Obtain<Map<(string, string), Item>>();
 
             wc.GiveDoc(200, h =>
                 {
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
 
-                    h.BOARDVIEW(shops,
+                    h.BOARDVIEW(cityorgs,
                         o => // header
                         {
                             h.H3(o.name);
@@ -215,7 +215,8 @@ namespace Core
                         },
                         o => // body
                         {
-                            h.LISTVIEW(items.FindGroup((o.id, null)), m =>
+                            var orgitems = items.FindGroup((o.id, null));
+                            h.LISTVIEW(orgitems, m =>
                             {
                                 h.ICON("/" + m.orgid + "/" + m.name + "/icon", wid: 0x13);
                                 h.COL_(0x23);

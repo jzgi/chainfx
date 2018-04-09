@@ -364,7 +364,7 @@ namespace Greatbone
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, int grouper = -1, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {

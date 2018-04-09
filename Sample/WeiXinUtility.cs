@@ -35,18 +35,7 @@ namespace Core
 
         private static bool stop;
 
-        private static readonly Thread Renewer = new Thread(async () =>
-        {
-            while (!stop)
-            {
-                JObj jo = await WeiXin.GetAsync<JObj>("/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret, null);
-                string access_token = jo?[nameof(access_token)];
-                AccessToken = access_token;
-
-                // suspend for 1 hour
-                Thread.Sleep(3600000);
-            }
-        });
+        static Thread Renewer;
 
         public static void Setup(string weixinfile, bool deploy, string p12file = null)
         {
@@ -58,9 +47,22 @@ namespace Core
             noncestr = wx[nameof(noncestr)];
             spbillcreateip = wx[nameof(spbillcreateip)];
             key = wx[nameof(key)];
+
             // start the access token renewer thread
             if (deploy)
             {
+                Renewer = new Thread(async () =>
+                {
+                    while (!stop)
+                    {
+                        JObj jo = await WeiXin.GetAsync<JObj>("/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret, null);
+                        string access_token = jo?[nameof(access_token)];
+                        AccessToken = access_token;
+
+                        // suspend for 1 hour
+                        Thread.Sleep(3600000);
+                    }
+                });
                 Renewer.Start();
             }
 
@@ -114,7 +116,7 @@ namespace Core
             JObj jo = await WeiXin.GetAsync<JObj>("/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN", null);
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User { wx = openid, name = nickname };
+            return new User {wx = openid, name = nickname};
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
@@ -122,7 +124,7 @@ namespace Core
         public static IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
             JObj jo = new JObj
             {
                 {"appId", appid},
@@ -145,7 +147,7 @@ namespace Core
             jc.Put("content", text);
             jc._OBJ();
             jc._OBJ();
-            await WeiXin.PostAsync<XElem>("/cgi-bin/message/custom/send?access_token=" + AccessToken, jc);
+            await WeiXin.PostAsync<JObj>("/cgi-bin/message/custom/send?access_token=" + AccessToken, jc);
         }
 
         public static async Task PostSendAsync(string openid, string title, string descr, string url, string picurl = null)
@@ -161,7 +163,7 @@ namespace Core
             jc.Put("picurl", picurl);
             jc._OBJ()._ARR()._OBJ();
             jc._OBJ();
-            await WeiXin.PostAsync<XElem>("/cgi-bin/message/custom/send?access_token=" + AccessToken, jc);
+            await WeiXin.PostAsync<JObj>("/cgi-bin/message/custom/send?access_token=" + AccessToken, jc);
         }
 
         public static async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)
@@ -248,7 +250,7 @@ namespace Core
             if (sign != Sign(xe, "sign")) return false;
 
             int cash_fee = xe.Child(nameof(cash_fee)); // in cent
-            cash = ((decimal)cash_fee) / 100;
+            cash = ((decimal) cash_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }
@@ -379,7 +381,7 @@ namespace Core
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Key).Append('=').Append((string)mbr);
+                sb.Append(mbr.Key).Append('=').Append((string) mbr);
             }
             sb.Append("&key=").Append(key);
             return StrUtility.MD5(sb.ToString());

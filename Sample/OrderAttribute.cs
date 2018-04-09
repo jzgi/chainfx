@@ -15,10 +15,12 @@ namespace Core
         {
             if (stack[0] is Order o)
             {
-                if (state == 'P')
+                if (state == 'P') // payable
                     return o.status < Order.PAID;
                 if (state == 'A')
                     return o.custaddr != null;
+                if (state == 'E') // enable
+                    return o.status >= Order.PAID;
             }
             return false;
         }

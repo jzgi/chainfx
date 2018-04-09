@@ -153,52 +153,16 @@ namespace Core
         }
 
 
-        [Ui("完成"), Tool(ButtonShow)]
-        public async Task end(WebContext wc)
+        [Ui("完成", "确定结束该订单？"), Tool(ButtonConfirm), Order('E')]
+        public void end(WebContext wc)
         {
             string orgid = wc[-2];
             int orderid = wc[this];
-            User prin = (User) wc.Principal;
-            bool mycart;
-            if (wc.GET)
+            using (var dc = NewDbContext(ReadCommitted))
             {
-                wc.GivePane(200, h =>
-                {
-                    // check personal pos
-                    using (var dc = NewDbContext())
-                    {
-                        h.FORM_();
-                        if (dc.Query1("SELECT TRUE FROM orders WHERE orgid = @1 AND status = 0 AND wx = @2 AND typ = 1", p => p.Set(orgid).Set(prin.wx)))
-                        {
-                            h.P("检测到您当前有分配的摊点");
-                            h.CHECKBOX(nameof(mycart), true, "完成同时扣减摊点里的数目");
-                        }
-                        else
-                        {
-                            h.P("确认已经出货并且结束此单吗？");
-                        }
-                        h._FORM();
-                    }
-                });
+                dc.Execute("UPDATE orders SET status = 2, ended = localtimestamp WHERE id = @1 AND orgid = @2 AND status = 1", p => p.Set(orderid).Set(orgid));
             }
-            else // POST
-            {
-                mycart = (await wc.ReadAsync<Form>())[nameof(mycart)];
-                using (var dc = NewDbContext(ReadCommitted))
-                {
-                    if (dc.Query1("UPDATE orders SET status = " + ENDED + ", closed = localtimestamp WHERE id = @1 AND orgid = @2 AND status = " + PAID + " RETURNING *", p => p.Set(orderid).Set(orgid)))
-                    {
-                        var o = dc.ToObject<Order>();
-                        if (mycart) // deduce my cart loads
-                        {
-                            dc.Query1("SELECT id, items FROM orders WHERE wx = @1 AND status = 0 AND orgid = @2 AND typ = 1", p => p.Set(prin.wx).Set(orgid));
-                            dc.Let(out int cartid).Let(out OrderItem[] cart);
-                            dc.Execute("UPDATE orders SET items = @1 WHERE id = @2 AND status = 0 AND orgid = @3", p => p.Set(cart).Set(cartid).Set(orgid));
-                        }
-                    }
-                }
-                wc.GivePane(200);
-            }
+            wc.GiveRedirect("../");
         }
     }
 
