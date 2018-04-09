@@ -562,7 +562,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_(string href, Style style = 0, bool? size = null, byte width = 0, char target = (char)0)
+        public HtmlContent A_(string href, Style style = 0, bool? size = null, byte width = 0, char target = (char) 0)
         {
             Add("<a href=\"");
             Add(href);
@@ -592,7 +592,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_HREF_(Style style = 0, bool? size = null, byte width = 0, char target = (char)0)
+        public HtmlContent A_HREF_(Style style = 0, bool? size = null, byte width = 0, char target = (char) 0)
         {
             Add("<a class=\"uk-button");
             if (style == 0) Add(" uk-button-default");
@@ -637,7 +637,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H2(string v, char line = (char)0)
+        public HtmlContent H2(string v, char line = (char) 0)
         {
             Add("<h2 class=\"uk-h3");
             if (line == 'd')
@@ -667,7 +667,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H3(string v, char line = (char)0)
+        public HtmlContent H3(string v, char line = (char) 0)
         {
             Add("<h3 class=\"uk-h3");
             if (line == 'd')
@@ -697,7 +697,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H4(string v, char line = (char)0)
+        public HtmlContent H4(string v, char line = (char) 0)
         {
             Add("<h4 class=\"uk-h4");
             if (line == 'b')
@@ -727,7 +727,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H5(string v, char line = (char)0)
+        public HtmlContent H5(string v, char line = (char) 0)
         {
             Add("<h5 class=\"uk-h5");
             if (line == 'b')
@@ -1403,7 +1403,7 @@ namespace Greatbone
                 for (int i = 0; i < arr.Length; i++)
                 {
                     D obj = arr[i];
-                    if (filter != null && filter(obj))
+                    if (filter == null || filter(obj))
                     {
                         stack[level] = obj;
 
@@ -1422,7 +1422,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<D> title, Action<D> content)
+        public HtmlContent ACCORDION<D>(D[] arr, Action<D> title, Action<D> content)
         {
             Add("<ul uk-accordion=\"multiple: true\">");
             if (arr != null)
@@ -2216,7 +2216,7 @@ namespace Greatbone
             bool grp = !step.Equals(default(V)); // input group with up and down
             if (grp)
             {
-                Add("<div class=\"uk-inline\">");
+                Add("<div class=\"uk-inline uk-width-1-2\">");
                 Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown()\"></a>");
             }
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
@@ -2388,7 +2388,7 @@ namespace Greatbone
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
-                        if (e.IsTop)
+                        if (e.IsHead)
                         {
                             STATIC_(null);
                             Add(e.Value.ToString());
@@ -2617,7 +2617,7 @@ namespace Greatbone
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
-                        if (e.top)
+                        if (e.IsHead)
                         {
                             if (grpopen)
                             {

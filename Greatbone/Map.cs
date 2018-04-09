@@ -15,13 +15,10 @@ namespace Greatbone
 
         int count;
 
-        readonly Predicate<K> toper;
+        // current group head
+        int head = -1;
 
-        // indices of top entries
-        int[] top;
-        int topCount;
-
-        public Map(int capacity = 16, Predicate<K> toper = null)
+        public Map(int capacity = 16)
         {
             // find a least power of 2 that is greater than or equal to capacity
             int size = 8;
@@ -30,12 +27,6 @@ namespace Greatbone
                 size <<= 1;
             }
             ReInit(size);
-            // init toper 
-            if (toper != null)
-            {
-                this.toper = toper;
-                this.top = new int[16];
-            }
         }
 
         void ReInit(int size) // size must be power of 2
@@ -52,52 +43,71 @@ namespace Greatbone
             count = 0;
         }
 
-        void AddTop(int idx)
-        {
-            int len = top.Length;
-            if (len <= topCount)
-            {
-                int[] alloc = new int[len * 2];
-                Array.Copy(top, alloc, topCount);
-                top = alloc;
-            }
-            top[topCount++] = idx;
-        }
-
         public int Count => count;
 
         public Entry At(int idx) => entries[idx];
 
         public V this[int idx] => entries[idx].value;
 
-        public int TopCount => topCount;
-
-        public Entry TopAt(int idx) => entries[top[idx]];
-
-        public V Top(int idx, out int open, out int close)
+        public V[] GetGroup(K key)
         {
-            int i = top[idx];
-            if (idx < topCount - 1)
+            int idx = IndexOf(key);
+            if (idx > -1)
             {
-                open = i + 1;
-                close = top[idx + 1] - 1;
+                int tail = entries[idx].tail;
+                int ret = tail - idx; // number of returned elements
+                V[] arr = new V[ret];
+                for (int i = 0; i < ret; i++)
+                {
+                    arr[i] = entries[idx + 1 + i].value;
+                }
+                return arr;
             }
-            else
-            {
-                open = i + 1;
-                close = count - 1;
-            }
-            return entries[i].value;
+            return null;
         }
 
-        public V[] Top()
+        public V[] FindGroup(K key, bool inclusive = true)
         {
-            V[] arr = new V[topCount];
-            for (int i = 0; i < topCount; i++)
+            string str = key as string;
+            // iterate through group heads
+            int p = 0;
+            while (p < count)
             {
-                arr[i] = entries[top[i]].value;
+                int tail = entries[p].tail;
+                if (tail == -1) break;
+
+                // if meet the target group head
+                if (entries[p].value is IGroupKeyable<K> gkeyable)
+                {
+                    if (gkeyable.GroupWith(key))
+                    {
+                        int ret = inclusive ? tail - p + 1 : tail - p;
+                        V[] arr = new V[ret];
+                        for (int i = 0; i < ret; i++)
+                        {
+                            arr[i] = entries[inclusive ? p + i : p + 1 + i].value;
+                        }
+                        return arr;
+                    }
+                }
+                p = tail + 1;
             }
-            return arr;
+            return null;
+        }
+
+        public V[] GetHeads()
+        {
+            Roll<V> roll = new Roll<V>(16);
+            // iterate through group heads
+            int p = 0;
+            while (p < count)
+            {
+                int tail = entries[p].tail;
+                if (tail == -1) break;
+                roll.Add(entries[p].value);
+                p = tail + 1;
+            }
+            return roll.ToArray();
         }
 
         public int IndexOf(K key)
@@ -166,14 +176,20 @@ namespace Greatbone
 
             // add a new entry
             idx = count;
-            bool istop = toper?.Invoke(key) ?? false; // determine if top or not
-            if (istop)
-            {
-                AddTop(idx);
-            }
-            entries[idx] = new Entry(code, buckets[buck], key, value, istop);
+            entries[idx] = new Entry(code, buckets[buck], key, value);
             buckets[buck] = idx;
             count++;
+
+            // decide group
+            if (value is IGroupKeyable<K> gkeyable)
+            {
+                // compare to current head
+                if (head == -1 || !gkeyable.GroupWith(entries[head].key))
+                {
+                    head = idx;
+                }
+                entries[head].tail = idx;
+            }
         }
 
         public bool Contains(K key)
@@ -272,19 +288,6 @@ namespace Greatbone
             }
         }
 
-        public void ForEachTop(Func<K, V, bool> cond, Action<K, V> hand)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                K key = entries[i].key;
-                V value = entries[i].value;
-                if (cond == null || cond(key, value))
-                {
-                    hand(entries[i].key, entries[i].value);
-                }
-            }
-        }
-
         public struct Entry
         {
             readonly int code; // lower 31 bits of hash code
@@ -295,15 +298,15 @@ namespace Greatbone
 
             internal readonly int next; // index of next entry, -1 if last
 
-            internal readonly bool top;
+            internal int tail; // the index of group tail, when this is the head entry
 
-            internal Entry(int code, int next, K key, V value, bool top)
+            internal Entry(int code, int next, K key, V value)
             {
                 this.code = code;
                 this.next = next;
                 this.key = key;
                 this.value = value;
-                this.top = top;
+                this.tail = -1;
             }
 
             internal bool Match(int code, K key)
@@ -320,7 +323,7 @@ namespace Greatbone
 
             public V Value => value;
 
-            public bool IsTop => top;
+            public bool IsHead => tail > -1;
         }
 
         public struct Enumerator : IEnumerator<Entry>
@@ -352,6 +355,22 @@ namespace Greatbone
             public void Dispose()
             {
             }
+        }
+
+        static void Test()
+        {
+            Map<string, string> m = new Map<string, string>
+            {
+                {"010101", "mike"},
+                {"010102", "jobs"},
+                {"010103", "tim"},
+                {"010104", "john"},
+                {"010301", "abigae"},
+                {"010302", "stephen"},
+                {"010303", "cox"},
+            };
+
+            var r = m.FindGroup("0103");
         }
     }
 }

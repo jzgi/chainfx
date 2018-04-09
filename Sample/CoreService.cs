@@ -35,6 +35,16 @@ namespace Core
                     }
                 }, 3600 * 8
             );
+
+            Register(delegate
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY orgid, name");
+                        return dc.Query<(string, string), Item>(proj: 0xff);
+                    }
+                }, 3600 * 8
+            );
         }
 
         public async Task<bool> AuthenticateAsync(WebContext wc)
@@ -184,13 +194,9 @@ namespace Core
                 cityid = City.All?[0].id;
             }
 
-            var orgs = Obtain<Map<string, Org>>();
-            var shops = orgs.All(x => x.id.StartsWith(cityid));
-            Item[] items = null;
-            using (var dc = NewDbContext())
-            {
-                items = dc.Query<Item>("SELECT * FROM items WHERE orgid LIKE @1 AND status > 0 ORDER BY orgid, status", p => p.Set(cityid + "%"));
-            }
+            var shops = Obtain<Map<string, Org>>().FindGroup(cityid);
+            var items = Obtain<Map<(string, string), Item>>();
+
             wc.GiveDoc(200, h =>
                 {
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
@@ -209,7 +215,7 @@ namespace Core
                         },
                         o => // body
                         {
-                            h.LISTVIEW(items, m =>
+                            h.LISTVIEW(items.FindGroup((o.id, null)), m =>
                             {
                                 h.ICON("/" + m.orgid + "/" + m.name + "/icon", wid: 0x13);
                                 h.COL_(0x23);
@@ -220,7 +226,7 @@ namespace Core
                                 h.TOOL(nameof(CoreItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
-                            }, m => m.orgid == o.id);
+                            });
                         }
                         , o => h.TOOLPAD()
                     );

@@ -5,7 +5,7 @@ namespace Core
     /// <summary>
     /// An item data object, that represents a product or service.
     /// </summary>
-    public class Item : IData
+    public class Item : IData, IGroupKeyable<(string, string)>
     {
         public static readonly Item Empty = new Item();
 
@@ -62,6 +62,13 @@ namespace Core
             s.Put(nameof(step), step);
             s.Put(nameof(stock), stock);
             s.Put(nameof(status), status);
+        }
+
+        public (string, string) Key => (orgid, name);
+
+        public bool GroupWith((string, string) akey)
+        {
+            return orgid == akey.Item1;
         }
     }
 }

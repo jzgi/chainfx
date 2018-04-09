@@ -60,15 +60,14 @@ namespace Core
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
-                    var it = o.items[idx];
-                    dc.Query1("SELECT step, stock FROM items WHERE orgid = @1 AND name = @2", p => p.Set(o.orgid).Set(it.name));
-                    dc.Let(out short step).Let(out short stock);
+                    var oi = o.items[idx];
+                    var item = Obtain<Map<(string, string), Item>>()[(o.orgid, oi.name)];
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.FIELD_("货品").ICON("/" + o.orgid + "/" + it.name + "/icon", wid: 0x16)._T(it.name)._FIELD();
-                        h.NUMBER(nameof(it.qty), it.qty, "购量", max: stock, min: (short) 0, step: step);
+                        h.FIELD_("货品").ICON("/" + o.orgid + "/" + oi.name + "/icon", wid: 0x16)._T(oi.name)._FIELD();
+                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.stock, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();
                     });

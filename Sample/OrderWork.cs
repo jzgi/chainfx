@@ -62,7 +62,7 @@ namespace Core
                 {
                     h.TOOLBAR();
                 }
-                h.ACCORDIONVIEW(arr,
+                h.ACCORDION(arr,
                     o => { h.T(o.custname); },
                     o =>
                     {

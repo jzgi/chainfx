@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    public class Org : IData, IKeyable<string>
+    public class Org : IData, IGroupKeyable<string>
     {
         public static readonly Org Empty = new Org();
 
@@ -76,5 +76,10 @@ namespace Core
         }
 
         public string Key => id;
+
+        public bool GroupWith(string akey)
+        {
+            return StrUtility.Compare(id, akey, 2);
+        }
     }
 }

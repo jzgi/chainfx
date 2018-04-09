@@ -30,7 +30,7 @@ namespace Core
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.ACCORDIONVIEW(arr,
+                    h.ACCORDION(arr,
                         o => h.T(o.name),
                         o =>
                         {

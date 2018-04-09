@@ -346,38 +346,38 @@ namespace Greatbone
             return null;
         }
 
-        public Map<K, D> Query<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
-                return ToMap(proj, keyer, toper);
+                return ToMap(proj, keyer);
             }
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
-                return ToMap(proj, keyer, toper);
+                return ToMap(proj, keyer);
             }
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, int grouper = -1, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
-                return ToMap(proj, keyer, toper);
+                return ToMap(proj, keyer);
             }
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParams> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
-                return ToMap(proj, keyer, toper);
+                return ToMap(proj, keyer);
             }
             return null;
         }
@@ -540,9 +540,9 @@ namespace Greatbone
             return roll.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null) where D : IData, new()
         {
-            Map<K, D> map = new Map<K, D>(64, toper);
+            Map<K, D> map = new Map<K, D>(64);
             while (Next())
             {
                 D obj = new D();
@@ -557,13 +557,13 @@ namespace Greatbone
                 {
                     key = keyer(obj);
                 }
-                else if (obj is IKeyable<K> mappable)
+                else if (obj is IKeyable<K> keyable)
                 {
-                    key = mappable.Key;
+                    key = keyable.Key;
                 }
                 else
                 {
-                    throw new ServiceException("neither keyer nor IMappable<D>");
+                    throw new ServiceException("neither keyer nor IKeyable<D>");
                 }
                 map.Add(key, obj);
             }

@@ -494,5 +494,18 @@ namespace Greatbone
             string c = str.Substring(p0, len - p0);
             return (a, b, c);
         }
+
+        public static bool Compare(string a, string b, int num)
+        {
+            if (a.Length < num || b.Length < num) return false;
+            for (int i = 0; i < num; i++)
+            {
+                if (a[i] != b[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

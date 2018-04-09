@@ -57,10 +57,11 @@ namespace Core
         [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             string orgid = wc[-1];
             string itemname = wc[this];
             var org = Obtain<Map<string, Org>>()[orgid];
+            var item = Obtain<Map<(string, string), Item>>()[(orgid, itemname)];
             short num;
             if (wc.GET)
             {
@@ -80,10 +81,8 @@ namespace Core
                         }
                         // quantity
                         h.FIELDSET_("加入购物车");
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
-                        var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-                        h.FIELD_("货品").ICON("icon", wid: 0x16)._T(it.name)._FIELD();
-                        h.FIELD_("数量").NUMBER(nameof(num), it.min, min: it.min, max: it.stock, step: it.step)._T(it.unit)._FIELD();
+                        h.FIELD_("货品").ICON("icon", wid: 0x16)._T(item.name)._FIELD();
+                        h.FIELD_("数量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step)._T(item.unit)._FIELD();
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -95,14 +94,12 @@ namespace Core
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE orgid = @1 AND name = @2");
-                    var it = dc.Query1<Item>(p => p.Set(orgid).Set(itemname));
-
-                    if (dc.Query1("SELECT * FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid))) // add to existing cart order
+                    // determine whether add to existing order or create new
+                    if (dc.Query1("SELECT * FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)))
                     {
                         var o = dc.ToObject<Order>();
                         (await wc.ReadAsync<Form>()).Let(out num);
-                        o.AddItem(itemname, it.unit, it.price, it.comp, num);
+                        o.AddItem(itemname, item.unit, item.price, item.comp, num);
                         dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.net).Set(o.id));
                     }
                     else // create a new order
@@ -118,9 +115,18 @@ namespace Core
                         };
                         o.Read(f, proj);
                         num = f[nameof(num)];
-                        o.AddItem(itemname, it.unit, it.price, it.comp, num);
+                        o.AddItem(itemname, item.unit, item.price, item.comp, num);
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
+
+                        // save user info
+                        if (prin.name != o.custname || prin.tel != o.custtel || prin.addr != o.custaddr)
+                        {
+                            if (dc.Execute("INSERT INTO users (wx, name, tel, addr) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, addr = @4", p => p.Set(o.custwx).Set(prin.name = o.custname).Set(prin.tel = o.custtel).Set(prin.addr = o.custaddr)) > 0)
+                            {
+                                wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
+                            }
+                        }
                     }
                     wc.GivePane(200, m =>
                     {
@@ -156,9 +162,9 @@ namespace Core
                         h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                         h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal)0.00, step: (decimal)0.01);
-                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short)1);
-                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short)1);
+                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal) 0.00, step: (decimal) 0.01);
+                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
+                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         h.NUMBER(nameof(o.stock), o.stock, "可供");
                         h._FIELDSET();
