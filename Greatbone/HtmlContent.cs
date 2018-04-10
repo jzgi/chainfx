@@ -637,6 +637,22 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent STATUS(string label, Style style = Style.Success)
+        {
+            Add("<span class=\"uk-card-badge");
+            if (style > 0)
+            {
+                if (style == Style.Primary) Add("-primary");
+                else if (style == Style.Success) Add("-success");
+                else if (style == Style.Warning) Add("-warning");
+                else if (style == Style.Danger) Add("-danger");
+            }
+            Add("\">");
+            Add(label);
+            Add("</span>");
+            return this;
+        }
+
         public HtmlContent H2(string v, char line = (char) 0)
         {
             Add("<h2 class=\"uk-h3");

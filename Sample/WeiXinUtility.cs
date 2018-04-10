@@ -49,7 +49,7 @@ namespace Core
             key = wx[nameof(key)];
 
             // start the access token renewer thread
-            if (deploy)
+            if (deploy) // access_token must be in the whitelist
             {
                 Renewer = new Thread(async () =>
                 {

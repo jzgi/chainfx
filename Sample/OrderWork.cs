@@ -11,7 +11,7 @@ namespace Core
     {
         protected OrderWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, long>((obj) => ((Order)obj).id);
+            CreateVar<V, long>((obj) => ((Order) obj).id);
         }
 
         // for customer side viewing
@@ -24,7 +24,7 @@ namespace Core
                     h.TOOLBAR();
                 }
                 h.BOARDVIEW(arr,
-                    o => { h.H5(o.orgname); },
+                    o => { h.H5(o.orgname).STATUS(Statuses[o.status]); },
                     o =>
                     {
                         h.P_("收货").T(o.custaddr)._T(o.custname).T(o.custtel)._P();
@@ -33,13 +33,13 @@ namespace Core
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            if (o.status <= 1)
+                            if (o.status == CREATED)
                             {
-                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P_(wid: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._LINK()._P().P(oi.ship, wid: 0x16);
+                                h.P(oi.name, wid: 0x12).P_(wid: 0x16).T("¥").T(oi.price)._P().P_(wid: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._T(oi.unit)._LINK()._P().P(oi.ship, wid: 0x16);
                             }
                             else
                             {
-                                h.P_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._P();
+                                h.P(oi.name, wid: 0x12).P_(wid: 0x16).T("¥").T(oi.price)._P().P_(wid: 0x16).T(oi.qty)._T(oi.unit)._P();
                             }
                         }
                         h.P_("总额", wid: 0x12).T("¥").T(o.total)._P();
@@ -48,7 +48,7 @@ namespace Core
                             h.P_("净额", wid: 0x12).T("¥").T(o.net)._P();
                         }
                     },
-                    tools ? o => h.TOOLPAD() : (Action<Order>)null
+                    tools ? o => h.TOOLPAD() : (Action<Order>) null
                 );
             }, false, 2);
         }
@@ -63,7 +63,7 @@ namespace Core
                     h.TOOLBAR();
                 }
                 h.ACCORDION(arr,
-                    o => { h.T(o.custname); },
+                    o => { h.T(o.custname).STATUS(Statuses[o.status]); },
                     o =>
                     {
                         h.P_("收货").T(o.custname)._T(o.custaddr).T(o.custtel)._P();
@@ -77,7 +77,7 @@ namespace Core
                             }
                             else
                             {
-                                h.P_().T(oi.name)._T("¥").T(oi.price)._T(oi.qty).T(oi.unit)._P();
+                                h.P(oi.name, wid: 0x12).P_(wid: 0x16).T("¥").T(oi.price)._P().P_(wid: 0x16)._T(oi.qty).T(oi.unit)._P();
                             }
                         }
                         h.P_("总额", wid: 0x12).T("¥").T(o.total)._P();
@@ -181,7 +181,7 @@ namespace Core
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status > 4 AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                 GiveAccordionOrderPage(wc, arr);
             }
         }

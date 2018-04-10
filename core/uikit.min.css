@@ -2548,8 +2548,9 @@ select.uk-form-width-xsmall {
 }
 
 .uk-card-header {
+    display: flex;
+    align-items: center;
     padding: 8px;
-    vertical-align: middle;
 }
 
 .uk-card-header .uk-checkbox {
@@ -2593,7 +2594,32 @@ select.uk-form-width-xsmall {
 
 .uk-card-badge {
     font-size: 0.875rem;
-    float: right;
+    margin-left: auto;
+    color: #c4c4c4;
+}
+
+.uk-card-badge-primary {
+    font-size: 0.875rem;
+    margin-left: auto;
+    color: #007aff;
+}
+
+.uk-card-badge-success {
+    font-size: 0.875rem;
+    margin-left: auto;
+    color: #4cd964;
+}
+
+.uk-card-badge-warning {
+    font-size: 0.875rem;
+    margin-left: auto;
+    color: #ff9500;
+}
+
+.uk-card-badge-danger {
+    font-size: 0.875rem;
+    margin-left: auto;
+    color: #ff3b30;
 }
 
 .uk-card-hover:not(.uk-card-default):not(.uk-card-primary):not(.uk-card-secondary):hover {
@@ -4612,7 +4638,8 @@ ul.uk-nav-sub {
 }
 
 .uk-accordion-title {
-    display: block;
+    display: flex;
+    align-items: center;
     font-size: 1.125rem;
     padding: 8px;
     color: #333;
