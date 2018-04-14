@@ -100,15 +100,17 @@ namespace Greatbone
 
         public bool HasAuthorize => authorize != null;
 
-        public bool DoAuthorize(WebContext wc, bool strict)
+        public bool DoAuthorize(WebContext wc)
         {
-            if (authorize != null && strict)
+            if (authorize != null)
             {
-                if (wc.Principal == null)
-                {
-                    return false;
-                }
-                return authorize.Check(wc);
+                IData prin = wc.Principal;
+
+                if (prin == null) throw AuthorizeException.Null;
+
+                if (!authorize.Ready(prin)) throw AuthorizeException.NotReady;
+
+                return authorize.Allowed(prin, wc);
             }
             return true;
         }

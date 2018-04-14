@@ -51,6 +51,8 @@ namespace Greatbone
 
         public int Subscript { get; internal set; }
 
+        public Exception Except { get; set; }
+
         /// The decrypted/decoded principal object.
         ///
         public IData Principal { get; set; }
@@ -136,6 +138,7 @@ namespace Greatbone
         public override string TraceIdentifier { get; set; } = null;
 
         public override ISession Session { get; set; } = null;
+
 
         //
         // REQUEST

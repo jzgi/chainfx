@@ -21,7 +21,7 @@ namespace Core
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {ABORTED, "已撤单"},
-            {CREATED, null},
+            {CREATED, "未付款"},
             {PAID, "已付款"},
             {ENDED, "已完成"}
         };

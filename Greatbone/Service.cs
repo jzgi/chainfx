@@ -143,12 +143,6 @@ namespace Greatbone
         {
         }
 
-        public virtual void Catch(Exception ex, WebContext wc)
-        {
-            WAR(ex.Message, ex);
-            wc.Give(500, ex.Message);
-        }
-
         /// <summary>
         /// To asynchronously process the request.
         /// </summary>
@@ -176,7 +170,17 @@ namespace Greatbone
             }
             catch (Exception ex)
             {
-                Catch(ex, wc);
+                if (Catch != null)
+                {
+                    wc.Except = ex; // attatch exception to current context
+                    if (Catch.IsAsync) await Catch.DoAsync(wc, 0);
+                    else Catch.Do(wc, 0);
+                }
+                else
+                {
+                    WAR(ex.Message, ex);
+                    wc.Give(500, ex.Message);
+                }
             }
 
             // sending
@@ -524,8 +528,8 @@ namespace Greatbone
             try // handling
             {
                 bool cont = true;
-                if (this is IAuthenticateAsync aasync) cont = await aasync.AuthenticateAsync(wc);
-                else if (this is IAuthenticate a) cont = a.Authenticate(wc);
+                if (this is IAuthenticateAsync auth2) cont = await auth2.AuthenticateAsync(wc);
+                else if (this is IAuthenticate auth) cont = auth.Authenticate(wc);
                 if (!cont)
                 {
                     return;
@@ -557,7 +561,17 @@ namespace Greatbone
             }
             catch (Exception ex)
             {
-                Catch(ex, wc);
+                if (Catch != null)
+                {
+                    wc.Except = ex; // attatch exception to current context
+                    if (Catch.IsAsync) await Catch.DoAsync(wc, 0);
+                    else Catch.Do(wc, 0);
+                }
+                else
+                {
+                    WAR(ex.Message, ex);
+                    wc.Give(500, ex.Message);
+                }
             }
 
             try // sending

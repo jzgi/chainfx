@@ -14,8 +14,6 @@ namespace Greatbone
     /// <remarks>A work can contain child/sub works.</remarks>
     public abstract class Work : Nodule
     {
-        internal static readonly AuthorizeException AuthorizeEx = new AuthorizeException();
-
         // max nesting levels
         const int MaxNesting = 8;
 
@@ -30,6 +28,9 @@ namespace Greatbone
 
         // the default procedure, can be null
         readonly Procedure @default;
+
+        // the catch procedure, can be null
+        readonly Procedure @catch;
 
         // procedure with UiToolAttribute
         readonly Procedure[] tooled;
@@ -74,7 +75,7 @@ namespace Greatbone
 
                 procedures.Add(prc);
                 if (prc.Key == string.Empty) @default = prc;
-
+                if (prc.Key == "catch") @catch = prc;
                 if (prc.Tool?.MustPick == true) pick = true;
             }
 
@@ -111,6 +112,8 @@ namespace Greatbone
         public bool HasPick => pick;
 
         public Procedure Default => @default;
+
+        public Procedure Catch => @catch;
 
         public Map<string, Work> Works => works;
 
@@ -307,7 +310,7 @@ namespace Greatbone
 
         internal Work Resolve(ref string relative, WebContext wc)
         {
-            if (!DoAuthorize(wc, true)) throw AuthorizeEx;
+            if (!DoAuthorize(wc)) throw AuthorizeException.NotAllowed;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -330,10 +333,10 @@ namespace Greatbone
                 object princi = null;
                 if (key.Length == 0) // resolve shortcut
                 {
-                    if (prin == null) throw AuthorizeEx;
+                    if (prin == null) throw AuthorizeException.Null;
                     if ((princi = varwork.GetVariableKey(prin)) == null)
                     {
-                        throw AuthorizeEx;
+                        throw AuthorizeException.Null;
                     }
                 }
 
@@ -350,7 +353,7 @@ namespace Greatbone
         /// <param name="rsc">the resource path</param>
         /// <param name="wc">WebContext</param>
         /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
-        /// <seealso cref="AuthorizeAttribute.Check"/>
+        /// <seealso cref="AuthorizeAttribute.Allowed"/>
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
@@ -384,7 +387,7 @@ namespace Greatbone
                     return;
                 }
 
-                if (!prc.DoAuthorize(wc, true)) throw AuthorizeEx;
+                if (!prc.DoAuthorize(wc)) throw AuthorizeException.NotAllowed;
                 wc.Procedure = prc;
                 // any before filterings
                 if (prc.Before?.Do(wc) == false) goto ProcedureExit;
@@ -394,14 +397,8 @@ namespace Greatbone
                 if (!Service.TryGiveFromCache(wc))
                 {
                     // method invocation
-                    if (prc.IsAsync)
-                    {
-                        await prc.DoAsync(wc, subscpt); // invoke procedure method
-                    }
-                    else
-                    {
-                        prc.Do(wc, subscpt);
-                    }
+                    if (prc.IsAsync) await prc.DoAsync(wc, subscpt); // invoke procedure method
+                    else prc.Do(wc, subscpt);
 
                     Service.TryCacheUp(wc);
                 }

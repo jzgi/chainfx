@@ -19,18 +19,17 @@ namespace Core
 
         public bool IsOpr => opr > 0;
 
-        public override bool Check(WebContext wc)
+        public override bool Allowed(IData prin, WebContext wc)
         {
-            if (!(wc.Principal is User prin)) return false;
-
+            var o = (User) prin;
             if (opr > 0)
             {
-                if ((prin.opr & opr) != opr) return false; // inclusive check
-                return prin.oprat == wc[typeof(OprVarWork)];
+                if ((o.opr & opr) != opr) return false; // inclusive check
+                return o.oprat == wc[typeof(OprVarWork)];
             }
             if (adm > 0)
             {
-                return (prin.adm & adm) != adm;
+                return (o.adm & adm) != adm;
             }
             return true;
         }

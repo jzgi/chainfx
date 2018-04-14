@@ -120,7 +120,7 @@ namespace Core
             return true;
         }
 
-        public override void Catch(Exception ex, WebContext wc)
+        public void @catch(WebContext wc, Exception ex)
         {
             if (ex is AuthorizeException)
             {
@@ -204,14 +204,18 @@ namespace Core
                     h.BOARDVIEW(cityorgs,
                         o => // header
                         {
+                            h.COL_();
+                            h.ROW_();
                             h.H3(o.name);
                             if (o.oprtel != null)
                             {
-//                                h.BADGE_LINK( "/a/", "commenting");
+                                //                                h.BADGE_LINK( "/a/", "commenting");
                                 h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
                             }
+                            h._ROW();
                             h.P(o.descr, "简介");
                             h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                            h._COL();
                         },
                         o => // body
                         {

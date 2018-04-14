@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-04-08 14:17:47
+Date: 2018-04-10 16:31:05
 */
 
 
@@ -23,9 +23,9 @@ CREATE SEQUENCE "public"."cashes_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 20
+ START 23
  CACHE 1;
-SELECT setval('"public"."cashes_id_seq"', 20, true);
+SELECT setval('"public"."cashes_id_seq"', 23, true);
 
 -- ----------------------------
 -- Sequence structure for orders_id_seq
@@ -35,9 +35,9 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 212
+ START 222
  CACHE 1;
-SELECT setval('"public"."orders_id_seq"', 212, true);
+SELECT setval('"public"."orders_id_seq"', 222, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq

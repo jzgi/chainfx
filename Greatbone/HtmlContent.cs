@@ -93,6 +93,13 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent RMB(decimal v)
+        {
+            Add('¥');
+            Add(v);
+            return this;
+        }
+
         public HtmlContent T(double v)
         {
             Add(v);
@@ -624,7 +631,7 @@ namespace Greatbone
 
         public HtmlContent BADGE_LINK(string href, string icon, string label = null)
         {
-            Add("<a class=\"uk-button-link uk-card-badge uk-icon-link\" href=\"");
+            Add("<a class=\"uk-button-link uk-card-badge-primary uk-icon-link\" href=\"");
             Add(href);
             Add("\" uk-icon=\"");
             Add(icon);
@@ -637,7 +644,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent STATUS(string label, Style style = Style.Success)
+        public HtmlContent STATUS(string label, Style style = Style.None)
         {
             Add("<span class=\"uk-card-badge");
             if (style > 0)
@@ -1749,7 +1756,7 @@ namespace Greatbone
         public HtmlContent LINK_(Procedure prc, int subscript = -1)
         {
             // check procedure's availability
-            bool ok = prc.DoAuthorize(webCtx, false);
+            bool ok = prc.DoAuthorize(webCtx);
             if (ok && level >= 0)
             {
                 ok = prc.DoState(webCtx, stack, level);
@@ -1877,7 +1884,7 @@ namespace Greatbone
         public HtmlContent BUTTON_(Procedure prc, int subscript = -1)
         {
             // check procedure's availability
-            bool ok = prc.DoAuthorize(webCtx, false);
+            bool ok = prc.DoAuthorize(webCtx);
             if (ok && level >= 0)
             {
                 ok = prc.DoState(webCtx, stack, level);
@@ -2233,7 +2240,7 @@ namespace Greatbone
             if (grp)
             {
                 Add("<div class=\"uk-inline uk-width-1-2\">");
-                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown()\"></a>");
+                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown();this.nextSibling.form.oninput();\"></a>");
             }
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
@@ -2269,7 +2276,7 @@ namespace Greatbone
 
             if (grp)
             {
-                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp()\"></a>");
+                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp();this.previousSibling.form.oninput();\"></a>");
                 Add("</div>");
             }
 
@@ -2947,6 +2954,20 @@ namespace Greatbone
             Add(name);
             Add("\">");
             AddPrimitive(v);
+            Add("</output>");
+
+            if (label != null) _FIELD();
+            return this;
+        }
+
+        public HtmlContent OUTPUT(string name, decimal v, string label = null)
+        {
+            if (label != null) FIELD_(label);
+
+            Add("<output class=\"uk-output\" name=\"");
+            Add(name);
+            Add("\">¥");
+            Add(v);
             Add("</output>");
 
             if (label != null) _FIELD();
