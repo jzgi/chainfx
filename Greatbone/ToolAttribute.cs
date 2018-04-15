@@ -18,18 +18,23 @@ namespace Greatbone
 
         readonly byte size;
 
-        public ToolAttribute(Modal modal, Style style = Style.Default, byte size = 2)
+        readonly bool auth;
+
+        public ToolAttribute(Modal modal, Style style = Style.Default, byte size = 2, bool auth = false)
         {
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0f00;
             this.size = size;
             this.style = style;
+            this.auth = auth;
         }
 
         public byte Size => size;
 
         public Style Style => style;
+
+        public bool Auth => auth;
 
         public int Ordinals { get; set; }
 

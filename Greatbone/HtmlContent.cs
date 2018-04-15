@@ -1755,14 +1755,15 @@ namespace Greatbone
 
         public HtmlContent LINK_(Procedure prc, int subscript = -1)
         {
+            var tool = prc.Tool;
+
             // check procedure's availability
-            bool ok = prc.DoAuthorize(webCtx);
+            bool ok = !tool.Auth || prc.DoAuthorize(webCtx, out _);
             if (ok && level >= 0)
             {
                 ok = prc.DoState(webCtx, stack, level);
             }
 
-            var tool = prc.Tool;
             Add("<a class=\"");
             if (tool.Style > 0)
             {
@@ -1883,14 +1884,15 @@ namespace Greatbone
 
         public HtmlContent BUTTON_(Procedure prc, int subscript = -1)
         {
+            var tool = prc.Tool;
+
             // check procedure's availability
-            bool ok = prc.DoAuthorize(webCtx);
+            bool ok = !tool.Auth || prc.DoAuthorize(webCtx, out _);
             if (ok && level >= 0)
             {
                 ok = prc.DoState(webCtx, stack, level);
             }
 
-            var tool = prc.Tool;
             Add("<button  class=\"uk-button uk-border-rounded");
 
             var style = tool.Style;

@@ -310,7 +310,7 @@ namespace Greatbone
 
         internal Work Resolve(ref string relative, WebContext wc)
         {
-            if (!DoAuthorize(wc)) throw AuthorizeException.NotAllowed;
+            if (!DoAuthorize(wc, out AuthorizeException except)) throw except;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -330,17 +330,17 @@ namespace Greatbone
             if (varwork != null) // if variable-key sub
             {
                 IData prin = wc.Principal;
-                object princi = null;
+                object prinkey = null;
                 if (key.Length == 0) // resolve shortcut
                 {
-                    if (prin == null) throw AuthorizeException.Null;
-                    if ((princi = varwork.GetVariableKey(prin)) == null)
+                    if (prin == null) throw AuthorizeException.NoPrincipalEx;
+                    if ((prinkey = varwork.GetVariableKey(prin)) == null)
                     {
-                        throw AuthorizeException.Null;
+                        throw AuthorizeException.FalseResultEx;
                     }
                 }
 
-                wc.Chain(varwork, key, princi);
+                wc.Chain(varwork, key, prinkey);
                 return varwork.Resolve(ref relative, wc);
             }
 
@@ -353,7 +353,7 @@ namespace Greatbone
         /// <param name="rsc">the resource path</param>
         /// <param name="wc">WebContext</param>
         /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
-        /// <seealso cref="AuthorizeAttribute.Allowed"/>
+        /// <seealso cref="AuthorizeAttribute.Check"/>
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
@@ -387,7 +387,7 @@ namespace Greatbone
                     return;
                 }
 
-                if (!prc.DoAuthorize(wc)) throw AuthorizeException.NotAllowed;
+                if (!prc.DoAuthorize(wc, out AuthorizeException except)) throw except;
                 wc.Procedure = prc;
                 // any before filterings
                 if (prc.Before?.Do(wc) == false) goto ProcedureExit;

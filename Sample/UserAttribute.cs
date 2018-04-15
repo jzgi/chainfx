@@ -19,7 +19,7 @@ namespace Core
 
         public bool IsOpr => opr > 0;
 
-        public override bool Allowed(IData prin, WebContext wc)
+        public override bool? Check(WebContext wc, IData prin)
         {
             var o = (User) prin;
             if (opr > 0)

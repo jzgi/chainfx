@@ -3,15 +3,15 @@ using System;
 namespace Greatbone
 {
     /// <summary>
-    /// Thrown to indicate an failure of authorization check to a certain nodule. A permission is required or authentication is needed.
+    /// Thrown to indicate an failure of authorization check to a certain nodule. 
     /// </summary>
     public class AuthorizeException : Exception
     {
-        public static readonly AuthorizeException Null = new AuthorizeException(0, "principal is null");
+        public static readonly AuthorizeException NoPrincipalEx = new AuthorizeException(0, "no principal");
 
-        public static readonly AuthorizeException NotReady = new AuthorizeException(1, "principal is not ready");
+        public static readonly AuthorizeException NullResultEx = new AuthorizeException(1, "authorize null result");
 
-        public static readonly AuthorizeException NotAllowed = new AuthorizeException(2, "principal is not allowed to access");
+        public static readonly AuthorizeException FalseResultEx = new AuthorizeException(2, "authorize false result");
 
         readonly int code;
 
@@ -20,10 +20,10 @@ namespace Greatbone
             this.code = code;
         }
 
-        public bool IsNull => code == 0;
+        public bool NoPrincipal => code == 0;
 
-        public bool IsNotReady => code == 1;
+        public bool NullResult => code == 1;
 
-        public bool IsNotAllowed => code == 2;
+        public bool FalseResult => code == 2;
     }
 }

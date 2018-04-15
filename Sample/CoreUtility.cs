@@ -83,7 +83,7 @@ namespace Core
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc, out _)) continue;
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -102,7 +102,7 @@ namespace Core
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc, out _)) continue;
                     h.Add("<li style=\"height: 100%\"><iframe src=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
@@ -156,7 +156,7 @@ namespace Core
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc, out _)) continue;
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -179,7 +179,7 @@ namespace Core
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc, out _)) continue;
                     h.Add("<li style=\"height: 100%\"><iframe src=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
