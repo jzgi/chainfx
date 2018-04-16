@@ -1,6 +1,6 @@
 ﻿using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// An item data object, that represents a product or service.

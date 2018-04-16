@@ -2,17 +2,17 @@
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Core.Order;
-using static Core.User;
+using static Samp.Order;
+using static Samp.User;
 using static Greatbone.Style;
 
-namespace Core
+namespace Samp
 {
     public abstract class OrderWork<V> : Work where V : OrderVarWork
     {
         protected OrderWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, long>((obj) => ((Order) obj).id);
+            CreateVar<V, int>((obj) => ((Order) obj).id);
         }
 
         // for customer side viewing
@@ -100,10 +100,10 @@ namespace Core
 
         public void @default(WebContext wc)
         {
-            string wx = wc[-1];
+            int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND custwx = @1 ORDER BY id DESC", p => p.Set(wx));
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
                 GiveBoardOrderPage(wc, arr);
             }
         }
@@ -111,10 +111,10 @@ namespace Core
         [Ui("已往订单"), Tool(ButtonOpen)]
         public void old(WebContext wc, int page)
         {
-            string wx = wc[-1];
+            int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND custwx = @1 ORDER BY id DESC", p => p.Set(wx));
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
                 GiveBoardOrderPage(wc, arr, false);
             }
         }

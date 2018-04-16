@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Greatbone;
-using static Core.WeiXinUtility;
+using static Samp.WeiXinUtility;
 using static Greatbone.Modal;
 
-namespace Core
+namespace Samp
 {
     [User]
     public abstract class ChatVarWork : Work

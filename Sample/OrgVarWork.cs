@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Core.User;
+using static Samp.User;
 
-namespace Core
+namespace Samp
 {
     public abstract class OrgVarWork : Work, IOrgVar
     {
@@ -13,11 +13,11 @@ namespace Core
         }
     }
 
-    public class CoreVarWork : OrgVarWork
+    public class SampVarWork : OrgVarWork
     {
-        public CoreVarWork(WorkConfig cfg) : base(cfg)
+        public SampVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CoreItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<SampItemVarWork, string>(obj => ((Item)obj).name);
         }
 
         public void icon(WebContext wc)

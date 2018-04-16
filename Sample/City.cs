@@ -1,6 +1,6 @@
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// A city data object.

@@ -1,6 +1,6 @@
 ﻿using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// For easy sharing code between works.
@@ -20,8 +20,8 @@ namespace Core
 
             WeiXinUtility.Setup("weixin.json", deploy, "apiclient_cert.p12");
 
-            TryCreate<CoreService>(
-                new ServiceConfig("core")
+            TryCreate<SampService>(
+                new ServiceConfig("samp")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,

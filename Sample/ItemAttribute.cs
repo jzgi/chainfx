@@ -1,6 +1,6 @@
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     public class ItemAttribute : StateAttribute
     {

@@ -2,19 +2,19 @@
 using System.Text;
 using System.Threading.Tasks;
 using Greatbone;
-using static Core.CoreUtility;
-using static Core.WeiXinUtility;
+using static Samp.SampUtility;
+using static Samp.WeiXinUtility;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// The sample service includes the gospel and the health provision.
     /// </summary>
-    public class CoreService : Service<User>, IAuthenticateAsync
+    public class SampService : Service<User>, IAuthenticateAsync
     {
-        public CoreService(ServiceConfig cfg) : base(cfg)
+        public SampService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<CoreVarWork, string>(obj => ((Org) obj).id);
+            CreateVar<SampVarWork, string>(obj => ((Org) obj).id);
 
             Create<MyWork>("my"); // personal
 
@@ -120,11 +120,25 @@ namespace Core
             return true;
         }
 
-        public void @catch(WebContext wc, Exception ex)
+        public async Task @catch(WebContext wc, int cmd)
         {
-            if (ex is AuthorizeException)
+            if (cmd == 1) // handle form submission
             {
-                if (wc.Principal == null)
+                var prin = (User) wc.Principal;
+                var f = await wc.ReadAsync<Form>();
+                string name = f[nameof(name)];
+                string tel = f[nameof(tel)];
+                string url = f[nameof(url)];
+                using (var dc = NewDbContext())
+                {
+                    var o = dc.Query1<User>("INSERT INTO users (name, wx, tel) VALUES (@1, @2, @3) RETURNING *", p => p.Set(name).Set(prin.wx).Set(tel));
+                    wc.SetTokenCookie(o, 0xff ^ User.CREDENTIAL);
+                }
+                wc.GiveRedirect(url);
+            }
+            else if (wc.Except is AuthorizeException authex)
+            {
+                if (authex.NoPrincipal)
                 {
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
@@ -137,21 +151,31 @@ namespace Core
                         wc.Give(401); // unauthorized
                     }
                 }
-                else
+                else if (authex.NullResult)
                 {
-                    wc.GivePane(403, h =>
+                    string url = wc.Path;
+                    wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("没有访问权限");
-                        h.P("您要访问的功能需要经过管理员授权后才能使用。");
+                        string name = null;
+                        string tel = null;
+                        h.FIELDSET_("您还没有注册，请填写用户基本信息");
+                        h.TEXT(nameof(name), name, label: "姓名", tip: "您本人的姓名", max: 4, min: 2, required: true);
+                        h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h._FIELDSET();
+                        h.HIDDEN(nameof(url), url);
+                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定")._BOTTOMBAR();
                         h._FORM();
-                    });
+                    }, title: "注册新帐号");
+                }
+                else // IsNotAllowed
+                {
+                    wc.GivePage(403, h => { h.ALERT("您要使用的功能需要管理员授权。"); }, title: "没有访问权限");
                 }
             }
             else
             {
-                wc.Give(500, ex.Message);
+                wc.Give(500, wc.Except.Message);
             }
         }
 
@@ -168,7 +192,7 @@ namespace Core
             {
                 using (var dc = NewDbContext())
                 {
-                    h.ALERT("　　这里所报告的都是客观存在的事实真相，并非主观的理论或捏造的说教。假以良知、耐心和洞察力，您就一定能像我们一样认知到这关于生命和敬虔的奥秘。");
+                    h.ALERT("　　这里所报告的都是客观存在的事实真相，且假以良知、耐心和洞察力，您就一定能像我们一样认知到这关于生命和敬虔的奥秘。");
 
                     h.GRIDVIEW(lessons, o =>
                     {
@@ -185,7 +209,7 @@ namespace Core
         /// Returns a home page pertaining to a related city
         /// We are forced to put auth check here because weixin auth does't work in iframe
 //        [CityId]
-        [User]
+        [User(false)]
         public void list(WebContext wc)
         {
             string cityid = wc.Query[nameof(cityid)];
@@ -228,7 +252,7 @@ namespace Core
                                 h.P(m.descr, "描述");
                                 h.ROW_();
                                 h.P_("价格", wid: 0x23).EM_().T('¥').T(m.price)._EM()._P();
-                                h.TOOL(nameof(CoreItemVarWork.buy));
+                                h.TOOL(nameof(SampItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
                             });

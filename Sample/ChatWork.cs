@@ -1,7 +1,7 @@
 using Greatbone;
-using static Core.User;
+using static Samp.User;
 
-namespace Core
+namespace Samp
 {
     public abstract class ChatWork<V> : Work where V : ChatVarWork
     {

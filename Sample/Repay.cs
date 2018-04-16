@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     ///
     /// A repay data object.

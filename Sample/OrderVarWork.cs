@@ -2,10 +2,10 @@ using System.Threading.Tasks;
 using Greatbone;
 using static System.Data.IsolationLevel;
 using static Greatbone.Modal;
-using static Core.Order;
-using static Core.CoreUtility;
+using static Samp.Order;
+using static Samp.SampUtility;
 
-namespace Core
+namespace Samp
 {
     public abstract class OrderVarWork : Work
     {
@@ -37,7 +37,7 @@ namespace Core
                 (o.comp ? o.net : o.total),
                 wx,
                 wc.RemoteAddr.ToString(),
-                NETADDR + "/" + nameof(CoreService.paynotify),
+                NETADDR + "/" + nameof(SampService.paynotify),
                 "粗粮达人-健康产品"
             );
             if (prepay_id != null)
@@ -54,12 +54,12 @@ namespace Core
         public async Task Upd(WebContext wc, int idx)
         {
             int orderid = wc[this];
-            string wx = wc[-2];
+            int myid = wc[-2];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
                     var oi = o.items[idx];
                     var item = Obtain<Map<(string, string), Item>>()[(o.orgid, oi.name)];
                     wc.GivePane(200, h =>
@@ -79,7 +79,7 @@ namespace Core
                 short qty = f[nameof(qty)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custwx = @2", p => p.Set(orderid).Set(wx));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
                     o.UpdItem(idx, qty);
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.net).Set(o.id));
                 }

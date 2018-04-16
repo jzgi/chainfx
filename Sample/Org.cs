@@ -1,6 +1,6 @@
 ﻿using Greatbone;
 
-namespace Core
+namespace Samp
 {
     public class Org : IData, IGroupKeyable<string>
     {
@@ -21,9 +21,11 @@ namespace Core
         internal string addr;
         internal double x;
         internal double y;
+        internal int mgrid;
         internal string mgrwx;
         internal string mgrname;
         internal string mgrtel;
+        internal int oprid;
         internal string oprwx;
         internal string oprname;
         internal string oprtel;
@@ -42,9 +44,11 @@ namespace Core
             }
             if ((proj & LATER) == LATER)
             {
+                s.Get(nameof(mgrid), ref mgrid);
                 s.Get(nameof(mgrname), ref mgrname);
                 s.Get(nameof(mgrwx), ref mgrwx);
                 s.Get(nameof(mgrtel), ref mgrtel);
+                s.Get(nameof(oprid), ref oprid);
                 s.Get(nameof(oprname), ref oprname);
                 s.Get(nameof(oprwx), ref oprwx);
                 s.Get(nameof(oprtel), ref oprtel);
@@ -65,9 +69,11 @@ namespace Core
             }
             if ((proj & LATER) == LATER)
             {
+                s.Put(nameof(mgrid), mgrid);
                 s.Put(nameof(mgrname), mgrname);
                 s.Put(nameof(mgrwx), mgrwx);
                 s.Put(nameof(mgrtel), mgrtel);
+                s.Put(nameof(oprid), oprid);
                 s.Put(nameof(oprname), oprname);
                 s.Put(nameof(oprwx), oprwx);
                 s.Put(nameof(oprtel), oprtel);

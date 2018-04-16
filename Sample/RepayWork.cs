@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
 
-namespace Core
+namespace Samp
 {
     public abstract class RepayWork<V> : Work where V : RepayVarWork
     {

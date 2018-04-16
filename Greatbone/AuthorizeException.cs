@@ -7,11 +7,11 @@ namespace Greatbone
     /// </summary>
     public class AuthorizeException : Exception
     {
-        public static readonly AuthorizeException NoPrincipalEx = new AuthorizeException(0, "no principal");
+        internal static readonly AuthorizeException NoPrincipalEx = new AuthorizeException(0, "no principal");
 
-        public static readonly AuthorizeException NullResultEx = new AuthorizeException(1, "authorize null result");
+        internal static readonly AuthorizeException NullResultEx = new AuthorizeException(1, "authorize null result");
 
-        public static readonly AuthorizeException FalseResultEx = new AuthorizeException(2, "authorize false result");
+        internal static readonly AuthorizeException FalseResultEx = new AuthorizeException(2, "authorize false result");
 
         readonly int code;
 

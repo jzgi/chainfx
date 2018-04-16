@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Core.User;
+using static Samp.User;
 
-namespace Core
+namespace Samp
 {
     public abstract class ItemVarWork : Work
     {
@@ -47,14 +47,14 @@ namespace Core
         }
     }
 
-    public class CoreItemVarWork : ItemVarWork
+    public class SampItemVarWork : ItemVarWork
     {
-        public CoreItemVarWork(WorkConfig cfg) : base(cfg)
+        public SampItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
         [User]
-        [Ui("购买"), Tool(ButtonOpen), Item('A')]
+        [Ui("购买"), Tool(ButtonOpen, size: 1), Item('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;

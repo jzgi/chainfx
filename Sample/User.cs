@@ -1,6 +1,6 @@
 ﻿using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// A user data object that is a principal.
@@ -23,13 +23,14 @@ namespace Core
             {OPRMGR, "经理"},
         };
 
-        internal string wx; // wexin openid
+        internal int id;
         internal string name;
+        internal string wx; // wexin openid
         internal string tel;
         internal string addr;
         internal string credential;
         internal int score;
-        internal int refwx;
+        internal int refid; // referee id
         internal string oprat;
         internal short opr;
         internal short adm;
@@ -38,9 +39,10 @@ namespace Core
         {
             if ((proj & PK) == PK)
             {
-                s.Get(nameof(wx), ref wx);
+                s.Get(nameof(id), ref id);
             }
             s.Get(nameof(name), ref name);
+            s.Get(nameof(wx), ref wx);
             s.Get(nameof(tel), ref tel);
             s.Get(nameof(addr), ref addr);
             if ((proj & CREDENTIAL) == CREDENTIAL)
@@ -48,7 +50,7 @@ namespace Core
                 s.Get(nameof(credential), ref credential);
             }
             s.Get(nameof(score), ref score);
-            s.Get(nameof(refwx), ref refwx);
+            s.Get(nameof(refid), ref refid);
             if ((proj & LATER) == LATER)
             {
                 s.Get(nameof(opr), ref opr);
@@ -61,9 +63,10 @@ namespace Core
         {
             if ((proj & PK) == PK)
             {
-                s.Put(nameof(wx), wx);
+                s.Put(nameof(id), id);
             }
             s.Put(nameof(name), name);
+            s.Put(nameof(wx), wx);
             s.Put(nameof(tel), tel);
             s.Put(nameof(addr), addr);
             if ((proj & CREDENTIAL) == CREDENTIAL)
@@ -71,7 +74,7 @@ namespace Core
                 s.Put(nameof(credential), credential);
             }
             s.Put(nameof(score), score);
-            s.Put(nameof(refwx), refwx);
+            s.Put(nameof(refid), refid);
             if ((proj & LATER) == LATER)
             {
                 s.Put(nameof(opr), opr);

@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// An order data object.
@@ -30,8 +30,9 @@ namespace Core
         internal short rev;
         internal string orgid;
         internal string orgname;
-        internal string custwx; // weixin openid
+        internal int custid;
         internal string custname; // customer name
+        internal string custwx; // weixin openid
         internal string custtel;
         internal string custaddr; // may include area and site
         internal OrderItem[] items;
@@ -53,8 +54,9 @@ namespace Core
             }
             s.Get(nameof(orgid), ref orgid);
             s.Get(nameof(orgname), ref orgname);
-            s.Get(nameof(custwx), ref custwx);
+            s.Get(nameof(custid), ref custid);
             s.Get(nameof(custname), ref custname);
+            s.Get(nameof(custwx), ref custwx);
             s.Get(nameof(custtel), ref custtel);
             s.Get(nameof(custaddr), ref custaddr);
             if ((proj & DETAIL) == DETAIL)
@@ -83,8 +85,9 @@ namespace Core
             }
             s.Put(nameof(orgid), orgid);
             s.Put(nameof(orgname), orgname);
-            s.Put(nameof(custwx), custwx);
+            s.Put(nameof(custid), custid);
             s.Put(nameof(custname), custname);
+            s.Put(nameof(custwx), custwx);
             s.Put(nameof(custtel), custtel);
             s.Put(nameof(custaddr), custaddr);
             if ((proj & DETAIL) == DETAIL)
@@ -202,6 +205,5 @@ namespace Core
                 items[i].ship = items[i].qty;
             }
         }
-
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// A chatting conversation.
@@ -12,8 +12,9 @@ namespace Core
 
         internal string orgid;
         internal string orgname;
-        internal string custwx;
+        internal string custid;
         internal string custname;
+        internal string custwx;
         internal ChatMsg[] msgs;
         internal DateTime quested;
 
@@ -21,6 +22,7 @@ namespace Core
         {
             s.Get(nameof(orgid), ref orgid);
             s.Get(nameof(orgname), ref orgname);
+            s.Get(nameof(custid), ref custid);
             s.Get(nameof(custname), ref custname);
             s.Get(nameof(custwx), ref custwx);
             s.Get(nameof(msgs), ref msgs);
@@ -33,6 +35,7 @@ namespace Core
         {
             s.Put(nameof(orgid), orgid);
             s.Put(nameof(orgname), orgname);
+            s.Put(nameof(custid), custid);
             s.Put(nameof(custname), custname);
             s.Put(nameof(custwx), custwx);
             s.Put(nameof(msgs), msgs);

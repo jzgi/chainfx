@@ -1,9 +1,9 @@
 using System;
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
-    public static class CoreUtility
+    public static class SampUtility
     {
         public const string BIZ = "粗粮达人";
 

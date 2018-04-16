@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// A before filter that ensures city is resolved and given in the URL.

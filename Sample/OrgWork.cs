@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
 
-namespace Core
+namespace Samp
 {
     public abstract class OrgWork<V> : Work where V : OrgVarWork
     {

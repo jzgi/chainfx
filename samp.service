@@ -1,11 +1,11 @@
 [Unit]
-Description=Greatbone Core Sample Service
+Description=Greatbone Sample Service
 
 [Service]
 EnvironmentFile=/etc/environment
 Type=forking
 WorkingDirectory=/root
-ExecStart=/usr/bin/dotnet /root/publish/Core.dll deploy
+ExecStart=/usr/bin/dotnet /root/publish/Greatbone.dll deploy
 Restart=always
 
 [Install]

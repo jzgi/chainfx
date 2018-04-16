@@ -1,7 +1,7 @@
 ﻿using System;
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
     /// <summary>
     /// An journal entry of cash receipt or payment.

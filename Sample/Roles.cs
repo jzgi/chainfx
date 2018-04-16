@@ -1,20 +1,22 @@
 using Greatbone;
 
-namespace Core
+namespace Samp
 {
+    [User]
     public class MyWork : Work
     {
         public MyWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyVarWork, string>((obj) => ((User)obj).wx);
+            CreateVar<MyVarWork, int>((obj) => ((User) obj).id);
         }
     }
 
+    [User(opr: 1)]
     public class OprWork : Work
     {
         public OprWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<OprVarWork, string>(prin => ((User)prin).oprat);
+            CreateVar<OprVarWork, string>(prin => ((User) prin).oprat);
         }
     }
 
@@ -39,10 +41,7 @@ namespace Core
                 {
                     h.TOOLBAR();
                     h.CARD(() => h.H4("系统运行状况"),
-                        () =>
-                        {
-                            h.P("2.0", "版本");
-                        }
+                        () => { h.P("2.0", "版本"); }
                     );
                 });
             }

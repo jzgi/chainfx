@@ -1,13 +1,12 @@
-using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Core.Org;
-using static Core.User;
+using static Samp.Org;
+using static Samp.User;
 
-namespace Core
+namespace Samp
 {
-    [Ui("设置"), User]
+    [Ui("设置")]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -19,19 +18,18 @@ namespace Core
 
         public void @default(WebContext wc)
         {
-            var prin = (User)wc.Principal;
+            var prin = (User) wc.Principal;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.CARDVIEW(prin,
-                    o => h.H4("账号信息"),
+                h.CARDVIEW(prin, null,
                     o =>
                     {
                         h.P(prin.name, "姓名");
                         h.P(prin.tel, "电话");
                         h.P_("地址")._T(prin.addr)._P();
                         h.COL_();
-                        h.QRCODE(CoreUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
+                        h.QRCODE(SampUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
                         h._COL();
                     }
                 );
@@ -54,15 +52,14 @@ namespace Core
         [Ui("设置"), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {
-            string wx = wc[this];
-            var prin = (User)wc.Principal;
+            var prin = (User) wc.Principal;
             string password = null;
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE wx = @1");
-                    var o = dc.Query1<User>(p => p.Set(wx));
+                    dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE id = @1");
+                    var o = dc.Query1<User>(p => p.Set(prin.id));
                     if (o.credential != null) password = VOIDPASS;
                     wc.GivePane(200, h =>
                     {
@@ -89,17 +86,11 @@ namespace Core
                     if (password != VOIDPASS) // password being changed
                     {
                         string credential = StrUtility.MD5(prin.tel + ":" + password);
-                        dc.Execute(
-                            "INSERT INTO users (wx, name, tel, credential) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, credential = @4",
-                            p => p.Set(prin.wx).Set(name).Set(tel).Set(credential)
-                        );
+                        dc.Execute("UPDATE users SET name = @1, tel = @2, credential = @3 WHERE id = @4", p => p.Set(name).Set(tel).Set(credential).Set(prin.id));
                     }
                     else // password no change
                     {
-                        dc.Execute(
-                            "INSERT INTO users (wx, name, tel) VALUES (@1, @2, @3) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3",
-                            p => p.Set(prin.wx).Set(name).Set(tel)
-                        );
+                        dc.Execute("UPDATE users SET name = @1, tel = @2 WHERE id = @3", p => p.Set(name).Set(tel).Set(prin.id));
                     }
                     prin.name = name;
                     prin.tel = tel;
@@ -112,11 +103,11 @@ namespace Core
         [Ui("身份刷新"), Tool(ButtonOpen)]
         public void token(WebContext ac)
         {
-            string wx = ac[this];
+            int myid = ac[this];
             using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ CREDENTIAL;
-                if (dc.Query1("SELECT * FROM users WHERE wx = @1", (p) => p.Set(wx)))
+                if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(myid)))
                 {
                     var o = dc.ToObject<User>(proj);
                     ac.SetTokenCookie(o, proj);
@@ -133,7 +124,7 @@ namespace Core
     /// <summary>
     /// The working folder of org operators.
     /// </summary>
-    [Ui("常规"), User(OPR)]
+    [Ui("常规")]
     public class OprVarWork : Work, IOrgVar
     {
         public OprVarWork(WorkConfig cfg) : base(cfg)
@@ -231,7 +222,7 @@ namespace Core
         public async Task status(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();
-            User prin = (User)ac.Principal;
+            User prin = (User) ac.Principal;
             string orgid = ac[this];
             var o = orgs[orgid];
             bool custsvc;
