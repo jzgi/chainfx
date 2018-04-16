@@ -4,14 +4,14 @@ Navicat PGSQL Data Transfer
 Source Server         : 144000.tv
 Source Server Version : 90606
 Source Host           : 144000.tv:5432
-Source Database       : core
+Source Database       : samp
 Source Schema         : public
 
 Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-04-10 16:31:05
+Date: 2018-04-16 14:14:29
 */
 
 
@@ -35,9 +35,8 @@ CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 222
+ START 220
  CACHE 1;
-SELECT setval('"public"."orders_id_seq"', 222, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -49,6 +48,18 @@ CREATE SEQUENCE "public"."repays_id_seq"
  MAXVALUE 9223372036854775807
  START 3
  CACHE 1;
+
+-- ----------------------------
+-- Sequence structure for users_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."users_id_seq";
+CREATE SEQUENCE "public"."users_id_seq"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
+ START 2
+ CACHE 1;
+SELECT setval('"public"."users_id_seq"', 2, true);
 
 -- ----------------------------
 -- Table structure for cashes
@@ -74,8 +85,9 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."chats";
 CREATE TABLE "public"."chats" (
 "orgid" varchar(4) COLLATE "default" NOT NULL,
-"custwx" varchar(28) COLLATE "default" NOT NULL,
+"custid" int4,
 "custname" varchar(254) COLLATE "default",
+"custwx" varchar(28) COLLATE "default" NOT NULL,
 "msgs" jsonb,
 "quested" timestamp(6)
 )
@@ -113,8 +125,9 @@ CREATE TABLE "public"."orders" (
 "rev" int2 DEFAULT 0 NOT NULL,
 "orgid" varchar(4) COLLATE "default" NOT NULL,
 "orgname" varchar(10) COLLATE "default",
-"custwx" varchar(28) COLLATE "default",
+"custid" int4 NOT NULL,
 "custname" varchar(10) COLLATE "default",
+"custwx" varchar(28) COLLATE "default",
 "custtel" varchar(11) COLLATE "default",
 "custaddr" varchar(20) COLLATE "default",
 "items" jsonb,
@@ -144,11 +157,13 @@ CREATE TABLE "public"."orgs" (
 "x" float8,
 "y" float8,
 "icon" bytea,
-"mgrwx" varchar(28) COLLATE "default",
+"mgrid" int4,
 "mgrname" varchar(10) COLLATE "default",
+"mgrwx" varchar(28) COLLATE "default",
 "mgrtel" varchar(11) COLLATE "default",
-"oprwx" varchar(28) COLLATE "default",
+"oprid" int4,
 "oprname" varchar(10) COLLATE "default",
+"oprwx" varchar(28) COLLATE "default",
 "oprtel" varchar(11) COLLATE "default",
 "status" int2
 )
@@ -181,13 +196,14 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
-"wx" varchar(28) COLLATE "default" NOT NULL,
+"id" int4 DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
 "name" varchar(10) COLLATE "default",
+"wx" varchar(28) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "score" int4,
-"refwx" varchar(28) COLLATE "default",
+"refid" int4,
 "oprat" varchar(4) COLLATE "default",
 "opr" int2 DEFAULT 0,
 "adm" int2
@@ -202,6 +218,7 @@ WITH (OIDS=FALSE)
 ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "cashes"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
+ALTER SEQUENCE "public"."users_id_seq" OWNED BY "users"."id";
 
 -- ----------------------------
 -- Indexes structure for table cashes
@@ -221,8 +238,8 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("orgid", "name");
 -- ----------------------------
 -- Indexes structure for table orders
 -- ----------------------------
-CREATE INDEX "orders_statuscustwx" ON "public"."orders" USING btree ("status", "custwx");
 CREATE INDEX "orders_statusorgid" ON "public"."orders" USING btree ("status", "orgid");
+CREATE INDEX "orders_statuscustid" ON "public"."orders" USING btree ("status", "custid");
 
 -- ----------------------------
 -- Primary Key structure for table orders
@@ -249,8 +266,3 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 -- ----------------------------
 CREATE INDEX "users_oprat" ON "public"."users" USING btree ("oprat") WHERE oprat IS NOT NULL;
 CREATE INDEX "users_tel" ON "public"."users" USING hash ("tel") WHERE tel IS NOT NULL;
-
--- ----------------------------
--- Primary Key structure for table users
--- ----------------------------
-ALTER TABLE "public"."users" ADD PRIMARY KEY ("wx");
