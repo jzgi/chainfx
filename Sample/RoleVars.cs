@@ -100,24 +100,9 @@ namespace Samp
             }
         }
 
-        [Ui("身份刷新"), Tool(ButtonOpen)]
-        public void token(WebContext ac)
+        [Ui("重新登录"), Tool(ButtonScript)]
+        public void rmtoken(WebContext wc)
         {
-            int myid = ac[this];
-            using (var dc = NewDbContext())
-            {
-                const byte proj = 0xff ^ CREDENTIAL;
-                if (dc.Query1("SELECT * FROM users WHERE id = @1", (p) => p.Set(myid)))
-                {
-                    var o = dc.ToObject<User>(proj);
-                    ac.SetTokenCookie(o, proj);
-                    ac.GivePane(200);
-                }
-                else
-                {
-                    ac.GivePane(404);
-                }
-            }
         }
     }
 

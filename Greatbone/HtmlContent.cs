@@ -536,9 +536,18 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A(string v, string href, bool? hollow = null, string targ = null)
+        public HtmlContent A(string v, string href, Style style = Style.Link, string targ = null)
         {
-            Add("<a class=\"uk-button uk-button-link\" href=\"");
+            Add("<a class=\"uk-button");
+
+            if (style == Style.Default) Add(" uk-button-default uk-border-rounded");
+            else if (style == Style.Primary) Add(" uk-button-primary");
+            else if (style == Style.Secondary) Add(" uk-button-secondary");
+            else if (style == Style.Danger) Add(" uk-button-danger");
+            else if (style == Style.Text) Add(" uk-button-text");
+            else if (style == Style.Link) Add(" uk-button-link");
+
+            Add("\" href=\"");
             Add(href);
             if (targ != null)
             {

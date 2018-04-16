@@ -73,14 +73,13 @@ namespace Samp
                         if (dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
                         {
                             // show addr inputs for order creation
-                            h.FIELDSET_("填写收货信息");
+                            h.FIELDSET_("创建订单，填写收货地址");
                             h.TEXT(nameof(Order.custaddr), prin.addr, "地址", max: 20, required: true);
-                            h.TEXT(nameof(Order.custname), prin.name, "姓名", max: 4, min: 2, required: true);
-                            h.TEL(nameof(Order.custtel), prin.tel, "电话", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                            h.FIELD_().LABEL("姓名").TEXT(nameof(Order.custname), prin.name, max: 4, min: 2, required: true).LABEL("电话").TEL(nameof(Order.custtel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._FIELD();
                             h._FIELDSET();
                         }
                         // quantity
-                        h.FIELDSET_("加入购物车");
+                        h.FIELDSET_("加入货品");
                         h.FIELD_("货品").ICON("icon", wid: 0x16)._T(item.name)._FIELD();
                         h.FIELD_("数量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step)._T(item.unit)._FIELD();
                         h._FIELDSET();
@@ -124,14 +123,14 @@ namespace Samp
                         {
                             if (dc.Execute("INSERT INTO users (wx, name, tel, addr) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, addr = @4", p => p.Set(o.custwx).Set(prin.name = o.custname).Set(prin.tel = o.custtel).Set(prin.addr = o.custaddr)) > 0)
                             {
-                                wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
+                                wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL, 3600); // refresh client token thru cookie
                             }
                         }
                     }
                     wc.GivePane(200, m =>
                     {
-                        m.MSG_(true, "加入购物车成功", "商品已经成功加入购物车");
-                        m.BOTTOMBAR_().A_CLOSE("继续选购", true).A("去购物车付款", "/my//ord/", true, targ: "_parent")._BOTTOMBAR();
+                        m.MSG_(true, "成功加入订单", "商品已经成功加入订单");
+                        m.BOTTOMBAR_().A_CLOSE("继续选购", true).A("去付款", "/my//ord/", Style.Default, targ: "_parent")._BOTTOMBAR();
                     });
                 }
             }
