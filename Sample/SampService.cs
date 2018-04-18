@@ -269,7 +269,7 @@ namespace Samp
         public async Task paynotify(WebContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-            if (!Notified(xe, out var trade_no, out var cash))
+            if (!OnNotified(xe, out var trade_no, out var cash))
             {
                 ac.Give(400);
                 return;

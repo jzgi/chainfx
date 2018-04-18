@@ -1704,7 +1704,7 @@ namespace Greatbone
         public HtmlContent TOOLPAD(byte width = 0x11)
         {
             // locate the proper work
-            Add("<form class=\"uk-button-group uk-flex uk-flex-center");
+            Add("<form class=\"uk-button-group uk-flex uk-flex-center uk-margin-small-top");
             if (width > 0)
             {
                 int lo = width & 0x0f;
@@ -2098,12 +2098,21 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
+        public HtmlContent SEARCH(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte wid = 0)
         {
             if (label != null) FIELD_(label);
 
-            Add("<div class=\"uk-inline\">");
-            Add("<input type=\"search\" class=\"uk-input\" name=\"");
+            Add("<div class=\"uk-inline");
+            if (wid > 0)
+            {
+                int lo = wid & 0x0f;
+                int hi = wid >> 4;
+                Add(" uk-width-");
+                Add(hi);
+                Add('-');
+                Add(lo);
+            }
+            Add("\"><input type=\"search\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(val);
@@ -2397,18 +2406,57 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, byte width = 0x11)
+        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false)
         {
-            FIELD_(null);
+            Add("<li>");
             Add("<label>");
             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(v);
-            Add(@checked ? "\" checked>" : "\">");
+            Add("\"");
+            if (required)
+            {
+                Add(" required");
+            }
+            if (@checked)
+            {
+                Add(" checked");
+            }
+            Add(">");
             Add(label);
             Add("</label>");
-            _FIELD();
+            Add("</li>");
+            return this;
+        }
+
+        public HtmlContent RADIO2<V>(string name, V v, string label = null, bool @checked = false, bool required = false, int idx = 0, int last = 0)
+        {
+            if (idx % 2 == 0)
+            {
+                Add("<li>");
+            }
+            Add("<label class=\"uk-width-1-2\">");
+            Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddPrimitive(v);
+            Add("\"");
+            if (required)
+            {
+                Add(" required");
+            }
+            if (@checked)
+            {
+                Add(" checked");
+            }
+            Add(">");
+            Add(label);
+            Add("</label>");
+            if (idx == last || idx % 2 == 1)
+            {
+                Add("</li>");
+            }
             return this;
         }
 

@@ -6,6 +6,7 @@ using static Samp.User;
 
 namespace Samp
 {
+    [User]
     [Ui("设置")]
     public class MyVarWork : Work
     {
@@ -109,6 +110,7 @@ namespace Samp
     /// <summary>
     /// The working folder of org operators.
     /// </summary>
+    [User(opr: 1)]
     [Ui("常规")]
     public class OprVarWork : Work, IOrgVar
     {

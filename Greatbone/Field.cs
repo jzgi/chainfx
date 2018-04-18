@@ -254,7 +254,8 @@ namespace Greatbone
             if (len == 1)
             {
                 string str = (string) v.value;
-                return new[] {str};
+                // it might have a line-break separated items
+                return str.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries);
             }
 
             string[] strs = (string[]) v.value;

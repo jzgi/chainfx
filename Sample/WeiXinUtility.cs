@@ -231,9 +231,9 @@ namespace Samp
             return (prepay_id, err_code);
         }
 
-        public static bool Notified(XElem xe, out string out_trade_no, out decimal cash)
+        public static bool OnNotified(XElem xe, out string out_trade_no, out decimal total)
         {
-            cash = 0;
+            total = 0;
             out_trade_no = null;
             string appid = xe.Child(nameof(appid));
             string mch_id = xe.Child(nameof(mch_id));
@@ -249,8 +249,8 @@ namespace Samp
             xe.Sort();
             if (sign != Sign(xe, "sign")) return false;
 
-            int cash_fee = xe.Child(nameof(cash_fee)); // in cent
-            cash = ((decimal) cash_fee) / 100;
+            int total_fee = xe.Child(nameof(total_fee)); // in cent
+            total = ((decimal) total_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }

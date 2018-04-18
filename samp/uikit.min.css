@@ -4333,7 +4333,7 @@ ul.uk-nav-sub {
     text-align: center;
     padding: 6px 12px;
     color: #999;
-    border-bottom: 1px solid transparent;
+    border-bottom: 2px solid transparent;
     text-transform: uppercase;
     transition: color 0.1s ease-in-out;
 }
@@ -4346,7 +4346,7 @@ ul.uk-nav-sub {
 
 .uk-tab > .uk-active > a {
     color: #333;
-    background-color: #f7f7f8;
+    border-color: #ff9500;
 }
 
 .uk-tab > .uk-disabled > a {
@@ -4640,7 +4640,7 @@ ul.uk-nav-sub {
 .uk-accordion-title {
     display: flex;
     align-items: center;
-    font-size: 1.125rem;
+    font-size: 1rem;
     padding: 8px;
     color: #333;
     background-color: white;
@@ -4650,8 +4650,9 @@ ul.uk-nav-sub {
 
 .uk-accordion-title::after {
     content: "";
-    width: 1.4em;
-    height: 1.4em;
+    width: 1.25em;
+    height: 1.25em;
+    margin-left: auto;
     float: right;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2213%22%20height%3D%2213%22%20viewBox%3D%220%200%2013%2013%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%2213%22%20height%3D%221%22%20x%3D%220%22%20y%3D%226%22%20%2F%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%221%22%20height%3D%2213%22%20x%3D%226%22%20y%3D%220%22%20%2F%3E%0A%3C%2Fsvg%3E");
     background-repeat: no-repeat;
@@ -4672,7 +4673,7 @@ ul.uk-nav-sub {
 .uk-accordion-content {
     margin-top: 0;
     background-color: #fff;
-    padding: 10px;
+    padding: 8px;
     border-top: 1px solid #e5e5e5;
 }
 
@@ -7927,25 +7928,10 @@ iframe.uk-cover {
     display: inline-block !important;
 }
 
-/* Inline
- ========================================================================== */
-/*
- * 1. Container fits its content
- * 2. Create position context
- * 3. Prevent content overflow
- * 4. Behave like most inline-block elements
- * 5. Force hardware acceleration without creating a new stacking context
- *    to fix 1px glitch when combined with overlays and transitions in Webkit
- * 6. Clip child elements
- */
 [class*='uk-inline'] {
-    /* 2 */
     position: relative;
-    /* 3 */
     max-width: 100%;
-    /* 4 */
     vertical-align: middle;
-    /* 5 */
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
@@ -8652,101 +8638,101 @@ iframe.uk-cover {
 }
 
 * + .uk-margin {
-    margin-top: 20px !important;
+    margin-top: 12px !important;
 }
 
 .uk-margin-top {
-    margin-top: 20px !important;
+    margin-top: 12px !important;
 }
 
 .uk-margin-bottom {
-    margin-bottom: 20px !important;
+    margin-bottom: 12px !important;
 }
 
 .uk-margin-left {
-    margin-left: 20px !important;
+    margin-left: 12px !important;
 }
 
 .uk-margin-right {
-    margin-right: 20px !important;
+    margin-right: 12px !important;
 }
 
 /* Small
  ========================================================================== */
 .uk-margin-small {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 * + .uk-margin-small {
-    margin-top: 10px !important;
+    margin-top: 8px !important;
 }
 
 .uk-margin-small-top {
-    margin-top: 10px !important;
+    margin-top: 8px !important;
 }
 
 .uk-margin-small-bottom {
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
 }
 
 .uk-margin-small-left {
-    margin-left: 10px !important;
+    margin-left: 8px !important;
 }
 
 .uk-margin-small-right {
-    margin-right: 10px !important;
+    margin-right: 8px !important;
 }
 
 /* Medium
  ========================================================================== */
 .uk-margin-medium {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 * + .uk-margin-medium {
-    margin-top: 40px !important;
+    margin-top: 24px !important;
 }
 
 .uk-margin-medium-top {
-    margin-top: 40px !important;
+    margin-top: 24px !important;
 }
 
 .uk-margin-medium-bottom {
-    margin-bottom: 40px !important;
+    margin-bottom: 24px !important;
 }
 
 .uk-margin-medium-left {
-    margin-left: 40px !important;
+    margin-left: 24px !important;
 }
 
 .uk-margin-medium-right {
-    margin-right: 40px !important;
+    margin-right: 24px !important;
 }
 
 /* Large
  ========================================================================== */
 .uk-margin-large {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
 * + .uk-margin-large {
-    margin-top: 40px !important;
+    margin-top: 32px !important;
 }
 
 .uk-margin-large-top {
-    margin-top: 40px !important;
+    margin-top: 32px !important;
 }
 
 .uk-margin-large-bottom {
-    margin-bottom: 40px !important;
+    margin-bottom: 32px !important;
 }
 
 .uk-margin-large-left {
-    margin-left: 40px !important;
+    margin-left: 32px !important;
 }
 
 .uk-margin-large-right {
-    margin-right: 40px !important;
+    margin-right: 32px !important;
 }
 
 /* Desktop and bigger */

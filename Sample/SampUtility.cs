@@ -103,12 +103,22 @@ namespace Samp
                 {
                     Work sub = subs[i];
                     if (!sub.DoAuthorize(wc, out _)) continue;
-                    h.Add("<li style=\"height: 100%\"><iframe src=\"");
+                    h.Add("<li style=\"height: 100%\"><iframe id=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
                 }
             }
             h.Add(" </ul>");
+
+            // lazy init src of iframes
+            h.Add("<script>");
+            h.Add("var lis = document.querySelector('.uk-switcher').children;");
+            h.Add("for (var i = 0; i < lis.length; i++) {");
+            h.Add("lis[i].addEventListener('show', function(e) {");
+            h.Add("if (!this.firstChild.src) this.firstChild.src = this.firstChild.id;");
+            h.Add("});");
+            h.Add("}");
+            h.Add("</script>");
 
             h.Add("</body>");
             h.Add("</html>");

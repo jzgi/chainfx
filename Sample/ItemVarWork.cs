@@ -54,7 +54,7 @@ namespace Samp
         }
 
         [User]
-        [Ui("购买"), Tool(ButtonOpen, size: 1), Item('A')]
+        [Ui("购买"), Tool(ButtonOpen), Item('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;
@@ -123,7 +123,7 @@ namespace Samp
                         {
                             if (dc.Execute("INSERT INTO users (wx, name, tel, addr) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, addr = @4", p => p.Set(o.custwx).Set(prin.name = o.custname).Set(prin.tel = o.custtel).Set(prin.addr = o.custaddr)) > 0)
                             {
-                                wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL, 3600); // refresh client token thru cookie
+                                wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
                             }
                         }
                     }

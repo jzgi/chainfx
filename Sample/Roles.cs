@@ -2,7 +2,6 @@ using Greatbone;
 
 namespace Samp
 {
-    [User]
     public class MyWork : Work
     {
         public MyWork(WorkConfig cfg) : base(cfg)
@@ -11,7 +10,6 @@ namespace Samp
         }
     }
 
-    [User(opr: 1)]
     public class OprWork : Work
     {
         public OprWork(WorkConfig cfg) : base(cfg)

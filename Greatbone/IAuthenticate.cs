@@ -7,7 +7,7 @@ namespace Greatbone
     /// </summary>
     public interface IAuthenticate
     {
-        bool Authenticate(WebContext ac);
+        bool Authenticate(WebContext wc);
     }
 
     /// <summary>
