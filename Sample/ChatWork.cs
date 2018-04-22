@@ -51,18 +51,17 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.TOOLBAR();
-                        h.CARDVIEW(obj, o => h.H5(o.orgname).BADGE_LINK("tel:#mp.weixin.qq.com", "receiver"), o =>
+                        h.ARTICLEVIEW(obj, o =>
                         {
+                            h.H5(o.orgname).T("tel:#mp.weixin.qq.com");
                             for (int i = 0; i < o.msgs?.Length; i++)
                             {
                                 var m = o.msgs[i];
                                 h.P(m.text, m.name);
                             }
-                        }, o =>
-                        {
                             string text = null;
                             h.FORM_();
-                            h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, width: 0x56).TOOL(nameof(OprChatVarWork.reply))._ROW();
+                            h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(OprChatVarWork.reply))._ROW();
                             h._FORM();
                         });
                     });
@@ -89,15 +88,13 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.BOARDVIEW(arr, o => { }, o =>
+                    h.BOARDVIEW(arr, o =>
                     {
                         for (int i = 0; i < o.msgs?.Length; i++)
                         {
                             var m = o.msgs[i];
                             h.P(m.text);
                         }
-                    }, o =>
-                    {
                         string text = null;
                         h.FORM_();
                         h.ROW_().TEXTAREA(nameof(text), text, max: 100, tip: "输入文字", required: true).TOOL(nameof(OprChatVarWork.reply))._ROW();

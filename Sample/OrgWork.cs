@@ -8,7 +8,7 @@ namespace Samp
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Org)obj).id);
+            CreateVar<V, string>(obj => ((Org) obj).id);
         }
     }
 
@@ -28,16 +28,16 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.BOARDVIEW(arr,
-                        o => h.T(o.id)._T(o.name),
-                        o =>
+                    h.BOARDVIEW(arr, o =>
                         {
+                            h.T(o.id).T(o.name);
                             h.P(o.descr, "简介");
                             h.P_("地址").T(o.addr)._P();
-                            h.P_("坐标").T(o.x)._T(o.y)._P();
-                            h.P_("经理").T(o.mgrname)._T(o.mgrtel)._P();
-                        },
-                        o => h.TOOLPAD()
+                            h.P_("坐标").T(o.x).T(o.y)._P();
+                            h.P_("经理").T(o.mgrname).T(o.mgrtel)._P();
+
+                            h.TOOLPAD();
+                        }
                     );
                 });
             }

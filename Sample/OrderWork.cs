@@ -16,40 +16,46 @@ namespace Samp
         }
 
         // for customer side viewing
-        protected void GiveBoardOrderPage(WebContext wc, Order[] arr, bool tools = true)
+        protected void GiveBoardOrderPage(WebContext wc, Order[] arr, bool tooling = true)
         {
             wc.GivePage(200, h =>
             {
-                if (tools)
+                if (tooling)
                 {
                     h.TOOLBAR();
                 }
-                h.BOARDVIEW(arr,
-                    o => { h.H5(o.orgname).STATUS(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None); },
-                    o =>
+                h.BOARDVIEW(arr, o =>
                     {
-                        h.P_("收货").T(o.custaddr)._T(o.custname).T(o.custtel)._P();
+                        h.SECTION_("uk-card-header");
+                        h.H5(o.orgname).STATUS(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h._SECTION();
 
-                        h.P("品名", wid: 0x12).P("单价", wid: 0x16).P("购量", wid: 0x16).P("到货", wid: 0x16);
+                        h.UL_("uk-card-body");
+
+                        h.LI("收货").T(o.custaddr).T(o.custname).T(o.custtel);
+
+                        h.P("品名", w: 0x12).P("单价", w: 0x16).P("购量", w: 0x16).P("到货", w: 0x16);
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status == CREATED)
                             {
-                                h.P(oi.name, wid: 0x12).P_(wid: 0x16).RMB(oi.price)._P().P_(wid: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty)._T(oi.unit)._LINK()._P().P(oi.ship, wid: 0x16);
+                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty).T(oi.unit)._LINK()._P().P(oi.ship, w: 0x16);
                             }
                             else
                             {
-                                h.P(oi.name, wid: 0x12).P_(wid: 0x16).RMB(oi.price)._P().P_(wid: 0x16).T(oi.qty)._T(oi.unit)._P();
+                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).T(oi.qty).T(oi.unit)._P();
                             }
                         }
-                        h.P_("总额", wid: 0x12).RMB(o.total)._P();
+                        h.P_("总额", w: 0x12).CUR(o.total)._P();
                         if (o.comp)
                         {
-                            h.P_("净额", wid: 0x12).RMB(o.net)._P();
+                            h.P_("净额", w: 0x12).CUR(o.net)._P();
                         }
-                    },
-                    tools ? o => h.TOOLPAD() : (Action<Order>) null
+                        h._UL(); // uk-card-body
+
+                        if (tooling) h.TOOLPAD();
+                    }
                 );
             }, false, 2);
         }
@@ -63,30 +69,36 @@ namespace Samp
                 {
                     h.TOOLBAR();
                 }
-                h.ACCORDION(arr,
-                    o => { h.T(o.custname).STATUS(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None); },
+                h.ACCORDIONVIEW(null, arr,
                     o =>
                     {
-                        h.P_("收货").T(o.custname)._T(o.custaddr).T(o.custtel)._P();
-                        h.P("品名", wid: 0x12).P("单价", wid: 0x16).P("购量", wid: 0x16).P("到货", wid: 0x16);
+                        h.SECTION_("uk-accordion-title");
+                        h.T(o.custname).STATUS(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h._SECTION();
+
+                        h.SECTION_("uk-accordion-content uk-grid");
+
+                        h.P_("收货").T(o.custname).T(o.custaddr).T(o.custtel)._P();
+                        h.UL_("uk-grid");
+                        h.LI_();
+                        h.LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16);
+                        h._LI();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
-                            if (o.status <= 1)
-                            {
-                                h.P(oi.name, wid: 0x12).P(oi.price, wid: 0x16).P(oi.qty, wid: 0x16).P(oi.ship, wid: 0x16);
-                            }
-                            else
-                            {
-                                h.P(oi.name, wid: 0x12).P_(wid: 0x16).T("¥").T(oi.price)._P().P_(wid: 0x16)._T(oi.qty).T(oi.unit)._P();
-                            }
+                            h.LI_();
+                            h.SPAN_(0x12).T(oi.name).T(" (").T(oi.unit).T(")")._SPAN().CUR(oi.price, w: 0x16).NUM(oi.qty, w: 0x16).NUMIF(oi.ship, w: 0x16);
+                            h._LI();
                         }
-                        h.P_("总额", wid: 0x12).T("¥").T(o.total)._P();
+                        h._UL();
+                        h.P_("总额", w: 0x12).CUR(o.total)._P();
                         if (o.comp)
                         {
-                            h.P_("净额", wid: 0x12).T("¥").T(o.net)._P();
+                            h.P_("净额", w: 0x12).CUR(o.net)._P();
                         }
                         h.TOOLPAD();
+
+                        h._SECTION();
                     });
             }, false, 2);
         }

@@ -23,19 +23,19 @@ namespace Samp
         [Ui("付款"), Tool(ButtonScript), Order('P')]
         public async Task prepay(WebContext wc)
         {
-            string wx = wc[-2];
+            var prin = (User) wc.Principal;
             int orderid = wc[this];
-            Order o = null;
+            Order o;
             using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ DETAIL;
-                dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custwx = @2");
-                o = dc.Query1<Order>(p => p.Set(orderid).Set(wx), proj);
+                dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custid = @2");
+                o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id), proj);
             }
             var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(
                 orderid + "-" + o.rev,
                 (o.comp ? o.net : o.total),
-                wx,
+                prin.wx,
                 wc.RemoteAddr.ToString(),
                 NETADDR + "/" + nameof(SampService.paynotify),
                 "粗粮达人-健康产品"
@@ -66,7 +66,7 @@ namespace Samp
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.FIELD_("货品").ICON("/" + o.orgid + "/" + oi.name + "/icon", wid: 0x16)._T(oi.name)._FIELD();
+                        h.LI_("货品").IMG("/" + o.orgid + "/" + oi.name + "/icon").T(oi.name)._LI();
                         h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.stock, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();

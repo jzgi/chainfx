@@ -221,43 +221,38 @@ namespace Samp
             var cityorgs = Obtain<Map<string, Org>>().FindGroup(cityid);
             var items = Obtain<Map<(string, string), Item>>();
 
-            wc.GiveDoc(200, h =>
+            wc.GivePage(200, h =>
                 {
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
-
-                    h.BOARDVIEW(cityorgs,
-                        o => // header
+                    h.BOARDVIEW(cityorgs, o =>
                         {
-                            h.COL_();
-                            h.ROW_();
+                            h.SECTION_("uk-card-header");
                             h.H3(o.name);
                             if (o.oprtel != null)
                             {
                                 //                                h.BADGE_LINK( "/a/", "commenting");
-                                h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
+//                                h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
                             }
-                            h._ROW();
                             h.P(o.descr, "简介");
                             h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
-                            h._COL();
-                        },
-                        o => // body
-                        {
+
+                            h._SECTION();
                             var orgitems = items.FindGroup((o.id, null));
-                            h.LISTVIEW(orgitems, m =>
+                            h.LISTVIEW("uk-card-body uk-padding-remove", orgitems, m =>
                             {
-                                h.ICON("/" + m.orgid + "/" + m.name + "/icon", wid: 0x13);
-                                h.COL_(0x23);
+                                h.THUMBNAIL_(w:0x13).T("/").T(m.orgid).T("/").T(m.name).T("/icon")._THUMBNAIL();
+                                h.COL_(0x23, @class:"uk-padding-small-left");
                                 h.H4(m.name);
-                                h.P(m.descr, "描述");
+                                h.P(m.descr);
                                 h.ROW_();
-                                h.P_("价格", wid: 0x23).EM_().T('¥').T(m.price)._EM()._P();
+                                h.P_(w: 0x23).EM_().T('¥').T(m.price)._EM().T("／").T(m.unit)._P();
                                 h.TOOL(nameof(SampItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
                             });
+
+                            h.TOOLPAD();
                         }
-                        , o => h.TOOLPAD()
                     );
                 }, true, 60
             );

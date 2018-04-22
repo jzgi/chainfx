@@ -23,12 +23,12 @@ namespace Samp
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.CARDVIEW(prin, null,
+                h.ARTICLEVIEW(prin,
                     o =>
                     {
                         h.P(prin.name, "姓名");
                         h.P(prin.tel, "电话");
-                        h.P_("地址")._T(prin.addr)._P();
+                        h.P_("地址").T(prin.addr)._P();
                         h.COL_();
                         h.QRCODE(SampUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
                         h._COL();
@@ -142,18 +142,16 @@ namespace Samp
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.CARDVIEW(org, null,
-                    o =>
-                    {
-                        h.P(org.descr, "简介");
-                        h.P_("经理").T(org.mgrname)._T(org.mgrtel)._P();
-                        h.P_("客服").T(org.oprname)._T(org.oprtel)._P();
-                    });
+                h.UL_("uk-card uk-card-default uk-card-body");
+                h.LI("简介", org.descr);
+                h.LI("经理", org.mgrname, org.mgrtel);
+                h.LI("客服", org.oprname, org.oprtel);
+                h._UL();
             });
         }
 
         [Ui("人员"), Tool(ButtonOpen), User(OPRMGR)]
-        public async Task access(WebContext wc, int cmd)
+        public async Task acl(WebContext wc, int cmd)
         {
             string orgid = wc[this];
             string tel = null;
@@ -194,13 +192,13 @@ namespace Samp
                     }
                 }
                 h._FIELDSET();
-                h.BUTTON(nameof(access), 1, "删除");
+                h.BUTTON(nameof(acl), 1, "删除");
 
                 h.FIELDSET_("添加人员");
                 h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
                 h.SELECT(nameof(opr), opr, Oprs, "角色");
                 h._FIELDSET();
-                h.BUTTON(nameof(access), 2, "添加");
+                h.BUTTON(nameof(acl), 2, "添加");
                 h._FORM();
             });
         }

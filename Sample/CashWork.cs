@@ -52,7 +52,7 @@ namespace Samp
                     h.FIELDSET_("填写交易信息");
                     h.SELECT(nameof(o.code), o.code, Cash.Codes, label: "类型");
                     h.TEXT(nameof(o.descr), o.descr, "简述", max: 20);
-                    h.FIELD_().LABEL("收入").NUMBER(nameof(o.receive), o.receive).LABEL("支出").NUMBER(nameof(o.pay), o.pay)._FIELD();
+                    h.LI_().LABEL("收入").NUMBER(nameof(o.receive), o.receive).LABEL("支出").NUMBER(nameof(o.pay), o.pay)._LI();
                     h._FIELDSET();
 
                     h._FORM();
