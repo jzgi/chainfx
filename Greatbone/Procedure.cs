@@ -74,7 +74,7 @@ namespace Greatbone
 
         public Work Work => work;
 
-        public string RPath => rpath;
+        public string RealPath => rpath;
 
         public bool IsAsync => async;
 

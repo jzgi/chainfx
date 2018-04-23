@@ -21,7 +21,7 @@ namespace Samp
         {
         }
 
-        [Ui("新结"), Tool(Link)]
+        [Ui("新结"), Tool(A)]
         public void @default(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
@@ -38,7 +38,7 @@ namespace Samp
             }
         }
 
-        [Ui("已转"), Tool(Link)]
+        [Ui("已转"), Tool(A)]
         public void old(WebContext wc, int page)
         {
             using (var dc = NewDbContext())

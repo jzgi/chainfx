@@ -32,21 +32,23 @@ namespace Samp
 
                         h.UL_("uk-card-body");
 
-                        h.LI("收货").T(o.custaddr).T(o.custname).T(o.custtel);
+                        h.LI("收货", o.custaddr, o.custname, o.custtel);
 
-                        h.P("品名", w: 0x12).P("单价", w: 0x16).P("购量", w: 0x16).P("到货", w: 0x16);
+                        h.UL_("uk-grid");
+                        h.LI_().LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16)._LI();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             if (o.status == CREATED)
                             {
-                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).LINK_(nameof(MyOrderVarWork.Upd), i).T(oi.qty).T(oi.unit)._LINK()._P().P(oi.ship, w: 0x16);
+                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).TOOL(nameof(MyOrderVarWork.Upd), i, oi.qty.ToString())._P().P(oi.ship, w: 0x16);
                             }
                             else
                             {
                                 h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).T(oi.qty).T(oi.unit)._P();
                             }
                         }
+                        h._UL();
                         h.P_("总额", w: 0x12).CUR(o.total)._P();
                         if (o.comp)
                         {
@@ -54,7 +56,7 @@ namespace Samp
                         }
                         h._UL(); // uk-card-body
 
-                        if (tooling) h.TOOLPAD();
+                        if (tooling) h.TOOLPAD(css: "uk-card-footer");
                     }
                 );
             }, false, 2);
@@ -80,9 +82,7 @@ namespace Samp
 
                         h.P_("收货").T(o.custname).T(o.custaddr).T(o.custtel)._P();
                         h.UL_("uk-grid");
-                        h.LI_();
-                        h.LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16);
-                        h._LI();
+                        h.LI_().LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16)._LI();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
@@ -120,7 +120,7 @@ namespace Samp
             }
         }
 
-        [Ui("已往订单"), Tool(ButtonOpen)]
+        [Ui("已往订单"), Tool(AOpen)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];
@@ -199,7 +199,7 @@ namespace Samp
             }
         }
 
-        [Ui("查询"), Tool(LinkShow)]
+        [Ui("查询"), Tool(AShow)]
         public void send(WebContext wc)
         {
             long[] key = wc.Query[nameof(key)];

@@ -50,7 +50,7 @@ namespace Samp
             }
         }
 
-        [Ui("修改"), Tool(ButtonShow, Style.None, 1)]
+        [Ui("修改"), Tool(AShow, Style.None, 1)]
         public async Task Upd(WebContext wc, int idx)
         {
             int orderid = wc[this];
@@ -66,7 +66,7 @@ namespace Samp
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.LI_("货品").IMG("/" + o.orgid + "/" + oi.name + "/icon").T(oi.name)._LI();
+                        h.LI_("货品").IMG("/" + o.orgid + "/" + oi.name + "/icon", w: 0x16).T(oi.name)._LI();
                         h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.stock, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();

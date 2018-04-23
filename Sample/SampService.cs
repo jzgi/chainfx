@@ -240,8 +240,8 @@ namespace Samp
                             var orgitems = items.FindGroup((o.id, null));
                             h.LISTVIEW("uk-card-body uk-padding-remove", orgitems, m =>
                             {
-                                h.THUMBNAIL_(w:0x13).T("/").T(m.orgid).T("/").T(m.name).T("/icon")._THUMBNAIL();
-                                h.COL_(0x23, @class:"uk-padding-small-left");
+                                h.THUMBNAIL_(w:0x13, css:"uk-padding-small").T("/").T(m.orgid).T("/").T(m.name).T("/icon")._THUMBNAIL();
+                                h.COL_(0x23, @class:"uk-padding-small");
                                 h.H4(m.name);
                                 h.P(m.descr);
                                 h.ROW_();

@@ -2568,10 +2568,6 @@ select.uk-form-width-xsmall {
     border-top: 1px solid #e5e5e5;
 }
 
-.uk-card-body > ul > li:nth-child(n+2) {
-    border-top: 1px solid #e5e5e5;
-}
-
 .uk-card-header {
     padding: 8px;
 }
@@ -2655,7 +2651,7 @@ select.uk-form-width-xsmall {
     color: #333;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
     box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
-    margin: 12px 4px;
+    margin: 12px 6px;
 }
 
 .uk-card-default .uk-card-title {
@@ -4683,11 +4679,6 @@ ul.uk-nav-sub {
     padding: 0;
     background-color: #fff;
 }
-
-.uk-accordion-content > ul > li:nth-child(n+2) {
-    border-top: 1px solid #e5e5e5;
-}
-
 
 
 .uk-open > .uk-accordion-title::after {

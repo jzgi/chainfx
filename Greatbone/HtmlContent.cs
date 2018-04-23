@@ -1006,6 +1006,50 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent A_CLOSEUP(string caption)
+        {
+            Add("<a href=\"#\" onclick=\"closeUp(false); return false;\"");
+            Add(" class=\"uk-button uk-button-default uk-border-rounded\"");
+            Add(">");
+            Add(caption);
+            Add("</a>");
+            return this;
+        }
+
+        public HtmlContent A_GOTO(string caption, string href)
+        {
+            Add("<a target=\"_parent\" href=\"");
+            Add(href);
+            Add("\" class=\"uk-button uk-button-default uk-border-rounded\"");
+            Add(">");
+            Add(caption);
+            Add("</a>");
+            return this;
+        }
+
+        public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
+        {
+            Add("<a href=\"#orginfo\" class=\"uk-button uk-button-link\" uk-toggle>");
+            Add(label);
+            Add("</a>");
+            Add("<div id=\"orginfo\" class=\"uk-modal\" uk-modal>");
+            Add("<div class=\"uk-modal-dialog uk-modal-body\">");
+            return this;
+        }
+
+        public HtmlContent _A_DROPDOWN()
+        {
+            Add("</div>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent _BUTTON()
+        {
+            Add("</button>");
+            return this;
+        }
+
         public HtmlContent IMG_(string @class = null, string alt = null)
         {
             Add("<img class=\"");
@@ -1025,9 +1069,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent THUMBNAIL_(string alt = null, byte w = 0)
+        public HtmlContent THUMBNAIL_(string alt = null, byte w = 0, string css = null)
         {
             Add("<div class=\"uk-margin-auto-vertical");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
             if (w > 0)
             {
                 int lo = w & 0x0f;
@@ -1054,23 +1103,31 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent IMG(string src, string href = null, byte box = 0x0c)
+        public HtmlContent IMG(string src, string href = null, byte w = 0x0c)
         {
-            LI_(null);
             if (href != null)
             {
                 Add("<a href=\"");
                 Add(href);
                 Add("\">");
             }
-            Add("<img class=\"img\" src=\"");
+            Add("<img class=\"uk-img");
+            if (w > 0)
+            {
+                int lo = w & 0x0f;
+                int hi = w >> 4;
+                Add(" uk-width-");
+                Add(hi);
+                Add('-');
+                Add(lo);
+            }
+            Add("\" src=\"");
             Add(src);
             Add("\">");
             if (href != null)
             {
                 Add("</a>");
             }
-            _LI();
             return this;
         }
 
@@ -1083,23 +1140,6 @@ namespace Greatbone
             Add(v);
             Add("\");");
             Add("</script>");
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
-        {
-            Add("<a href=\"#orginfo\" class=\"uk-button uk-button-link\" uk-toggle>");
-            Add(label);
-            Add("</a>");
-            Add("<div id=\"orginfo\" class=\"uk-modal\" uk-modal>");
-            Add("<div class=\"uk-modal-dialog uk-modal-body\">");
-            return this;
-        }
-
-        public HtmlContent _A_DROPDOWN()
-        {
-            Add("</div>");
             Add("</div>");
             return this;
         }
@@ -1516,7 +1556,14 @@ namespace Greatbone
                     {
                         Add("<td>");
                         Add("<form>");
-                        PutTools(vw);
+                        for (int j = 0; j < prcs.Length; j++)
+                        {
+                            var prc = prcs[j];
+                            if (!prc.IsCapital)
+                            {
+                                PutTool(prc);
+                            }
+                        }
                         Add("</form>");
                         Add("</td>");
                     }
@@ -1667,7 +1714,7 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLPAD(byte w = 0x11)
+        public HtmlContent TOOLPAD(string css = null, byte w = 0x11)
         {
             // locate the proper work
             Add("<form class=\"uk-button-group uk-flex uk-flex-center");
@@ -1679,6 +1726,11 @@ namespace Greatbone
                 Add(hi);
                 Add('-');
                 Add(lo);
+            }
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
             }
             Add("\">");
 
@@ -1700,7 +1752,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string name, int subscript = -1)
+        public HtmlContent TOOL(string name, int subscript = -1, string caption = null)
         {
             // locate the proper work
             Work w = webCtx.Work;
@@ -1711,24 +1763,12 @@ namespace Greatbone
             var prc = w[name];
             if (prc != null)
             {
-                PutTool(prc, subscript);
+                PutTool(prc, subscript, caption);
             }
             return this;
         }
 
-        public HtmlContent LINK_(string prcname, int subscript = -1)
-        {
-            // locate the proper work
-            Work w = webCtx.Work;
-            for (int i = -1; i < level; i++)
-            {
-                w = w.varwork;
-            }
-            var prc = w[prcname];
-            return LINK_(prc, subscript);
-        }
-
-        public HtmlContent LINK_(Procedure prc, int subscript = -1)
+        public void PutTool(Procedure prc, int subscript = -1, string caption = null)
         {
             var tool = prc.Tool;
 
@@ -1739,166 +1779,78 @@ namespace Greatbone
                 ok = prc.DoState(webCtx, stack, level);
             }
 
-            Add("<a class=\"");
-            if (tool.Style > 0)
-            {
-                Add("uk-button");
-                Add(prc == webCtx.Procedure ? " uk-button-default" : " uk-button-link");
-            }
-            Add("\" href=\"");
-            if (level >= 0)
-            {
-                Work w = webCtx.Work;
-                for (int i = 0; i <= level; i++)
-                {
-                    w = w.varwork;
-                    w.PutVariableKey(stack[i], this);
-                    Add('/');
-                }
-            }
-            Add(prc.RPath);
-            if (subscript >= 0)
-            {
-                Add('-');
-                Add(subscript);
-            }
-            Add("\"");
-
-            if (!ok)
-            {
-                Add(" disabled onclick=\"return false;\"");
-            }
-            else if (tool.HasConfirm)
-            {
-                Add(" onclick=\"return ");
-                if (tool.MustPick)
-                {
-                    Add("!serialize(this.form) ? false : ");
-                }
-                Add("confirm('");
-                Add(prc.Tip ?? prc.Label);
-                Add("');\"");
-            }
-            else if (tool.HasPrompt)
-            {
-                OnClickDialog(2, tool.MustPick, tool.Size, prc.Tip);
-            }
-            else if (tool.HasShow)
-            {
-                OnClickDialog(4, tool.MustPick, tool.Size, prc.Tip);
-            }
-            else if (tool.HasOpen)
-            {
-                OnClickDialog(8, tool.MustPick, tool.Size, prc.Tip);
-            }
-            else if (tool.HasScript)
-            {
-                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
-                Add(prc.Lower);
-                Add("(this);\"");
-            }
-            else if (tool.HasCrop)
-            {
-                Add(" onclick=\"return crop(this,");
-                Add(tool.Ordinals);
-                Add(',');
-                Add(tool.Size);
-                Add(",'");
-                Add(prc.Tip);
-                Add("');\"");
-            }
-            Add(">");
-
-            return this;
-        }
-
-        public HtmlContent _LINK()
-        {
-            Add("</a>");
-            return this;
-        }
-
-        public HtmlContent LINK(Procedure prc, int subscript = -1, string caption = null)
-        {
-            LINK_(prc, subscript);
-            Add(caption ?? prc.Label);
-            _LINK();
-            return this;
-        }
-
-
-        void PutTools(Work work)
-        {
-            var prcs = work.Tooled;
-            if (prcs == null)
-            {
-                return;
-            }
-            for (int i = 0; i < prcs.Length; i++)
-            {
-                var prc = prcs[i];
-                if (!prc.IsCapital)
-                {
-                    PutTool(prc);
-                }
-            }
-        }
-
-        void PutTool(Procedure prc, int subscript = -1)
-        {
-            var tool = prc.Tool;
             if (tool.IsAnchorTag)
             {
-                LINK(prc, subscript);
+                Add("<a class=\"");
+                var style = tool.Style;
+                if (style > Style.None)
+                {
+                    Add("uk-button uk-border-rounded");
+                    if (prc == webCtx.Procedure) // if current procedure
+                    {
+                        Add(" uk-button-primary");
+                    }
+                    else
+                    {
+                        if (style == Style.Default) Add(" uk-button-default");
+                        if (style == Style.Primary) Add(" uk-button-primary");
+                        else if (style == Style.Secondary) Add(" uk-button-secondary");
+                        else if (style == Style.Danger) Add(" uk-button-danger");
+                        else if (style == Style.Text) Add(" uk-button-text");
+                        else if (style == Style.Link) Add(" uk-button-link");
+                    }
+                }
+                Add("\" href=\"");
+                if (level >= 0)
+                {
+                    Work w = webCtx.Work;
+                    for (int i = 0; i <= level; i++)
+                    {
+                        w = w.varwork;
+                        w.PutVariableKey(stack[i], this);
+                        Add('/');
+                    }
+                }
+                Add(prc.RealPath);
+                if (subscript >= 0)
+                {
+                    Add('-');
+                    Add(subscript);
+                }
+                Add("\"");
             }
             else
             {
-                BUTTON(prc, subscript);
-            }
-        }
+                Add("<button  class=\"uk-button");
+                var style = tool.Style;
+                if (style == Style.Default) Add(" uk-button-default");
+                else if (style == Style.Primary) Add(" uk-button-primary");
+                else if (style == Style.Secondary) Add(" uk-button-secondary");
+                else if (style == Style.Danger) Add(" uk-button-danger");
+                else if (style == Style.Text) Add(" uk-button-text");
+                else if (style == Style.Link) Add(" uk-button-link");
 
-        public HtmlContent BUTTON_(Procedure prc, int subscript = -1)
-        {
-            var tool = prc.Tool;
-
-            // check procedure's availability
-            bool ok = !tool.Auth || prc.DoAuthorize(webCtx, out _);
-            if (ok && level >= 0)
-            {
-                ok = prc.DoState(webCtx, stack, level);
-            }
-
-            Add("<button  class=\"uk-button uk-border-rounded");
-
-            var style = tool.Style;
-            if (style == Style.Default) Add(" uk-button-default");
-            else if (style == Style.Primary) Add(" uk-button-primary");
-            else if (style == Style.Secondary) Add(" uk-button-secondary");
-            else if (style == Style.Danger) Add(" uk-button-danger");
-            else if (style == Style.Text) Add(" uk-button-text");
-            else if (style == Style.Link) Add(" uk-button-link");
-
-            Add("\" name=\"");
-            Add(prc.Key);
-            Add("\" formaction=\"");
-            if (level >= 0)
-            {
-                Work w = webCtx.Work;
-                for (int i = 0; i <= level; i++)
+                Add("\" name=\"");
+                Add(prc.Key);
+                Add("\" formaction=\"");
+                if (level >= 0)
                 {
-                    w = w.varwork;
-                    w.PutVariableKey(stack[i], this);
-                    Add('/');
+                    Work w = webCtx.Work;
+                    for (int i = 0; i <= level; i++)
+                    {
+                        w = w.varwork;
+                        w.PutVariableKey(stack[i], this);
+                        Add('/');
+                    }
                 }
+                Add(prc.Key);
+                if (subscript >= 0)
+                {
+                    Add('-');
+                    Add(subscript);
+                }
+                Add("\" formmethod=\"post\"");
             }
-            Add(prc.Key);
-            if (subscript >= 0)
-            {
-                Add('-');
-                Add(subscript);
-            }
-            Add("\" formmethod=\"post\"");
-
 
             if (!ok)
             {
@@ -1945,23 +1897,11 @@ namespace Greatbone
             }
             Add(">");
 
-            return this;
-        }
-
-        public HtmlContent _BUTTON()
-        {
-            Add("</button>");
-            return this;
-        }
-
-        public HtmlContent BUTTON(Procedure prc, int subscript = -1, string caption = null)
-        {
-            BUTTON_(prc, subscript);
             Add(caption ?? prc.Label);
-            _BUTTON();
-            return this;
-        }
 
+            // put the closing tag
+            Add(tool.IsAnchorTag ? "</a>" : "</button>");
+        }
 
         //
         // CONTROLS
