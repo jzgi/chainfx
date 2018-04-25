@@ -109,6 +109,8 @@ namespace Samp
                         {
                             orgid = orgid,
                             orgname = org.name,
+                            custid = prin.id,
+                            custname = prin.name,
                             custwx = prin.wx,
                             created = DateTime.Now
                         };
@@ -117,15 +119,6 @@ namespace Samp
                         o.AddItem(itemname, item.unit, item.price, item.comp, num);
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
-
-                        // save user info
-                        if (prin.name != o.custname || prin.tel != o.custtel || prin.addr != o.custaddr)
-                        {
-                            if (dc.Execute("INSERT INTO users (wx, name, tel, addr) VALUES (@1, @2, @3, @4) ON CONFLICT (wx) DO UPDATE SET name = @2, tel = @3, addr = @4", p => p.Set(o.custwx).Set(prin.name = o.custname).Set(prin.tel = o.custtel).Set(prin.addr = o.custaddr)) > 0)
-                            {
-                                wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL); // refresh client token thru cookie
-                            }
-                        }
                     }
                     wc.GivePane(200, m =>
                     {

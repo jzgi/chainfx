@@ -139,6 +139,8 @@ svg:not(:root) {
 }
 
 p,
+span,
+label,
 ul,
 ol,
 dl,
@@ -147,7 +149,6 @@ address,
 figure {
     margin: 0;
     padding: 2px 0;
-    
 }
 
 h1,
@@ -167,7 +168,6 @@ h6,
     color: #333;
     text-transform: none;
     display: inline-block;
-    padding: 2px;
 }
 
 /*
@@ -175,37 +175,37 @@ h6,
  */
 h1,
 .uk-h1 {
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     margin: 0.5rem 0;
 }
 
 h2,
 .uk-h2 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin: 0.5rem 0;
 }
 
 h3,
 .uk-h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin: 0.375rem 0;
 }
 
 h4,
 .uk-h4 {
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin: 0.375rem 0;
 }
 
 h5,
 .uk-h5 {
-    font-size: 16px;
+    font-size: 0.875rem;
     margin: 0.25rem 0;
 }
 
 h6,
 .uk-h6 {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     margin: 0.25rem 0;
 }
 
@@ -1756,6 +1756,8 @@ select.uk-form-width-xsmall {
     background-color: #007aff;
     color: #fff;
     border: 1px solid transparent;
+    line-height: 27px;
+    height: 29px;
 }
 
 /* Hover + Focus */
@@ -1779,6 +1781,8 @@ select.uk-form-width-xsmall {
     background-color: #222;
     color: #fff;
     border: 1px solid transparent;
+    line-height: 27px;
+    height: 29px;
 }
 
 /* Hover + Focus */
@@ -1809,6 +1813,8 @@ select.uk-form-width-xsmall {
 .uk-button-danger:focus {
     background-color: #ee395b;
     color: #fff;
+    line-height: 27px;
+    height: 29px;
 }
 
 /* OnClick + Active */
@@ -2598,46 +2604,37 @@ select.uk-form-width-xsmall {
     clear: both;
 }
 
-/*
- * Remove margin from the last-child
- */
-.uk-card-body > :last-child,
-.uk-card-header > :last-child,
-.uk-card-footer > :last-child {
-    margin-bottom: 0;
-}
-
 .uk-card-title {
     font-size: 1.125rem;
 }
 
 .uk-card-badge {
     font-size: 0.875rem;
-    margin-left: auto;
+    margin-left: 1rem;
     color: #c4c4c4;
 }
 
 .uk-card-badge-primary {
     font-size: 0.875rem;
-    margin-left: auto;
+    margin-left: 1rem;
     color: #007aff;
 }
 
 .uk-card-badge-success {
     font-size: 0.875rem;
-    margin-left: auto;
+    margin-left: 1rem;
     color: #4cd964;
 }
 
 .uk-card-badge-warning {
     font-size: 0.875rem;
-    margin-left: auto;
+    margin-left: 1rem;
     color: #ff9500;
 }
 
 .uk-card-badge-danger {
     font-size: 0.875rem;
-    margin-left: auto;
+    margin-left: 1rem;
     color: #ff3b30;
 }
 
@@ -3053,7 +3050,7 @@ select.uk-form-width-xsmall {
     margin-right: 0.5rem;
 }
 
-.uk-label-lite {
+.uk-label-top {
     text-transform: uppercase;
     white-space: nowrap;
     color: indianred;
@@ -4657,11 +4654,10 @@ ul.uk-nav-sub {
     content: "";
     width: 1.25em;
     height: 1.25em;
-    margin-left: auto;
-    float: right;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2213%22%20height%3D%2213%22%20viewBox%3D%220%200%2013%2013%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%2213%22%20height%3D%221%22%20x%3D%220%22%20y%3D%226%22%20%2F%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%221%22%20height%3D%2213%22%20x%3D%226%22%20y%3D%220%22%20%2F%3E%0A%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: 50% 50%;
+    margin-left: auto;
 }
 
 .uk-accordion-content li {
@@ -4679,7 +4675,6 @@ ul.uk-nav-sub {
     padding: 0;
     background-color: #fff;
 }
-
 
 .uk-open > .uk-accordion-title::after {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2213%22%20height%3D%2213%22%20viewBox%3D%220%200%2013%2013%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%2213%22%20height%3D%221%22%20x%3D%220%22%20y%3D%226%22%20%2F%3E%0A%3C%2Fsvg%3E");
@@ -6786,6 +6781,67 @@ ul.uk-nav-sub {
     flex: 1;
     min-width: 0;
     flex-basis: 1px;
+}
+
+/* extensions for accurate widths */
+.uk-width-1 {
+    width: 20px;
+}
+
+.uk-width-2 {
+    width: 40px;
+}
+
+.uk-width-3 {
+    width: 60px;
+}
+
+.uk-width-4 {
+    width: 80px;
+}
+
+.uk-width-5 {
+    width: 100px;
+}
+
+.uk-width-6 {
+    width: 120px;
+}
+
+.uk-width-7 {
+    width: 140px;
+}
+
+.uk-width-8 {
+    width: 160px;
+}
+
+.uk-width-9 {
+    width: 180px;
+}
+
+.uk-width-10 {
+    width: 200px;
+}
+
+.uk-width-11 {
+    width: 220px;
+}
+
+.uk-width-12 {
+    width: 240px;
+}
+
+.uk-width-13 {
+    width: 260px;
+}
+
+.uk-width-14 {
+    width: 280px;
+}
+
+.uk-width-15 {
+    width: 300px;
 }
 
 /* Phone landscape and bigger */

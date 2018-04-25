@@ -120,7 +120,7 @@ namespace Samp
             }
         }
 
-        [Ui("已往订单"), Tool(AOpen)]
+        [Ui("历史记录"), Tool(AOpen)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];
@@ -166,7 +166,7 @@ namespace Samp
                 wc.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", width: 0x4c);
+                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", w: 0x4c);
                     m._FORM();
                 });
             }
