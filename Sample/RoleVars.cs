@@ -23,17 +23,16 @@ namespace Samp
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.ARTICLEVIEW(prin,
-                    o =>
-                    {
-                        h.P(prin.name, "姓名");
-                        h.P(prin.tel, "电话");
-                        h.P_("地址").T(prin.addr)._P();
-                        h.COL_();
-                        h.QRCODE(SampUtility.NETADDR + "/my//join?refwx=" + prin.wx).P("让好友扫分享码，一同享用健康产品。");
-                        h._COL();
-                    }
-                );
+                h.UL_("uk-card- uk-card-default uk-card-body");
+                h.LI("姓名", prin.name);
+                h.LI("电话", prin.tel);
+                h.LI("地址", prin.addr);
+                h.HR();
+                h.COL_();
+                h.P("让好友扫分享码，一同享用健康产品。");
+                h.QRCODE(SampUtility.NETADDR + "/my//join?refid=" + prin.id);
+                h._COL();
+                h._UL();
             });
         }
 

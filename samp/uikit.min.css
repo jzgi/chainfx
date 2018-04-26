@@ -1696,21 +1696,24 @@ select.uk-form-width-xsmall {
     vertical-align: middle;
 }
 
+a.uk-button {
+    border-radius: 5px;
+}
+
+button.uk-button {
+    border-radius: 25px;
+}
+
 .uk-button:not(:disabled) {
     cursor: pointer;
 }
 
-/*
- * Remove the inner border and padding in Firefox.
- */
-.uk-button::-moz-focus-inner {
+\.uk-button::-moz-focus-inner {
     border: 0;
     padding: 0;
 }
 
-/* Hover */
 .uk-button:hover {
-    /* 8 */
     text-decoration: none;
 }
 
@@ -1719,16 +1722,9 @@ select.uk-form-width-xsmall {
     outline: none;
 }
 
-/* OnClick + Active */
-/* Style modifiers
- ========================================================================== */
-/*
- * Default
- */
 .uk-button-default {
     border: 1px solid #007aff;
     color: #007aff;
-    border-radius: 5px;
     line-height: 27px;
     height: 29px;
 }
@@ -1737,8 +1733,8 @@ select.uk-form-width-xsmall {
 .uk-button-default:hover,
 .uk-button-default:focus {
     background-color: transparent;
-    color: #333;
-    border-color: #b2b2b2;
+    color: #007aff;
+    border-color: #007aff;
 }
 
 /* OnClick + Active */
@@ -1767,25 +1763,20 @@ select.uk-form-width-xsmall {
     color: #fff;
 }
 
-/* OnClick + Active */
 .uk-button-primary:active,
 .uk-button-primary.uk-active {
     background-color: #0e6dcd;
     color: #fff;
 }
 
-/*
- * Secondary
- */
 .uk-button-secondary {
-    background-color: #222;
+    background-color: #8e8e93;
     color: #fff;
     border: 1px solid transparent;
     line-height: 27px;
     height: 29px;
 }
 
-/* Hover + Focus */
 .uk-button-secondary:hover,
 .uk-button-secondary:focus {
     background-color: #151515;
@@ -1808,7 +1799,6 @@ select.uk-form-width-xsmall {
     border: 1px solid transparent;
 }
 
-/* Hover + Focus */
 .uk-button-danger:hover,
 .uk-button-danger:focus {
     background-color: #ee395b;
@@ -1817,17 +1807,12 @@ select.uk-form-width-xsmall {
     height: 29px;
 }
 
-/* OnClick + Active */
 .uk-button-danger:active,
 .uk-button-danger.uk-active {
     background-color: #ec2147;
     color: #fff;
 }
 
-/*
- * Disabled
- * The same for all style modifiers
- */
 .uk-button-default:disabled,
 .uk-button-primary:disabled,
 .uk-button-secondary:disabled,
@@ -1837,8 +1822,6 @@ select.uk-form-width-xsmall {
     border-color: #e5e5e5;
 }
 
-/* Size modifiers
- ========================================================================== */
 .uk-button-small {
     padding: 0 15px;
     line-height: 28px;
@@ -1851,13 +1834,6 @@ select.uk-form-width-xsmall {
     font-size: 0.875rem;
 }
 
-/* Text modifiers
- ========================================================================== */
-/*
- * Text
- * 1. Reset
- * 2. Style
- */
 .uk-button-text {
     line-height: 27px;
     height: 29px;
@@ -1896,22 +1872,21 @@ select.uk-form-width-xsmall {
     display: none;
 }
 
-/*
- * Link
- * 1. Reset
- * 2. Style
- */
 .uk-button-link {
     line-height: 28px;
     background: none;
     color: #007aff;
 }
 
-/* Hover + Focus */
 .uk-button-link:hover,
 .uk-button-link:focus {
     color: #0f6ecd;
     text-decoration: underline;
+}
+
+.uk-button-link:active,
+.uk-button-link.uk-active {
+    border: 1px solid #007aff;
 }
 
 /* Disabled */
@@ -2608,36 +2583,6 @@ select.uk-form-width-xsmall {
     font-size: 1.125rem;
 }
 
-.uk-card-badge {
-    font-size: 0.875rem;
-    margin-left: 1rem;
-    color: #c4c4c4;
-}
-
-.uk-card-badge-primary {
-    font-size: 0.875rem;
-    margin-left: 1rem;
-    color: #007aff;
-}
-
-.uk-card-badge-success {
-    font-size: 0.875rem;
-    margin-left: 1rem;
-    color: #4cd964;
-}
-
-.uk-card-badge-warning {
-    font-size: 0.875rem;
-    margin-left: 1rem;
-    color: #ff9500;
-}
-
-.uk-card-badge-danger {
-    font-size: 0.875rem;
-    margin-left: 1rem;
-    color: #ff3b30;
-}
-
 .uk-card-hover:not(.uk-card-default):not(.uk-card-primary):not(.uk-card-secondary):hover {
     background: #fff;
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
@@ -3020,28 +2965,47 @@ select.uk-form-width-xsmall {
 
 .uk-badge {
     box-sizing: border-box;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 5px;
-    border-radius: 500px;
+    padding: 0 4px;
     vertical-align: middle;
-    background: #007aff;
-    color: #fff;
-    font-size: 0.875rem;
+    margin-left: 4px;
+    color: #8e8e93;
+    border-top: 1px solid #8e8e93;
+    border-bottom: 1px solid #8e8e93;
+    font-size: 0.75rem;
     display: inline-flex;
     justify-content: center;
     align-items: center;
 }
 
-/*
- * Required for `a`
- */
-.uk-badge:hover,
-.uk-badge:focus {
-    color: #fff;
-    text-decoration: none;
-    outline: none;
+.uk-card-header > .uk-badge {
+    margin-left: auto;
 }
+
+.uk-badge-primary {
+    color: #007aff;
+    border-top: 1px solid #007aff;
+    border-bottom: 1px solid #007aff;
+}
+
+.uk-badge-success {
+    color: #4cd964;
+    border-top: 1px solid #4cd964;
+    border-bottom: 1px solid #4cd964;
+}
+
+.uk-badge-warning {
+    color: #ff9500;
+    border-top: 1px solid #ff9500;
+    border-bottom: 1px solid #ff9500;
+}
+
+.uk-badge-danger {
+    color: #ff3b30;
+    border-top: 1px solid #ff3b30;
+    border-bottom: 1px solid #ff3b30;
+}
+
+
 
 .uk-label {
     text-transform: uppercase;
@@ -4674,6 +4638,10 @@ ul.uk-nav-sub {
     width: 100%;
     padding: 0;
     background-color: #fff;
+}
+
+.uk-accordion-content > li:nth-child(n+2) {
+    border-top: 1px solid #e5e5e5;
 }
 
 .uk-open > .uk-accordion-title::after {

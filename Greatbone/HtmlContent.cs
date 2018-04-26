@@ -54,15 +54,22 @@ namespace Greatbone
         {
             if (w > 0)
             {
-                int hi = w >> 4;
-                int lo = w & 0x0f;
                 Add(" uk-width-");
-                if (hi > 0) // if a percentage value
+                if (w == 0x0f)
                 {
-                    Add(hi);
-                    Add('-');
+                    Add("expand");
                 }
-                Add(lo);
+                else
+                {
+                    int hi = w >> 4;
+                    int lo = w & 0x0f;
+                    if (hi > 0) // if a percentage value
+                    {
+                        Add(hi);
+                        Add('-');
+                    }
+                    Add(lo);
+                }
             }
         }
 
@@ -501,13 +508,13 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H5(string v, string @class = null)
+        public HtmlContent H5(string v, string css = null)
         {
             Add("<h5 class=\"uk-h5");
-            if (@class != null)
+            if (css != null)
             {
                 Add(' ');
-                Add(@class);
+                Add(css);
             }
             Add("\">");
             Add(v);
@@ -1132,6 +1139,16 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent ICON(string src, byte w = 0x0c)
+        {
+            Add("<img class=\"uk-img uk-border-circle");
+            Width(w);
+            Add("\" src=\"");
+            Add(src);
+            Add("\">");
+            return this;
+        }
+
         public HtmlContent QRCODE(string v)
         {
             Add("<div class=\"uk-qrcode\">");
@@ -1148,22 +1165,6 @@ namespace Greatbone
         //
         // UIKIT COMPONENTS
         //
-
-        public HtmlContent STATUS(string label, Style style = Style.None)
-        {
-            Add("<span class=\"uk-card-badge");
-            if (style > 0)
-            {
-                if (style == Style.Primary) Add("-primary");
-                else if (style == Style.Success) Add("-success");
-                else if (style == Style.Warning) Add("-warning");
-                else if (style == Style.Danger) Add("-danger");
-            }
-            Add("\">");
-            Add(label);
-            Add("</span>");
-            return this;
-        }
 
         public HtmlContent MSG_(bool yes, string title, string msg)
         {
@@ -1234,6 +1235,45 @@ namespace Greatbone
             Add(p);
             Add("</p>");
             _ALERT();
+            return this;
+        }
+
+        public HtmlContent BADGE_(Style style = 0)
+        {
+            Add("<span class=\"uk-badge");
+            if (style > 0)
+            {
+                switch (style)
+                {
+                    case Style.Primary:
+                        Add(" uk-badge-primary");
+                        break;
+                    case Style.Success:
+                        Add(" uk-badge-success");
+                        break;
+                    case Style.Warning:
+                        Add(" uk-badge-warning");
+                        break;
+                    case Style.Danger:
+                        Add(" uk-badge-danger");
+                        break;
+                }
+            }
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _BADGE()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent BADGE(string caption, Style style = 0)
+        {
+            BADGE_(style);
+            Add(caption);
+            _BADGE();
             return this;
         }
 
@@ -1776,19 +1816,16 @@ namespace Greatbone
                 var style = tool.Style;
                 if (style > Style.None)
                 {
-                    Add("uk-button uk-border-rounded");
+                    Add("uk-button");
+                    if (style == Style.Default) Add(" uk-button-default");
+                    if (style == Style.Primary) Add(" uk-button-primary");
+                    else if (style == Style.Secondary) Add(" uk-button-secondary");
+                    else if (style == Style.Danger) Add(" uk-button-danger");
+                    else if (style == Style.Text) Add(" uk-button-text");
+                    else if (style == Style.Link) Add(" uk-button-link");
                     if (prc == webCtx.Procedure) // if current procedure
                     {
-                        Add(" uk-button-primary");
-                    }
-                    else
-                    {
-                        if (style == Style.Default) Add(" uk-button-default");
-                        if (style == Style.Primary) Add(" uk-button-primary");
-                        else if (style == Style.Secondary) Add(" uk-button-secondary");
-                        else if (style == Style.Danger) Add(" uk-button-danger");
-                        else if (style == Style.Text) Add(" uk-button-text");
-                        else if (style == Style.Link) Add(" uk-button-link");
+                        Add(" uk-active");
                     }
                 }
                 Add("\" href=\"");

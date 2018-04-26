@@ -80,7 +80,7 @@ namespace Samp
                         }
                         // quantity
                         h.FIELDSET_("加入货品");
-                        h.LI_("货品").IMG("icon", w: 0x16).T(item.name)._LI();
+                        h.LI_("货品").ICON("icon", w: 0x16).SP().T(item.name)._LI();
                         h.LI_("数量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
                         h._FIELDSET();
 

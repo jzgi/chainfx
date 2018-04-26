@@ -26,8 +26,8 @@ namespace Samp
                 }
                 h.BOARDVIEW(arr, o =>
                     {
-                        h.SECTION_("uk-card-header");
-                        h.H5(o.orgname).STATUS(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.SECTION_("uk-card-header uk-flex uk-flex-middle");
+                        h.H5(o.orgname).BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h._SECTION();
 
                         h.UL_("uk-card-body");
@@ -75,7 +75,7 @@ namespace Samp
                     o =>
                     {
                         h.SECTION_("uk-accordion-title");
-                        h.T(o.custname).STATUS(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.H5(o.custname, "uk-width-expand").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h._SECTION();
 
                         h.SECTION_("uk-accordion-content uk-grid");
@@ -179,6 +179,17 @@ namespace Samp
                 }
                 wc.GivePane(200);
             }
+        }
+
+        [Ui("清理", "清理三天以前未付款或者已撤销的订单"), Tool(ButtonConfirm)]
+        public void clean(WebContext wc)
+        {
+            string orgid = wc[-1];
+            using (var dc = NewDbContext())
+            {
+                dc.Execute("DELETE FROM orders WHERE (status = 0 OR status = -1) AND orgid = @1 AND (created + interval '3 day' < localtimestamp)", p => p.Set(orgid));
+            }
+            wc.GiveRedirect();
         }
     }
 
