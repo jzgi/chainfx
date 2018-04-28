@@ -30,13 +30,15 @@ namespace Samp
                     h.TOOLBAR();
                     h.BOARDVIEW(arr, o =>
                         {
-                            h.T(o.id).T(o.name);
-                            h.P(o.descr, "简介");
-                            h.P_("地址").T(o.addr)._P();
-                            h.P_("坐标").T(o.x).T(o.y)._P();
-                            h.P_("经理").T(o.mgrname).T(o.mgrtel)._P();
+                            h.SECTION_("uk-card-header").T(o.id).SP().T(o.name)._SECTION();
+                            h.UL_("uk-card-body");
+                            h.LI( "简介",o.descr);
+                            h.LI("地址",o.addr);
+                            h.LI_("坐标").T(o.x).T(o.y)._LI();
+                            h.LI_("经理").T(o.mgrname).T(o.mgrtel)._LI();
+                            h._UL();
 
-                            h.TOOLPAD();
+                            h.TOOLPAD("uk-card-footer");
                         }
                     );
                 });

@@ -7,7 +7,6 @@ using static Samp.User;
 namespace Samp
 {
     [User]
-    [Ui("设置")]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -29,20 +28,20 @@ namespace Samp
                 h.LI("地址", prin.addr);
                 h.HR();
                 h.COL_();
-                h.P("让好友扫分享码，一同享用健康产品。");
+                h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
                 h.QRCODE(SampUtility.NETADDR + "/my//join?refid=" + prin.id);
                 h._COL();
                 h._UL();
-            });
+            }, title: "我的设置");
         }
 
         public void join(WebContext wc)
         {
-            string wx = wc[this];
-            string refwx = wc.Query[nameof(refwx)];
+            int myid = wc[this];
+            int refid = wc.Query[nameof(refid)];
             using (var dc = NewDbContext())
             {
-                dc.Execute("INSERT INTO users (wx, refwx) VALUES (@1, @2) ON CONFLICT (wx) DO NOTHING", p => p.Set(wx).Set(refwx));
+                dc.Execute("UPDATE users SET refid = @1 WHERE id = @2", p => p.Set(refid).Set(myid));
             }
             wc.GiveRedirect("https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect");
         }

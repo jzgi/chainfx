@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
+using static Greatbone.Style;
 
 namespace Samp
 {
@@ -21,7 +22,7 @@ namespace Samp
         {
         }
 
-        [Ui("新结"), Tool(A)]
+        [Ui("新结"), Tool(A, Link)]
         public void @default(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
@@ -38,7 +39,7 @@ namespace Samp
             }
         }
 
-        [Ui("已转"), Tool(A)]
+        [Ui("已转"), Tool(A, Link)]
         public void old(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
@@ -64,7 +65,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    fro = (DateTime)dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
+                    fro = (DateTime) dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
                     wc.GivePane(200, h =>
                     {
                         h.FORM_().FIELDSET_("选择截至日期（不包含）");
@@ -114,7 +115,7 @@ namespace Samp
                 }
             }
             // do transfer for each
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             for (int i = 0; i < trans.Count; i++)
             {
                 var tr = trans[i];

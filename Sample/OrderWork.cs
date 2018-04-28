@@ -71,7 +71,7 @@ namespace Samp
                 {
                     h.TOOLBAR();
                 }
-                h.ACCORDIONVIEW(null, arr,
+                h.ACCORDIONVIEW(arr,
                     o =>
                     {
                         h.SECTION_("uk-accordion-title");
@@ -99,7 +99,7 @@ namespace Samp
                         h.TOOLPAD();
 
                         h._SECTION();
-                    });
+                    }, null);
             }, false, 2);
         }
     }

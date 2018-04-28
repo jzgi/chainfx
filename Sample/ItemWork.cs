@@ -30,7 +30,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.ACCORDIONVIEW(null, arr,
+                    h.ACCORDIONVIEW(arr,
                         o =>
                         {
                             h.SECTION_("uk-accordion-title");
@@ -43,7 +43,7 @@ namespace Samp
                             h.HR();
                             h.TOOLPAD();
                             h._SECTION();
-                        });
+                        }, null);
                 });
             }
         }

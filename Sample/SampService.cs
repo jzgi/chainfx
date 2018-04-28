@@ -238,7 +238,7 @@ namespace Samp
 
                             h._SECTION();
                             var orgitems = items.FindGroup((o.id, null));
-                            h.LISTVIEW("uk-card-body uk-padding-remove", orgitems, m =>
+                            h.LISTVIEW(orgitems, m =>
                             {
                                 h.THUMBNAIL_(w:0x13, css:"uk-padding-small").T("/").T(m.orgid).T("/").T(m.name).T("/icon")._THUMBNAIL();
                                 h.COL_(0x23, css:"uk-padding-small");
@@ -249,7 +249,7 @@ namespace Samp
                                 h.TOOL(nameof(SampItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
-                            });
+                            }, "uk-card-body uk-padding-remove");
 
                             h.TOOLPAD();
                         }

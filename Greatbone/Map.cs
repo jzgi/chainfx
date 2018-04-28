@@ -335,7 +335,7 @@ namespace Greatbone
             internal Enumerator(Map<K, V> map)
             {
                 this.map = map;
-                current = 0;
+                current = -1;
             }
 
             public bool MoveNext()
@@ -345,7 +345,7 @@ namespace Greatbone
 
             public void Reset()
             {
-                current = 0;
+                current = -1;
             }
 
             public Entry Current => map.entries[current];
