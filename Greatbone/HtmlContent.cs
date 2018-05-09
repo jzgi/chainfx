@@ -332,30 +332,6 @@ namespace Greatbone
             return this;
         }
 
-        public void ARTICLEVIEW<D>(D obj, Action<D> item, string @class = null)
-        {
-            Add("<article");
-            if (@class != null)
-            {
-                Add(" class=\"");
-                Add(@class);
-                Add("\"");
-            }
-            Add(">");
-            if (obj != null)
-            {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
-
-                stack[level] = obj;
-                item(obj);
-                stack[level] = null;
-
-                level--; // exit the level
-            }
-            Add("</article>");
-        }
-
         public HtmlContent SECTION_(string css = null)
         {
             Add("<section");
@@ -394,15 +370,36 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent SCRIPT(string v)
+        {
+            Add("<script>");
+            Add(v);
+            Add("</script");
+            return this;
+        }
+
+        public HtmlContent SCRIPT_()
+        {
+            Add("<script>");
+            return this;
+        }
+
+        public HtmlContent _SCRIPT()
+        {
+            Add("</script");
+            return this;
+        }
+
         public HtmlContent H2_(string css = null)
         {
-            Add("<h2 class=\"uk-h2");
+            Add("<h2");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             return this;
         }
 
@@ -412,29 +409,31 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H2(string v, string @class = null)
+        public HtmlContent H2(string v, string css = null)
         {
-            Add("<h2 class=\"uk-h2");
-            if (@class != null)
+            Add("<h2");
+            if (css != null)
             {
-                Add(' ');
-                Add(@class);
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             Add(v);
             Add("</h2>");
             return this;
         }
 
-        public HtmlContent H3_(string @class = null)
+        public HtmlContent H3_(string css = null)
         {
-            Add("<h3 class=\"uk-h3");
-            if (@class != null)
+            Add("<h3");
+            if (css != null)
             {
-                Add(' ');
-                Add(@class);
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             return this;
         }
 
@@ -446,27 +445,29 @@ namespace Greatbone
 
         public HtmlContent H3(string v, string css = null)
         {
-            Add("<h3 class=\"uk-h3");
+            Add("<h3");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             Add(v);
             Add("</h3>");
             return this;
         }
 
-        public HtmlContent H4_(string @class = null)
+        public HtmlContent H4_(string css = null)
         {
-            Add("<h4 class=\"uk-h4");
-            if (@class != null)
+            Add("<h4");
+            if (css != null)
             {
-                Add(' ');
-                Add(@class);
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             return this;
         }
 
@@ -476,29 +477,31 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent H4(string v, string @class = null)
+        public HtmlContent H4(string v, string css = null)
         {
-            Add("<h4 class=\"uk-h4");
-            if (@class != null)
+            Add("<h4");
+            if (css != null)
             {
-                Add(' ');
-                Add(@class);
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             Add(v);
             Add("</h4>");
             return this;
         }
 
-        public HtmlContent H5_(string @class = null)
+        public HtmlContent H5_(string css = null)
         {
-            Add("<h5 class=\"uk-h5");
-            if (@class != null)
+            Add("<h5");
+            if (css != null)
             {
-                Add(' ');
-                Add(@class);
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             return this;
         }
 
@@ -510,13 +513,14 @@ namespace Greatbone
 
         public HtmlContent H5(string v, string css = null)
         {
-            Add("<h5 class=\"uk-h5");
+            Add("<h5");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add('\"');
             }
-            Add("\">");
+            Add(">");
             Add(v);
             Add("</h5>");
             return this;
@@ -598,6 +602,15 @@ namespace Greatbone
             Add("<td style=\"text-align: right\">");
             Add(v);
             Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TDIMG(string src)
+        {
+            Add("<td class=\"uk-width-small\">");
+            Add("<img src=\"");
+            Add(src);
+            Add("\"></td>");
             return this;
         }
 
@@ -697,6 +710,25 @@ namespace Greatbone
         public HtmlContent _TD()
         {
             Add("</td>");
+            return this;
+        }
+
+        public HtmlContent UL_(string css = null)
+        {
+            Add("<ul");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _UL()
+        {
+            Add("</ul>");
             return this;
         }
 
@@ -989,12 +1021,12 @@ namespace Greatbone
             Add(css);
             if (href != null)
             {
-                Add(" href=\"");
+                Add("\" href=\"");
                 Add(href);
             }
             if (onclick != null)
             {
-                Add(" onclick=\"");
+                Add("\" onclick=\"");
                 Add(onclick);
             }
             Add("\">");
@@ -1102,10 +1134,9 @@ namespace Greatbone
                 Add(css);
             }
             Width(w);
-            Add("\"><img class=\"uk-img");
+            Add("\"><img class=\"uk-img\" alt=\"");
             if (alt != null)
             {
-                Add("\" alt=\"");
                 Add(alt);
             }
             Add("\" src=\"");
@@ -1466,7 +1497,7 @@ namespace Greatbone
             }
         }
 
-        public HtmlContent LISTVIEW<D>(D[] arr, Action<D> item, string ul = null, string li = null)
+        public HtmlContent LIST<D>(D[] arr, Action<D> item, string ul = null, string li = null)
         {
             Add("<ul class=\"uk-list uk-list-divider");
             if (ul != null)
@@ -1506,7 +1537,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ACCORDIONVIEW<D>(D[] arr, Action<D> item, string ul = null, string li = null)
+        public HtmlContent ACCORDION<D>(D[] arr, Action<D> item, string ul = null, string li = null)
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
             if (ul != null)
@@ -1546,7 +1577,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLEVIEW<D>(D[] arr, Action head, Action<D> row)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte flag = 0)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
@@ -1585,7 +1616,7 @@ namespace Greatbone
                     if (vw != null && w.HasPick)
                     {
                         Add("<td>");
-                        Add("<input name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+                        Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
                         vw.PutVariableKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</td>");
@@ -1594,11 +1625,11 @@ namespace Greatbone
                     if (prcs != null) // triggers
                     {
                         Add("<td>");
-                        Add("<form>");
+                        Add("<form class=\"uk-button-group\">");
                         for (int j = 0; j < prcs.Length; j++)
                         {
                             var prc = prcs[j];
-                            if (!prc.IsCapital)
+                            if (!prc.IsCapital && (prc.Flag == 0 || flag == prc.Flag))
                             {
                                 PutTool(prc);
                             }
@@ -1618,7 +1649,7 @@ namespace Greatbone
             Add("</div>");
         }
 
-        public void GRIDVIEW<D>(D[] arr, Action<D> block, string css = null)
+        public void GRID<D>(D[] arr, Action<D> block, string css = null)
         {
             Add("<div class=\"uk-grid uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@xll");
             if (css != null)
@@ -1649,79 +1680,14 @@ namespace Greatbone
             Add("</div>");
         }
 
-        public void CARD(Action header, Action body, Action footer = null)
-        {
-            Add("<article class=\"uk-card uk-card-default\">");
-            // header
-            if (header != null)
-            {
-                Add("<div class=\"uk-card-header\">");
-                header();
-                Add("</div>");
-            }
-            // body
-            if (body != null)
-            {
-                Add("<div class=\"uk-card-body uk-grid uk-grid-small uk-padding-small\">");
-                body();
-                Add("</div>");
-            }
-            // footer
-            if (footer != null)
-            {
-                Add("<div class=\"uk-card-footer\">");
-                footer();
-                Add("</div>");
-            }
-            Add("</article>");
-        }
 
-
-        public void CARDVIEW<D>(D obj, Action<D> item, string article = "uk-card-default")
-        {
-            Add("<article class=\"uk-card ");
-            Add(article);
-            Add("\">");
-            if (obj != null)
-            {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
-
-                stack[level] = obj;
-                item(obj);
-                stack[level] = null;
-
-                level--; // exit the level
-            }
-            Add("</article>");
-        }
-
-        public HtmlContent UL_(string css = null)
-        {
-            Add("<ul");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _UL()
-        {
-            Add("</ul>");
-            return this;
-        }
-
-        public void BOARDVIEW<D>(D[] arr, Action<D> card, string css = null)
+        public void BOARD<D>(D[] arr, Action<D> card, string mainCss = null, string articleCss = null)
         {
             Add("<main class=\"uk-board");
-            if (css != null)
+            if (mainCss != null)
             {
                 Add(' ');
-                Add(css);
+                Add(mainCss);
             }
             Add("\">");
             if (arr != null)
@@ -1830,6 +1796,10 @@ namespace Greatbone
                         Add(" uk-active");
                     }
                 }
+                if (!ok)
+                {
+                    Add(" disabled");
+                }
                 Add("\" href=\"");
                 if (level >= 0)
                 {
@@ -1884,7 +1854,7 @@ namespace Greatbone
 
             if (!ok)
             {
-                Add(" disabled onclick=\"return false;\"");
+                Add(" disabled=\"disabled\" onclick=\"return false;\"");
             }
             else if (tool.HasConfirm)
             {
@@ -1994,6 +1964,18 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent FILE(string name, string v, string label = null, string tip = null, bool @readonly = false, bool required = false, bool list = false)
+        {
+            if (label != null) LI_(label);
+
+            Add("<input class=\"uk-input\" type=\"file\" name=\"");
+            Add(name);
+            Add("\">");
+
+            if (label != null) _LI();
+            return this;
+        }
+
         public HtmlContent TEL(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             if (label != null) LI_(label);
@@ -2030,7 +2012,8 @@ namespace Greatbone
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
-            _LI();
+
+            if (label != null) _LI();
             return this;
         }
 

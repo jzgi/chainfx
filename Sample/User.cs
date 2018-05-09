@@ -28,7 +28,7 @@ namespace Samp
         internal string wx; // wexin openid
         internal string tel;
         internal string addr;
-        internal string credential;
+        public string credential;
         internal int score;
         internal int refid; // referee id
         internal string oprat;

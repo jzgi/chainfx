@@ -29,7 +29,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLEVIEW(arr,
+                    h.TABLE(arr,
                         () => h.TH("日期").TH("项目").TH("收入").TH("支出").TH("记账"),
                         o => h.TD(o.date).TD(Cash.Codes[o.code]).TD(o.receive).TD(o.pay).TD(o.creator));
                 }, false, 2);

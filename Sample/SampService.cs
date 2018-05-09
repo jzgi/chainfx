@@ -194,7 +194,7 @@ namespace Samp
                 {
                     h.ALERT("　　这里所报告的都是客观存在的事实真相，且假以良知、耐心和洞察力，您就一定能像我们一样认知到这关于生命和敬虔的奥秘。");
 
-                    h.GRIDVIEW(lessons, o =>
+                    h.GRID(lessons, o =>
                     {
                         // h.T("<div class=\"uk-inline\">");
                         h.T("<video class=\"uk-width-1-1\" controls playsinline uk-video src=\"http://aliyun.com/").T(o.zh).T("\" type=\"video/mp4\">");
@@ -224,7 +224,7 @@ namespace Samp
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
-                    h.BOARDVIEW(cityorgs, o =>
+                    h.BOARD(cityorgs, o =>
                         {
                             h.SECTION_("uk-card-header");
                             h.H3(o.name);
@@ -238,7 +238,7 @@ namespace Samp
 
                             h._SECTION();
                             var orgitems = items.FindGroup((o.id, null));
-                            h.LISTVIEW(orgitems, m =>
+                            h.LIST(orgitems, m =>
                             {
                                 h.THUMBNAIL_(w:0x13, css:"uk-padding-small").T("/").T(m.orgid).T("/").T(m.name).T("/icon")._THUMBNAIL();
                                 h.COL_(0x23, css:"uk-padding-small");

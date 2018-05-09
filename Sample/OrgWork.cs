@@ -28,7 +28,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.BOARDVIEW(arr, o =>
+                    h.BOARD(arr, o =>
                         {
                             h.SECTION_("uk-card-header").T(o.id).SP().T(o.name)._SECTION();
                             h.UL_("uk-card-body");

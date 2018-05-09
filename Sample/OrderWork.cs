@@ -24,7 +24,7 @@ namespace Samp
                 {
                     h.TOOLBAR();
                 }
-                h.BOARDVIEW(arr, o =>
+                h.BOARD(arr, o =>
                     {
                         h.SECTION_("uk-card-header uk-flex uk-flex-middle");
                         h.H5(o.orgname).BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
@@ -71,7 +71,7 @@ namespace Samp
                 {
                     h.TOOLBAR();
                 }
-                h.ACCORDIONVIEW(arr,
+                h.ACCORDION(arr,
                     o =>
                     {
                         h.SECTION_("uk-accordion-title");

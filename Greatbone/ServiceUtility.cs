@@ -30,22 +30,20 @@ namespace Greatbone
             cfg.Level = 0;
             cfg.IsVar = false;
             cfg.Directory = cfg.Name;
+
+            if (!Directory.Exists(cfg.Directory)) return null;
+
             // may load from the configuration file
             if (load)
             {
                 string file = cfg.GetFilePath(CONFIG);
-                if (File.Exists(file))
-                {
-                    byte[] bytes = File.ReadAllBytes(file);
-                    JsonParser p = new JsonParser(bytes, bytes.Length);
-                    JObj jo = (JObj) p.Parse();
-                    // this will override values
-                    cfg.Read(jo, 0xff);
-                }
-                else
-                {
-                    return null;
-                }
+                if (!File.Exists(file)) return null;
+
+                byte[] bytes = File.ReadAllBytes(file);
+                JsonParser p = new JsonParser(bytes, bytes.Length);
+                JObj jo = (JObj) p.Parse();
+                // this will override values
+                cfg.Read(jo, 0xff);
             }
 
             // create service instance by reflection

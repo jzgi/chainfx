@@ -38,9 +38,10 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.CARD(() => h.H4("系统运行状况"),
-                        () => { h.P("2.0", "版本"); }
-                    );
+                    h.ARTICLE_("uk-card uk-card-default");
+                    h.H4("系统运行状况");
+                    h.P("2.0", "版本");
+                    h._ARTICLE();
                 });
             }
             else

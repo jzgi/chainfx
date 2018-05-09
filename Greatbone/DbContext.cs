@@ -1105,6 +1105,30 @@ namespace Greatbone
             return this;
         }
 
+        public ISource Let(out byte[] v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    int len;
+                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    {
+                        byte[] buf = new byte[len];
+                        reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
+                        v = buf;
+                        return this;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            v = default;
+            return this;
+        }
+
         public ISource Let(out short[] v)
         {
             try

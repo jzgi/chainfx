@@ -194,7 +194,7 @@ namespace Greatbone
                 throw new ServiceException(typ + " need public and WorkConfig");
             }
 
-            WorkConfig wc = new WorkConfig(name)
+            WorkConfig config = new WorkConfig(name)
             {
                 Ui = ui,
                 Authorize = authorize,
@@ -205,9 +205,8 @@ namespace Greatbone
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
             };
             // init sub work
-            W w = (W) ci.Invoke(new object[] {wc});
+            W w = (W) ci.Invoke(new object[] {config});
             works.Add(w.Key, w);
-
             return w;
         }
 

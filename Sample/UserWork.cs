@@ -29,7 +29,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLEVIEW(arr,
+                    h.TABLE(arr,
                         () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
                         o => h.TD(o.name).TD(o.tel).TD(o.oprat).TD(Oprs[o.opr])
                     );

@@ -30,7 +30,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.ACCORDIONVIEW(arr,
+                    h.ACCORDION(arr,
                         o =>
                         {
                             h.SECTION_("uk-accordion-title");

@@ -31,7 +31,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLEVIEW(arr,
+                    h.TABLE(arr,
                         () => h.TH("网点").TH("期间").TH("总数").TH("单额").TH("净额").TH("转款"),
                         o => h.TD(o.orgid).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                     );
@@ -48,7 +48,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLEVIEW(arr,
+                    h.TABLE(arr,
                         () => h.TH("网点").TH("期间").TH("总数").TH("单额").TH("净额").TH("转款"),
                         o => h.TD(o.orgid).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
                     );
