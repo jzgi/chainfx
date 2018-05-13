@@ -80,11 +80,11 @@ namespace Samp
                         }
                         // quantity
                         h.FIELDSET_("加入货品");
-                        h.LI_("货品").ICON("icon", w: 0x16).SP().T(item.name)._LI();
+                        h.LI_("货品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
                         h.LI_("数量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
-                        h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
+                        h.ACTIONBAR_().BUTTON("确定")._ACTIONBAR();
                         h._FORM();
                     }
                 });
@@ -123,7 +123,7 @@ namespace Samp
                     wc.GivePane(200, m =>
                     {
                         m.MSG_(true, "成功加入订单", "商品已经成功加入订单");
-                        m.BOTTOMBAR_().A_CLOSEUP("继续选购").A_GOTO("去付款", "/my//ord/")._BOTTOMBAR();
+                        m.ACTIONBAR_().A_CLOSEUP("继续选购").A_GOTO("去付款", "/my//ord/")._ACTIONBAR();
                     });
                 }
             }

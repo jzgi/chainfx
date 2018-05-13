@@ -26,9 +26,9 @@ namespace Samp
                 }
                 h.BOARD(arr, o =>
                     {
-                        h.SECTION_("uk-card-header uk-flex uk-flex-middle");
-                        h.H5(o.orgname).BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
-                        h._SECTION();
+                        h.T("<section class=\"uk-card-header uk-flex uk-flex-middle\">");
+                        h.T("<h3>").T(o.orgname).T("</h3>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("</section>");
 
                         h.UL_("uk-card-body");
 
@@ -74,12 +74,11 @@ namespace Samp
                 h.ACCORDION(arr,
                     o =>
                     {
-                        h.SECTION_("uk-accordion-title");
-                        h.H5(o.custname, "uk-width-expand").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
-                        h._SECTION();
+                        h.T("<section class=\"uk-accordion-title\">");
+                        h.T("<h3 class=\"uk-width-expand\">").T(o.custname).T("</h3>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("</section>");
 
-                        h.SECTION_("uk-accordion-content uk-grid");
-
+                        h.T("<section class=\"uk-accordion-content uk-grid\">");
                         h.P_("收货").T(o.custname).T(o.custaddr).T(o.custtel)._P();
                         h.UL_("uk-grid");
                         h.LI_().LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16)._LI();
@@ -87,7 +86,7 @@ namespace Samp
                         {
                             var oi = o.items[i];
                             h.LI_();
-                            h.SPAN_(0x12).T(oi.name).T(" (").T(oi.unit).T(")")._SPAN().CUR(oi.price, w: 0x16).NUM(oi.qty, w: 0x16).NUMIF(oi.ship, w: 0x16);
+                            h.SPAN_(0x12).T(oi.name).T(" (").T(oi.unit).T(")")._SPAN().CUR(oi.price, w: 0x16).SPAN(oi.qty, w: 0x16).NUMIF(oi.ship, w: 0x16);
                             h._LI();
                         }
                         h._UL();
@@ -98,7 +97,7 @@ namespace Samp
                         }
                         h.TOOLPAD();
 
-                        h._SECTION();
+                        h.T("</section>");
                     }, null);
             }, false, 2);
         }

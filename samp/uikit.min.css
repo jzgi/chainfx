@@ -165,7 +165,7 @@ h6,
 .uk-h6 {
     font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-weight: normal;
-    color: #333;
+    color: #222;
     text-transform: none;
     display: inline-block;
 }
@@ -177,24 +177,28 @@ h1,
 .uk-h1 {
     font-size: 1.75rem;
     margin: 0.5rem 0;
+    color: black;
 }
 
 h2,
 .uk-h2 {
     font-size: 1.5rem;
     margin: 0.5rem 0;
+    color: black;
 }
 
 h3,
 .uk-h3 {
     font-size: 1.25rem;
     margin: 0.375rem 0;
+    color: black;
 }
 
 h4,
 .uk-h4 {
     font-size: 1rem;
     margin: 0.375rem 0;
+    color: black;
 }
 
 h5,
@@ -1205,9 +1209,46 @@ button.uk-icon:not(:disabled) {
     background: #d2d2d2;
 }
 
-/* ========================================================================
-   Component: Form
- ========================================================================== */
+
+.uk-tool-bar {
+    position: fixed;
+    height: 2.75rem;
+    width: 100%;
+    top: 0;
+    font-size: 1rem;
+    background: #f7f7f8;
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 0 4px;
+    border-bottom: 1px solid #c4c4c4;
+}
+
+.uk-tool-bar-placeholder {
+    height: 2.75rem;
+}
+
+.uk-action-bar-placeholder {
+    height: 2.75rem;
+}
+
+.uk-action-bar {
+    position: fixed;
+    height: 2.75rem;
+    width: 100%;
+    bottom: 0;
+    font-size: 1rem;
+    background: #f7f7f8;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #c4c4c4;
+}
+
+
+
 
 .uk-fieldset {
     border: none;
@@ -1697,7 +1738,7 @@ select.uk-form-width-xsmall {
 }
 
 a.uk-button {
-    border-radius: 5px;
+    border-radius: 0;
 }
 
 button.uk-button {
@@ -1708,7 +1749,7 @@ button.uk-button {
     cursor: pointer;
 }
 
-\.uk-button::-moz-focus-inner {
+.uk-button::-moz-focus-inner {
     border: 0;
     padding: 0;
 }
@@ -1745,9 +1786,6 @@ button.uk-button {
     border-color: #999999;
 }
 
-/*
- * Primary
- */
 .uk-button-primary {
     background-color: #007aff;
     color: #fff;
@@ -1756,7 +1794,6 @@ button.uk-button {
     height: 29px;
 }
 
-/* Hover + Focus */
 .uk-button-primary:hover,
 .uk-button-primary:focus {
     background-color: #0f7ae5;
@@ -1863,7 +1900,11 @@ button.uk-button {
     right: 0;
 }
 
-/* Disabled */
+.uk-button-text:active,
+.uk-button-text.uk-active {
+    border-bottom: 1px solid #333;
+}
+
 .uk-button-text:disabled {
     color: #999;
 }
@@ -2583,11 +2624,6 @@ button.uk-button {
     font-size: 1.125rem;
 }
 
-.uk-card-hover:not(.uk-card-default):not(.uk-card-primary):not(.uk-card-secondary):hover {
-    background: #fff;
-    box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-}
-
 .uk-card-default {
     background: #fff;
     color: #333;
@@ -2596,20 +2632,20 @@ button.uk-button {
     margin: 12px 6px;
 }
 
-.uk-card-default .uk-card-title {
+.uk-card .uk-card-title {
     color: #333;
 }
 
-.uk-card-default.uk-card-hover:hover {
+.uk-card.uk-card-hover:hover {
     background-color: #fff;
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
 
-.uk-card-default .uk-card-header {
+.uk-card .uk-card-header {
     border-bottom: 1px solid #e5e5e5;
 }
 
-.uk-card-default .uk-card-footer {
+.uk-card .uk-card-footer {
     border-top: 1px solid #e5e5e5;
 }
 
@@ -2617,9 +2653,10 @@ button.uk-button {
  * Primary
  */
 .uk-card-primary {
-    background: #007aff;
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+    margin: 12px 0;
+    border-top: 1px solid #c4c4c4;
+    border-bottom: 1px solid #c4c4c4;
 }
 
 .uk-card-primary .uk-card-title {
@@ -2627,7 +2664,7 @@ button.uk-button {
 }
 
 .uk-card-primary.uk-card-hover:hover {
-    background-color: #007aff;
+    background-color: #fff;
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
 
@@ -2635,9 +2672,7 @@ button.uk-button {
  * Secondary
  */
 .uk-card-secondary {
-    background: #222;
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin: 12px 0;
 }
 
 .uk-card-secondary .uk-card-title {
@@ -2645,7 +2680,7 @@ button.uk-button {
 }
 
 .uk-card-secondary.uk-card-hover:hover {
-    background-color: #222;
+    background-color: #fff;
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
 
@@ -3543,7 +3578,7 @@ ul.uk-nav-sub {
  * Header
  */
 .uk-nav-default .uk-nav-header {
-    color: #333;
+    color: #fff;
 }
 
 /*
@@ -4047,47 +4082,19 @@ ul.uk-nav-sub {
     border-top: 1px solid #e5e5e5;
 }
 
-/* ========================================================================
-   Component: Subnav
- ========================================================================== */
-/*
- * 1. Allow items to wrap into the next line
- * 2. Gutter
- * 3. Reset list
- */
 .uk-subnav {
     display: flex;
-    /* 1 */
     flex-wrap: wrap;
-    /* 2 */
-    margin-left: -20px;
-    /* 3 */
-    padding: 0;
+    padding: 8px;
     list-style: none;
 }
 
-/*
- * 1. Space is allocated solely based on content dimensions: 0 0 auto
- * 2. Gutter
- * 3. Create position context for dropdowns
- */
 .uk-subnav > * {
-    /* 1 */
     flex: none;
-    /* 2 */
-    padding-left: 20px;
-    /* 3 */
+    padding: 4px;
     position: relative;
 }
 
-/* Items
- ========================================================================== */
-/*
- * Items must target `a` elements to exclude other elements (e.g. dropdowns)
- * Using `:first-child` instead of `a` to support `span` elements for text
- * 1. Prevent gap if child element is `inline-block`, e.g. an icon
- * 2. Style
- */
 .uk-subnav > * > :first-child {
     /* 1 */
     display: block;
@@ -4099,7 +4106,6 @@ ul.uk-nav-sub {
     transition-property: color, background-color;
 }
 
-/* Hover + Focus */
 .uk-subnav > * > a:hover,
 .uk-subnav > * > a:focus {
     color: #333;
@@ -4107,64 +4113,48 @@ ul.uk-nav-sub {
     outline: none;
 }
 
-/* Active */
+.uk-subnav > .uk-active {
+    border-bottom: 2px solid #ff9500;
+}
+
 .uk-subnav > .uk-active > a {
     color: #333;
 }
 
-/* Divider modifier
- ========================================================================== */
-/*
- * 1. Align items and divider vertically
- */
 .uk-subnav-divider > * {
     /* 1 */
     display: flex;
     align-items: center;
 }
 
-/*
- * Divider
- * `nth-child` makes it also work without JS if it's only one row
- */
 .uk-subnav-divider > :nth-child(n+2):not(.uk-first-column)::before {
     content: "";
-    height: 1.5em;
-    margin-left: 0px;
-    margin-right: 20px;
-    border-left: 1px solid #e5e5e5;
+    margin-left: 6px;
+    border-left: 1px solid #c4c4c4;
 }
 
-/* Pill modifier
- ========================================================================== */
 .uk-subnav-pill > * > :first-child {
     padding: 5px 10px;
     background: transparent;
     color: #999;
 }
 
-/* Hover + Focus */
 .uk-subnav-pill > * > a:hover,
 .uk-subnav-pill > * > a:focus {
     background-color: #f8f8f8;
     color: #333;
 }
 
-/* OnClick */
 .uk-subnav-pill > * > a:active {
     background-color: #f8f8f8;
     color: #333;
 }
 
-/* Active */
 .uk-subnav-pill > .uk-active > a {
     background-color: #007aff;
     color: #fff;
 }
 
-/* Disabled
- * The same for all style modifiers
- ========================================================================== */
 .uk-subnav > .uk-disabled > a {
     color: #999;
 }
@@ -5446,8 +5436,8 @@ ul.uk-nav-sub {
 
 .uk-offcanvas-toggle {
     position: absolute;
-    bottom: 0.5rem;
-    background-color: dimgrey;
+    top: 7px;
+    padding-left: 4px;
 }
 
 .uk-offcanvas-flip .uk-offcanvas {

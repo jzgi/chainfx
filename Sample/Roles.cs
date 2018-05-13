@@ -38,10 +38,10 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.ARTICLE_("uk-card uk-card-default");
-                    h.H4("系统运行状况");
+                    h.T("<article class=\"uk-card uk-card-default\">");
+                    h.T("<h4>系统运行状况</h4>");
                     h.P("2.0", "版本");
-                    h._ARTICLE();
+                    h.T("</article>");
                 });
             }
             else

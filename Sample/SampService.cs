@@ -164,7 +164,7 @@ namespace Samp
                         h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h._FIELDSET();
                         h.HIDDEN(nameof(url), url);
-                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定")._BOTTOMBAR();
+                        h.ACTIONBAR_().BUTTON("/catch", 1, "确定")._ACTIONBAR();
                         h._FORM();
                     }, title: "注册新帐号");
                 }
@@ -226,8 +226,8 @@ namespace Samp
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
                     h.BOARD(cityorgs, o =>
                         {
-                            h.SECTION_("uk-card-header");
-                            h.H3(o.name);
+                            h.T("<section class=\"uk-card-header\">");
+                            h.T("<h4>").T(o.name).T("</h4>");
                             if (o.oprtel != null)
                             {
                                 //                                h.BADGE_LINK( "/a/", "commenting");
@@ -236,16 +236,16 @@ namespace Samp
                             h.P(o.descr, "简介");
                             h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
 
-                            h._SECTION();
+                            h.T("</section>");
                             var orgitems = items.FindGroup((o.id, null));
                             h.LIST(orgitems, m =>
                             {
-                                h.THUMBNAIL_(w:0x13, css:"uk-padding-small").T("/").T(m.orgid).T("/").T(m.name).T("/icon")._THUMBNAIL();
-                                h.COL_(0x23, css:"uk-padding-small");
-                                h.H4(m.name);
+                                h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(m.orgid).T("/").T(m.name).T("/icon")._ICO();
+                                h.COL_(0x23, css: "uk-padding-small");
+                                h.T("<h4>").T(m.name).T("</h4>");
                                 h.P(m.descr);
                                 h.ROW_();
-                                h.P_(w: 0x23).EM_().T('¥').T(m.price)._EM().T("／").T(m.unit)._P();
+                                h.P_(w: 0x23).T("<em>¥").T(m.price).T("</em>／").T(m.unit)._P();
                                 h.TOOL(nameof(SampItemVarWork.buy));
                                 h._ROW();
                                 h._COL();
@@ -253,6 +253,7 @@ namespace Samp
 
                             h.TOOLPAD();
                         }
+                        , article: "uk-card-primary"
                     );
                 }, true, 60
             );

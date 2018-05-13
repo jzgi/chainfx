@@ -33,16 +33,16 @@ namespace Samp
                     h.ACCORDION(arr,
                         o =>
                         {
-                            h.SECTION_("uk-accordion-title");
+                            h.T("<section class=\"uk-accordion-title\">");
                             h.T(o.name);
-                            h._SECTION();
-                            h.SECTION_("uk-accordion-content uk-grid");
-                            h.THUMBNAIL_(w: 0x14).T(o.name).T("/icon")._THUMBNAIL();
+                            h.T("</section>");
+                            h.T("<section class=\"uk-accordion-content uk-grid\">");
+                            h.PIC_(w: 0x14).T(o.name).T("/icon")._PIC();
                             h.COL_(0x34).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P().P_("佣金").T("¥").T(o.comp)._P()._COL();
                             h.P(o.unit, "单位", 0x14).P(o.min, "起订", 0x14).P(o.step, "递增", 0x14).P(o.stock, "存量", 0x14);
-                            h.HR();
+                            h.T("<hr>");
                             h.TOOLPAD();
-                            h._SECTION();
+                            h.T("</section>");
                         }, null);
                 });
             }

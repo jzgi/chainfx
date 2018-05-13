@@ -51,8 +51,8 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.TOOLBAR();
-                        h.ARTICLE_();
-                        h.H5(o.orgname).T("tel:#mp.weixin.qq.com");
+                        h.T("<article>");
+                        h.T(o.orgname).T("tel:#mp.weixin.qq.com");
                         for (int i = 0; i < o.msgs?.Length; i++)
                         {
                             var m = o.msgs[i];
@@ -62,7 +62,7 @@ namespace Samp
                         h.FORM_();
                         h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(OprChatVarWork.reply))._ROW();
                         h._FORM();
-                        h._ARTICLE();
+                        h.T("</article>");
                     });
                 }
             }

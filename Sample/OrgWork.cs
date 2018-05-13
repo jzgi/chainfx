@@ -30,7 +30,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.BOARD(arr, o =>
                         {
-                            h.SECTION_("uk-card-header").T(o.id).SP().T(o.name)._SECTION();
+                            h.T("<section class=\"uk-card-header\">").T(o.id).SP().T(o.name).T("</section>");
                             h.UL_("uk-card-body");
                             h.LI( "简介",o.descr);
                             h.LI("地址",o.addr);

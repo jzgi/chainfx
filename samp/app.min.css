@@ -10,8 +10,12 @@
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-    padding: 0 4px;
+    padding: 0 4px 0 2.25rem;
     border-bottom: 1px solid #c4c4c4;
+}
+
+.uk-modal-header {
+    padding-left: 2rem;
 }
 
 .top-bar-placeholder {

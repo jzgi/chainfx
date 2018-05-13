@@ -85,15 +85,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent T(int v, sbyte fix = 0)
+        public HtmlContent T(int v)
         {
-            if (fix > 0)
-            {
-            }
-            else
-            {
-                Add(v);
-            }
+            Add(v);
             return this;
         }
 
@@ -140,12 +134,71 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent IF<V>(V v) where V : IEquatable<V>
+        public HtmlContent IF(char v)
         {
-            if (v.Equals(default))
+            if (v != ' ')
             {
-                Add(' ');
-                AddPrimitive(v);
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(short v)
+        {
+            if (v != 0)
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(int v)
+        {
+            if (v != 0)
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(long v)
+        {
+            if (v != 0)
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(DateTime v)
+        {
+            Add(v);
+            return this;
+        }
+
+        public HtmlContent IF(decimal v)
+        {
+            if (v != 0)
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(double v)
+        {
+            if (Math.Abs(v) > 0)
+            {
+                Add(v);
+            }
+            return this;
+        }
+
+        public HtmlContent IF(string v)
+        {
+            if (v != null)
+            {
+                Add(v);
             }
             return this;
         }
@@ -153,376 +206,6 @@ namespace Greatbone
         public HtmlContent BR()
         {
             Add("<br>");
-            return this;
-        }
-
-        public HtmlContent ABBR_()
-        {
-            Add("<abbr>");
-            return this;
-        }
-
-        public HtmlContent _ABBR()
-        {
-            Add("</abbr>");
-            return this;
-        }
-
-        public HtmlContent ABBR<V>(V v)
-        {
-            ABBR_();
-            AddPrimitive(v);
-            _ABBR();
-            return this;
-        }
-
-        public HtmlContent B_()
-        {
-            Add("<b>");
-            return this;
-        }
-
-        public HtmlContent _B()
-        {
-            Add("</b>");
-            return this;
-        }
-
-        public HtmlContent B<V>(V v)
-        {
-            B_();
-            AddPrimitive(v);
-            _B();
-            return this;
-        }
-
-        public HtmlContent CITE_()
-        {
-            Add("<cite>");
-            return this;
-        }
-
-        public HtmlContent _CITE()
-        {
-            Add("</cite>");
-            return this;
-        }
-
-        public HtmlContent CITE<V>(V v)
-        {
-            CITE_();
-            AddPrimitive(v);
-            _CITE();
-            return this;
-        }
-
-        public HtmlContent CODE_()
-        {
-            Add("<code>");
-            return this;
-        }
-
-        public HtmlContent _CODE()
-        {
-            Add("</code>");
-            return this;
-        }
-
-        public HtmlContent CODE<V>(V v)
-        {
-            CODE_();
-            AddPrimitive(v);
-            _CODE();
-            return this;
-        }
-
-        public HtmlContent DEL_()
-        {
-            Add("<del>");
-            return this;
-        }
-
-        public HtmlContent _DEL()
-        {
-            Add("</del>");
-            return this;
-        }
-
-        public HtmlContent DEL<V>(V v)
-        {
-            DEL_();
-            AddPrimitive(v);
-            _DEL();
-            return this;
-        }
-
-        public HtmlContent DFN_()
-        {
-            Add("<dfn>");
-            return this;
-        }
-
-        public HtmlContent _DFN()
-        {
-            Add("</dfn>");
-            return this;
-        }
-
-        public HtmlContent DFN<V>(V v)
-        {
-            DFN_();
-            AddPrimitive(v);
-            _DFN();
-            return this;
-        }
-
-        public HtmlContent HR(bool icon = false)
-        {
-            Add("<hr");
-            if (icon)
-            {
-                Add(" class=\"uk-divider-icon\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent EM_()
-        {
-            Add("<em>");
-            return this;
-        }
-
-        public HtmlContent _EM()
-        {
-            Add("</em>");
-            return this;
-        }
-
-        public HtmlContent EM<V>(V v)
-        {
-            EM_();
-            AddPrimitive(v);
-            _EM();
-            return this;
-        }
-
-        public HtmlContent SEP()
-        {
-            Add("&nbsp;/&nbsp;");
-            return this;
-        }
-
-        public HtmlContent ARTICLE_(string css = null)
-        {
-            Add("<article");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _ARTICLE()
-        {
-            Add("</article");
-            return this;
-        }
-
-        public HtmlContent SECTION_(string css = null)
-        {
-            Add("<section");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _SECTION()
-        {
-            Add("</section>");
-            return this;
-        }
-
-        public HtmlContent DIV_(string css = null)
-        {
-            Add("<div");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _DIV()
-        {
-            Add("</div");
-            return this;
-        }
-
-        public HtmlContent SCRIPT(string v)
-        {
-            Add("<script>");
-            Add(v);
-            Add("</script");
-            return this;
-        }
-
-        public HtmlContent SCRIPT_()
-        {
-            Add("<script>");
-            return this;
-        }
-
-        public HtmlContent _SCRIPT()
-        {
-            Add("</script");
-            return this;
-        }
-
-        public HtmlContent H2_(string css = null)
-        {
-            Add("<h2");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _H2()
-        {
-            Add("</h2>");
-            return this;
-        }
-
-        public HtmlContent H2(string v, string css = null)
-        {
-            Add("<h2");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            Add(v);
-            Add("</h2>");
-            return this;
-        }
-
-        public HtmlContent H3_(string css = null)
-        {
-            Add("<h3");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _H3()
-        {
-            Add("</h3>");
-            return this;
-        }
-
-        public HtmlContent H3(string v, string css = null)
-        {
-            Add("<h3");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            Add(v);
-            Add("</h3>");
-            return this;
-        }
-
-        public HtmlContent H4_(string css = null)
-        {
-            Add("<h4");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _H4()
-        {
-            Add("</h4>");
-            return this;
-        }
-
-        public HtmlContent H4(string v, string css = null)
-        {
-            Add("<h4");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            Add(v);
-            Add("</h4>");
-            return this;
-        }
-
-        public HtmlContent H5_(string css = null)
-        {
-            Add("<h5");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _H5()
-        {
-            Add("</h5>");
-            return this;
-        }
-
-        public HtmlContent H5(string v, string css = null)
-        {
-            Add("<h5");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add('\"');
-            }
-            Add(">");
-            Add(v);
-            Add("</h5>");
             return this;
         }
 
@@ -555,22 +238,10 @@ namespace Greatbone
         }
 
 
-        public HtmlContent TH(string label)
+        public HtmlContent TH(string caption)
         {
             Add("<th>");
-            Add(label);
-            Add("</th>");
-            return this;
-        }
-
-        public HtmlContent TH_()
-        {
-            Add("<th>");
-            return this;
-        }
-
-        public HtmlContent _TH()
-        {
+            Add(caption);
             Add("</th>");
             return this;
         }
@@ -586,13 +257,10 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TD(short v, bool zero = false)
+        public HtmlContent TD(short v)
         {
             Add("<td style=\"text-align: right\">");
-            if (v != 0 || zero)
-            {
-                Add(v);
-            }
+            Add(v);
             Add("</td>");
             return this;
         }
@@ -605,15 +273,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TDIMG(string src)
-        {
-            Add("<td class=\"uk-width-small\">");
-            Add("<img src=\"");
-            Add(src);
-            Add("\"></td>");
-            return this;
-        }
-
         public HtmlContent TD(long v)
         {
             Add("<td style=\"text-align: right\">");
@@ -622,20 +281,17 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TD(decimal v, bool zero = false)
+        public HtmlContent TD(decimal v)
         {
             Add("<td style=\"text-align: right\">");
-            if (v != 0 || zero)
-            {
-                Add(v);
-            }
+            Add(v);
             Add("</td>");
             return this;
         }
 
         public HtmlContent TD(DateTime v)
         {
-            Add("<td>");
+            Add("<td style=\"text-align: center\">");
             Add(v);
             Add("</td>");
             return this;
@@ -676,34 +332,64 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TD_(short v)
+        public HtmlContent TDIF(short v)
         {
-            Add("<td>");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent TD_(int v)
-        {
-            Add("<td>");
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent TD_(string v = null)
-        {
-            Add("<td>");
-            if (v != null)
+            Add("<td style=\"text-align: right\">");
+            if (v != 0)
             {
-                AddEsc(v);
+                Add(v);
             }
+            Add("</td>");
             return this;
         }
 
-        public HtmlContent TD_(double v)
+        public HtmlContent TDIF(int v)
+        {
+            Add("<td style=\"text-align: right\">");
+            if (v != 0)
+            {
+                Add(v);
+            }
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TDIF(long v)
+        {
+            Add("<td style=\"text-align: right\">");
+            if (v != 0)
+            {
+                Add(v);
+            }
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TDIF(decimal v)
+        {
+            Add("<td style=\"text-align: right\">");
+            if (v != 0)
+            {
+                Add(v);
+            }
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TDIF(DateTime v)
+        {
+            Add("<td style=\"text-align: center\">");
+            if (v != default)
+            {
+                Add(v);
+            }
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TD_()
         {
             Add("<td>");
-            Add(v);
             return this;
         }
 
@@ -880,18 +566,50 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent NUM(int v, byte w = 0x11)
+        public HtmlContent SPAN(short v, byte w = 0x11)
         {
             Add("<span class=\"uk-text-right");
-            if (w > 0)
-            {
-                int lo = w & 0x0f;
-                int hi = w >> 4;
-                Add(" uk-width-");
-                Add(hi);
-                Add('-');
-                Add(lo);
-            }
+            Width(w);
+            Add("\">");
+            Add(v);
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlContent SPAN(int v, byte w = 0x11)
+        {
+            Add("<span class=\"uk-text-right");
+            Width(w);
+            Add("\">");
+            Add(v);
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlContent SPAN(decimal v, byte w = 0x11)
+        {
+            Add("<span class=\"uk-text-right");
+            Width(w);
+            Add("\">");
+            Add(v);
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlContent SPAN(DateTime v, byte w = 0x11)
+        {
+            Add("<span class=\"uk-text-center");
+            Width(w);
+            Add("\">");
+            Add(v);
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlContent SPAN(string v, byte w = 0x11)
+        {
+            Add("<span class=\"");
+            Width(w);
             Add("\">");
             Add(v);
             Add("</span>");
@@ -1125,7 +843,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent THUMBNAIL_(string alt = null, byte w = 0, string css = null)
+        public HtmlContent PIC_(byte w = 0, string css = null)
         {
             Add("<div class=\"uk-margin-auto-vertical");
             if (css != null)
@@ -1134,16 +852,31 @@ namespace Greatbone
                 Add(css);
             }
             Width(w);
-            Add("\"><img class=\"uk-img\" alt=\"");
-            if (alt != null)
-            {
-                Add(alt);
-            }
-            Add("\" src=\"");
+            Add("\"><img alt=\"\" src=\"");
             return this;
         }
 
-        public HtmlContent _THUMBNAIL()
+        public HtmlContent _PIC()
+        {
+            Add("\">");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent ICO_(byte w = 0, string css = null)
+        {
+            Add("<div class=\"uk-margin-auto-vertical");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Width(w);
+            Add("\"><img class=\"uk-border-circle\" alt=\"\" src=\"");
+            return this;
+        }
+
+        public HtmlContent _ICO()
         {
             Add("\">");
             Add("</div>");
@@ -1170,13 +903,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ICON(string src, byte w = 0x0c)
+        public HtmlContent PIC(string src, byte w = 0x0c)
         {
-            Add("<img class=\"uk-img uk-border-circle");
+            Add("<div class=\"uk-margin-vertical-auto");
             Width(w);
+            Add("\"><img class=\"uk-img uk-border-circle");
             Add("\" src=\"");
             Add(src);
-            Add("\">");
+            Add("\"></div>");
             return this;
         }
 
@@ -1423,7 +1157,7 @@ namespace Greatbone
 
         public HtmlContent TOOLBAR_()
         {
-            Add("<form id=\"tool-bar-form\" class=\"top-bar\">");
+            Add("<form id=\"tool-bar-form\" class=\"uk-tool-bar\">");
             return this;
         }
 
@@ -1442,13 +1176,13 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BOTTOMBAR_()
+        public HtmlContent ACTIONBAR_()
         {
-            Add("<footer class=\"bottom-bar\">");
+            Add("<footer class=\"uk-action-bar\">");
             return this;
         }
 
-        public HtmlContent _BOTTOMBAR()
+        public HtmlContent _ACTIONBAR()
         {
             Add("</footer>");
             return this;
@@ -1681,13 +1415,13 @@ namespace Greatbone
         }
 
 
-        public void BOARD<D>(D[] arr, Action<D> card, string mainCss = null, string articleCss = null)
+        public void BOARD<D>(D[] arr, Action<D> card, string main = null, string article = "uk-card-default")
         {
             Add("<main class=\"uk-board");
-            if (mainCss != null)
+            if (main != null)
             {
                 Add(' ');
-                Add(mainCss);
+                Add(main);
             }
             Add("\">");
             if (arr != null)
@@ -1698,7 +1432,13 @@ namespace Greatbone
                 {
                     D obj = arr[i];
                     stack[level] = obj;
-                    Add("<article class=\"uk-card uk-card-default\">");
+                    Add("<article class=\"uk-card");
+                    if (article != null)
+                    {
+                        Add(' ');
+                        Add(article);
+                    }
+                    Add("\">");
                     card(obj);
                     Add("</article>");
                     stack[level] = null;
