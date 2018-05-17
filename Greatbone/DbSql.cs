@@ -315,6 +315,11 @@ namespace Greatbone
             Build(name);
         }
 
+        public void Put(string name, byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Put(string name, short[] v)
         {
             if (name != null)

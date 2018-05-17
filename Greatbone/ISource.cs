@@ -25,6 +25,8 @@ namespace Greatbone
 
         bool Get(string name, ref ArraySegment<byte> v);
 
+        bool Get(string name, ref byte[] v);
+
         bool Get(string name, ref short[] v);
 
         bool Get(string name, ref int[] v);

@@ -29,6 +29,8 @@ namespace Greatbone
 
         IParams Set(ArraySegment<byte> v);
 
+        IParams Set(byte[] v);
+
         IParams Set(short[] v);
 
         IParams Set(int[] v);

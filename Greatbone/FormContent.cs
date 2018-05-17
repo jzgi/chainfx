@@ -195,6 +195,10 @@ namespace Greatbone
         {
         }
 
+        public void Put(string name, byte[] v)
+        {
+        }
+
         public void Put(string name, short[] v)
         {
             ordinal++;

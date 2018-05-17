@@ -4,18 +4,14 @@
     width: 100%;
     top: 0;
     font-size: 1rem;
-    background: #f7f7f8;
+    background: #fff;
     z-index: 9;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-    padding: 0 4px 0 2.25rem;
-    border-bottom: 1px solid #c4c4c4;
-}
-
-.uk-modal-header {
-    padding-left: 2rem;
+    padding: 0 4px;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .top-bar-placeholder {

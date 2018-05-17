@@ -116,6 +116,12 @@ namespace Greatbone
             return jo != null && jo.Get(name, ref v);
         }
 
+        public bool Get(string name, ref byte[] v)
+        {
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
+        }
+
         public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
         {
             JObj jo = elements[current];

@@ -6,17 +6,13 @@ html {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
-    color: #333;
+    color: #666;
 }
 
 body {
     margin: 0;
-    background-color: #efeff4;
+    background-color: #f2f2f2;;
     font-size: 0.875rem;
-}
-
-.uk-pane {
-    background-color: #f7f7f8;
 }
 
 form {
@@ -34,14 +30,14 @@ a:hover {
 
 a,
 .uk-link {
-    color: #007aff;
+    color: #23C1BB;
     text-decoration: none;
     cursor: pointer;
 }
 
 a:hover,
 .uk-link:hover {
-    color: #0f6ecd;
+    color: #23C1BB;
     text-decoration: underline;
 }
 
@@ -64,7 +60,7 @@ strong {
     /* 2 */
     font-family: Consolas, monaco, monospace;
     /* 3 */
-    color: #f0506e;
+    color: #FD9840;
     white-space: nowrap;
     padding: 2px 6px;
     background: #f8f8f8;
@@ -72,7 +68,7 @@ strong {
 
 em {
     font-style: normal;
-    color: #ff3b30;
+    color: #FD9840;
 }
 
 ins {
@@ -197,20 +193,20 @@ h3,
 h4,
 .uk-h4 {
     font-size: 1rem;
-    margin: 0.375rem 0;
+    margin: 0.25rem 0;
     color: black;
 }
 
 h5,
 .uk-h5 {
     font-size: 0.875rem;
-    margin: 0.25rem 0;
+    margin: 0.125rem 0;
 }
 
 h6,
 .uk-h6 {
     font-size: 0.75rem;
-    margin: 0.25rem 0;
+    margin: 0.125rem 0;
 }
 
 /*
@@ -297,13 +293,13 @@ pre code {
 }
 
 ::-moz-selection {
-    background: #39f;
+    background: #23C1BB;
     color: #fff;
     text-shadow: none;
 }
 
 ::selection {
-    background: #39f;
+    background: #23C1BB;
     color: #fff;
     text-shadow: none;
 }
@@ -594,7 +590,7 @@ a.uk-link-reset:hover,
  */
 .uk-list ul {
     margin: 0;
-    padding-left: 30px;
+    padding-left: 16px;
     list-style: none;
 }
 
@@ -607,8 +603,8 @@ a.uk-link-reset:hover,
 }
 
 .uk-list-divider > li:nth-child(n+2) {
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 1px solid #e5e5e5;
 }
 
@@ -616,7 +612,7 @@ a.uk-link-reset:hover,
  * Striped
  */
 .uk-list-striped > li {
-    padding: 10px 10px;
+    padding: 8px 8px;
 }
 
 .uk-list-striped > li:nth-of-type(odd) {
@@ -740,7 +736,7 @@ a.uk-link-reset:hover,
     vertical-align: bottom;
     font-size: 0.875rem;
     font-weight: normal;
-    color: indianred;
+    color: #FD9840;
     text-transform: uppercase;
 }
 
@@ -1216,14 +1212,14 @@ button.uk-icon:not(:disabled) {
     width: 100%;
     top: 0;
     font-size: 1rem;
-    background: #f7f7f8;
+    background: #fff;
     z-index: 9;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
     padding: 0 4px;
-    border-bottom: 1px solid #c4c4c4;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-tool-bar-placeholder {
@@ -1240,11 +1236,11 @@ button.uk-icon:not(:disabled) {
     width: 100%;
     bottom: 0;
     font-size: 1rem;
-    background: #f7f7f8;
+    background: #fff;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border-top: 1px solid #c4c4c4;
+    border-top: 1px solid #dcdcdc;
 }
 
 
@@ -1258,7 +1254,7 @@ button.uk-icon:not(:disabled) {
 
 .uk-fieldset > legend {
     text-transform: uppercase;
-    color: #6d6d72;
+    color: #333;
     padding: 0.5rem;
     line-height: 16px;
 }
@@ -1270,8 +1266,8 @@ button.uk-icon:not(:disabled) {
 }
 
 .uk-fieldset > ul {
-    border-top: 1px solid #c4c4c4;
-    border-bottom: 1px solid #c4c4c4;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
     padding: 0;
     background-color: #fff;
 }
@@ -1282,7 +1278,7 @@ button.uk-icon:not(:disabled) {
 }
 
 .uk-fieldset > ul > li:nth-child(n+2) {
-    border-top: 1px solid #c4c4c4;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-radio,
@@ -1528,20 +1524,20 @@ select.uk-form-width-xsmall {
 .uk-radio:focus,
 .uk-checkbox:focus {
     outline: none;
-    border-color: #007aff;
+    border-color: #23C1BB;
 }
 
 .uk-radio:checked,
 .uk-checkbox:checked,
 .uk-checkbox:indeterminate {
-    background-color: #007aff;
+    background-color: #23C1BB;
     border-color: transparent;
 }
 
 .uk-radio:checked:focus,
 .uk-checkbox:checked:focus,
 .uk-checkbox:indeterminate:focus {
-    background-color: #0e6dcd;
+    background-color: #23C1BB;
 }
 
 .uk-radio:checked {
@@ -1764,8 +1760,8 @@ button.uk-button {
 }
 
 .uk-button-default {
-    border: 1px solid #007aff;
-    color: #007aff;
+    border: 1px solid #23C1BB;
+    color: #23C1BB;
     line-height: 27px;
     height: 29px;
 }
@@ -1774,8 +1770,8 @@ button.uk-button {
 .uk-button-default:hover,
 .uk-button-default:focus {
     background-color: transparent;
-    color: #007aff;
-    border-color: #007aff;
+    color: #23C1BB;
+    border-color: #23C1BB;
 }
 
 /* OnClick + Active */
@@ -1787,7 +1783,7 @@ button.uk-button {
 }
 
 .uk-button-primary {
-    background-color: #007aff;
+    background-color: #23C1BB;
     color: #fff;
     border: 1px solid transparent;
     line-height: 27px;
@@ -1796,13 +1792,13 @@ button.uk-button {
 
 .uk-button-primary:hover,
 .uk-button-primary:focus {
-    background-color: #0f7ae5;
+    background-color: #23C1BB;
     color: #fff;
 }
 
 .uk-button-primary:active,
 .uk-button-primary.uk-active {
-    background-color: #0e6dcd;
+    background-color: #23C1BB;
     color: #fff;
 }
 
@@ -1916,18 +1912,18 @@ button.uk-button {
 .uk-button-link {
     line-height: 28px;
     background: none;
-    color: #007aff;
+    color: #23C1BB;
 }
 
 .uk-button-link:hover,
 .uk-button-link:focus {
-    color: #0f6ecd;
+    color: #23C1BB;
     text-decoration: underline;
 }
 
 .uk-button-link:active,
 .uk-button-link.uk-active {
-    border: 1px solid #007aff;
+    border: 1px solid #23C1BB;
 }
 
 /* Disabled */
@@ -2572,7 +2568,7 @@ button.uk-button {
 
 .uk-card-body li {
     box-sizing: border-box;
-    min-height: 1.5rem;
+    min-height: 1.75rem;
     display: flex;
     align-items: center;
     width: 100%;
@@ -2626,10 +2622,9 @@ button.uk-button {
 
 .uk-card-default {
     background: #fff;
-    color: #333;
-    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
     margin: 12px 6px;
+    border-bottom: 1px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-card .uk-card-title {
@@ -2642,11 +2637,11 @@ button.uk-button {
 }
 
 .uk-card .uk-card-header {
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #23C1BB;
 }
 
 .uk-card .uk-card-footer {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #f2f2f2;
 }
 
 /*
@@ -2655,8 +2650,8 @@ button.uk-button {
 .uk-card-primary {
     background-color: #fff;
     margin: 12px 0;
-    border-top: 1px solid #c4c4c4;
-    border-bottom: 1px solid #c4c4c4;
+    border-bottom: 1px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-card-primary .uk-card-title {
@@ -2672,6 +2667,7 @@ button.uk-button {
  * Secondary
  */
 .uk-card-secondary {
+    background-color: #fff;
     margin: 12px 0;
 }
 
@@ -2773,7 +2769,7 @@ button.uk-button {
 }
 
 .uk-close {
-    color: #007aff;
+    color: #23C1BB;
     transition: 0.1s ease-in-out;
     transition-property: color, opacity;
 }
@@ -3017,9 +3013,9 @@ button.uk-button {
 }
 
 .uk-badge-primary {
-    color: #007aff;
-    border-top: 1px solid #007aff;
-    border-bottom: 1px solid #007aff;
+    color: #23C1BB;
+    border-top: 1px solid #23C1BB;
+    border-bottom: 1px solid #23C1BB;
 }
 
 .uk-badge-success {
@@ -3029,9 +3025,9 @@ button.uk-button {
 }
 
 .uk-badge-warning {
-    color: #ff9500;
-    border-top: 1px solid #ff9500;
-    border-bottom: 1px solid #ff9500;
+    color: #FD9840;
+    border-top: 1px solid #FD9840;
+    border-bottom: 1px solid #FD9840;
 }
 
 .uk-badge-danger {
@@ -3045,18 +3041,11 @@ button.uk-button {
 .uk-label {
     text-transform: uppercase;
     white-space: nowrap;
-    color: indianred;
+    color: #FD9840;
     margin-right: 0.5rem;
-}
-
-.uk-label-top {
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: indianred;
-}
-
-.uk-label::after {
-    content: ":";
+    background-color: #f2f2f2;
+    padding: 0 8px;
+    border-radius: 25%;
 }
 
 .uk-overlay {
@@ -4087,6 +4076,7 @@ ul.uk-nav-sub {
     flex-wrap: wrap;
     padding: 8px;
     list-style: none;
+    background-color: #f2f2f2;
 }
 
 .uk-subnav > * {
@@ -4590,7 +4580,6 @@ ul.uk-nav-sub {
     display: block;
     margin: 8px 4px;
     min-height: 1.5rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
 }
 
 .uk-accordion-title {
@@ -4649,7 +4638,7 @@ ul.uk-nav-sub {
     margin-top: 0;
     background-color: #fff;
     padding: 8px;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #23C1BB;
 }
 
 .uk-accordion-content::before,
@@ -4821,35 +4810,19 @@ ul.uk-nav-sub {
     width: 100% !important;
 }
 
-/* ========================================================================
-   Component: Modal
- ========================================================================== */
-/*
- * 1. Hide by default
- * 2. Set position
- * 3. Allow scrolling for the modal dialog
- * 4. Horizontal padding
- * 5. Mask the background page
- * 6. Fade-in transition
- */
+
 .uk-modal {
-    /* 1 */
     display: none;
-    /* 2 */
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 1010;
-    /* 3 */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    /* 4 */
-    padding: 15px 15px;
-    /* 5 */
+    padding: 16px 16px;
     background: rgba(0, 0, 0, 0.6);
-    /* 6 */
     opacity: 0;
     transition: opacity 0.15s linear;
 }
@@ -4857,7 +4830,7 @@ ul.uk-nav-sub {
 /* Phone landscape and bigger */
 @media (min-width: 640px) {
     .uk-modal {
-        padding: 50px 30px;
+        padding: 40px 30px;
     }
 }
 
@@ -4885,28 +4858,13 @@ ul.uk-nav-sub {
     overflow: hidden;
 }
 
-/* Dialog
- ========================================================================== */
-/*
- * 1. Create position context for spinner and close button
- * 2. Dimensions
- * 3. Fix `max-width: 100%` not working in combination with flex and responsive images in IE11
- *    `!important` needed to overwrite `uk-width-auto`. See `#modal-media-image` in tests
- * 4. Style
- * 5. Slide-in transition
- */
 .uk-modal-dialog {
-    /* 1 */
     position: relative;
-    /* 2 */
     box-sizing: border-box;
-    margin: 0 auto;
+    margin: 44px auto;
     width: 600px;
-    /* 3 */
     max-width: calc(100% - 0.01px) !important;
-    /* 4 */
     background: #fff;
-    /* 5 */
     opacity: 0;
     transform: translateY(-100px);
     transition: 0.3s linear;
@@ -4931,12 +4889,6 @@ ul.uk-nav-sub {
     width: 1200px;
 }
 
-/*
- * Full size
- * 1. Remove padding and background from modal
- * 2. Reset all default declarations from modal dialog
- */
-/* 1 */
 .uk-modal-full {
     padding: 0;
     background: none;
@@ -5000,8 +4952,8 @@ ul.uk-nav-sub {
     display: flex;
     align-items: center;
     height: 2.75rem;
-    background: #f7f7f8;
-    border-bottom: 1px solid #c4c4c4;
+    background: #fff;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-modal-footer {
@@ -5009,8 +4961,8 @@ ul.uk-nav-sub {
     align-items: center;
     justify-content: center;
     height: 2.75rem;
-    background: #f7f7f8;
-    border-top: 1px solid #c4c4c4;
+    background: #fff;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*
@@ -5435,9 +5387,11 @@ ul.uk-nav-sub {
 }
 
 .uk-offcanvas-toggle {
-    position: absolute;
+    position: fixed;
     top: 7px;
     padding-left: 4px;
+    z-index: 4;
+    background-color: #fff;
 }
 
 .uk-offcanvas-flip .uk-offcanvas {

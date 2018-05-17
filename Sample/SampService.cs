@@ -226,26 +226,26 @@ namespace Samp
                     h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
                     h.BOARD(cityorgs, o =>
                         {
-                            h.T("<section class=\"uk-card-header\">");
-                            h.T("<h4>").T(o.name).T("</h4>");
+                            h.T("<section class=\"uk-card-header org-header\">");
+                            h.T("<h2>").T(o.name).T("</h2>");
                             if (o.oprtel != null)
                             {
                                 //                                h.BADGE_LINK( "/a/", "commenting");
 //                                h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
                             }
-                            h.P(o.descr, "简介");
-                            h.P_("地址").T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                            h.P(o.descr);
+                            h.P_().T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
 
                             h.T("</section>");
-                            var orgitems = items.FindGroup((o.id, null));
-                            h.LIST(orgitems, m =>
+                            var ois = items.FindGroup((o.id, null));
+                            h.LIST(ois, oi =>
                             {
-                                h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(m.orgid).T("/").T(m.name).T("/icon")._ICO();
+                                h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.orgid).T("/").T(oi.name).T("/icon")._ICO();
                                 h.COL_(0x23, css: "uk-padding-small");
-                                h.T("<h4>").T(m.name).T("</h4>");
-                                h.P(m.descr);
+                                h.T("<h3>").T(oi.name).T("</h3>");
+                                h.P(oi.descr);
                                 h.ROW_();
-                                h.P_(w: 0x23).T("<em>¥").T(m.price).T("</em>／").T(m.unit)._P();
+                                h.P_(w: 0x23).T("<em>￥").T(oi.price).T("</em>／").T(oi.unit)._P();
                                 h.TOOL(nameof(SampItemVarWork.buy));
                                 h._ROW();
                                 h._COL();

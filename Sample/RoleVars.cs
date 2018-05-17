@@ -22,7 +22,7 @@ namespace Samp
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.UL_("uk-card- uk-card-default uk-card-body");
+                h.UL_("uk-card- uk-card-primary uk-card-body");
                 h.LI("姓名", prin.name);
                 h.LI("电话", prin.tel);
                 h.LI("地址", prin.addr);

@@ -94,6 +94,11 @@ namespace Greatbone
             throw new NotImplementedException();
         }
 
+        public void Put(string name, byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Put(string name, short[] v)
         {
             throw new NotImplementedException();

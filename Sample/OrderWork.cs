@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
 using static Samp.Order;
@@ -27,7 +26,7 @@ namespace Samp
                 h.BOARD(arr, o =>
                     {
                         h.T("<section class=\"uk-card-header uk-flex uk-flex-middle\">");
-                        h.T("<h3>").T(o.orgname).T("</h3>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<h5>").T(o.orgname).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</section>");
 
                         h.UL_("uk-card-body");
@@ -75,7 +74,7 @@ namespace Samp
                     o =>
                     {
                         h.T("<section class=\"uk-accordion-title\">");
-                        h.T("<h3 class=\"uk-width-expand\">").T(o.custname).T("</h3>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<div class=\"uk-width-expand\">").T(o.custname).T("</div>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</section>");
 
                         h.T("<section class=\"uk-accordion-content uk-grid\">");

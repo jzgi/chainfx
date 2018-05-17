@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
@@ -46,14 +47,19 @@ namespace Greatbone
             };
         }
 
-        void Clear()
+        void Clear(bool reread = true)
         {
-            if (reader != null)
-            {
-                reader.Close();
-                reader = null;
-            }
-            ordinal = 0;
+//            if (reread)
+//            {
+                // reader reset
+                if (reader != null)
+                {
+                    reader.Close();
+                    reader = null;
+                }
+                ordinal = 0;
+//            }
+            // command parameter reset
             command.Parameters.Clear();
             index = 0;
         }
@@ -106,7 +112,7 @@ namespace Greatbone
             if (transact != null && !transact.IsCompleted)
             {
                 // indicate disposing the instance 
-                Clear();
+                Clear(false);
                 transact.Rollback();
                 command.Transaction = null;
                 transact = null;
@@ -405,7 +411,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear();
+            Clear(false);
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -422,7 +428,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear();
+            Clear(false);
             command.CommandText = sql.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -439,7 +445,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear();
+            Clear(false);
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -461,7 +467,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear();
+            Clear(false);
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -479,7 +485,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear();
+            Clear(false);
             command.CommandText = sql.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -496,7 +502,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear();
+            Clear(false);
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -1462,6 +1468,18 @@ namespace Greatbone
             });
         }
 
+        public void Put(string name, byte[] v)
+        {
+            if (name == null)
+            {
+                name = PARAMS[index++];
+            }
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v?.Length ?? 0)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
+        }
+
         public void Put(string name, short[] v)
         {
             if (name == null)
@@ -1664,6 +1682,12 @@ namespace Greatbone
         }
 
         public IParams Set(ArraySegment<byte> v)
+        {
+            Put(null, v);
+            return this;
+        }
+
+        public IParams Set(byte[] v)
         {
             Put(null, v);
             return this;

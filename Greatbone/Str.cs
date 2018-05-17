@@ -132,6 +132,11 @@ namespace Greatbone
             throw new NotImplementedException();
         }
 
+        public bool Get(string name, ref byte[] v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref short[] v)
         {
             throw new NotImplementedException();

@@ -29,6 +29,8 @@ namespace Greatbone
 
         void Put(string name, ArraySegment<byte> v);
 
+        void Put(string name, byte[] v);
+
         void Put(string name, short[] v);
 
         void Put(string name, int[] v);
