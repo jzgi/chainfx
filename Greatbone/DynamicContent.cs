@@ -199,9 +199,10 @@ namespace Greatbone
             Add(v, 0, v.Length);
         }
 
-        public void Add(string v, int offset, int len)
+        public void Add(string v, int offset, int length)
         {
             if (v == null) return;
+            int len = Math.Min(length, v.Length);
             for (int i = offset; i < len; i++)
             {
                 Add(v[i]);

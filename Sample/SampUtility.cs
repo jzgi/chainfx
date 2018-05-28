@@ -251,7 +251,7 @@ namespace Samp
 
         public static HtmlContent TOPBAR_(this HtmlContent h, string title = null)
         {
-            h.T("<form class=\"top-bar uk-flex-between\">");
+            h.T("<form class=\"uk-top-bar uk-flex-between\">");
             if (title != null)
             {
                 h.T("<div>").T(title).T("</div>");
@@ -265,7 +265,7 @@ namespace Samp
             h.T("</div>");
             h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//ord/\">我的订单</a>");
             h.T("</form>");
-            h.T("<div class=\"top-bar-placeholder\"></div>");
+            h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;
         }
 

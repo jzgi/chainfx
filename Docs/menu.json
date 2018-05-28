@@ -11,7 +11,13 @@
       "sub_button": [
         {
           "type": "view",
-          "name": "《生命的奥秘》系列",
+          "name": "《家庭健康如此行》",
+          "url": "http://144000.tv/inf/",
+          "sub_button": []
+        },
+        {
+          "type": "view",
+          "name": "《生命的奥秘》",
           "url": "http://144000.tv/",
           "sub_button": []
         },
@@ -23,7 +29,7 @@
         },
         {
           "type": "view",
-          "name": "我的设置",
+          "name": "我的账号",
           "url": "http://144000.tv/my//",
           "sub_button": []
         }
@@ -40,7 +46,7 @@
         },
         {
           "type": "view",
-          "name": "（内部人员操作）",
+          "name": "（内部操作）",
           "url": "http://144000.tv/opr//",
           "sub_button": []
         }

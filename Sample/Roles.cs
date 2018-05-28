@@ -28,6 +28,8 @@ namespace Samp
             Create<AdmOrgWork>("org");
 
             Create<AdmRepayWork>("repay");
+
+            Create<AdmInfWork>("inf");
         }
 
         public void @default(WebContext wc)

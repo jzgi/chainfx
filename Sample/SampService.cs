@@ -16,6 +16,8 @@ namespace Samp
         {
             CreateVar<SampVarWork, string>(obj => ((Org) obj).id);
 
+            Create<PubInfWork>("inf");
+
             Create<MyWork>("my"); // personal
 
             Create<OprWork>("opr"); // org operator
@@ -164,7 +166,7 @@ namespace Samp
                         h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h._FIELDSET();
                         h.HIDDEN(nameof(url), url);
-                        h.ACTIONBAR_().BUTTON("/catch", 1, "确定")._ACTIONBAR();
+                        h.ACTBAR_().BUTTON("/catch", 1, "确定")._ACTBAR();
                         h._FORM();
                     }, title: "注册新帐号");
                 }

@@ -1530,7 +1530,7 @@ namespace Greatbone
         // fixed length
         readonly int length;
 
-        public StaticContent(ArraySegment<byte> byteAs) : this(byteAs.Array, byteAs.Count)
+        public StaticContent(ArraySegment<byte> bytea) : this(bytea.Array, bytea.Count)
         {
         }
 

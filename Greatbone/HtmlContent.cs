@@ -121,6 +121,12 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent T(string v, int offset, int len)
+        {
+            Add(v, offset, len);
+            return this;
+        }
+
         public HtmlContent T(string[] v)
         {
             if (v != null)
@@ -845,7 +851,7 @@ namespace Greatbone
 
         public HtmlContent PIC_(byte w = 0, string css = null)
         {
-            Add("<div class=\"uk-margin-auto-vertical");
+            Add("<div class=\"uk-margin-auto-vertical uk-text-center");
             if (css != null)
             {
                 Add(' ');
@@ -1140,8 +1146,14 @@ namespace Greatbone
 
         public void TOOLBAR(string title = null, bool refresh = true)
         {
-            var prcs = webCtx.Work.Tooled;
             TOOLBAR_();
+            _TOOLBAR(title, refresh);
+        }
+
+        public HtmlContent TOOLBAR_()
+        {
+            var prcs = webCtx.Work.Tooled;
+            Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<div class=\"uk-button-group\">");
             for (int i = 0; i < prcs?.Length; i++)
             {
@@ -1151,18 +1163,12 @@ namespace Greatbone
                     PutTool(prc);
                 }
             }
-            Add("</div>");
-            _TOOLBAR(title, refresh);
-        }
-
-        public HtmlContent TOOLBAR_()
-        {
-            Add("<form id=\"tool-bar-form\" class=\"uk-tool-bar\">");
             return this;
         }
 
         public HtmlContent _TOOLBAR(string title = null, bool refresh = true)
         {
+            Add("</div>");
             if (title != null)
             {
                 Add(title);
@@ -1172,17 +1178,18 @@ namespace Greatbone
                 Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             }
             Add("</form>");
-            Add("<div class=\"top-bar-placeholder\"></div>");
+            Add("<div class=\"uk-top-placeholder\"></div>");
             return this;
         }
 
-        public HtmlContent ACTIONBAR_()
+        public HtmlContent ACTBAR_()
         {
-            Add("<footer class=\"uk-action-bar\">");
+            Add("<div class=\"uk-bottom-placeholder\"></div>");
+            Add("<footer class=\"uk-bottom-bar\">");
             return this;
         }
 
-        public HtmlContent _ACTIONBAR()
+        public HtmlContent _ACTBAR()
         {
             Add("</footer>");
             return this;
@@ -1448,20 +1455,18 @@ namespace Greatbone
             Add("</main>");
         }
 
-        void OnClickDialog(byte mode, bool pick, byte size, string tip)
+        void OnClickDialog(byte mode, bool pick, string tip)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
             Add(",");
             Add(pick);
-            Add(",");
-            Add(size);
             Add(",'");
             Add(tip);
             Add("');\"");
         }
 
-        public HtmlContent TOOLPAD(string css = null, byte w = 0x11)
+        public HtmlContent TOOLPAD(string css = null, byte w = 0x11, byte flag = 0)
         {
             // locate the proper work
             Add("<form class=\"uk-button-group uk-flex uk-flex-center");
@@ -1479,10 +1484,10 @@ namespace Greatbone
                 work = work.varwork;
             }
             var prcs = work.Tooled;
-            for (int i = 0; i < prcs?.Length; i++)
+            for (int j = 0; j < prcs?.Length; j++)
             {
-                var prc = prcs[i];
-                if (!prc.IsCapital)
+                var prc = prcs[j];
+                if (!prc.IsCapital && (prc.Flag == 0 || flag == prc.Flag))
                 {
                     PutTool(prc);
                 }
@@ -1609,15 +1614,15 @@ namespace Greatbone
             }
             else if (tool.HasPrompt)
             {
-                OnClickDialog(2, tool.MustPick, tool.Size, prc.Tip);
+                OnClickDialog(2, tool.MustPick, prc.Tip);
             }
             else if (tool.HasShow)
             {
-                OnClickDialog(4, tool.MustPick, tool.Size, prc.Tip);
+                OnClickDialog(4, tool.MustPick, prc.Tip);
             }
             else if (tool.HasOpen)
             {
-                OnClickDialog(8, tool.MustPick, tool.Size, prc.Tip);
+                OnClickDialog(8, tool.MustPick, prc.Tip);
             }
             else if (tool.HasScript)
             {
