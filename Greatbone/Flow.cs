@@ -10,7 +10,7 @@ namespace Greatbone
     public delegate long FlowDelegate(Flow flow);
 
     /// <summary>
-    /// The data object of an event in the event queue.
+    /// The pack of a set of recent events.
     /// </summary>
     public class Flow : ISource
     {
@@ -20,10 +20,10 @@ namespace Greatbone
 
         int pos;
 
-        public Flow(ArraySegment<byte> byteas)
+        public Flow(ArraySegment<byte> bytea)
         {
-            this.buffer = byteas.Array;
-            this.length = byteas.Count;
+            this.buffer = bytea.Array;
+            this.length = bytea.Count;
         }
 
         public bool Get(string name, ref bool v)

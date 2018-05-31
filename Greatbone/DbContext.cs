@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
@@ -8,7 +7,7 @@ using NpgsqlTypes;
 namespace Greatbone
 {
     /// <summary>
-    /// An environment for database operations based on current service.
+    /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
     /// </summary>
     public class DbContext : ISource, IParams, IDisposable
     {
@@ -51,13 +50,13 @@ namespace Greatbone
         {
 //            if (reread)
 //            {
-                // reader reset
-                if (reader != null)
-                {
-                    reader.Close();
-                    reader = null;
-                }
-                ordinal = 0;
+            // reader reset
+            if (reader != null)
+            {
+                reader.Close();
+                reader = null;
+            }
+            ordinal = 0;
 //            }
             // command parameter reset
             command.Parameters.Clear();
@@ -1352,9 +1351,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Numeric)
+            command.Parameters.Add(new NpgsqlParameter<decimal>(name, NpgsqlDbType.Numeric)
             {
-                Value = v.Decimal
+                TypedValue = v.Decimal
             });
         }
 
@@ -1364,9 +1363,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Boolean)
+            command.Parameters.Add(new NpgsqlParameter<bool>(name, NpgsqlDbType.Boolean)
             {
-                Value = v
+                TypedValue = v
             });
         }
 
@@ -1376,9 +1375,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Smallint)
+            command.Parameters.Add(new NpgsqlParameter<short>(name, NpgsqlDbType.Smallint)
             {
-                Value = v
+                TypedValue = v
             });
         }
 
@@ -1388,9 +1387,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Integer)
+            command.Parameters.Add(new NpgsqlParameter<int>(name, NpgsqlDbType.Integer)
             {
-                Value = v
+                TypedValue = v
             });
         }
 
@@ -1400,9 +1399,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bigint)
+            command.Parameters.Add(new NpgsqlParameter<long>(name, NpgsqlDbType.Bigint)
             {
-                Value = v
+                TypedValue = v
             });
         }
 
@@ -1412,9 +1411,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Double)
+            command.Parameters.Add(new NpgsqlParameter<double>(name, NpgsqlDbType.Double)
             {
-                Value = v
+                TypedValue = v
             });
         }
 
@@ -1424,9 +1423,9 @@ namespace Greatbone
             {
                 name = PARAMS[index++];
             }
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Money)
+            command.Parameters.Add(new NpgsqlParameter<decimal>(name, NpgsqlDbType.Money)
             {
-                Value = v
+                TypedValue = v
             });
         }
 
@@ -1437,9 +1436,9 @@ namespace Greatbone
                 name = PARAMS[index++];
             }
             bool date = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
-            command.Parameters.Add(new NpgsqlParameter(name, date ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
+            command.Parameters.Add(new NpgsqlParameter<DateTime>(name, date ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
             {
-                Value = v
+                TypedValue = v
             });
         }
 

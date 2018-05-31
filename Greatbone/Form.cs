@@ -136,17 +136,6 @@ namespace Greatbone
             return false;
         }
 
-//        public bool Get(string name, ref ArraySegment<byte> v)
-//        {
-//            Field fld;
-//            if (TryGet(name, out fld))
-//            {
-//                v = fld;
-//                return true;
-//            }
-//            return false;
-//        }
-//
         public bool Get(string name, ref byte[] v)
         {
             throw new NotImplementedException();

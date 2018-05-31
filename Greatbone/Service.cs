@@ -59,7 +59,7 @@ namespace Greatbone
 
             // init the embedded server
             KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServiceUtility.Libuv, factory);
+            server = new KestrelServer(Options.Create(options), ServiceUtility.Factory, factory);
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {

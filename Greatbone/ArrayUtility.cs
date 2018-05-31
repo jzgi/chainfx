@@ -2,6 +2,9 @@ using System;
 
 namespace Greatbone
 {
+    /// <summary>
+    /// A set of frequently-used array operations.
+    /// </summary>
     public static class ArrayUtility
     {
         public static E[] AddOf<E>(this E[] arr, E v, int limit = 0)

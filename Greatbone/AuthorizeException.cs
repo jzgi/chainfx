@@ -20,10 +20,19 @@ namespace Greatbone
             this.code = code;
         }
 
+        /// <summary>
+        /// No principal is presented.
+        /// </summary>
         public bool NoPrincipal => code == 0;
 
+        /// <summary>
+        /// A principal is presented but a check operation returns null because of incompleteness of the principal.
+        /// </summary>
         public bool NullResult => code == 1;
 
+        /// <summary>
+        /// A principal is presented but a check operation returns false.
+        /// </summary>
         public bool FalseResult => code == 2;
     }
 }

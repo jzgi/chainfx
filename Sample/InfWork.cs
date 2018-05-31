@@ -43,7 +43,7 @@ namespace Samp
         }
     }
 
-    [Ui("资讯管理")]
+    [Ui("资讯")]
     public class AdmInfWork : InfWork<AdmInfVarWork>
     {
         public AdmInfWork(WorkConfig cfg) : base(cfg)

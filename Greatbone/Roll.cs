@@ -3,7 +3,7 @@
 namespace Greatbone
 {
     /// <summary>
-    /// A lightweight alternative to List<T>. The internal array is created on demand.
+    /// A lightweight alternative to List. The internal array is created on demand.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public struct Roll<T>

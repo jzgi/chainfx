@@ -8,10 +8,13 @@ namespace Samp
     /// </summary>
     public class Cash : IData
     {
+        ///
         public static readonly Cash Empty = new Cash();
 
+        ///
         public const byte ID = 1;
 
+        ///
         public static readonly Map<short, string> Codes = new Map<short, string>
         {
             {11, "销售收入"},
@@ -33,6 +36,7 @@ namespace Samp
         internal decimal pay;
         internal string creator;
 
+        ///
         public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & ID) == ID)
@@ -48,6 +52,7 @@ namespace Samp
             s.Get(nameof(creator), ref creator);
         }
 
+        ///
         public void Write(ISink s, byte proj = 0x0f)
         {
             if ((proj & ID) == ID)
