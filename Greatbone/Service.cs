@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Greatbone
@@ -51,15 +52,19 @@ namespace Greatbone
             id = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
 
             // init the file-based logger
-            LoggerFactory factory = new LoggerFactory();
-            factory.AddProvider(this);
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
-            FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write);
-            logWriter = new StreamWriter(fs, Encoding.UTF8, 1024 * 4, false) {AutoFlush = true};
+            FileStream stream = new FileStream(file, FileMode.Append, FileAccess.Write);
+            logWriter = new StreamWriter(stream, Encoding.UTF8, 4096, false)
+            {
+                AutoFlush = true
+            };
 
             // init the embedded server
-            KestrelServerOptions options = new KestrelServerOptions();
-            server = new KestrelServer(Options.Create(options), ServiceUtility.Factory, factory);
+            var options = Options.Create(new KestrelServerOptions());
+            var loggerf = new LoggerFactory();
+            loggerf.AddProvider(this);
+            server = new KestrelServer(options, ServiceUtility.TransportFactory, loggerf);
+
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
             {
@@ -345,7 +350,7 @@ namespace Greatbone
 
         static readonly string[] LVL = {"TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "};
 
-        public void Log<T>(LogLevel level, EventId eid, T state, Exception exception, Func<T, Exception, string> formatter)
+        public void Log<T>(LogLevel level, EventId eid, T state, Exception except, Func<T, Exception, string> formatter)
         {
             if (!IsEnabled(level))
             {
@@ -363,15 +368,15 @@ namespace Greatbone
 
             if (formatter != null) // custom format
             {
-                var msg = formatter(state, exception);
+                var msg = formatter(state, except);
                 logWriter.WriteLine(msg);
             }
             else // fixed format
             {
                 logWriter.WriteLine(state.ToString());
-                if (exception != null)
+                if (except != null)
                 {
-                    logWriter.WriteLine(exception.StackTrace);
+                    logWriter.WriteLine(except.StackTrace);
                 }
             }
         }
@@ -389,15 +394,15 @@ namespace Greatbone
         //
         // RESPONSE CACHE
 
-        internal void TryCacheUp(WebContext ac)
+        internal void TryCacheUp(WebContext wc)
         {
-            if (ac.GET)
+            if (wc.GET)
             {
-                if (!ac.InCache && ac.Public == true && Resp.IsCacheable(ac.Status))
+                if (!wc.InCache && wc.Public == true && Resp.IsCacheable(wc.Status))
                 {
-                    var re = new Resp(ac.Status, ac.Content, ac.MaxAge, Environment.TickCount);
-                    cache.AddOrUpdate(ac.Uri, re, (k, old) => re.MergeWith(old));
-                    ac.InCache = true;
+                    var re = new Resp(wc.Status, wc.Content, wc.MaxAge, Environment.TickCount);
+                    cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
+                    wc.InCache = true;
                 }
             }
         }

@@ -4,7 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
@@ -19,7 +20,7 @@ namespace Greatbone
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
-        internal static readonly SocketTransportFactory Factory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
+        internal static readonly ITransportFactory TransportFactory = new LibuvTransportFactory(Options.Create(new LibuvTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
         static readonly List<Service> services = new List<Service>(8);
 
@@ -51,7 +52,7 @@ namespace Greatbone
             ConstructorInfo ci = typ.GetConstructor(new[] {typeof(ServiceConfig)});
             if (ci == null)
             {
-                throw new ServiceException(typ + " missing ServiceContext");
+                throw new ServiceException(typ + " missing ServiceConfig");
             }
 
             S inst = (S) ci.Invoke(new object[] {cfg});
@@ -135,7 +136,6 @@ namespace Greatbone
                 {
                     return;
                 }
-
                 stopping.Cancel(false);
             }
             catch (Exception)
@@ -153,7 +153,6 @@ namespace Greatbone
                 {
                     return;
                 }
-
                 started.Cancel(false);
             }
             catch (Exception)
@@ -171,7 +170,6 @@ namespace Greatbone
                 {
                     return;
                 }
-
                 stopped.Cancel(false);
             }
             catch (Exception)
