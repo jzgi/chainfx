@@ -5,14 +5,14 @@ namespace Greatbone
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="flow"></param>
-    /// <returns>the last dataid that has been received and handled</returns>
-    public delegate long FlowDelegate(Flow flow);
+    /// <param name="pack"></param>
+    /// <returns>the last eventid that has been received and handled</returns>
+    public delegate int EventHandler(EventPack pack);
 
     /// <summary>
     /// The pack of a set of recent events.
     /// </summary>
-    public class Flow : ISource
+    public class EventPack : ISource
     {
         byte[] buffer;
 
@@ -20,7 +20,7 @@ namespace Greatbone
 
         int pos;
 
-        public Flow(ArraySegment<byte> bytea)
+        public EventPack(ArraySegment<byte> bytea)
         {
             this.buffer = bytea.Array;
             this.length = bytea.Count;

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Greatbone
@@ -27,14 +26,14 @@ namespace Greatbone
         // the embedded server
         readonly KestrelServer server;
 
-        // configured clients to peers
+        // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 
-        // the publishes of data flows
-        readonly FlowPub[] pubs;
+        // the publishes of data event sources
+        readonly EventPub[] pubs;
 
         // the subscribes of data flows
-        List<FlowSub> subs;
+        List<EventSub> subs;
 
         // the data flow polling schesuler thread
         Thread scheduler;
@@ -91,7 +90,7 @@ namespace Greatbone
             }
 
             // init data flow publishes
-            Roll<FlowPub> roll = new Roll<FlowPub>();
+            Roll<EventPub> roll = new Roll<EventPub>();
             using (var dc = NewDbContext())
             {
                 // tables/views with names in form of pub_* and the pub_id column 
@@ -99,7 +98,7 @@ namespace Greatbone
                 while (dc.Next())
                 {
                     dc.Let(out string tname);
-                    roll.Add(new FlowPub(tname));
+                    roll.Add(new EventPub(tname));
                 }
             }
             pubs = roll.ToArray();
@@ -131,7 +130,7 @@ namespace Greatbone
 
         public Map<string, Client> Clients => clients;
 
-        public List<FlowSub> Subs => subs;
+        public List<EventSub> Subs => subs;
 
         public string Describe()
         {
@@ -282,7 +281,7 @@ namespace Greatbone
         }
 
         //
-        // CLUSTER
+        // data event
 
         internal void Poll(WebContext wc)
         {
@@ -292,13 +291,13 @@ namespace Greatbone
             int? limit = wc.HeaderInt("X-Limit");
             using (var dc = NewDbContext())
             {
-                dc.Query(pub.Sql, p => p.Set(x_id.Value).Set(limit.Value));
+//                dc.Query(pub.Sql, p => p.Set(x_id.Value).Set(limit.Value));
                 var cnt = dc.Dump();
                 wc.Give(200, cnt);
             }
         }
 
-        public void Subscribe(string peering, string flow, FlowDelegate handler)
+        public void Subscribe(string peering, string flow, EventHandler handler)
         {
             for (int i = 0; i < clients.Count; i++)
             {
@@ -307,9 +306,9 @@ namespace Greatbone
                 {
                     if (subs == null)
                     {
-                        subs = new List<FlowSub>(8);
+                        subs = new List<EventSub>(8);
                     }
-                    subs.Add(new FlowSub(pid, flow, handler));
+                    subs.Add(new EventSub(pid, flow, handler));
                 }
             }
         }

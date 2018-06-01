@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Greatbone
 {
-    public class FlowContent : HttpContent, IContent, ISink
+    public class EventPackContent : HttpContent, IContent, ISink
     {
         // NOTE: HttpResponseStream doesn't have internal buffer
         byte[] bytebuf;
@@ -14,13 +14,13 @@ namespace Greatbone
         // number of bytes or chars
         int count;
 
-        public FlowContent(int capacity)
+        public EventPackContent(int capacity)
         {
             bytebuf = BufferUtility.GetByteBuffer(capacity);
             count = 0;
         }
 
-        public string Type => "application/x-flow";
+        public string Type => "application/x-event-pack";
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -158,7 +158,7 @@ namespace Greatbone
             return true;
         }
 
-        public ArraySegment<byte> ToByteAs()
+        public ArraySegment<byte> ToBytea()
         {
             return new ArraySegment<byte>(bytebuf, 0, count);
         }

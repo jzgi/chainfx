@@ -1327,7 +1327,7 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new FlowContent(512 * 1024);
+            var cnt = new EventPackContent(512 * 1024);
             cnt.PutFrom(this);
             return cnt;
         }
