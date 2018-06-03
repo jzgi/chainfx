@@ -66,7 +66,7 @@ namespace Samp
 
         public (string, string) Key => (orgid, name);
 
-        public bool GroupWith((string, string) akey)
+        public bool GroupAs((string, string) akey)
         {
             return orgid == akey.Item1;
         }

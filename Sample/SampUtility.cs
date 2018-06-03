@@ -263,7 +263,7 @@ namespace Samp
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
             h.T("</div>");
-            h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//ord/\">我的订单</a>");
+            h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//ord/\">查看订单</a>");
             h.T("</form>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

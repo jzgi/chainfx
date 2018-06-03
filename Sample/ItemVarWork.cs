@@ -54,7 +54,7 @@ namespace Samp
         }
 
         [User]
-        [Ui("购买"), Tool(ButtonOpen), Item('A')]
+        [Ui("购买"), Tool(ButtonPickOpen, size: 2), Item('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;
@@ -65,11 +65,16 @@ namespace Samp
             short num;
             if (wc.GET)
             {
+                int oprid = wc.Query[nameof(oprid)];
                 wc.GivePane(200, h =>
                 {
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
+                        if (oprid > 0)
+                        {
+                            h.HIDDEN(nameof(oprid), oprid);
+                        }
                         if (dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
                         {
                             // show addr inputs for order creation
@@ -105,6 +110,7 @@ namespace Samp
                     {
                         const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         var f = await wc.ReadAsync<Form>();
+                        string oprid = f[nameof(oprid)];
                         var o = new Order
                         {
                             orgid = orgid,

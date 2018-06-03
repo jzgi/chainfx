@@ -24,10 +24,6 @@ namespace Samp
 
             Create<AdmWork>("adm"); // administrator
 
-            City.All = DataUtility.FileToArray<City>(GetFilePath("$cities.json"));
-
-            Register(() => DataUtility.FileToArray<Lesson>(GetFilePath("$lessons.json")), 3600 * 8);
-
             Register(delegate
                 {
                     using (var dc = NewDbContext())
@@ -194,8 +190,6 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    h.ALERT("　　这里所报告的都是客观存在的事实真相，且假以良知、耐心和洞察力，您就一定能像我们一样认知到这关于生命和敬虔的奥秘。");
-
                     h.GRID(lessons, o =>
                     {
                         // h.T("<div class=\"uk-inline\">");
@@ -210,36 +204,57 @@ namespace Samp
 
         /// Returns a home page pertaining to a related city
         /// We are forced to put auth check here because weixin auth does't work in iframe
-//        [CityId]
+//        [City]
         [User(false)]
         public void list(WebContext wc)
         {
-            string cityid = wc.Query[nameof(cityid)];
-            if (string.IsNullOrEmpty(cityid))
+            var orgs = wc.Service.Obtain<Map<string, Org>>();
+            var cities = orgs.Heads();
+
+            // check if bind to a operator
+            Org[] shops = null;
+            string oprat = null;
+            string city = null;
+            int oprid = wc.Query[nameof(oprid)];
+            if (oprid > 0)
             {
-                cityid = City.All?[0].id;
+                using (var dc = NewDbContext())
+                {
+                    oprat = (string) dc.Scalar("SELECT oprat FROM users WHERE id = @1", (p) => p.Set(oprid));
+                }
+                var shop = orgs[oprat];
+                shops = new[] {shop};
+                city = oprat.Substring(0, 2);
+            }
+            else
+            {
+                city = wc.Query[nameof(city)];
+                if (string.IsNullOrEmpty(city))
+                {
+                    city = "NC";
+                }
+                shops = orgs.GroupFor(city, false);
             }
 
-            var cityorgs = Obtain<Map<string, Org>>().FindGroup(cityid);
             var items = Obtain<Map<(string, string), Item>>();
 
             wc.GivePage(200, h =>
                 {
-                    h.TOPBAR_().SELECT(nameof(cityid), cityid, City.All, refresh: true)._TOPBAR();
-                    h.BOARD(cityorgs, o =>
+                    h.TOPBAR_().SELECT(nameof(city), city, cities, refresh: true)._TOPBAR();
+                    h.BOARD(shops, o =>
                         {
                             h.T("<section class=\"uk-card-header org-header\">");
                             h.T("<h2>").T(o.name).T("</h2>");
                             if (o.oprtel != null)
                             {
-                                //                                h.BADGE_LINK( "/a/", "commenting");
+//                                h.BADGE( "/a/", "commenting");
 //                                h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
                             }
                             h.P(o.descr);
                             h.P_().T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
 
                             h.T("</section>");
-                            var ois = items.FindGroup((o.id, null));
+                            var ois = items.GroupFor((o.id, null));
                             h.LIST(ois, oi =>
                             {
                                 h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.orgid).T("/").T(oi.name).T("/icon")._ICO();
@@ -247,8 +262,11 @@ namespace Samp
                                 h.T("<h3>").T(oi.name).T("</h3>");
                                 h.P(oi.descr);
                                 h.ROW_();
-                                h.P_(w: 0x23).T("<em>￥").T(oi.price).T("</em>／").T(oi.unit)._P();
+                                h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
+                                h.FORM_();
+                                h.HIDDEN(nameof(oprid), oprid);
                                 h.TOOL(nameof(SampItemVarWork.buy));
+                                h._FORM();
                                 h._ROW();
                                 h._COL();
                             }, "uk-card-body uk-padding-remove");

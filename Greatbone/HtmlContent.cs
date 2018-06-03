@@ -221,6 +221,18 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent article_(string @class)
+        {
+            Add("<article>");
+            return this;
+        }
+
+        public HtmlContent _article()
+        {
+            Add("</article>");
+            return this;
+        }
+
         public HtmlContent ROW_(byte w = 0x11)
         {
             Add("<div class=\"uk-row");
@@ -1455,12 +1467,14 @@ namespace Greatbone
             Add("</main>");
         }
 
-        void OnClickDialog(byte mode, bool pick, string tip)
+        void OnClickDialog(byte mode, bool pick, byte size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
             Add(",");
             Add(pick);
+            Add(",");
+            Add(size);
             Add(",'");
             Add(tip);
             Add("');\"");
@@ -1614,15 +1628,15 @@ namespace Greatbone
             }
             else if (tool.HasPrompt)
             {
-                OnClickDialog(2, tool.MustPick, prc.Tip);
+                OnClickDialog(2, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasShow)
             {
-                OnClickDialog(4, tool.MustPick, prc.Tip);
+                OnClickDialog(4, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasOpen)
             {
-                OnClickDialog(8, tool.MustPick, prc.Tip);
+                OnClickDialog(8, tool.MustPick, tool.Size, prc.Tip);
             }
             else if (tool.HasScript)
             {

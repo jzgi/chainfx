@@ -15,6 +15,6 @@ namespace Greatbone
         /// </summary>
         /// <param name="akey"></param>
         /// <returns></returns>
-        bool GroupWith(K akey);
+        bool GroupAs(K akey);
     }
 }

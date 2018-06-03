@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Greatbone;
 using static Samp.WeiXinUtility;
-using static Greatbone.Modal;
 
 namespace Samp
 {

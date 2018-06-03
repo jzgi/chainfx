@@ -83,7 +83,9 @@ namespace Samp
 
         public string Key => id;
 
-        public bool GroupWith(string akey)
+        public override string ToString() => name;
+
+        public bool GroupAs(string akey)
         {
             return StrUtility.Compare(id, akey, 2);
         }

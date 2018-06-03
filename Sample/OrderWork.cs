@@ -118,7 +118,7 @@ namespace Samp
             }
         }
 
-        [Ui("历史记录"), Tool(AOpen)]
+        [Ui("查看以往订单"), Tool(AOpen)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];

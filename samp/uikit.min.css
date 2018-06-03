@@ -60,7 +60,7 @@ strong {
     /* 2 */
     font-family: Consolas, monaco, monospace;
     /* 3 */
-    color: #FD9840;
+    color: #e36209;
     white-space: nowrap;
     padding: 2px 6px;
     background: #f8f8f8;
@@ -68,7 +68,8 @@ strong {
 
 em {
     font-style: normal;
-    color: #FD9840;
+    font-size: 1.25rem;
+    color: #e36209;
 }
 
 ins {
@@ -443,17 +444,10 @@ a.uk-link-reset:hover,
     border-bottom: 1px solid #e5e5e5;
 }
 
-/* Bullet
- ========================================================================== */
 .uk-heading-bullet {
     position: relative;
 }
 
-/*
- * 1. Using `inline-block` to make it work with text alignment
- * 2. Center vertically
- * 3. Style
- */
 .uk-heading-bullet::before {
     content: "";
     /* 1 */
@@ -468,22 +462,14 @@ a.uk-link-reset:hover,
     border-left: 5px solid #e5e5e5;
 }
 
-/* Line
- ========================================================================== */
-/*
- * Clip the child element
- */
 .uk-heading-line {
     overflow: hidden;
 }
 
-/*
- * Extra markup is needed to make it work with text align
- */
 .uk-heading-line > * {
     display: inline-block;
     position: relative;
-    color: #FD9840;
+    color: #e36209;
     border: 1px solid #23C1BB;
     padding: 4px;
     border-radius: 25px;
@@ -520,8 +506,6 @@ a.uk-link-reset:hover,
     margin-top: 20px;
 }
 
-/* Icon
- ========================================================================== */
 .uk-divider-icon {
     position: relative;
     height: 20px;
@@ -732,7 +716,7 @@ a.uk-link-reset:hover,
     vertical-align: bottom;
     font-size: 0.875rem;
     font-weight: normal;
-    color: #FD9840;
+    color: #e36209;
     text-transform: uppercase;
 }
 
@@ -1761,8 +1745,9 @@ button.uk-button {
 }
 
 .uk-button-default {
-    border: 1px solid #23C1BB;
-    color: #23C1BB;
+    background-color: inherit;
+    border: 1px solid #4cabb1;
+    color: #4cabb1;
     line-height: 26px;
     height: 28px;
 }
@@ -2528,32 +2513,18 @@ button.uk-button {
     }
 }
 
-/* Style modifiers
- ========================================================================== */
-/*
- * Default
- */
 .uk-tile-default {
     background: #fff;
 }
 
-/*
- * Muted
- */
 .uk-tile-muted {
     background: #f8f8f8;
 }
 
-/*
- * Primary
- */
 .uk-tile-primary {
     background: #007aff;
 }
 
-/*
- * Secondary
- */
 .uk-tile-secondary {
     background: #222;
 }
@@ -2576,16 +2547,16 @@ button.uk-button {
     width: 100%;
 }
 
-.uk-card-body ul {
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+ul.uk-list-divider {
+    border-top: 1px solid #69c7ad;
+    border-bottom: 1px solid #69c7ad;
     width: 100%;
     padding: 0;
     background-color: #fff;
 }
 
-.uk-card-body > li:nth-child(n+2) {
-    border-top: 1px solid #e5e5e5;
+ul.uk-list-divider > li:nth-child(n+2) {
+    border-top: 1px solid #69c7ad;
 }
 
 .uk-card-header {
@@ -2625,8 +2596,11 @@ button.uk-button {
 .uk-card-default {
     background: #fff;
     margin: 12px 6px;
-    border-bottom: 1px solid #dcdcdc;
-    border-top: 1px solid #dcdcdc;
+    border: 1px solid #dcdcdc;
+}
+
+.uk-card-default .uk-card-body {
+    background-color: #fafafa;
 }
 
 .uk-card .uk-card-title {
@@ -2638,25 +2612,21 @@ button.uk-button {
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
 
-.uk-card .uk-card-header {
-    border-bottom: 1px solid #23C1BB;
-}
-
-.uk-card .uk-card-footer {
-    border-top: 1px solid #f2f2f2;
-}
 
 /*
  * Primary
  */
 .uk-card-primary {
-    background-color: #fff;
     margin: 12px 0;
-    border-bottom: 1px solid #dcdcdc;
-    border-top: 1px solid #dcdcdc;
+    background-color: #fff;
 }
 
-.uk-card-primary .uk-card-title {
+.uk-card-primary > .uk-card-header {
+    background-color: #69c7ad;
+    color: #fff;
+}
+
+.uk-card-primary > .uk-card-header > * {
     color: #fff;
 }
 
@@ -3027,9 +2997,9 @@ button.uk-button {
 }
 
 .uk-badge-warning {
-    color: #FD9840;
-    border-top: 1px solid #FD9840;
-    border-bottom: 1px solid #FD9840;
+    color: #e36209;
+    border-top: 1px solid #e36209;
+    border-bottom: 1px solid #e36209;
 }
 
 .uk-badge-danger {
@@ -3043,7 +3013,7 @@ button.uk-button {
 .uk-label {
     text-transform: uppercase;
     white-space: nowrap;
-    color: #FD9840;
+    color: #e36209;
     margin-right: 0.5rem;
     background-color: #f2f2f2;
     padding: 0 8px;
@@ -4833,14 +4803,12 @@ ul.uk-nav-sub {
     transition: opacity 0.15s linear;
 }
 
-/* Phone landscape and bigger */
 @media (min-width: 640px) {
     .uk-modal {
         padding: 40px 30px;
     }
 }
 
-/* Tablet landscape and bigger */
 @media (min-width: 960px) {
     .uk-modal {
         padding-left: 40px;
@@ -4867,8 +4835,6 @@ ul.uk-nav-sub {
 .uk-modal-dialog {
     position: relative;
     box-sizing: border-box;
-    margin: 44px auto;
-    width: 600px;
     background: #fff;
     opacity: 0;
     transform: translateY(-100px);
@@ -4884,12 +4850,6 @@ ul.uk-nav-sub {
     transform: translateY(0);
 }
 
-/* Size modifier
- ========================================================================== */
-/*
- * Container size
- * Take the same size as the Container component
- */
 .uk-modal-container .uk-modal-dialog {
     width: 1200px;
 }
@@ -4899,7 +4859,6 @@ ul.uk-nav-sub {
     background: none;
 }
 
-/* 2 */
 .uk-modal-full .uk-modal-dialog {
     margin: 0;
     width: 100%;
@@ -4909,7 +4868,6 @@ ul.uk-nav-sub {
     height: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 4px 2px #dcdcdc;
 }
 
 .uk-modal-full .uk-modal-body {
@@ -4920,6 +4878,59 @@ ul.uk-nav-sub {
     transform: translateY(0);
     flex: 1;
 }
+
+
+.uk-modal-small {
+    padding: 0;
+}
+
+.uk-modal-small .uk-modal-dialog {
+    position: relative;
+    margin: 25% auto;
+    height: 50%;
+    max-height: 400px;
+    width: 80%;
+    max-width: 400px;
+    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+}
+
+.uk-modal-small .uk-modal-body {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    transform: translateY(0);
+    flex: 1;
+}
+
+
+.uk-modal-large {
+    padding: 0;
+}
+
+.uk-modal-large .uk-modal-dialog {
+    position: relative;
+    margin: 10% auto;
+    height: 80%;
+    max-height: 800px;
+    width: 90%;
+    max-width: 800px;
+    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+}
+
+.uk-modal-large .uk-modal-body {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    transform: translateY(0);
+    flex: 1;
+}
+
 
 .uk-modal-side {
     padding: 0;
@@ -4939,7 +4950,7 @@ ul.uk-nav-sub {
     height: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 4px 2px #dcdcdc;
+    box-shadow: 0 0 6px 3px gray;
 }
 
 .uk-modal-side .uk-modal-body {
@@ -4969,7 +4980,7 @@ ul.uk-nav-sub {
     transform: translateY(0);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 4px 2px #dcdcdc;
+    box-shadow: 0 0 6px 3px gray;
 }
 
 .uk-modal-half .uk-modal-body {
@@ -4992,7 +5003,7 @@ ul.uk-nav-sub {
     height: 2.75rem;
     background: #fff;
     box-sizing: border-box;
-    border-bottom: 1px solid #dcdcdc;
+    background-color: #f2f2f2;
 }
 
 .uk-modal-footer {
@@ -5002,7 +5013,7 @@ ul.uk-nav-sub {
     height: 2.75rem;
     background: #fff;
     box-sizing: border-box;
-    border-top: 1px solid #dcdcdc;
+    background-color: #f2f2f2;
 }
 
 /*

@@ -7,14 +7,15 @@ namespace Samp
     /// A before filter that ensures city is resolved and given in the URL.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class CityIdAttribute : Attribute, IBefore
+    public class CityAttribute : Attribute, IBefore
     {
         public bool Do(WebContext wc)
         {
             string cityid = wc.Query[nameof(cityid)];
             if (cityid == null) // no cityid given then return a geolocator page 
             {
-                string json = DataUtility.ToString(City.All);
+                var orgs = wc.Service.Obtain<Map<string, Org>>();
+                string json = DataUtility.ToString(orgs.Heads());
                 // give out a geolocation page
                 //
                 HtmlContent h = new HtmlContent(wc, true);

@@ -66,7 +66,7 @@ namespace Greatbone
             return null;
         }
 
-        public V[] FindGroup(K key, bool inclusive = true)
+        public V[] GroupFor(K key, bool inclusive = true)
         {
             string str = key as string;
             // iterate through group heads
@@ -75,11 +75,10 @@ namespace Greatbone
             {
                 int tail = entries[p].tail;
                 if (tail == -1) break;
-
                 // if meet the target group head
                 if (entries[p].value is IGroupKeyable<K> gkeyable)
                 {
-                    if (gkeyable.GroupWith(key))
+                    if (gkeyable.GroupAs(key))
                     {
                         int ret = inclusive ? tail - p + 1 : tail - p;
                         V[] arr = new V[ret];
@@ -95,7 +94,7 @@ namespace Greatbone
             return null;
         }
 
-        public V[] GetHeads()
+        public V[] Heads()
         {
             Roll<V> roll = new Roll<V>(16);
             // iterate through group heads
@@ -184,7 +183,7 @@ namespace Greatbone
             if (value is IGroupKeyable<K> gkeyable)
             {
                 // compare to current head
-                if (head == -1 || !gkeyable.GroupWith(entries[head].key))
+                if (head == -1 || !gkeyable.GroupAs(entries[head].key))
                 {
                     head = idx;
                 }
@@ -370,7 +369,7 @@ namespace Greatbone
                 {"010303", "cox"},
             };
 
-            var r = m.FindGroup("0103");
+            var r = m.GroupFor("0103");
         }
     }
 }
