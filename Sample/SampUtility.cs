@@ -9,6 +9,8 @@ namespace Samp
 
         public const string NETADDR = "http://144000.tv";
 
+        public const string JOINADDR = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect";
+
         // an invisible/unprintable char
         public const char SEPCHAR = '\u200f';
 
@@ -263,6 +265,7 @@ namespace Samp
         public static HtmlContent _TOPBAR(this HtmlContent h)
         {
             h.T("</div>");
+            h.T("<a class=\"uk-button uk-button-default\" href=\"").T(JOINADDR).T("\">关注公众号</a>");
             h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//ord/\">查看订单</a>");
             h.T("</form>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
@@ -271,7 +274,7 @@ namespace Samp
 
         public static HtmlContent A_POI(this HtmlContent h, double x, double y, string title, string addr, string tel = null)
         {
-            h.T("<a href=\"http://apis.map.qq.com/uri/v1/marker?marker=coord:").T(y).T(',').T(x).T(";title:").T(title).T(";addr:").T(addr);
+            h.T("<a class=\"uk-label\" href=\"http://apis.map.qq.com/uri/v1/marker?marker=coord:").T(y).T(',').T(x).T(";title:").T(title).T(";addr:").T(addr);
             if (tel != null)
             {
                 h.T(";tel:").T(tel);

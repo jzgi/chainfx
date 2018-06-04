@@ -79,14 +79,14 @@ namespace Samp
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("创建订单，填写收货地址");
-                            h.TEXT(nameof(Order.custaddr), prin.addr, "地址", max: 20, required: true);
-                            h.LI_().LABEL("姓名").TEXT(nameof(Order.custname), prin.name, max: 4, min: 2, required: true).LABEL("电话").TEL(nameof(Order.custtel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
+                            h.TEXT(nameof(Order.custaddr), prin.addr, "地　址", max: 20, required: true);
+                            h.LI_().LABEL("姓　名").TEXT(nameof(Order.custname), prin.name, max: 4, min: 2, required: true).LABEL("电　话").TEL(nameof(Order.custtel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                             h._FIELDSET();
                         }
                         // quantity
                         h.FIELDSET_("加入货品");
-                        h.LI_("货品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
-                        h.LI_("数量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
+                        h.LI_("货　品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
+                        h.LI_("数　量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
                         h.ACTBAR_().BUTTON("确定")._ACTBAR();

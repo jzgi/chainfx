@@ -6,7 +6,7 @@ html {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
-    color: #666;
+    color: #333;
 }
 
 body {
@@ -1218,12 +1218,10 @@ button.uk-icon:not(:disabled) {
     width: 100%;
     bottom: 0;
     font-size: 1rem;
-    background: #fff;
     display: flex;
     box-sizing: border-box;
     justify-content: space-around;
     align-items: center;
-    border-top: 1px solid #dcdcdc;
 }
 
 
@@ -1719,7 +1717,7 @@ select.uk-form-width-xsmall {
 }
 
 a.uk-button {
-    border-radius: 0;
+    border-radius: 0 25px 25px 0;
 }
 
 button.uk-button {
@@ -1763,9 +1761,7 @@ button.uk-button {
 /* OnClick + Active */
 .uk-button-default:active,
 .uk-button-default.uk-active {
-    background-color: transparent;
-    color: #333;
-    border-color: #999999;
+    border-radius: 0;
 }
 
 .uk-button-primary {
@@ -1784,8 +1780,7 @@ button.uk-button {
 
 .uk-button-primary:active,
 .uk-button-primary.uk-active {
-    background-color: #23C1BB;
-    color: #fff;
+    border-radius: 0;
 }
 
 .uk-button-secondary {
@@ -1805,8 +1800,7 @@ button.uk-button {
 /* OnClick + Active */
 .uk-button-secondary:active,
 .uk-button-secondary.uk-active {
-    background-color: #080808;
-    color: #fff;
+    border-radius: 0;
 }
 
 /*
@@ -1828,8 +1822,7 @@ button.uk-button {
 
 .uk-button-danger:active,
 .uk-button-danger.uk-active {
-    background-color: #ec2147;
-    color: #fff;
+    border-radius: 0;
 }
 
 .uk-button-default:disabled,
@@ -1884,7 +1877,7 @@ button.uk-button {
 
 .uk-button-text:active,
 .uk-button-text.uk-active {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #4cabb1;
 }
 
 .uk-button-text:disabled {
@@ -1910,7 +1903,7 @@ button.uk-button {
 
 .uk-button-link:active,
 .uk-button-link.uk-active {
-    border: 1px solid #23C1BB;
+    border: 1px solid #4cabb1;
 }
 
 /* Disabled */
@@ -2990,6 +2983,12 @@ ul.uk-list-divider > li:nth-child(n+2) {
     border-bottom: 1px solid #23C1BB;
 }
 
+.uk-badge-secondary {
+    color: #fff;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
 .uk-badge-success {
     color: #4cd964;
     border-top: 1px solid #4cd964;
@@ -3009,16 +3008,36 @@ ul.uk-list-divider > li:nth-child(n+2) {
 }
 
 
-
 .uk-label {
     text-transform: uppercase;
     white-space: nowrap;
-    color: #e36209;
-    margin-right: 0.5rem;
-    background-color: #f2f2f2;
-    padding: 0 8px;
-    border-radius: 25%;
+    color: #fff;
+    background-color: #575b72;
+    padding: 0 4px;
+    border-radius: 15%;
 }
+
+label.uk-label {
+    margin-right: 0.5rem;
+    color: #e36209;
+    background-color: #f2f2f2;
+}
+
+.uk-label-success {
+    color: #fff;
+    background-color: #69c7ad;
+}
+
+.uk-label-warning {
+    color: #fff;
+    background-color: #e36209;
+}
+
+.uk-label-danger {
+    color: #e36209;
+    background-color: #f2f2f2;
+}
+
 
 .uk-overlay {
     padding: 16px 16px;
@@ -4253,7 +4272,7 @@ ul.uk-nav-sub {
     display: block;
     text-align: center;
     padding: 6px 12px;
-    color: #999;
+    color: #666;
     border-bottom: 2px solid transparent;
     text-transform: uppercase;
     transition: color 0.1s ease-in-out;
@@ -4261,13 +4280,13 @@ ul.uk-nav-sub {
 
 .uk-tab > * > a:hover,
 .uk-tab > * > a:focus {
-    color: #333;
+    color: black;
     text-decoration: none;
 }
 
 .uk-tab > .uk-active > a {
-    color: #333;
-    border-color: #ff9500;
+    color: black;
+    border-color: #e36209;
 }
 
 .uk-tab > .uk-disabled > a {
@@ -4577,6 +4596,7 @@ ul.uk-nav-sub {
     background-repeat: no-repeat;
     background-position: 50% 50%;
     margin-left: auto;
+    color: #4cabb1;
 }
 
 .uk-accordion-content li {
@@ -4614,7 +4634,7 @@ ul.uk-nav-sub {
     margin-top: 0;
     background-color: #fff;
     padding: 8px;
-    border-top: 1px solid #23C1BB;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-accordion-content::before,
@@ -4886,7 +4906,7 @@ ul.uk-nav-sub {
 
 .uk-modal-small .uk-modal-dialog {
     position: relative;
-    margin: 25% auto;
+    margin: 4rem auto;
     height: 50%;
     max-height: 400px;
     width: 80%;
@@ -4912,7 +4932,7 @@ ul.uk-nav-sub {
 
 .uk-modal-large .uk-modal-dialog {
     position: relative;
-    margin: 10% auto;
+    margin: 2rem auto;
     height: 80%;
     max-height: 800px;
     width: 90%;
@@ -7558,7 +7578,7 @@ iframe.uk-cover {
 }
 
 .uk-background-muted {
-    background-color: #f8f8f8;
+    background-color: #575b72;
 }
 
 .uk-background-primary {

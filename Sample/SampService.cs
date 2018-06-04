@@ -185,7 +185,7 @@ namespace Samp
         /// </summary>
         public void @default(WebContext wc)
         {
-            var lessons = Obtain<Lesson[]>();
+            var lessons = Obtain<Tut[]>();
             wc.GivePage(200, h =>
             {
                 using (var dc = NewDbContext())
@@ -193,9 +193,9 @@ namespace Samp
                     h.GRID(lessons, o =>
                     {
                         // h.T("<div class=\"uk-inline\">");
-                        h.T("<video class=\"uk-width-1-1\" controls playsinline uk-video src=\"http://aliyun.com/").T(o.zh).T("\" type=\"video/mp4\">");
+                        h.T("<video class=\"uk-width-1-1\" controls playsinline uk-video src=\"http://aliyun.com/").T(o.id).T("\" type=\"video/mp4\">");
                         h.T("</video>");
-                        h.T("<div>").T(o.zh).T("</div>");
+                        h.T("<div>").T(o.id).T("</div>");
                         // h.T("</div>");
                     });
                 }
@@ -216,11 +216,13 @@ namespace Samp
             string oprat = null;
             string city = null;
             int oprid = wc.Query[nameof(oprid)];
+            string oprname = null;
             if (oprid > 0)
             {
                 using (var dc = NewDbContext())
                 {
-                    oprat = (string) dc.Scalar("SELECT oprat FROM users WHERE id = @1", (p) => p.Set(oprid));
+                    dc.Query1("SELECT name, oprat FROM users WHERE id = @1", (p) => p.Set(oprid));
+                    dc.Let(out oprname).Let(out oprat);
                 }
                 var shop = orgs[oprat];
                 shops = new[] {shop};
@@ -245,10 +247,13 @@ namespace Samp
                         {
                             h.T("<section class=\"uk-card-header org-header\">");
                             h.T("<h2>").T(o.name).T("</h2>");
-                            if (o.oprtel != null)
+                            if (oprname != null)
                             {
-//                                h.BADGE( "/a/", "commenting");
-//                                h.BADGE_LINK("tel:" + o.oprtel + "#mp.weixin.qq.com", "receiver");
+                                h.T("<span class=\"uk-badge uk-badge-secondary uk-align-right\">").T(oprname).T("</span>");
+                            }
+                            else if (o.oprtel != null)
+                            {
+                                h.T("<a class=\"uk-icon-link uk-align-right\" href=\"tel:#mp.weixin.qq.com@").T(o.oprtel).T("\" uk-icon=\"receiver\"></a>");
                             }
                             h.P(o.descr);
                             h.P_().T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
@@ -280,9 +285,9 @@ namespace Samp
         }
 
         /// <summary>
-        /// WCPay notify, placed here due to non-authentic context.
+        /// WCPay notify, without authentic context.
         /// </summary>
-        public async Task paynotify(WebContext ac)
+        public async Task onpay(WebContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
             if (!OnNotified(xe, out var trade_no, out var cash))
@@ -303,12 +308,11 @@ namespace Samp
                 }
                 dc.Let(out orgid).Let(out custname).Let(out custaddr);
             }
-
-            // send messages
-            var towx = orgs[orgid].oprwx;
-            if (towx != null)
+            // send weixin message
+            var oprwx = orgs[orgid]?.oprwx;
+            if (oprwx != null)
             {
-                await PostSendAsync(towx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");
+                await PostSendAsync(oprwx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");
             }
             // return xml to WCPay server
             XmlContent x = new XmlContent(true, 1024);

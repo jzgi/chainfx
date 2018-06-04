@@ -18,8 +18,8 @@ namespace Samp
 
         public static readonly Map<short, string> Oprs = new Map<short, string>
         {
-            {OPR, "基础"},
-            {OPRMEM, "成员"},
+            {OPR, "销售"},
+            {OPRMEM, "内务"},
             {OPRMGR, "经理"},
         };
 
@@ -29,7 +29,7 @@ namespace Samp
         internal string tel;
         internal string addr;
         public string credential;
-        internal int score;
+        internal int credit;
         internal int refid; // referee id
         internal string oprat;
         internal short opr;
@@ -49,7 +49,7 @@ namespace Samp
             {
                 s.Get(nameof(credential), ref credential);
             }
-            s.Get(nameof(score), ref score);
+            s.Get(nameof(credit), ref credit);
             s.Get(nameof(refid), ref refid);
             if ((proj & LATER) == LATER)
             {
@@ -73,7 +73,7 @@ namespace Samp
             {
                 s.Put(nameof(credential), credential);
             }
-            s.Put(nameof(score), score);
+            s.Put(nameof(credit), credit);
             s.Put(nameof(refid), refid);
             if ((proj & LATER) == LATER)
             {

@@ -1048,7 +1048,7 @@ namespace Greatbone
 
         public HtmlContent _BADGE()
         {
-            Add("</div>");
+            Add("</span>");
             return this;
         }
 

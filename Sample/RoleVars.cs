@@ -43,7 +43,7 @@ namespace Samp
             {
                 dc.Execute("UPDATE users SET refid = @1 WHERE id = @2", p => p.Set(refid).Set(myid));
             }
-            wc.GiveRedirect("https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect");
+            wc.GiveRedirect(SampUtility.JOINADDR);
         }
 
         const string VOIDPASS = "t#0^0z4R4pX7";

@@ -37,7 +37,7 @@ namespace Samp
                 (o.comp ? o.net : o.total),
                 prin.wx,
                 wc.RemoteAddr.ToString(),
-                NETADDR + "/" + nameof(SampService.paynotify),
+                NETADDR + "/" + nameof(SampService.onpay),
                 "粗粮达人-健康产品"
             );
             if (prepay_id != null)
