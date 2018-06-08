@@ -45,7 +45,7 @@ namespace Greatbone
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Authorize)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
         {
             this.cfg = cfg;
 
@@ -129,12 +129,12 @@ namespace Greatbone
         /// </summary>
         /// <param name="keyer"></param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="authorize">to override class-wise Authorize attribute</param>
+        /// <param name="access">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : Work
+        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AccessAttribute access = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -152,7 +152,7 @@ namespace Greatbone
             WorkConfig wc = new WorkConfig(VAR)
             {
                 Ui = ui,
-                Authorize = authorize,
+                Access = access,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -170,11 +170,11 @@ namespace Greatbone
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="authorize">to override class-wise Authorize attribute</param>
+        /// <param name="access">to override class-wise Authorize attribute</param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : Work
+        protected W Create<W>(string name, UiAttribute ui = null, AccessAttribute access = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -197,7 +197,7 @@ namespace Greatbone
             WorkConfig config = new WorkConfig(name)
             {
                 Ui = ui,
-                Authorize = authorize,
+                Access = access,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -309,7 +309,7 @@ namespace Greatbone
 
         internal Work Resolve(ref string relative, WebContext wc)
         {
-            if (!DoAuthorize(wc, out AuthorizeException except)) throw except;
+            if (!CheckAccess(wc, out AccessException except)) throw except;
 
             int slash = relative.IndexOf('/');
             if (slash == -1)
@@ -332,10 +332,10 @@ namespace Greatbone
                 object prinkey = null;
                 if (key.Length == 0) // resolve shortcut
                 {
-                    if (prin == null) throw AuthorizeException.NoPrincipalEx;
+                    if (prin == null) throw AccessException.NoPrincipalEx;
                     if ((prinkey = varwork.GetVariableKey(prin)) == null)
                     {
-                        throw AuthorizeException.FalseResultEx;
+                        throw AccessException.FalseResultEx;
                     }
                 }
 
@@ -351,8 +351,8 @@ namespace Greatbone
         /// </summary>
         /// <param name="rsc">the resource path</param>
         /// <param name="wc">WebContext</param>
-        /// <exception cref="AuthorizeException">Thrown when authorization is required and false is returned by checking</exception>
-        /// <seealso cref="AuthorizeAttribute.Check"/>
+        /// <exception cref="AccessException">Thrown when authorization is required and false is returned by checking</exception>
+        /// <seealso cref="AccessAttribute.Check"/>
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
@@ -386,7 +386,7 @@ namespace Greatbone
                     return;
                 }
 
-                if (!prc.DoAuthorize(wc, out AuthorizeException except)) throw except;
+                if (!prc.CheckAccess(wc, out AccessException except)) throw except;
                 wc.Procedure = prc;
                 // any before filterings
                 if (prc.Before?.Do(wc) == false) goto ProcedureExit;

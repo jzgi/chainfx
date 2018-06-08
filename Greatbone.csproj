@@ -10,7 +10,7 @@
     <PackageId>Greatbone</PackageId>
     <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <Version>3.0</Version>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <Company>Greatbone</Company>
     <RootNamespace>Creatbone</RootNamespace>
   </PropertyGroup>

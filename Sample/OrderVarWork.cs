@@ -23,7 +23,7 @@ namespace Samp
         [Ui("付款"), Tool(ButtonScript), Order('P')]
         public async Task prepay(WebContext wc)
         {
-            var prin = (User) wc.Principal;
+            var prin = (User)wc.Principal;
             int orderid = wc[this];
             Order o;
             using (var dc = NewDbContext())
@@ -50,7 +50,7 @@ namespace Samp
             }
         }
 
-        [Ui("修改"), Tool(AShow, Style.None, 1)]
+        [Ui("修改"), Tool(AShow, Style.None, size: 2)]
         public async Task Upd(WebContext wc, int idx)
         {
             int orderid = wc[this];
@@ -67,7 +67,7 @@ namespace Samp
                         h.FORM_();
                         h.FIELDSET_("购买数量");
                         h.LI_("货品").PIC("/" + o.orgid + "/" + oi.name + "/icon", w: 0x16).SP().T(oi.name)._LI();
-                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.stock, min: (short) 0, step: item.step);
+                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.stock, min: (short)0, step: item.step);
                         h._FIELDSET();
                         h._FORM();
                     });

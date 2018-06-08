@@ -23,7 +23,7 @@ namespace Greatbone
         readonly byte flag;
 
         // access check
-        internal readonly AuthorizeAttribute authorize;
+        internal readonly AccessAttribute access;
 
         // pre- operation
         readonly IBefore before;
@@ -35,7 +35,7 @@ namespace Greatbone
 
         readonly IAfterAsync afterAsync;
 
-        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthorizeAttribute authorize = null)
+        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AccessAttribute access = null)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
             this.capital = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
@@ -55,15 +55,15 @@ namespace Greatbone
             this.tip = ui?.Tip ?? label;
             this.flag = ui?.Flag ?? 0;
             // authorize
-            if (authorize == null)
+            if (access == null)
             {
-                var accs = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), true);
+                var accs = (AccessAttribute[]) attrp.GetCustomAttributes(typeof(AccessAttribute), true);
                 if (accs.Length > 0)
                 {
-                    authorize = accs[0];
+                    access = accs[0];
                 }
             }
-            this.authorize = authorize;
+            this.access = access;
             // filters
             var attrs = attrp.GetCustomAttributes(true);
             for (int i = 0; i < attrs.Length; i++)
@@ -88,7 +88,7 @@ namespace Greatbone
 
         public byte Flag => flag;
 
-        public AuthorizeAttribute Authorize => authorize;
+        public AccessAttribute Access => access;
 
         public IBefore Before => before;
 
@@ -98,28 +98,28 @@ namespace Greatbone
 
         public IAfterAsync AfterAsync => afterAsync;
 
-        public bool HasAuthorize => authorize != null;
+        public bool HasAuthorize => access != null;
 
-        public bool DoAuthorize(WebContext wc, out AuthorizeException except)
+        public bool CheckAccess(WebContext wc, out AccessException except)
         {
             except = null;
-            if (authorize != null)
+            if (access != null)
             {
                 IData prin = wc.Principal;
                 if (prin == null)
                 {
-                    except = AuthorizeException.NoPrincipalEx;
+                    except = AccessException.NoPrincipalEx;
                     return false;
                 }
-                bool? ret = authorize.Check(wc, prin);
+                bool? ret = access.Check(wc, prin);
                 if (ret == null)
                 {
-                    except = AuthorizeException.NullResultEx;
+                    except = AccessException.NullResultEx;
                     return false;
                 }
                 if (!ret.Value)
                 {
-                    except = AuthorizeException.FalseResultEx;
+                    except = AccessException.FalseResultEx;
                 }
                 return ret.Value;
             }

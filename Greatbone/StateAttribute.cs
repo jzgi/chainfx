@@ -3,7 +3,7 @@
 namespace Greatbone
 {
     /// <summary>
-    /// A constraint check annotation to determine the availability of a procedure.
+    /// A constraint check to determine the availability of a procedure.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class StateAttribute : Attribute

@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// To check access to an annotated work or procedure. 
     /// </summary>
-    public class UserAttribute : AuthorizeAttribute
+    public class UserAttribute : AccessAttribute
     {
         // require a ready principal
         readonly bool ready;

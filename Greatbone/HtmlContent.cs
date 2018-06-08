@@ -20,6 +20,8 @@ namespace Greatbone
 
         public override string Type => "text/html; charset=utf-8";
 
+        public WebContext WebCtx => webCtx;
+
         public void AddEsc(string v)
         {
             if (v == null) return;
@@ -1156,13 +1158,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TOOLBAR(string title = null, bool refresh = true)
-        {
-            TOOLBAR_();
-            _TOOLBAR(title, refresh);
-        }
-
-        public HtmlContent TOOLBAR_()
+        public HtmlContent TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
         {
             var prcs = webCtx.Work.Tooled;
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
@@ -1170,17 +1166,14 @@ namespace Greatbone
             for (int i = 0; i < prcs?.Length; i++)
             {
                 var prc = prcs[i];
-                if (!prc.IsCapital)
+                if (!prc.IsCapital && (prc.Flag == 0 || prc.Flag == flag))
                 {
                     PutTool(prc);
                 }
             }
-            return this;
-        }
-
-        public HtmlContent _TOOLBAR(string title = null, bool refresh = true)
-        {
             Add("</div>");
+
+            Add("<div class=\"uk-flex uk-flex-middle\">");
             if (title != null)
             {
                 Add(title);
@@ -1189,6 +1182,7 @@ namespace Greatbone
             {
                 Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             }
+            Add("</div>");
             Add("</form>");
             Add("<div class=\"uk-top-placeholder\"></div>");
             return this;
@@ -1334,7 +1328,7 @@ namespace Greatbone
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
-            Add("<div class=\"uk-card uk-card-default uk-overflow-auto\">");
+            Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             Procedure[] prcs = vw?.Tooled;
             if (head != null)
@@ -1402,38 +1396,6 @@ namespace Greatbone
             Add("</div>");
         }
 
-        public void GRID<D>(D[] arr, Action<D> block, string css = null)
-        {
-            Add("<div class=\"uk-grid uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@xll");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-            Add("\">");
-            if (arr != null)
-            {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
-
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    D obj = arr[i];
-                    stack[level] = obj;
-
-                    Add("<section class=\"uk-text-center uk-padding-small\">");
-                    block(obj);
-                    Add("</section>");
-
-                    stack[level] = null;
-                }
-
-                level--; // exit the level
-            }
-            Add("</div>");
-        }
-
-
         public void BOARD<D>(D[] arr, Action<D> card, string main = null, string article = "uk-card-default")
         {
             Add("<main class=\"uk-board");
@@ -1467,6 +1429,33 @@ namespace Greatbone
             Add("</main>");
         }
 
+        public void GRID<D>(D[] arr, Action<D> card, string article = null)
+        {
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            if (arr != null)
+            {
+                if (stack == null) stack = new object[4]; // init contexts
+                level++; // enter a new level
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    D obj = arr[i];
+                    stack[level] = obj;
+                    Add("<article class=\"uk-card uk-card-default uk-margin-remove uk-padding-small");
+                    if (article != null)
+                    {
+                        Add(' ');
+                        Add(article);
+                    }
+                    Add("\">");
+                    card(obj);
+                    Add("</article>");
+                    stack[level] = null;
+                }
+                level--; // exit the level
+            }
+            Add("</main>");
+        }
+
         void OnClickDialog(byte mode, bool pick, byte size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
@@ -1483,7 +1472,7 @@ namespace Greatbone
         public HtmlContent TOOLPAD(string css = null, byte w = 0x11, byte flag = 0)
         {
             // locate the proper work
-            Add("<form class=\"uk-button-group uk-flex uk-flex-center");
+            Add("<form class=\"uk-button-group");
             Width(w);
             if (css != null)
             {
@@ -1510,7 +1499,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string name, int subscript = -1, string caption = null)
+        public HtmlContent TOOL(string procedure, int subscript = -1, string caption = null)
         {
             // locate the proper work
             Work w = webCtx.Work;
@@ -1518,7 +1507,7 @@ namespace Greatbone
             {
                 w = w.varwork;
             }
-            var prc = w[name];
+            var prc = w[procedure];
             if (prc != null)
             {
                 PutTool(prc, subscript, caption);
@@ -1531,10 +1520,10 @@ namespace Greatbone
             var tool = prc.Tool;
 
             // check procedure's availability
-            bool ok = !tool.Auth || prc.DoAuthorize(webCtx, out _);
+            bool ok = !tool.Auth || prc.CheckAccess(webCtx, out _);
             if (ok && level >= 0)
             {
-                ok = prc.DoState(webCtx, stack, level);
+                ok = prc.CheckState(webCtx, stack, level);
             }
 
             if (tool.IsAnchorTag)
@@ -1824,14 +1813,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent PASSWORD(string name, string val, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent PASSWORD(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             if (label != null) LI_(label);
 
             Add("<input type=\"password\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddEsc(val);
+            AddEsc(v);
             Add("\"");
 
             if (tip != null)
@@ -1935,7 +1924,11 @@ namespace Greatbone
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddPrimitive(v);
+            if (v is short shortv && shortv != 0) Add(shortv);
+            else if (v is int intv && intv != 0) Add(intv);
+            else if (v is long longv && longv != 0) Add(longv);
+            else if (v is decimal decv) Add(decv);
+            else if (v is double doublev) Add(doublev);
             Add("\"");
 
             if (tip != null)
@@ -2330,7 +2323,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, string tip = null, bool required = false, sbyte size = 0, bool refresh = false)
         {
             if (label != null) LI_(label);
 
@@ -2349,9 +2342,11 @@ namespace Greatbone
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
-            if (v == null)
+            if (tip != null)
             {
-                Add("<option disabled selected></option>");
+                Add("<option disabled selected>");
+                Add(tip);
+                Add("</option>");
             }
             if (opt != null)
             {

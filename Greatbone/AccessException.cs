@@ -3,19 +3,19 @@ using System;
 namespace Greatbone
 {
     /// <summary>
-    /// Thrown to indicate an failure of authorization check to a certain nodule. 
+    /// Thrown to indicate an failure of access check to a certain nodule. 
     /// </summary>
-    public class AuthorizeException : Exception
+    public class AccessException : Exception
     {
-        internal static readonly AuthorizeException NoPrincipalEx = new AuthorizeException(0, "no principal");
+        internal static readonly AccessException NoPrincipalEx = new AccessException(0, "no principal");
 
-        internal static readonly AuthorizeException NullResultEx = new AuthorizeException(1, "authorize null result");
+        internal static readonly AccessException NullResultEx = new AccessException(1, "authorize null result");
 
-        internal static readonly AuthorizeException FalseResultEx = new AuthorizeException(2, "authorize false result");
+        internal static readonly AccessException FalseResultEx = new AccessException(2, "authorize false result");
 
         readonly int code;
 
-        private AuthorizeException(int code, string msg) : base(msg)
+        private AccessException(int code, string msg) : base(msg)
         {
             this.code = code;
         }

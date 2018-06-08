@@ -3,10 +3,10 @@
 namespace Greatbone
 {
     /// <summary>
-    /// An authorization check filter before the target nodule is invoked.
+    /// An access checking filter before the target nodule is invoked.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public abstract class AuthorizeAttribute : Attribute
+    public abstract class AccessAttribute : Attribute
     {
         /// <summary>
         /// An authorization check

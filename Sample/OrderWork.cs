@@ -11,58 +11,63 @@ namespace Samp
     {
         protected OrderWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>((obj) => ((Order) obj).id);
+            CreateVar<V, int>((obj) => ((Order)obj).id);
         }
 
         // for customer side viewing
-        protected void GiveBoardOrderPage(WebContext wc, Order[] arr, bool tooling = true)
+        protected void GiveBoardPage(WebContext wc, Order[] arr, bool tooling = true)
         {
             wc.GivePage(200, h =>
             {
                 if (tooling)
                 {
-                    h.TOOLBAR();
+                    h.TOOLBAR(title: "购物车");
                 }
                 h.BOARD(arr, o =>
                     {
-                        h.T("<section class=\"uk-card-header uk-flex uk-flex-middle\">");
+                        h.T("<header class=\"uk-card-header uk-flex uk-flex-middle\">");
                         h.T("<h5>").T(o.orgname).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
-                        h.T("</section>");
+                        h.T("</header>");
 
-                        h.UL_("uk-card-body");
+                        h.UL_("uk-list uk-list-divider uk-card-body");
 
-                        h.LI("收货", o.custaddr, o.custname, o.custtel);
+                        h.LI("收　货", o.custaddr, o.custname, o.custtel);
 
-                        h.UL_("uk-grid");
-                        h.LI_().LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16)._LI();
+                        h.LI_();
+                        h.UL_("uk-list uk-list-divider");
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
+                            h.LI_();
+                            h.ICO_(w: 0x16).T('/').T(o.orgid).T('/').T(oi.name).T("/icon")._ICO();
                             if (o.status == CREATED)
                             {
-                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).TOOL(nameof(MyOrderVarWork.Upd), i, oi.qty.ToString())._P().P(oi.ship, w: 0x16);
+                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).TOOL(nameof(MyOrderVarWork.Upd), i, oi.qty.ToString())._P();
                             }
                             else
                             {
                                 h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).T(oi.qty).T(oi.unit)._P();
                             }
+                            h._LI();
                         }
                         h._UL();
-                        h.P_("总额", w: 0x12).CUR(o.total)._P();
+                        h._LI();
+
+                        h.LI_("总　额").CUR(o.total)._LI();
                         if (o.comp)
                         {
                             h.P_("净额", w: 0x12).CUR(o.net)._P();
                         }
                         h._UL(); // uk-card-body
 
-                        if (tooling) h.TOOLPAD(css: "uk-card-footer");
+                        if (tooling) h.TOOLPAD(css: "uk-card-footer uk-text-center");
                     }
                 );
             }, false, 2);
         }
 
         // for org side viewing
-        protected void GiveAccordionOrderPage(WebContext wc, Order[] arr, bool tools = true)
+        protected void GiveAccordionPage(WebContext wc, Order[] arr, bool tools = true)
         {
             wc.GivePage(200, h =>
             {
@@ -114,18 +119,18 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
-                GiveBoardOrderPage(wc, arr);
+                GiveBoardPage(wc, arr);
             }
         }
 
-        [Ui("查看以往订单"), Tool(AOpen)]
+        [Ui("历史订单"), Tool(AOpen, size: 3)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
-                GiveBoardOrderPage(wc, arr, false);
+                GiveBoardPage(wc, arr, false);
             }
         }
     }
@@ -143,7 +148,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND orgid = @1 ORDER BY id DESC", p => p.Set(orgid));
-                GiveAccordionOrderPage(wc, dc.ToArray<Order>());
+                GiveAccordionPage(wc, dc.ToArray<Order>());
             }
         }
 
@@ -204,7 +209,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                GiveAccordionOrderPage(wc, arr);
+                GiveAccordionPage(wc, arr);
             }
         }
 

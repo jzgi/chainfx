@@ -53,7 +53,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc, out _)) continue;
+                    if (!sub.CheckAccess(wc, out _)) continue;
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -72,7 +72,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc, out _)) continue;
+                    if (!sub.CheckAccess(wc, out _)) continue;
                     h.Add("<li style=\"height: 100%\"><iframe id=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
@@ -136,7 +136,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc, out _)) continue;
+                    if (!sub.CheckAccess(wc, out _)) continue;
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -159,7 +159,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.DoAuthorize(wc, out _)) continue;
+                    if (!sub.CheckAccess(wc, out _)) continue;
                     h.Add("<li style=\"height: 100%\"><iframe src=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
@@ -266,7 +266,7 @@ namespace Samp
         {
             h.T("</div>");
             h.T("<a class=\"uk-button uk-button-default\" href=\"").T(JOINADDR).T("\">关注公众号</a>");
-            h.T("<a class=\"uk-button uk-button-default uk-border-rounded\" href=\"/my//ord/\">查看订单</a>");
+            h.T("<a class=\"uk-icon-button\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
             h.T("</form>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

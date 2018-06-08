@@ -6,6 +6,20 @@
     background-color: lavender;
 }
 
+.uk-card-primary > .uk-card-header {
+    background-color: #dcdcdc;
+    border: none;
+}
+
+.uk-card-primary > .uk-card-body.uk-list-divider {
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.uk-card-primary > .uk-card-body.uk-list-divider li:nth-child(n+2) {
+    border-top: 1px solid #dcdcdc;
+}
+
 /* CROPPIE */
 
 .croppie-container {

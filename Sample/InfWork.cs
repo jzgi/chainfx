@@ -9,7 +9,7 @@ namespace Samp
     {
         protected InfWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>(obj => ((Inf) obj).id);
+            CreateVar<V, int>(obj => ((Inf)obj).id);
         }
     }
 

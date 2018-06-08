@@ -14,7 +14,7 @@ namespace Samp
     {
         public SampService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<SampVarWork, string>(obj => ((Org) obj).id);
+            CreateVar<SampVarWork, string>(obj => ((Org)obj).id);
 
             Create<PubInfWork>("inf");
 
@@ -78,7 +78,7 @@ namespace Samp
                     }
                     else
                     {
-                        prin = new User {wx = openid}; // create a minimal principal object
+                        prin = new User { wx = openid }; // create a minimal principal object
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace Samp
         {
             if (cmd == 1) // handle form submission
             {
-                var prin = (User) wc.Principal;
+                var prin = (User)wc.Principal;
                 var f = await wc.ReadAsync<Form>();
                 string name = f[nameof(name)];
                 string tel = f[nameof(tel)];
@@ -134,7 +134,7 @@ namespace Samp
                 }
                 wc.GiveRedirect(url);
             }
-            else if (wc.Except is AuthorizeException authex)
+            else if (wc.Except is AccessException authex)
             {
                 if (authex.NoPrincipal)
                 {
@@ -225,7 +225,7 @@ namespace Samp
                     dc.Let(out oprname).Let(out oprat);
                 }
                 var shop = orgs[oprat];
-                shops = new[] {shop};
+                shops = new[] { shop };
                 city = oprat.Substring(0, 2);
             }
             else
@@ -245,7 +245,7 @@ namespace Samp
                     h.TOPBAR_().SELECT(nameof(city), city, cities, refresh: true)._TOPBAR();
                     h.BOARD(shops, o =>
                         {
-                            h.T("<section class=\"uk-card-header org-header\">");
+                            h.T("<header class=\"uk-card-header org-header\">");
                             h.T("<h2>").T(o.name).T("</h2>");
                             if (oprname != null)
                             {
@@ -253,12 +253,12 @@ namespace Samp
                             }
                             else if (o.oprtel != null)
                             {
-                                h.T("<a class=\"uk-icon-link uk-align-right\" href=\"tel:#mp.weixin.qq.com@").T(o.oprtel).T("\" uk-icon=\"receiver\"></a>");
+                                h.T("<a class=\"uk-icon-button uk-align-right\" href=\"tel:").T(o.oprtel).T("#mp.weixin.qq.com\" uk-icon=\"receiver\"></a>");
                             }
                             h.P(o.descr);
                             h.P_().T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
 
-                            h.T("</section>");
+                            h.T("</header>");
                             var ois = items.GroupFor((o.id, null));
                             h.LIST(ois, oi =>
                             {
@@ -268,7 +268,7 @@ namespace Samp
                                 h.P(oi.descr);
                                 h.ROW_();
                                 h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
-                                h.FORM_();
+                                h.FORM_(css: "uk-width-auto");
                                 h.HIDDEN(nameof(oprid), oprid);
                                 h.TOOL(nameof(SampItemVarWork.buy));
                                 h._FORM();

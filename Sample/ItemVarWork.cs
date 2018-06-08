@@ -22,9 +22,9 @@ namespace Samp
             {
                 if (dc.Query1("SELECT icon FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                 {
-                    dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) wc.Give(204); // no content 
-                    else wc.Give(200, new StaticContent(byteas), true, PICAGE);
+                    dc.Let(out byte[] bytes);
+                    if (bytes == null) wc.Give(204); // no content 
+                    else wc.Give(200, new StaticContent(bytes), true, PICAGE);
                 }
                 else wc.Give(404, @public: true, maxage: PICAGE); // not found
             }
@@ -38,9 +38,9 @@ namespace Samp
             {
                 if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                 {
-                    dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) wc.Give(204); // no content 
-                    else wc.Give(200, new StaticContent(byteas), true, PICAGE);
+                    dc.Let(out byte[] bytes);
+                    if (bytes == null) wc.Give(204); // no content 
+                    else wc.Give(200, new StaticContent(bytes), true, PICAGE);
                 }
                 else wc.Give(404, @public: true, maxage: PICAGE); // not found
             }
@@ -54,10 +54,10 @@ namespace Samp
         }
 
         [User]
-        [Ui("购买"), Tool(ButtonPickOpen, size: 2), Item('A')]
+        [Ui("购买"), Tool(ButtonShow, size: 2), Item('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User) wc.Principal;
+            User prin = (User)wc.Principal;
             string orgid = wc[-1];
             string itemname = wc[this];
             var org = Obtain<Map<string, Org>>()[orgid];
@@ -89,7 +89,6 @@ namespace Samp
                         h.LI_("数　量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
-                        h.ACTBAR_().BUTTON("确定")._ACTBAR();
                         h._FORM();
                     }
                 });
@@ -126,11 +125,7 @@ namespace Samp
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
                     }
-                    wc.GivePane(200, m =>
-                    {
-                        m.MSG_(true, "成功加入订单", "商品已经成功加入订单");
-                        m.ACTBAR_().A_CLOSEUP("继续选购").A_GOTO("去付款", "/my//ord/")._ACTBAR();
-                    });
+                    wc.GivePane(200);
                 }
             }
         }
@@ -160,9 +155,9 @@ namespace Samp
                         h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                         h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal) 0.00, step: (decimal) 0.01);
-                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
+                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal)0.00, step: (decimal)0.01);
+                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short)1);
+                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short)1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         h.NUMBER(nameof(o.stock), o.stock, "可供");
                         h._FIELDSET();
