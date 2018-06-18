@@ -266,7 +266,7 @@ namespace Samp
         {
             h.T("</div>");
             h.T("<a class=\"uk-button uk-button-default\" href=\"").T(JOINADDR).T("\">关注公众号</a>");
-            h.T("<a class=\"uk-icon-button\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
+            h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
             h.T("</form>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

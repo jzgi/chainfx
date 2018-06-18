@@ -205,7 +205,7 @@ namespace Samp
         /// Returns a home page pertaining to a related city
         /// We are forced to put auth check here because weixin auth does't work in iframe
 //        [City]
-        [User(false)]
+        [UserAccess(false)]
         public void list(WebContext wc)
         {
             var orgs = wc.Service.Obtain<Map<string, Org>>();

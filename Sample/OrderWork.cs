@@ -196,7 +196,7 @@ namespace Samp
         }
     }
 
-    [Ui("旧单"), User(OPR)]
+    [Ui("旧单"), UserAccess(OPR)]
     public class OprOldoWork : OrderWork<OprOldoVarWork>
     {
         public OprOldoWork(WorkConfig cfg) : base(cfg)

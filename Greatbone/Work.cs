@@ -505,42 +505,33 @@ namespace Greatbone
 
         int size;
 
-        public void Register(object value)
+        public void Register(object value, byte flag = 0)
         {
             if (registry == null)
             {
                 registry = new Cell[16];
             }
-
-            registry[size++] = new Cell(value);
+            registry[size++] = new Cell(value, flag);
         }
 
-        public void Register(params object[] values)
-        {
-            foreach (var val in values)
-            {
-                Register(val);
-            }
-        }
-
-        public void Register<V>(Func<V> loader, int maxage = 3600) where V : class
+        public void Register<V>(Func<V> loader, int maxage = 3600, byte flag = 0) where V : class
         {
             if (registry == null)
             {
                 registry = new Cell[8];
             }
 
-            registry[size++] = new Cell(typeof(V), loader, maxage);
+            registry[size++] = new Cell(typeof(V), loader, maxage, flag);
         }
 
-        public void Register<V>(Func<Task<V>> loaderAsync, int maxage = 3600) where V : class
+        public void Register<V>(Func<Task<V>> loaderAsync, int maxage = 3600, byte flag = 0) where V : class
         {
             if (registry == null)
             {
                 registry = new Cell[8];
             }
 
-            registry[size++] = new Cell(typeof(V), loaderAsync, maxage);
+            registry[size++] = new Cell(typeof(V), loaderAsync, maxage, flag);
         }
 
         /// <summary>
@@ -548,37 +539,46 @@ namespace Greatbone
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>the result object or null</returns>
-        public T Obtain<T>() where T : class
+        public T Obtain<T>(byte flag = 0) where T : class
         {
             if (registry != null)
             {
                 for (int i = 0; i < size; i++)
                 {
                     var cell = registry[i];
-                    if (!cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                    if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
-                        return cell.GetValue() as T;
+                        if (!cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                        {
+                            return cell.GetValue() as T;
+                        }
                     }
                 }
             }
-            return Parent?.Obtain<T>();
+            return Parent?.Obtain<T>(flag);
         }
 
-        public async Task<T> ObtainAsync<T>() where T : class
+        public async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
             if (registry != null)
             {
                 for (int i = 0; i < size; i++)
                 {
                     var cell = registry[i];
-                    if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                    if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
-                        return await cell.GetValueAsync() as T;
+                        if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                        {
+                            return await cell.GetValueAsync() as T;
+                        }
                     }
                 }
             }
-            if (Parent == null) return null;
-            return await Parent.ObtainAsync<T>();
+            if (Parent == null)
+            {
+                return null;
+            }
+            return await Parent.ObtainAsync<T>(flag);
         }
 
         public DbContext NewDbContext(IsolationLevel? level = null)
@@ -610,15 +610,19 @@ namespace Greatbone
 
             object value;
 
-            internal Cell(object value)
+            readonly byte flag;
+
+            internal Cell(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
+                this.flag = flag;
             }
 
-            internal Cell(Type typ, Func<object> loader, int maxage = 3600 * 12)
+            internal Cell(Type typ, Func<object> loader, int maxage, byte flag)
             {
                 this.typ = typ;
+                this.flag = flag;
                 if (loader is Func<Task<object>> loader2)
                 {
                     this.loaderAsync = loader2;
@@ -627,11 +631,12 @@ namespace Greatbone
                 {
                     this.loader = loader;
                 }
-
                 this.maxage = maxage;
             }
 
             public Type Typ => typ;
+
+            public byte Flag => flag;
 
             public bool IsAsync => loaderAsync != null;
 

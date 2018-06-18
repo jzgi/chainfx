@@ -11,7 +11,7 @@ namespace Samp
     }
 
     [Ui("联系客服")]
-    [User]
+    [UserAccess]
     public class MyChatWork : ChatWork<OprChatVarWork>
     {
         public MyChatWork(WorkConfig cfg) : base(cfg)
@@ -70,7 +70,7 @@ namespace Samp
     }
 
     [Ui("客服")]
-    [User(OPR)]
+    [UserAccess(OPR)]
     public class OprChatWork : ChatWork<OprChatVarWork>
     {
         public OprChatWork(WorkConfig cfg) : base(cfg)

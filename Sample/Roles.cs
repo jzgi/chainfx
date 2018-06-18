@@ -18,7 +18,7 @@ namespace Samp
         }
     }
 
-    [Ui("常规"), User(adm: 1)]
+    [Ui("常规"), UserAccess(adm: 1)]
     public class AdmWork : Work
     {
         public AdmWork(WorkConfig cfg) : base(cfg)

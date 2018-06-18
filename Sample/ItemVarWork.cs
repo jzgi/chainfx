@@ -53,8 +53,8 @@ namespace Samp
         {
         }
 
-        [User]
-        [Ui("购买"), Tool(ButtonShow, size: 2), Item('A')]
+        [UserAccess]
+        [Ui("购买"), Tool(AOpen, size: 2), Item('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User)wc.Principal;
@@ -88,6 +88,8 @@ namespace Samp
                         h.LI_("货　品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
                         h.LI_("数　量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
                         h._FIELDSET();
+
+                        h.ACTBAR_().BUTTON("确定")._ACTBAR();
 
                         h._FORM();
                     }
@@ -125,7 +127,11 @@ namespace Samp
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
                     }
-                    wc.GivePane(200);
+                    wc.GivePane(200, m =>
+                    {
+                        m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
+                        m.ACTBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._ACTBAR();
+                    });
                 }
             }
         }
@@ -137,7 +143,7 @@ namespace Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("修改"), Tool(ButtonShow), UserAccess(OPRMEM)]
         public async Task upd(WebContext wc)
         {
             string orgid = wc[-2];
@@ -182,7 +188,7 @@ namespace Samp
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop), User(OPRMEM)]
+        [Ui("照片"), Tool(ButtonCrop), UserAccess(OPRMEM)]
         public new async Task icon(WebContext wc)
         {
             string orgid = wc[-2];

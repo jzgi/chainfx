@@ -14,7 +14,7 @@ namespace Samp
     }
 
 
-    [Ui("货品"), User(OPRMEM)]
+    [Ui("货品"), UserAccess(OPRMEM)]
     public class OprItemWork : ItemWork<OprItemVarWork>
     {
         public OprItemWork(WorkConfig cfg) : base(cfg)
@@ -48,7 +48,7 @@ namespace Samp
             }
         }
 
-        [Ui("新建"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("新建"), Tool(ButtonShow), UserAccess(OPRMEM)]
         public async Task @new(WebContext wc)
         {
             if (wc.GET)
@@ -84,7 +84,7 @@ namespace Samp
             }
         }
 
-        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), User(OPRMEM)]
+        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), UserAccess(OPRMEM)]
         public async Task del(WebContext wc)
         {
             string orgid = wc[-1];

@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// To check access to an annotated work or procedure. 
     /// </summary>
-    public class UserAttribute : AccessAttribute
+    public class UserAccessAttribute : AccessAttribute
     {
         // require a ready principal
         readonly bool ready;
@@ -16,14 +16,14 @@ namespace Samp
         // require of admin
         readonly short adm;
 
-        public UserAttribute(short opr = 0, short adm = 0)
+        public UserAccessAttribute(short opr = 0, short adm = 0)
         {
             this.ready = true;
             this.opr = opr;
             this.adm = adm;
         }
 
-        public UserAttribute(bool ready)
+        public UserAccessAttribute(bool ready)
         {
             this.ready = ready;
         }

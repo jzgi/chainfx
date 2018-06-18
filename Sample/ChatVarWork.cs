@@ -4,7 +4,7 @@ using static Samp.WeiXinUtility;
 
 namespace Samp
 {
-    [User]
+    [UserAccess]
     public abstract class ChatVarWork : Work
     {
         protected ChatVarWork(WorkConfig cfg) : base(cfg)

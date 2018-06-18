@@ -6,7 +6,7 @@ using static Samp.User;
 
 namespace Samp
 {
-    [User]
+    [UserAccess]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -108,7 +108,7 @@ namespace Samp
     /// <summary>
     /// The working folder of org operators.
     /// </summary>
-    [User(opr: 1)]
+    [UserAccess(opr: 1)]
     [Ui("常规")]
     public class OprVarWork : Work, IOrgVar
     {
@@ -148,7 +148,7 @@ namespace Samp
             });
         }
 
-        [Ui("人员"), Tool(ButtonOpen), User(OPRMGR)]
+        [Ui("人员"), Tool(ButtonOpen), UserAccess(OPRMGR)]
         public async Task acl(WebContext wc, int cmd)
         {
             string orgid = wc[this];
@@ -201,7 +201,7 @@ namespace Samp
             });
         }
 
-        [Ui("状态"), Tool(ButtonShow), User(OPRMEM)]
+        [Ui("状态"), Tool(ButtonShow), UserAccess(OPRMEM)]
         public async Task status(WebContext ac)
         {
             var orgs = Obtain<Map<string, Org>>();

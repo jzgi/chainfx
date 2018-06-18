@@ -13,7 +13,7 @@ namespace Samp
         }
     }
 
-    [Ui("财务"), User(OPRMGR)]
+    [Ui("财务"), UserAccess(OPRMGR)]
     public class OprCashWork : CashWork
     {
         public OprCashWork(WorkConfig cfg) : base(cfg)

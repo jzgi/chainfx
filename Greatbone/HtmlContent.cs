@@ -81,6 +81,12 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent T(bool v)
+        {
+            Add(v);
+            return this;
+        }
+
         public HtmlContent T(short v)
         {
             Add(v);
@@ -810,13 +816,20 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_GOTO(string caption, string href)
+        public HtmlContent A_GOTO(string caption, string icon = null, string href = null)
         {
             Add("<a target=\"_parent\" href=\"");
             Add(href);
-            Add("\" class=\"uk-button uk-button-default uk-border-rounded\"");
+            Add("\" class=\"uk-button uk-button-default\"");
             Add(">");
             Add(caption);
+            if (icon != null)
+            {
+                Add("&nbsp;");
+                Add("<span uk-icon=\"");
+                Add(icon);
+                Add("\"></span>");
+            }
             Add("</a>");
             return this;
         }
@@ -1166,7 +1179,7 @@ namespace Greatbone
             for (int i = 0; i < prcs?.Length; i++)
             {
                 var prc = prcs[i];
-                if (!prc.IsCapital && (prc.Flag == 0 || prc.Flag == flag))
+                if (!prc.IsCapital && (prc.Group == 0 || prc.Group == flag))
                 {
                     PutTool(prc);
                 }
@@ -1376,7 +1389,7 @@ namespace Greatbone
                         for (int j = 0; j < prcs.Length; j++)
                         {
                             var prc = prcs[j];
-                            if (!prc.IsCapital && (prc.Flag == 0 || flag == prc.Flag))
+                            if (!prc.IsCapital && (prc.Group == 0 || flag == prc.Group))
                             {
                                 PutTool(prc);
                             }
@@ -1429,7 +1442,7 @@ namespace Greatbone
             Add("</main>");
         }
 
-        public void GRID<D>(D[] arr, Action<D> card, string article = null)
+        public void GRID<D>(D[] arr, Action<D> card, string css = null)
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
             if (arr != null)
@@ -1441,10 +1454,10 @@ namespace Greatbone
                     D obj = arr[i];
                     stack[level] = obj;
                     Add("<article class=\"uk-card uk-card-default uk-margin-remove uk-padding-small");
-                    if (article != null)
+                    if (css != null)
                     {
                         Add(' ');
-                        Add(article);
+                        Add(css);
                     }
                     Add("\">");
                     card(obj);
@@ -1469,7 +1482,34 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLPAD(string css = null, byte w = 0x11, byte flag = 0)
+        public HtmlContent TOOLTHIS(string css = null, byte w = 0x11, byte flag = 0)
+        {
+            // locate the proper work
+            Add("<form class=\"uk-button-group");
+            Width(w);
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
+
+            Work work = webCtx.Work;
+            var prcs = work.Tooled;
+            for (int j = 0; j < prcs?.Length; j++)
+            {
+                var prc = prcs[j];
+                if (!prc.IsCapital && (prc.Group == 0 || flag == prc.Group))
+                {
+                    PutTool(prc);
+                }
+            }
+            Add("</form>");
+            return this;
+        }
+
+
+        public HtmlContent TOOLPAD(string css = null, byte w = 0x11, byte group = 0)
         {
             // locate the proper work
             Add("<form class=\"uk-button-group");
@@ -1490,7 +1530,7 @@ namespace Greatbone
             for (int j = 0; j < prcs?.Length; j++)
             {
                 var prc = prcs[j];
-                if (!prc.IsCapital && (prc.Flag == 0 || flag == prc.Flag))
+                if (!prc.IsCapital && (prc.Group == 0 || group == prc.Group))
                 {
                     PutTool(prc);
                 }
@@ -1974,9 +2014,18 @@ namespace Greatbone
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            AddPrimitive(v);
+            if (v != 0 || tip == null)
+            {
+                Add(v);
+            }
             Add("\"");
 
+            if (tip != null)
+            {
+                Add(" placeholder=\"");
+                Add(tip);
+                Add("\"");
+            }
             if (min != decimal.MinValue)
             {
                 Add(" min=\"");
@@ -2003,13 +2052,6 @@ namespace Greatbone
             if (required) Add(" required");
 
             Add(">");
-
-            if (tip != null)
-            {
-                Add("<mark>");
-                Add(tip);
-                Add("</mark>");
-            }
 
             if (label != null) _LI();
             return this;
@@ -2323,7 +2365,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, string tip = null, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, string tip = null, bool required = false, sbyte size = 0, bool refresh = false, Predicate<V> filter = null)
         {
             if (label != null) LI_(label);
 
@@ -2356,6 +2398,7 @@ namespace Greatbone
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
+                        if (filter != null && !filter(e.value)) continue;
                         if (e.IsHead)
                         {
                             if (grpopen)

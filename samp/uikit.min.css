@@ -470,8 +470,7 @@ a.uk-link-reset:hover,
 .uk-heading-line > * {
     display: inline-block;
     position: relative;
-    color: #e36209;
-    border: 1px solid #4cabb1;
+    color: #333;
     padding: 4px;
     border-radius: 25px;
 }
@@ -482,7 +481,7 @@ a.uk-link-reset:hover,
     position: absolute;
     top: calc(50% - (1px / 2));
     width: 2000px;
-    border-bottom: 1px solid #4cabb1;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-heading-line > ::before {
@@ -1006,10 +1005,6 @@ button.uk-icon:not(:disabled) {
     color: #595959;
 }
 
-/*
- * Button
- * 1. Center icon vertically and horizontally
- */
 .uk-icon-button {
     box-sizing: border-box;
     width: 36px;
@@ -1036,9 +1031,9 @@ button.uk-icon:not(:disabled) {
 
 /* OnClick + Active */
 .uk-icon-button:active,
-.uk-active > .uk-icon-button {
-    background-color: #dfdfdf;
-    color: #333;
+.uk-icon-button.uk-active {
+    background-color: #4cabb1;
+    color: #fff;
 }
 
 /* ========================================================================
@@ -1209,7 +1204,7 @@ button.uk-icon:not(:disabled) {
     box-sizing: border-box;
     align-items: center;
     justify-content: space-between;
-    padding: 0 4px;
+    padding: 0 4px 0 2.5rem;
     border-bottom: 1px solid #dcdcdc;
 }
 
@@ -1751,7 +1746,7 @@ button.uk-button {
 
 .uk-button-default {
     background-color: inherit;
-    border: 1px solid rgba(76, 171, 177, 0.50);
+    border: 1px solid #4cabb1;
     color: #4cabb1;
     line-height: 26px;
     height: 28px;
@@ -1776,7 +1771,7 @@ button.uk-button {
 .uk-button-primary {
     background-color: #4cabb1;
     color: #fff;
-    border: 1px solid rgba(76, 171, 177, 0.50);
+    border: 1px solid #4cabb1;
     line-height: 26px;
     height: 28px;
 }
@@ -1834,13 +1829,13 @@ button.uk-button {
     border-radius: 0;
 }
 
-.uk-button-default:disabled,
-.uk-button-primary:disabled,
-.uk-button-secondary:disabled,
-.uk-button-danger:disabled {
+.uk-button-default:disabled, .uk-button-default.disabled,
+.uk-button-primary:disabled, .uk-button-primary.disabled,
+.uk-button-secondary:disabled, .uk-button-secondary.disabled,
+.uk-button-danger:disabled, .uk-button-danger.disabled {
     background-color: transparent;
-    color: #e5e5e5;
-    border-color: #e5e5e5;
+    color: #dcdcdc;
+    border-color: #dcdcdc;
 }
 
 .uk-button-small {
@@ -1937,15 +1932,9 @@ button.uk-button {
     z-index: 1;
 }
 
-/* ========================================================================
-   Component: Section
- ========================================================================== */
-/*
- * 1. Make it work with `100vh` and height in general
- */
+
 .uk-section {
     box-sizing: border-box;
-    /* 1 */
     padding-top: 40px;
     padding-bottom: 40px;
 }
@@ -2028,11 +2017,7 @@ button.uk-button {
     }
 }
 
-/* Style modifiers
- ========================================================================== */
-/*
- * Default
- */
+
 .uk-section-default {
     background: #fff;
 }
@@ -2058,19 +2043,8 @@ button.uk-button {
     background: #222;
 }
 
-/* Overlap modifier
- ========================================================================== */
-/*
- * Reserved modifier to make a section overlap another section with an border image
- * Implemented by the theme
- */
-/* ========================================================================
-   Component: Container
- ========================================================================== */
-/*
- * 1. Box sizing has to be `content-box` so the max-width is always the same and
- *    unaffected by the padding on different breakpoints. It's important for the size modifiers.
- */
+
+
 .uk-container {
     box-sizing: content-box;
     /* 1 */
@@ -2548,7 +2522,6 @@ button.uk-button {
 
 .uk-card-header {
     padding: 8px;
-    border-bottom: 1px solid #f2f2f2;
 }
 
 .uk-card-header .uk-checkbox {
@@ -2607,12 +2580,18 @@ button.uk-button {
 .uk-card-primary {
     margin: 12px 0;
     background-color: #fff;
+    border: 1px solid #dcdcdc;
 }
 
 .uk-card-primary.uk-card-hover:hover {
     background-color: #fff;
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
+
+.uk-card-primary .uk-card-body {
+    background-color: #fafafa;
+}
+
 
 /*
  * Secondary
@@ -2811,7 +2790,6 @@ button.uk-button {
 
 .uk-msg {
     margin: 0.5rem;
-    background-color: #fff;
     padding: 0.5rem;
 }
 
@@ -2828,8 +2806,9 @@ button.uk-button {
 }
 
 .uk-msg-yes > span {
-    color: #4cd964;
-    border: 2px solid #4cd964;
+    margin: 4px;
+    color: #69c7ad;
+    border: 2px solid #69c7ad;
     border-radius: 50%;
 }
 
@@ -4900,7 +4879,7 @@ ul.uk-nav-sub {
 
 .uk-modal-large .uk-modal-dialog {
     position: relative;
-    margin: 2rem auto;
+    margin: 4rem auto;
     height: 80%;
     max-height: 800px;
     width: 90%;
@@ -5418,8 +5397,8 @@ ul.uk-nav-sub {
 
 .uk-offcanvas-toggle {
     position: fixed;
-    top: 7px;
-    padding-left: 4px;
+    top: 4px;
+    padding: 4px;
     z-index: 4;
     background-color: #fff;
 }

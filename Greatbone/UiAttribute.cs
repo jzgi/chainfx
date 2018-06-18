@@ -12,13 +12,13 @@ namespace Greatbone
 
         readonly string tip;
 
-        readonly byte flag;
+        readonly byte group;
 
-        public UiAttribute(string label = null, string tip = null, byte flag = 0)
+        public UiAttribute(string label = null, string tip = null, byte group = 0)
         {
             this.label = label;
             this.tip = tip ?? label;
-            this.flag = flag;
+            this.group = group;
         }
 
         public string Label => label;
@@ -28,6 +28,6 @@ namespace Greatbone
         /// <summary>
         /// A grouping number that refers to a particular functionality.
         /// </summary>
-        public byte Flag => flag;
+        public byte Group => group;
     }
 }
