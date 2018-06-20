@@ -24,16 +24,16 @@ namespace Greatbone
         readonly Type type;
 
         // declared procedures 
-        readonly Map<string, Procedure> procedures;
+        readonly Map<string, Actioner> actionors;
 
         // the default procedure, can be null
-        readonly Procedure @default;
+        readonly Actioner @default;
 
         // the catch procedure, can be null
-        readonly Procedure @catch;
+        readonly Actioner @catch;
 
         // procedure with UiToolAttribute
-        readonly Procedure[] tooled;
+        readonly Actioner[] tooled;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -50,7 +50,7 @@ namespace Greatbone
             this.cfg = cfg;
 
             // gather procedures
-            procedures = new Map<string, Procedure>(32);
+            actionors = new Map<string, Actioner>(32);
             this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -62,34 +62,33 @@ namespace Greatbone
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                Procedure prc;
+                Actioner actr;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    prc = new Procedure(this, mi, async, false);
+                    actr = new Actioner(this, mi, async, false);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
-                    prc = new Procedure(this, mi, async, true);
+                    actr = new Actioner(this, mi, async, true);
                 }
                 else continue;
 
-                procedures.Add(prc);
-                if (prc.Key == string.Empty) @default = prc;
-                if (prc.Key == "catch") @catch = prc;
-                if (prc.Tool?.MustPick == true) pick = true;
+                actionors.Add(actr);
+                if (actr.Key == string.Empty) @default = actr;
+                if (actr.Key == "catch") @catch = actr;
+                if (actr.Tool?.MustPick == true) pick = true;
             }
 
             // gather tooled procedures
-            Roll<Procedure> roll = new Roll<Procedure>(16);
-            for (int i = 0; i < procedures.Count; i++)
+            Roll<Actioner> roll = new Roll<Actioner>(16);
+            for (int i = 0; i < actionors.Count; i++)
             {
-                Procedure prc = procedures[i];
-                if (prc.HasTool)
+                Actioner actr = actionors[i];
+                if (actr.HasTool)
                 {
-                    roll.Add(prc);
+                    roll.Add(actr);
                 }
             }
-
             tooled = roll.ToArray();
         }
 
@@ -105,15 +104,15 @@ namespace Greatbone
 
         public bool HasKeyer => cfg.Keyer != null;
 
-        public Map<string, Procedure> Procedures => procedures;
+        public Map<string, Actioner> Actionors => actionors;
 
-        public Procedure[] Tooled => tooled;
+        public Actioner[] Tooled => tooled;
 
         public bool HasPick => pick;
 
-        public Procedure Default => @default;
+        public Actioner Default => @default;
 
-        public Procedure Catch => @catch;
+        public Actioner Catch => @catch;
 
         public Map<string, Work> Works => works;
 
@@ -282,10 +281,10 @@ namespace Greatbone
             cnt.ELEM(Key,
                 delegate
                 {
-                    for (int i = 0; i < procedures.Count; i++)
+                    for (int i = 0; i < actionors.Count; i++)
                     {
-                        Procedure prc = procedures[i];
-                        cnt.Put(prc.Key, "");
+                        Actioner actr = actionors[i];
+                        cnt.Put(actr.Key, "");
                     }
                 },
                 delegate
@@ -305,7 +304,7 @@ namespace Greatbone
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
-        public Procedure this[string method] => string.IsNullOrEmpty(method) ? @default : procedures[method];
+        public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actionors[method];
 
         internal Work Resolve(ref string relative, WebContext wc)
         {
@@ -379,34 +378,34 @@ namespace Greatbone
                     wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
 
-                Procedure prc = this[name];
-                if (prc == null)
+                Actioner actr = this[name];
+                if (actr == null)
                 {
                     wc.Give(404); // not found
                     return;
                 }
 
-                if (!prc.CheckAccess(wc, out AccessException except)) throw except;
-                wc.Procedure = prc;
+                if (!actr.CheckAccess(wc, out AccessException except)) throw except;
+                wc.Actioner = actr;
                 // any before filterings
-                if (prc.Before?.Do(wc) == false) goto ProcedureExit;
-                if (prc.BeforeAsync != null && !(await prc.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
+                if (actr.Before?.Do(wc) == false) goto ProcedureExit;
+                if (actr.BeforeAsync != null && !(await actr.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
 
                 // try in cache
                 if (!Service.TryGiveFromCache(wc))
                 {
                     // method invocation
-                    if (prc.IsAsync) await prc.DoAsync(wc, subscpt); // invoke procedure method
-                    else prc.Do(wc, subscpt);
+                    if (actr.IsAsync) await actr.DoAsync(wc, subscpt); // invoke procedure method
+                    else actr.Do(wc, subscpt);
 
                     Service.TryCacheUp(wc);
                 }
 
                 ProcedureExit:
                 // procedure's after filtering
-                prc.After?.Do(wc);
-                if (prc.AfterAsync != null) await prc.AfterAsync.DoAsync(wc);
-                wc.Procedure = null;
+                actr.After?.Do(wc);
+                if (actr.AfterAsync != null) await actr.AfterAsync.DoAsync(wc);
+                wc.Actioner = null;
             }
 
             WorkExit:

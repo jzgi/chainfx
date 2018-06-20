@@ -650,7 +650,7 @@ namespace Greatbone
             int mask = (int) Cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
-            var str = new Str(1024);
+            var str = new Text(1024);
             int p = 0;
             for (int i = 0; i < len; i++)
             {

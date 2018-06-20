@@ -42,12 +42,12 @@ namespace Greatbone
                 }
                 else
                 {
-                    Str str = new Str();
+                    Text text = new Text();
                     for (int i = 0; i < length; i++)
                     {
-                        str.Accept(buffer[i]);
+                        text.Accept(buffer[i]);
                     }
-                    return str;
+                    return text;
                 }
             }
             return null;

@@ -111,7 +111,7 @@ namespace Greatbone
 
         string etag;
 
-        public string ETag => etag ?? (etag = StrUtility.ToHex(checksum));
+        public string ETag => etag ?? (etag = TextUtility.ToHex(checksum));
 
         void AddByte(byte b)
         {

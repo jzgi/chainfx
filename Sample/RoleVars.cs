@@ -84,7 +84,7 @@ namespace Samp
                 {
                     if (password != VOIDPASS) // password being changed
                     {
-                        string credential = StrUtility.MD5(prin.tel + ":" + password);
+                        string credential = TextUtility.MD5(prin.tel + ":" + password);
                         dc.Execute("UPDATE users SET name = @1, tel = @2, credential = @3 WHERE id = @4", p => p.Set(name).Set(tel).Set(credential).Set(prin.id));
                     }
                     else // password no change

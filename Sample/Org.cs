@@ -87,7 +87,7 @@ namespace Samp
 
         public bool GroupAs(string akey)
         {
-            return StrUtility.Compare(id, akey, 2);
+            return TextUtility.Compare(id, akey, 2);
         }
     }
 }

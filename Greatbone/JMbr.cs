@@ -152,7 +152,7 @@ namespace Greatbone
             if (v.type == JType.String)
             {
                 string str = (string) v.refv;
-                if (StrUtility.TryParseDate(str, out var dt)) return dt;
+                if (TextUtility.TryParseDate(str, out var dt)) return dt;
             }
             return default;
         }

@@ -157,7 +157,7 @@ namespace Greatbone
         public static implicit operator DateTime(Field v)
         {
             string str = v.First;
-            if (StrUtility.TryParseDate(str, out var dt))
+            if (TextUtility.TryParseDate(str, out var dt))
             {
                 return dt;
             }

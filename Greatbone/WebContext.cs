@@ -47,7 +47,7 @@ namespace Greatbone
 
         public Work Work { get; internal set; }
 
-        public Procedure Procedure { get; internal set; }
+        public Actioner Actioner { get; internal set; }
 
         public int Subscript { get; internal set; }
 
@@ -234,7 +234,7 @@ namespace Greatbone
             if (fRequest.Headers.TryGetValue(name, out var vs))
             {
                 string str = vs;
-                if (StrUtility.TryParseUtcDate(str, out var v))
+                if (TextUtility.TryParseUtcDate(str, out var v))
                 {
                     return v;
                 }
@@ -386,7 +386,7 @@ namespace Greatbone
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = StrUtility.FormatUtcDate(v);
+            string str = TextUtility.FormatUtcDate(v);
             fResponse.Headers.Add(name, new StringValues(str));
         }
 
@@ -426,7 +426,7 @@ namespace Greatbone
 
         public void Give(int status, string text, bool? @public = null, int maxage = 60)
         {
-            StrContent cont = new StrContent(true);
+            TextContent cont = new TextContent(true);
             cont.Add(text);
 
             // set response states
@@ -497,7 +497,7 @@ namespace Greatbone
                 DateTime? last = sta.Modified;
                 if (last != null)
                 {
-                    SetHeader("Last-Modified", StrUtility.FormatUtcDate(last.Value));
+                    SetHeader("Last-Modified", TextUtility.FormatUtcDate(last.Value));
                 }
                 if (sta.GZip)
                 {

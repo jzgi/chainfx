@@ -16,14 +16,14 @@ namespace Greatbone
         readonly int length;
 
         // UTF-8 string builder
-        readonly Str str;
+        readonly Text text;
 
         public FormParser(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
             this.length = length;
-            this.str = new Str(256);
+            this.text = new Text(256);
         }
 
         public FormParser(string strbuf)
@@ -31,7 +31,7 @@ namespace Greatbone
             this.bytebuf = null;
             this.strbuf = strbuf;
             this.length = strbuf?.Length ?? 0;
-            this.str = new Str(256);
+            this.text = new Text(256);
         }
 
         int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
@@ -58,7 +58,7 @@ namespace Greatbone
 
         string ParseName(ref int pos)
         {
-            str.Clear();
+            text.Clear();
             int p = pos;
             for (;;)
             {
@@ -70,11 +70,11 @@ namespace Greatbone
                 if (b == '=')
                 {
                     pos = p;
-                    return str.ToString();
+                    return text.ToString();
                 }
                 else if (b == '+')
                 {
-                    str.Accept(' ');
+                    text.Accept(' ');
                 }
                 else if (b == '%') // percent-encoding %xy
                 {
@@ -83,35 +83,35 @@ namespace Greatbone
                     if (p >= length) throw ParserEx;
                     int y = this[p++];
 
-                    str.Accept(Dv(x) << 4 | Dv(y));
+                    text.Accept(Dv(x) << 4 | Dv(y));
                 }
                 else
                 {
-                    str.Accept(b);
+                    text.Accept(b);
                 }
             }
         }
 
         string ParseValue(ref int pos)
         {
-            str.Clear();
+            text.Clear();
             int p = pos;
             for (;;)
             {
                 if (p >= length)
                 {
                     pos = p;
-                    return str.ToString();
+                    return text.ToString();
                 }
                 int b = this[p++];
                 if (b == '&')
                 {
                     pos = p;
-                    return str.ToString();
+                    return text.ToString();
                 }
                 else if (b == '+')
                 {
-                    str.Accept(' ');
+                    text.Accept(' ');
                 }
                 else if (b == '%') // percent-encoding %xy
                 {
@@ -120,11 +120,11 @@ namespace Greatbone
                     if (p >= length) throw ParserEx;
                     int y = this[p++];
 
-                    str.Accept(Dv(x) << 4 | Dv(y));
+                    text.Accept(Dv(x) << 4 | Dv(y));
                 }
                 else
                 {
-                    str.Accept(b);
+                    text.Accept(b);
                 }
             }
         }

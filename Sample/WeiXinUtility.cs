@@ -366,7 +366,7 @@ namespace Samp
                 sb.Append(child.Tag).Append('=').Append(child.Text);
             }
             sb.Append("&key=").Append(key);
-            return StrUtility.MD5(sb.ToString());
+            return TextUtility.MD5(sb.ToString());
         }
 
         static string Sign(JObj jo, string exclude = null)
@@ -384,7 +384,7 @@ namespace Samp
                 sb.Append(mbr.Key).Append('=').Append((string) mbr);
             }
             sb.Append("&key=").Append(key);
-            return StrUtility.MD5(sb.ToString());
+            return TextUtility.MD5(sb.ToString());
         }
     }
 }

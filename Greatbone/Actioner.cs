@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 namespace Greatbone
 {
     /// <summary>
-    /// The descriptor for a procedure method. A procedure public method should have one or two parameters, the first parameter must be of WebContext type.
+    /// The descriptor for an action method. A procedure public method should have one or two parameters, the first parameter must be of WebContext type.
     /// The second parameter, if presented, must be an int value.
     /// </summary>
-    public class Procedure : Nodule
+    public class Actioner : Nodule
     {
         readonly Work work;
 
@@ -31,13 +31,13 @@ namespace Greatbone
         // async Task procedure(WebContext)
         readonly Func<WebContext, Task> doAsync;
 
-        // void procedure(WebContext, int)
+        // void action(WebContext, int)
         readonly Action<WebContext, int> do2;
 
-        // async Task procedure(WebContext, int)
+        // async Task action(WebContext, int)
         readonly Func<WebContext, int, Task> do2Async;
 
-        internal Procedure(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
+        internal Actioner(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
             this.work = work;
             this.rpath = Key == string.Empty ? "./" : Key;

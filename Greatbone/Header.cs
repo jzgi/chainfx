@@ -3,7 +3,7 @@ namespace Greatbone
     /// <summary>
     /// To analyze HTTP header.
     /// </summary>
-    public class Header : Str
+    public class Header : Text
     {
         // start index of the value field
         int vstart;

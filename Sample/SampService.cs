@@ -94,7 +94,7 @@ namespace Samp
                 string orig = Encoding.ASCII.GetString(bytes);
                 int colon = orig.IndexOf(':');
                 string tel = orig.Substring(0, colon);
-                string credential = StrUtility.MD5(orig);
+                string credential = TextUtility.MD5(orig);
                 using (var dc = NewDbContext())
                 {
                     if (dc.Query1("SELECT * FROM users WHERE tel = @1", p => p.Set(tel)))

@@ -3,9 +3,9 @@ using System;
 namespace Greatbone
 {
     /// <summary>
-    /// A text/plain model or comma-separate values. It can be used as UTF-8 string builder.
+    /// A text/plain model or comma-separate values (CSV). Also it can be used as a UTF-8 string builder.
     /// </summary>
-    public class Str : ISource
+    public class Text : ISource
     {
         protected char[] charbuf;
 
@@ -18,7 +18,7 @@ namespace Greatbone
         // number of rest octets
         int rest;
 
-        public Str(int capacity = 512)
+        public Text(int capacity = 512)
         {
             charbuf = new char[capacity];
             sum = 0;
@@ -295,7 +295,7 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new StrContent(true, true);
+            var cnt = new TextContent(true, true);
             cnt.Add(charbuf, 0, count);
             return cnt;
         }

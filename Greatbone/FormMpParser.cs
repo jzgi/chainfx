@@ -43,7 +43,7 @@ namespace Greatbone
 
             // UTF-8 header builder
             Header hdr = new Header(128);
-            Str str = new Str(128);
+            Text text = new Text(128);
 
             // keep local for speed
             int boundlen = bound_.Length;
@@ -94,7 +94,7 @@ namespace Greatbone
                 }
 
                 // get part's content
-                str.Clear();
+                text.Clear();
                 bool plain = ctype == null || "text/plain".Equals(ctype);
                 int start = p; // mark down content start
                 int idx = 0; // index on bound
@@ -108,7 +108,7 @@ namespace Greatbone
                         {
                             if (frm == null) frm = new Form(true) {Buffer = buffer_};
                             if (plain)
-                                frm.Add(name, str.ToString());
+                                frm.Add(name, text.ToString());
                             else
                                 frm.Add(name, filename, start, p - start - boundlen);
                             // goto the ending CRLF/-- check
@@ -121,14 +121,14 @@ namespace Greatbone
                         {
                             for (int i = 0; i < idx; i++)
                             {
-                                str.Accept(bound_[i]);
+                                text.Accept(bound_[i]);
                             }
                         }
                         idx = 0; // reset
                     }
                     else
                     {
-                        if (plain) str.Accept(b);
+                        if (plain) text.Accept(b);
                     }
                 }
 

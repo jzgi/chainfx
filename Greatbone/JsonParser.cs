@@ -16,14 +16,14 @@ namespace Greatbone
         readonly int length;
 
         // UTF-8 string builder
-        readonly Str str;
+        readonly Text text;
 
         public JsonParser(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.length = length;
             this.strbuf = null;
-            this.str = new Str(512);
+            this.text = new Text(512);
         }
 
         public JsonParser(string strbuf)
@@ -31,7 +31,7 @@ namespace Greatbone
             this.strbuf = strbuf;
             this.length = strbuf.Length;
             this.bytebuf = null;
-            this.str = new Str(512);
+            this.text = new Text(512);
         }
 
         int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
@@ -70,13 +70,13 @@ namespace Greatbone
                     throw ParserEx;
                 }
 
-                str.Clear(); // parse name
+                text.Clear(); // parse name
                 for (;;)
                 {
                     if (p >= length - 1) throw ParserEx;
                     int b = this[++p];
                     if (b == '"') break; // meet second quote
-                    str.Add((char) b);
+                    text.Add((char) b);
                 }
 
                 for (;;) // till a colon
@@ -87,7 +87,7 @@ namespace Greatbone
                     if (b == ':') break;
                     throw ParserEx;
                 }
-                string name = str.ToString();
+                string name = text.ToString();
 
                 // parse the value part
                 for (;;)
@@ -209,7 +209,7 @@ namespace Greatbone
 
         string ParseString(ref int pos)
         {
-            str.Clear();
+            text.Clear();
             int p = pos;
             bool esc = false;
             for (;;)
@@ -218,7 +218,7 @@ namespace Greatbone
                 int b = this[++p];
                 if (esc)
                 {
-                    str.Add(b == '"' ? '"' :
+                    text.Add(b == '"' ? '"' :
                         b == '\\' ? '\\' :
                         b == 'b' ? '\b' :
                         b == 'f' ? '\f' :
@@ -236,11 +236,11 @@ namespace Greatbone
                     else if (b == '"')
                     {
                         pos = p;
-                        return str.ToString();
+                        return text.ToString();
                     }
                     else
                     {
-                        str.Accept(b);
+                        text.Accept(b);
                     }
                 }
             }

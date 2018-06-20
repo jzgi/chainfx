@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.7">
   <PropertyGroup>
-    <Description>Greatbone Microservice Library</Description>
+    <Description>Greatbone SOA Library</Description>
     <VersionPrefix>3</VersionPrefix>
     <Authors>hismichael</Authors>
     <TargetFramework>netcoreapp2.1</TargetFramework>

@@ -16,14 +16,14 @@ namespace Greatbone
         readonly int length;
 
         // UTF-8 string builder
-        readonly Str str;
+        readonly Text text;
 
         public XmlParser(byte[] bytebuf, int length)
         {
             this.bytebuf = bytebuf;
             this.strbuf = null;
             this.length = length;
-            this.str = new Str(1024);
+            this.text = new Text(1024);
         }
 
         public XmlParser(string strbuf)
@@ -31,7 +31,7 @@ namespace Greatbone
             this.bytebuf = null;
             this.strbuf = strbuf;
             this.length = strbuf.Length;
-            this.str = new Str(1024);
+            this.text = new Text(1024);
         }
 
         int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
@@ -95,13 +95,13 @@ namespace Greatbone
             int b;
 
             // parse element tag name
-            str.Clear();
-            str.Accept(startchar);
+            text.Clear();
+            text.Accept(startchar);
             while (IsNameChar(b = this[++p]))
             {
-                str.Accept(b); // to comprise start tag
+                text.Accept(b); // to comprise start tag
             }
-            string tag = str.ToString();
+            string tag = text.ToString();
             XElem elem = new XElem(tag);
 
             // optionally parse attributes
@@ -114,17 +114,17 @@ namespace Greatbone
                 if (IsNameStartChar(b))
                 {
                     // attribute name
-                    str.Clear();
-                    str.Accept(b);
+                    text.Clear();
+                    text.Accept(b);
                     while ((b = this[++p]) != '=')
                     {
-                        str.Accept(b);
+                        text.Accept(b);
                     }
-                    string name = str.ToString();
+                    string name = text.ToString();
 
                     // attribute value
                     if (this[++p] != '"') throw ParserEx; // left quote
-                    str.Clear();
+                    text.Clear();
                     while ((b = this[++p]) != '"') // till right quote
                     {
                         if (b == '&') // escape &lt; &gt; &amp; &quot;
@@ -153,9 +153,9 @@ namespace Greatbone
                                 p += 5;
                             }
                         }
-                        str.Accept(b);
+                        text.Accept(b);
                     }
-                    string value = str.ToString();
+                    string value = text.ToString();
 
                     elem.AddAttr(name, value);
 
@@ -177,12 +177,12 @@ namespace Greatbone
                         if (b == '/') // the ending tag
                         {
                             // consume
-                            str.Clear();
+                            text.Clear();
                             while ((b = this[++p]) != '>')
                             {
-                                str.Accept(b);
+                                text.Accept(b);
                             }
-                            if (!str.Equals(tag)) throw ParserEx;
+                            if (!text.Equals(tag)) throw ParserEx;
 
                             pos = p; // adjust current position
                             return elem;
@@ -191,13 +191,13 @@ namespace Greatbone
                         {
                             if (this[p + 1] == '[' && this[p + 2] == 'C' && this[p + 3] == 'D' && this[p + 4] == 'A' && this[p + 5] == 'T' && this[p + 6] == 'A' && this[p + 7] == '[')
                             {
-                                str.Clear();
+                                text.Clear();
                                 p += 7;
                                 while ((b = this[++p]) != ']' || this[p + 1] != ']' || this[p + 2] != '>')
                                 {
-                                    str.Accept(b);
+                                    text.Accept(b);
                                 }
-                                elem.Text = str.ToString();
+                                elem.Text = text.ToString();
                                 p += 2; // skip ]>
                             }
                         }
@@ -209,7 +209,7 @@ namespace Greatbone
                     }
                     else // text node
                     {
-                        str.Clear();
+                        text.Clear();
                         while ((b = this[p]) != '<') // NOTE from the first char
                         {
                             if (b == '&') // escape &lt; &gt; &amp; &quot;
@@ -238,12 +238,12 @@ namespace Greatbone
                                     p += 5;
                                 }
                             }
-                            str.Accept(b);
+                            text.Accept(b);
                             ++p;
                         }
-                        if (str.Count > 0)
+                        if (text.Count > 0)
                         {
-                            elem.Text = str.ToString();
+                            elem.Text = text.ToString();
                         }
                         // NOTE decrease in position to behave as other child nodes
                         --p;
