@@ -229,18 +229,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent article_(string @class)
-        {
-            Add("<article>");
-            return this;
-        }
-
-        public HtmlContent _article()
-        {
-            Add("</article>");
-            return this;
-        }
-
         public HtmlContent ROW_(byte w = 0x11)
         {
             Add("<div class=\"uk-row");
@@ -834,23 +822,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent A_DROPDOWN_(string label, sbyte size = 0)
-        {
-            Add("<a href=\"#orginfo\" class=\"uk-button uk-button-link\" uk-toggle>");
-            Add(label);
-            Add("</a>");
-            Add("<div id=\"orginfo\" class=\"uk-modal\" uk-modal>");
-            Add("<div class=\"uk-modal-dialog uk-modal-body\">");
-            return this;
-        }
-
-        public HtmlContent _A_DROPDOWN()
-        {
-            Add("</div>");
-            Add("</div>");
-            return this;
-        }
-
         public HtmlContent _BUTTON()
         {
             Add("</button>");
@@ -1171,49 +1142,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLBAR(byte flag = 0, string title = null, bool refresh = true)
-        {
-            var actrs = webCtx.Work.Tooled;
-            Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
-            Add("<div class=\"uk-button-group\">");
-            for (int i = 0; i < actrs?.Length; i++)
-            {
-                var actr = actrs[i];
-                if (!actr.IsCapital && (actr.Group == 0 || actr.Group == flag))
-                {
-                    PutTool(actr);
-                }
-            }
-            Add("</div>");
-
-            Add("<div class=\"uk-flex uk-flex-middle\">");
-            if (title != null)
-            {
-                Add(title);
-            }
-            if (refresh)
-            {
-                Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
-            }
-            Add("</div>");
-            Add("</form>");
-            Add("<div class=\"uk-top-placeholder\"></div>");
-            return this;
-        }
-
-        public HtmlContent ACTBAR_()
-        {
-            Add("<div class=\"uk-bottom-placeholder\"></div>");
-            Add("<footer class=\"uk-bottom-bar\">");
-            return this;
-        }
-
-        public HtmlContent _ACTBAR()
-        {
-            Add("</footer>");
-            return this;
-        }
-
         public void PAGENATION(int count, int limit = 20)
         {
             // pagination
@@ -1482,11 +1410,66 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLTHIS(string css = null, byte w = 0x11, byte flag = 0)
+        public HtmlContent TOOLBAR(byte grp = 0x0f, string title = null)
         {
-            // locate the proper work
-            Add("<form class=\"uk-button-group");
-            Width(w);
+            Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
+            Add("<section class=\"uk-top-bar-left\">");
+            int gogrp = -1;
+            var actrs = webCtx.Work.Tooled;
+            if (actrs != null)
+            {
+                for (int i = 0; i < actrs.Length; i++)
+                {
+                    var actr = actrs[i];
+                    int g = actr.Group;
+                    if (g != gogrp)
+                    {
+                        if (gogrp != -1)
+                        {
+                            Add("</div>");
+                        }
+                        Add("<div class=\"uk-button-group\">");
+                    }
+                    if (g == 0 || (g & grp) > 0)
+                    {
+                        PutTool(actr);
+                    }
+                    gogrp = g;
+                }
+                Add("</div>");
+            }
+            Add("</section>");
+
+            Add("<section class=\"uk-flex uk-flex-middle\">");
+            if (title != null)
+            {
+                Add(title);
+                Add("&nbsp;");
+            }
+            Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
+            Add("</section>");
+
+            Add("</form>");
+            Add("<div class=\"uk-top-placeholder\"></div>");
+            return this;
+        }
+
+        public HtmlContent ACTBAR_()
+        {
+            Add("<div class=\"uk-bottom-placeholder\"></div>");
+            Add("<footer class=\"uk-bottom-bar\">");
+            return this;
+        }
+
+        public HtmlContent _ACTBAR()
+        {
+            Add("</footer>");
+            return this;
+        }
+
+        public HtmlContent TOOLS(byte grp = 0, string css = null)
+        {
+            Add("<form class=\"uk-flex uk-flex-center");
             if (css != null)
             {
                 Add(' ');
@@ -1494,26 +1477,40 @@ namespace Greatbone
             }
             Add("\">");
 
-            Work work = webCtx.Work;
-            var actrs = work.Tooled;
-            for (int j = 0; j < actrs?.Length; j++)
+            int gogrp = -1;
+            Work wrk = webCtx.Work;
+            var actrs = wrk.Tooled;
+            if (actrs != null)
             {
-                var actr = actrs[j];
-                if (!actr.IsCapital && (actr.Group == 0 || flag == actr.Group))
+                for (int i = 0; i < actrs.Length; i++)
                 {
-                    PutTool(actr);
+                    var actr = actrs[i];
+                    int g = actr.Group;
+                    if (g != gogrp)
+                    {
+                        if (gogrp != -1)
+                        {
+                            Add("</div>");
+                        }
+                        Add("<div class=\"uk-button-group\">");
+                    }
+                    if (g == 0 || (g & grp) > 0)
+                    {
+                        PutTool(actr);
+                    }
+                    gogrp = g;
                 }
+                Add("</div>");
             }
+
             Add("</form>");
             return this;
         }
 
 
-        public HtmlContent TOOLPAD(string css = null, byte w = 0x11, byte group = 0)
+        public HtmlContent VARTOOLS(byte grp = 0, string css = null)
         {
-            // locate the proper work
-            Add("<form class=\"uk-button-group");
-            Width(w);
+            Add("<form class=\"uk-flex uk-flex-center");
             if (css != null)
             {
                 Add(' ');
@@ -1521,20 +1518,32 @@ namespace Greatbone
             }
             Add("\">");
 
-            Work wrk = webCtx.Work;
-            for (int i = -1; i < level; i++)
-            {
-                wrk = wrk.varwork;
-            }
+            int gogrp = -1;
+            Work wrk = webCtx.Work.VarWork;
             var actrs = wrk.Tooled;
-            for (int j = 0; j < actrs?.Length; j++)
+            if (actrs != null)
             {
-                var actr = actrs[j];
-                if (!actr.IsCapital && (actr.Group == 0 || group == actr.Group))
+                for (int i = 0; i < actrs.Length; i++)
                 {
-                    PutTool(actr);
+                    var actr = actrs[i];
+                    int g = actr.Group;
+                    if (g != gogrp)
+                    {
+                        if (gogrp != -1)
+                        {
+                            Add("</div>");
+                        }
+                        Add("<div class=\"uk-button-group\">");
+                    }
+                    if (g == 0 || (g & grp) > 0)
+                    {
+                        PutTool(actr);
+                    }
+                    gogrp = g;
                 }
+                Add("</div>");
             }
+
             Add("</form>");
             return this;
         }
@@ -1555,7 +1564,7 @@ namespace Greatbone
             return this;
         }
 
-        public void PutTool(Actioner actr, int subscript = -1, string caption = null)
+        void PutTool(Actioner actr, int subscript = -1, string caption = null)
         {
             var tool = actr.Tool;
 
@@ -2067,7 +2076,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false, byte width = 6)
+        public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false)
         {
             Add("<li>");
             if (label != null)
@@ -2089,9 +2098,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent CHECKBOXSET(string name, string[] val, string[] opt, string legend = null, byte box = 0x0c)
+        public HtmlContent CHECKBOXSET(string name, string[] val, string[] opt, string legend = null, byte w = 0x0c)
         {
-            FIELDSET_(legend, box);
+            FIELDSET_(legend, w);
             for (int i = 0; i < opt.Length; i++)
             {
                 var e = opt[i];
@@ -2183,7 +2192,7 @@ namespace Greatbone
                         }
                         else
                         {
-                            LI_(null);
+                            LI_();
                             Add("<label>");
                             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
                             Add(name);

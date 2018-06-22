@@ -4971,6 +4971,7 @@ ul.uk-nav-sub {
     background: #fff;
     box-sizing: border-box;
     background-color: #fff;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-modal-footer {
@@ -4980,6 +4981,7 @@ ul.uk-nav-sub {
     height: 2.75rem;
     box-sizing: border-box;
     background-color: #fff;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*

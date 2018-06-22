@@ -32,13 +32,13 @@ namespace Samp
                         {
                             h.T("<section class=\"uk-card-header\">").T(o.id).SP().T(o.name).T("</section>");
                             h.UL_("uk-card-body");
-                            h.LI( "简介",o.descr);
-                            h.LI("地址",o.addr);
+                            h.LI("简介", o.descr);
+                            h.LI("地址", o.addr);
                             h.LI_("坐标").T(o.x).T(o.y)._LI();
                             h.LI_("经理").T(o.mgrname).T(o.mgrtel)._LI();
                             h._UL();
 
-                            h.TOOLPAD("uk-card-footer");
+                            h.VARTOOLS(css: "uk-card-footer");
                         }
                     );
                 });

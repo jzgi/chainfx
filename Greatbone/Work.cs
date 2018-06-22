@@ -23,16 +23,16 @@ namespace Greatbone
 
         readonly Type type;
 
-        // declared procedures 
-        readonly Map<string, Actioner> actionors;
+        // declared action methods 
+        readonly Map<string, Actioner> actioners;
 
-        // the default procedure, can be null
+        // the default action method, can be null
         readonly Actioner @default;
 
         // the catch procedure, can be null
         readonly Actioner @catch;
 
-        // procedure with UiToolAttribute
+        // action method with the ToolAttribute
         readonly Actioner[] tooled;
 
         // subworks, if any
@@ -50,7 +50,7 @@ namespace Greatbone
             this.cfg = cfg;
 
             // gather procedures
-            actionors = new Map<string, Actioner>(32);
+            actioners = new Map<string, Actioner>(32);
             this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -73,23 +73,27 @@ namespace Greatbone
                 }
                 else continue;
 
-                actionors.Add(actr);
+                actioners.Add(actr);
                 if (actr.Key == string.Empty) @default = actr;
                 if (actr.Key == "catch") @catch = actr;
                 if (actr.Tool?.MustPick == true) pick = true;
             }
-
-            // gather tooled procedures
+            // gather tooled action methods
             Roll<Actioner> roll = new Roll<Actioner>(16);
-            for (int i = 0; i < actionors.Count; i++)
+            for (int i = 0; i < actioners.Count; i++)
             {
-                Actioner actr = actionors[i];
+                Actioner actr = actioners[i];
                 if (actr.HasTool)
                 {
                     roll.Add(actr);
                 }
             }
             tooled = roll.ToArray();
+            
+            if (tooled != null) // sort by group
+            {
+                Array.Sort(tooled, (a, b) => a.Group - b.Group);
+            }
         }
 
         public Service Service => cfg.Service;
@@ -104,7 +108,7 @@ namespace Greatbone
 
         public bool HasKeyer => cfg.Keyer != null;
 
-        public Map<string, Actioner> Actionors => actionors;
+        public Map<string, Actioner> Actioners => actioners;
 
         public Actioner[] Tooled => tooled;
 
@@ -148,7 +152,7 @@ namespace Greatbone
                 throw new ServiceException(typ + " need public and WorkConfig");
             }
 
-            WorkConfig wc = new WorkConfig(VAR)
+            WorkConfig config = new WorkConfig(VAR)
             {
                 Ui = ui,
                 Access = access,
@@ -159,7 +163,7 @@ namespace Greatbone
                 Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
                 Keyer = keyer,
             };
-            W w = (W) ci.Invoke(new object[] {wc});
+            W w = (W) ci.Invoke(new object[] {config});
             varwork = w;
             return w;
         }
@@ -216,42 +220,34 @@ namespace Greatbone
             {
                 return fstr(obj);
             }
-
             if (keyer is Func<object, int> fint)
             {
                 return fint(obj);
             }
-
             if (keyer is Func<object, long> flong)
             {
                 return flong(obj);
             }
-
             if (keyer is Func<object, short> fshort)
             {
                 return fshort(obj);
             }
-
             if (keyer is Func<object, string[]> fstrs)
             {
                 return fstrs(obj);
             }
-
             if (keyer is Func<object, int[]> fints)
             {
                 return fints(obj);
             }
-
             if (keyer is Func<object, long[]> flongs)
             {
                 return flongs(obj);
             }
-
             if (keyer is Func<object, short[]> fshorts)
             {
                 return fshorts(obj);
             }
-
             return null;
         }
 
@@ -281,9 +277,9 @@ namespace Greatbone
             cnt.ELEM(Key,
                 delegate
                 {
-                    for (int i = 0; i < actionors.Count; i++)
+                    for (int i = 0; i < actioners.Count; i++)
                     {
-                        Actioner actr = actionors[i];
+                        Actioner actr = actioners[i];
                         cnt.Put(actr.Key, "");
                     }
                 },
@@ -297,14 +293,13 @@ namespace Greatbone
                             wrk.Describe(cnt);
                         }
                     }
-
                     varwork?.Describe(cnt);
                 });
         }
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
-        public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actionors[method];
+        public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];
 
         internal Work Resolve(ref string relative, WebContext wc)
         {

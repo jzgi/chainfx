@@ -41,7 +41,7 @@ namespace Samp
                             h.COL_(0x34).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P().P_("佣金").T("¥").T(o.comp)._P()._COL();
                             h.P(o.unit, "单位", 0x14).P(o.min, "起订", 0x14).P(o.step, "递增", 0x14).P(o.stock, "存量", 0x14);
                             h.T("<hr>");
-                            h.TOOLPAD();
+                            h.VARTOOLS();
                             h.T("</section>");
                         }, null);
                 });

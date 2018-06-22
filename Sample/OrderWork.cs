@@ -60,7 +60,7 @@ namespace Samp
                         }
                         h._UL(); // uk-card-body
 
-                        if (tooling) h.TOOLPAD(css: "uk-card-footer uk-text-center");
+                        if (tooling) h.VARTOOLS(css: "uk-card-footer uk-text-center");
                     }
                 );
             }, false, 2);
@@ -99,7 +99,7 @@ namespace Samp
                         {
                             h.P_("净额", w: 0x12).CUR(o.net)._P();
                         }
-                        h.TOOLPAD();
+                        h.VARTOOLS();
 
                         h.T("</section>");
                     }, null);

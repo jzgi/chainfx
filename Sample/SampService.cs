@@ -276,7 +276,7 @@ namespace Samp
                                 h._COL();
                             }, "uk-card-body uk-padding-remove");
 
-                            h.TOOLPAD();
+                            h.VARTOOLS();
                         }
                         , article: "uk-card-primary"
                     );
