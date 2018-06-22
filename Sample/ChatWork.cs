@@ -17,7 +17,7 @@ namespace Samp
     {
         public MyChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyChatVarWork, string>((obj) => ((Chat) obj).custwx);
+            CreateVar<MyChatVarWork, string>((obj) => ((Chat) obj).orgid);
         }
 
         public void @default(WebContext wc)
@@ -54,20 +54,23 @@ namespace Samp
                     h.TOOLBAR();
                     h.BOARD(arr, o =>
                     {
-                        h.T("<article>");
-                        h.T("<header class=\"uk-card-header\">").T(orgs[orgid].name).T("</header>");
-                        h.T("<main class=\"uk-card-body\">");
-                        for (int i = 0; i < o.msgs?.Length; i++)
+                        h.T("<h4 class=\"uk-card-header\">").T(orgs[orgid].name).T("</h4>");
+                        if (o.msgs != null)
                         {
-                            var m = o.msgs[i];
-                            h.P(m.text, m.name);
+                            h.T("<main class=\"uk-card-body\">");
+                            for (int i = 0; i < o.msgs?.Length; i++)
+                            {
+                                var m = o.msgs[i];
+                                h.P(m.text, m.name);
+                            }
+                            h.T("</main>");
                         }
                         string text = null;
+                        h.T("<footer class=\"uk-card-footer\">");
                         h.FORM_();
-                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(OprChatVarWork.reply))._ROW();
+                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(MyChatVarWork.say))._ROW();
                         h._FORM();
-                        h.T("</main>");
-                        h.T("</article>");
+                        h.T("</footer>");
                     });
                 });
             }
@@ -80,7 +83,7 @@ namespace Samp
     {
         public OprChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<OprChatVarWork, string>((obj) => ((Chat) obj).custwx);
+            CreateVar<OprChatVarWork, int>((obj) => ((Chat) obj).custid);
         }
 
         public void @default(WebContext wc)

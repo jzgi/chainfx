@@ -253,7 +253,10 @@ namespace Samp
                             }
                             else if (o.oprtel != null)
                             {
-                                h.T("<a class=\"uk-icon-button uk-align-right\" href=\"tel:").T(o.oprtel).T("#mp.weixin.qq.com\" uk-icon=\"receiver\"></a>");
+                                h.T("<div class=\"uk-align-right\">");
+                                h.T("<a class=\"uk-icon-button\" href=\"tel:").T(o.oprtel).T("\" uk-icon=\"receiver\"></a>");
+                                h.T("<a class=\"uk-icon-button\" href=\"/my//chat/?orgid=").T(o.id).T("\" uk-icon=\"comment\"></a>");
+                                h.T("</div>");
                             }
                             h.P(o.descr);
                             h.P_().T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();

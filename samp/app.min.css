@@ -7,17 +7,17 @@
 }
 
 .uk-card-primary > .uk-card-header {
-    background-color: #dcdcdc;
+    background-color: #c0c0c0;
     border: none;
 }
 
 .uk-card-primary > .uk-card-body.uk-list-divider {
-    border-top: 1px solid #dcdcdc;
-    border-bottom: 1px solid #dcdcdc;
+    border-top: 1px solid #c0c0c0;
+    border-bottom: 1px solid #c0c0c0;
 }
 
 .uk-card-primary > .uk-card-body.uk-list-divider li:nth-child(n+2) {
-    border-top: 1px solid #dcdcdc;
+    border-top: 1px solid #c0c0c0;
 }
 
 /* CROPPIE */

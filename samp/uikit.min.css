@@ -17,7 +17,6 @@ body {
 
 form {
     display: block;
-    width: 100%;
 }
 
 a {
@@ -1228,7 +1227,8 @@ button.uk-icon:not(:disabled) {
     box-sizing: border-box;
     justify-content: space-around;
     align-items: center;
-    background-color: #fff;
+    background-color: #f2f2f2;
+    border-top: 1px solid #dcdcdc;
 }
 
 
@@ -1918,6 +1918,8 @@ button.uk-button {
 .uk-button-group {
     vertical-align: middle;
     position: relative;
+    display: inline-block;
+    padding: 0 4px;
 }
 
 .uk-button-group > * {

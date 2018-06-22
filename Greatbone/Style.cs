@@ -21,6 +21,8 @@ namespace Greatbone
 
         Text,
 
-        Link
+        Link,
+        
+        Icon
     }
 }

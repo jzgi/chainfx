@@ -1422,16 +1422,13 @@ namespace Greatbone
                 {
                     var actr = actrs[i];
                     int g = actr.Group;
-                    if (g != gogrp)
-                    {
-                        if (gogrp != -1)
-                        {
-                            Add("</div>");
-                        }
-                        Add("<div class=\"uk-button-group\">");
-                    }
                     if (g == 0 || (g & grp) > 0)
                     {
+                        if (g != gogrp)
+                        {
+                            if (gogrp != -1) Add("</div>");
+                            Add("<div class=\"uk-button-group\">");
+                        }
                         PutTool(actr);
                     }
                     gogrp = g;
@@ -1444,7 +1441,6 @@ namespace Greatbone
             if (title != null)
             {
                 Add(title);
-                Add("&nbsp;");
             }
             Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             Add("</section>");
@@ -1486,16 +1482,13 @@ namespace Greatbone
                 {
                     var actr = actrs[i];
                     int g = actr.Group;
-                    if (g != gogrp)
-                    {
-                        if (gogrp != -1)
-                        {
-                            Add("</div>");
-                        }
-                        Add("<div class=\"uk-button-group\">");
-                    }
                     if (g == 0 || (g & grp) > 0)
                     {
+                        if (g != gogrp)
+                        {
+                            if (gogrp != -1) Add("</div>");
+                            Add("<div class=\"uk-button-group\">");
+                        }
                         PutTool(actr);
                     }
                     gogrp = g;
@@ -1527,23 +1520,19 @@ namespace Greatbone
                 {
                     var actr = actrs[i];
                     int g = actr.Group;
-                    if (g != gogrp)
-                    {
-                        if (gogrp != -1)
-                        {
-                            Add("</div>");
-                        }
-                        Add("<div class=\"uk-button-group\">");
-                    }
                     if (g == 0 || (g & grp) > 0)
                     {
+                        if (g != gogrp)
+                        {
+                            if (gogrp != -1) Add("</div>");
+                            Add("<div class=\"uk-button-group\">");
+                        }
                         PutTool(actr);
                     }
                     gogrp = g;
                 }
                 Add("</div>");
             }
-
             Add("</form>");
             return this;
         }
@@ -1588,6 +1577,7 @@ namespace Greatbone
                     else if (style == Style.Danger) Add(" uk-button-danger");
                     else if (style == Style.Text) Add(" uk-button-text");
                     else if (style == Style.Link) Add(" uk-button-link");
+                    else if (style == Style.Icon) Add(" uk-icon-button");
                     if (actr == webCtx.Actioner) // if current action
                     {
                         Add(" uk-active");
@@ -1626,6 +1616,7 @@ namespace Greatbone
                 else if (style == Style.Danger) Add(" uk-button-danger");
                 else if (style == Style.Text) Add(" uk-button-text");
                 else if (style == Style.Link) Add(" uk-button-link");
+                else if (style == Style.Icon) Add(" uk-icon-button");
 
                 Add("\" name=\"");
                 Add(actr.Key);

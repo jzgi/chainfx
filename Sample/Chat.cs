@@ -11,17 +11,15 @@ namespace Samp
         public static readonly Chat Empty = new Chat();
 
         internal string orgid;
-        internal string orgname;
-        internal string custid;
+        internal int custid;
         internal string custname;
         internal string custwx;
-        internal ChatMsg[] msgs;
+        internal Msg[] msgs;
         internal DateTime quested;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(orgid), ref orgid);
-            s.Get(nameof(orgname), ref orgname);
             s.Get(nameof(custid), ref custid);
             s.Get(nameof(custname), ref custname);
             s.Get(nameof(custwx), ref custwx);
@@ -34,7 +32,6 @@ namespace Samp
         public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(orgid), orgid);
-            s.Put(nameof(orgname), orgname);
             s.Put(nameof(custid), custid);
             s.Put(nameof(custname), custname);
             s.Put(nameof(custwx), custwx);
@@ -43,7 +40,7 @@ namespace Samp
         }
     }
 
-    public struct ChatMsg : IData
+    public struct Msg : IData
     {
         internal string name;
         internal string text;

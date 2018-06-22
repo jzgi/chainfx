@@ -42,7 +42,8 @@ namespace Samp
                             h.ICO_(w: 0x16).T('/').T(o.orgid).T('/').T(oi.name).T("/icon")._ICO();
                             if (o.status == CREATED)
                             {
-                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).TOOL(nameof(MyOrderVarWork.Upd), i, oi.qty.ToString())._P();
+                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P();
+                                h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MyOrderVarWork.Upd), i, oi.qty.ToString())._P();
                             }
                             else
                             {
@@ -60,7 +61,7 @@ namespace Samp
                         }
                         h._UL(); // uk-card-body
 
-                        if (tooling) h.VARTOOLS(css: "uk-card-footer uk-text-center");
+                        if (tooling) h.VARTOOLS(css: "uk-card-footer");
                     }
                 );
             }, false, 2);
