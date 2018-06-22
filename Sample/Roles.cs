@@ -18,7 +18,8 @@ namespace Samp
         }
     }
 
-    [Ui("常规"), UserAccess(adm: 1)]
+    [UserAccess(adm: 1)]
+    [Ui("常规")]
     public class AdmWork : Work
     {
         public AdmWork(WorkConfig cfg) : base(cfg)
@@ -40,9 +41,9 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.T("<article class=\"uk-card uk-card-default\">");
-                    h.T("<h4>系统运行状况</h4>");
-                    h.P("2.0", "版本");
+                    h.T("<article class=\"uk-card uk-card-primary uk-card-body\">");
+                    h.T("<h4>系统信息</h4>");
+                    h.P("2.0", "版　本");
                     h.T("</article>");
                 });
             }

@@ -23,9 +23,9 @@ namespace Samp
             {
                 h.TOOLBAR();
                 h.UL_("uk-card- uk-card-primary uk-card-body");
-                h.LI("姓名", prin.name);
-                h.LI("电话", prin.tel);
-                h.LI("地址", prin.addr);
+                h.LI("姓　名", prin.name);
+                h.LI("电　话", prin.tel);
+                h.LI("地　址", prin.addr);
                 h.T("<hr>");
                 h.COL_();
                 h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
@@ -141,9 +141,9 @@ namespace Samp
             {
                 h.TOOLBAR();
                 h.UL_("uk-card uk-card-default uk-card-body");
-                h.LI("简介", org.descr);
-                h.LI("经理", org.mgrname, org.mgrtel);
-                h.LI("客服", org.oprname, org.oprtel);
+                h.LI("简　介", org.descr);
+                h.LI("经　理", org.mgrname, org.mgrtel);
+                h.LI("客　服", org.oprname, org.oprtel);
                 h._UL();
             });
         }

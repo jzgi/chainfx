@@ -52,14 +52,14 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Inf.Empty).T(" FROM infos WHERE id = @1");
+                    dc.Sql("SELECT ").collst(Inf.Empty).T(" FROM infs WHERE id = @1");
                     var o = dc.Query1<Inf>(p => p.Set(infid));
                     ac.GivePane(200, h =>
                     {
                         h.FORM_().FIELDSET_();
-                        h.DATE(nameof(o.created), o.created, "日期");
-                        h.TEXT(nameof(o.subject), o.subject, "标题");
-                        h.TEXTAREA(nameof(o.text), o.text, "正文");
+                        h.DATE(nameof(o.created), o.created, "日　期");
+                        h.TEXT(nameof(o.subject), o.subject, "标　题");
+                        h.TEXTAREA(nameof(o.text), o.text, "正　文");
                         h._FIELDSET()._FORM();
                     });
                 }

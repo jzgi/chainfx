@@ -726,7 +726,7 @@ a.uk-link-reset:hover,
     vertical-align: bottom;
     font-size: 0.875rem;
     font-weight: normal;
-    color: #e36209;
+    color: #bd7325;
     text-transform: uppercase;
 }
 
@@ -1204,7 +1204,7 @@ button.uk-icon:not(:disabled) {
     box-sizing: border-box;
     align-items: center;
     justify-content: space-between;
-    padding: 0 4px 0 2.5rem;
+    padding: 0 4px;
     border-bottom: 1px solid #dcdcdc;
 }
 
@@ -4970,7 +4970,7 @@ ul.uk-nav-sub {
     height: 2.75rem;
     background: #fff;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: #f2f2f2;
     border-bottom: 1px solid #dcdcdc;
 }
 
@@ -4980,7 +4980,7 @@ ul.uk-nav-sub {
     justify-content: center;
     height: 2.75rem;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: #f2f2f2;
     border-top: 1px solid #dcdcdc;
 }
 
