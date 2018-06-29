@@ -1442,7 +1442,7 @@ namespace Greatbone
             {
                 Add(title);
             }
-            Add("<a class=\"uk-icon-button uk-button-link\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
+            Add("<a class=\"uk-icon-button uk-light\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             Add("</section>");
 
             Add("</form>");
@@ -1450,14 +1450,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ACTBAR_()
+        public HtmlContent BOTTOMBAR_()
         {
             Add("<div class=\"uk-bottom-placeholder\"></div>");
             Add("<footer class=\"uk-bottom-bar\">");
             return this;
         }
 
-        public HtmlContent _ACTBAR()
+        public HtmlContent _BOTTOMBAR()
         {
             Add("</footer>");
             return this;
@@ -2165,7 +2165,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, bool required = false, byte w = 0x11)
+        public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, bool required = false, byte w = 0x11, Predicate<V> filter = null)
         {
             FIELDSET_(legend, w);
             if (opt != null)
@@ -2175,6 +2175,7 @@ namespace Greatbone
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
+                        if (filter != null && !filter(e.value)) continue;
                         if (e.IsHead)
                         {
                             STATIC_(null);
@@ -2183,7 +2184,7 @@ namespace Greatbone
                         }
                         else
                         {
-                            LI_();
+                            Add("<li>");
                             Add("<label>");
                             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
                             Add(name);
@@ -2199,7 +2200,60 @@ namespace Greatbone
                             Add(">");
                             Add(e.Value.ToString());
                             Add("</label>");
-                            _LI();
+                            Add("</li>");
+                        }
+                    }
+                }
+            }
+            _FIELDSET();
+            return this;
+        }
+
+        public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, bool required = false, byte w = 0x11, Predicate<V> filter = null)
+        {
+            FIELDSET_(legend, w);
+            if (opt != null)
+            {
+                lock (opt)
+                {
+                    bool odd = true;
+                    for (int i = 0; i < opt.Count; i++)
+                    {
+                        var e = opt.At(i);
+                        if (filter != null && !filter(e.value)) continue;
+                        if (e.IsHead)
+                        {
+                            STATIC_(null);
+                            Add(e.Value.ToString());
+                            _STATIC();
+                            odd = true;
+                        }
+                        else
+                        {
+                            if (odd)
+                            {
+                                Add("<li>");
+                            }
+                            Add("<label class=\"uk-width-expand\">");
+                            Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
+                            Add(name);
+                            Add("\" id=\"");
+                            Add(name);
+                            AddPrimitive(e.Key);
+                            Add("\"");
+                            Add("\" value=\"");
+                            AddPrimitive(e.Key);
+                            Add("\"");
+                            if (e.Key.Equals(v)) Add(" checked");
+                            if (required) Add(" required");
+                            Add(">");
+                            Add(e.Value.ToString());
+                            Add("</label>");
+                            if (!odd)
+                            {
+                                Add("</li>");
+                            }
+                            odd = !odd;
                         }
                     }
                 }

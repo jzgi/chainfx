@@ -89,7 +89,7 @@ namespace Samp
                         h.LI_("数　量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
-                        h.ACTBAR_().BUTTON("确定")._ACTBAR();
+                        h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
 
                         h._FORM();
                     }
@@ -130,7 +130,7 @@ namespace Samp
                     wc.GivePane(200, m =>
                     {
                         m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
-                        m.ACTBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._ACTBAR();
+                        m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
                     });
                 }
             }

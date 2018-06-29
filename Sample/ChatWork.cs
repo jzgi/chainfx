@@ -58,7 +58,7 @@ namespace Samp
                         if (o.msgs != null)
                         {
                             h.T("<main class=\"uk-card-body\">");
-                            for (int i = 0; i < o.msgs?.Length; i++)
+                            for (int i = 0; i < o.msgs.Length; i++)
                             {
                                 var m = o.msgs[i];
                                 h.P(m.text, m.name);
@@ -88,7 +88,7 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string orgid = wc[typeof(IOrgVar)];
+            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Chat>("SELECT * FROM chats WHERE orgid = @1", p => p.Set(orgid));
@@ -97,20 +97,23 @@ namespace Samp
                     h.TOOLBAR();
                     h.BOARD(arr, o =>
                     {
-                        h.T("<article>");
-                        h.T("<header class=\"uk-card-header\">").T(o.custname).T("</header>");
-                        h.T("<main class=\"uk-card-body\">");
-                        for (int i = 0; i < o.msgs?.Length; i++)
+                        h.T("<h4 class=\"uk-card-header\">").T(o.custname).T("</h4>");
+                        if (o.msgs != null)
                         {
-                            var m = o.msgs[i];
-                            h.P(m.text, m.name);
+                            h.T("<main class=\"uk-card-body\">");
+                            for (int i = 0; i < o.msgs.Length; i++)
+                            {
+                                var m = o.msgs[i];
+                                h.P(m.text, m.name);
+                            }
+                            h.T("</main>");
                         }
                         string text = null;
+                        h.T("<footer class=\"uk-card-footer\">");
                         h.FORM_();
-                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(OprChatVarWork.reply))._ROW();
+                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(OprChatVarWork.say))._ROW();
                         h._FORM();
-                        h.T("</main>");
-                        h.T("</article>");
+                        h.T("</footer>");
                     });
                 });
             }

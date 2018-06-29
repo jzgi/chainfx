@@ -162,7 +162,7 @@ namespace Samp
                         h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h._FIELDSET();
                         h.HIDDEN(nameof(url), url);
-                        h.ACTBAR_().BUTTON("/catch", 1, "确定")._ACTBAR();
+                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定")._BOTTOMBAR();
                         h._FORM();
                     }, title: "注册新帐号");
                 }

@@ -151,15 +151,14 @@ namespace Greatbone
             return this;
         }
 
-        public DbSql _IN_(string[] vals)
+        public DbSql _IN_(string[] vs)
         {
             Add(" IN (");
-            for (int i = 0; i < vals.Length; i++)
+            for (int i = 1; i <= vs.Length; i++)
             {
-                if (i > 0) Add(',');
-                Add('\'');
-                Add(vals[i]);
-                Add('\'');
+                if (i > 1) Add(',');
+                Add('v');
+                Add(i);
             }
             Add(')');
             return this;

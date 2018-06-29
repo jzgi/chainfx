@@ -13,7 +13,14 @@ namespace Greatbone
     {
         static readonly string[] PARAMS =
         {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
+            "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"
+        };
+
+        static readonly string[] INS =
+        {
+            "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
+            "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31", "v32"
         };
 
         readonly Service service;
@@ -1338,19 +1345,11 @@ namespace Greatbone
 
         public void PutNull(string name)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.AddWithValue(name, DBNull.Value);
         }
 
         public void Put(string name, JNumber v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<decimal>(name, NpgsqlDbType.Numeric)
             {
                 TypedValue = v.Decimal
@@ -1359,10 +1358,6 @@ namespace Greatbone
 
         public void Put(string name, bool v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<bool>(name, NpgsqlDbType.Boolean)
             {
                 TypedValue = v
@@ -1371,10 +1366,6 @@ namespace Greatbone
 
         public void Put(string name, short v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<short>(name, NpgsqlDbType.Smallint)
             {
                 TypedValue = v
@@ -1383,10 +1374,6 @@ namespace Greatbone
 
         public void Put(string name, int v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<int>(name, NpgsqlDbType.Integer)
             {
                 TypedValue = v
@@ -1395,10 +1382,6 @@ namespace Greatbone
 
         public void Put(string name, long v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<long>(name, NpgsqlDbType.Bigint)
             {
                 TypedValue = v
@@ -1407,10 +1390,6 @@ namespace Greatbone
 
         public void Put(string name, double v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<double>(name, NpgsqlDbType.Double)
             {
                 TypedValue = v
@@ -1419,10 +1398,6 @@ namespace Greatbone
 
         public void Put(string name, decimal v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter<decimal>(name, NpgsqlDbType.Money)
             {
                 TypedValue = v
@@ -1431,10 +1406,6 @@ namespace Greatbone
 
         public void Put(string name, DateTime v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             bool date = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
             command.Parameters.Add(new NpgsqlParameter<DateTime>(name, date ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
             {
@@ -1444,10 +1415,6 @@ namespace Greatbone
 
         public void Put(string name, string v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             int len = v?.Length ?? 0;
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, len)
             {
@@ -1457,10 +1424,6 @@ namespace Greatbone
 
         public void Put(string name, ArraySegment<byte> v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
             {
                 Value = (v.Array != null) ? (object) v : DBNull.Value
@@ -1469,10 +1432,6 @@ namespace Greatbone
 
         public void Put(string name, byte[] v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v?.Length ?? 0)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1481,10 +1440,6 @@ namespace Greatbone
 
         public void Put(string name, short[] v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1493,10 +1448,6 @@ namespace Greatbone
 
         public void Put(string name, int[] v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1505,10 +1456,6 @@ namespace Greatbone
 
         public void Put(string name, long[] v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1517,10 +1464,6 @@ namespace Greatbone
 
         public void Put(string name, string[] v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
                 Value = (v != null) ? (object) v : DBNull.Value
@@ -1529,10 +1472,6 @@ namespace Greatbone
 
         public void Put(string name, JObj v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -1551,10 +1490,6 @@ namespace Greatbone
 
         public void Put(string name, JArr v)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -1573,10 +1508,6 @@ namespace Greatbone
 
         public void Put(string name, IData v, byte proj = 0x0f)
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
@@ -1592,10 +1523,6 @@ namespace Greatbone
 
         public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
-            if (name == null)
-            {
-                name = PARAMS[index++];
-            }
             if (v == null)
             {
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
@@ -1622,97 +1549,97 @@ namespace Greatbone
 
         public IParams SetNull()
         {
-            PutNull(null);
+            PutNull(PARAMS[index++]);
             return this;
         }
 
         public IParams Set(bool v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(short v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(int v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(long v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(double v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(decimal v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(JNumber v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(DateTime v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(string v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(ArraySegment<byte> v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(byte[] v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(short[] v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(int[] v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(long[] v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
         public IParams Set(string[] v)
         {
-            Put(null, v);
+            Put(PARAMS[index++], v);
             return this;
         }
 
@@ -1728,13 +1655,22 @@ namespace Greatbone
 
         public IParams Set(IData v, byte proj = 0x0f)
         {
-            Put(null, v, proj);
+            Put(PARAMS[index++], v, proj);
             return this;
         }
 
         public IParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
-            Put(null, v, proj);
+            Put(PARAMS[index++], v, proj);
+            return this;
+        }
+
+        public IParams SetIn(string[] v)
+        {
+            for (int i = 1; i <= v.Length; i++)
+            {
+                Put(INS[i++], v);
+            }
             return this;
         }
     }
