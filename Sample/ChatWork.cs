@@ -28,30 +28,17 @@ namespace Samp
             string orgid = wc.Query[nameof(orgid)];
             using (var dc = NewDbContext())
             {
-                Chat[] arr;
-                if (orgid == null)
+                var arr = dc.Query<Chat>("SELECT * FROM chats WHERE custid = @1 AND orgid = @2", p => p.Set(myid).Set(orgid));
+                if (arr == null)
                 {
-                    arr = dc.Query<Chat>("SELECT * FROM chats WHERE custid = @1", p => p.Set(myid));
-                }
-                else
-                {
-                    arr = dc.Query<Chat>("SELECT * FROM chats WHERE custid = @1 AND orgid = @2", p => p.Set(myid).Set(orgid));
-                    if (arr == null)
+                    arr = new[]
                     {
-                        arr = new[]
-                        {
-                            new Chat
-                            {
-                                orgid = orgid,
-                                custwx = prin.wx,
-                                custname = prin.name
-                            }
-                        };
-                    }
+                        new Chat {orgid = orgid, custwx = prin.wx, custname = prin.name}
+                    };
                 }
                 wc.GivePage(200, h =>
                 {
-                    h.TOOLBAR();
+                    h.TOOLBAR(title: Label);
                     h.BOARD(arr, o =>
                     {
                         h.T("<h4 class=\"uk-card-header\">").T(orgs[orgid].name).T("</h4>");
@@ -68,7 +55,7 @@ namespace Samp
                         string text = null;
                         h.T("<footer class=\"uk-card-footer\">");
                         h.FORM_();
-                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(MyChatVarWork.say))._ROW();
+                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x0f).TOOL(nameof(MyChatVarWork.say))._ROW();
                         h._FORM();
                         h.T("</footer>");
                     });
@@ -95,25 +82,20 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.BOARD(arr, o =>
+                    h.ACCORDION(arr, o =>
                     {
-                        h.T("<h4 class=\"uk-card-header\">").T(o.custname).T("</h4>");
+                        h.T("<header class=\"uk-accordion-title\">").T(o.custname).T("</header>");
                         if (o.msgs != null)
                         {
-                            h.T("<main class=\"uk-card-body\">");
+                            h.T("<main class=\"uk-accordion-content uk-grid\">");
                             for (int i = 0; i < o.msgs.Length; i++)
                             {
                                 var m = o.msgs[i];
                                 h.P(m.text, m.name);
                             }
+                            h.VARTOOLS();
                             h.T("</main>");
                         }
-                        string text = null;
-                        h.T("<footer class=\"uk-card-footer\">");
-                        h.FORM_();
-                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x56).TOOL(nameof(OprChatVarWork.say))._ROW();
-                        h._FORM();
-                        h.T("</footer>");
                     });
                 });
             }

@@ -14,9 +14,19 @@ namespace Greatbone
                 return new[] {v};
             }
             int len = arr.Length;
-            E[] alloc = new E[len + 1];
-            Array.Copy(arr, alloc, len);
-            alloc[len] = v;
+            E[] alloc;
+            if (limit > 0 && limit <= len)
+            {
+                alloc = new E[limit];
+                Array.Copy(arr, len - limit + 1, alloc, 0, limit - 1);
+                alloc[limit - 1] = v;
+            }
+            else
+            {
+                alloc = new E[len + 1];
+                Array.Copy(arr, alloc, len);
+                alloc[len] = v;
+            }
             return alloc;
         }
 

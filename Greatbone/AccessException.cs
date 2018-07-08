@@ -9,9 +9,9 @@ namespace Greatbone
     {
         internal static readonly AccessException NoPrincipalEx = new AccessException(0, "no principal");
 
-        internal static readonly AccessException NullResultEx = new AccessException(1, "authorize null result");
+        internal static readonly AccessException NullResultEx = new AccessException(1, "access check with null result");
 
-        internal static readonly AccessException FalseResultEx = new AccessException(2, "authorize false result");
+        internal static readonly AccessException FalseResultEx = new AccessException(2, "access check with false result");
 
         readonly int code;
 

@@ -8,7 +8,7 @@ namespace Samp
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Org) obj).id);
+            CreateVar<V, string>(obj => ((Org)obj).id);
         }
     }
 

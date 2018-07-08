@@ -26,6 +26,7 @@ namespace Samp
                 h.LI("姓　名", prin.name);
                 h.LI("电　话", prin.tel);
                 h.LI("地　址", prin.addr);
+                h.LI("积　分", prin.credit);
                 h.T("<hr>");
                 h.COL_();
                 h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
@@ -93,15 +94,10 @@ namespace Samp
                     }
                     prin.name = name;
                     prin.tel = tel;
-                    wc.SetTokenCookie(prin, 0xff ^ CREDENTIAL);
+                    wc.SetTokenCookie(prin, 0xff ^ PRIVACY);
                     wc.GivePane(200); // close dialog
                 }
             }
-        }
-
-        [Ui("重新登录"), Tool(ButtonScript)]
-        public void rmtoken(WebContext wc)
-        {
         }
     }
 
@@ -127,28 +123,29 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            var orgs = Obtain<Map<string, Org>>();
             string orgid = wc[this];
-            var org = orgs[orgid];
+            var org = Obtain<Map<string, Org>>()[orgid];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
                 wc.GiveFrame(200, false, 60 * 15, org?.name);
-                return;
             }
-
-            wc.GivePage(200, h =>
+            else
             {
-                h.TOOLBAR();
-                h.UL_("uk-card uk-card-default uk-card-body");
-                h.LI("简　介", org.descr);
-                h.LI("经　理", org.mgrname, org.mgrtel);
-                h.LI("客　服", org.oprname, org.oprtel);
-                h._UL();
-            });
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.UL_("uk-card uk-card-default uk-card-body");
+                    h.LI("简　介", org.descr);
+                    h.LI("经　理", org.mgrname, org.mgrtel);
+                    h.LI("客　服", org.oprname, org.oprtel);
+                    h._UL();
+                });
+            }
         }
 
-        [Ui("人员"), Tool(ButtonOpen), UserAccess(OPRMGR)]
+        [UserAccess(OPRMGR)]
+        [Ui("人员"), Tool(ButtonOpen)]
         public async Task acl(WebContext wc, int cmd)
         {
             string orgid = wc[this];
@@ -201,21 +198,21 @@ namespace Samp
             });
         }
 
-        [Ui("状态"), Tool(ButtonShow), UserAccess(OPRMEM)]
-        public async Task status(WebContext ac)
+        [UserAccess(OPRMEM)]
+        [Ui("状态"), Tool(ButtonShow)]
+        public async Task status(WebContext wc)
         {
-            var orgs = Obtain<Map<string, Org>>();
-            User prin = (User) ac.Principal;
-            string orgid = ac[this];
-            var o = orgs[orgid];
+            string orgid = wc[this];
+            var org = Obtain<Map<string, Org>>()[orgid];
+            User prin = (User) wc.Principal;
             bool custsvc;
-            if (ac.GET)
+            if (wc.GET)
             {
-                custsvc = o.oprwx == prin.wx;
-                ac.GivePane(200, h =>
+                custsvc = org.oprwx == prin.wx;
+                wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(o.status), o.status, Statuses, "营业状态")._FIELDSET();
+                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(org.status), org.status, Statuses, "营业状态")._FIELDSET();
                     h.FIELDSET_("客服设置");
                     h.CHECKBOX(nameof(custsvc), custsvc, "我要作为上线客服");
                     h._FIELDSET();
@@ -224,29 +221,41 @@ namespace Samp
             }
             else
             {
-                var f = await ac.ReadAsync<Form>();
-                o.status = f[nameof(o.status)];
+                var f = await wc.ReadAsync<Form>();
+                org.status = f[nameof(org.status)];
                 custsvc = f[nameof(custsvc)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE orgs SET status = @1 WHERE id = @2", p => p.Set(o.status).Set(orgid));
+                    dc.Execute("UPDATE orgs SET status = @1 WHERE id = @2", p => p.Set(org.status).Set(orgid));
                     if (custsvc)
                     {
                         dc.Execute("UPDATE orgs SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(orgid));
-                        o.oprwx = prin.wx;
-                        o.oprtel = prin.tel;
-                        o.oprname = prin.name;
+                        org.oprwx = prin.wx;
+                        org.oprtel = prin.tel;
+                        org.oprname = prin.name;
                     }
                     else
                     {
                         dc.Execute("UPDATE orgs SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(orgid));
-                        o.oprwx = null;
-                        o.oprtel = null;
-                        o.oprname = null;
+                        org.oprwx = null;
+                        org.oprtel = null;
+                        org.oprname = null;
                     }
                 }
-                ac.GivePane(200);
+                wc.GivePane(200);
             }
+        }
+
+        [Ui("零售点", "我的零售点"), Tool(AOpen)]
+        public void pos(WebContext wc)
+        {
+            User prin = (User) wc.Principal;
+            wc.GivePane(200, h =>
+            {
+                h.FORM_().FIELDSET_();
+                h.QRCODE(SampUtility.NETADDR + "/list?posid=" + prin.id);
+                h._FIELDSET()._FORM();
+            }, false, 300);
         }
     }
 }

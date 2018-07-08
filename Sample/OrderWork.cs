@@ -11,7 +11,7 @@ namespace Samp
     {
         protected OrderWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>((obj) => ((Order)obj).id);
+            CreateVar<V, int>((obj) => ((Order) obj).id);
         }
 
         // for customer side viewing
@@ -32,9 +32,8 @@ namespace Samp
                         h.UL_("uk-list uk-list-divider uk-card-body");
 
                         h.LI("收　货", o.custaddr, o.custname, o.custtel);
-
                         h.LI_();
-                        h.UL_("uk-list uk-list-divider");
+                        h.UL_("uk-list uk-list-divider uk-width-1-1");
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
@@ -42,7 +41,7 @@ namespace Samp
                             h.ICO_(w: 0x16).T('/').T(o.orgid).T('/').T(oi.name).T("/icon")._ICO();
                             if (o.status == CREATED)
                             {
-                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P();
+                                h.P(oi.name, w: 0x13).P_(w: 0x13).CUR(oi.price).T("／").T(oi.unit)._P();
                                 h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MyOrderVarWork.Upd), i, oi.qty.ToString())._P();
                             }
                             else
@@ -53,11 +52,10 @@ namespace Samp
                         }
                         h._UL();
                         h._LI();
-
                         h.LI_("总　额").CUR(o.total)._LI();
-                        if (o.comp)
+                        if (o.posid > 0)
                         {
-                            h.P_("净额", w: 0x12).CUR(o.net)._P();
+                            h.P_("净额", w: 0x12).CUR(o.points)._P();
                         }
                         h._UL(); // uk-card-body
 
@@ -80,26 +78,22 @@ namespace Samp
                     o =>
                     {
                         h.T("<section class=\"uk-accordion-title\">");
-                        h.T("<div class=\"uk-width-expand\">").T(o.custname).T("</div>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<h4 class=\"uk-width-expand\">").T(o.custname).T("</h4>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</section>");
 
                         h.T("<section class=\"uk-accordion-content uk-grid\">");
-                        h.P_("收货").T(o.custname).T(o.custaddr).T(o.custtel)._P();
+                        h.P_("收　货").SP().T(o.custname).SP().T(o.custaddr).SP().T(o.custtel)._P();
                         h.UL_("uk-grid");
-                        h.LI_().LABEL("品名", 0x12).LABEL("单价", 0x16).LABEL("购量", 0x16).LABEL("到货", 0x16)._LI();
                         for (int i = 0; i < o.items.Length; i++)
                         {
                             var oi = o.items[i];
                             h.LI_();
-                            h.SPAN_(0x12).T(oi.name).T(" (").T(oi.unit).T(")")._SPAN().CUR(oi.price, w: 0x16).SPAN(oi.qty, w: 0x16).NUMIF(oi.ship, w: 0x16);
+                            h.SPAN_(0x11).T(oi.name)._SPAN().SPAN_(w: 0x23).T('￥').T(oi.price).T("／").T(oi.unit)._SPAN().SPAN(oi.qty, w: 0x13);
                             h._LI();
                         }
                         h._UL();
-                        h.P_("总额", w: 0x12).CUR(o.total)._P();
-                        if (o.comp)
-                        {
-                            h.P_("净额", w: 0x12).CUR(o.net)._P();
-                        }
+                        h.P_("总　额", w: 0x12).CUR(o.total)._P();
+
                         h.VARTOOLS();
 
                         h.T("</section>");
@@ -124,7 +118,7 @@ namespace Samp
             }
         }
 
-        [Ui("历史订单"), Tool(AOpen, size: 3)]
+        [Ui("历史订单"), Tool(AOpen, size: 2)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];

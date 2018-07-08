@@ -55,8 +55,6 @@ namespace Greatbone
 
         void Clear(bool reread = true)
         {
-//            if (reread)
-//            {
             // reader reset
             if (reader != null)
             {
@@ -64,7 +62,6 @@ namespace Greatbone
                 reader = null;
             }
             ordinal = 0;
-//            }
             // command parameter reset
             command.Parameters.Clear();
             index = 0;

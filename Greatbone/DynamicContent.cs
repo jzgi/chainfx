@@ -460,7 +460,7 @@ namespace Greatbone
             return true;
         }
 
-        public ArraySegment<byte> ToByteAs()
+        public ArraySegment<byte> ToBytea()
         {
             return new ArraySegment<byte>(bytebuf, 0, count);
         }

@@ -89,7 +89,7 @@ namespace Greatbone
                 }
             }
             tooled = roll.ToArray();
-            
+
             if (tooled != null) // sort by group
             {
                 Array.Sort(tooled, (a, b) => a.Group - b.Group);

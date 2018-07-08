@@ -120,11 +120,8 @@ audio,
 canvas,
 img,
 video {
-    /* 1 */
     max-width: 100%;
-    /* 2 */
     height: auto;
-    /* 3 */
     box-sizing: border-box;
 }
 
@@ -201,7 +198,7 @@ h4,
 h5,
 .uk-h5 {
     font-size: 0.875rem;
-    margin: 0.125rem 0;
+    margin: 0.25rem 0;
 }
 
 h6,
@@ -281,7 +278,6 @@ pre {
     color: #333;
     -moz-tab-size: 4;
     tab-size: 4;
-    /* 1 */
     overflow: auto;
     padding: 10px;
     border: 1px solid #e5e5e5;
@@ -383,11 +379,7 @@ a.uk-link-heading:hover,
     text-decoration: none;
 }
 
-/* Reset
- ========================================================================== */
-/*
- * `!important` needed to override inverse component
- */
+
 a.uk-link-reset,
 a.uk-link-reset:hover,
 .uk-link-reset a,
@@ -396,17 +388,13 @@ a.uk-link-reset:hover,
     text-decoration: none !important;
 }
 
-/* ========================================================================
-   Component: Heading
- ========================================================================== */
-/* Primary
- ========================================================================== */
+
 .uk-heading-primary {
     font-size: 2.625rem;
     line-height: 1.2;
 }
 
-/* Tablet landscape and bigger */
+
 @media (min-width: 960px) {
     .uk-heading-primary {
         font-size: 3.75rem;
@@ -414,14 +402,13 @@ a.uk-link-reset:hover,
     }
 }
 
-/* Hero
- ========================================================================== */
+
 .uk-heading-hero {
     font-size: 4rem;
     line-height: 1.1;
 }
 
-/* Phone landscape and bigger */
+
 @media (min-width: 640px) {
     .uk-heading-hero {
         font-size: 6rem;
@@ -429,7 +416,7 @@ a.uk-link-reset:hover,
     }
 }
 
-/* Tablet landscape and bigger */
+
 @media (min-width: 960px) {
     .uk-heading-hero {
         font-size: 8rem;
@@ -437,8 +424,7 @@ a.uk-link-reset:hover,
     }
 }
 
-/* Divider
- ========================================================================== */
+
 .uk-heading-divider {
     padding-bottom: 10px;
     border-bottom: 1px solid #e5e5e5;
@@ -450,13 +436,10 @@ a.uk-link-reset:hover,
 
 .uk-heading-bullet::before {
     content: "";
-    /* 1 */
     display: inline-block;
-    /* 2 */
     position: relative;
     top: calc(-0.1 * 1em);
     vertical-align: middle;
-    /* 3 */
     height: 0.9em;
     margin-right: 10px;
     border-left: 5px solid #e5e5e5;
@@ -494,13 +477,11 @@ a.uk-link-reset:hover,
 }
 
 [class*='uk-divider'] {
-    /* 1 */
     border: none;
-    /* 2 */
     margin-bottom: 20px;
 }
 
-/* Add margin if adjacent element */
+
 * + [class*='uk-divider'] {
     margin-top: 20px;
 }
@@ -544,8 +525,6 @@ a.uk-link-reset:hover,
     border-top: 1px solid #e5e5e5;
     vertical-align: top;
 }
-
-
 
 .uk-list {
     padding: 0;
@@ -638,24 +617,19 @@ a.uk-link-reset:hover,
     float: left;
 }
 
-/* Size modifier
- ========================================================================== */
+
 .uk-list-large > li:nth-child(n+2),
 .uk-list-large > li > ul {
     margin-top: 20px;
 }
 
-/*
- * Divider
- */
+
 .uk-list-large.uk-list-divider > li:nth-child(n+2) {
     margin-top: 20px;
     padding-top: 20px;
 }
 
-/*
- * Striped
- */
+
 .uk-list-large.uk-list-striped > li {
     padding: 20px 10px;
 }
@@ -669,12 +643,7 @@ a.uk-link-reset:hover,
     margin-top: 0;
 }
 
-/* ========================================================================
-   Component: Description list
- ========================================================================== */
-/*
- * Term
- */
+
 .uk-description-list > dt {
     color: #333;
     font-size: 0.875rem;
@@ -686,28 +655,14 @@ a.uk-link-reset:hover,
     margin-top: 20px;
 }
 
-/*
- * Description
- */
-/* Style modifier
- ========================================================================== */
-/*
- * Line
- */
+
 .uk-description-list-divider > dt:nth-child(n+2) {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid #f2f2f2;
 }
 
-/* ========================================================================
-   Component: Table
- ========================================================================== */
-/*
- * 1. Remove most spacing between table cells.
- * 2. Behave like a block element
- * 3. Style
- */
+
 .uk-table {
     /* 1 */
     border-collapse: collapse;
@@ -742,36 +697,28 @@ a.uk-link-reset:hover,
     margin-bottom: 0;
 }
 
-/* Footer
- ========================================================================== */
+
 .uk-table tfoot {
     font-size: 0.875rem;
 }
 
-/* Caption
- ========================================================================== */
+
 .uk-table caption {
     font-size: 0.875rem;
     text-align: left;
     color: #999;
 }
 
-/* Row
- ========================================================================== */
-.uk-table > tr.uk-active,
+\.uk-table > tr.uk-active,
 .uk-table tbody tr.uk-active {
     background: #ffd;
 }
 
-/* Alignment modifier
- ========================================================================== */
 .uk-table-middle,
 .uk-table-middle td {
     vertical-align: middle !important;
 }
 
-/* Style modifiers
- ========================================================================== */
 /*
  * Divider
  */
@@ -781,9 +728,7 @@ a.uk-link-reset:hover,
     border-top: 1px solid #e5e5e5;
 }
 
-/*
- * Striped
- */
+
 .uk-table-striped > tr:nth-of-type(odd),
 .uk-table-striped tbody tr:nth-of-type(odd) {
     background: #f8f8f8;
@@ -799,15 +744,12 @@ a.uk-link-reset:hover,
     background: #ffd;
 }
 
-/* Size modifier
- ========================================================================== */
 .uk-table-small th,
 .uk-table-small td {
     padding: 10px 12px;
 }
 
-/* Justify modifier
- ========================================================================== */
+
 .uk-table-justify th:first-child,
 .uk-table-justify td:first-child {
     padding-left: 0;
@@ -818,8 +760,6 @@ a.uk-link-reset:hover,
     padding-right: 0;
 }
 
-/* Cell size modifier
- ========================================================================== */
 .uk-table-shrink {
     width: 1px;
 }
@@ -894,22 +834,8 @@ a.uk-link-reset:hover,
     transition: background-color 0.1s linear;
 }
 
-/* ========================================================================
-   Component: Icon
- ========================================================================== */
-/*
- * Note: 1. - 7. is required for `button` elements. Needed for Close and Form Icon component.
- * 1. Remove margins in Chrome, Safari and Opera.
- * 2. Remove borders for `button`.
- * 3. Remove border-radius in Chrome.
- * 4. Address `overflow` set to `hidden` in IE.
- * 5. Correct `font` properties and `color` not being inherited for `button`.
- * 6. Remove the inheritance of text transform in Edge, Firefox, and IE.
- * 7. Remove default `button` padding and background color
- * 8. Style
- * 9. Fill all SVG elements with the current text color if no `fill` attribute is set
- * 10. Let the container fit the height of the icon
- */
+
+
 .uk-icon {
     /* 1 */
     margin: 0;
@@ -969,11 +895,7 @@ button.uk-icon:not(:disabled) {
     transform: translate(0, 0);
 }
 
-/* Image modifier
- ========================================================================== */
-/*
- * Display images in icon dimensions
- */
+
 .uk-icon-image {
     width: 20px;
     height: 20px;
@@ -983,11 +905,6 @@ button.uk-icon:not(:disabled) {
     vertical-align: middle;
 }
 
-/* Style modifiers
- ========================================================================== */
-/*
- * Link
- */
 .uk-icon-link {
     color: #999;
 }
@@ -1010,7 +927,6 @@ button.uk-icon:not(:disabled) {
     height: 36px;
     border-radius: 500px;
     background: #f8f8f8;
-    color: #999;
     vertical-align: middle;
     color: #4cabb1;
     display: inline-flex;
@@ -1020,7 +936,10 @@ button.uk-icon:not(:disabled) {
     transition-property: color, background-color;
 }
 
-/* Hover + Focus */
+.uk-icon-button.uk-light {
+    background-color: inherit;
+}
+
 .uk-icon-button:hover,
 .uk-icon-button:focus {
     background-color: #ebebeb;
@@ -1028,42 +947,23 @@ button.uk-icon:not(:disabled) {
     outline: none;
 }
 
-/* OnClick + Active */
 .uk-icon-button:active,
 .uk-icon-button.uk-active {
     background-color: #4cabb1;
     color: #fff;
 }
 
-/* ========================================================================
-   Component: Form Range
- ========================================================================== */
-/*
- * 1. Normalize and defaults
- * 2. Prevent content overflow if a fixed width is used
- * 3. Take the full width
- * 4. Remove default style
- * 5. Remove white background in Chrome
- * 6. Remove padding in IE11
- */
 .uk-range {
-    /* 1 */
     box-sizing: border-box;
     margin: 0;
     vertical-align: middle;
-    /* 2 */
     max-width: 100%;
-    /* 3 */
     width: 100%;
-    /* 4 */
     -webkit-appearance: none;
-    /* 5 */
     background: transparent;
-    /* 6 */
     padding: 0;
 }
 
-/* Focus */
 .uk-range:focus {
     outline: none;
 }
@@ -1190,7 +1090,6 @@ button.uk-icon:not(:disabled) {
     background: #d2d2d2;
 }
 
-
 .uk-top-bar {
     position: fixed;
     height: 2.75rem;
@@ -1231,9 +1130,6 @@ button.uk-icon:not(:disabled) {
     border-top: 1px solid #dcdcdc;
 }
 
-
-
-
 .uk-fieldset {
     border: none;
     margin: 0.75rem 0;
@@ -1268,8 +1164,6 @@ button.uk-icon:not(:disabled) {
 .uk-fieldset > ul > li:nth-child(n+2) {
     border-top: 1px solid #dcdcdc;
 }
-
-
 
 .uk-radio,
 .uk-checkbox {
@@ -1698,7 +1592,6 @@ select.uk-form-width-xsmall {
     padding-right: 40px;
 }
 
-
 .uk-button {
     text-decoration: none;
     text-align: center;
@@ -1934,7 +1827,6 @@ button.uk-button {
     z-index: 1;
 }
 
-
 .uk-section {
     box-sizing: border-box;
     padding-top: 40px;
@@ -2019,7 +1911,6 @@ button.uk-button {
     }
 }
 
-
 .uk-section-default {
     background: #fff;
 }
@@ -2044,8 +1935,6 @@ button.uk-button {
 .uk-section-secondary {
     background: #222;
 }
-
-
 
 .uk-container {
     box-sizing: content-box;
@@ -2575,7 +2464,6 @@ button.uk-button {
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
 }
 
-
 /*
  * Primary
  */
@@ -2593,7 +2481,6 @@ button.uk-button {
 .uk-card-primary .uk-card-body {
     background-color: #fafafa;
 }
-
 
 /*
  * Secondary
@@ -2770,12 +2657,7 @@ button.uk-button {
     color: #333;
 }
 
-/* ========================================================================
-   Component: Marker
- ========================================================================== */
-/*
- * Addopts `uk-icon`
- */
+
 .uk-marker {
     padding: 5px;
     background: #222;
@@ -2820,9 +2702,8 @@ button.uk-button {
     border-radius: 50%;
 }
 
-/* ========================================================================
-   Component: Alert
- ========================================================================== */
+
+
 .uk-alert {
     position: relative;
     margin-bottom: 20px;
@@ -2843,9 +2724,7 @@ button.uk-button {
     margin-bottom: 0;
 }
 
-/* Close
- * Adopts `uk-close`
- ========================================================================== */
+
 .uk-alert-close {
     position: absolute;
     top: 20px;
@@ -2870,11 +2749,7 @@ button.uk-button {
     opacity: 0.8;
 }
 
-/* Style modifiers
- ========================================================================== */
-/*
- * Primary
- */
+
 .uk-alert-primary {
     background: #d8eafc;
     color: #007aff;
@@ -2938,16 +2813,15 @@ button.uk-button {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    margin-left: auto;
+    float: right;
 }
 
-.uk-card-header > .uk-badge {
-    margin-left: auto;
-}
 
 .uk-badge-primary {
-    color: #4cabb1;
-    border-top: 1px solid #4cabb1;
-    border-bottom: 1px solid #4cabb1;
+    color: #bd7325;
+    border-top: 1px solid #bd7325;
+    border-bottom: 1px solid #bd7325;
 }
 
 .uk-badge-secondary {
@@ -2963,9 +2837,9 @@ button.uk-button {
 }
 
 .uk-badge-warning {
-    color: #e36209 ;
-    border-top: 1px solid #e36209 ;
-    border-bottom: 1px solid #e36209 ;
+    color: #e36209;
+    border-top: 1px solid #e36209;
+    border-bottom: 1px solid #e36209;
 }
 
 .uk-badge-danger {
@@ -2973,7 +2847,6 @@ button.uk-button {
     border-top: 1px solid #ff3b30;
     border-bottom: 1px solid #ff3b30;
 }
-
 
 .uk-label {
     text-transform: uppercase;
@@ -2999,7 +2872,6 @@ label.uk-label {
     color: #e36209;
     background-color: #f2f2f2;
 }
-
 
 .uk-overlay {
     padding: 16px 16px;
@@ -3477,7 +3349,6 @@ ul.uk-nav-sub {
 .uk-nav-parent-icon > .uk-parent.uk-open > a::after {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolyline%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%221.1%22%20points%3D%221%204%207%2010%2013%204%22%20%2F%3E%0A%3C%2Fsvg%3E");
 }
-
 
 .uk-nav-header {
     padding: 4px 0;
@@ -4496,12 +4367,7 @@ ul.uk-nav-sub {
     background-color: transparent;
 }
 
-/* Modifier: 'uk-thumbnav-vertical'
- ========================================================================== */
-/*
- * 1. Change direction
- * 2. Gutter
- */
+
 .uk-thumbnav-vertical {
     /* 1 */
     flex-direction: column;
@@ -4583,7 +4449,6 @@ ul.uk-nav-sub {
     margin-top: 0;
     background-color: #fff;
     padding: 8px;
-    border-top: 1px solid #dcdcdc;
 }
 
 .uk-accordion-content::before,
@@ -4730,9 +4595,7 @@ ul.uk-nav-sub {
     color: #333;
 }
 
-/* Direction / Alignment modifiers
- ========================================================================== */
-/* Direction */
+
 [class*='uk-dropdown-top'] {
     margin-top: -10px;
 }
@@ -4749,12 +4612,10 @@ ul.uk-nav-sub {
     margin-left: 10px;
 }
 
-/* Grid modifiers
- ========================================================================== */
+
 .uk-dropdown-stack .uk-dropdown-grid > * {
     width: 100% !important;
 }
-
 
 .uk-modal {
     display: none;
@@ -4764,7 +4625,7 @@ ul.uk-nav-sub {
     bottom: 0;
     left: 0;
     z-index: 1010;
-    overflow-y: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 16px 16px;
     background: rgba(0, 0, 0, 0.6);
@@ -4792,12 +4653,7 @@ ul.uk-nav-sub {
     opacity: 1;
 }
 
-/* Page
- ========================================================================== */
-/*
- * Prevent scrollbars
- */
-.uk-modal-page {
+\.uk-modal-page {
     overflow: hidden;
 }
 
@@ -4848,7 +4704,6 @@ ul.uk-nav-sub {
     flex: 1;
 }
 
-
 .uk-modal-small {
     padding: 0;
 }
@@ -4874,7 +4729,6 @@ ul.uk-nav-sub {
     flex: 1;
 }
 
-
 .uk-modal-large {
     padding: 0;
 }
@@ -4882,7 +4736,7 @@ ul.uk-nav-sub {
 .uk-modal-large .uk-modal-dialog {
     position: relative;
     margin: 4rem auto;
-    height: 80%;
+    height: 85%;
     max-height: 800px;
     width: 90%;
     max-width: 800px;
@@ -4899,7 +4753,6 @@ ul.uk-nav-sub {
     transform: translateY(0);
     flex: 1;
 }
-
 
 .uk-modal-side {
     padding: 0;
@@ -5388,7 +5241,6 @@ ul.uk-nav-sub {
 .uk-sticky.uk-animation-reverse {
     animation-duration: 0.2s;
 }
-
 
 .uk-offcanvas {
     display: none;
@@ -7900,8 +7752,7 @@ iframe.uk-cover {
     margin-bottom: 0;
 }
 
-/* Resize
- ========================================================================== */
+
 .uk-resize {
     resize: both;
 }
@@ -7910,8 +7761,7 @@ iframe.uk-cover {
     resize: vertical;
 }
 
-/* Display
- ========================================================================== */
+
 .uk-display-block {
     display: block !important;
 }
@@ -7937,8 +7787,7 @@ iframe.uk-cover {
     overflow: hidden;
 }
 
-/* Height
- ========================================================================== */
+
 [class*='uk-height'] {
     box-sizing: border-box;
 }
@@ -7985,12 +7834,7 @@ iframe.uk-cover {
     max-height: 450px;
 }
 
-/* Responsive objects
- ========================================================================== */
-/*
- * Preserve original dimensions
- * Because `img, `video`, `canvas` and  `audio` are already responsive by default, see Base component
- */
+
 .uk-preserve-width,
 .uk-preserve-width audio,
 .uk-preserve-width canvas,
@@ -8317,9 +8161,9 @@ iframe.uk-cover {
     transform-origin: 100% 100%;
 }
 
-/* ========================================================================
-   Component: Flex
- ========================================================================== */
+
+
+
 .uk-flex {
     display: flex;
 }
@@ -8338,12 +8182,7 @@ iframe.uk-cover {
     display: none;
 }
 
-/* Alignment
- ========================================================================== */
-/*
- * Align items along the main axis of the current line of the flex container
- * Row: Horizontal
- */
+
 .uk-flex-left {
     justify-content: flex-start;
 }
@@ -8536,11 +8375,7 @@ iframe.uk-cover {
     align-content: space-around;
 }
 
-/* Item ordering
- ========================================================================== */
-/*
- * Default is 0
- */
+
 .uk-flex-first {
     order: -1;
 }
@@ -8549,7 +8384,6 @@ iframe.uk-cover {
     order: 99;
 }
 
-/* Phone landscape and bigger */
 @media (min-width: 640px) {
     .uk-flex-first\@s {
         order: -1;
@@ -8560,7 +8394,6 @@ iframe.uk-cover {
     }
 }
 
-/* Tablet landscape and bigger */
 @media (min-width: 960px) {
     .uk-flex-first\@m {
         order: -1;
@@ -8571,7 +8404,6 @@ iframe.uk-cover {
     }
 }
 
-/* Desktop and bigger */
 @media (min-width: 1200px) {
     .uk-flex-first\@l {
         order: -1;
@@ -8582,7 +8414,6 @@ iframe.uk-cover {
     }
 }
 
-/* Large screen and bigger */
 @media (min-width: 1600px) {
     .uk-flex-first\@xl {
         order: -1;
@@ -8593,16 +8424,7 @@ iframe.uk-cover {
     }
 }
 
-/* Item dimensions
- ========================================================================== */
-/*
- * Initial: 0 1 auto
- * Content dimensions, but shrinks
- */
-/*
- * No Flex: 0 0 auto
- * Content dimensions
- */
+
 .uk-flex-none {
     flex: none;
 }
@@ -8623,12 +8445,8 @@ iframe.uk-cover {
     flex: 1;
 }
 
-/* ========================================================================
-   Component: Margin
- ========================================================================== */
-/*
- * Default
- */
+
+
 .uk-margin {
     margin-bottom: 20px;
 }
@@ -8653,8 +8471,7 @@ iframe.uk-cover {
     margin-right: 12px !important;
 }
 
-/* Small
- ========================================================================== */
+
 .uk-margin-small {
     margin-bottom: 8px;
 }
@@ -8679,8 +8496,7 @@ iframe.uk-cover {
     margin-right: 8px !important;
 }
 
-/* Medium
- ========================================================================== */
+
 .uk-margin-medium {
     margin-bottom: 24px;
 }
@@ -8705,8 +8521,7 @@ iframe.uk-cover {
     margin-right: 24px !important;
 }
 
-/* Large
- ========================================================================== */
+
 .uk-margin-large {
     margin-bottom: 32px;
 }
@@ -8758,9 +8573,8 @@ iframe.uk-cover {
     }
 }
 
-/* XLarge
- ========================================================================== */
-.uk-margin-xlarge {
+
+\.uk-margin-xlarge {
     margin-bottom: 70px;
 }
 
@@ -8811,8 +8625,7 @@ iframe.uk-cover {
     }
 }
 
-/* Remove
- ========================================================================== */
+
 .uk-margin-remove {
     margin: 0 !important;
 }
@@ -8842,8 +8655,7 @@ iframe.uk-cover {
     margin-top: 0 !important;
 }
 
-/* Auto
- ========================================================================== */
+
 .uk-margin-auto {
     margin-left: auto !important;
     margin-right: auto !important;
@@ -8870,9 +8682,7 @@ iframe.uk-cover {
     margin-bottom: auto !important;
 }
 
-/* ========================================================================
-   Component: Padding
- ========================================================================== */
+
 .uk-padding {
     padding: 16px;
 }
@@ -8960,11 +8770,7 @@ iframe.uk-cover {
     padding-right: 0 !important;
 }
 
-/* ========================================================================
-   Component: Position
- ========================================================================== */
-/* Directions
- ========================================================================== */
+
 [class*='uk-position-top'],
 [class*='uk-position-bottom'],
 [class*='uk-position-left'],
@@ -8973,9 +8779,7 @@ iframe.uk-cover {
     position: absolute !important;
 }
 
-/* Edges
- ========================================================================== */
-/* Don't use `width: 100%` because it is wrong if the parent has padding. */
+
 .uk-position-top {
     top: 0;
     left: 0;
@@ -9000,8 +8804,6 @@ iframe.uk-cover {
     right: 0;
 }
 
-/* Corners
- ========================================================================== */
 .uk-position-top-left {
     top: 0;
     left: 0;
@@ -9022,18 +8824,12 @@ iframe.uk-cover {
     right: 0;
 }
 
-/*
- * Center
- * 1. Fix text wrapping if content is larger than 50% of the container (Not working in Firefox)
- * 2. Fix text wrapping for Firefox
- */
+
 .uk-position-center {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* 1 */
     display: table;
-    /* 2 */
     width: -moz-max-content;
     max-width: 100%;
     box-sizing: border-box;
@@ -9085,8 +8881,7 @@ iframe.uk-cover {
     bottom: 0;
 }
 
-/* Cover
- ========================================================================== */
+
 .uk-position-cover {
     position: absolute;
     top: 0;
@@ -9095,8 +8890,7 @@ iframe.uk-cover {
     right: 0;
 }
 
-/* Utility
- ========================================================================== */
+
 .uk-position-relative {
     position: relative !important;
 }
@@ -9113,11 +8907,7 @@ iframe.uk-cover {
     z-index: 1;
 }
 
-/* Margin modifier
- ========================================================================== */
-/*
- * Small
- */
+
 .uk-position-small {
     margin: 15px;
 }
@@ -9199,14 +8989,8 @@ iframe.uk-cover {
     }
 }
 
-/* ========================================================================
-   Component: Transition
- ========================================================================== */
-/*
- * Using multiple selectors to exclude `uk-transition-toggle`
- * Note: Transitions don't work with `uk-postion-center-*` classes because they also use `transform`
- *       Just put the transition in an extra `div`
- */
+
+
 .uk-transition-fade,
 [class*='uk-transition-scale'],
 [class*='uk-transition-slide'] {
@@ -9321,7 +9105,6 @@ iframe.uk-cover {
     transform: translateX(50px);
 }
 
-/* Show */
 .uk-transition-toggle:hover [class*='uk-transition-slide'],
 .uk-transition-toggle.uk-hover [class*='uk-transition-slide'],
 .uk-transition-toggle:focus [class*='uk-transition-slide'],
@@ -9330,25 +9113,16 @@ iframe.uk-cover {
     transform: translateX(0) translateY(0);
 }
 
-/* Opacity modifier
-========================================================================== */
 .uk-transition-opaque {
     opacity: 1;
 }
 
-/* Duration modifiers
-========================================================================== */
 .uk-transition-slow {
     transition-duration: 0.7s;
 }
 
-/* ========================================================================
-   Component: Visibility
- ========================================================================== */
-/*
- * Hidden
- * `hidden` attribute also set here to make it stronger
- */
+
+
 [hidden],
 .uk-hidden {
     display: none !important;
@@ -9382,49 +9156,34 @@ iframe.uk-cover {
     }
 }
 
-/*
- * Visible
- */
-/* Phone portrait and smaller */
 @media (max-width: 639px) {
     .uk-visible\@s {
         display: none !important;
     }
 }
 
-/* Phone landscape and smaller */
 @media (max-width: 959px) {
     .uk-visible\@m {
         display: none !important;
     }
 }
 
-/* Tablet landscape and smaller */
 @media (max-width: 1199px) {
     .uk-visible\@l {
         display: none !important;
     }
 }
 
-/* Desktop and smaller */
 @media (max-width: 1599px) {
     .uk-visible\@xl {
         display: none !important;
     }
 }
 
-/* Visibility
- ========================================================================== */
 .uk-invisible {
     visibility: hidden !important;
 }
 
-/* Hover
- ========================================================================== */
-/*
- * Hidden
- * Can't use `display: hidden` because it's not focusable. This is accessible through keyboard.
- */
 .uk-visible-toggle:not(:hover):not(.uk-hover) .uk-hidden-hover:not(:focus) {
     position: absolute !important;
     width: 0 !important;

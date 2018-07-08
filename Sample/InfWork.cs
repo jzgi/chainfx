@@ -9,7 +9,7 @@ namespace Samp
     {
         protected InfWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>(obj => ((Inf)obj).id);
+            CreateVar<V, int>(obj => ((Inf) obj).id);
         }
     }
 
@@ -38,7 +38,7 @@ namespace Samp
                         h._COL();
                         h.T("</a>");
                     }, li: "uk-card uk-card-primary");
-                }, title: "家庭健康如此行");
+                }, title: "健康如此行");
             }
         }
     }

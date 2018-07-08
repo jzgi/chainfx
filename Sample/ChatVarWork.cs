@@ -34,7 +34,7 @@ namespace Samp
                 if (dc.Query1("SELECT msgs FROM chats WHERE orgid = @1 AND custid = @2", p => p.Set(orgid).Set(prin.id)))
                 {
                     dc.Let(out Msg[] msgs);
-                    msgs = msgs.AddOf(msg);
+                    msgs = msgs.AddOf(msg, limit: 10);
                     dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(prin.id));
                 }
                 else
@@ -62,28 +62,35 @@ namespace Samp
         {
         }
 
-        [Ui("发送"), Tool(Button)]
+        [Ui("回复"), Tool(ButtonShow)]
         public async Task say(WebContext wc)
         {
-            string orgid = wc[-1];
+            string orgid = wc[-2];
             var orgs = Obtain<Map<string, Org>>();
             int custid = wc[this];
             User prin = (User) wc.Principal;
             string text = null;
-            var f = await wc.ReadAsync<Form>();
-            text = f[nameof(text)];
-            string custwc = null;
-            using (var dc = NewDbContext())
+            if (wc.GET)
             {
-                if (dc.Query1("SELECT custwc, msgs FROM chats WHERE orgid = @1 AND custid = @2", p => p.Set(orgid).Set(custid)))
-                {
-                    dc.Let(out custwc).Let(out Msg[] msgs);
-                    msgs = msgs.AddOf(new Msg {name = prin.name, text = text});
-                    dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(custid));
-                }
+                wc.GivePane(200, h => { h.FORM_().FIELDSET_().TEXTAREA(nameof(text), text, max: 100, min: 1)._FIELDSET()._FORM(); });
             }
-            await PostSendAsync(custwc, orgs[orgid].name, text, SampUtility.NETADDR + "/my//chat/?orgid=" + orgid);
-            wc.GiveRedirect("../");
+            else
+            {
+                var f = await wc.ReadAsync<Form>();
+                text = f[nameof(text)];
+                string custwx = null;
+                using (var dc = NewDbContext())
+                {
+                    if (dc.Query1("SELECT custwx, msgs FROM chats WHERE orgid = @1 AND custid = @2", p => p.Set(orgid).Set(custid)))
+                    {
+                        dc.Let(out custwx).Let(out Msg[] msgs);
+                        msgs = msgs.AddOf(new Msg {name = prin.name, text = text}, limit: 10);
+                        dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(custid));
+                    }
+                }
+                await PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
+                wc.GivePane(200);
+            }
         }
     }
 }

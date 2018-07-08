@@ -14,7 +14,7 @@ namespace Samp
     {
         public SampService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<SampVarWork, string>(obj => ((Org)obj).id);
+            CreateVar<SampVarWork, string>(obj => ((Org) obj).id);
 
             Create<PubInfWork>("inf");
 
@@ -74,11 +74,11 @@ namespace Samp
                 {
                     if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
                     {
-                        prin = dc.ToObject<User>(0xff ^ User.CREDENTIAL);
+                        prin = dc.ToObject<User>(0xff ^ User.PRIVACY);
                     }
                     else
                     {
-                        prin = new User { wx = openid }; // create a minimal principal object
+                        prin = new User {wx = openid}; // create a minimal principal object
                     }
                 }
             }
@@ -113,7 +113,7 @@ namespace Samp
             {
                 // set token success
                 wc.Principal = prin;
-                wc.SetTokenCookie(prin, 0xff ^ User.CREDENTIAL);
+                wc.SetTokenCookie(prin, 0xff ^ User.PRIVACY);
             }
             return true;
         }
@@ -122,7 +122,7 @@ namespace Samp
         {
             if (cmd == 1) // handle form submission
             {
-                var prin = (User)wc.Principal;
+                var prin = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
                 string name = f[nameof(name)];
                 string tel = f[nameof(tel)];
@@ -130,13 +130,13 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<User>("INSERT INTO users (name, wx, tel) VALUES (@1, @2, @3) RETURNING *", p => p.Set(name).Set(prin.wx).Set(tel));
-                    wc.SetTokenCookie(o, 0xff ^ User.CREDENTIAL);
+                    wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                 }
                 wc.GiveRedirect(url);
             }
-            else if (wc.Except is AccessException authex)
+            else if (wc.Except is AccessException ace)
             {
-                if (authex.NoPrincipal)
+                if (ace.NoPrincipal)
                 {
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
@@ -149,7 +149,7 @@ namespace Samp
                         wc.Give(401); // unauthorized
                     }
                 }
-                else if (authex.NullResult)
+                else if (ace.NullResult)
                 {
                     string url = wc.Path;
                     wc.GivePage(200, h =>
@@ -215,17 +215,17 @@ namespace Samp
             Org[] shops = null;
             string oprat = null;
             string city = null;
-            int oprid = wc.Query[nameof(oprid)];
+            int posid = wc.Query[nameof(posid)];
             string oprname = null;
-            if (oprid > 0)
+            if (posid > 0)
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Query1("SELECT name, oprat FROM users WHERE id = @1", (p) => p.Set(oprid));
+                    dc.Query1("SELECT name, oprat FROM users WHERE id = @1", (p) => p.Set(posid));
                     dc.Let(out oprname).Let(out oprat);
                 }
                 var shop = orgs[oprat];
-                shops = new[] { shop };
+                shops = new[] {shop};
                 city = oprat.Substring(0, 2);
             }
             else
@@ -249,13 +249,13 @@ namespace Samp
                             h.T("<h2>").T(o.name).T("</h2>");
                             if (oprname != null)
                             {
-                                h.T("<span class=\"uk-badge uk-badge-secondary uk-align-right\">").T(oprname).T("</span>");
+                                h.T("<span class=\"uk-badge uk-badge-primary uk-align-right\">").T(oprname).T("</span>");
                             }
                             else if (o.oprtel != null)
                             {
                                 h.T("<div class=\"uk-align-right\">");
                                 h.T("<a class=\"uk-icon-button\" href=\"tel:").T(o.oprtel).T("\" uk-icon=\"receiver\"></a>");
-                                h.T("<a class=\"uk-icon-button\" href=\"/my//chat/?orgid=").T(o.id).T("\" uk-icon=\"comment\"></a>");
+                                h.T("<a class=\"uk-icon-button\" href=\"/my//chat/?orgid=").T(o.id).T("\" uk-icon=\"commenting\"></a>");
                                 h.T("</div>");
                             }
                             h.P(o.descr);
@@ -272,7 +272,7 @@ namespace Samp
                                 h.ROW_();
                                 h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
                                 h.FORM_(css: "uk-width-auto");
-                                h.HIDDEN(nameof(oprid), oprid);
+                                h.HIDDEN(nameof(posid), posid);
                                 h.TOOL(nameof(SampItemVarWork.buy));
                                 h._FORM();
                                 h._ROW();

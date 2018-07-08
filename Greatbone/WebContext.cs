@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +32,8 @@ namespace Greatbone
 
         readonly ResponseCookiesFeature fResponseCookies;
 
+        readonly IHttpWebSocketFeature fWebSocket;
+
         internal WebContext(IFeatureCollection features)
         {
             this.features = features;
@@ -41,6 +44,8 @@ namespace Greatbone
 
             fResponse = features.Get<IHttpResponseFeature>();
             fResponseCookies = new ResponseCookiesFeature(features);
+
+            fWebSocket = features.Get<IHttpWebSocketFeature>();
         }
 
         public Service Service { get; internal set; }
@@ -116,7 +121,11 @@ namespace Greatbone
 
         public override ConnectionInfo Connection => connection;
 
-        public override WebSocketManager WebSockets { get; }
+        public override WebSocketManager WebSockets => null;
+
+        public bool IsWebSocketRequest => fWebSocket.IsWebSocketRequest;
+
+        public Task<WebSocket> AcceptWebSocketAsync() => fWebSocket.AcceptAsync(null);
 
         [Obsolete("This is obsolete and will be removed in a future version. The recommended alternative is to use Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions. See https://go.microsoft.com/fwlink/?linkid=845470.")]
         public override AuthenticationManager Authentication => null;

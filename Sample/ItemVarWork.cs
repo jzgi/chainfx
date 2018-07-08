@@ -54,10 +54,10 @@ namespace Samp
         }
 
         [UserAccess]
-        [Ui("购买"), Tool(AOpen, size: 2), Item('A')]
+        [Ui("购买"), Tool(AOpen, size: 1), Item('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             string orgid = wc[-1];
             string itemname = wc[this];
             var org = Obtain<Map<string, Org>>()[orgid];
@@ -65,15 +65,15 @@ namespace Samp
             short num;
             if (wc.GET)
             {
-                int oprid = wc.Query[nameof(oprid)];
+                int posid = wc.Query[nameof(posid)];
                 wc.GivePane(200, h =>
                 {
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
-                        if (oprid > 0)
+                        if (posid > 0)
                         {
-                            h.HIDDEN(nameof(oprid), oprid);
+                            h.HIDDEN(nameof(posid), posid);
                         }
                         if (dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
                         {
@@ -105,7 +105,7 @@ namespace Samp
                         var o = dc.ToObject<Order>();
                         (await wc.ReadAsync<Form>()).Let(out num);
                         o.AddItem(itemname, item.unit, item.price, item.comp, num);
-                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.net).Set(o.id));
+                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.points).Set(o.id));
                     }
                     else // create a new order
                     {
@@ -143,7 +143,7 @@ namespace Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow), UserAccess(OPRMEM)]
+        [Ui("修改"), Tool(ButtonShow, size: 2), UserAccess(OPRMEM)]
         public async Task upd(WebContext wc)
         {
             string orgid = wc[-2];
@@ -161,9 +161,9 @@ namespace Samp
                         h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                         h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal)0.00, step: (decimal)0.01);
-                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short)1);
-                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short)1);
+                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal) 0.00, step: (decimal) 0.01);
+                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
+                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
                         h.NUMBER(nameof(o.stock), o.stock, "可供");
                         h._FIELDSET();
@@ -188,7 +188,7 @@ namespace Samp
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop), UserAccess(OPRMEM)]
+        [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(OPRMEM)]
         public new async Task icon(WebContext wc)
         {
             string orgid = wc[-2];

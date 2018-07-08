@@ -1503,7 +1503,7 @@ namespace Greatbone
 
         public HtmlContent VARTOOLS(byte grp = 0, string css = null)
         {
-            Add("<form class=\"uk-flex uk-flex-center");
+            Add("<form class=\"uk-flex uk-flex-center uk-width-1-1");
             if (css != null)
             {
                 Add(' ');

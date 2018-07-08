@@ -34,7 +34,7 @@ namespace Samp
             }
             var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(
                 orderid + "-" + o.rev,
-                (o.comp ? o.net : o.total),
+                o.cash,
                 prin.wx,
                 wc.RemoteAddr.ToString(),
                 NETADDR + "/" + nameof(SampService.onpay),
@@ -81,7 +81,7 @@ namespace Samp
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
                     o.UpdItem(idx, qty);
-                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.net).Set(o.id));
+                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.points).Set(o.id));
                 }
                 wc.GivePane(200);
             }
@@ -121,37 +121,6 @@ namespace Samp
             }
             wc.GiveRedirect("../");
         }
-
-        [Ui("发货"), Tool(ButtonShow, size: 1)]
-        public async Task deliver(WebContext wc)
-        {
-            string orgid = wc[-2];
-            int orderid = wc[this];
-            bool comp = false;
-            if (wc.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Query1("SELECT comp FROM orders WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
-                    dc.Let(out comp);
-                }
-                wc.GivePane(200, h => { h.FORM_().FIELDSET_("是否适用佣金").CHECKBOX(nameof(comp), comp, "计算销售佣金")._FIELDSET()._FORM(); });
-            }
-            else
-            {
-                var f = await wc.ReadAsync<Form>();
-                comp = f[nameof(comp)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Query1("SELECT items FROM orders WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
-                    dc.Let(out OrderItem[] items);
-                    OrderItem.Ship(items);
-                    dc.Execute("UPDATE orders SET items = @1, comp = @2 WHERE id = @3 AND orgid = @4", p => p.Set(items).Set(comp).Set(orderid).Set(orgid));
-                }
-                wc.GivePane(200);
-            }
-        }
-
 
         [Ui("完成", "确定结束该订单？"), Tool(ButtonConfirm), Order('E')]
         public void end(WebContext wc)
