@@ -113,7 +113,9 @@ namespace Samp
             return null;
         }
 
-        public void AddItem(string name, string unit, decimal price, decimal comp, short num)
+        public bool IsPos => posid > 0;
+
+        public void AddItem(string name, string unit, decimal price, short num)
         {
             int idx = items.IndexOf(o => o.name.Equals(name));
             if (idx != -1)

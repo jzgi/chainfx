@@ -71,7 +71,7 @@ namespace Samp
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
-                        if (posid > 0)
+                        if (posid > 0) // if in POS mode
                         {
                             h.HIDDEN(nameof(posid), posid);
                         }
@@ -86,7 +86,7 @@ namespace Samp
                         // quantity
                         h.FIELDSET_("加入货品");
                         h.LI_("货　品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
-                        h.LI_("数　量").NUMBER(nameof(num), item.min, min: item.min, max: item.stock, step: item.step).T(item.unit)._LI();
+                        h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.stock, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -104,14 +104,14 @@ namespace Samp
                     {
                         var o = dc.ToObject<Order>();
                         (await wc.ReadAsync<Form>()).Let(out num);
-                        o.AddItem(itemname, item.unit, item.price, item.comp, num);
+                        o.AddItem(itemname, item.unit, item.price, num);
                         dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.points).Set(o.id));
                     }
                     else // create a new order
                     {
                         const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                         var f = await wc.ReadAsync<Form>();
-                        string oprid = f[nameof(oprid)];
+                        string posid = f[nameof(posid)];
                         var o = new Order
                         {
                             orgid = orgid,
@@ -123,7 +123,7 @@ namespace Samp
                         };
                         o.Read(f, proj);
                         num = f[nameof(num)];
-                        o.AddItem(itemname, item.unit, item.price, item.comp, num);
+                        o.AddItem(itemname, item.unit, item.price, num);
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
                     }
@@ -161,7 +161,6 @@ namespace Samp
                         h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
                         h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        h.NUMBER(nameof(o.comp), o.comp, "佣金", min: (decimal) 0.00, step: (decimal) 0.01);
                         h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
                         h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");

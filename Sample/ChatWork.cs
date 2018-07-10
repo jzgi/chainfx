@@ -17,13 +17,13 @@ namespace Samp
     {
         public MyChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyChatVarWork, string>((obj) => ((Chat) obj).orgid);
+            CreateVar<MyChatVarWork, string>((obj) => ((Chat)obj).orgid);
         }
 
         public void @default(WebContext wc)
         {
             int myid = wc[-1];
-            var prin = (User) wc.Principal;
+            var prin = (User)wc.Principal;
             var orgs = Obtain<Map<string, Org>>();
             string orgid = wc.Query[nameof(orgid)];
             using (var dc = NewDbContext())
@@ -70,7 +70,7 @@ namespace Samp
     {
         public OprChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<OprChatVarWork, int>((obj) => ((Chat) obj).custid);
+            CreateVar<OprChatVarWork, int>((obj) => ((Chat)obj).custid);
         }
 
         public void @default(WebContext wc)

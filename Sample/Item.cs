@@ -1,4 +1,5 @@
 ﻿using Greatbone;
+using Microsoft.Net.Http.Headers;
 
 namespace Samp
 {
@@ -24,7 +25,6 @@ namespace Samp
         internal string descr;
         internal string unit;
         internal decimal price;
-        internal decimal comp; // compensation
         internal short min;
         internal short step;
         internal short stock;
@@ -40,7 +40,6 @@ namespace Samp
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
-            s.Get(nameof(comp), ref comp);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
             s.Get(nameof(stock), ref stock);
@@ -57,7 +56,6 @@ namespace Samp
             s.Put(nameof(descr), descr);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
-            s.Put(nameof(comp), comp);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
             s.Put(nameof(stock), stock);
