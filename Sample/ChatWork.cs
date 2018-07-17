@@ -13,11 +13,11 @@ namespace Samp
 
     [UserAccess]
     [Ui("联系客服")]
-    public class MyChatWork : ChatWork<OprChatVarWork>
+    public class MyChatWork : ChatWork<CtrlyChatVarWork>
     {
         public MyChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyChatVarWork, string>((obj) => ((Chat)obj).orgid);
+            CreateVar<MyChatVarWork, string>((obj) => ((Chat)obj).ctrid);
         }
 
         public void @default(WebContext wc)
@@ -33,7 +33,7 @@ namespace Samp
                 {
                     arr = new[]
                     {
-                        new Chat {orgid = orgid, custwx = prin.wx, custname = prin.name}
+                        new Chat {ctrid = orgid, uwx = prin.wx, uname = prin.name}
                     };
                 }
                 wc.GivePage(200, h =>
@@ -48,7 +48,7 @@ namespace Samp
                             for (int i = 0; i < o.msgs.Length; i++)
                             {
                                 var m = o.msgs[i];
-                                h.P(m.text, m.name);
+                                h.P(m.text, m.uname);
                             }
                             h.T("</main>");
                         }
@@ -66,11 +66,11 @@ namespace Samp
 
     [UserAccess(OPR)]
     [Ui("客服")]
-    public class OprChatWork : ChatWork<OprChatVarWork>
+    public class CtrlyChatWork : ChatWork<CtrlyChatVarWork>
     {
-        public OprChatWork(WorkConfig cfg) : base(cfg)
+        public CtrlyChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<OprChatVarWork, int>((obj) => ((Chat)obj).custid);
+            CreateVar<CtrlyChatVarWork, int>((obj) => ((Chat)obj).uid);
         }
 
         public void @default(WebContext wc)
@@ -84,14 +84,14 @@ namespace Samp
                     h.TOOLBAR();
                     h.ACCORDION(arr, o =>
                     {
-                        h.T("<header class=\"uk-accordion-title\">").T(o.custname).T("</header>");
+                        h.T("<header class=\"uk-accordion-title\">").T(o.uname).T("</header>");
                         if (o.msgs != null)
                         {
                             h.T("<main class=\"uk-accordion-content uk-grid\">");
                             for (int i = 0; i < o.msgs.Length; i++)
                             {
                                 var m = o.msgs[i];
-                                h.P(m.text, m.name);
+                                h.P(m.text, m.uname);
                             }
                             h.VARTOOLS();
                             h.T("</main>");

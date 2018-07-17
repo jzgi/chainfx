@@ -1,5 +1,4 @@
 ﻿using Greatbone;
-using Microsoft.Net.Http.Headers;
 
 namespace Samp
 {
@@ -20,21 +19,23 @@ namespace Samp
             {2, "推荐"},
         };
 
-        internal string orgid;
+        internal string ctrid;
         internal string name;
         internal string descr;
         internal string unit;
         internal decimal price;
         internal short min;
         internal short step;
-        internal short stock;
+        internal short max;
+        internal short next;
+        internal Cap[] caps;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
             if ((proj & PK) == PK)
             {
-                s.Get(nameof(orgid), ref orgid);
+                s.Get(nameof(ctrid), ref ctrid);
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);
@@ -42,7 +43,7 @@ namespace Samp
             s.Get(nameof(price), ref price);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
-            s.Get(nameof(stock), ref stock);
+            s.Get(nameof(max), ref max);
             s.Get(nameof(status), ref status);
         }
 
@@ -50,7 +51,7 @@ namespace Samp
         {
             if ((proj & PK) == PK)
             {
-                s.Put(nameof(orgid), orgid);
+                s.Put(nameof(ctrid), ctrid);
                 s.Put(nameof(name), name);
             }
             s.Put(nameof(descr), descr);
@@ -58,15 +59,37 @@ namespace Samp
             s.Put(nameof(price), price);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
-            s.Put(nameof(stock), stock);
+            s.Put(nameof(max), max);
             s.Put(nameof(status), status);
         }
 
-        public (string, string) Key => (orgid, name);
+        public (string, string) Key => (ctrid, name);
 
         public bool GroupAs((string, string) akey)
         {
-            return orgid == akey.Item1;
+            return ctrid == akey.Item1;
+        }
+    }
+
+    /// <summary>
+    /// A supply capacity.
+    /// </summary>
+    public struct Cap : IData
+    {
+        internal string vdrid; // vendor id
+
+        internal short max;
+
+        internal short next;
+
+        public void Read(ISource s, byte proj = 15)
+        {
+            s.Get(nameof(vdrid), ref vdrid);
+        }
+
+        public void Write(ISink s, byte proj = 15)
+        {
+            s.Put(nameof(vdrid), vdrid);
         }
     }
 }

@@ -2,52 +2,35 @@
   "button": [
     {
       "type": "view",
-      "name": "产品/下单",
+      "name": "团交流／下单",
       "url": "http://144000.tv/list",
       "sub_button": []
-    },
-    {
-      "name": "我的...",
-      "sub_button": [
-        {
-          "type": "view",
-          "name": "《家庭健康如此行》",
-          "url": "http://144000.tv/inf/",
-          "sub_button": []
-        },
-        {
-          "type": "view",
-          "name": "《生命的奥秘》",
-          "url": "http://144000.tv/",
-          "sub_button": []
-        },
-        {
-          "type": "view",
-          "name": "我的订单",
-          "url": "http://144000.tv/my//ord/",
-          "sub_button": []
-        },
-        {
-          "type": "view",
-          "name": "我的账号",
-          "url": "http://144000.tv/my//",
-          "sub_button": []
-        }
-      ]
     },
     {
       "name": "平台...",
       "sub_button": [
         {
           "type": "view",
-          "name": "关于「粗粮达人」",
-          "url": "http://144000.tv/about.html",
+          "name": "全粮派网站",
+          "url": "http://144000.tv/",
           "sub_button": []
         },
         {
           "type": "view",
-          "name": "（内部操作）",
-          "url": "http://144000.tv/opr//",
+          "name": "《健康常识》",
+          "url": "http://144000.tv/inf/",
+          "sub_button": []
+        },
+        {
+          "type": "view",
+          "name": "《生命的奥秘》",
+          "url": "http://144000.tv/tut/",
+          "sub_button": []
+        },
+        {
+          "type": "view",
+          "name": "我的设置",
+          "url": "http://144000.tv/my//",
           "sub_button": []
         }
       ]

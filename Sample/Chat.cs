@@ -4,57 +4,80 @@ using Greatbone;
 namespace Samp
 {
     /// <summary>
-    /// A chatting conversation.
+    /// A discussion thread data object.
     /// </summary>
     public class Chat : IData
     {
         public static readonly Chat Empty = new Chat();
 
-        internal string orgid;
-        internal int custid;
-        internal string custname;
-        internal string custwx;
+        public const byte ID = 1;
+
+        internal int id;
+        internal string ctrid;
+        internal string topic;
+        internal int uid;
+        internal string uname;
+        internal string uwx;
         internal Msg[] msgs;
-        internal DateTime quested;
+        internal short replies;
+        internal DateTime posted;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            s.Get(nameof(orgid), ref orgid);
-            s.Get(nameof(custid), ref custid);
-            s.Get(nameof(custname), ref custname);
-            s.Get(nameof(custwx), ref custwx);
+            if ((proj & ID) > 0)
+            {
+                s.Get(nameof(id), ref id);
+            }
+            s.Get(nameof(ctrid), ref ctrid);
+            s.Get(nameof(topic), ref topic);
+            s.Get(nameof(uid), ref uid);
+            s.Get(nameof(uname), ref uname);
+            s.Get(nameof(uwx), ref uwx);
             s.Get(nameof(msgs), ref msgs);
-            s.Get(nameof(quested), ref quested);
+            s.Get(nameof(replies), ref replies);
+            s.Get(nameof(posted), ref posted);
         }
 
         public const int NUM = 6;
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            s.Put(nameof(orgid), orgid);
-            s.Put(nameof(custid), custid);
-            s.Put(nameof(custname), custname);
-            s.Put(nameof(custwx), custwx);
+            if ((proj & ID) > 0)
+            {
+                s.Put(nameof(id), id);
+            }
+            s.Put(nameof(ctrid), ctrid);
+            s.Put(nameof(topic), topic);
+            s.Put(nameof(uid), uid);
+            s.Put(nameof(uname), uname);
+            s.Put(nameof(uwx), uwx);
             s.Put(nameof(msgs), msgs);
-            s.Put(nameof(quested), quested);
+            s.Put(nameof(replies), replies);
+            s.Put(nameof(posted), posted);
         }
     }
 
     public struct Msg : IData
     {
-        internal string name;
+        internal int uid;
+        internal string uname;
         internal string text;
+        internal DateTime posted;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            s.Get(nameof(name), ref name);
+            s.Get(nameof(uid), ref uid);
+            s.Get(nameof(uname), ref uname);
             s.Get(nameof(text), ref text);
+            s.Get(nameof(posted), ref posted);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            s.Put(nameof(name), name);
+            s.Put(nameof(uid), uid);
+            s.Put(nameof(uname), uname);
             s.Put(nameof(text), text);
+            s.Put(nameof(posted), posted);
         }
     }
 }

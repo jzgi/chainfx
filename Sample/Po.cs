@@ -1,24 +1,22 @@
-using System;
+﻿using System;
 using Greatbone;
 
 namespace Samp
 {
     /// <summary>
-    /// An infor article data object.
+    /// A purchase order data model.
     /// </summary>
-    public class Inf : IData, IKeyable<short>
+    public class Po : IData
     {
-        public static readonly Inf Empty = new Inf();
+        public static readonly Tut Empty = new Tut();
 
         public const byte ID = 1;
-
-        public const int CREATED = 0, OPEN = 2;
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CREATED, "新建"},
-            {OPEN, "发布"},
+            {0, "新建"},
+            {1, "发布"},
         };
 
         internal short id;
@@ -29,10 +27,7 @@ namespace Samp
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & ID) > 0)
-            {
-                s.Get(nameof(id), ref id);
-            }
+            s.Get(nameof(id), ref id);
             s.Get(nameof(subject), ref subject);
             s.Get(nameof(text), ref text);
             s.Get(nameof(created), ref created);
@@ -41,16 +36,11 @@ namespace Samp
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & ID) > 0)
-            {
-                s.Put(nameof(id), id);
-            }
+            s.Put(nameof(id), id);
             s.Put(nameof(subject), subject);
             s.Put(nameof(text), text);
             s.Put(nameof(created), created);
             s.Put(nameof(status), status);
         }
-
-        public short Key => id;
     }
 }

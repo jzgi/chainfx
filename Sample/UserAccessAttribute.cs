@@ -40,18 +40,18 @@ namespace Samp
             // if requires operator
             if (opr > 0)
             {
-                if ((o.opr & opr) != opr) return false; // inclusive check
+                if ((o.ctr & opr) != opr) return false; // inclusive check
                 string at = wc[typeof(IOrgVar)];
                 if (at != null)
                 {
-                    return o.oprat == at;
+                    return o.ctrat == at;
                 }
                 return true;
             }
             // if requires admin
             if (adm > 0)
             {
-                return (o.adm & adm) == adm;
+                return (o.plat & adm) == adm;
             }
             return true;
         }

@@ -5,7 +5,7 @@ namespace Samp
 {
     public static class SampUtility
     {
-        public const string BIZ = "粗粮达人";
+        public const string BIZ = "全粮派";
 
         public const string NETADDR = "http://144000.tv";
 

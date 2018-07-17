@@ -2,11 +2,11 @@ using Greatbone;
 
 namespace Samp
 {
-    public class ItemAttribute : StateAttribute
+    public class PoStateAttribute : StateAttribute
     {
         readonly char state;
 
-        public ItemAttribute(char state)
+        public PoStateAttribute(char state)
         {
             this.state = state;
         }
@@ -17,7 +17,7 @@ namespace Samp
             {
                 var org = stack[0] as Org;
                 var item = stack[1] as Item;
-                return org?.status > 1 && item?.stock > 0;
+                return org?.status > 1 && item?.max > 0;
             }
             return false;
         }

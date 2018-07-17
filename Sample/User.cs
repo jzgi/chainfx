@@ -14,9 +14,9 @@ namespace Samp
             PRIVACY = 2,
             LATER = 4;
 
-        public const short 
-            OPR = 1, 
-            OPRMEM = 3, 
+        public const short
+            OPR = 1,
+            OPRMEM = 3,
             OPRMGR = 7;
 
         public static readonly Map<short, string> Oprs = new Map<short, string>
@@ -32,11 +32,15 @@ namespace Samp
         internal string tel;
         internal string addr;
         public string credential;
-        internal int credit;
+        internal int points;
         internal int refid; // referee id
-        internal string oprat;
-        internal short opr;
-        internal short adm;
+        internal string grpat; // group
+        internal short grp;
+        internal string vdrat; // vendor
+        internal short vdr;
+        internal string ctrat; // center
+        internal short ctr;
+        internal short plat; // platform
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -51,14 +55,18 @@ namespace Samp
             if ((proj & PRIVACY) == PRIVACY)
             {
                 s.Get(nameof(credential), ref credential);
-                s.Get(nameof(credit), ref credit);
+                s.Get(nameof(points), ref points);
                 s.Get(nameof(refid), ref refid);
             }
             if ((proj & LATER) == LATER)
             {
-                s.Get(nameof(opr), ref opr);
-                s.Get(nameof(oprat), ref oprat);
-                s.Get(nameof(adm), ref adm);
+                s.Get(nameof(grpat), ref grpat);
+                s.Get(nameof(grp), ref grp);
+                s.Get(nameof(vdrat), ref vdrat);
+                s.Get(nameof(vdr), ref vdr);
+                s.Get(nameof(ctrat), ref ctrat);
+                s.Get(nameof(ctr), ref ctr);
+                s.Get(nameof(plat), ref plat);
             }
         }
 
@@ -75,14 +83,16 @@ namespace Samp
             if ((proj & PRIVACY) == PRIVACY)
             {
                 s.Put(nameof(credential), credential);
-                s.Put(nameof(credit), credit);
+                s.Put(nameof(points), points);
                 s.Put(nameof(refid), refid);
             }
             if ((proj & LATER) == LATER)
             {
-                s.Put(nameof(opr), opr);
-                s.Put(nameof(oprat), oprat);
-                s.Put(nameof(adm), adm);
+                s.Put(nameof(grpat), grpat);
+                s.Put(nameof(grp), grp);
+                s.Put(nameof(ctrat), ctrat);
+                s.Put(nameof(ctr), ctr);
+                s.Put(nameof(plat), plat);
             }
         }
     }

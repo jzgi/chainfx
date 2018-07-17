@@ -11,7 +11,7 @@ namespace Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MyOrderWork>("ord");
+            Create<MySoWork>("ord");
 
             Create<MyChatWork>("chat");
         }
@@ -26,7 +26,7 @@ namespace Samp
                 h.LI("姓　名", prin.name);
                 h.LI("电　话", prin.tel);
                 h.LI("地　址", prin.addr);
-                h.LI("积　分", prin.credit);
+                h.LI("积　分", prin.points);
                 h.T("<hr>");
                 h.COL_();
                 h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
@@ -101,24 +101,21 @@ namespace Samp
         }
     }
 
-    /// <summary>
-    /// The working folder of org operators.
-    /// </summary>
     [UserAccess(opr: 1)]
     [Ui("常规")]
-    public class OprVarWork : Work, IOrgVar
+    public class GrplyVarWork : Work, IOrgVar
     {
-        public OprVarWork(WorkConfig cfg) : base(cfg)
+        public GrplyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<OprChatWork>("chat");
+            Create<CtrlyChatWork>("chat");
 
-            Create<OprNewoWork>("newo");
+            Create<CtrlyNewoWork>("newo");
 
-            Create<OprOldoWork>("oldo");
+            Create<CtrlyOldoWork>("oldo");
 
-            Create<OprItemWork>("item");
+            Create<CtrlyItemWork>("item");
 
-            Create<OprCashWork>("cash");
+            Create<CtrlyCashWork>("cash");
         }
 
         public void @default(WebContext wc)
@@ -138,7 +135,58 @@ namespace Samp
                     h.UL_("uk-card uk-card-default uk-card-body");
                     h.LI("简　介", org.descr);
                     h.LI("经　理", org.mgrname, org.mgrtel);
-                    h.LI("客　服", org.oprname, org.oprtel);
+                    h._UL();
+                });
+            }
+        }
+    }
+
+    public class VndlyVarWork : Work, IOrgVar
+    {
+        public VndlyVarWork(WorkConfig cfg) : base(cfg)
+        {
+            Create<CtrlyChatWork>("chat");
+        }
+
+        public void @default(WebContext wc)
+        {
+        }
+    }
+
+    [UserAccess(opr: 1)]
+    [Ui("常规")]
+    public class CtrlyVarWork : Work, IOrgVar
+    {
+        public CtrlyVarWork(WorkConfig cfg) : base(cfg)
+        {
+            Create<CtrlyChatWork>("chat");
+
+            Create<CtrlyNewoWork>("newo");
+
+            Create<CtrlyOldoWork>("oldo");
+
+            Create<CtrlyItemWork>("item");
+
+            Create<CtrlyCashWork>("cash");
+        }
+
+        public void @default(WebContext wc)
+        {
+            string orgid = wc[this];
+            var org = Obtain<Map<string, Org>>()[orgid];
+            bool inner = wc.Query[nameof(inner)];
+            if (!inner)
+            {
+                wc.GiveFrame(200, false, 60 * 15, org?.name);
+            }
+            else
+            {
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.UL_("uk-card uk-card-default uk-card-body");
+                    h.LI("简　介", org.descr);
+                    h.LI("经　理", org.mgrname, org.mgrtel);
                     h._UL();
                 });
             }
@@ -208,7 +256,7 @@ namespace Samp
             bool custsvc;
             if (wc.GET)
             {
-                custsvc = org.oprwx == prin.wx;
+                custsvc = org.mgrwx == prin.wx;
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
@@ -230,16 +278,10 @@ namespace Samp
                     if (custsvc)
                     {
                         dc.Execute("UPDATE orgs SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(orgid));
-                        org.oprwx = prin.wx;
-                        org.oprtel = prin.tel;
-                        org.oprname = prin.name;
                     }
                     else
                     {
                         dc.Execute("UPDATE orgs SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(orgid));
-                        org.oprwx = null;
-                        org.oprtel = null;
-                        org.oprname = null;
                     }
                 }
                 wc.GivePane(200);

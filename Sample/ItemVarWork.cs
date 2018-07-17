@@ -54,7 +54,7 @@ namespace Samp
         }
 
         [UserAccess]
-        [Ui("购买"), Tool(AOpen, size: 1), Item('A')]
+        [Ui("购买"), Tool(AOpen, size: 1), ItemState('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;
@@ -79,14 +79,14 @@ namespace Samp
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("创建订单，填写收货地址");
-                            h.TEXT(nameof(Order.custaddr), prin.addr, "地　址", max: 20, required: true);
-                            h.LI_().LABEL("姓　名").TEXT(nameof(Order.custname), prin.name, max: 4, min: 2, required: true).LABEL("电　话").TEL(nameof(Order.custtel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
+                            h.TEXT(nameof(So.custaddr), prin.addr, "地　址", max: 20, required: true);
+                            h.LI_().LABEL("姓　名").TEXT(nameof(So.custname), prin.name, max: 4, min: 2, required: true).LABEL("电　话").TEL(nameof(So.custtel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                             h._FIELDSET();
                         }
                         // quantity
                         h.FIELDSET_("加入货品");
                         h.LI_("货　品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
-                        h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.stock, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
+                        h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.max, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -102,17 +102,17 @@ namespace Samp
                     // determine whether add to existing order or create new
                     if (dc.Query1("SELECT * FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)))
                     {
-                        var o = dc.ToObject<Order>();
+                        var o = dc.ToObject<So>();
                         (await wc.ReadAsync<Form>()).Let(out num);
                         o.AddItem(itemname, item.unit, item.price, num);
                         dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.points).Set(o.id));
                     }
                     else // create a new order
                     {
-                        const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
+                        const byte proj = 0xff ^ So.KEY ^ So.LATER;
                         var f = await wc.ReadAsync<Form>();
                         string posid = f[nameof(posid)];
-                        var o = new Order
+                        var o = new So
                         {
                             orgid = orgid,
                             orgname = org.name,
@@ -164,7 +164,7 @@ namespace Samp
                         h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
                         h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
-                        h.NUMBER(nameof(o.stock), o.stock, "可供");
+                        h.NUMBER(nameof(o.max), o.max, "可供");
                         h._FIELDSET();
                         h._FORM();
                     });

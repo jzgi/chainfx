@@ -30,7 +30,7 @@ namespace Samp
             text = f[nameof(text)];
             using (var dc = NewDbContext())
             {
-                var msg = new Msg {name = prin.name, text = text};
+                var msg = new Msg {uname = prin.name, text = text};
                 if (dc.Query1("SELECT msgs FROM chats WHERE orgid = @1 AND custid = @2", p => p.Set(orgid).Set(prin.id)))
                 {
                     dc.Let(out Msg[] msgs);
@@ -41,12 +41,12 @@ namespace Samp
                 {
                     var o = new Chat()
                     {
-                        orgid = orgid,
-                        custid = prin.id,
-                        custname = prin.name,
-                        custwx = prin.wx,
+                        ctrid = orgid,
+                        uid = prin.id,
+                        uname = prin.name,
+                        uwx = prin.wx,
                         msgs = new[] {msg},
-                        quested = DateTime.Now
+                        posted = DateTime.Now
                     };
                     dc.Sql("INSERT INTO chats")._(Chat.Empty)._VALUES_(Chat.Empty);
                     dc.Execute(p => o.Write(p));
@@ -56,9 +56,9 @@ namespace Samp
         }
     }
 
-    public class OprChatVarWork : ChatVarWork
+    public class CtrlyChatVarWork : ChatVarWork
     {
-        public OprChatVarWork(WorkConfig cfg) : base(cfg)
+        public CtrlyChatVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -84,7 +84,7 @@ namespace Samp
                     if (dc.Query1("SELECT custwx, msgs FROM chats WHERE orgid = @1 AND custid = @2", p => p.Set(orgid).Set(custid)))
                     {
                         dc.Let(out custwx).Let(out Msg[] msgs);
-                        msgs = msgs.AddOf(new Msg {name = prin.name, text = text}, limit: 10);
+                        msgs = msgs.AddOf(new Msg {uname = prin.name, text = text}, limit: 10);
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(custid));
                     }
                 }

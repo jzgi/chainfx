@@ -16,13 +16,15 @@ namespace Samp
         {
             CreateVar<SampVarWork, string>(obj => ((Org) obj).id);
 
-            Create<PubInfWork>("inf");
-
             Create<MyWork>("my"); // personal
 
-            Create<OprWork>("opr"); // org operator
+            Create<GrplyWork>("grp"); // group
 
-            Create<AdmWork>("adm"); // administrator
+            Create<VdrlyWork>("vdr"); // vendor
+
+            Create<CtrlyWork>("ctr"); // center
+
+            Create<PlatlyWork>("plat"); // platform
 
             Register(delegate
                 {
@@ -38,7 +40,7 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY orgid, name");
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY ctrid, name");
                         return dc.Query<(string, string), Item>(proj: 0xff);
                     }
                 }, 3600 * 8
@@ -202,6 +204,71 @@ namespace Samp
             }, true, 3600, "《生命的奥秘》系列");
         }
 
+        public void chat(WebContext wc)
+        {
+            var orgs = wc.Service.Obtain<Map<string, Org>>();
+            var cities = orgs.Heads();
+
+            // check if bind to a operator
+            Org[] shops = null;
+            string oprat = null;
+            string city = null;
+            int posid = wc.Query[nameof(posid)];
+            string oprname = null;
+            if (posid > 0)
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Query1("SELECT name, oprat FROM users WHERE id = @1", (p) => p.Set(posid));
+                    dc.Let(out oprname).Let(out oprat);
+                }
+                var shop = orgs[oprat];
+                shops = new[] {shop};
+                city = oprat.Substring(0, 2);
+            }
+            else
+            {
+                city = wc.Query[nameof(city)];
+                if (string.IsNullOrEmpty(city))
+                {
+                    city = "NC";
+                }
+                shops = orgs.GroupFor(city, false);
+            }
+
+            Chat[] items = null;
+            using (var dc = NewDbContext())
+            {
+                items = dc.Query<Chat>("SELECT * FROM chats WHERE grpid = @1", (p) => p.Set(posid));
+            }
+
+            wc.GivePage(200, h =>
+                {
+                    h.T("<ul class=\"uk-subnav\">");
+                    h.T("<li class=\"uk-active\"><a href=\"/chat\">团交流</a></li>");
+                    h.T("<li><a href=\"/list\">下单</a></li>");
+                    h.T("</ul>");
+                    h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
+
+                    h.LIST(items, oi =>
+                    {
+                        h.COL_(0x23, css: "uk-padding-small");
+                        h.T("<h3>").T(oi.uname).T("</h3>");
+                        h.P(oi.posted);
+                        h.ROW_();
+                        h.FORM_(css: "uk-width-auto");
+                        h.HIDDEN(nameof(posid), posid);
+                        h.TOOL(nameof(SampItemVarWork.buy));
+                        h._FORM();
+                        h._ROW();
+                        h._COL();
+                    }, "uk-card-body uk-padding-remove");
+
+                    h.VARTOOLS();
+                }, true, 60
+            );
+        }
+
         /// Returns a home page pertaining to a related city
         /// We are forced to put auth check here because weixin auth does't work in iframe
 //        [City]
@@ -242,47 +309,29 @@ namespace Samp
 
             wc.GivePage(200, h =>
                 {
-                    h.TOPBAR_().SELECT(nameof(city), city, cities, refresh: true)._TOPBAR();
-                    h.BOARD(shops, o =>
-                        {
-                            h.T("<header class=\"uk-card-header org-header\">");
-                            h.T("<h2>").T(o.name).T("</h2>");
-                            if (oprname != null)
-                            {
-                                h.T("<span class=\"uk-badge uk-badge-primary uk-align-right\">").T(oprname).T("</span>");
-                            }
-                            else if (o.oprtel != null)
-                            {
-                                h.T("<div class=\"uk-align-right\">");
-                                h.T("<a class=\"uk-icon-button\" href=\"tel:").T(o.oprtel).T("\" uk-icon=\"receiver\"></a>");
-                                h.T("<a class=\"uk-icon-button\" href=\"/my//chat/?orgid=").T(o.id).T("\" uk-icon=\"commenting\"></a>");
-                                h.T("</div>");
-                            }
-                            h.P(o.descr);
-                            h.P_().T(o.addr).T(" ").A_POI(o.x, o.y, o.name, o.addr)._P();
+                    h.T("<ul class=\"uk-subnav\">");
+                    h.T("<li><a href=\"/chat\">团交流</a></li>");
+                    h.T("<li class=\"uk-active\"><a href=\"/list\">下单</a></li>");
+                    h.T("</ul>");
+                    h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
 
-                            h.T("</header>");
-                            var ois = items.GroupFor((o.id, null));
-                            h.LIST(ois, oi =>
-                            {
-                                h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.orgid).T("/").T(oi.name).T("/icon")._ICO();
-                                h.COL_(0x23, css: "uk-padding-small");
-                                h.T("<h3>").T(oi.name).T("</h3>");
-                                h.P(oi.descr);
-                                h.ROW_();
-                                h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
-                                h.FORM_(css: "uk-width-auto");
-                                h.HIDDEN(nameof(posid), posid);
-                                h.TOOL(nameof(SampItemVarWork.buy));
-                                h._FORM();
-                                h._ROW();
-                                h._COL();
-                            }, "uk-card-body uk-padding-remove");
+                    h.LIST(items.GroupFor((city, null)), oi =>
+                    {
+                        h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
+                        h.COL_(0x23, css: "uk-padding-small");
+                        h.T("<h3>").T(oi.name).T("</h3>");
+                        h.P(oi.descr);
+                        h.ROW_();
+                        h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
+                        h.FORM_(css: "uk-width-auto");
+                        h.HIDDEN(nameof(posid), posid);
+                        h.TOOL(nameof(SampItemVarWork.buy));
+                        h._FORM();
+                        h._ROW();
+                        h._COL();
+                    }, "uk-card-body uk-padding-remove");
 
-                            h.VARTOOLS();
-                        }
-                        , article: "uk-card-primary"
-                    );
+                    h.VARTOOLS();
                 }, true, 60
             );
         }
@@ -312,7 +361,7 @@ namespace Samp
                 dc.Let(out orgid).Let(out custname).Let(out custaddr);
             }
             // send weixin message
-            var oprwx = orgs[orgid]?.oprwx;
+            var oprwx = orgs[orgid]?.mgrwx;
             if (oprwx != null)
             {
                 await PostSendAsync(oprwx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");

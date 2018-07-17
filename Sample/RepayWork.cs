@@ -81,7 +81,7 @@ namespace Samp
                 till = f[nameof(till)];
                 using (var dc = NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.ENDED + " AND ended BETWEEN @1 AND @2 GROUP BY orgid", p => p.Set(fro).Set(till));
+                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + So.ENDED + " AND ended BETWEEN @1 AND @2 GROUP BY orgid", p => p.Set(fro).Set(till));
                 }
                 wc.GivePane(200);
             }

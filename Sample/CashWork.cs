@@ -14,9 +14,9 @@ namespace Samp
     }
 
     [Ui("财务"), UserAccess(OPRMGR)]
-    public class OprCashWork : CashWork
+    public class CtrlyCashWork : CashWork
     {
-        public OprCashWork(WorkConfig cfg) : base(cfg)
+        public CtrlyCashWork(WorkConfig cfg) : base(cfg)
         {
         }
 

@@ -19,16 +19,14 @@ namespace Samp
         internal string name;
         internal string descr;
         internal string addr;
-        internal double x;
-        internal double y;
+        internal double x1;
+        internal double y1;
+        internal double x2;
+        internal double y2;
         internal int mgrid;
         internal string mgrwx;
         internal string mgrname;
         internal string mgrtel;
-        internal int oprid;
-        internal string oprwx;
-        internal string oprname;
-        internal string oprtel;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -39,8 +37,10 @@ namespace Samp
                 s.Get(nameof(name), ref name);
                 s.Get(nameof(descr), ref descr);
                 s.Get(nameof(addr), ref addr);
-                s.Get(nameof(x), ref x);
-                s.Get(nameof(y), ref y);
+                s.Get(nameof(x1), ref x1);
+                s.Get(nameof(y1), ref y1);
+                s.Get(nameof(x2), ref x2);
+                s.Get(nameof(y2), ref y2);
             }
             if ((proj & LATER) == LATER)
             {
@@ -48,10 +48,6 @@ namespace Samp
                 s.Get(nameof(mgrname), ref mgrname);
                 s.Get(nameof(mgrwx), ref mgrwx);
                 s.Get(nameof(mgrtel), ref mgrtel);
-                s.Get(nameof(oprid), ref oprid);
-                s.Get(nameof(oprname), ref oprname);
-                s.Get(nameof(oprwx), ref oprwx);
-                s.Get(nameof(oprtel), ref oprtel);
                 s.Get(nameof(status), ref status);
             }
         }
@@ -64,8 +60,10 @@ namespace Samp
                 s.Put(nameof(name), name);
                 s.Put(nameof(descr), descr);
                 s.Put(nameof(addr), addr);
-                s.Put(nameof(x), x);
-                s.Put(nameof(y), y);
+                s.Put(nameof(x1), x1);
+                s.Put(nameof(y1), y1);
+                s.Put(nameof(x2), x2);
+                s.Put(nameof(y2), y2);
             }
             if ((proj & LATER) == LATER)
             {
@@ -73,10 +71,6 @@ namespace Samp
                 s.Put(nameof(mgrname), mgrname);
                 s.Put(nameof(mgrwx), mgrwx);
                 s.Put(nameof(mgrtel), mgrtel);
-                s.Put(nameof(oprid), oprid);
-                s.Put(nameof(oprname), oprname);
-                s.Put(nameof(oprwx), oprwx);
-                s.Put(nameof(oprtel), oprtel);
                 s.Put(nameof(status), status);
             }
         }
@@ -89,5 +83,11 @@ namespace Samp
         {
             return TextUtility.Compare(id, akey, 2);
         }
+
+        public bool IsCenter => id.Length == 2;
+
+        public bool IsSupply => id.Length == 4 && id[2] >= 'E';
+
+        public bool IsGroup => id.Length == 4 && id[2] < 'E';
     }
 }

@@ -5,9 +5,9 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    public abstract class InfVarWork : Work
+    public abstract class PoVarWork : Work
     {
-        protected InfVarWork(WorkConfig cfg) : base(cfg)
+        protected PoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -27,20 +27,9 @@ namespace Samp
         }
     }
 
-    public class PubInfVarWork : InfVarWork
+    public class CtrlyPoVarWork : PoVarWork
     {
-        public PubInfVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        public void @default(WebContext ac)
-        {
-        }
-    }
-
-    public class AdmInfVarWork : InfVarWork
-    {
-        public AdmInfVarWork(WorkConfig cfg) : base(cfg)
+        public CtrlyPoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -52,21 +41,21 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Inf.Empty).T(" FROM infs WHERE id = @1");
-                    var o = dc.Query1<Inf>(p => p.Set(infid));
+                    dc.Sql("SELECT ").collst(Tut.Empty).T(" FROM infos WHERE id = @1");
+                    var o = dc.Query1<Tut>(p => p.Set(infid));
                     ac.GivePane(200, h =>
                     {
                         h.FORM_().FIELDSET_();
-                        h.DATE(nameof(o.created), o.created, "日　期");
-                        h.TEXT(nameof(o.subject), o.subject, "标　题");
-                        h.TEXTAREA(nameof(o.text), o.text, "正　文");
+                        h.DATE(nameof(o.created), o.created, "日期");
+                        h.TEXT(nameof(o.subject), o.subject, "标题");
+                        h.TEXTAREA(nameof(o.text), o.text, "正文");
                         h._FIELDSET()._FORM();
                     });
                 }
             }
             else // post
             {
-                var o = await ac.ReadObjectAsync<Inf>();
+                var o = await ac.ReadObjectAsync<Tut>();
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("UPDATE ")._SET_(o)._VALUES_(o).T(" WHERE id = @1");
