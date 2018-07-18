@@ -13,7 +13,7 @@ namespace Samp
 
     [UserAccess]
     [Ui("联系客服")]
-    public class MyChatWork : ChatWork<CtrlyChatVarWork>
+    public class MyChatWork : ChatWork<CtrChatVarWork>
     {
         public MyChatWork(WorkConfig cfg) : base(cfg)
         {
@@ -66,11 +66,11 @@ namespace Samp
 
     [UserAccess(OPR)]
     [Ui("客服")]
-    public class CtrlyChatWork : ChatWork<CtrlyChatVarWork>
+    public class CtrChatWork : ChatWork<CtrChatVarWork>
     {
-        public CtrlyChatWork(WorkConfig cfg) : base(cfg)
+        public CtrChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrlyChatVarWork, int>((obj) => ((Chat)obj).uid);
+            CreateVar<CtrChatVarWork, int>((obj) => ((Chat)obj).uid);
         }
 
         public void @default(WebContext wc)

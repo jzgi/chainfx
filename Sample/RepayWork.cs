@@ -15,9 +15,9 @@ namespace Samp
     }
 
     [Ui("结款")]
-    public class AdmRepayWork : RepayWork<AdmRepayVarWork>
+    public class PlatRepayWork : RepayWork<PlatRepayVarWork>
     {
-        public AdmRepayWork(WorkConfig cfg) : base(cfg)
+        public PlatRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 

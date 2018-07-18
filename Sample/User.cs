@@ -32,10 +32,10 @@ namespace Samp
         internal string tel;
         internal string addr;
         public string credential;
-        internal int points;
+        internal int score;
         internal int refid; // referee id
-        internal string grpat; // group
-        internal short grp;
+        internal string tmat; // team
+        internal short tm;
         internal string vdrat; // vendor
         internal short vdr;
         internal string ctrat; // center
@@ -55,13 +55,13 @@ namespace Samp
             if ((proj & PRIVACY) == PRIVACY)
             {
                 s.Get(nameof(credential), ref credential);
-                s.Get(nameof(points), ref points);
+                s.Get(nameof(score), ref score);
                 s.Get(nameof(refid), ref refid);
             }
             if ((proj & LATER) == LATER)
             {
-                s.Get(nameof(grpat), ref grpat);
-                s.Get(nameof(grp), ref grp);
+                s.Get(nameof(tmat), ref tmat);
+                s.Get(nameof(tm), ref tm);
                 s.Get(nameof(vdrat), ref vdrat);
                 s.Get(nameof(vdr), ref vdr);
                 s.Get(nameof(ctrat), ref ctrat);
@@ -83,13 +83,13 @@ namespace Samp
             if ((proj & PRIVACY) == PRIVACY)
             {
                 s.Put(nameof(credential), credential);
-                s.Put(nameof(points), points);
+                s.Put(nameof(score), score);
                 s.Put(nameof(refid), refid);
             }
             if ((proj & LATER) == LATER)
             {
-                s.Put(nameof(grpat), grpat);
-                s.Put(nameof(grp), grp);
+                s.Put(nameof(tmat), tmat);
+                s.Put(nameof(tm), tm);
                 s.Put(nameof(ctrat), ctrat);
                 s.Put(nameof(ctr), ctr);
                 s.Put(nameof(plat), plat);

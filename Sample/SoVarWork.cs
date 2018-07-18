@@ -60,14 +60,13 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<So>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
-                    var oi = o.items[idx];
-                    var item = Obtain<Map<(string, string), Item>>()[(o.orgid, oi.name)];
+                    var item = Obtain<Map<(string, string), Item>>()[(o.ctrid, o.item)];
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.LI_("货品").PIC("/" + o.orgid + "/" + oi.name + "/icon", w: 0x16).SP().T(oi.name)._LI();
-                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
+                        h.LI_("货品").PIC("/" + o.ctrid + "/" + o.item + "/icon", w: 0x16).SP().T(o.item)._LI();
+//                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -80,17 +79,24 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<So>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
-                    o.UpdItem(idx, qty);
-                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.points).Set(o.id));
+//                    o.UpdItem(idx, qty);
+                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.item).Set(o.total).Set(o.score).Set(o.id));
                 }
                 wc.GivePane(200);
             }
         }
     }
 
-    public class OprNewoVarWork : SoVarWork
+    public class TmSoVarWork : SoVarWork
     {
-        public OprNewoVarWork(WorkConfig cfg) : base(cfg)
+        public TmSoVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
+
+    public class CtrNewSoVarWork : SoVarWork
+    {
+        public CtrNewSoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -135,16 +141,9 @@ namespace Samp
         }
     }
 
-    public class OprOldoVarWork : SoVarWork
+    public class CtrOldSoVarWork : SoVarWork
     {
-        public OprOldoVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-    }
-
-    public class AdmKickVarWork : SoVarWork
-    {
-        public AdmKickVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOldSoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

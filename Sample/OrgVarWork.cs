@@ -36,9 +36,9 @@ namespace Samp
         }
     }
 
-    public class AdmOrgVarWork : OrgVarWork
+    public class PlatCtrVarWork : OrgVarWork
     {
-        public AdmOrgVarWork(WorkConfig cfg) : base(cfg)
+        public PlatCtrVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

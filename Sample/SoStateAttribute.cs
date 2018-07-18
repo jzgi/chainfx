@@ -18,7 +18,7 @@ namespace Samp
                 if (state == 'P') // payable
                     return o.status < So.PAID;
                 if (state == 'A')
-                    return o.custaddr != null;
+                    return o.uaddr != null;
                 if (state == 'E') // enable
                     return o.status >= So.PAID;
             }

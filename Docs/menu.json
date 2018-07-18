@@ -2,7 +2,7 @@
   "button": [
     {
       "type": "view",
-      "name": "团交流／下单",
+      "name": "交流／下单",
       "url": "http://144000.tv/list",
       "sub_button": []
     },
@@ -11,14 +11,8 @@
       "sub_button": [
         {
           "type": "view",
-          "name": "全粮派网站",
+          "name": "《全粮派》",
           "url": "http://144000.tv/",
-          "sub_button": []
-        },
-        {
-          "type": "view",
-          "name": "《健康常识》",
-          "url": "http://144000.tv/inf/",
           "sub_button": []
         },
         {

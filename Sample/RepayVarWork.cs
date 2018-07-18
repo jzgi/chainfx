@@ -9,16 +9,16 @@ namespace Samp
         }
     }
 
-    public class OprRepayVarWork : RepayVarWork
+    public class OrgRepayVarWork : RepayVarWork
     {
-        public OprRepayVarWork(WorkConfig cfg) : base(cfg)
+        public OrgRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class AdmRepayVarWork : RepayVarWork
+    public class PlatRepayVarWork : RepayVarWork
     {
-        public AdmRepayVarWork(WorkConfig cfg) : base(cfg)
+        public PlatRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

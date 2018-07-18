@@ -27,9 +27,9 @@ namespace Samp
         }
     }
 
-    public class CtrlyPoVarWork : PoVarWork
+    public class CtrPoVarWork : PoVarWork
     {
-        public CtrlyPoVarWork(WorkConfig cfg) : base(cfg)
+        public CtrPoVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

@@ -14,9 +14,9 @@ namespace Samp
     }
 
     [Ui("资讯")]
-    public class CtrlyPoWork : PoWork<CtrlyPoVarWork>
+    public class CtrPoWork : PoWork<CtrPoVarWork>
     {
-        public CtrlyPoWork(WorkConfig cfg) : base(cfg)
+        public CtrPoWork(WorkConfig cfg) : base(cfg)
         {
         }
 

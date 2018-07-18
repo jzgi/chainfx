@@ -26,7 +26,7 @@ namespace Samp
                 h.LI("姓　名", prin.name);
                 h.LI("电　话", prin.tel);
                 h.LI("地　址", prin.addr);
-                h.LI("积　分", prin.points);
+                h.LI("积　分", prin.score);
                 h.T("<hr>");
                 h.COL_();
                 h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
@@ -103,19 +103,19 @@ namespace Samp
 
     [UserAccess(opr: 1)]
     [Ui("常规")]
-    public class GrplyVarWork : Work, IOrgVar
+    public class TmVarWork : Work, IOrgVar
     {
-        public GrplyVarWork(WorkConfig cfg) : base(cfg)
+        public TmVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrlyChatWork>("chat");
+            Create<CtrChatWork>("chat");
 
-            Create<CtrlyNewoWork>("newo");
+            Create<CtrNewSoWork>("newso");
 
-            Create<CtrlyOldoWork>("oldo");
+            Create<CtrOldSoWork>("oldso");
 
-            Create<CtrlyItemWork>("item");
+            Create<CtrItemWork>("item");
 
-            Create<CtrlyCashWork>("cash");
+            Create<OrgCashWork>("cash");
         }
 
         public void @default(WebContext wc)
@@ -141,11 +141,11 @@ namespace Samp
         }
     }
 
-    public class VndlyVarWork : Work, IOrgVar
+    public class VdrVarWork : Work, IOrgVar
     {
-        public VndlyVarWork(WorkConfig cfg) : base(cfg)
+        public VdrVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrlyChatWork>("chat");
+            Create<CtrChatWork>("chat");
         }
 
         public void @default(WebContext wc)
@@ -155,19 +155,19 @@ namespace Samp
 
     [UserAccess(opr: 1)]
     [Ui("常规")]
-    public class CtrlyVarWork : Work, IOrgVar
+    public class CtrVarWork : Work, IOrgVar
     {
-        public CtrlyVarWork(WorkConfig cfg) : base(cfg)
+        public CtrVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrlyChatWork>("chat");
+            Create<CtrChatWork>("chat");
 
-            Create<CtrlyNewoWork>("newo");
+            Create<CtrNewSoWork>("newo");
 
-            Create<CtrlyOldoWork>("oldo");
+            Create<CtrOldSoWork>("oldo");
 
-            Create<CtrlyItemWork>("item");
+            Create<CtrItemWork>("item");
 
-            Create<CtrlyCashWork>("cash");
+            Create<OrgCashWork>("cash");
         }
 
         public void @default(WebContext wc)

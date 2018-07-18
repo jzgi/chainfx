@@ -26,37 +26,29 @@ namespace Samp
                 h.BOARD(arr, o =>
                     {
                         h.T("<header class=\"uk-card-header uk-flex uk-flex-middle\">");
-                        h.T("<h5>").T(o.orgname).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<h5>").T(o.tmid).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</header>");
 
                         h.UL_("uk-list uk-list-divider uk-card-body");
 
-                        h.LI("收　货", o.custaddr, o.custname, o.custtel);
+                        h.LI("收　货", o.uaddr, o.uname, o.utel);
                         h.LI_();
                         h.UL_("uk-list uk-list-divider uk-width-1-1");
-                        for (int i = 0; i < o.items.Length; i++)
+                        h.LI_();
+                        h.ICO_(w: 0x16).T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
+                        if (o.status == CREATED)
                         {
-                            var oi = o.items[i];
-                            h.LI_();
-                            h.ICO_(w: 0x16).T('/').T(o.orgid).T('/').T(oi.name).T("/icon")._ICO();
-                            if (o.status == CREATED)
-                            {
-                                h.P(oi.name, w: 0x13).P_(w: 0x13).CUR(oi.price).T("／").T(oi.unit)._P();
-                                h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MySoVarWork.Upd), i, oi.qty.ToString())._P();
-                            }
-                            else
-                            {
-                                h.P(oi.name, w: 0x12).P_(w: 0x16).CUR(oi.price)._P().P_(w: 0x16).T(oi.qty).T(oi.unit)._P();
-                            }
-                            h._LI();
+                            h.P(o.item, w: 0x13).P_(w: 0x13).CUR(o.price).T("／").T(o.unit)._P();
+                            h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MySoVarWork.Upd), 0, o.qty.ToString())._P();
                         }
+                        else
+                        {
+                            h.P(o.item, w: 0x12).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
+                        }
+                        h._LI();
                         h._UL();
                         h._LI();
                         h.LI_("总　额").CUR(o.total)._LI();
-                        if (o.posid > 0)
-                        {
-                            h.P_("净额", w: 0x12).CUR(o.points)._P();
-                        }
                         h._UL(); // uk-card-body
 
                         if (tooling) h.VARTOOLS(css: "uk-card-footer");
@@ -78,19 +70,15 @@ namespace Samp
                     o =>
                     {
                         h.T("<section class=\"uk-accordion-title\">");
-                        h.T("<h4 class=\"uk-width-expand\">").T(o.custname).T("</h4>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<h4 class=\"uk-width-expand\">").T(o.uname).T("</h4>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</section>");
 
                         h.T("<section class=\"uk-accordion-content uk-grid\">");
-                        h.P_("收　货").SP().T(o.custname).SP().T(o.custaddr).SP().T(o.custtel)._P();
+                        h.P_("收　货").SP().T(o.uname).SP().T(o.uaddr).SP().T(o.utel)._P();
                         h.UL_("uk-grid");
-                        for (int i = 0; i < o.items.Length; i++)
-                        {
-                            var oi = o.items[i];
-                            h.LI_();
-                            h.SPAN_(0x11).T(oi.name)._SPAN().SPAN_(w: 0x23).T('￥').T(oi.price).T("／").T(oi.unit)._SPAN().SPAN(oi.qty, w: 0x13);
-                            h._LI();
-                        }
+                        h.LI_();
+                        h.SPAN_(0x11).T(o.item)._SPAN().SPAN_(w: 0x23).T('￥').T(o.price).T("／").T(o.unit)._SPAN().SPAN(o.qty, w: 0x13);
+                        h._LI();
                         h._UL();
                         h.P_("总　额", w: 0x12).CUR(o.total)._P();
 
@@ -130,10 +118,22 @@ namespace Samp
         }
     }
 
-    [Ui("新单")]
-    public class CtrlyNewoWork : SoWork<OprNewoVarWork>
+    [Ui("订单")]
+    public class TmSoWork : SoWork<TmSoVarWork>
     {
-        public CtrlyNewoWork(WorkConfig cfg) : base(cfg)
+        public TmSoWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        public void @default(WebContext wc)
+        {
+        }
+    }
+
+    [Ui("新单")]
+    public class CtrNewSoWork : SoWork<CtrNewSoVarWork>
+    {
+        public CtrNewSoWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -192,9 +192,9 @@ namespace Samp
     }
 
     [Ui("旧单"), UserAccess(OPR)]
-    public class CtrlyOldoWork : SoWork<OprOldoVarWork>
+    public class CtrOldSoWork : SoWork<CtrOldSoVarWork>
     {
-        public CtrlyOldoWork(WorkConfig cfg) : base(cfg)
+        public CtrOldSoWork(WorkConfig cfg) : base(cfg)
         {
         }
 

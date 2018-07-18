@@ -79,8 +79,8 @@ namespace Samp
                         {
                             // show addr inputs for order creation
                             h.FIELDSET_("创建订单，填写收货地址");
-                            h.TEXT(nameof(So.custaddr), prin.addr, "地　址", max: 20, required: true);
-                            h.LI_().LABEL("姓　名").TEXT(nameof(So.custname), prin.name, max: 4, min: 2, required: true).LABEL("电　话").TEL(nameof(So.custtel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
+                            h.TEXT(nameof(So.uaddr), prin.addr, "地　址", max: 20, required: true);
+                            h.LI_().LABEL("姓　名").TEXT(nameof(So.uname), prin.name, max: 4, min: 2, required: true).LABEL("电　话").TEL(nameof(So.utel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                             h._FIELDSET();
                         }
                         // quantity
@@ -104,8 +104,8 @@ namespace Samp
                     {
                         var o = dc.ToObject<So>();
                         (await wc.ReadAsync<Form>()).Let(out num);
-                        o.AddItem(itemname, item.unit, item.price, num);
-                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.points).Set(o.id));
+//                        o.AddItem(itemname, item.unit, item.price, num);
+//                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.score).Set(o.id));
                     }
                     else // create a new order
                     {
@@ -114,16 +114,16 @@ namespace Samp
                         string posid = f[nameof(posid)];
                         var o = new So
                         {
-                            orgid = orgid,
-                            orgname = org.name,
-                            custid = prin.id,
-                            custname = prin.name,
-                            custwx = prin.wx,
+                            ctrid = orgid,
+                            tmid = org.name,
+                            uid = prin.id,
+                            uname = prin.name,
+                            uwx = prin.wx,
                             created = DateTime.Now
                         };
                         o.Read(f, proj);
                         num = f[nameof(num)];
-                        o.AddItem(itemname, item.unit, item.price, num);
+//                        o.AddItem(itemname, item.unit, item.price, num);
                         dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                         dc.Execute(p => o.Write(p, proj));
                     }
@@ -137,9 +137,9 @@ namespace Samp
         }
     }
 
-    public class OprItemVarWork : ItemVarWork
+    public class CtrItemVarWork : ItemVarWork
     {
-        public OprItemVarWork(WorkConfig cfg) : base(cfg)
+        public CtrItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

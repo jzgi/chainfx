@@ -28,18 +28,23 @@ namespace Samp
 
         internal int id;
         internal short rev;
-        internal string orgid;
-        internal string orgname;
-        internal int custid;
-        internal string custname; // customer name
-        internal string custwx; // weixin openid
-        internal string custtel;
-        internal string custaddr; // may include area and site
-        internal OrderItem[] items;
+        internal string ctrid; // center id
+
+        internal int uid;
+        internal string uname; // customer name
+        internal string uwx; // weixin openid
+        internal string utel;
+        internal string uaddr; // may include area and site
+        internal string tmid; // team id
+
+        internal string item;
+        internal string unit;
+        internal decimal price;
+        internal short qty;
         internal decimal total; // total price
-        internal decimal cash; // cash payment
-        internal decimal points; // deduction of points
-        internal int posid; // POS id
+        internal decimal cash; // cash paid
+        internal int score; // deduction of points
+
         internal DateTime created;
         internal DateTime paid;
         internal DateTime ended;
@@ -52,23 +57,24 @@ namespace Samp
                 s.Get(nameof(id), ref id);
                 s.Get(nameof(rev), ref rev);
             }
-            s.Get(nameof(orgid), ref orgid);
-            s.Get(nameof(orgname), ref orgname);
-            s.Get(nameof(custid), ref custid);
-            s.Get(nameof(custname), ref custname);
-            s.Get(nameof(custwx), ref custwx);
-            s.Get(nameof(custtel), ref custtel);
-            s.Get(nameof(custaddr), ref custaddr);
-            if ((proj & DETAIL) == DETAIL)
-            {
-                s.Get(nameof(items), ref items);
-            }
+            s.Get(nameof(ctrid), ref ctrid);
+            s.Get(nameof(tmid), ref tmid);
+            s.Get(nameof(uid), ref uid);
+            s.Get(nameof(uname), ref uname);
+            s.Get(nameof(uwx), ref uwx);
+            s.Get(nameof(utel), ref utel);
+            s.Get(nameof(uaddr), ref uaddr);
+
+            s.Get(nameof(item), ref item);
+            s.Get(nameof(unit), ref unit);
+            s.Get(nameof(price), ref price);
+            s.Get(nameof(qty), ref qty);
+
             s.Get(nameof(total), ref total);
-            s.Get(nameof(points), ref points);
+            s.Get(nameof(score), ref score);
             s.Get(nameof(created), ref created);
             if ((proj & LATER) == LATER)
             {
-                s.Get(nameof(posid), ref posid);
                 s.Get(nameof(cash), ref cash);
                 s.Get(nameof(paid), ref paid);
                 s.Get(nameof(ended), ref ended);
@@ -83,23 +89,24 @@ namespace Samp
                 s.Put(nameof(id), id);
                 s.Put(nameof(rev), rev);
             }
-            s.Put(nameof(orgid), orgid);
-            s.Put(nameof(orgname), orgname);
-            s.Put(nameof(custid), custid);
-            s.Put(nameof(custname), custname);
-            s.Put(nameof(custwx), custwx);
-            s.Put(nameof(custtel), custtel);
-            s.Put(nameof(custaddr), custaddr);
-            if ((proj & DETAIL) == DETAIL)
-            {
-                s.Put(nameof(items), items);
-            }
+            s.Put(nameof(ctrid), ctrid);
+            s.Put(nameof(tmid), tmid);
+            s.Put(nameof(uid), uid);
+            s.Put(nameof(uname), uname);
+            s.Put(nameof(uwx), uwx);
+            s.Put(nameof(utel), utel);
+            s.Put(nameof(uaddr), uaddr);
+
+            s.Put(nameof(item), item);
+            s.Put(nameof(unit), unit);
+            s.Put(nameof(price), price);
+            s.Put(nameof(qty), qty);
+
             s.Put(nameof(total), total);
-            s.Put(nameof(points), points);
+            s.Put(nameof(score), score);
             s.Put(nameof(created), created);
             if ((proj & LATER) == LATER)
             {
-                s.Put(nameof(posid), posid);
                 s.Put(nameof(cash), cash);
                 s.Put(nameof(paid), paid);
                 s.Put(nameof(ended), ended);
@@ -109,86 +116,8 @@ namespace Samp
 
         public string Err()
         {
-            if (custaddr == null) return "您尚未填写地址哦！";
+            if (uaddr == null) return "您尚未填写地址哦！";
             return null;
-        }
-
-        public bool IsPos => posid > 0;
-
-        public void AddItem(string name, string unit, decimal price, short num)
-        {
-            int idx = items.IndexOf(o => o.name.Equals(name));
-            if (idx != -1)
-            {
-                items[idx].qty += num;
-            }
-            else
-            {
-                items = items.AddOf(new OrderItem
-                {
-                    name = name,
-                    unit = unit,
-                    price = price,
-                    qty = num
-                });
-            }
-            Calc();
-        }
-
-        public void UpdItem(int idx, short num)
-        {
-            items[idx].qty = num;
-            if (num <= 0)
-            {
-                items = items.RemovedOf(idx);
-            }
-            else
-            {
-                items[idx].qty = num;
-            }
-            Calc();
-        }
-
-        // calculate total price and net price
-        public void Calc()
-        {
-            decimal sum = 0;
-            decimal deduct = 0;
-            if (items != null)
-            {
-                for (int i = 0; i < items.Length; i++)
-                {
-                    sum += items[i].qty * items[i].price;
-                }
-            }
-            total = sum;
-            points = sum - deduct;
-        }
-    }
-
-    public struct OrderItem : IData
-    {
-        internal string name;
-        internal string unit;
-        internal decimal price;
-        internal short qty;
-
-        public decimal Subtotal => price * qty;
-
-        public void Read(ISource s, byte proj = 0x0f)
-        {
-            s.Get(nameof(name), ref name);
-            s.Get(nameof(unit), ref unit);
-            s.Get(nameof(price), ref price);
-            s.Get(nameof(qty), ref qty);
-        }
-
-        public void Write(ISink s, byte proj = 0x0f)
-        {
-            s.Put(nameof(name), name);
-            s.Put(nameof(unit), unit);
-            s.Put(nameof(price), price);
-            s.Put(nameof(qty), qty);
         }
     }
 }

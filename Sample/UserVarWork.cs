@@ -9,9 +9,9 @@ namespace Samp
         }
     }
 
-    public class AdmOprVarWork : UserVarWork
+    public class PlatUserVarWork : UserVarWork
     {
-        public AdmOprVarWork(WorkConfig cfg) : base(cfg)
+        public PlatUserVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

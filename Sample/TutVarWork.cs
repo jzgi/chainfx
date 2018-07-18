@@ -38,9 +38,9 @@ namespace Samp
         }
     }
 
-    public class AdmTutVarWork : TutVarWork
+    public class PlatTutVarWork : TutVarWork
     {
-        public AdmTutVarWork(WorkConfig cfg) : base(cfg)
+        public PlatTutVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

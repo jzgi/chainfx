@@ -56,9 +56,9 @@ namespace Samp
         }
     }
 
-    public class CtrlyChatVarWork : ChatVarWork
+    public class CtrChatVarWork : ChatVarWork
     {
-        public CtrlyChatVarWork(WorkConfig cfg) : base(cfg)
+        public CtrChatVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

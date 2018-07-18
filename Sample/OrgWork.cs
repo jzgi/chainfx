@@ -8,14 +8,14 @@ namespace Samp
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Org)obj).id);
+            CreateVar<V, string>(obj => ((Org) obj).id);
         }
     }
 
     [Ui("网点")]
-    public class AdmOrgWork : OrgWork<AdmOrgVarWork>
+    public class PlatCtrWork : OrgWork<PlatCtrVarWork>
     {
-        public AdmOrgWork(WorkConfig cfg) : base(cfg)
+        public PlatCtrWork(WorkConfig cfg) : base(cfg)
         {
         }
 

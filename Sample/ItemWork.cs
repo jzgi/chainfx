@@ -15,9 +15,9 @@ namespace Samp
 
 
     [Ui("货品"), UserAccess(OPRMEM)]
-    public class CtrlyItemWork : ItemWork<OprItemVarWork>
+    public class CtrItemWork : ItemWork<CtrItemVarWork>
     {
-        public CtrlyItemWork(WorkConfig cfg) : base(cfg)
+        public CtrItemWork(WorkConfig cfg) : base(cfg)
         {
         }
 

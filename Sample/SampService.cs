@@ -18,13 +18,13 @@ namespace Samp
 
             Create<MyWork>("my"); // personal
 
-            Create<GrplyWork>("grp"); // group
+            Create<TmWork>("grp"); // group
 
-            Create<VdrlyWork>("vdr"); // vendor
+            Create<VdrWork>("vdr"); // vendor
 
-            Create<CtrlyWork>("ctr"); // center
+            Create<CtrWork>("ctr"); // center
 
-            Create<PlatlyWork>("plat"); // platform
+            Create<PlatWork>("plat"); // platform
 
             Register(delegate
                 {

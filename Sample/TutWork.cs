@@ -44,9 +44,9 @@ namespace Samp
     }
 
     [Ui("资讯")]
-    public class AdmTutWork : TutWork<AdmTutVarWork>
+    public class PlatTutWork : TutWork<PlatTutVarWork>
     {
-        public AdmTutWork(WorkConfig cfg) : base(cfg)
+        public PlatTutWork(WorkConfig cfg) : base(cfg)
         {
         }
 

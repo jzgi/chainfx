@@ -10,42 +10,41 @@ namespace Samp
         }
     }
 
-    public class GrplyWork : Work
+    public class TmWork : Work
     {
-        public GrplyWork(WorkConfig cfg) : base(cfg)
+        public TmWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<GrplyVarWork, string>(prin => ((User) prin).grpat);
+            CreateVar<TmVarWork, string>(prin => ((User) prin).tmat);
         }
     }
 
-    public class VdrlyWork : Work
+    public class VdrWork : Work
     {
-        public VdrlyWork(WorkConfig cfg) : base(cfg)
+        public VdrWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<GrplyVarWork, string>(prin => ((User) prin).grpat);
+            CreateVar<VdrVarWork, string>(prin => ((User) prin).tmat);
         }
     }
 
-    public class CtrlyWork : Work
+    public class CtrWork : Work
     {
-        public CtrlyWork(WorkConfig cfg) : base(cfg)
+        public CtrWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrlyVarWork, string>(prin => ((User) prin).ctrat);
+            CreateVar<CtrVarWork, string>(prin => ((User) prin).ctrat);
         }
     }
 
     [UserAccess(adm: 1)]
     [Ui("常规")]
-    public class PlatlyWork : Work
+    public class PlatWork : Work
     {
-        public PlatlyWork(WorkConfig cfg) : base(cfg)
+        public PlatWork(WorkConfig cfg) : base(cfg)
         {
-            Create<AdmOprWork>("opr");
+            Create<PlatUserWork>("user");
 
-            Create<AdmOrgWork>("org");
+            Create<PlatCtrWork>("ctr");
 
-            Create<AdmRepayWork>("repay");
-
+            Create<PlatRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
