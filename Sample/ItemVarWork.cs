@@ -86,7 +86,7 @@ namespace Samp
                         // quantity
                         h.FIELDSET_("加入货品");
                         h.LI_("货　品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
-                        h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.max, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
+                        h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.stock, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
                         h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
@@ -164,7 +164,7 @@ namespace Samp
                         h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
                         h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
-                        h.NUMBER(nameof(o.max), o.max, "可供");
+                        h.NUMBER(nameof(o.stock), o.stock, "可供");
                         h._FIELDSET();
                         h._FORM();
                     });

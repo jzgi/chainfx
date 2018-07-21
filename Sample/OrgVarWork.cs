@@ -13,26 +13,83 @@ namespace Samp
         }
     }
 
+    [UserAccess(false)]
     public class SampVarWork : OrgVarWork
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<SampItemVarWork, string>(obj => ((Item) obj).name);
         }
 
-        public void icon(WebContext wc)
+        public void chat(WebContext wc, int page)
         {
-            string orgid = wc[this];
-            using (var dc = NewDbContext())
+            string ctrid = wc[this];
+            var org = Obtain<Map<string, Org>>()[ctrid];
+            using (var dc = ServiceUtility.NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM orgs WHERE id = @1", p => p.Set(orgid)))
-                {
-                    dc.Let(out ArraySegment<byte> byteas);
-                    if (byteas.Count == 0) wc.Give(204, @public: true, maxage: 3600); // no content 
-                    else wc.Give(200, new StaticContent(byteas), @public: true, maxage: 3600);
-                }
-                else wc.Give(404, @public: true, maxage: 3600); // not found
+                const byte proj = 0xff ^ Chat.DETAIL;
+                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats WHERE ctrid = @1");
+                var arr = dc.Query<Chat>(p => p.Set(ctrid), proj);
+                wc.GivePage(200, h =>
+                    {
+                        h.T("<ul class=\"uk-subnav\">");
+                        h.T("<li class=\"uk-active\"><a href=\"chat\">").T(org.name).T("邻里交流</a></li>");
+                        h.T("<li><a href=\"./\">下单</a></li>");
+                        h.T("</ul>");
+                        h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
+
+                        h.LIST(arr, oi =>
+                        {
+                            h.COL_(0x23, css: "uk-padding-small");
+                            h.T("<h3>").T(oi.uname).T("</h3>");
+                            h.P(oi.posted);
+                            h.ROW_();
+                            h.FORM_(css: "uk-width-auto");
+                            h.HIDDEN(nameof(ctrid), ctrid);
+                            h.TOOL(nameof(SampItemVarWork.buy));
+                            h._FORM();
+                            h._ROW();
+                            h._COL();
+                        }, "uk-card-body uk-padding-remove");
+
+                        h.VARTOOLS();
+                    }, true, 60
+                );
             }
+        }
+
+        public void @default(WebContext wc)
+        {
+            string ctrid = wc[this];
+            var org = Obtain<Map<string, Org>>()[ctrid];
+            var arr = Obtain<Map<(string, string), Item>>();
+            wc.GivePage(200, h =>
+                {
+                    h.T("<ul class=\"uk-subnav\">");
+                    h.T("<li><a href=\"chat\">").T(org.name).T("邻里交流</a></li>");
+                    h.T("<li class=\"uk-active\"><a href=\"/list\">下单</a></li>");
+                    h.T("</ul>");
+                    h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
+
+                    h.LIST(arr.GroupFor((ctrid, null)), oi =>
+                    {
+                        h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
+                        h.COL_(0x23, css: "uk-padding-small");
+                        h.T("<h3>").T(oi.name).T("</h3>");
+                        h.P(oi.descr);
+                        h.ROW_();
+                        h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
+                        h.FORM_(css: "uk-width-auto");
+                        h.HIDDEN(nameof(ctrid), ctrid);
+                        h.TOOL(nameof(SampItemVarWork.buy));
+                        h._FORM();
+                        h._ROW();
+                        h._COL();
+                    }, "uk-card-body uk-padding-remove");
+
+                    h.VARTOOLS();
+                }, true, 60
+            );
         }
     }
 

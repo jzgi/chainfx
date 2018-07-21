@@ -34,6 +34,7 @@ namespace Samp
         public string credential;
         internal int score;
         internal int refid; // referee id
+        internal string ctrid; // team
         internal string tmat; // team
         internal short tm;
         internal string vdrat; // vendor

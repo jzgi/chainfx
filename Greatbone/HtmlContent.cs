@@ -1501,7 +1501,7 @@ namespace Greatbone
         }
 
 
-        public HtmlContent VARTOOLS(byte grp = 0, string css = null)
+        public HtmlContent VARTOOLS(byte grou = 0, string css = null)
         {
             Add("<form class=\"uk-flex uk-flex-center uk-width-1-1");
             if (css != null)
@@ -1513,14 +1513,14 @@ namespace Greatbone
 
             int gogrp = -1;
             Work wrk = webCtx.Work.VarWork;
-            var actrs = wrk.Tooled;
+            var actrs = wrk?.Tooled;
             if (actrs != null)
             {
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
                     int g = actr.Group;
-                    if (g == 0 || (g & grp) > 0)
+                    if (g == 0 || (g & grou) > 0)
                     {
                         if (g != gogrp)
                         {

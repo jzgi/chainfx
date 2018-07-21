@@ -18,7 +18,7 @@ namespace Samp
 
             Create<MyWork>("my"); // personal
 
-            Create<TmWork>("grp"); // group
+            Create<TmWork>("tm"); // team
 
             Create<VdrWork>("vdr"); // vendor
 
@@ -185,6 +185,7 @@ namespace Samp
         /// <summary>
         /// The home page that lists gospel lessons.
         /// </summary>
+        [Ctr]
         public void @default(WebContext wc)
         {
             var lessons = Obtain<Tut[]>();
@@ -202,138 +203,6 @@ namespace Samp
                     });
                 }
             }, true, 3600, "《生命的奥秘》系列");
-        }
-
-        public void chat(WebContext wc)
-        {
-            var orgs = wc.Service.Obtain<Map<string, Org>>();
-            var cities = orgs.Heads();
-
-            // check if bind to a operator
-            Org[] shops = null;
-            string oprat = null;
-            string city = null;
-            int posid = wc.Query[nameof(posid)];
-            string oprname = null;
-            if (posid > 0)
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Query1("SELECT name, oprat FROM users WHERE id = @1", (p) => p.Set(posid));
-                    dc.Let(out oprname).Let(out oprat);
-                }
-                var shop = orgs[oprat];
-                shops = new[] {shop};
-                city = oprat.Substring(0, 2);
-            }
-            else
-            {
-                city = wc.Query[nameof(city)];
-                if (string.IsNullOrEmpty(city))
-                {
-                    city = "NC";
-                }
-                shops = orgs.GroupFor(city, false);
-            }
-
-            Chat[] items = null;
-            using (var dc = NewDbContext())
-            {
-                items = dc.Query<Chat>("SELECT * FROM chats WHERE grpid = @1", (p) => p.Set(posid));
-            }
-
-            wc.GivePage(200, h =>
-                {
-                    h.T("<ul class=\"uk-subnav\">");
-                    h.T("<li class=\"uk-active\"><a href=\"/chat\">团交流</a></li>");
-                    h.T("<li><a href=\"/list\">下单</a></li>");
-                    h.T("</ul>");
-                    h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
-
-                    h.LIST(items, oi =>
-                    {
-                        h.COL_(0x23, css: "uk-padding-small");
-                        h.T("<h3>").T(oi.uname).T("</h3>");
-                        h.P(oi.posted);
-                        h.ROW_();
-                        h.FORM_(css: "uk-width-auto");
-                        h.HIDDEN(nameof(posid), posid);
-                        h.TOOL(nameof(SampItemVarWork.buy));
-                        h._FORM();
-                        h._ROW();
-                        h._COL();
-                    }, "uk-card-body uk-padding-remove");
-
-                    h.VARTOOLS();
-                }, true, 60
-            );
-        }
-
-        /// Returns a home page pertaining to a related city
-        /// We are forced to put auth check here because weixin auth does't work in iframe
-//        [City]
-        [UserAccess(false)]
-        public void list(WebContext wc)
-        {
-            var orgs = wc.Service.Obtain<Map<string, Org>>();
-            var cities = orgs.Heads();
-
-            // check if bind to a operator
-            Org[] shops = null;
-            string oprat = null;
-            string city = null;
-            int posid = wc.Query[nameof(posid)];
-            string oprname = null;
-            if (posid > 0)
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Query1("SELECT name, oprat FROM users WHERE id = @1", (p) => p.Set(posid));
-                    dc.Let(out oprname).Let(out oprat);
-                }
-                var shop = orgs[oprat];
-                shops = new[] {shop};
-                city = oprat.Substring(0, 2);
-            }
-            else
-            {
-                city = wc.Query[nameof(city)];
-                if (string.IsNullOrEmpty(city))
-                {
-                    city = "NC";
-                }
-                shops = orgs.GroupFor(city, false);
-            }
-
-            var items = Obtain<Map<(string, string), Item>>();
-
-            wc.GivePage(200, h =>
-                {
-                    h.T("<ul class=\"uk-subnav\">");
-                    h.T("<li><a href=\"/chat\">团交流</a></li>");
-                    h.T("<li class=\"uk-active\"><a href=\"/list\">下单</a></li>");
-                    h.T("</ul>");
-                    h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
-
-                    h.LIST(items.GroupFor((city, null)), oi =>
-                    {
-                        h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
-                        h.COL_(0x23, css: "uk-padding-small");
-                        h.T("<h3>").T(oi.name).T("</h3>");
-                        h.P(oi.descr);
-                        h.ROW_();
-                        h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
-                        h.FORM_(css: "uk-width-auto");
-                        h.HIDDEN(nameof(posid), posid);
-                        h.TOOL(nameof(SampItemVarWork.buy));
-                        h._FORM();
-                        h._ROW();
-                        h._COL();
-                    }, "uk-card-body uk-padding-remove");
-
-                    h.VARTOOLS();
-                }, true, 60
-            );
         }
 
         /// <summary>

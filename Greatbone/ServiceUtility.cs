@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -61,6 +62,29 @@ namespace Greatbone
         }
 
         static readonly CancellationTokenSource Cts = new CancellationTokenSource();
+
+        public static Service GetService(string svcId = null)
+        {
+            if (svcId == null)
+            {
+                return services[0];
+            }
+            else
+            {
+                for (int i = 0; i < services.Count; i++)
+                {
+                    var svc = services[i];
+                    if (svc.Id == svcId) return svc;
+                }
+            }
+            return null;
+        }
+
+        public static DbContext NewDbContext(string svcId = null, IsolationLevel? level = null)
+        {
+            var svc = GetService(svcId);
+            return svc?.NewDbContext(level);
+        }
 
         /// 
         /// Runs a number of web services and block until shutdown.

@@ -10,7 +10,7 @@ namespace Samp
     {
         public static readonly Chat Empty = new Chat();
 
-        public const byte ID = 1;
+        public const byte ID = 1, DETAIL = 2;
 
         internal int id;
         internal string ctrid;
@@ -33,7 +33,10 @@ namespace Samp
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
             s.Get(nameof(uwx), ref uwx);
-            s.Get(nameof(msgs), ref msgs);
+            if ((proj & DETAIL) > 0)
+            {
+                s.Get(nameof(msgs), ref msgs);
+            }
             s.Get(nameof(replies), ref replies);
             s.Get(nameof(posted), ref posted);
         }
@@ -51,7 +54,10 @@ namespace Samp
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
             s.Put(nameof(uwx), uwx);
-            s.Put(nameof(msgs), msgs);
+            if ((proj & DETAIL) > 0)
+            {
+                s.Put(nameof(msgs), msgs);
+            }
             s.Put(nameof(replies), replies);
             s.Put(nameof(posted), posted);
         }

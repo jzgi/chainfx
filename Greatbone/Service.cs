@@ -90,7 +90,7 @@ namespace Greatbone
             }
 
             // init data flow publishes
-            Roll<EventPub> roll = new Roll<EventPub>();
+            Roll<EventPub> evts = new Roll<EventPub>();
             using (var dc = NewDbContext())
             {
                 // tables/views with names in form of pub_* and the pub_id column 
@@ -98,10 +98,10 @@ namespace Greatbone
                 while (dc.Next())
                 {
                     dc.Let(out string tname);
-                    roll.Add(new EventPub(tname));
+                    evts.Add(new EventPub(tname));
                 }
             }
-            pubs = roll.ToArray();
+            pubs = evts.ToArray();
 
             // init the response cache
             if (cfg.cache)

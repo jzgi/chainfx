@@ -26,7 +26,7 @@ namespace Samp
         internal decimal price;
         internal short min;
         internal short step;
-        internal short max;
+        internal short stock;
         internal short next;
         internal Cap[] caps;
         internal short status;
@@ -43,7 +43,7 @@ namespace Samp
             s.Get(nameof(price), ref price);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
-            s.Get(nameof(max), ref max);
+            s.Get(nameof(stock), ref stock);
             s.Get(nameof(status), ref status);
         }
 
@@ -59,7 +59,7 @@ namespace Samp
             s.Put(nameof(price), price);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
-            s.Put(nameof(max), max);
+            s.Put(nameof(stock), stock);
             s.Put(nameof(status), status);
         }
 

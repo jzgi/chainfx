@@ -582,7 +582,6 @@ namespace Greatbone
             {
                 dc.Begin(level.Value);
             }
-
             return dc;
         }
 
