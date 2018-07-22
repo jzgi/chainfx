@@ -1410,7 +1410,7 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte grp = 0x0f, string title = null)
+        public HtmlContent TOOLBAR(byte grou = 0x0f, string title = null, bool refresh = true)
         {
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">");
@@ -1422,7 +1422,7 @@ namespace Greatbone
                 {
                     var actr = actrs[i];
                     int g = actr.Group;
-                    if (g == 0 || (g & grp) > 0)
+                    if (g == 0 || (g & grou) > 0)
                     {
                         if (g != gogrp)
                         {
@@ -1442,7 +1442,10 @@ namespace Greatbone
             {
                 Add(title);
             }
-            Add("<a class=\"uk-icon-button uk-light\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
+            if (refresh)
+            {
+                Add("<a class=\"uk-icon-button uk-light\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
+            }
             Add("</section>");
 
             Add("</form>");

@@ -251,23 +251,23 @@ namespace Samp
             ac.Give(status, h, @public, maxage);
         }
 
-        public static HtmlContent TOPBAR_(this HtmlContent h, string title = null)
+        public static HtmlContent TOPBAR(this HtmlContent h, bool def)
         {
-            h.T("<form class=\"uk-top-bar uk-flex-between\">");
-            if (title != null)
+            h.T("<nav class=\"uk-top-bar\">");
+            h.T("<ul class=\"uk-subnav\">");
+            if (def)
             {
-                h.T("<div>").T(title).T("</div>");
+                h.T("<li class=\"uk-active \"><a href=\"#\">下单</a></li>");
+                h.T("<li><a href=\"chat/\">社区交流</a></li>");
             }
-            h.T("<div>");
-            return h;
-        }
-
-        public static HtmlContent _TOPBAR(this HtmlContent h)
-        {
-            h.T("</div>");
-            h.T("<a class=\"uk-button uk-button-default\" href=\"").T(JOINADDR).T("\">关注公众号</a>");
-            h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
-            h.T("</form>");
+            else
+            {
+                h.T("<li><a href=\"../\">下单</a></li>");
+                h.T("<li class=\"uk-active \"><a href=\"#\">社区交流</a></li>");
+            }
+            h.T("</ul>");
+            h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"album\"></a>");
+            h.T("</nav>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;
         }

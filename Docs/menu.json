@@ -2,8 +2,8 @@
   "button": [
     {
       "type": "view",
-      "name": "交流／下单",
-      "url": "http://144000.tv/list",
+      "name": "下单／社区交流",
+      "url": "http://144000.tv/nc/",
       "sub_button": []
     },
     {
@@ -11,14 +11,14 @@
       "sub_button": [
         {
           "type": "view",
-          "name": "《全粮派》",
-          "url": "http://144000.tv/",
+          "name": "《生命的奥秘》",
+          "url": "http://144000.tv/tut/",
           "sub_button": []
         },
         {
           "type": "view",
-          "name": "《生命的奥秘》",
-          "url": "http://144000.tv/tut/",
+          "name": "全粮派网站",
+          "url": "http://144000.tv/",
           "sub_button": []
         },
         {

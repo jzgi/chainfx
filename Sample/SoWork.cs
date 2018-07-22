@@ -21,7 +21,7 @@ namespace Samp
             {
                 if (tooling)
                 {
-                    h.TOOLBAR(title: "购物车");
+                    h.TOOLBAR(title: "我的订单");
                 }
                 h.BOARD(arr, o =>
                     {
@@ -39,7 +39,7 @@ namespace Samp
                         if (o.status == CREATED)
                         {
                             h.P(o.item, w: 0x13).P_(w: 0x13).CUR(o.price).T("／").T(o.unit)._P();
-                            h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MySoVarWork.Upd), 0, o.qty.ToString())._P();
+                            h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MySoVarWork.cancel), 0, o.qty.ToString())._P();
                         }
                         else
                         {
@@ -101,12 +101,27 @@ namespace Samp
             int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<So>("SELECT * FROM sos WHERE status BETWEEN 0 AND 1 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
-                GiveBoardPage(wc, arr);
+                var arr = dc.Query<So>("SELECT * FROM sos WHERE status BETWEEN 0 AND 1 AND uid = @1 ORDER BY id DESC", p => p.Set(myid));
+                wc.GivePage(200, h =>
+                {
+                    h.BOARD(arr, o =>
+                        {
+                            h.UL_("uk-list uk-list-divider uk-card-body");
+                            h.LI("收货", o.uaddr, o.uname, o.utel);
+                            h.LI_();
+                            h.ICO_(w: 0x16).T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
+                            h.P(o.item, w: 0x12).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
+                            h._LI();
+                            h._UL(); // uk-card-body
+
+                            h.VARTOOLS(css: "uk-card-footer");
+                        }
+                    );
+                }, false, 2, title: "我的订单");
             }
         }
 
-        [Ui("历史订单"), Tool(AOpen, size: 2)]
+        [Ui("查看历史订单"), Tool(AOpen, size: 2)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];

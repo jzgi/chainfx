@@ -20,7 +20,7 @@ namespace Samp
             string name = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
+                if (dc.Query1("SELECT icon FROM items WHERE ctrid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
@@ -133,6 +133,36 @@ namespace Samp
                         m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
                     });
                 }
+            }
+        }
+
+        [Ui("付款"), Tool(ButtonScript), SoState('P')]
+        public async Task prepay(WebContext wc)
+        {
+            var prin = (User) wc.Principal;
+            int orderid = wc[this];
+            So o;
+            using (var dc = NewDbContext())
+            {
+                const byte proj = 0xff ^ So.DETAIL;
+                dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custid = @2");
+                o = dc.Query1<So>(p => p.Set(orderid).Set(prin.id), proj);
+            }
+            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(
+                orderid + "-" + o.rev,
+                o.cash,
+                prin.wx,
+                wc.RemoteAddr.ToString(),
+                SampUtility.NETADDR + "/" + nameof(SampService.onpay),
+                "粗粮达人-健康产品"
+            );
+            if (prepay_id != null)
+            {
+                wc.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
+            }
+            else
+            {
+                wc.Give(500);
             }
         }
     }

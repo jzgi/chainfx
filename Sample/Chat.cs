@@ -14,12 +14,12 @@ namespace Samp
 
         internal int id;
         internal string ctrid;
-        internal string topic;
+        internal string subject;
         internal int uid;
         internal string uname;
-        internal string uwx;
         internal Msg[] msgs;
         internal short replies;
+        internal short imgs;
         internal DateTime posted;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -29,15 +29,15 @@ namespace Samp
                 s.Get(nameof(id), ref id);
             }
             s.Get(nameof(ctrid), ref ctrid);
-            s.Get(nameof(topic), ref topic);
+            s.Get(nameof(subject), ref subject);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
-            s.Get(nameof(uwx), ref uwx);
             if ((proj & DETAIL) > 0)
             {
                 s.Get(nameof(msgs), ref msgs);
             }
             s.Get(nameof(replies), ref replies);
+            s.Get(nameof(imgs), ref imgs);
             s.Get(nameof(posted), ref posted);
         }
 
@@ -50,15 +50,15 @@ namespace Samp
                 s.Put(nameof(id), id);
             }
             s.Put(nameof(ctrid), ctrid);
-            s.Put(nameof(topic), topic);
+            s.Put(nameof(subject), subject);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
-            s.Put(nameof(uwx), uwx);
             if ((proj & DETAIL) > 0)
             {
                 s.Put(nameof(msgs), msgs);
             }
             s.Put(nameof(replies), replies);
+            s.Put(nameof(imgs), imgs);
             s.Put(nameof(posted), posted);
         }
     }
@@ -68,6 +68,7 @@ namespace Samp
         internal int uid;
         internal string uname;
         internal string text;
+        internal short img;
         internal DateTime posted;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -75,6 +76,7 @@ namespace Samp
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
             s.Get(nameof(text), ref text);
+            s.Get(nameof(img), ref img);
             s.Get(nameof(posted), ref posted);
         }
 
@@ -83,6 +85,7 @@ namespace Samp
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
             s.Put(nameof(text), text);
+            s.Put(nameof(img), img);
             s.Put(nameof(posted), posted);
         }
     }

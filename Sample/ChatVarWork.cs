@@ -44,7 +44,6 @@ namespace Samp
                         ctrid = orgid,
                         uid = prin.id,
                         uname = prin.name,
-                        uwx = prin.wx,
                         msgs = new[] {msg},
                         posted = DateTime.Now
                     };

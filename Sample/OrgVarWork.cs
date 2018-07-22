@@ -23,56 +23,14 @@ namespace Samp
             Create<SampChatWork>("chat"); // chat
         }
 
-        public void @default(WebContext wc, int page)
-        {
-            string ctrid = wc[this];
-            var org = Obtain<Map<string, Org>>()[ctrid];
-            using (var dc = ServiceUtility.NewDbContext())
-            {
-                const byte proj = 0xff ^ Chat.DETAIL;
-                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats WHERE ctrid = @1");
-                var arr = dc.Query<Chat>(p => p.Set(ctrid), proj);
-                wc.GivePage(200, h =>
-                    {
-                        h.T("<ul class=\"uk-subnav\" uk-sticky=\"offset: 0\">");
-                        h.T("<li class=\"uk-active\"><a href=\"./\">").T(org.name).T("交流</a></li>");
-                        h.T("<li><a href=\"list\">下单</a></li>");
-                        h.T("</ul>");
-                        h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
-
-                        h.LIST(arr, o =>
-                        {
-                            h.COL_(0x23, css: "uk-padding-small");
-                            h.T("<h3>").T(o.uname).T("</h3>");
-                            h.P(o.posted);
-                            h.ROW_();
-                            h.FORM_(css: "uk-width-auto");
-                            h.HIDDEN(nameof(ctrid), ctrid);
-                            h.TOOL(nameof(SampItemVarWork.buy));
-                            h._FORM();
-                            h._ROW();
-                            h._COL();
-                        }, "uk-card-body uk-padding-remove");
-
-                        h.VARTOOLS();
-                    }, true, 60
-                );
-            }
-        }
-
-        public void list(WebContext wc)
+        public void @default(WebContext wc)
         {
             string ctrid = wc[this];
             var org = Obtain<Map<string, Org>>()[ctrid];
             var arr = Obtain<Map<(string, string), Item>>();
             wc.GivePage(200, h =>
                 {
-                    h.T("<ul class=\"uk-subnav\" uk-sticky=\"offset: 0\">");
-                    h.T("<li><a href=\"./\">").T(org.name).T("邻里交流</a></li>");
-                    h.T("<li class=\"uk-active\"><a href=\"list\">下单</a></li>");
-                    h.T("</ul>");
-                    h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
-
+                    h.TOPBAR(true);
                     h.LIST(arr.GroupFor((ctrid, null)), oi =>
                     {
                         h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
@@ -88,11 +46,11 @@ namespace Samp
                         h._ROW();
                         h._COL();
                     }, "uk-card-body uk-padding-remove");
-
-                    h.VARTOOLS();
+                    
                 }, true, 60
             );
         }
+
     }
 
     public class PlatCtrVarWork : OrgVarWork

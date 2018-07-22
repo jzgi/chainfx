@@ -80,12 +80,6 @@ namespace Greatbone
             return null;
         }
 
-        public static DbContext NewDbContext(string svcId = null, IsolationLevel? level = null)
-        {
-            var svc = GetService(svcId);
-            return svc?.NewDbContext(level);
-        }
-
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 

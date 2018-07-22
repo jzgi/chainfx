@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
 using static Samp.User;
@@ -15,49 +17,88 @@ namespace Samp
     {
         public SampChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampChatVarWork, string>((obj) => ((Chat)obj).ctrid);
+            CreateVar<SampChatVarWork, string>((obj) => ((Chat) obj).ctrid);
         }
 
-        public void @default(WebContext wc)
+        public void @default(WebContext wc, int page)
         {
-            int myid = wc[-1];
-            var prin = (User)wc.Principal;
-            var orgs = Obtain<Map<string, Org>>();
-            string orgid = wc.Query[nameof(orgid)];
+            string ctrid = wc[-1];
+            var org = Obtain<Map<string, Org>>()[ctrid];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Chat>("SELECT * FROM chats WHERE custid = @1 AND orgid = @2", p => p.Set(myid).Set(orgid));
-                if (arr == null)
-                {
-                    arr = new[]
-                    {
-                        new Chat {ctrid = orgid, uwx = prin.wx, uname = prin.name}
-                    };
-                }
+                const byte proj = 0xff ^ Chat.DETAIL;
+                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats WHERE ctrid = @1");
+                var arr = dc.Query<Chat>(p => p.Set(ctrid), proj);
                 wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR(title: Label);
-                    h.BOARD(arr, o =>
                     {
-                        h.T("<h4 class=\"uk-card-header\">").T(orgs[orgid].name).T("</h4>");
-                        if (o.msgs != null)
+                        h.TOPBAR(false);
+
+                        h.LIST(arr, o =>
                         {
-                            h.T("<main class=\"uk-card-body\">");
-                            for (int i = 0; i < o.msgs.Length; i++)
-                            {
-                                var m = o.msgs[i];
-                                h.P(m.text, m.uname);
-                            }
-                            h.T("</main>");
-                        }
-                        string text = null;
-                        h.T("<footer class=\"uk-card-footer\">");
-                        h.FORM_();
-                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x0f).TOOL(nameof(SampChatVarWork.say))._ROW();
-                        h._FORM();
-                        h.T("</footer>");
-                    });
+                            h.COL_(0x23, css: "uk-padding-small");
+                            h.T("<h3>").T(o.uname).T("</h3>");
+                            h.P(o.posted);
+                            h.ROW_();
+                            h.FORM_(css: "uk-width-auto");
+                            h.HIDDEN(nameof(ctrid), ctrid);
+                            h._FORM();
+                            h._ROW();
+                            h._COL();
+                        });
+
+                        h.BOTTOMBAR_().TOOL(nameof(@new))._BOTTOMBAR();
+                    }, true, 60
+                );
+            }
+        }
+
+        [Ui("发新帖"), Tool(ButtonShow, size: 2)]
+        public async Task @new(WebContext wc)
+        {
+            string ctrid = wc[-1];
+            string subject = null;
+            string text = null;
+            if (wc.GET)
+            {
+                wc.GivePane(200, h =>
+                {
+                    h.FORM_(mp: true);
+                    h.TEXT(nameof(subject), text, max: 20, tip: "输入文字");
+                    h.TEXTAREA(nameof(text), text, max: 500, tip: "输入文字");
+                    h._FORM();
                 });
+            }
+            else
+            {
+                var prin = (User) wc.Principal;
+                var f = await wc.ReadAsync<Form>();
+                text = f[nameof(text)];
+                subject = f[nameof(subject)];
+
+                var chat = new Chat
+                {
+                    ctrid = ctrid,
+                    subject = subject,
+                    uid = prin.id,
+                    uname = prin.name,
+                    msgs = new[]
+                    {
+                        new Msg
+                        {
+                            uid = prin.id,
+                            uname = prin.name,
+                            text = text
+                        }
+                    },
+                    posted = DateTime.Now
+                };
+                using (var dc = NewDbContext())
+                {
+                    const byte proj = 0xff ^ Chat.ID;
+                    dc.Sql("INSERT INTO chats")._(chat, proj)._VALUES_(chat, proj);
+                    dc.Execute(p => chat.Write(p));
+                }
+                wc.GivePane(200);
             }
         }
     }
@@ -68,7 +109,7 @@ namespace Samp
     {
         public CtrChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrChatVarWork, int>((obj) => ((Chat)obj).uid);
+            CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).uid);
         }
 
         public void @default(WebContext wc)

@@ -30,14 +30,14 @@ a:hover {
 
 a,
 .uk-link {
-    color: #4cabb1;
+    color: #3caf36;
     text-decoration: none;
     cursor: pointer;
 }
 
 a:hover,
 .uk-link:hover {
-    color: #4cabb1;
+    color: #3caf36;
     text-decoration: underline;
 }
 
@@ -290,13 +290,13 @@ pre code {
 }
 
 ::-moz-selection {
-    background: #4cabb1;
+    background: #3caf36;
     color: #fff;
     text-shadow: none;
 }
 
 ::selection {
-    background: #4cabb1;
+    background: #3caf36;
     color: #fff;
     text-shadow: none;
 }
@@ -529,6 +529,7 @@ a.uk-link-reset:hover,
 .uk-list {
     padding: 0;
     list-style: none;
+    background-color: #fff;
 }
 
 .uk-list > li::before,
@@ -563,17 +564,17 @@ a.uk-link-reset:hover,
 }
 
 .uk-list.uk-list-divider::before {
-    border-top: 1px solid #f2f2f2;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-list.uk-list-divider::after {
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-list-divider > li:nth-child(n+2) {
     margin-top: 4px;
     padding-top: 4px;
-    border-top: 1px solid #f2f2f2;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*
@@ -928,7 +929,7 @@ button.uk-icon:not(:disabled) {
     border-radius: 500px;
     background: #f8f8f8;
     vertical-align: middle;
-    color: #4cabb1;
+    color: #3caf36;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -949,7 +950,7 @@ button.uk-icon:not(:disabled) {
 
 .uk-icon-button:active,
 .uk-icon-button.uk-active {
-    background-color: #4cabb1;
+    background-color: #3caf36;
     color: #fff;
 }
 
@@ -1408,20 +1409,20 @@ select.uk-form-width-xsmall {
 .uk-radio:focus,
 .uk-checkbox:focus {
     outline: none;
-    border-color: #4cabb1;
+    border-color: #3caf36;
 }
 
 .uk-radio:checked,
 .uk-checkbox:checked,
 .uk-checkbox:indeterminate {
-    background-color: #4cabb1;
+    background-color: #3caf36;
     border-color: transparent;
 }
 
 .uk-radio:checked:focus,
 .uk-checkbox:checked:focus,
 .uk-checkbox:indeterminate:focus {
-    background-color: #4cabb1;
+    background-color: #3caf36;
 }
 
 .uk-radio:checked {
@@ -1615,10 +1616,6 @@ select.uk-form-width-xsmall {
     align-items: center;
 }
 
-button.uk-button {
-    border-radius: 12px;
-}
-
 .uk-button:not(:disabled) {
     cursor: pointer;
 }
@@ -1639,8 +1636,8 @@ button.uk-button {
 
 .uk-button-default {
     background-color: inherit;
-    border: 1px solid #4cabb1;
-    color: #4cabb1;
+    border: 1px solid #3caf36;
+    color: #3caf36;
     line-height: 26px;
     height: 28px;
 }
@@ -1649,29 +1646,34 @@ button.uk-button {
 .uk-button-default:hover,
 .uk-button-default:focus {
     background-color: transparent;
-    color: #4cabb1;
-    border-color: #4cabb1;
+    color: #3caf36;
+    border-color: #3caf36;
 }
 
 /* OnClick + Active */
 .uk-button-default:active,
 .uk-button-default.uk-active {
-    background-color: #4cabb1;
-    border: 1px solid #4cabb1;
+    background-color: #3caf36;
+    border: 1px solid #3caf36;
     color: #fff;
 }
 
 .uk-button-primary {
-    background-color: #4cabb1;
+    background-color: #3caf36;
     color: #fff;
-    border: 1px solid #4cabb1;
+    border: 1px solid #3caf36;
     line-height: 26px;
     height: 28px;
 }
 
+a.uk-button-primary {
+    background-color: inherit;
+    color: #3caf36;
+}
+
 .uk-button-primary:hover,
 .uk-button-primary:focus {
-    background-color: #4cabb1;
+    background-color: #3caf36;
     color: #fff;
 }
 
@@ -1774,7 +1776,7 @@ button.uk-button {
 
 .uk-button-text:active,
 .uk-button-text.uk-active {
-    border-bottom: 1px solid #4cabb1;
+    border-bottom: 1px solid #3caf36;
 }
 
 .uk-button-text:disabled {
@@ -1789,18 +1791,18 @@ button.uk-button {
     line-height: 26px;
     height: 28px;
     background: none;
-    color: #4cabb1;
+    color: #3caf36;
 }
 
 .uk-button-link:hover,
 .uk-button-link:focus {
-    color: #4cabb1;
+    color: #3caf36;
     text-decoration: underline;
 }
 
 .uk-button-link:active,
 .uk-button-link.uk-active {
-    border: 1px solid #4cabb1;
+    border: 1px solid #3caf36;
 }
 
 .uk-button-link:disabled {
@@ -2401,7 +2403,7 @@ button.uk-button {
 }
 
 .uk-card-body {
-    padding: 8px;
+    padding: 4px 8px;
 }
 
 .uk-card-body li {
@@ -2412,7 +2414,7 @@ button.uk-button {
 }
 
 .uk-card-header {
-    padding: 8px;
+    padding: 4px 8px;
 }
 
 .uk-card-header .uk-checkbox {
@@ -2421,7 +2423,7 @@ button.uk-button {
 }
 
 .uk-card-footer {
-    padding: 8px;
+    padding: 4px 8px;
     vertical-align: middle;
 }
 
@@ -2449,10 +2451,6 @@ button.uk-button {
     background: #fff;
     margin: 12px 6px;
     border: 1px solid #dcdcdc;
-}
-
-.uk-card-default .uk-card-body {
-    background-color: #fafafa;
 }
 
 .uk-card .uk-card-title {
@@ -2588,7 +2586,7 @@ button.uk-button {
 }
 
 .uk-close {
-    color: #4cabb1;
+    color: #3caf36;
     transition: 0.1s ease-in-out;
     transition-property: color, opacity;
 }
@@ -2831,9 +2829,9 @@ button.uk-button {
 }
 
 .uk-badge-success {
-    color: #4cabb1;
-    border-top: 1px solid #4cabb1;
-    border-bottom: 1px solid #4cabb1;
+    color: #3caf36;
+    border-top: 1px solid #3caf36;
+    border-bottom: 1px solid #3caf36;
 }
 
 .uk-badge-warning {
@@ -2860,7 +2858,7 @@ label.uk-label {
 
 .uk-label-success {
     color: #fff;
-    background-color: #4cabb1;
+    background-color: #3caf36;
 }
 
 .uk-label-warning {
@@ -3891,21 +3889,20 @@ ul.uk-nav-sub {
 .uk-subnav {
     display: flex;
     flex-wrap: wrap;
-    padding: 8px;
+    padding-left: 8px;
     list-style: none;
-    background-color: #f2f2f2;
 }
 
 .uk-subnav > * {
     flex: none;
-    padding: 4px 6px;
+    padding: 4px 16px;
     position: relative;
 }
 
 .uk-subnav > * > :first-child {
     display: block;
     color: #666;
-    font-size: 0.875rem;
+    font-size: 1rem;
     text-transform: uppercase;
     transition: 0.1s ease-in-out;
     transition-property: color, background-color;
@@ -4411,7 +4408,7 @@ ul.uk-nav-sub {
     background-repeat: no-repeat;
     background-position: 50% 50%;
     margin-left: auto;
-    color: #4cabb1;
+    color: #3caf36;
 }
 
 .uk-accordion-content li {
