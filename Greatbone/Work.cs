@@ -495,37 +495,37 @@ namespace Greatbone
         //
         // OBJECT PROVIDER
 
-        Cell[] registry;
+        Hold[] holds;
 
         int size;
 
         public void Register(object value, byte flag = 0)
         {
-            if (registry == null)
+            if (holds == null)
             {
-                registry = new Cell[16];
+                holds = new Hold[16];
             }
-            registry[size++] = new Cell(value, flag);
+            holds[size++] = new Hold(value, flag);
         }
 
         public void Register<V>(Func<V> loader, int maxage = 3600, byte flag = 0) where V : class
         {
-            if (registry == null)
+            if (holds == null)
             {
-                registry = new Cell[8];
+                holds = new Hold[8];
             }
 
-            registry[size++] = new Cell(typeof(V), loader, maxage, flag);
+            holds[size++] = new Hold(typeof(V), loader, maxage, flag);
         }
 
         public void Register<V>(Func<Task<V>> loaderAsync, int maxage = 3600, byte flag = 0) where V : class
         {
-            if (registry == null)
+            if (holds == null)
             {
-                registry = new Cell[8];
+                holds = new Hold[8];
             }
 
-            registry[size++] = new Cell(typeof(V), loaderAsync, maxage, flag);
+            holds[size++] = new Hold(typeof(V), loaderAsync, maxage, flag);
         }
 
         /// <summary>
@@ -535,11 +535,11 @@ namespace Greatbone
         /// <returns>the result object or null</returns>
         public T Obtain<T>(byte flag = 0) where T : class
         {
-            if (registry != null)
+            if (holds != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = registry[i];
+                    var cell = holds[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (!cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -554,11 +554,11 @@ namespace Greatbone
 
         public async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (registry != null)
+            if (holds != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = registry[i];
+                    var cell = holds[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -575,6 +575,18 @@ namespace Greatbone
             return await Parent.ObtainAsync<T>(flag);
         }
 
+        public void Invalidate<T>(byte flag = 0) where T : class
+        {
+        }
+
+        public void Flush<T>(byte flag = 0) where T : class
+        {
+        }
+
+        public async Task FlushAsync<T>(byte flag = 0) where T : class
+        {
+        }
+
         public DbContext NewDbContext(IsolationLevel? level = null)
         {
             DbContext dc = new DbContext(Service);
@@ -586,9 +598,9 @@ namespace Greatbone
         }
 
         /// <summary>
-        /// A registry cell.
+        /// A object holder in registry.
         /// </summary>
-        class Cell
+        class Hold
         {
             readonly Type typ;
 
@@ -605,14 +617,14 @@ namespace Greatbone
 
             readonly byte flag;
 
-            internal Cell(object value, byte flag)
+            internal Hold(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
                 this.flag = flag;
             }
 
-            internal Cell(Type typ, Func<object> loader, int maxage, byte flag)
+            internal Hold(Type typ, Func<object> loader, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;

@@ -13,7 +13,7 @@ namespace Samp
         {
             Create<MySoWork>("ord");
 
-            Create<MyChatWork>("chat");
+            Create<SampChatWork>("chat");
         }
 
         public void @default(WebContext wc)

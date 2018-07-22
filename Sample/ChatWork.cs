@@ -11,13 +11,11 @@ namespace Samp
         }
     }
 
-    [UserAccess]
-    [Ui("联系客服")]
-    public class MyChatWork : ChatWork<CtrChatVarWork>
+    public class SampChatWork : ChatWork<SampChatVarWork>
     {
-        public MyChatWork(WorkConfig cfg) : base(cfg)
+        public SampChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyChatVarWork, string>((obj) => ((Chat)obj).ctrid);
+            CreateVar<SampChatVarWork, string>((obj) => ((Chat)obj).ctrid);
         }
 
         public void @default(WebContext wc)
@@ -55,7 +53,7 @@ namespace Samp
                         string text = null;
                         h.T("<footer class=\"uk-card-footer\">");
                         h.FORM_();
-                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x0f).TOOL(nameof(MyChatVarWork.say))._ROW();
+                        h.ROW_().TEXTAREA(nameof(text), text, tip: "输入文字", max: 100, required: true, w: 0x0f).TOOL(nameof(SampChatVarWork.say))._ROW();
                         h._FORM();
                         h.T("</footer>");
                     });

@@ -14,9 +14,9 @@ namespace Samp
         }
     }
 
-    public class MyChatVarWork : ChatVarWork
+    public class SampChatVarWork : ChatVarWork
     {
-        public MyChatVarWork(WorkConfig cfg) : base(cfg)
+        public SampChatVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

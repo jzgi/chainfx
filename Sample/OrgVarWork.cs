@@ -19,9 +19,11 @@ namespace Samp
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<SampItemVarWork, string>(obj => ((Item) obj).name);
+
+            Create<SampChatWork>("chat"); // chat
         }
 
-        public void chat(WebContext wc, int page)
+        public void @default(WebContext wc, int page)
         {
             string ctrid = wc[this];
             var org = Obtain<Map<string, Org>>()[ctrid];
@@ -32,17 +34,17 @@ namespace Samp
                 var arr = dc.Query<Chat>(p => p.Set(ctrid), proj);
                 wc.GivePage(200, h =>
                     {
-                        h.T("<ul class=\"uk-subnav\">");
-                        h.T("<li class=\"uk-active\"><a href=\"chat\">").T(org.name).T("邻里交流</a></li>");
-                        h.T("<li><a href=\"./\">下单</a></li>");
+                        h.T("<ul class=\"uk-subnav\" uk-sticky=\"offset: 0\">");
+                        h.T("<li class=\"uk-active\"><a href=\"./\">").T(org.name).T("交流</a></li>");
+                        h.T("<li><a href=\"list\">下单</a></li>");
                         h.T("</ul>");
                         h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
 
-                        h.LIST(arr, oi =>
+                        h.LIST(arr, o =>
                         {
                             h.COL_(0x23, css: "uk-padding-small");
-                            h.T("<h3>").T(oi.uname).T("</h3>");
-                            h.P(oi.posted);
+                            h.T("<h3>").T(o.uname).T("</h3>");
+                            h.P(o.posted);
                             h.ROW_();
                             h.FORM_(css: "uk-width-auto");
                             h.HIDDEN(nameof(ctrid), ctrid);
@@ -58,16 +60,16 @@ namespace Samp
             }
         }
 
-        public void @default(WebContext wc)
+        public void list(WebContext wc)
         {
             string ctrid = wc[this];
             var org = Obtain<Map<string, Org>>()[ctrid];
             var arr = Obtain<Map<(string, string), Item>>();
             wc.GivePage(200, h =>
                 {
-                    h.T("<ul class=\"uk-subnav\">");
-                    h.T("<li><a href=\"chat\">").T(org.name).T("邻里交流</a></li>");
-                    h.T("<li class=\"uk-active\"><a href=\"/list\">下单</a></li>");
+                    h.T("<ul class=\"uk-subnav\" uk-sticky=\"offset: 0\">");
+                    h.T("<li><a href=\"./\">").T(org.name).T("邻里交流</a></li>");
+                    h.T("<li class=\"uk-active\"><a href=\"list\">下单</a></li>");
                     h.T("</ul>");
                     h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"cart\"></a>");
 
