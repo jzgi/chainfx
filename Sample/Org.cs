@@ -6,23 +6,20 @@ namespace Samp
     {
         public static readonly Org Empty = new Org();
 
-        public const byte ADM = 3, ID = 1, NORM = 4, LATER = 8;
+        public const byte ID = 1, LATER = 2;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "已停业"},
+            {0, null},
             {1, "休息中"},
             {2, "营业中"}
         };
 
         internal string id;
         internal string name;
-        internal string descr;
         internal string addr;
-        internal double x1;
-        internal double y1;
-        internal double x2;
-        internal double y2;
+        internal double x;
+        internal double y;
         internal int mgrid;
         internal string mgrwx;
         internal string mgrname;
@@ -31,17 +28,14 @@ namespace Samp
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & ADM) != 0)
+            if ((proj & ID) > 0)
             {
-                if ((proj & ID) == ID) s.Get(nameof(id), ref id);
-                s.Get(nameof(name), ref name);
-                s.Get(nameof(descr), ref descr);
-                s.Get(nameof(addr), ref addr);
-                s.Get(nameof(x1), ref x1);
-                s.Get(nameof(y1), ref y1);
-                s.Get(nameof(x2), ref x2);
-                s.Get(nameof(y2), ref y2);
+                s.Get(nameof(id), ref id);
             }
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(addr), ref addr);
+            s.Get(nameof(x), ref x);
+            s.Get(nameof(y), ref y);
             if ((proj & LATER) == LATER)
             {
                 s.Get(nameof(mgrid), ref mgrid);
@@ -54,17 +48,14 @@ namespace Samp
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & ADM) != 0)
+            if ((proj & ID) > 0)
             {
-                if ((proj & ID) == ID) s.Put(nameof(id), id);
-                s.Put(nameof(name), name);
-                s.Put(nameof(descr), descr);
-                s.Put(nameof(addr), addr);
-                s.Put(nameof(x1), x1);
-                s.Put(nameof(y1), y1);
-                s.Put(nameof(x2), x2);
-                s.Put(nameof(y2), y2);
+                s.Put(nameof(id), id);
             }
+            s.Put(nameof(name), name);
+            s.Put(nameof(addr), addr);
+            s.Put(nameof(x), x);
+            s.Put(nameof(y), y);
             if ((proj & LATER) == LATER)
             {
                 s.Put(nameof(mgrid), mgrid);
@@ -86,8 +77,8 @@ namespace Samp
 
         public bool IsCenter => id.Length == 2;
 
-        public bool IsSupply => id.Length == 4 && id[2] >= 'E';
+        public bool IsVendor => id.Length == 4 && id[2] >= 'E';
 
-        public bool IsGroup => id.Length == 4 && id[2] < 'E';
+        public bool IsTeam => id.Length == 4 && id[2] < 'E';
     }
 }

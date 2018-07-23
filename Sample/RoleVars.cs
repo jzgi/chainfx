@@ -11,7 +11,7 @@ namespace Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MySoWork>("ord");
+            Create<MyOrderWork>("ord");
 
             Create<SampChatWork>("chat");
         }
@@ -21,13 +21,13 @@ namespace Samp
             var prin = (User) wc.Principal;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR();
                 h.UL_("uk-card- uk-card-primary uk-card-body");
-                h.LI("姓　名", prin.name);
-                h.LI("电　话", prin.tel);
-                h.LI("地　址", prin.addr);
-                h.LI("积　分", prin.score);
-                h.T("<hr>");
+                h.LI("用户昵称", prin.name);
+                h.LI("电话", prin.tel);
+                h.LI("地址", prin.addr);
+                h.LI("剩余积分", prin.score);
+                h._UL();
+                h.UL_("uk-card- uk-card-primary uk-card-body");
                 h.COL_();
                 h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
                 h.QRCODE(SampUtility.NETADDR + "/my//join?refid=" + prin.id);
@@ -101,59 +101,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(opr: 1)]
-    [Ui("常规")]
-    public class TmVarWork : Work, IOrgVar
-    {
-        public TmVarWork(WorkConfig cfg) : base(cfg)
-        {
-            Create<CtrChatWork>("chat");
-
-            Create<CtrNewSoWork>("newso");
-
-            Create<CtrOldSoWork>("oldso");
-
-            Create<CtrItemWork>("item");
-
-            Create<OrgCashWork>("cash");
-        }
-
-        public void @default(WebContext wc)
-        {
-            string orgid = wc[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            bool inner = wc.Query[nameof(inner)];
-            if (!inner)
-            {
-                wc.GiveFrame(200, false, 60 * 15, org?.name);
-            }
-            else
-            {
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-                    h.UL_("uk-card uk-card-default uk-card-body");
-                    h.LI("简　介", org.descr);
-                    h.LI("经　理", org.mgrname, org.mgrtel);
-                    h._UL();
-                });
-            }
-        }
-    }
-
-    public class VdrVarWork : Work, IOrgVar
-    {
-        public VdrVarWork(WorkConfig cfg) : base(cfg)
-        {
-            Create<CtrChatWork>("chat");
-        }
-
-        public void @default(WebContext wc)
-        {
-        }
-    }
-
-    [UserAccess(opr: 1)]
+    [UserAccess(ctr: 1)]
     [Ui("常规")]
     public class CtrVarWork : Work, IOrgVar
     {
@@ -161,9 +109,7 @@ namespace Samp
         {
             Create<CtrChatWork>("chat");
 
-            Create<CtrNewSoWork>("newo");
-
-            Create<CtrOldSoWork>("oldo");
+            Create<CtrOrderWork>("newo");
 
             Create<CtrItemWork>("item");
 
@@ -185,7 +131,7 @@ namespace Samp
                 {
                     h.TOOLBAR();
                     h.UL_("uk-card uk-card-default uk-card-body");
-                    h.LI("简　介", org.descr);
+                    h.LI("简　介", org.addr);
                     h.LI("经　理", org.mgrname, org.mgrtel);
                     h._UL();
                 });
@@ -298,6 +244,55 @@ namespace Samp
                 h.QRCODE(SampUtility.NETADDR + "/list?posid=" + prin.id);
                 h._FIELDSET()._FORM();
             }, false, 300);
+        }
+    }
+
+    public class VdrVarWork : Work, IOrgVar
+    {
+        public VdrVarWork(WorkConfig cfg) : base(cfg)
+        {
+            Create<CtrChatWork>("chat");
+        }
+
+        public void @default(WebContext wc)
+        {
+        }
+    }
+
+
+    [UserAccess(tm: 1)]
+    [Ui("常规")]
+    public class TmVarWork : Work, IOrgVar
+    {
+        public TmVarWork(WorkConfig cfg) : base(cfg)
+        {
+            Create<TmOrderWork>("ord");
+
+            Create<OrgCashWork>("cash");
+        }
+
+        public void @default(WebContext wc)
+        {
+            string orgid = wc[this];
+            var org = Obtain<Map<string, Org>>()[orgid];
+            bool inner = wc.Query[nameof(inner)];
+            if (!inner)
+            {
+                wc.GiveFrame(200, false, 60 * 15, org?.name);
+            }
+            else
+            {
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.UL_("uk-card uk-card-default uk-card-body");
+                    h.LI("名称", org.name);
+                    h.LI("地址", org.addr);
+                    h.LI("地图", org.addr);
+                    h.LI("负责人", org.mgrname, org.mgrtel);
+                    h._UL();
+                });
+            }
         }
     }
 }

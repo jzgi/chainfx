@@ -17,7 +17,7 @@ namespace Samp
             {
                 var org = stack[0] as Org;
                 var item = stack[1] as Item;
-                return org?.status > 1 && item?.stock > 0;
+                return org?.status > 1 && item?.demand > 0;
             }
             return false;
         }

@@ -3,7 +3,7 @@
 namespace Samp
 {
     /// <summary>
-    /// An item data object, that represents a product or service.
+    /// An item data object that represents a product or service.
     /// </summary>
     public class Item : IData, IGroupKeyable<(string, string)>
     {
@@ -26,9 +26,11 @@ namespace Samp
         internal decimal price;
         internal short min;
         internal short step;
-        internal short stock;
-        internal short next;
-        internal Cap[] caps;
+        internal bool refrig;
+        internal string video; // video url
+        internal string vdrid; // vendor that provides the item
+        internal short demand;
+        internal short[] cap7; // capacity of week
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -43,7 +45,11 @@ namespace Samp
             s.Get(nameof(price), ref price);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
-            s.Get(nameof(stock), ref stock);
+            s.Get(nameof(refrig), ref refrig);
+            s.Get(nameof(video), ref video);
+            s.Get(nameof(vdrid), ref vdrid);
+            s.Get(nameof(demand), ref demand);
+            s.Get(nameof(cap7), ref cap7);
             s.Get(nameof(status), ref status);
         }
 
@@ -59,7 +65,11 @@ namespace Samp
             s.Put(nameof(price), price);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
-            s.Put(nameof(stock), stock);
+            s.Put(nameof(refrig), refrig);
+            s.Put(nameof(video), video);
+            s.Put(nameof(vdrid), vdrid);
+            s.Put(nameof(demand), demand);
+            s.Put(nameof(cap7), cap7);
             s.Put(nameof(status), status);
         }
 
@@ -68,28 +78,6 @@ namespace Samp
         public bool GroupAs((string, string) akey)
         {
             return ctrid == akey.Item1;
-        }
-    }
-
-    /// <summary>
-    /// A supply capacity.
-    /// </summary>
-    public struct Cap : IData
-    {
-        internal string vdrid; // vendor id
-
-        internal short max;
-
-        internal short next;
-
-        public void Read(ISource s, byte proj = 15)
-        {
-            s.Get(nameof(vdrid), ref vdrid);
-        }
-
-        public void Write(ISink s, byte proj = 15)
-        {
-            s.Put(nameof(vdrid), vdrid);
         }
     }
 }

@@ -911,7 +911,7 @@ namespace Greatbone
         {
             Add("<div class=\"uk-margin-vertical-auto");
             Width(w);
-            Add("\"><img class=\"uk-img uk-border-circle");
+            Add("\"><img class=\"uk-img");
             Add("\" src=\"");
             Add(src);
             Add("\"></div>");

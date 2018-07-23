@@ -34,7 +34,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(adm: 1)]
+    [UserAccess(plat: 1)]
     [Ui("常规")]
     public class PlatWork : Work
     {

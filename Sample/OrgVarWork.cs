@@ -63,7 +63,7 @@ namespace Samp
         public async Task edit(WebContext wc)
         {
             string orgid = wc[this];
-            const byte proj = Org.ADM;
+            const byte proj = 0xff;
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
@@ -75,9 +75,8 @@ namespace Samp
                         h.FORM_().FIELDSET_("填写网点信息");
                         h.STATIC(o.id, "编号");
                         h.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                        h.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                         h.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                        h.NUMBER(nameof(o.x2), o.x2, "经度").NUMBER(nameof(o.x2), o.x2, "纬度");
+                        h.NUMBER(nameof(o.x), o.x, "经度").NUMBER(nameof(o.x), o.x, "纬度");
                         h._FIELDSET()._FORM();
                     });
                 }

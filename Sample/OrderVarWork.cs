@@ -5,16 +5,16 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    public abstract class SoVarWork : Work
+    public abstract class OrderVarWork : Work
     {
-        protected SoVarWork(WorkConfig cfg) : base(cfg)
+        protected OrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class MySoVarWork : SoVarWork
+    public class MyOrderVarWork : OrderVarWork
     {
-        public MySoVarWork(WorkConfig cfg) : base(cfg)
+        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -27,7 +27,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<So>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
                     var item = Obtain<Map<(string, string), Item>>()[(o.ctrid, o.item)];
                     wc.GivePane(200, h =>
                     {
@@ -46,7 +46,7 @@ namespace Samp
                 short qty = f[nameof(qty)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<So>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
 //                    o.UpdItem(idx, qty);
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.item).Set(o.total).Set(o.score).Set(o.id));
                 }
@@ -55,16 +55,16 @@ namespace Samp
         }
     }
 
-    public class TmSoVarWork : SoVarWork
+    public class TmOrderVarWork : OrderVarWork
     {
-        public TmSoVarWork(WorkConfig cfg) : base(cfg)
+        public TmOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class CtrNewSoVarWork : SoVarWork
+    public class CtrOrderVarWork : OrderVarWork
     {
-        public CtrNewSoVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -96,7 +96,7 @@ namespace Samp
             wc.GiveRedirect("../");
         }
 
-        [Ui("完成", "确定结束该订单？"), Tool(ButtonConfirm), SoState('E')]
+        [Ui("完成", "确定结束该订单？"), Tool(ButtonConfirm), OrderState('E')]
         public void end(WebContext wc)
         {
             string orgid = wc[-2];
@@ -109,9 +109,16 @@ namespace Samp
         }
     }
 
-    public class CtrOldSoVarWork : SoVarWork
+    public class CtrOldOrderVarWork : OrderVarWork
     {
-        public CtrOldSoVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOldOrderVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
+
+    public class VdrOrderVarWork : OrderVarWork
+    {
+        public VdrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

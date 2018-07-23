@@ -31,16 +31,16 @@ namespace Samp
         internal string wx; // wexin openid
         internal string tel;
         internal string addr;
+        internal string ctrid; // region
         public string credential;
         internal int score;
         internal int refid; // referee id
-        internal string ctrid; // team
-        internal string tmat; // team
-        internal short tm;
-        internal string vdrat; // vendor
-        internal short vdr;
         internal string ctrat; // center
         internal short ctr;
+        internal string vdrat; // vendor
+        internal short vdr;
+        internal string tmat; // team
+        internal short tm;
         internal short plat; // platform
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -53,6 +53,7 @@ namespace Samp
             s.Get(nameof(wx), ref wx);
             s.Get(nameof(tel), ref tel);
             s.Get(nameof(addr), ref addr);
+            s.Get(nameof(ctrid), ref ctrid);
             if ((proj & PRIVACY) == PRIVACY)
             {
                 s.Get(nameof(credential), ref credential);
@@ -61,12 +62,12 @@ namespace Samp
             }
             if ((proj & LATER) == LATER)
             {
-                s.Get(nameof(tmat), ref tmat);
-                s.Get(nameof(tm), ref tm);
-                s.Get(nameof(vdrat), ref vdrat);
-                s.Get(nameof(vdr), ref vdr);
                 s.Get(nameof(ctrat), ref ctrat);
                 s.Get(nameof(ctr), ref ctr);
+                s.Get(nameof(vdrat), ref vdrat);
+                s.Get(nameof(vdr), ref vdr);
+                s.Get(nameof(tmat), ref tmat);
+                s.Get(nameof(tm), ref tm);
                 s.Get(nameof(plat), ref plat);
             }
         }
@@ -81,6 +82,7 @@ namespace Samp
             s.Put(nameof(wx), wx);
             s.Put(nameof(tel), tel);
             s.Put(nameof(addr), addr);
+            s.Put(nameof(ctrid), ctrid);
             if ((proj & PRIVACY) == PRIVACY)
             {
                 s.Put(nameof(credential), credential);
@@ -89,10 +91,12 @@ namespace Samp
             }
             if ((proj & LATER) == LATER)
             {
-                s.Put(nameof(tmat), tmat);
-                s.Put(nameof(tm), tm);
                 s.Put(nameof(ctrat), ctrat);
                 s.Put(nameof(ctr), ctr);
+                s.Put(nameof(vdrat), vdrat);
+                s.Put(nameof(vdr), vdr);
+                s.Put(nameof(tmat), tmat);
+                s.Put(nameof(tm), tm);
                 s.Put(nameof(plat), plat);
             }
         }

@@ -32,9 +32,8 @@ namespace Samp
                         {
                             h.T("<section class=\"uk-card-header\">").T(o.id).SP().T(o.name).T("</section>");
                             h.UL_("uk-card-body");
-                            h.LI("简　介", o.descr);
                             h.LI("地　址", o.addr);
-                            h.LI_("坐　标").T(o.x2).SP().T(o.y2)._LI();
+                            h.LI_("坐　标").T(o.x).SP().T(o.y)._LI();
                             h.LI_("经　理").T(o.mgrname).SP().T(o.mgrtel)._LI();
                             h._UL();
                             h.VARTOOLS(css: "uk-card-footer");
@@ -48,7 +47,7 @@ namespace Samp
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            const byte proj = Org.ADM;
+            const byte proj = 0xff;
             if (wc.GET)
             {
                 var o = new Org { };
@@ -58,9 +57,8 @@ namespace Samp
                     m.FORM_();
                     m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
                     m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                    m.TEXTAREA(nameof(o.descr), o.descr, "简介", max: 50, required: true);
                     m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                    m.NUMBER(nameof(o.x2), o.x2, "经度", max: 20).NUMBER(nameof(o.x2), o.x2, "纬度", max: 20);
+                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20).NUMBER(nameof(o.x), o.x, "纬度", max: 20);
                     m._FORM();
                 });
             }

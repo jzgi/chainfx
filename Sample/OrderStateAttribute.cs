@@ -2,25 +2,25 @@ using Greatbone;
 
 namespace Samp
 {
-    public class SoStateAttribute : StateAttribute
+    public class OrderStateAttribute : StateAttribute
     {
         readonly char state;
 
-        public SoStateAttribute(char state)
+        public OrderStateAttribute(char state)
         {
             this.state = state;
         }
 
         public override bool Check(WebContext ac, object[] stack, int level)
         {
-            if (stack[0] is So o)
+            if (stack[0] is Order o)
             {
                 if (state == 'P') // payable
-                    return o.status < So.PAID;
+                    return o.status < Order.PAID;
                 if (state == 'A')
                     return o.uaddr != null;
                 if (state == 'E') // enable
-                    return o.status >= So.PAID;
+                    return o.status >= Order.PAID;
             }
             return false;
         }

@@ -2403,7 +2403,7 @@ a.uk-button-primary {
 }
 
 .uk-card-body {
-    padding: 4px 8px;
+    padding: 8px;
 }
 
 .uk-card-body li {
@@ -2849,7 +2849,7 @@ a.uk-button-primary {
 .uk-label {
     text-transform: uppercase;
     white-space: nowrap;
-    color: #bd7325;
+    color: #000;
 }
 
 label.uk-label {

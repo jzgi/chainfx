@@ -10,6 +10,7 @@ namespace Samp
     /// <summary>
     /// The sample service includes the gospel and the health provision.
     /// </summary>
+    [Ui("全粮派")]
     public class SampService : Service<User>, IAuthenticateAsync
     {
         public SampService(ServiceConfig cfg) : base(cfg)
@@ -185,24 +186,25 @@ namespace Samp
         /// <summary>
         /// The home page that lists gospel lessons.
         /// </summary>
-        [Ctr]
         public void @default(WebContext wc)
         {
-            var lessons = Obtain<Tut[]>();
             wc.GivePage(200, h =>
             {
-                using (var dc = NewDbContext())
-                {
-                    h.GRID(lessons, o =>
-                    {
-                        // h.T("<div class=\"uk-inline\">");
-                        h.T("<video class=\"uk-width-1-1\" controls playsinline uk-video src=\"http://aliyun.com/").T(o.id).T("\" type=\"video/mp4\">");
-                        h.T("</video>");
-                        h.T("<div>").T(o.id).T("</div>");
-                        // h.T("</div>");
-                    });
-                }
-            }, true, 3600, "《生命的奥秘》系列");
+                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
+                h.PIC("/logo.png", w: 0x16);
+                h.T("<div class=\"uk-width-5-6 uk-padding-small-left\">全粮派是开源开源开源开源开源开源</div>");
+                h.T("</section>");
+
+                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
+                h.T("<div class=\"uk-width-1-1\">社区团长</div>");
+                h.T("</section>");
+                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
+                h.T("<div class=\"uk-width-1-2\">加工作坊</div>");
+                h.T("</section>");
+                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
+                h.T("<div class=\"uk-width-1-1\">地区中心</div>");
+                h.T("</section>");
+            }, true, 3600);
         }
 
         /// <summary>
