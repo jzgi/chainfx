@@ -17,18 +17,16 @@ namespace Samp
     {
         public SampChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampChatVarWork, string>((obj) => ((Chat)obj).ctrid);
+            CreateVar<SampChatVarWork, string>((obj) => ((Chat) obj).ctrid);
         }
 
         public void @default(WebContext wc, int page)
         {
-            string ctrid = wc[-1];
-            var org = Obtain<Map<string, Org>>()[ctrid];
             using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ Chat.DETAIL;
-                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats WHERE ctrid = @1");
-                var arr = dc.Query<Chat>(p => p.Set(ctrid), proj);
+                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY posted DESC OFFSET @1 LIMIT 20");
+                var arr = dc.Query<Chat>(p => p.Set(page * 20), proj);
                 wc.GivePage(200, h =>
                     {
                         h.TOPBAR(false);
@@ -40,7 +38,6 @@ namespace Samp
                             h.FI(null, o.posted);
                             h.ROW_();
                             h.FORM_(css: "uk-width-auto");
-                            h.HIDDEN(nameof(ctrid), ctrid);
                             h._FORM();
                             h._ROW();
                             h._COL();
@@ -70,7 +67,7 @@ namespace Samp
             }
             else
             {
-                var prin = (User)wc.Principal;
+                var prin = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
                 text = f[nameof(text)];
                 subject = f[nameof(subject)];
@@ -109,7 +106,7 @@ namespace Samp
     {
         public CtrChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrChatVarWork, int>((obj) => ((Chat)obj).uid);
+            CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).uid);
         }
 
         public void @default(WebContext wc)

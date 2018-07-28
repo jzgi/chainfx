@@ -18,16 +18,14 @@ namespace Samp
         {
             bool deploy = args.Length > 0;
 
-            WeiXinUtility.Setup("weixin.json", deploy, "apiclient_cert.p12");
-
             TryCreate<SampService>(
-                new ServiceConfig("samp")
+                new ServiceConfig("nc")
                 {
                     addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,
                     db = new Db
                     {
-                        host = "144000.tv",
+                        host = "nc.144000.tv",
                         port = 5432,
                         username = "postgres",
                         password = "721004"

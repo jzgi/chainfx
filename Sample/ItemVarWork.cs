@@ -16,11 +16,10 @@ namespace Samp
 
         public void icon(WebContext wc)
         {
-            string ctrid = wc[typeof(IOrgVar)];
             string name = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM items WHERE ctrid = @1 AND name = @2", p => p.Set(ctrid).Set(name)))
+                if (dc.Query1("SELECT icon FROM items WHERE name = @1", p => p.Set(name)))
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
@@ -47,9 +46,9 @@ namespace Samp
         }
     }
 
-    public class SampItemVarWork : ItemVarWork
+    public class SampVarWork : ItemVarWork
     {
-        public SampItemVarWork(WorkConfig cfg) : base(cfg)
+        public SampVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

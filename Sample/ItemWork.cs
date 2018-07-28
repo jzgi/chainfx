@@ -74,7 +74,6 @@ namespace Samp
             else // POST
             {
                 var o = await wc.ReadObjectAsync<Item>();
-                o.ctrid = wc[-1];
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty);

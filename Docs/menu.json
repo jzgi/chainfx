@@ -3,7 +3,7 @@
     {
       "type": "view",
       "name": "下单／社区交流",
-      "url": "http://144000.tv/nc/",
+      "url": "http://nc.144000.tv/",
       "sub_button": []
     },
     {
@@ -24,7 +24,7 @@
         {
           "type": "view",
           "name": "我的设置",
-          "url": "http://144000.tv/my//",
+          "url": "http://nc.144000.tv/my//",
           "sub_button": []
         }
       ]

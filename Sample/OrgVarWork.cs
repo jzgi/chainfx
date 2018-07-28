@@ -13,45 +13,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(false)]
-    public class SampVarWork : OrgVarWork
-    {
-        public SampVarWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<SampItemVarWork, string>(obj => ((Item) obj).name);
-
-            Create<SampChatWork>("chat"); // chat
-        }
-
-        public void @default(WebContext wc)
-        {
-            string ctrid = wc[this];
-            var org = Obtain<Map<string, Org>>()[ctrid];
-            var arr = Obtain<Map<(string, string), Item>>();
-            wc.GivePage(200, h =>
-                {
-                    h.TOPBAR(true);
-                    h.LIST(arr.GroupFor((ctrid, null)), oi =>
-                    {
-                        h.ICO_(css: "uk-width-2-3 uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
-                        h.COL_(0x23, css: "uk-padding-small");
-                        h.T("<h3>").T(oi.name).T("</h3>");
-                        h.FI(null, oi.descr);
-                        h.ROW_();
-                        h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
-                        h.FORM_(css: "uk-width-auto");
-                        h.HIDDEN(nameof(ctrid), ctrid);
-                        h.TOOL(nameof(SampItemVarWork.buy));
-                        h._FORM();
-                        h._ROW();
-                        h._COL();
-                    }, "uk-card-body uk-padding-remove");
-                }, true, 60
-            );
-        }
-    }
-
-    public class CtrOrgVarWork : OrgVarWork
+     public class CtrOrgVarWork : OrgVarWork
     {
         public CtrOrgVarWork(WorkConfig cfg) : base(cfg)
         {

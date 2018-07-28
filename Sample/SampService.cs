@@ -13,9 +13,13 @@ namespace Samp
     [Ui("全粮派")]
     public class SampService : Service<User>, IAuthenticateAsync
     {
+        readonly WeiXin weixin;
+
         public SampService(ServiceConfig cfg) : base(cfg)
         {
-            CreateVar<SampVarWork, string>(obj => ((Org) obj).id);
+            CreateVar<SampVarWork, string>(obj => ((Item) obj).name);
+
+            Create<SampChatWork>("chat"); // chat
 
             Create<MyWork>("my"); // personal
 
@@ -41,12 +45,16 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY ctrid, name");
-                        return dc.Query<(string, string), Item>(proj: 0xff);
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY name");
+                        return dc.Query<string, Item>(proj: 0xff);
                     }
                 }, 3600 * 8
             );
+
+            weixin = DataUtility.FileToObject<WeiXin>(cfg.GetFilePath("$weixin.json"));
         }
+
+        public WeiXin WeiXin => weixin;
 
         public async Task<bool> AuthenticateAsync(WebContext wc)
         {
@@ -180,33 +188,32 @@ namespace Samp
             }
         }
 
+        public void @default(WebContext wc)
+        {
+            var arr = Obtain<Map<string, Item>>();
+            wc.GivePage(200, h =>
+                {
+                    h.TOPBAR(true);
+                    h.LIST(arr.All(), oi =>
+                    {
+                        h.ICO_(css: "uk-width-2-3 uk-padding-small").T(oi.name).T("/icon")._ICO();
+                        h.COL_(0x23, css: "uk-padding-small");
+                        h.T("<h3>").T(oi.name).T("</h3>");
+                        h.FI(null, oi.descr);
+                        h.ROW_();
+                        h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
+                        h.FORM_(css: "uk-width-auto");
+                        h.TOOL(nameof(SampVarWork.buy));
+                        h._FORM();
+                        h._ROW();
+                        h._COL();
+                    }, "uk-card-body uk-padding-remove");
+                }, true, 60
+            );
+        }
 
         const string Aliyun = "http://aliyun.com/";
 
-        /// <summary>
-        /// The home page that lists gospel lessons.
-        /// </summary>
-        public void @default(WebContext wc)
-        {
-            wc.GivePage(200, h =>
-            {
-                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
-                h.PIC("/logo.png", w: 0x16);
-                h.T("<div class=\"uk-width-5-6 uk-padding-small-left\">全粮派是开源开源开源开源开源开源</div>");
-                h.T("</section>");
-
-                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
-                h.T("<div class=\"uk-width-1-1\">社区团长</div>");
-                h.T("</section>");
-                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
-                h.T("<div class=\"uk-width-1-2\">加工作坊</div>");
-                h.T("</section>");
-                h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
-                h.T("<div class=\"uk-width-1-1\">地区中心</div>");
-                h.T("<div class=\"uk-width-1-1\"><a href=\"/ctr//\">功能</a></div>");
-                h.T("</section>");
-            }, true, 3600);
-        }
 
         /// <summary>
         /// WCPay notify, without authentic context.

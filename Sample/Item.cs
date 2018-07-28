@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// An item data object that represents a product or service.
     /// </summary>
-    public class Item : IData, IGroupKeyable<(string, string)>
+    public class Item : IData, IKeyable<string>
     {
         public static readonly Item Empty = new Item();
 
@@ -19,7 +19,6 @@ namespace Samp
             {2, "推荐"},
         };
 
-        internal string ctrid;
         internal string name;
         internal string descr;
         internal string unit;
@@ -40,7 +39,6 @@ namespace Samp
         {
             if ((proj & PK) == PK)
             {
-                s.Get(nameof(ctrid), ref ctrid);
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);
@@ -63,7 +61,6 @@ namespace Samp
         {
             if ((proj & PK) == PK)
             {
-                s.Put(nameof(ctrid), ctrid);
                 s.Put(nameof(name), name);
             }
             s.Put(nameof(descr), descr);
@@ -82,11 +79,6 @@ namespace Samp
             s.Put(nameof(status), status);
         }
 
-        public (string, string) Key => (ctrid, name);
-
-        public bool GroupAs((string, string) akey)
-        {
-            return ctrid == akey.Item1;
-        }
+        public string Key => name;
     }
 }

@@ -56,7 +56,7 @@ namespace Greatbone
             }
         }
 
-        public void Read(ISource s, byte proj = 0x0f)
+        public virtual void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(shard), ref shard);
             s.Get(nameof(addrs), ref addrs);
@@ -66,7 +66,7 @@ namespace Greatbone
             s.Get(nameof(cache), ref cache);
         }
 
-        public void Write(ISink s, byte proj = 0x0f)
+        public virtual void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(shard), shard);
             s.Put(nameof(addrs), addrs);

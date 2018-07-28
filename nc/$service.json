@@ -1,0 +1,11 @@
+{
+  "addrs": [
+    "http://144000.tv"
+  ],
+  "db": {
+    "host": "/tmp",
+    "port": 5432,
+    "username": "",
+    "password": ""
+  }
+}
