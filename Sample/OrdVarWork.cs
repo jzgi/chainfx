@@ -5,16 +5,16 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    public abstract class OrderVarWork : Work
+    public abstract class OrdVarWork : Work
     {
-        protected OrderVarWork(WorkConfig cfg) : base(cfg)
+        protected OrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class MyOrderVarWork : OrderVarWork
+    public class MyOrdVarWork : OrdVarWork
     {
-        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
+        public MyOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -55,16 +55,16 @@ namespace Samp
         }
     }
 
-    public class TmOrderVarWork : OrderVarWork
+    public class TmOrdVarWork : OrdVarWork
     {
-        public TmOrderVarWork(WorkConfig cfg) : base(cfg)
+        public TmOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class CtrOrderVarWork : OrderVarWork
+    public class CtrNewOrdVarWork : OrdVarWork
     {
-        public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
+        public CtrNewOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -109,16 +109,16 @@ namespace Samp
         }
     }
 
-    public class CtrOldOrderVarWork : OrderVarWork
+    public class CtrOldOrdVarWork : OrdVarWork
     {
-        public CtrOldOrderVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOldOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class VdrOrderVarWork : OrderVarWork
+    public class VdrOrdVarWork : OrdVarWork
     {
-        public VdrOrderVarWork(WorkConfig cfg) : base(cfg)
+        public VdrOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

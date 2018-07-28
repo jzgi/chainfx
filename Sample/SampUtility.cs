@@ -9,7 +9,7 @@ namespace Samp
 
         public const string NETADDR = "http://144000.tv";
 
-        public const string JOINADDR = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU4NDAxMTAwOQ==&scene=124#wechat_redirect";
+        public const string JOINADDR = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUyNTkxNzM3Nw==&scene=124#wechat_redirect";
 
         // an invisible/unprintable char
         public const char SEPCHAR = '\u200f';

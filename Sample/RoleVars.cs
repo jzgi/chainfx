@@ -6,12 +6,12 @@ using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess]
+    [UserAccess(persisted: true)]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MyOrderWork>("ord");
+            Create<MyOrdWork>("ord");
 
             Create<SampChatWork>("chat");
         }
@@ -29,22 +29,11 @@ namespace Samp
                 h._UL();
                 h.UL_("uk-card- uk-card-primary uk-card-body");
                 h.COL_();
-                h.P("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
+                h.FI(null, "让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
                 h.QRCODE(SampUtility.NETADDR + "/my//join?refid=" + prin.id);
                 h._COL();
                 h._UL();
             }, title: "我的设置");
-        }
-
-        public void join(WebContext wc)
-        {
-            int myid = wc[this];
-            int refid = wc.Query[nameof(refid)];
-            using (var dc = NewDbContext())
-            {
-                dc.Execute("UPDATE users SET refid = @1 WHERE id = @2", p => p.Set(refid).Set(myid));
-            }
-            wc.GiveRedirect(SampUtility.JOINADDR);
         }
 
         const string VOIDPASS = "t#0^0z4R4pX7";
@@ -107,13 +96,17 @@ namespace Samp
     {
         public CtrVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrChatWork>("chat");
+            Create<CtrNewOrdWork>("newo");
 
-            Create<CtrOrderWork>("newo");
+            Create<CtrOldOrdWork>("oldo");
 
             Create<CtrItemWork>("item");
 
-            Create<OrgCashWork>("cash");
+            Create<CtrRepayWork>("repay");
+
+            Create<CtrOrgWork>("org");
+
+            Create<OrgRecWork>("rec");
         }
 
         public void @default(WebContext wc)
@@ -132,7 +125,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.UL_("uk-card uk-card-default uk-card-body");
                     h.LI("简　介", org.addr);
-                    h.LI("经　理", org.mgrname, org.mgrtel);
+                    h.LI("经　理", org.mgrname, org.tel);
                     h._UL();
                 });
             }
@@ -266,9 +259,9 @@ namespace Samp
     {
         public TmVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<TmOrderWork>("ord");
+            Create<TmOrdWork>("ord");
 
-            Create<OrgCashWork>("cash");
+            Create<OrgRecWork>("cash");
         }
 
         public void @default(WebContext wc)
@@ -289,7 +282,7 @@ namespace Samp
                     h.LI("名称", org.name);
                     h.LI("地址", org.addr);
                     h.LI("地图", org.addr);
-                    h.LI("负责人", org.mgrname, org.mgrtel);
+                    h.LI("负责人", org.mgrname, org.tel);
                     h._UL();
                 });
             }

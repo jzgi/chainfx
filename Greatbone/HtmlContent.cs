@@ -433,16 +433,9 @@ namespace Greatbone
         }
 
 
-        public HtmlContent LI_(string label = null, string css = null)
+        public HtmlContent LI_(string label = null)
         {
-            Add("<li");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add(">");
+            Add("<li>");
             LABEL(label);
             return this;
         }
@@ -453,21 +446,53 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent LABEL(string caption, byte w = 0)
+        public HtmlContent LI<V>(string label, V p)
+        {
+            Add("<li>");
+            Add("<label class=\"uk-label\">");
+            Add(label);
+            Add("</label>");
+            Add("<p>");
+            AddPrimitive(p);
+            Add("</p>");
+            Add("</li>");
+            return this;
+        }
+
+        public HtmlContent LI(string label, decimal p)
+        {
+            Add("<li>");
+            LABEL(label);
+            Add("<p>");
+            Add('¥');
+            Add(p);
+            Add("</p>");
+            Add("</li>");
+            return this;
+        }
+
+        public HtmlContent LI(string label, params string[] p)
+        {
+            Add("<li>");
+            Add("<label class=\"uk-label\">");
+            Add(label);
+            Add("</label>");
+            Add("<p>");
+            for (int i = 0; i < p.Length; i++)
+            {
+                if (i > 0) Add("&nbsp;");
+                Add(p[i]);
+            }
+            Add("</p>");
+            Add("</li>");
+            return this;
+        }
+
+        public HtmlContent LABEL(string caption)
         {
             if (caption != null)
             {
-                Add("<label class=\"");
-                if (w > 0)
-                {
-                    Add("uk-label-top");
-                    Width(w);
-                }
-                else
-                {
-                    Add("uk-label");
-                }
-                Add("\">");
+                Add("<label class=\"uk-label\">");
                 Add(caption);
                 Add("</label>");
             }
@@ -548,35 +573,19 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent P<V>(V v, string label = null, byte w = 0x11)
+        /// <summary>
+        /// A field item
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="p"></param>
+        /// <typeparam name="V"></typeparam>
+        /// <returns></returns>
+        public HtmlContent FI<V>(string label, V p)
         {
-            P_(label, w);
-            AddPrimitive(v);
-            _P();
-            return this;
-        }
-
-        public HtmlContent LI<V>(string label, V v)
-        {
-            LI_(label);
+            LABEL(label);
             Add("<p>");
-            AddPrimitive(v);
+            AddPrimitive(p);
             Add("</p>");
-            _LI();
-            return this;
-        }
-
-        public HtmlContent LI(string label, params string[] v)
-        {
-            LI_(label);
-            Add("<p>");
-            for (int i = 0; i < v.Length; i++)
-            {
-                if (i > 0) Add("&nbsp;");
-                Add(v[i]);
-            }
-            Add("</p>");
-            _LI();
             return this;
         }
 
@@ -867,7 +876,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ICO_(byte w = 0, string css = null)
+        public HtmlContent ICO_(string css = null, string alt = null)
         {
             Add("<div class=\"uk-margin-auto-vertical");
             if (css != null)
@@ -875,8 +884,12 @@ namespace Greatbone
                 Add(' ');
                 Add(css);
             }
-            Width(w);
-            Add("\"><img class=\"uk-border-circle\" alt=\"\" src=\"");
+            Add("\"><img class=\"uk-border-circle\" alt=\"");
+            if (alt != null)
+            {
+                Add(alt);
+            }
+            Add("\" src=\"");
             return this;
         }
 
@@ -884,6 +897,14 @@ namespace Greatbone
         {
             Add("\">");
             Add("</div>");
+            return this;
+        }
+
+        public HtmlContent ICO(string src, string css = null, string alt = null)
+        {
+            ICO_(css, alt);
+            Add(src);
+            _ICO();
             return this;
         }
 
@@ -1128,9 +1149,17 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BUTTON(string name, int subcmd, string v, bool post = true)
+        public HtmlContent BUTTON(string name, int subcmd, string v, bool post = true, Style style = Style.Default)
         {
-            Add("<button class=\"uk-button uk-button-default\" formmethod=\"");
+            Add("<button class=\"uk-button");
+            if (style == Style.Default) Add(" uk-button-default");
+            if (style == Style.Primary) Add(" uk-button-primary");
+            else if (style == Style.Secondary) Add(" uk-button-secondary");
+            else if (style == Style.Danger) Add(" uk-button-danger");
+            else if (style == Style.Text) Add(" uk-button-text");
+            else if (style == Style.Link) Add(" uk-button-link");
+            else if (style == Style.Icon) Add(" uk-icon-button");
+            Add("\" formmethod=\"");
             Add(post ? "post" : "get");
             Add("\" formaction=\"");
             Add(name);
@@ -1466,7 +1495,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLS(byte grp = 0, string css = null)
+        public HtmlContent TOOLS(byte grou = 0, string css = null)
         {
             Add("<form class=\"uk-flex uk-flex-center");
             if (css != null)
@@ -1485,7 +1514,7 @@ namespace Greatbone
                 {
                     var actr = actrs[i];
                     int g = actr.Group;
-                    if (g == 0 || (g & grp) > 0)
+                    if (g == 0 || (g & grou) > 0)
                     {
                         if (g != gogrp)
                         {

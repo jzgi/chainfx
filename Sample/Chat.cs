@@ -17,7 +17,7 @@ namespace Samp
         internal string subject;
         internal int uid;
         internal string uname;
-        internal Msg[] msgs;
+        internal Post[] posts;
         internal short replies;
         internal short imgs;
         internal DateTime posted;
@@ -34,7 +34,7 @@ namespace Samp
             s.Get(nameof(uname), ref uname);
             if ((proj & DETAIL) > 0)
             {
-                s.Get(nameof(msgs), ref msgs);
+                s.Get(nameof(posts), ref posts);
             }
             s.Get(nameof(replies), ref replies);
             s.Get(nameof(imgs), ref imgs);
@@ -55,7 +55,7 @@ namespace Samp
             s.Put(nameof(uname), uname);
             if ((proj & DETAIL) > 0)
             {
-                s.Put(nameof(msgs), msgs);
+                s.Put(nameof(posts), posts);
             }
             s.Put(nameof(replies), replies);
             s.Put(nameof(imgs), imgs);
@@ -63,7 +63,7 @@ namespace Samp
         }
     }
 
-    public struct Msg : IData
+    public struct Post : IData
     {
         internal int uid;
         internal string uname;

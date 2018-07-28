@@ -15,9 +15,9 @@ namespace Samp
     }
 
     [Ui("结款")]
-    public class PlatRepayWork : RepayWork<PlatRepayVarWork>
+    public class CtrRepayWork : RepayWork<CtrRepayVarWork>
     {
-        public PlatRepayWork(WorkConfig cfg) : base(cfg)
+        public CtrRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -131,7 +131,7 @@ namespace Samp
                         // update repay status
                         dc.Execute("UPDATE repays SET err = NULL, payer = @1, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
                         // add a cash journal entry
-                        var ety = new Cash
+                        var ety = new Rec
                         {
                             orgid = tr.orgid,
                             date = DateTime.Now,
@@ -141,7 +141,7 @@ namespace Samp
                             pay = 0,
                             creator = prin.name
                         };
-                        const byte proj = 0xff ^ Cash.ID;
+                        const byte proj = 0xff ^ Rec.ID;
                         dc.Sql("INSERT INTO cashes")._(ety, proj)._VALUES_(ety, proj);
                         dc.Execute(p => ety.Write(p, proj));
                     }

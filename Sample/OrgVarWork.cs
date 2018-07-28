@@ -33,10 +33,10 @@ namespace Samp
                     h.TOPBAR(true);
                     h.LIST(arr.GroupFor((ctrid, null)), oi =>
                     {
-                        h.ICO_(w: 0x13, css: "uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
+                        h.ICO_(css: "uk-width-2-3 uk-padding-small").T("/").T(oi.ctrid).T("/").T(oi.name).T("/icon")._ICO();
                         h.COL_(0x23, css: "uk-padding-small");
                         h.T("<h3>").T(oi.name).T("</h3>");
-                        h.P(oi.descr);
+                        h.FI(null, oi.descr);
                         h.ROW_();
                         h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
                         h.FORM_(css: "uk-width-auto");
@@ -46,11 +46,22 @@ namespace Samp
                         h._ROW();
                         h._COL();
                     }, "uk-card-body uk-padding-remove");
-                    
                 }, true, 60
             );
         }
+    }
 
+    public class CtrOrgVarWork : OrgVarWork
+    {
+        public CtrOrgVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        [Ui("负责"), Tool(ButtonShow)]
+        public async Task mgr(WebContext wc)
+        {
+            string orgid = wc[this];
+        }
     }
 
     public class PlatCtrVarWork : OrgVarWork

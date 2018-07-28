@@ -16,9 +16,9 @@ namespace Samp
         }
     }
 
-    public class PlatRepayVarWork : RepayVarWork
+    public class CtrRepayVarWork : RepayVarWork
     {
-        public PlatRepayVarWork(WorkConfig cfg) : base(cfg)
+        public CtrRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

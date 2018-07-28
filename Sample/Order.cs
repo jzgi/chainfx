@@ -29,13 +29,14 @@ namespace Samp
         internal int id;
         internal short rev;
         internal string ctrid; // center id
+        internal string tmid; // team id
+        internal string vdrid; // vendor id
 
         internal int uid;
         internal string uname; // customer name
         internal string uwx; // weixin openid
         internal string utel;
         internal string uaddr; // may include area and site
-        internal string tmid; // team id
 
         internal string item;
         internal string unit;

@@ -7,9 +7,9 @@ using static Greatbone.Style;
 
 namespace Samp
 {
-    public abstract class OrderWork<V> : Work where V : OrderVarWork
+    public abstract class OrdWork<V> : Work where V : OrdVarWork
     {
-        protected OrderWork(WorkConfig cfg) : base(cfg)
+        protected OrdWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<V, int>((obj) => ((Order) obj).id);
         }
@@ -35,15 +35,15 @@ namespace Samp
                         h.LI_();
                         h.UL_("uk-list uk-list-divider uk-width-1-1");
                         h.LI_();
-                        h.ICO_(w: 0x16).T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
+                        h.ICO_(css: "uk-width-1-6").T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
                         if (o.status == CREATED)
                         {
-                            h.P(o.item, w: 0x13).P_(w: 0x13).CUR(o.price).T("／").T(o.unit)._P();
-                            h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MyOrderVarWork.cancel), 0, o.qty.ToString())._P();
+                            h.FI(null, o.item).P_(w: 0x13).CUR(o.price).T("／").T(o.unit)._P();
+                            h.T("<p class=\"uk-width-1-6 \">").TOOL(nameof(MyOrdVarWork.cancel), 0, o.qty.ToString())._P();
                         }
                         else
                         {
-                            h.P(o.item, w: 0x12).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
+                            h.FI(null, o.item).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
                         }
                         h._LI();
                         h._UL();
@@ -90,9 +90,9 @@ namespace Samp
         }
     }
 
-    public class MyOrderWork : OrderWork<MyOrderVarWork>
+    public class MyOrdWork : OrdWork<MyOrdVarWork>
     {
-        public MyOrderWork(WorkConfig cfg) : base(cfg)
+        public MyOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -101,7 +101,7 @@ namespace Samp
             int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM sos WHERE status BETWEEN 0 AND 1 AND uid = @1 ORDER BY id DESC", p => p.Set(myid));
+                var arr = dc.Query<Order>("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 AND uid = @1 ORDER BY id DESC", p => p.Set(myid));
                 wc.GivePage(200, h =>
                 {
                     h.BOARD(arr, o =>
@@ -109,8 +109,8 @@ namespace Samp
                             h.UL_("uk-list uk-list-divider uk-card-body");
                             h.LI("收货", o.uaddr, o.uname, o.utel);
                             h.LI_();
-                            h.ICO_(w: 0x16).T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
-                            h.P(o.item, w: 0x12).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
+                            h.ICO_(css: "uk-width-1-6").T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
+                            h.FI(null, o.item).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
                             h._LI();
                             h._UL(); // uk-card-body
 
@@ -127,16 +127,16 @@ namespace Samp
             int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM sos WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
+                var arr = dc.Query<Order>("SELECT * FROM ords WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
                 GiveBoardPage(wc, arr, false);
             }
         }
     }
 
-    [Ui("销售")]
-    public class CtrOrderWork : OrderWork<CtrOrderVarWork>
+    [Ui("新单")]
+    public class CtrNewOrdWork : OrdWork<CtrNewOrdVarWork>
     {
-        public CtrOrderWork(WorkConfig cfg) : base(cfg)
+        public CtrNewOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -145,7 +145,7 @@ namespace Samp
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND orgid = @1 ORDER BY id DESC", p => p.Set(orgid));
+                dc.Query("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 AND ctrid = @1 ORDER BY id DESC", p => p.Set(orgid));
                 GiveAccordionPage(wc, dc.ToArray<Order>());
             }
         }
@@ -175,7 +175,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
+                    dc.Sql("SELECT wx FROM ords WHERE id")._IN_(key);
                     dc.Execute(prepare: false);
                 }
                 wc.GivePane(200);
@@ -188,16 +188,16 @@ namespace Samp
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE (status = 0 OR status = -1) AND orgid = @1 AND (created + interval '3 day' < localtimestamp)", p => p.Set(orgid));
+                dc.Execute("DELETE FROM ords WHERE (status = 0 OR status = -1) AND ctrid = @1 AND (created + interval '3 day' < localtimestamp)", p => p.Set(orgid));
             }
             wc.GiveRedirect();
         }
     }
 
     [Ui("旧单"), UserAccess(OPR)]
-    public class CtrOldOrderWork : OrderWork<CtrOldOrderVarWork>
+    public class CtrOldOrdWork : OrdWork<CtrOldOrdVarWork>
     {
-        public CtrOldOrderWork(WorkConfig cfg) : base(cfg)
+        public CtrOldOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -206,7 +206,7 @@ namespace Samp
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND orgid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
+                var arr = dc.Query<Order>("SELECT * FROM ords WHERE status >= 2 AND ctrid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                 GiveAccordionPage(wc, arr);
             }
         }
@@ -242,9 +242,9 @@ namespace Samp
     }
 
     [Ui("订单")]
-    public class VdrOrderWork : OrderWork<VdrOrderVarWork>
+    public class VdrOrdWork : OrdWork<VdrOrdVarWork>
     {
-        public VdrOrderWork(WorkConfig cfg) : base(cfg)
+        public VdrOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -303,9 +303,9 @@ namespace Samp
     }
 
     [Ui("订单")]
-    public class TmOrderWork : OrderWork<TmOrderVarWork>
+    public class TmOrdWork : OrdWork<TmOrdVarWork>
     {
-        public TmOrderWork(WorkConfig cfg) : base(cfg)
+        public TmOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 

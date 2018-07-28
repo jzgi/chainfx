@@ -17,13 +17,13 @@ namespace Samp
 
         internal string id;
         internal string name;
+        internal string tel;
         internal string addr;
         internal double x;
         internal double y;
         internal int mgrid;
-        internal string mgrwx;
         internal string mgrname;
-        internal string mgrtel;
+        internal string mgrwx;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -33,6 +33,7 @@ namespace Samp
                 s.Get(nameof(id), ref id);
             }
             s.Get(nameof(name), ref name);
+            s.Get(nameof(tel), ref tel);
             s.Get(nameof(addr), ref addr);
             s.Get(nameof(x), ref x);
             s.Get(nameof(y), ref y);
@@ -41,7 +42,6 @@ namespace Samp
                 s.Get(nameof(mgrid), ref mgrid);
                 s.Get(nameof(mgrname), ref mgrname);
                 s.Get(nameof(mgrwx), ref mgrwx);
-                s.Get(nameof(mgrtel), ref mgrtel);
                 s.Get(nameof(status), ref status);
             }
         }
@@ -53,6 +53,7 @@ namespace Samp
                 s.Put(nameof(id), id);
             }
             s.Put(nameof(name), name);
+            s.Put(nameof(tel), tel);
             s.Put(nameof(addr), addr);
             s.Put(nameof(x), x);
             s.Put(nameof(y), y);
@@ -61,7 +62,6 @@ namespace Samp
                 s.Put(nameof(mgrid), mgrid);
                 s.Put(nameof(mgrname), mgrname);
                 s.Put(nameof(mgrwx), mgrwx);
-                s.Put(nameof(mgrtel), mgrtel);
                 s.Put(nameof(status), status);
             }
         }
@@ -77,8 +77,8 @@ namespace Samp
 
         public bool IsCenter => id.Length == 2;
 
-        public bool IsVendor => id.Length == 4 && id[2] >= 'E';
+        public bool IsVendor => id.Length == 3;
 
-        public bool IsTeam => id.Length == 4 && id[2] < 'E';
+        public bool IsTeam => id.Length == 4;
     }
 }

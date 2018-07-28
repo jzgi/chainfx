@@ -4760,7 +4760,7 @@
 											"top": 277,
 											"width": 49.11181640625,
 											"height": 13,
-											"text": "grp"
+											"text": "grou"
 										},
 										{
 											"_type": "LabelView",
@@ -7977,7 +7977,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFkm10RSwy68NM="
 					},
-					"name": "grp",
+					"name": "grou",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -10272,7 +10272,7 @@
 											"width": 47.68359375,
 											"height": 13,
 											"underline": true,
-											"text": "grp"
+											"text": "grou"
 										},
 										{
 											"_type": "LabelView",
@@ -10394,7 +10394,7 @@
 											"width": 47.68359375,
 											"height": 13,
 											"underline": true,
-											"text": "grp"
+											"text": "grou"
 										},
 										{
 											"_type": "LabelView",
@@ -10496,7 +10496,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFkm3x1bh8RgQ8="
 					},
-					"name": "grp"
+					"name": "grou"
 				}
 			]
 		}

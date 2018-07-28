@@ -160,14 +160,14 @@ namespace Samp
                         h.FORM_();
                         string name = null;
                         string tel = null;
-                        h.FIELDSET_("您还没有注册，请填写用户基本信息");
-                        h.TEXT(nameof(name), name, label: "姓名", tip: "您本人的姓名", max: 4, min: 2, required: true);
-                        h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                        h.FIELDSET_("填写用户信息");
+                        h.TEXT(nameof(name), name, label: "用户昵称", max: 4, min: 2, required: true);
+                        h.TEXT(nameof(tel), tel, label: "手　　机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h._FIELDSET();
                         h.HIDDEN(nameof(url), url);
-                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定")._BOTTOMBAR();
+                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", style: Style.Primary)._BOTTOMBAR();
                         h._FORM();
-                    }, title: "注册新帐号");
+                    }, title: "用户注册");
                 }
                 else // IsNotAllowed
                 {
@@ -203,6 +203,7 @@ namespace Samp
                 h.T("</section>");
                 h.T("<section class=\"uk-card uk-card-primary uk-card-body uk-flex\">");
                 h.T("<div class=\"uk-width-1-1\">地区中心</div>");
+                h.T("<div class=\"uk-width-1-1\"><a href=\"/ctr//\">功能</a></div>");
                 h.T("</section>");
             }, true, 3600);
         }

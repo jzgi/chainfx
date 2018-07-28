@@ -23,32 +23,33 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string orgid = wc[-1];
+            string ctrid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Item>("SELECT * FROM items WHERE orgid = @1 ORDER BY status DESC", p => p.Set(orgid));
+                var arr = dc.Query<Item>("SELECT * FROM items WHERE ctrid = @1 ORDER BY status DESC", p => p.Set(ctrid));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.ACCORDION(arr,
-                        o =>
-                        {
-                            h.T("<section class=\"uk-accordion-title\">");
-                            h.T(o.name);
-                            h.T("</section>");
-                            h.T("<section class=\"uk-accordion-content uk-grid\">");
-                            h.ICO_(w: 0x14).T(o.name).T("/icon")._ICO();
-                            h.COL_(0x34).P(o.descr, "描述").P_("单价").T("¥").T(o.price)._P()._COL();
-                            h.P(o.unit, "单位", 0x14).P(o.min, "起订", 0x14).P(o.step, "递增", 0x14).P(o.demand, "存量", 0x14);
-                            h.T("<hr>");
-                            h.VARTOOLS();
-                            h.T("</section>");
-                        }, null);
+                    h.BOARD(arr, o =>
+                    {
+                        h.T("<header class=\"uk-card-header\">");
+                        h.T(o.name);
+                        h.T("</header>");
+                        h.T("<main class=\"uk-card-body uk-grid\">");
+                        h.ICO_(css: "uk-width-1-4").T(o.name).T("/icon")._ICO();
+                        h.UL_(css: "uk-width-3-4 uk-padding-small-left");
+                        h.LI("描述", o.descr);
+                        h.LI_().FI("单价", o.price).FI("供价", o._vdr).FI("运费", o._dlvy).FI("团费", o._tm)._LI();
+                        h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("存量", o.demand)._LI();
+                        h._UL();
+                        h.T("</main>");
+                        h.VARTOOLS(css: "uk-card-footer");
+                    }, null);
                 });
             }
         }
 
-        [Ui("新建"), Tool(ButtonShow), UserAccess(OPRMEM)]
+        [Ui("新建"), Tool(ButtonShow, Style.Primary), UserAccess(OPRMEM)]
         public async Task @new(WebContext wc)
         {
             if (wc.GET)

@@ -16,11 +16,11 @@ namespace Samp
 
         public void icon(WebContext wc)
         {
-            string orgid = wc[typeof(IOrgVar)];
+            string ctrid = wc[typeof(IOrgVar)];
             string name = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM items WHERE ctrid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
+                if (dc.Query1("SELECT icon FROM items WHERE ctrid = @1 AND name = @2", p => p.Set(ctrid).Set(name)))
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
@@ -220,23 +220,14 @@ namespace Samp
         [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(OPRMEM)]
         public new async Task icon(WebContext wc)
         {
-            string orgid = wc[-2];
-            string name = wc[this];
             if (wc.GET)
             {
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query1("SELECT icon FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
-                    {
-                        dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) wc.Give(204); // no content 
-                        else wc.Give(200, new StaticContent(byteas));
-                    }
-                    else wc.Give(404); // not found           
-                }
+                base.icon(wc);
             }
             else // POST
             {
+                string orgid = wc[-2];
+                string name = wc[this];
                 var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> img = f[nameof(img)];
                 using (var dc = NewDbContext())

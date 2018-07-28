@@ -1,28 +1,54 @@
+using System.Threading.Tasks;
 using Greatbone;
 
 namespace Samp
 {
+    [UserAccess(persisted: false)]
     public class MyWork : Work
     {
         public MyWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<MyVarWork, int>((obj) => ((User) obj).id);
         }
-    }
 
-    public class TmWork : Work
-    {
-        public TmWork(WorkConfig cfg) : base(cfg)
+        public async Task @ref(WebContext wc)
         {
-            CreateVar<TmVarWork, string>(prin => ((User) prin).tmat);
-        }
-    }
+            var prin = (User) wc.Principal;
+            if (prin.id > 0)
+            {
+                wc.GivePage(200, h => { h.ALERT("您已经是会员，引荐操作无效。"); });
+                return;
+            }
 
-    public class VdrWork : Work
-    {
-        public VdrWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<VdrVarWork, string>(prin => ((User) prin).tmat);
+            if (wc.GET)
+            {
+                prin.refid = wc.Query[nameof(prin.refid)];
+                prin.ctrid = wc.Query[nameof(prin.ctrid)];
+                wc.GivePage(200, h =>
+                {
+                    h.FORM_();
+                    h.HIDDEN(nameof(prin.refid), prin.refid);
+                    h.HIDDEN(nameof(prin.ctrid), prin.ctrid);
+                    h.FIELDSET_("会员信息");
+                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
+                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                    h._FIELDSET();
+                    h.ALERT("确认后请关注公众号");
+                    h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
+                    h._FORM();
+                });
+            }
+            else // POST
+            {
+                prin = await wc.ReadObjectAsync(obj: prin);
+                using (var dc = NewDbContext())
+                {
+                    const byte proj = 0xff ^ User.ID ^ User.LATER;
+                    dc.Sql("INSERT INTO users ")._(prin, proj)._VALUES_(prin, proj);
+                    dc.Execute(p => prin.Write(p));
+                }
+                wc.GiveRedirect(SampUtility.JOINADDR);
+            }
         }
     }
 
@@ -31,6 +57,22 @@ namespace Samp
         public CtrWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<CtrVarWork, string>(prin => ((User) prin).ctrat);
+        }
+    }
+
+    public class VdrWork : Work
+    {
+        public VdrWork(WorkConfig cfg) : base(cfg)
+        {
+            CreateVar<VdrVarWork, string>(prin => ((User) prin).vdrat);
+        }
+    }
+
+    public class TmWork : Work
+    {
+        public TmWork(WorkConfig cfg) : base(cfg)
+        {
+            CreateVar<TmVarWork, string>(prin => ((User) prin).tmat);
         }
     }
 
@@ -44,7 +86,6 @@ namespace Samp
 
             Create<PlatCtrWork>("ctr");
 
-            Create<PlatRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -57,7 +98,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.T("<article class=\"uk-card uk-card-primary uk-card-body\">");
                     h.T("<h4>系统信息</h4>");
-                    h.P("2.0", "版　本");
+                    h.FI("版　本", "2.0");
                     h.T("</article>");
                 });
             }

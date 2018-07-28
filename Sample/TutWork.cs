@@ -34,7 +34,7 @@ namespace Samp
                         h.PIC_(w: 0x13).T(o.id).T("/icon")._PIC();
                         h.COL_(0x23, css: "uk-padding-small");
                         h.T("<h3>").T(o.subject).T("</h3>");
-                        h.P(o.text);
+                        h.FI(null, o.text);
                         h._COL();
                         h.T("</a>");
                     }, li: "uk-card uk-card-primary");

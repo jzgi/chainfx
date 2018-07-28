@@ -4,12 +4,12 @@ using Greatbone;
 namespace Samp
 {
     /// <summary>
-    /// An journal entry of cash receipt or payment.
+    /// An journal record of cash receipt or payment.
     /// </summary>
-    public class Cash : IData
+    public class Rec : IData
     {
         ///
-        public static readonly Cash Empty = new Cash();
+        public static readonly Rec Empty = new Rec();
 
         ///
         public const byte ID = 1;

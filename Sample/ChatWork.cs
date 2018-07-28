@@ -17,7 +17,7 @@ namespace Samp
     {
         public SampChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampChatVarWork, string>((obj) => ((Chat) obj).ctrid);
+            CreateVar<SampChatVarWork, string>((obj) => ((Chat)obj).ctrid);
         }
 
         public void @default(WebContext wc, int page)
@@ -37,7 +37,7 @@ namespace Samp
                         {
                             h.COL_(0x23, css: "uk-padding-small");
                             h.T("<h3>").T(o.uname).T("</h3>");
-                            h.P(o.posted);
+                            h.FI(null, o.posted);
                             h.ROW_();
                             h.FORM_(css: "uk-width-auto");
                             h.HIDDEN(nameof(ctrid), ctrid);
@@ -70,7 +70,7 @@ namespace Samp
             }
             else
             {
-                var prin = (User) wc.Principal;
+                var prin = (User)wc.Principal;
                 var f = await wc.ReadAsync<Form>();
                 text = f[nameof(text)];
                 subject = f[nameof(subject)];
@@ -81,9 +81,9 @@ namespace Samp
                     subject = subject,
                     uid = prin.id,
                     uname = prin.name,
-                    msgs = new[]
+                    posts = new[]
                     {
-                        new Msg
+                        new Post
                         {
                             uid = prin.id,
                             uname = prin.name,
@@ -109,7 +109,7 @@ namespace Samp
     {
         public CtrChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).uid);
+            CreateVar<CtrChatVarWork, int>((obj) => ((Chat)obj).uid);
         }
 
         public void @default(WebContext wc)
@@ -124,13 +124,13 @@ namespace Samp
                     h.ACCORDION(arr, o =>
                     {
                         h.T("<header class=\"uk-accordion-title\">").T(o.uname).T("</header>");
-                        if (o.msgs != null)
+                        if (o.posts != null)
                         {
                             h.T("<main class=\"uk-accordion-content uk-grid\">");
-                            for (int i = 0; i < o.msgs.Length; i++)
+                            for (int i = 0; i < o.posts.Length; i++)
                             {
-                                var m = o.msgs[i];
-                                h.P(m.text, m.uname);
+                                var m = o.posts[i];
+                                h.FI(m.uname, m.text);
                             }
                             h.VARTOOLS();
                             h.T("</main>");
