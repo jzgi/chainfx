@@ -41,7 +41,6 @@ namespace Samp
                 {
                     var o = new Chat()
                     {
-                        ctrid = orgid,
                         uid = prin.id,
                         uname = prin.name,
                         posts = new[] {msg},

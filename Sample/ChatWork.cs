@@ -17,7 +17,7 @@ namespace Samp
     {
         public SampChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampChatVarWork, string>((obj) => ((Chat) obj).ctrid);
+            CreateVar<SampChatVarWork, int>((obj) => ((Chat) obj).id);
         }
 
         public void @default(WebContext wc, int page)
@@ -74,7 +74,6 @@ namespace Samp
 
                 var chat = new Chat
                 {
-                    ctrid = ctrid,
                     subject = subject,
                     uid = prin.id,
                     uname = prin.name,

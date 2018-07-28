@@ -23,13 +23,12 @@ namespace Samp
 
             Create<MyWork>("my"); // personal
 
-            Create<TmWork>("tm"); // team
+            Create<GrpWork>("grp"); // group
 
-            Create<VdrWork>("vdr"); // vendor
+            Create<SupWork>("sup"); // supply
 
-            Create<CtrWork>("ctr"); // center
+            Create<OprWork>("opr"); // operator
 
-            Create<PlatWork>("plat"); // platform
 
             Register(delegate
                 {
@@ -196,7 +195,7 @@ namespace Samp
                     h.TOPBAR(true);
                     h.LIST(arr.All(), oi =>
                     {
-                        h.ICO_(css: "uk-width-2-3 uk-padding-small").T(oi.name).T("/icon")._ICO();
+                        h.ICO_(css: "uk-width-1-3 uk-padding-small").T(oi.name).T("/icon")._ICO();
                         h.COL_(0x23, css: "uk-padding-small");
                         h.T("<h3>").T(oi.name).T("</h3>");
                         h.FI(null, oi.descr);

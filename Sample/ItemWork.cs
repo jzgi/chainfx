@@ -15,9 +15,9 @@ namespace Samp
 
 
     [Ui("货品"), UserAccess(OPRMEM)]
-    public class CtrItemWork : ItemWork<CtrItemVarWork>
+    public class OprItemWork : ItemWork<CtrItemVarWork>
     {
-        public CtrItemWork(WorkConfig cfg) : base(cfg)
+        public OprItemWork(WorkConfig cfg) : base(cfg)
         {
         }
 

@@ -4,14 +4,14 @@ Navicat PGSQL Data Transfer
 Source Server         : 144000.tv
 Source Server Version : 90606
 Source Host           : 144000.tv:5432
-Source Database       : samp
+Source Database       : nc
 Source Schema         : public
 
 Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-07-28 17:38:21
+Date: 2018-07-29 00:04:31
 */
 
 
@@ -79,7 +79,6 @@ CREATE SEQUENCE "public"."users_id_seq1"
 DROP TABLE IF EXISTS "public"."chats";
 CREATE TABLE "public"."chats" (
 "id" int4 DEFAULT nextval('chats_id_seq1'::regclass) NOT NULL,
-"ctrid" varchar(2) COLLATE "default" NOT NULL,
 "subject" varchar(20) COLLATE "default",
 "uid" int4 NOT NULL,
 "uname" varchar(254) COLLATE "default",
@@ -108,9 +107,10 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
-"ctrid" varchar(2) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
+"sort" varchar(6) COLLATE "default" NOT NULL,
 "descr" varchar(100) COLLATE "default",
+"remark" varchar(500) COLLATE "default",
 "icon" bytea,
 "unit" varchar(4) COLLATE "default",
 "price" money,
@@ -137,7 +137,6 @@ DROP TABLE IF EXISTS "public"."ords";
 CREATE TABLE "public"."ords" (
 "id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "rev" int2 DEFAULT 0 NOT NULL,
-"ctrid" varchar(2) COLLATE "default" NOT NULL,
 "tmid" varchar(4) COLLATE "default",
 "uid" int4 NOT NULL,
 "uname" varchar(10) COLLATE "default",
@@ -241,20 +240,17 @@ DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
 "id" int4 DEFAULT nextval('users_id_seq1'::regclass) NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
-"ctrid" varchar(2) COLLATE "default" NOT NULL,
 "wx" varchar(28) COLLATE "default" NOT NULL,
 "tel" varchar(11) COLLATE "default" NOT NULL,
 "addr" varchar(20) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "score" int4,
 "refid" int4,
-"ctrat" varchar(2) COLLATE "default",
-"ctr" int2 DEFAULT 0,
-"vdrat" varchar(3) COLLATE "default",
-"vdr" int2,
-"tmat" varchar(4) COLLATE "default",
-"tm" int2,
-"plat" int2
+"opr" int2 DEFAULT 0,
+"supat" varchar(3) COLLATE "default",
+"sup" int2,
+"grpat" varchar(4) COLLATE "default",
+"grp" int2
 )
 WITH (OIDS=FALSE)
 
@@ -270,25 +266,14 @@ ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."users_id_seq1" OWNED BY "users"."id";
 
 -- ----------------------------
--- Indexes structure for table chats
--- ----------------------------
-CREATE INDEX "chats_ctrid" ON "public"."chats" USING btree ("ctrid");
-
--- ----------------------------
 -- Primary Key structure for table chats
 -- ----------------------------
 ALTER TABLE "public"."chats" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
--- Primary Key structure for table items
--- ----------------------------
-ALTER TABLE "public"."items" ADD PRIMARY KEY ("ctrid", "name");
-
--- ----------------------------
 -- Indexes structure for table ords
 -- ----------------------------
 CREATE INDEX "orders_statuscustid" ON "public"."ords" USING btree ("status", "uid");
-CREATE INDEX "orders_statusorgid" ON "public"."ords" USING btree ("status", "ctrid");
 
 -- ----------------------------
 -- Primary Key structure for table ords
@@ -323,7 +308,6 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 -- ----------------------------
 -- Indexes structure for table users
 -- ----------------------------
-CREATE INDEX "users_ctrat" ON "public"."users" USING btree ("ctrat") WHERE ctrat IS NOT NULL;
 CREATE INDEX "users_tel" ON "public"."users" USING hash ("tel") WHERE tel IS NOT NULL;
 
 -- ----------------------------
@@ -332,19 +316,9 @@ CREATE INDEX "users_tel" ON "public"."users" USING hash ("tel") WHERE tel IS NOT
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
--- Foreign Key structure for table "public"."chats"
--- ----------------------------
-ALTER TABLE "public"."chats" ADD FOREIGN KEY ("ctrid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
 -- Foreign Key structure for table "public"."items"
 -- ----------------------------
-ALTER TABLE "public"."items" ADD FOREIGN KEY ("ctrid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."ords"
--- ----------------------------
-ALTER TABLE "public"."ords" ADD FOREIGN KEY ("ctrid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public"."items" ADD FOREIGN KEY ("sort") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- ----------------------------
 -- Foreign Key structure for table "public"."recs"
@@ -355,8 +329,3 @@ ALTER TABLE "public"."recs" ADD FOREIGN KEY ("orgid") REFERENCES "public"."orgs"
 -- Foreign Key structure for table "public"."repays"
 -- ----------------------------
 ALTER TABLE "public"."repays" ADD FOREIGN KEY ("orgid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."users"
--- ----------------------------
-ALTER TABLE "public"."users" ADD FOREIGN KEY ("ctrid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

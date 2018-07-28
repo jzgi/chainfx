@@ -8,80 +8,65 @@ namespace Samp
     public class UserAccessAttribute : AccessAttribute
     {
         // require a persisted principal
-        readonly bool persisted;
+        readonly bool stored;
 
-        // require center access
-        readonly short ctr;
+        // require operator access
+        readonly short opr;
 
-        // require vendor access
-        readonly short vdr;
+        // require supply access
+        readonly short sup;
 
-        // require team access
-        readonly short tm;
+        // require group access
+        readonly short grp;
 
-        // require platform access
-        readonly short plat;
-
-        public UserAccessAttribute(short ctr = 0, short vdr = 0, short tm = 0, short plat = 0)
+        public UserAccessAttribute(short opr = 0, short sup = 0, short grp = 0)
         {
-            this.persisted = true;
-            this.ctr = ctr;
-            this.vdr = vdr;
-            this.tm = tm;
-            this.plat = plat;
+            this.stored = true;
+            this.opr = opr;
+            this.sup = sup;
+            this.grp = grp;
         }
 
-        public UserAccessAttribute(bool persisted)
+        public UserAccessAttribute(bool stored)
         {
-            this.persisted = persisted;
+            this.stored = stored;
         }
 
         public override bool? Check(WebContext wc, IData prin)
         {
             // if not require persisted
-            if (!persisted) return true;
+            if (!stored) return true;
 
             var o = (User) prin;
 
             if (o.id == 0) return null;
 
             // if requires center access
-            if (ctr > 0)
+            if (opr > 0)
             {
-                if ((o.ctr & ctr) != ctr) return false; // inclusive check
+                return (o.opr & opr) == opr;
+            }
+
+            if (sup > 0)
+            {
+                if ((o.sup & sup) != sup) return false; // inclusive check
                 string at = wc[typeof(IOrgVar)];
                 if (at != null)
                 {
-                    return o.ctrat == at;
+                    return o.supat == at;
                 }
                 return true;
             }
-            // if requires vendor access
-            if (vdr > 0)
+
+            if (grp > 0)
             {
-                if ((o.vdr & vdr) != vdr) return false; // inclusive check
+                if ((o.grp & grp) != grp) return false; // inclusive check
                 string at = wc[typeof(IOrgVar)];
                 if (at != null)
                 {
-                    return o.vdrat == at;
+                    return o.grpat == at;
                 }
                 return true;
-            }
-            // if requires team access
-            if (tm > 0)
-            {
-                if ((o.tm & tm) != tm) return false; // inclusive check
-                string at = wc[typeof(IOrgVar)];
-                if (at != null)
-                {
-                    return o.tmat == at;
-                }
-                return true;
-            }
-            // if requires platform access
-            if (plat > 0)
-            {
-                return (o.plat & plat) == plat;
             }
             return true;
         }

@@ -13,9 +13,9 @@ namespace Samp
     }
 
     [Ui("用户管理")]
-    public class PlatUserWork : UserWork<PlatUserVarWork>
+    public class OprUserWork : UserWork<PlatUserVarWork>
     {
-        public PlatUserWork(WorkConfig cfg) : base(cfg)
+        public OprUserWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -31,7 +31,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.TABLE(arr,
                         () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                        o => h.TD(o.name).TD(o.tel).TD(o.ctrat).TD(Oprs[o.ctr])
+                        o => h.TD(o.name).TD(o.tel).TD(o.supat).TD(Oprs[o.opr])
                     );
                 });
             }
@@ -49,7 +49,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.TABLE(arr,
                         () => h.TH("姓名").TH("电话").TH("网点").TH("积分"),
-                        o => h.TD(o.name).TD(o.tel).TD(o.ctrat).TD(o.score)
+                        o => h.TD(o.name).TD(o.tel).TD(o.supat).TD(o.score)
                     );
                 });
             }
@@ -76,7 +76,7 @@ namespace Samp
                         h.TOOLBAR();
                         h.TABLE(arr,
                             () => h.TH("姓名").TH("电话").TH("网点").TH("积分"),
-                            o => h.TD(o.name).TD(o.tel).TD(o.ctrat).TD(o.score)
+                            o => h.TD(o.name).TD(o.tel).TD(o.supat).TD(o.score)
                         );
                     });
                 }

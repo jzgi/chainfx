@@ -134,9 +134,9 @@ namespace Samp
     }
 
     [Ui("新单")]
-    public class CtrNewOrdWork : OrdWork<CtrNewOrdVarWork>
+    public class OprNewOrdWork : OrdWork<CtrNewOrdVarWork>
     {
-        public CtrNewOrdWork(WorkConfig cfg) : base(cfg)
+        public OprNewOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -195,9 +195,9 @@ namespace Samp
     }
 
     [Ui("旧单"), UserAccess(OPR)]
-    public class CtrOldOrdWork : OrdWork<CtrOldOrdVarWork>
+    public class OprOldOrdWork : OrdWork<CtrOldOrdVarWork>
     {
-        public CtrOldOrdWork(WorkConfig cfg) : base(cfg)
+        public OprOldOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 

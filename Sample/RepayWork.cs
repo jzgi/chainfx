@@ -15,9 +15,9 @@ namespace Samp
     }
 
     [Ui("结款")]
-    public class CtrRepayWork : RepayWork<CtrRepayVarWork>
+    public class OprRepayWork : RepayWork<CtrRepayVarWork>
     {
-        public CtrRepayWork(WorkConfig cfg) : base(cfg)
+        public OprRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 

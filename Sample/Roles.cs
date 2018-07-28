@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Greatbone;
+using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess(persisted: false)]
+    [UserAccess(stored: false)]
     public class MyWork : Work
     {
         public MyWork(WorkConfig cfg) : base(cfg)
@@ -23,12 +24,10 @@ namespace Samp
             if (wc.GET)
             {
                 prin.refid = wc.Query[nameof(prin.refid)];
-                prin.ctrid = wc.Query[nameof(prin.ctrid)];
                 wc.GivePage(200, h =>
                 {
                     h.FORM_();
                     h.HIDDEN(nameof(prin.refid), prin.refid);
-                    h.HIDDEN(nameof(prin.ctrid), prin.ctrid);
                     h.FIELDSET_("会员信息");
                     h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
                     h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
@@ -43,7 +42,7 @@ namespace Samp
                 prin = await wc.ReadObjectAsync(obj: prin);
                 using (var dc = NewDbContext())
                 {
-                    const byte proj = 0xff ^ User.ID ^ User.LATER;
+                    const byte proj = 0xff ^ ID ^ LATER;
                     dc.Sql("INSERT INTO users ")._(prin, proj)._VALUES_(prin, proj);
                     dc.Execute(p => prin.Write(p));
                 }
@@ -52,40 +51,23 @@ namespace Samp
         }
     }
 
-    public class CtrWork : Work
+    public class OprWork : Work
     {
-        public CtrWork(WorkConfig cfg) : base(cfg)
+        public OprWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrVarWork, string>(prin => ((User) prin).ctrat);
-        }
-    }
+            Create<OprNewOrdWork>("newo");
 
-    public class VdrWork : Work
-    {
-        public VdrWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<VdrVarWork, string>(prin => ((User) prin).vdrat);
-        }
-    }
+            Create<OprOldOrdWork>("oldo");
 
-    public class TmWork : Work
-    {
-        public TmWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<TmVarWork, string>(prin => ((User) prin).tmat);
-        }
-    }
+            Create<OprItemWork>("item");
 
-    [UserAccess(plat: 1)]
-    [Ui("常规")]
-    public class PlatWork : Work
-    {
-        public PlatWork(WorkConfig cfg) : base(cfg)
-        {
-            Create<PlatUserWork>("user");
+            Create<OprRepayWork>("repay");
 
-            Create<PlatCtrWork>("ctr");
+            Create<OprOrgWork>("org");
 
+            Create<OprUserWork>("user");
+
+            Create<OrgRecWork>("rec");
         }
 
         public void @default(WebContext wc)
@@ -108,9 +90,116 @@ namespace Samp
             }
         }
 
-        [Ui("清理"), Tool(Modal.ButtonOpen)]
-        public void clean(WebContext ac)
+        [UserAccess(OPRMGR)]
+        [Ui("人员"), Tool(Modal.ButtonOpen)]
+        public async Task acl(WebContext wc, int cmd)
         {
+            string orgid = wc[this];
+            string tel = null;
+            short opr = 0;
+            var f = await wc.ReadAsync<Form>();
+            if (f != null)
+            {
+                tel = f[nameof(tel)];
+                opr = f[nameof(opr)];
+                if (cmd == 1) // remove
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(tel));
+                    }
+                }
+                else if (cmd == 2) // add
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(orgid).Set(opr).Set(tel));
+                    }
+                }
+            }
+            wc.GivePane(200, h =>
+            {
+                h.FORM_();
+                h.FIELDSET_("现有人员");
+                using (var dc = NewDbContext())
+                {
+                    if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
+                    {
+                        while (dc.Next())
+                        {
+                            dc.Let(out string name).Let(out tel).Let(out opr);
+                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Oprs[opr], false);
+                        }
+                    }
+                }
+                h._FIELDSET();
+                h.BUTTON(nameof(acl), 1, "删除");
+
+                h.FIELDSET_("添加人员");
+                h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
+                h.SELECT(nameof(opr), opr, Oprs, "角色");
+                h._FIELDSET();
+                h.BUTTON(nameof(acl), 2, "添加");
+                h._FORM();
+            });
+        }
+
+        [UserAccess(OPRMEM)]
+        [Ui("状态"), Tool(Modal.ButtonShow)]
+        public async Task status(WebContext wc)
+        {
+            string orgid = wc[this];
+            var org = Obtain<Map<string, Org>>()[orgid];
+            User prin = (User) wc.Principal;
+            bool custsvc;
+            if (wc.GET)
+            {
+                custsvc = org.mgrwx == prin.wx;
+                wc.GivePane(200, h =>
+                {
+                    h.FORM_();
+//                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(org.status), org.status, Statuses, "营业状态")._FIELDSET();
+                    h.FIELDSET_("客服设置");
+                    h.CHECKBOX(nameof(custsvc), custsvc, "我要作为上线客服");
+                    h._FIELDSET();
+                    h._FORM();
+                });
+            }
+            else
+            {
+                var f = await wc.ReadAsync<Form>();
+                org.status = f[nameof(org.status)];
+                custsvc = f[nameof(custsvc)];
+                using (var dc = NewDbContext())
+                {
+                    dc.Execute("UPDATE orgs SET status = @1 WHERE id = @2", p => p.Set(org.status).Set(orgid));
+                    if (custsvc)
+                    {
+                        dc.Execute("UPDATE orgs SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(orgid));
+                    }
+                    else
+                    {
+                        dc.Execute("UPDATE orgs SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(orgid));
+                    }
+                }
+                wc.GivePane(200);
+            }
+        }
+    }
+
+    public class SupWork : Work
+    {
+        public SupWork(WorkConfig cfg) : base(cfg)
+        {
+            CreateVar<SupVarWork, string>(prin => ((User) prin).supat);
+        }
+    }
+
+    public class GrpWork : Work
+    {
+        public GrpWork(WorkConfig cfg) : base(cfg)
+        {
+            CreateVar<GrpVarWork, string>(prin => ((User) prin).grpat);
         }
     }
 }

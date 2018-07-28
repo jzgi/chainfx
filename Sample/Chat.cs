@@ -13,7 +13,6 @@ namespace Samp
         public const byte ID = 1, DETAIL = 2;
 
         internal int id;
-        internal string ctrid;
         internal string subject;
         internal int uid;
         internal string uname;
@@ -28,7 +27,6 @@ namespace Samp
             {
                 s.Get(nameof(id), ref id);
             }
-            s.Get(nameof(ctrid), ref ctrid);
             s.Get(nameof(subject), ref subject);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
@@ -49,7 +47,6 @@ namespace Samp
             {
                 s.Put(nameof(id), id);
             }
-            s.Put(nameof(ctrid), ctrid);
             s.Put(nameof(subject), subject);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);

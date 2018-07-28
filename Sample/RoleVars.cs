@@ -6,7 +6,7 @@ using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess(persisted: true)]
+    [UserAccess(stored: true)]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -90,159 +90,10 @@ namespace Samp
         }
     }
 
-    [UserAccess(ctr: 1)]
-    [Ui("常规")]
-    public class CtrVarWork : Work, IOrgVar
+
+    public class SupVarWork : Work, IOrgVar
     {
-        public CtrVarWork(WorkConfig cfg) : base(cfg)
-        {
-            Create<CtrNewOrdWork>("newo");
-
-            Create<CtrOldOrdWork>("oldo");
-
-            Create<CtrItemWork>("item");
-
-            Create<CtrRepayWork>("repay");
-
-            Create<CtrOrgWork>("org");
-
-            Create<OrgRecWork>("rec");
-        }
-
-        public void @default(WebContext wc)
-        {
-            string orgid = wc[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            bool inner = wc.Query[nameof(inner)];
-            if (!inner)
-            {
-                wc.GiveFrame(200, false, 60 * 15, org?.name);
-            }
-            else
-            {
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-                    h.UL_("uk-card uk-card-default uk-card-body");
-                    h.LI("简　介", org.addr);
-                    h.LI("经　理", org.mgrname, org.tel);
-                    h._UL();
-                });
-            }
-        }
-
-        [UserAccess(OPRMGR)]
-        [Ui("人员"), Tool(ButtonOpen)]
-        public async Task acl(WebContext wc, int cmd)
-        {
-            string orgid = wc[this];
-            string tel = null;
-            short opr = 0;
-            var f = await wc.ReadAsync<Form>();
-            if (f != null)
-            {
-                tel = f[nameof(tel)];
-                opr = f[nameof(opr)];
-                if (cmd == 1) // remove
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(tel));
-                    }
-                }
-                else if (cmd == 2) // add
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(orgid).Set(opr).Set(tel));
-                    }
-                }
-            }
-            wc.GivePane(200, h =>
-            {
-                h.FORM_();
-                h.FIELDSET_("现有人员");
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
-                    {
-                        while (dc.Next())
-                        {
-                            dc.Let(out string name).Let(out tel).Let(out opr);
-                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Oprs[opr], false);
-                        }
-                    }
-                }
-                h._FIELDSET();
-                h.BUTTON(nameof(acl), 1, "删除");
-
-                h.FIELDSET_("添加人员");
-                h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                h.SELECT(nameof(opr), opr, Oprs, "角色");
-                h._FIELDSET();
-                h.BUTTON(nameof(acl), 2, "添加");
-                h._FORM();
-            });
-        }
-
-        [UserAccess(OPRMEM)]
-        [Ui("状态"), Tool(ButtonShow)]
-        public async Task status(WebContext wc)
-        {
-            string orgid = wc[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            User prin = (User) wc.Principal;
-            bool custsvc;
-            if (wc.GET)
-            {
-                custsvc = org.mgrwx == prin.wx;
-                wc.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(org.status), org.status, Statuses, "营业状态")._FIELDSET();
-                    h.FIELDSET_("客服设置");
-                    h.CHECKBOX(nameof(custsvc), custsvc, "我要作为上线客服");
-                    h._FIELDSET();
-                    h._FORM();
-                });
-            }
-            else
-            {
-                var f = await wc.ReadAsync<Form>();
-                org.status = f[nameof(org.status)];
-                custsvc = f[nameof(custsvc)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Execute("UPDATE orgs SET status = @1 WHERE id = @2", p => p.Set(org.status).Set(orgid));
-                    if (custsvc)
-                    {
-                        dc.Execute("UPDATE orgs SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(orgid));
-                    }
-                    else
-                    {
-                        dc.Execute("UPDATE orgs SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(orgid));
-                    }
-                }
-                wc.GivePane(200);
-            }
-        }
-
-        [Ui("零售点", "我的零售点"), Tool(AOpen)]
-        public void pos(WebContext wc)
-        {
-            User prin = (User) wc.Principal;
-            wc.GivePane(200, h =>
-            {
-                h.FORM_().FIELDSET_();
-                h.QRCODE(SampUtility.NETADDR + "/list?posid=" + prin.id);
-                h._FIELDSET()._FORM();
-            }, false, 300);
-        }
-    }
-
-    public class VdrVarWork : Work, IOrgVar
-    {
-        public VdrVarWork(WorkConfig cfg) : base(cfg)
+        public SupVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<CtrChatWork>("chat");
         }
@@ -253,11 +104,11 @@ namespace Samp
     }
 
 
-    [UserAccess(tm: 1)]
+    [UserAccess(grp: 1)]
     [Ui("常规")]
-    public class TmVarWork : Work, IOrgVar
+    public class GrpVarWork : Work, IOrgVar
     {
-        public TmVarWork(WorkConfig cfg) : base(cfg)
+        public GrpVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<TmOrdWork>("ord");
 
