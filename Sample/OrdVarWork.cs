@@ -84,7 +84,7 @@ namespace Samp
             }
             if (cash > 0)
             {
-                string err = await WeiXinUtility.PostRefundAsync(orderid + "-" + rev, cash, cash);
+                string err = await ((SampService)Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
                 if (err == null) // success
                 {
                     using (var dc = NewDbContext())

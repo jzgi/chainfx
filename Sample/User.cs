@@ -30,6 +30,7 @@ namespace Samp
         internal string name;
         internal string wx; // wexin openid
         internal string tel;
+        internal string grpat; // community group
         internal string addr;
         public string credential;
         internal int score;
@@ -37,7 +38,6 @@ namespace Samp
         internal short opr;
         internal string supat; // supply
         internal short sup;
-        internal string grpat; // group
         internal short grp;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -49,6 +49,7 @@ namespace Samp
             s.Get(nameof(name), ref name);
             s.Get(nameof(wx), ref wx);
             s.Get(nameof(tel), ref tel);
+            s.Get(nameof(grpat), ref grpat);
             s.Get(nameof(addr), ref addr);
             if ((proj & PRIVACY) == PRIVACY)
             {
@@ -61,7 +62,6 @@ namespace Samp
                 s.Get(nameof(opr), ref opr);
                 s.Get(nameof(supat), ref supat);
                 s.Get(nameof(sup), ref sup);
-                s.Get(nameof(grpat), ref grpat);
                 s.Get(nameof(grp), ref grp);
             }
         }
@@ -75,6 +75,7 @@ namespace Samp
             s.Put(nameof(name), name);
             s.Put(nameof(wx), wx);
             s.Put(nameof(tel), tel);
+            s.Put(nameof(grpat), grpat);
             s.Put(nameof(addr), addr);
             if ((proj & PRIVACY) == PRIVACY)
             {
@@ -87,7 +88,6 @@ namespace Samp
                 s.Put(nameof(opr), opr);
                 s.Put(nameof(supat), supat);
                 s.Put(nameof(sup), sup);
-                s.Put(nameof(grpat), grpat);
                 s.Put(nameof(grp), grp);
             }
         }

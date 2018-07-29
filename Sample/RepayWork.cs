@@ -118,7 +118,7 @@ namespace Samp
             for (int i = 0; i < trans.Count; i++)
             {
                 var tr = trans[i];
-                string err = await WeiXinUtility.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
+                string err = await ((SampService)Service).WeiXin.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
                 // update data records
                 using (var dc = NewDbContext())
                 {

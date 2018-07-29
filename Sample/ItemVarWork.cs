@@ -147,7 +147,7 @@ namespace Samp
                 dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custid = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id), proj);
             }
-            var (prepay_id, _) = await WeiXinUtility.PostUnifiedOrderAsync(
+            var (prepay_id, _) = await ((SampService) Service).WeiXin.PostUnifiedOrderAsync(
                 orderid + "-" + o.rev,
                 o.cash,
                 prin.wx,
@@ -157,7 +157,7 @@ namespace Samp
             );
             if (prepay_id != null)
             {
-                wc.Give(200, WeiXinUtility.BuildPrepayContent(prepay_id));
+                wc.Give(200, ((SampService) Service).WeiXin.BuildPrepayContent(prepay_id));
             }
             else
             {

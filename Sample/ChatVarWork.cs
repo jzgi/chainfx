@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.WeiXinUtility;
 
 namespace Samp
 {
@@ -86,7 +85,7 @@ namespace Samp
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(custid));
                     }
                 }
-                await PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
+                await ((SampService)Service).WeiXin.PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
                 wc.GivePane(200);
             }
         }

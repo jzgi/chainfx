@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Greatbone;
 using static Samp.SampUtility;
-using static Samp.WeiXinUtility;
 
 namespace Samp
 {
@@ -67,14 +66,14 @@ namespace Samp
             // resolve principal thru OAuth2 or HTTP-basic
             User prin = null;
             string state = wc.Query[nameof(state)];
-            if (WXAUTH.Equals(state)) // if weixin auth
+            if (WeiXin.WXAUTH.Equals(state)) // if weixin auth
             {
                 string code = wc.Query[nameof(code)];
                 if (code == null)
                 {
                     return false;
                 }
-                (_, string openid) = await GetAccessorAsync(code);
+                (_, string openid) = await WeiXin.GetAccessorAsync(code);
                 if (openid == null)
                 {
                     return false;
@@ -132,14 +131,14 @@ namespace Samp
         {
             if (cmd == 1) // handle form submission
             {
-                var prin = (User) wc.Principal;
+                var o = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
-                string name = f[nameof(name)];
-                string tel = f[nameof(tel)];
+                o.Read(f);
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<User>("INSERT INTO users (name, wx, tel) VALUES (@1, @2, @3) RETURNING *", p => p.Set(name).Set(prin.wx).Set(tel));
+                    dc.Sql("INSERT INTO users")._(o, 0)._VALUES_(o, 0);
+                    dc.Execute(p => o.Write(p));
                     wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                 }
                 wc.GiveRedirect(url);
@@ -151,7 +150,7 @@ namespace Samp
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
                     {
-                        wc.GiveRedirectWeiXinAuthorize(NETADDR);
+                        WeiXin.GiveRedirectWeiXinAuthorize(wc, NETADDR);
                     }
                     else // challenge BASIC scheme
                     {
@@ -161,17 +160,21 @@ namespace Samp
                 }
                 else if (ace.NullResult)
                 {
+                    var o = (User) wc.Principal;
                     string url = wc.Path;
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        string name = null;
-                        string tel = null;
-                        h.FIELDSET_("填写用户信息");
-                        h.TEXT(nameof(name), name, label: "用户昵称", max: 4, min: 2, required: true);
-                        h.TEXT(nameof(tel), tel, label: "手　　机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                        h.FIELDSET_("填写用户基本信息");
+                        h.TEXT(nameof(o.name), o.name, label: "用户昵称", max: 4, min: 2, required: true);
+                        h.TEXT(nameof(o.tel), o.tel, label: "手　　机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h._FIELDSET();
                         h.HIDDEN(nameof(url), url);
+                        h.FIELDSET_("填写参团派送信息");
+                        var orgs = Obtain<Map<string, Org>>();
+                        h.SELECT(nameof(o.grpat), o.grpat, orgs, label: "参团社区");
+                        h.TEXT(nameof(o.addr), o.addr, label: "送货地址", max: 21, min: 2, required: true);
+                        h._FIELDSET();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", style: Style.Primary)._BOTTOMBAR();
                         h._FORM();
                     }, title: "用户注册");
@@ -193,14 +196,14 @@ namespace Samp
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
-                    h.LIST(arr.All(), oi =>
+                    h.LIST(arr.All(), o =>
                     {
-                        h.ICO_(css: "uk-width-1-3 uk-padding-small").T(oi.name).T("/icon")._ICO();
+                        h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
                         h.COL_(0x23, css: "uk-padding-small");
-                        h.T("<h3>").T(oi.name).T("</h3>");
-                        h.FI(null, oi.descr);
+                        h.T("<h3>").T(o.name).T("</h3>");
+                        h.FI(null, o.descr);
                         h.ROW_();
-                        h.P_(w: 0x23).T("￥<em>").T(oi.price).T("</em>／").T(oi.unit)._P();
+                        h.P_(w: 0x23).T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
                         h.FORM_(css: "uk-width-auto");
                         h.TOOL(nameof(SampVarWork.buy));
                         h._FORM();
@@ -220,7 +223,7 @@ namespace Samp
         public async Task onpay(WebContext ac)
         {
             XElem xe = await ac.ReadAsync<XElem>();
-            if (!OnNotified(xe, out var trade_no, out var cash))
+            if (!WeiXin.OnNotified(xe, out var trade_no, out var cash))
             {
                 ac.Give(400);
                 return;
@@ -242,7 +245,7 @@ namespace Samp
             var oprwx = orgs[orgid]?.mgrwx;
             if (oprwx != null)
             {
-                await PostSendAsync(oprwx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");
+                await WeiXin.PostSendAsync(oprwx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");
             }
             // return xml to WCPay server
             XmlContent x = new XmlContent(true, 1024);

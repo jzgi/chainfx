@@ -133,7 +133,7 @@ namespace Samp
                     h.LI("名称", org.name);
                     h.LI("地址", org.addr);
                     h.LI("地图", org.addr);
-                    h.LI("负责人", org.mgrname, org.tel);
+                    h.LI("负责人", org.mgrname, org.mgrtel);
                     h._UL();
                 });
             }

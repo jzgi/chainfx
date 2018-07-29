@@ -34,7 +34,7 @@ namespace Samp
                             h.UL_("uk-card-body");
                             h.LI("地　址", o.addr);
                             h.LI_("坐　标").T(o.x).SP().T(o.y)._LI();
-                            h.LI_("经　理").T(o.mgrname).SP().T(o.tel)._LI();
+                            h.LI_("经　理").T(o.mgrname).SP().T(o.mgrtel)._LI();
                             h._UL();
                             h.VARTOOLS(css: "uk-card-footer");
                         }
@@ -97,7 +97,7 @@ namespace Samp
                             h.UL_("uk-card-body");
                             h.LI("地　址", o.addr);
                             h.LI_("坐　标").T(o.x).SP().T(o.y)._LI();
-                            h.LI_("经　理").T(o.mgrname).SP().T(o.tel)._LI();
+                            h.LI_("经　理").T(o.mgrname).SP().T(o.mgrtel)._LI();
                             h._UL();
                             h.VARTOOLS(css: "uk-card-footer");
                         }

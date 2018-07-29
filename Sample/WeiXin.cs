@@ -10,6 +10,8 @@ namespace Samp
 {
     public class WeiXin : IData
     {
+        public const string WXAUTH = "wxauth";
+
         static readonly Client Connector = new Client("https://api.weixin.qq.com");
 
         Client WCPay;
@@ -68,11 +70,16 @@ namespace Samp
 
         private string accessToken;
 
+        private int tick;
+
         async Task<string> AccessToken()
         {
-            JObj jo = await Connector.GetAsync<JObj>("/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret, null);
-            string access_token = jo?[nameof(access_token)];
-            accessToken = access_token;
+            if (accessToken == null)
+            {
+                JObj jo = await Connector.GetAsync<JObj>("/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret, null);
+                string access_token = jo?[nameof(access_token)];
+                accessToken = access_token;
+            }
 
             return accessToken;
         }
