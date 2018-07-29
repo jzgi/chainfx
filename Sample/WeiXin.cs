@@ -50,7 +50,7 @@ namespace Samp
         }
 
         // apiclient_cert.p12
-        internal void Init(string p12file)
+        internal void InitWCPay(string p12file)
         {
             if (p12file != null)
             {
@@ -68,7 +68,7 @@ namespace Samp
             }
         }
 
-        private string accessToken;
+        internal string accessToken;
 
         private int tick;
 
@@ -132,6 +132,22 @@ namespace Samp
             };
             jo.Add("paySign", Sign(jo, "paySign"));
             return jo.Dump();
+        }
+
+        public async Task<(string ticket, string url)> PostQrSceneAsync(int uid)
+        {
+            var jc = new JsonContent(true);
+            jc.OBJ_();
+            jc.Put("expire_seconds", 604800);
+            jc.Put("action_name", "QR_SCENE");
+            jc.OBJ_("action_info");
+            jc.OBJ_("scene");
+            jc.Put("scene_id", uid);
+            jc._OBJ();
+            jc._OBJ();
+            jc._OBJ();
+            var (_, jo) = await Connector.PostAsync<JObj>("/cgi-bin/qrcode/create?access_token=" + AccessToken(), jc);
+            return (jo["ticket"], jo["url"]);
         }
 
         public async Task PostSendAsync(string openid, string text)

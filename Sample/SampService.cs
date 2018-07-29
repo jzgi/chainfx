@@ -74,6 +74,8 @@ namespace Samp
                     return false;
                 }
                 (_, string openid) = await WeiXin.GetAccessorAsync(code);
+                
+                INF("openid = " + openid);
                 if (openid == null)
                 {
                     return false;

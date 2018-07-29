@@ -2390,25 +2390,20 @@ a.uk-button-primary {
     display: flex;
     align-items: baseline;
     width: 100%;
+    padding: 2px 0;
 }
 
-.uk-card-body li > p{
+.uk-card-body li > p {
     width: 100%;
-}
-
-.uk-card-body ul::before {
-    border-top: 1px solid #dcdcdc;
-}
-
-.uk-card-body ul::after {
-    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-card-body ul > li:nth-child(n+2) {
     border-top: 1px solid #dcdcdc;
 }
 
-
+ul.uk-card-body li:nth-child(n+2) {
+    border-top: 1px solid #dcdcdc;
+}
 
 .uk-card-header {
     padding: 4px 8px;
@@ -2471,10 +2466,6 @@ a.uk-button-primary {
 .uk-card-primary.uk-card-hover:hover {
     background-color: #fff;
     box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-}
-
-.uk-card-primary .uk-card-body {
-    background-color: #fafafa;
 }
 
 /*

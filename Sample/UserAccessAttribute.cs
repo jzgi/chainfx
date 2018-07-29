@@ -8,7 +8,7 @@ namespace Samp
     public class UserAccessAttribute : AccessAttribute
     {
         // require a persisted principal
-        readonly bool stored;
+        readonly bool complete;
 
         // require operator access
         readonly short opr;
@@ -21,21 +21,21 @@ namespace Samp
 
         public UserAccessAttribute(short opr = 0, short sup = 0, short grp = 0)
         {
-            this.stored = true;
+            this.complete = true;
             this.opr = opr;
             this.sup = sup;
             this.grp = grp;
         }
 
-        public UserAccessAttribute(bool stored)
+        public UserAccessAttribute(bool complete)
         {
-            this.stored = stored;
+            this.complete = complete;
         }
 
         public override bool? Check(WebContext wc, IData prin)
         {
             // if not require persisted
-            if (!stored) return true;
+            if (!complete) return true;
 
             var o = (User) prin;
 

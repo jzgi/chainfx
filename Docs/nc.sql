@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-07-29 00:04:31
+Date: 2018-07-29 14:07:31
 */
 
 
@@ -63,15 +63,16 @@ CREATE SEQUENCE "public"."repays_id_seq"
 SELECT setval('"public"."repays_id_seq"', 5, true);
 
 -- ----------------------------
--- Sequence structure for users_id_seq1
+-- Sequence structure for users_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."users_id_seq1";
-CREATE SEQUENCE "public"."users_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."users_id_seq";
+CREATE SEQUENCE "public"."users_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
+SELECT setval('"public"."users_id_seq"', 1, true);
 
 -- ----------------------------
 -- Table structure for chats
@@ -166,17 +167,15 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orgs";
 CREATE TABLE "public"."orgs" (
-"id" varchar(4) COLLATE "default" NOT NULL,
+"id" varchar(3) COLLATE "default" NOT NULL,
 "name" varchar(10) COLLATE "default",
-"descr" varchar(50) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "x" float8,
 "y" float8,
-"icon" bytea,
 "mgrid" int4,
 "mgrname" varchar(10) COLLATE "default",
 "mgrwx" varchar(28) COLLATE "default",
-"tel" varchar(11) COLLATE "default",
+"mgrtel" varchar(11) COLLATE "default",
 "status" int2
 )
 WITH (OIDS=FALSE)
@@ -238,10 +237,11 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
-"id" int4 DEFAULT nextval('users_id_seq1'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
 "name" varchar(10) COLLATE "default" NOT NULL,
 "wx" varchar(28) COLLATE "default" NOT NULL,
 "tel" varchar(11) COLLATE "default" NOT NULL,
+"grpat" varchar(3) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "score" int4,
@@ -249,7 +249,6 @@ CREATE TABLE "public"."users" (
 "opr" int2 DEFAULT 0,
 "supat" varchar(3) COLLATE "default",
 "sup" int2,
-"grpat" varchar(4) COLLATE "default",
 "grp" int2
 )
 WITH (OIDS=FALSE)
@@ -263,7 +262,7 @@ ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "recs"."id";
 ALTER SEQUENCE "public"."chats_id_seq1" OWNED BY "chats"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "ords"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
-ALTER SEQUENCE "public"."users_id_seq1" OWNED BY "users"."id";
+ALTER SEQUENCE "public"."users_id_seq" OWNED BY "users"."id";
 
 -- ----------------------------
 -- Primary Key structure for table chats
@@ -314,18 +313,3 @@ CREATE INDEX "users_tel" ON "public"."users" USING hash ("tel") WHERE tel IS NOT
 -- Primary Key structure for table users
 -- ----------------------------
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("id");
-
--- ----------------------------
--- Foreign Key structure for table "public"."items"
--- ----------------------------
-ALTER TABLE "public"."items" ADD FOREIGN KEY ("sort") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."recs"
--- ----------------------------
-ALTER TABLE "public"."recs" ADD FOREIGN KEY ("orgid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."repays"
--- ----------------------------
-ALTER TABLE "public"."repays" ADD FOREIGN KEY ("orgid") REFERENCES "public"."orgs" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

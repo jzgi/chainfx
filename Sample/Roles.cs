@@ -4,7 +4,7 @@ using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess(stored: false)]
+    [UserAccess(true)]
     public class MyWork : Work
     {
         public MyWork(WorkConfig cfg) : base(cfg)

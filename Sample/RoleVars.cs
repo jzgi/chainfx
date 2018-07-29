@@ -1,12 +1,11 @@
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.Org;
 using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess(stored: true)]
+    [UserAccess(complete: true)]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -21,24 +20,21 @@ namespace Samp
             var prin = (User) wc.Principal;
             wc.GivePage(200, h =>
             {
-                h.UL_("uk-card- uk-card-primary uk-card-body");
+                h.T("<section class=\"uk-card- uk-card-primary \">");
+                h.UL_("uk-card-body");
                 h.LI("用户昵称", prin.name);
-                h.LI("电话", prin.tel);
-                h.LI("地址", prin.addr);
-                h.LI("剩余积分", prin.score);
+                h.LI("手　　机", prin.tel);
+                h.LI("收货地址", prin.addr);
+                h.LI("积　　分", prin.score);
                 h._UL();
-                h.UL_("uk-card- uk-card-primary uk-card-body");
-                h.COL_();
-                h.FI(null, "让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
-                h.QRCODE(SampUtility.NETADDR + "/my//join?refid=" + prin.id);
-                h._COL();
-                h._UL();
+                h.TOOLS(css: "uk-card-footer");
+                h.T("</section>");
             }, title: "我的设置");
         }
 
         const string VOIDPASS = "t#0^0z4R4pX7";
 
-        [Ui("设置"), Tool(ButtonShow)]
+        [Ui("修改"), Tool(ButtonShow, Style.Primary)]
         public async Task edit(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -47,7 +43,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE id = @1");
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE id = @1");
                     var o = dc.Query1<User>(p => p.Set(prin.id));
                     if (o.credential != null) password = VOIDPASS;
                     wc.GivePane(200, h =>
@@ -87,6 +83,62 @@ namespace Samp
                     wc.GivePane(200); // close dialog
                 }
             }
+        }
+
+        [Ui("设密码", "设外部登录密码"), Tool(ButtonShow)]
+        public async Task pass(WebContext wc)
+        {
+            var prin = (User) wc.Principal;
+            string password = null;
+            if (wc.GET)
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT credential FROM users WHERE id = @1");
+                    var credential = (string) dc.Scalar("SELECT credential FROM users WHERE id = @1", p => p.Set(prin.id));
+                    if (credential != null)
+                    {
+                        password = VOIDPASS;
+                    }
+                    wc.GivePane(200, h =>
+                    {
+                        h.FORM_();
+                        h.FIELDSET_("用于从微信以外登录（可选）");
+                        h.PASSWORD(nameof(password), password, label: "密码", max: 12, min: 3);
+                        h._FIELDSET();
+                        h._FORM();
+                    });
+                }
+            }
+            else
+            {
+                var f = await wc.ReadAsync<Form>();
+                password = f[nameof(password)];
+                using (var dc = NewDbContext())
+                {
+                    if (password != VOIDPASS) // password being changed
+                    {
+                        string credential = TextUtility.MD5(prin.tel + ":" + password);
+                        dc.Execute("UPDATE users SET credential = @1 WHERE id = @2", p => p.Set(credential).Set(prin.id));
+                    }
+                    wc.GivePane(200); // close dialog
+                }
+            }
+        }
+
+        [Ui("推荐给"), Tool(AOpen)]
+        public async Task share(WebContext wc)
+        {
+            var prin = (User) wc.Principal;
+            var (ticket, url) = await ((SampService) Service).WeiXin.PostQrSceneAsync(prin.id);
+            wc.GivePage(200, h =>
+            {
+                h.FIELDSET_();
+
+                h.T("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
+                h.IMG_().T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._IMG();
+                h._FIELDSET();
+            });
         }
     }
 

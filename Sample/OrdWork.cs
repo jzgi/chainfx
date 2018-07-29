@@ -109,7 +109,7 @@ namespace Samp
                             h.UL_("uk-list uk-list-divider uk-card-body");
                             h.LI("收货", o.uaddr, o.uname, o.utel);
                             h.LI_();
-                            h.ICO_(css: "uk-width-1-6").T('/').T(o.ctrid).T('/').T(o.item).T("/icon")._ICO();
+                            h.ICO_(css: "uk-width-1-3").T('/').T(o.item).T("/icon")._ICO();
                             h.FI(null, o.item).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
                             h._LI();
                             h._UL(); // uk-card-body
