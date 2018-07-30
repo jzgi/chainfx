@@ -13,7 +13,7 @@ namespace Samp
         }
     }
 
-    [Ui("账务"), UserAccess(OPRMGR)]
+    [Ui("账务"), UserAccess(CTR_MGR)]
     public class OrgRecWork : RecWork
     {
         public OrgRecWork(WorkConfig cfg) : base(cfg)

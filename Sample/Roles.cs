@@ -89,7 +89,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(OPRMGR)]
+        [UserAccess(CTR_MGR)]
         [Ui("人员"), Tool(Modal.ButtonOpen)]
         public async Task acl(WebContext wc, int cmd)
         {
@@ -127,7 +127,7 @@ namespace Samp
                         while (dc.Next())
                         {
                             dc.Let(out string name).Let(out tel).Let(out opr);
-                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Oprs[opr], false);
+                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Ctrs[opr], false);
                         }
                     }
                 }
@@ -136,14 +136,14 @@ namespace Samp
 
                 h.FIELDSET_("添加人员");
                 h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                h.SELECT(nameof(opr), opr, Oprs, "角色");
+                h.SELECT(nameof(opr), opr, Ctrs, "角色");
                 h._FIELDSET();
                 h.BUTTON(nameof(acl), 2, "添加");
                 h._FORM();
             });
         }
 
-        [UserAccess(OPRMEM)]
+        [UserAccess(CTR_SUPPLY)]
         [Ui("状态"), Tool(Modal.ButtonShow)]
         public async Task status(WebContext wc)
         {
@@ -183,14 +183,6 @@ namespace Samp
                 }
                 wc.GivePane(200);
             }
-        }
-    }
-
-    public class SupWork : Work
-    {
-        public SupWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<SupVarWork, string>(prin => ((User) prin).supat);
         }
     }
 

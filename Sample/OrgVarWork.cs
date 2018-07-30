@@ -13,22 +13,9 @@ namespace Samp
         }
     }
 
-     public class CtrOrgVarWork : OrgVarWork
+    public class CtrOrgVarWork : OrgVarWork
     {
         public CtrOrgVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        [Ui("负责"), Tool(ButtonShow)]
-        public async Task mgr(WebContext wc)
-        {
-            string orgid = wc[this];
-        }
-    }
-
-    public class PlatCtrVarWork : OrgVarWork
-    {
-        public PlatCtrVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -108,7 +95,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Execute(@"UPDATE orgs SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
-                        UPDATE users SET opr = " + OPRMGR + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
+                        UPDATE users SET opr = " + CTR_MGR + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
                 }
                 wc.GivePane(200);
             }

@@ -15,15 +15,16 @@ namespace Samp
             LATER = 4;
 
         public const short
-            OPR = 1,
-            OPRMEM = 3,
-            OPRMGR = 7;
+            CTR = 1,
+            CTR_SUPPLY = 0b0011, // 3
+            CTR_DELIVER = 0b0101, // 5
+            CTR_MGR = 0b0111; // 7
 
-        public static readonly Map<short, string> Oprs = new Map<short, string>
+        public static readonly Map<short, string> Ctrs = new Map<short, string>
         {
-            {OPR, "销售"},
-            {OPRMEM, "内务"},
-            {OPRMGR, "经理"},
+            {CTR_SUPPLY, "加工备货"},
+            {CTR_DELIVER, "派送"},
+            {CTR_MGR, "经理"},
         };
 
         internal int id;
@@ -35,9 +36,7 @@ namespace Samp
         public string credential;
         internal int score;
         internal int refid; // referee id
-        internal short opr;
-        internal string supat; // supply
-        internal short sup;
+        internal short ctr;
         internal short grp;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -59,9 +58,7 @@ namespace Samp
             }
             if ((proj & LATER) == LATER)
             {
-                s.Get(nameof(opr), ref opr);
-                s.Get(nameof(supat), ref supat);
-                s.Get(nameof(sup), ref sup);
+                s.Get(nameof(ctr), ref ctr);
                 s.Get(nameof(grp), ref grp);
             }
         }
@@ -85,9 +82,7 @@ namespace Samp
             }
             if ((proj & LATER) == LATER)
             {
-                s.Put(nameof(opr), opr);
-                s.Put(nameof(supat), supat);
-                s.Put(nameof(sup), sup);
+                s.Put(nameof(ctr), ctr);
                 s.Put(nameof(grp), grp);
             }
         }

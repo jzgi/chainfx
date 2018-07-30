@@ -29,8 +29,8 @@ namespace Samp
         internal int id;
         internal short rev;
         internal string ctrid; // center id
-        internal string tmid; // team id
-        internal string vdrid; // vendor id
+        internal string grpid; // team id
+        internal string supid; // supply
 
         internal int uid;
         internal string uname; // customer name
@@ -59,7 +59,7 @@ namespace Samp
                 s.Get(nameof(rev), ref rev);
             }
             s.Get(nameof(ctrid), ref ctrid);
-            s.Get(nameof(tmid), ref tmid);
+            s.Get(nameof(grpid), ref grpid);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
             s.Get(nameof(uwx), ref uwx);
@@ -91,7 +91,7 @@ namespace Samp
                 s.Put(nameof(rev), rev);
             }
             s.Put(nameof(ctrid), ctrid);
-            s.Put(nameof(tmid), tmid);
+            s.Put(nameof(grpid), grpid);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
             s.Put(nameof(uwx), uwx);

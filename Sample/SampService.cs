@@ -24,8 +24,6 @@ namespace Samp
 
             Create<GrpWork>("grp"); // group
 
-            Create<SupWork>("sup"); // supply
-
             Create<CtrWork>("ctr"); // central operation
 
 

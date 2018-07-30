@@ -84,7 +84,7 @@ namespace Samp
             }
             if (cash > 0)
             {
-                string err = await ((SampService)Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
+                string err = await ((SampService) Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
                 if (err == null) // success
                 {
                     using (var dc = NewDbContext())
@@ -112,13 +112,6 @@ namespace Samp
     public class CtrOldOrdVarWork : OrdVarWork
     {
         public CtrOldOrdVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-    }
-
-    public class SupOrdVarWork : OrdVarWork
-    {
-        public SupOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

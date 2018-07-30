@@ -143,22 +143,6 @@ namespace Samp
     }
 
 
-    [UserAccess(sup: 1)]
-    public class SupVarWork : Work, IOrgVar
-    {
-        public SupVarWork(WorkConfig cfg) : base(cfg)
-        {
-            Create<SupOrdWork>("ord");
-
-            Create<OrgRecWork>("rec");
-        }
-
-        public void @default(WebContext wc)
-        {
-        }
-    }
-
-
     [UserAccess(grp: 1)]
     [Ui("常规")]
     public class GrpVarWork : Work, IOrgVar
@@ -167,7 +151,7 @@ namespace Samp
         {
             Create<GrpOrdWork>("ord");
 
-            Create<OrgRecWork>("cash");
+            Create<OrgRecWork>("rec");
         }
 
         public void @default(WebContext wc)

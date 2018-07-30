@@ -149,7 +149,7 @@ namespace Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow, size: 2), UserAccess(OPRMEM)]
+        [Ui("修改"), Tool(ButtonShow, size: 2), UserAccess(CTR_SUPPLY)]
         public async Task upd(WebContext wc)
         {
             string orgid = wc[-2];
@@ -193,7 +193,7 @@ namespace Samp
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(OPRMEM)]
+        [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(CTR_SUPPLY)]
         public new async Task icon(WebContext wc)
         {
             if (wc.GET)

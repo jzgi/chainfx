@@ -2818,15 +2818,11 @@ ul.uk-card-body li:nth-child(n+2) {
 .uk-label {
     text-transform: uppercase;
     white-space: nowrap;
-    color: #000;
+    color: #bd7325;
 }
 
 label.uk-label {
     margin-right: 0.5rem;
-}
-
-label.uk-label::after {
-    content: ':';
 }
 
 .uk-label-success {

@@ -99,7 +99,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(OPR)]
+    [UserAccess(CTR)]
     [Ui("客服")]
     public class CtrChatWork : ChatWork<CtrChatVarWork>
     {

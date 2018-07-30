@@ -26,7 +26,7 @@ namespace Samp
                 h.BOARD(arr, o =>
                     {
                         h.T("<header class=\"uk-card-header uk-flex uk-flex-middle\">");
-                        h.T("<h5>").T(o.tmid).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<h5>").T(o.grpid).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</header>");
 
                         h.UL_("uk-list uk-list-divider uk-card-body");
@@ -194,7 +194,7 @@ namespace Samp
         }
     }
 
-    [Ui("旧单"), UserAccess(OPR)]
+    [Ui("旧单"), UserAccess(CTR)]
     public class CtrOldOrdWork : OrdWork<CtrOldOrdVarWork>
     {
         public CtrOldOrdWork(WorkConfig cfg) : base(cfg)
@@ -236,67 +236,6 @@ namespace Samp
                     dc.Sql("UPDATE orders SET status = ").T(PAID).T(" WHERE status > ").T(PAID).T(" AND orgid = @1 AND id")._IN_(key);
                     dc.Execute(p => p.Set(orgid), prepare: false);
                 }
-            }
-            wc.GiveRedirect();
-        }
-    }
-
-    [Ui("订单")]
-    public class SupOrdWork : OrdWork<SupOrdVarWork>
-    {
-        public SupOrdWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        public void @default(WebContext wc)
-        {
-            string orgid = wc[-1];
-            using (var dc = NewDbContext())
-            {
-                dc.Query("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND orgid = @1 ORDER BY id DESC", p => p.Set(orgid));
-                GiveAccordionPage(wc, dc.ToArray<Ord>());
-            }
-        }
-
-        static readonly Map<string, string> MSGS = new Map<string, string>
-        {
-            ["订单处理"] = "我们已经接到您的订单（金额{0}元）",
-            ["派送通知"] = "销售人员正在派送您所购的商品",
-            ["sdf"] = "",
-        };
-
-        [Ui("通知"), Tool(ButtonPickShow)]
-        public void send(WebContext wc)
-        {
-            long[] key = wc.Query[nameof(key)];
-            string msg = null;
-            if (wc.GET)
-            {
-                wc.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", w: 0x4c);
-                    m._FORM();
-                });
-            }
-            else
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
-                    dc.Execute(prepare: false);
-                }
-                wc.GivePane(200);
-            }
-        }
-
-        [Ui("清理", "清理三天以前未付款或者已撤销的订单"), Tool(ButtonConfirm)]
-        public void clean(WebContext wc)
-        {
-            string orgid = wc[-1];
-            using (var dc = NewDbContext())
-            {
-                dc.Execute("DELETE FROM orders WHERE (status = 0 OR status = -1) AND orgid = @1 AND (created + interval '3 day' < localtimestamp)", p => p.Set(orgid));
             }
             wc.GiveRedirect();
         }

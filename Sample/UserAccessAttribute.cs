@@ -13,17 +13,13 @@ namespace Samp
         // require operator access
         readonly short ctr;
 
-        // require supply access
-        readonly short sup;
-
         // require group access
         readonly short grp;
 
-        public UserAccessAttribute(short ctr = 0, short sup = 0, short grp = 0)
+        public UserAccessAttribute(short ctr = 0, short grp = 0)
         {
             this.full = true;
             this.ctr = ctr;
-            this.sup = sup;
             this.grp = grp;
         }
 
@@ -44,18 +40,7 @@ namespace Samp
             // if requires center access
             if (ctr > 0)
             {
-                return (o.opr & ctr) == ctr;
-            }
-
-            if (sup > 0)
-            {
-                if ((o.sup & sup) != sup) return false; // inclusive check
-                string at = wc[typeof(IOrgVar)];
-                if (at != null)
-                {
-                    return o.supat == at;
-                }
-                return true;
+                return (o.ctr & ctr) == ctr;
             }
 
             if (grp > 0)
