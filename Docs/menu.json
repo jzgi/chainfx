@@ -17,8 +17,20 @@
         },
         {
           "type": "view",
-          "name": "全粮派网站",
-          "url": "http://144000.tv/",
+          "name": "调度专区🔒",
+          "url": "http://nc.144000.tv/ctr/",
+          "sub_button": []
+        },
+        {
+          "type": "view",
+          "name": "加工供货专区🔒",
+          "url": "http://nc.144000.tv/sup//",
+          "sub_button": []
+        },
+        {
+          "type": "view",
+          "name": "团长专区🔒",
+          "url": "http://nc.144000.tv/grp//",
           "sub_button": []
         },
         {

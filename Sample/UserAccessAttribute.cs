@@ -8,10 +8,10 @@ namespace Samp
     public class UserAccessAttribute : AccessAttribute
     {
         // require a persisted principal
-        readonly bool complete;
+        readonly bool full;
 
         // require operator access
-        readonly short opr;
+        readonly short ctr;
 
         // require supply access
         readonly short sup;
@@ -19,32 +19,32 @@ namespace Samp
         // require group access
         readonly short grp;
 
-        public UserAccessAttribute(short opr = 0, short sup = 0, short grp = 0)
+        public UserAccessAttribute(short ctr = 0, short sup = 0, short grp = 0)
         {
-            this.complete = true;
-            this.opr = opr;
+            this.full = true;
+            this.ctr = ctr;
             this.sup = sup;
             this.grp = grp;
         }
 
-        public UserAccessAttribute(bool complete)
+        public UserAccessAttribute(bool full)
         {
-            this.complete = complete;
+            this.full = full;
         }
 
         public override bool? Check(WebContext wc, IData prin)
         {
             // if not require persisted
-            if (!complete) return true;
+            if (!full) return true;
 
             var o = (User) prin;
 
             if (o.id == 0) return null;
 
             // if requires center access
-            if (opr > 0)
+            if (ctr > 0)
             {
-                return (o.opr & opr) == opr;
+                return (o.opr & ctr) == ctr;
             }
 
             if (sup > 0)

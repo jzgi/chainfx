@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.Order;
+using static Samp.Ord;
 using static Samp.User;
 using static Greatbone.Style;
 
@@ -11,11 +11,11 @@ namespace Samp
     {
         protected OrdWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>((obj) => ((Order) obj).id);
+            CreateVar<V, int>((obj) => ((Ord) obj).id);
         }
 
         // for customer side viewing
-        protected void GiveBoardPage(WebContext wc, Order[] arr, bool tooling = true)
+        protected void GiveBoardPage(WebContext wc, Ord[] arr, bool tooling = true)
         {
             wc.GivePage(200, h =>
             {
@@ -58,7 +58,7 @@ namespace Samp
         }
 
         // for org side viewing
-        protected void GiveAccordionPage(WebContext wc, Order[] arr, bool tools = true)
+        protected void GiveAccordionPage(WebContext wc, Ord[] arr, bool tools = true)
         {
             wc.GivePage(200, h =>
             {
@@ -101,7 +101,7 @@ namespace Samp
             int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 AND uid = @1 ORDER BY id DESC", p => p.Set(myid));
+                var arr = dc.Query<Ord>("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 AND uid = @1 ORDER BY id DESC", p => p.Set(myid));
                 wc.GivePage(200, h =>
                 {
                     h.BOARD(arr, o =>
@@ -127,16 +127,16 @@ namespace Samp
             int myid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM ords WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
+                var arr = dc.Query<Ord>("SELECT * FROM ords WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
                 GiveBoardPage(wc, arr, false);
             }
         }
     }
 
     [Ui("新单")]
-    public class OprNewOrdWork : OrdWork<CtrNewOrdVarWork>
+    public class CtrNewOrdWork : OrdWork<CtrNewOrdVarWork>
     {
-        public OprNewOrdWork(WorkConfig cfg) : base(cfg)
+        public CtrNewOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -146,7 +146,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 AND ctrid = @1 ORDER BY id DESC", p => p.Set(orgid));
-                GiveAccordionPage(wc, dc.ToArray<Order>());
+                GiveAccordionPage(wc, dc.ToArray<Ord>());
             }
         }
 
@@ -195,9 +195,9 @@ namespace Samp
     }
 
     [Ui("旧单"), UserAccess(OPR)]
-    public class OprOldOrdWork : OrdWork<CtrOldOrdVarWork>
+    public class CtrOldOrdWork : OrdWork<CtrOldOrdVarWork>
     {
-        public OprOldOrdWork(WorkConfig cfg) : base(cfg)
+        public CtrOldOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -206,7 +206,7 @@ namespace Samp
             string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM ords WHERE status >= 2 AND ctrid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
+                var arr = dc.Query<Ord>("SELECT * FROM ords WHERE status >= 2 AND ctrid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
                 GiveAccordionPage(wc, arr);
             }
         }
@@ -242,9 +242,9 @@ namespace Samp
     }
 
     [Ui("订单")]
-    public class VdrOrdWork : OrdWork<VdrOrdVarWork>
+    public class SupOrdWork : OrdWork<SupOrdVarWork>
     {
-        public VdrOrdWork(WorkConfig cfg) : base(cfg)
+        public SupOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -254,7 +254,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 dc.Query("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 AND orgid = @1 ORDER BY id DESC", p => p.Set(orgid));
-                GiveAccordionPage(wc, dc.ToArray<Order>());
+                GiveAccordionPage(wc, dc.ToArray<Ord>());
             }
         }
 
@@ -303,9 +303,9 @@ namespace Samp
     }
 
     [Ui("订单")]
-    public class TmOrdWork : OrdWork<TmOrdVarWork>
+    public class GrpOrdWork : OrdWork<GrpOrdVarWork>
     {
-        public TmOrdWork(WorkConfig cfg) : base(cfg)
+        public GrpOrdWork(WorkConfig cfg) : base(cfg)
         {
         }
 

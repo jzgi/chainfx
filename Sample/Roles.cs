@@ -51,23 +51,22 @@ namespace Samp
         }
     }
 
-    public class OprWork : Work
+    [UserAccess(ctr: 1)]
+    public class CtrWork : Work
     {
-        public OprWork(WorkConfig cfg) : base(cfg)
+        public CtrWork(WorkConfig cfg) : base(cfg)
         {
-            Create<OprNewOrdWork>("newo");
+            Create<CtrNewOrdWork>("newo");
 
-            Create<OprOldOrdWork>("oldo");
+            Create<CtrOldOrdWork>("oldo");
 
-            Create<OprItemWork>("item");
+            Create<CtrItemWork>("item");
 
-            Create<OprRepayWork>("repay");
+            Create<CtrRepayWork>("repay");
 
-            Create<OprOrgWork>("org");
+            Create<CtrOrgWork>("org");
 
-            Create<OprUserWork>("user");
-
-            Create<OrgRecWork>("rec");
+            Create<CtrUserWork>("user");
         }
 
         public void @default(WebContext wc)

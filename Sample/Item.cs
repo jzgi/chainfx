@@ -11,6 +11,14 @@ namespace Samp
 
         public const byte PK = 1, LATER = 2;
 
+        // sorts
+        public static readonly Map<short, string> Sorts = new Map<short, string>
+        {
+            {1, "粉面类"},
+            {11, "谷物类"},
+            {21, "其他类"},
+        };
+
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -21,16 +29,18 @@ namespace Samp
 
         internal string name;
         internal string descr;
+        internal string remark;
+        internal string mov; // movie url
+        internal short sort;
         internal string unit;
         internal decimal price;
-        internal decimal _vdr; // vendor price
-        internal decimal _tm; // team cost
-        internal decimal _dlvy; // delivery cost
+        internal decimal _sup; // supply price
+        internal decimal _grp; // group cost
+        internal decimal _dvr; // deliver cost
         internal short min;
         internal short step;
         internal bool refrig;
-        internal string mov; // movie url
-        internal string vdrid; // vendor that provides the item
+        internal string supid; // supply of the item
         internal short demand;
         internal short[] cap7; // capacity of week
         internal short status;
@@ -42,16 +52,18 @@ namespace Samp
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);
+            s.Get(nameof(remark), ref remark);
+            s.Get(nameof(mov), ref mov);
+            s.Get(nameof(sort), ref sort);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
-            s.Get(nameof(_vdr), ref _vdr);
-            s.Get(nameof(_tm), ref _tm);
-            s.Get(nameof(_dlvy), ref _dlvy);
+            s.Get(nameof(_sup), ref _sup);
+            s.Get(nameof(_grp), ref _grp);
+            s.Get(nameof(_dvr), ref _dvr);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
             s.Get(nameof(refrig), ref refrig);
-            s.Get(nameof(mov), ref mov);
-            s.Get(nameof(vdrid), ref vdrid);
+            s.Get(nameof(supid), ref supid);
             s.Get(nameof(demand), ref demand);
             s.Get(nameof(cap7), ref cap7);
             s.Get(nameof(status), ref status);
@@ -64,16 +76,18 @@ namespace Samp
                 s.Put(nameof(name), name);
             }
             s.Put(nameof(descr), descr);
+            s.Put(nameof(remark), remark);
+            s.Put(nameof(mov), mov);
+            s.Put(nameof(sort), sort);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
-            s.Put(nameof(_vdr), _vdr);
-            s.Put(nameof(_tm), _tm);
-            s.Put(nameof(_dlvy), _dlvy);
+            s.Put(nameof(_sup), _sup);
+            s.Put(nameof(_grp), _grp);
+            s.Put(nameof(_dvr), _dvr);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
             s.Put(nameof(refrig), refrig);
-            s.Put(nameof(mov), mov);
-            s.Put(nameof(vdrid), vdrid);
+            s.Put(nameof(supid), supid);
             s.Put(nameof(demand), demand);
             s.Put(nameof(cap7), cap7);
             s.Put(nameof(status), status);

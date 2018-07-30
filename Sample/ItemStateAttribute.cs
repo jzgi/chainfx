@@ -15,9 +15,8 @@ namespace Samp
         {
             if (state == 'A')
             {
-                var org = stack[0] as Org;
-                var item = stack[1] as Item;
-                return org?.status > 1 && item?.demand > 0;
+                var item = stack[0] as Item;
+                return item?.demand > 0;
             }
             return false;
         }

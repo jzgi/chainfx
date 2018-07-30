@@ -26,7 +26,7 @@ namespace Samp
 
             Create<SupWork>("sup"); // supply
 
-            Create<OprWork>("opr"); // operator
+            Create<CtrWork>("ctr"); // central operation
 
 
             Register(delegate
@@ -43,7 +43,7 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY name");
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY sort, status DESC");
                         return dc.Query<string, Item>(proj: 0xff);
                     }
                 }, 3600 * 8
@@ -74,7 +74,7 @@ namespace Samp
                     return false;
                 }
                 (_, string openid) = await WeiXin.GetAccessorAsync(code);
-                
+
                 INF("openid = " + openid);
                 if (openid == null)
                 {
@@ -192,26 +192,34 @@ namespace Samp
             }
         }
 
+        [UserAccess(full: false)]
         public void @default(WebContext wc)
         {
             var arr = Obtain<Map<string, Item>>();
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
-                    h.LIST(arr.All(), o =>
+
+                    for (int i = 0; i < Item.Sorts.Count; i++)
                     {
-                        h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
-                        h.COL_(0x23, css: "uk-padding-small");
-                        h.T("<h3>").T(o.name).T("</h3>");
-                        h.FI(null, o.descr);
-                        h.ROW_();
-                        h.P_(w: 0x23).T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
-                        h.FORM_(css: "uk-width-auto");
-                        h.TOOL(nameof(SampVarWork.buy));
-                        h._FORM();
-                        h._ROW();
-                        h._COL();
-                    }, "uk-card-body uk-padding-remove");
+                        var sort = Item.Sorts.At(i);
+                        h.T("<h3>").T(sort.value).T("</h3>");
+
+                        h.LIST(arr.All(x => x.sort == sort.key), o =>
+                        {
+                            h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
+                            h.COL_(0x23, css: "uk-padding-small");
+                            h.T("<h3>").T(o.name).T("</h3>");
+                            h.FI(null, o.descr);
+                            h.ROW_();
+                            h.P_(w: 0x23).T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                            h.FORM_(css: "uk-width-auto");
+                            h.TOOL(nameof(SampVarWork.buy));
+                            h._FORM();
+                            h._ROW();
+                            h._COL();
+                        }, "uk-card-body uk-padding-remove");
+                    }
                 }, true, 60
             );
         }

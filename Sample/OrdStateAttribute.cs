@@ -13,14 +13,14 @@ namespace Samp
 
         public override bool Check(WebContext ac, object[] stack, int level)
         {
-            if (stack[0] is Order o)
+            if (stack[0] is Ord o)
             {
                 if (state == 'P') // payable
-                    return o.status < Order.PAID;
+                    return o.status < Ord.PAID;
                 if (state == 'A')
                     return o.uaddr != null;
                 if (state == 'E') // enable
-                    return o.status >= Order.PAID;
+                    return o.status >= Ord.PAID;
             }
             return false;
         }

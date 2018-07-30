@@ -6,9 +6,9 @@ namespace Samp
     /// <summary>
     /// An order data object.
     /// </summary>
-    public class Order : IData
+    public class Ord : IData
     {
-        public static readonly Order Empty = new Order();
+        public static readonly Ord Empty = new Ord();
 
         public const byte KEY = 1, DETAIL = 2, LATER = 4;
 

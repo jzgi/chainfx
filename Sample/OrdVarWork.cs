@@ -27,7 +27,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
+                    var o = dc.Query1<Ord>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
                     var item = Obtain<Map<(string, string), Item>>()[(o.ctrid, o.item)];
                     wc.GivePane(200, h =>
                     {
@@ -46,7 +46,7 @@ namespace Samp
                 short qty = f[nameof(qty)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
+                    var o = dc.Query1<Ord>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
 //                    o.UpdItem(idx, qty);
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.item).Set(o.total).Set(o.score).Set(o.id));
                 }
@@ -55,9 +55,9 @@ namespace Samp
         }
     }
 
-    public class TmOrdVarWork : OrdVarWork
+    public class GrpOrdVarWork : OrdVarWork
     {
-        public TmOrdVarWork(WorkConfig cfg) : base(cfg)
+        public GrpOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
@@ -116,9 +116,9 @@ namespace Samp
         }
     }
 
-    public class VdrOrdVarWork : OrdVarWork
+    public class SupOrdVarWork : OrdVarWork
     {
-        public VdrOrdVarWork(WorkConfig cfg) : base(cfg)
+        public SupOrdVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

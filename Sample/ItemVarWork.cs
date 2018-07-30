@@ -52,15 +52,13 @@ namespace Samp
         {
         }
 
-        [UserAccess]
+        [UserAccess(true)]
         [Ui("购买"), Tool(AOpen, size: 1), ItemState('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;
-            string orgid = wc[-1];
             string itemname = wc[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            var item = Obtain<Map<(string, string), Item>>()[(orgid, itemname)];
+            var item = Obtain<Map<string, Item>>()[itemname];
             short num;
             if (wc.GET)
             {
@@ -74,21 +72,13 @@ namespace Samp
                         {
                             h.HIDDEN(nameof(posid), posid);
                         }
-                        if (dc.Scalar("SELECT 1 FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)) == null) // to create new
-                        {
-                            // show addr inputs for order creation
-                            h.FIELDSET_("创建订单，填写收货地址");
-                            h.TEXT(nameof(Order.uaddr), prin.addr, "地　址", max: 20, required: true);
-                            h.LI_().LABEL("姓　名").TEXT(nameof(Order.uname), prin.name, max: 4, min: 2, required: true).LABEL("电　话").TEL(nameof(Order.utel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                            h._FIELDSET();
-                        }
                         // quantity
                         h.FIELDSET_("加入货品");
-                        h.LI_("货　品").PIC("icon", w: 0x16).SP().T(item.name)._LI();
+                        h.LI_("货　品").ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
                         h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.demand, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
                         h._FIELDSET();
 
-                        h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
+                        h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
 
                         h._FORM();
                     }
@@ -98,54 +88,41 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    // determine whether add to existing order or create new
-                    if (dc.Query1("SELECT * FROM orders WHERE status = 0 AND custwx = @1 AND orgid = @2", p => p.Set(prin.wx).Set(orgid)))
+                    const byte proj = 0xff ^ Ord.KEY ^ Ord.LATER;
+                    var f = await wc.ReadAsync<Form>();
+                    string posid = f[nameof(posid)];
+                    var o = new Ord
                     {
-                        var o = dc.ToObject<Order>();
-                        (await wc.ReadAsync<Form>()).Let(out num);
+                        uid = prin.id,
+                        uname = prin.name,
+                        uwx = prin.wx,
+                        created = DateTime.Now
+                    };
+                    o.Read(f, proj);
+                    num = f[nameof(num)];
 //                        o.AddItem(itemname, item.unit, item.price, num);
-//                        dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.items).Set(o.total).Set(o.score).Set(o.id));
-                    }
-                    else // create a new order
-                    {
-                        const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
-                        var f = await wc.ReadAsync<Form>();
-                        string posid = f[nameof(posid)];
-                        var o = new Order
-                        {
-                            ctrid = orgid,
-                            tmid = org.name,
-                            uid = prin.id,
-                            uname = prin.name,
-                            uwx = prin.wx,
-                            created = DateTime.Now
-                        };
-                        o.Read(f, proj);
-                        num = f[nameof(num)];
-//                        o.AddItem(itemname, item.unit, item.price, num);
-                        dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
-                        dc.Execute(p => o.Write(p, proj));
-                    }
-                    wc.GivePane(200, m =>
-                    {
-                        m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
-                        m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
-                    });
+                    dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
+                    dc.Execute(p => o.Write(p, proj));
                 }
+                wc.GivePane(200, m =>
+                {
+                    m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
+                    m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
+                });
             }
         }
 
-        [Ui("付款"), Tool(ButtonScript), OrderState('P')]
+        [Ui("付款"), Tool(ButtonScript, Style.Primary), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
             var prin = (User) wc.Principal;
             int orderid = wc[this];
-            Order o;
+            Ord o;
             using (var dc = NewDbContext())
             {
-                const byte proj = 0xff ^ Order.DETAIL;
+                const byte proj = 0xff ^ Ord.DETAIL;
                 dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custid = @2");
-                o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id), proj);
+                o = dc.Query1<Ord>(p => p.Set(orderid).Set(prin.id), proj);
             }
             var (prepay_id, _) = await ((SampService) Service).WeiXin.PostUnifiedOrderAsync(
                 orderid + "-" + o.rev,

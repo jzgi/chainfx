@@ -5,7 +5,7 @@ using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess(complete: true)]
+    [UserAccess(true)]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -143,11 +143,14 @@ namespace Samp
     }
 
 
+    [UserAccess(sup: 1)]
     public class SupVarWork : Work, IOrgVar
     {
         public SupVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrChatWork>("chat");
+            Create<SupOrdWork>("ord");
+
+            Create<OrgRecWork>("rec");
         }
 
         public void @default(WebContext wc)
@@ -162,7 +165,7 @@ namespace Samp
     {
         public GrpVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<TmOrdWork>("ord");
+            Create<GrpOrdWork>("ord");
 
             Create<OrgRecWork>("cash");
         }

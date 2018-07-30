@@ -13,9 +13,9 @@ namespace Samp
     }
 
     [Ui("用户管理")]
-    public class OprUserWork : UserWork<PlatUserVarWork>
+    public class CtrUserWork : UserWork<PlatUserVarWork>
     {
-        public OprUserWork(WorkConfig cfg) : base(cfg)
+        public CtrUserWork(WorkConfig cfg) : base(cfg)
         {
         }
 
