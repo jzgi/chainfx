@@ -142,11 +142,32 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Query("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 AND ctrid = @1 ORDER BY id DESC", p => p.Set(orgid));
-                GiveAccordionPage(wc, dc.ToArray<Ord>());
+                var arr = dc.Query<Ord>("SELECT * FROM ords WHERE status BETWEEN 0 AND 1 ORDER BY id DESC");
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.GRID(arr, o =>
+                    {
+                        h.T("<section class=\"uk-accordion-title\">");
+                        h.T("<h4 class=\"uk-width-expand\">").T(o.uname).T("</h4>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("</section>");
+
+                        h.T("<section class=\"uk-accordion-content uk-grid\">");
+                        h.P_("收　货").SP().T(o.uname).SP().T(o.uaddr).SP().T(o.utel)._P();
+                        h.UL_("uk-grid");
+                        h.LI_();
+                        h.SPAN_(0x11).T(o.item)._SPAN().SPAN_(w: 0x23).T('￥').T(o.price).T("／").T(o.unit)._SPAN().SPAN(o.qty, w: 0x13);
+                        h._LI();
+                        h._UL();
+                        h.P_("总　额", w: 0x12).CUR(o.total)._P();
+
+                        h.VARTOOLS();
+
+                        h.T("</section>");
+                    }, null);
+                }, false, 2);
             }
         }
 

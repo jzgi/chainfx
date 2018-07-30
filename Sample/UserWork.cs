@@ -12,7 +12,7 @@ namespace Samp
         }
     }
 
-    [Ui("用户管理")]
+    [Ui("客户")]
     public class CtrUserWork : UserWork<CtrUserVarWork>
     {
         public CtrUserWork(WorkConfig cfg) : base(cfg)

@@ -1793,11 +1793,10 @@ a.uk-button-primary {
     vertical-align: middle;
     position: relative;
     display: inline-block;
-    padding: 0 4px;
 }
 
 .uk-button-group > * {
-    margin: 0 2px;
+    margin: 0 4px;
 }
 
 .uk-button-group .uk-button:hover,
@@ -2818,11 +2817,11 @@ ul.uk-card-body li:nth-child(n+2) {
 .uk-label {
     text-transform: uppercase;
     white-space: nowrap;
-    color: #bd7325;
+    color: #b18250;
 }
 
 label.uk-label {
-    margin-right: 0.5rem;
+    margin-right: 0.875rem;
 }
 
 .uk-label-success {

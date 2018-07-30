@@ -23,10 +23,9 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string ctrid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Item>("SELECT * FROM items WHERE ctrid = @1 ORDER BY status DESC", p => p.Set(ctrid));
+                var arr = dc.Query<Item>("SELECT * FROM items WHERE status > 0 ORDER BY status DESC");
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();

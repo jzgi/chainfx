@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Greatbone;
 using static Samp.User;
+using static Greatbone.Modal;
 
 namespace Samp
 {
@@ -52,7 +53,8 @@ namespace Samp
     }
 
     [UserAccess(ctr: 1)]
-    public class CtrWork : Work
+    [Ui("中心")]
+    public class CtrWork : OrgWork<CtrOrgVarWork>
     {
         public CtrWork(WorkConfig cfg) : base(cfg)
         {
@@ -63,8 +65,6 @@ namespace Samp
             Create<CtrItemWork>("item");
 
             Create<CtrRepayWork>("repay");
-
-            Create<CtrOrgWork>("org");
 
             Create<CtrUserWork>("user");
         }
@@ -77,42 +77,88 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.T("<article class=\"uk-card uk-card-primary uk-card-body\">");
-                    h.T("<h4>系统信息</h4>");
-                    h.FI("版　本", "2.0");
-                    h.T("</article>");
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
+                        var arr = dc.Query<Org>();
+                        h.TABLE(arr,
+                            () => h.TH("名称").TH("团长"),
+                            o => h.TD(o.name).TD(o.mgrname)
+                        );
+
+//                        h.BOARD(arr, o =>
+//                        {
+//                            h.T("<section class=\"uk-card-header\">").T(o.id).SP().T(o.name).T("</section>");
+//                            h.UL_("uk-card-body");
+//                            h.LI("地　址", o.addr);
+//                            h.LI_("坐　标").T(o.x).SP().T(o.y)._LI();
+//                            h.LI_("经　理").T(o.mgrname).SP().T(o.mgrtel)._LI();
+//                            h._UL();
+//                            h.VARTOOLS(css: "uk-card-footer");
+//                        });
+                    }
                 });
             }
             else
             {
-                wc.GiveFrame(200, false, 60 * 15, "平台管理");
+                wc.GiveFrame(200, false, 60 * 15, "后台作业功能");
+            }
+        }
+
+        [Ui("新建团"), Tool(ButtonShow, Style.Primary)]
+        public async Task @new(WebContext wc)
+        {
+            const byte proj = 0xff;
+            if (wc.GET)
+            {
+                var o = new Org { };
+                o.Read(wc.Query, proj);
+                wc.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
+                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
+                    m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
+                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20).NUMBER(nameof(o.x), o.x, "纬度", max: 20);
+                    m._FORM();
+                });
+            }
+
+            else // post
+            {
+                var o = await wc.ReadObjectAsync<Org>(proj);
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("INSERT INTO orgs")._(Org.Empty, proj)._VALUES_(Org.Empty, proj);
+                    dc.Execute(p => o.Write(p, proj));
+                }
+                wc.GivePane(200); // created
             }
         }
 
         [UserAccess(CTR_MGR)]
-        [Ui("人员"), Tool(Modal.ButtonOpen)]
+        [Ui("人员", "设置操作人员"), Tool(ButtonOpen, size: 4)]
         public async Task acl(WebContext wc, int cmd)
         {
-            string orgid = wc[this];
             string tel = null;
-            short opr = 0;
+            short ctr = 0;
             var f = await wc.ReadAsync<Form>();
             if (f != null)
             {
                 tel = f[nameof(tel)];
-                opr = f[nameof(opr)];
+                ctr = f[nameof(ctr)];
                 if (cmd == 1) // remove
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = NULL, opr = 0 WHERE tel = @1", p => p.Set(tel));
+                        dc.Execute("UPDATE users SET ctr = NULL WHERE tel = @1", p => p.Set(tel));
                     }
                 }
                 else if (cmd == 2) // add
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET oprat = @1, opr = @2 WHERE tel = @3", p => p.Set(orgid).Set(opr).Set(tel));
+                        dc.Execute("UPDATE users SET ctr = @1 WHERE tel = @2", p => p.Set(ctr).Set(tel));
                     }
                 }
             }
@@ -122,12 +168,12 @@ namespace Samp
                 h.FIELDSET_("现有人员");
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Query("SELECT name, tel, opr FROM users WHERE oprat = @1", p => p.Set(orgid)))
+                    if (dc.Query("SELECT name, tel, ctr FROM users WHERE ctr > 0"))
                     {
                         while (dc.Next())
                         {
-                            dc.Let(out string name).Let(out tel).Let(out opr);
-                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Ctrs[opr], false);
+                            dc.Let(out string name).Let(out tel).Let(out ctr);
+                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Ctrs[ctr], false);
                         }
                     }
                 }
@@ -136,7 +182,7 @@ namespace Samp
 
                 h.FIELDSET_("添加人员");
                 h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                h.SELECT(nameof(opr), opr, Ctrs, "角色");
+                h.SELECT(nameof(ctr), ctr, Ctrs, "角色");
                 h._FIELDSET();
                 h.BUTTON(nameof(acl), 2, "添加");
                 h._FORM();
@@ -157,7 +203,7 @@ namespace Samp
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-//                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(org.status), org.status, Statuses, "营业状态")._FIELDSET();
+                    //                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(org.status), org.status, Statuses, "营业状态")._FIELDSET();
                     h.FIELDSET_("客服设置");
                     h.CHECKBOX(nameof(custsvc), custsvc, "我要作为上线客服");
                     h._FIELDSET();

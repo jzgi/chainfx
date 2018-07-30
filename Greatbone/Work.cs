@@ -508,24 +508,24 @@ namespace Greatbone
             holds[size++] = new Hold(value, flag);
         }
 
-        public void Register<V>(Func<V> loader, int maxage = 3600, byte flag = 0) where V : class
+        public void Register<V>(Func<V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
                 holds = new Hold[8];
             }
 
-            holds[size++] = new Hold(typeof(V), loader, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
         }
 
-        public void Register<V>(Func<Task<V>> loaderAsync, int maxage = 3600, byte flag = 0) where V : class
+        public void Register<V>(Func<Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
                 holds = new Hold[8];
             }
 
-            holds[size++] = new Hold(typeof(V), loaderAsync, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
         }
 
         /// <summary>
@@ -604,9 +604,9 @@ namespace Greatbone
         {
             readonly Type typ;
 
-            readonly Func<object> loader;
+            readonly Func<object> fetch;
 
-            readonly Func<Task<object>> loaderAsync;
+            readonly Func<Task<object>> fetchAsync;
 
             readonly int maxage; //in seconds
 
@@ -624,17 +624,17 @@ namespace Greatbone
                 this.flag = flag;
             }
 
-            internal Hold(Type typ, Func<object> loader, int maxage, byte flag)
+            internal Hold(Type typ, Func<object> fetch, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;
-                if (loader is Func<Task<object>> loader2)
+                if (fetch is Func<Task<object>> fetch2)
                 {
-                    this.loaderAsync = loader2;
+                    this.fetchAsync = fetch2;
                 }
                 else
                 {
-                    this.loader = loader;
+                    this.fetch = fetch;
                 }
                 this.maxage = maxage;
             }
@@ -643,19 +643,19 @@ namespace Greatbone
 
             public byte Flag => flag;
 
-            public bool IsAsync => loaderAsync != null;
+            public bool IsAsync => fetchAsync != null;
 
             public object GetValue()
             {
-                if (loader == null) // simple object
+                if (fetch == null) // simple object
                 {
                     return value;
                 }
-                lock (loader) // cache object
+                lock (fetch) // cache object
                 {
                     if (Environment.TickCount >= expiry)
                     {
-                        value = loader();
+                        value = fetch();
                         expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                     }
                     return value;
@@ -664,7 +664,7 @@ namespace Greatbone
 
             public async Task<object> GetValueAsync()
             {
-                if (loaderAsync == null) // simple object
+                if (fetchAsync == null) // simple object
                 {
                     return value;
                 }
@@ -672,7 +672,7 @@ namespace Greatbone
                 int ticks = Environment.TickCount;
                 if (ticks >= lexpiry)
                 {
-                    value = await loaderAsync();
+                    value = await fetchAsync();
                     expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                 }
                 return value;

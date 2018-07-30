@@ -12,7 +12,7 @@ namespace Samp
         }
     }
 
-    [Ui("机构")]
+    [Ui("团")]
     public class CtrOrgWork : OrgWork<CtrOrgVarWork>
     {
         public CtrOrgWork(WorkConfig cfg) : base(cfg)

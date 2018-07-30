@@ -57,7 +57,7 @@ namespace Samp
             }
         }
 
-        [Ui("经理"), Tool(ButtonShow)]
+        [Ui("团长"), Tool(ButtonShow)]
         public async Task mgr(WebContext wc)
         {
             string orgid = wc[this];
@@ -99,35 +99,6 @@ namespace Samp
                 }
                 wc.GivePane(200);
             }
-        }
-
-        [Ui("照片"), Tool(ButtonCrop)]
-        public async Task icon(WebContext wc)
-        {
-            string orgid = wc[this];
-            if (wc.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query1("SELECT icon FROM orgs WHERE id = @1", p => p.Set(orgid)))
-                    {
-                        dc.Let(out ArraySegment<byte> byteas);
-                        if (byteas.Count == 0) wc.Give(204); // no content 
-                        else
-                            wc.Give(200, new StaticContent(byteas));
-                    }
-                    else wc.Give(404); // not found           
-                }
-                return;
-            }
-
-            var f = await wc.ReadAsync<Form>();
-            ArraySegment<byte> jpeg = f[nameof(jpeg)];
-            using (var dc = NewDbContext())
-            {
-                dc.Execute("UPDATE orgs SET icon = @1 WHERE id = @2", p => p.Set(jpeg).Set(orgid));
-            }
-            wc.Give(200); // ok
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Samp
                         dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
                         return dc.Query<string, Org>(proj: 0xff);
                     }
-                }, 3600 * 8
+                }, 1800
             );
 
             Register(delegate
@@ -44,7 +44,7 @@ namespace Samp
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY sort, status DESC");
                         return dc.Query<string, Item>(proj: 0xff);
                     }
-                }, 3600 * 8
+                }, 120
             );
 
             weixin = DataUtility.FileToObject<WeiXin>(cfg.GetFilePath("$weixin.json"));
@@ -172,8 +172,8 @@ namespace Samp
                         h.HIDDEN(nameof(url), url);
                         h.FIELDSET_("填写参团派送信息");
                         var orgs = Obtain<Map<string, Org>>();
-                        h.SELECT(nameof(o.grpat), o.grpat, orgs, label: "参团社区");
-                        h.TEXT(nameof(o.addr), o.addr, label: "送货地址", max: 21, min: 2, required: true);
+                        h.SELECT(nameof(o.grpat), o.grpat, orgs, label: "参 加 团");
+                        h.TEXT(nameof(o.addr), o.addr, label: "收货地址", max: 21, min: 2, required: true);
                         h._FIELDSET();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", style: Style.Primary)._BOTTOMBAR();
                         h._FORM();
