@@ -88,10 +88,10 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    const byte proj = 0xff ^ Ord.KEY ^ Ord.LATER;
+                    const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
                     var f = await wc.ReadAsync<Form>();
                     string posid = f[nameof(posid)];
-                    var o = new Ord
+                    var o = new Order
                     {
                         uid = prin.id,
                         uname = prin.name,
@@ -117,15 +117,14 @@ namespace Samp
         {
             var prin = (User) wc.Principal;
             int orderid = wc[this];
-            Ord o;
+            Order o;
             using (var dc = NewDbContext())
             {
-                const byte proj = 0xff ^ Ord.DETAIL;
-                dc.Sql("SELECT ").collst(Empty, proj).T(" FROM orders WHERE id = @1 AND custid = @2");
-                o = dc.Query1<Ord>(p => p.Set(orderid).Set(prin.id), proj);
+                dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
+                o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
             }
             var (prepay_id, _) = await ((SampService) Service).WeiXin.PostUnifiedOrderAsync(
-                orderid + "-" + o.rev,
+                orderid + "-",
                 o.cash,
                 prin.wx,
                 wc.RemoteAddr.ToString(),
@@ -149,7 +148,7 @@ namespace Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow, size: 2), UserAccess(CTR_SUPPLY)]
+        [Ui("修改"), Tool(ButtonShow, size: 2), UserAccess(CTR_SUPPLIER)]
         public async Task upd(WebContext wc)
         {
             string orgid = wc[-2];
@@ -193,7 +192,7 @@ namespace Samp
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(CTR_SUPPLY)]
+        [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(CTR_SUPPLIER)]
         public new async Task icon(WebContext wc)
         {
             if (wc.GET)

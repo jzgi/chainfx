@@ -58,9 +58,9 @@ namespace Samp
     {
         public CtrWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrNewOrdWork>("newo");
+            Create<CtrNewOrderWork>("newo");
 
-            Create<CtrOldOrdWork>("oldo");
+            Create<CtrOldOrderWork>("oldo");
 
             Create<CtrItemWork>("item");
 
@@ -81,8 +81,7 @@ namespace Samp
                     {
                         dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
                         var arr = dc.Query<Org>();
-                        h.TABLE(arr,
-                            () => h.TH("名称").TH("团长"),
+                        h.TABLE(arr, null, 
                             o => h.TD(o.name).TD(o.mgrname)
                         );
 
@@ -136,7 +135,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(CTR_MGR)]
+        [UserAccess(CTR_MANAGER)]
         [Ui("人员", "设置操作人员"), Tool(ButtonOpen, size: 4)]
         public async Task acl(WebContext wc, int cmd)
         {
@@ -189,7 +188,7 @@ namespace Samp
             });
         }
 
-        [UserAccess(CTR_SUPPLY)]
+        [UserAccess(CTR_SUPPLIER)]
         [Ui("状态"), Tool(Modal.ButtonShow)]
         public async Task status(WebContext wc)
         {
@@ -232,11 +231,11 @@ namespace Samp
         }
     }
 
-    public class GrpWork : Work
+    public class TeamWork : Work
     {
-        public GrpWork(WorkConfig cfg) : base(cfg)
+        public TeamWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<GrpVarWork, string>(prin => ((User) prin).grpat);
+            CreateVar<TeamVarWork, string>(prin => ((User) prin).teamat);
         }
     }
 }

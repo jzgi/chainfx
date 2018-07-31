@@ -10,7 +10,7 @@ namespace Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MyOrdWork>("ord");
+            Create<MyOrderWork>("ord");
 
             Create<SampChatWork>("chat");
         }
@@ -143,37 +143,39 @@ namespace Samp
     }
 
 
-    [UserAccess(grp: 1)]
-    [Ui("常规")]
-    public class GrpVarWork : Work, IOrgVar
+    [UserAccess(team: 1)]
+    [Ui("团员")]
+    public class TeamVarWork : UserWork<TeamUserVarWork>, IOrgVar
     {
-        public GrpVarWork(WorkConfig cfg) : base(cfg)
+        public TeamVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<GrpOrdWork>("ord");
+            Create<TeamOrderWork>("ord");
 
             Create<OrgRecWork>("rec");
         }
 
         public void @default(WebContext wc)
         {
-            string orgid = wc[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
+            string teamid = wc[this];
+            var team = Obtain<Map<string, Org>>()[teamid];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
-                wc.GiveFrame(200, false, 60 * 15, org?.name);
+                wc.GiveFrame(200, false, 60 * 15, team?.name);
             }
             else
             {
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.UL_("uk-card uk-card-default uk-card-body");
-                    h.LI("名称", org.name);
-                    h.LI("地址", org.addr);
-                    h.LI("地图", org.addr);
-                    h.LI("负责人", org.mgrname, org.mgrtel);
-                    h._UL();
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE teamat = @1 ORDER BY id");
+                        var arr = dc.Query<User>(p => p.Set(teamid));
+                        h.TABLE(arr, null,
+                            o => h.TD(o.name).TD(o.tel)
+                        );
+                    }
                 });
             }
         }

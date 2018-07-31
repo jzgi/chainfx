@@ -22,7 +22,7 @@ namespace Samp
 
             Create<MyWork>("my"); // personal
 
-            Create<GrpWork>("grp"); // group
+            Create<TeamWork>("team"); // group
 
             Create<CtrWork>("ctr"); // central operation
 
@@ -165,14 +165,12 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("填写用户基本信息");
+                        h.FIELDSET_("填写用户信息");
                         h.TEXT(nameof(o.name), o.name, label: "用户昵称", max: 4, min: 2, required: true);
                         h.TEXT(nameof(o.tel), o.tel, label: "手　　机", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                        h._FIELDSET();
                         h.HIDDEN(nameof(url), url);
-                        h.FIELDSET_("填写参团派送信息");
                         var orgs = Obtain<Map<string, Org>>();
-                        h.SELECT(nameof(o.grpat), o.grpat, orgs, label: "参 加 团");
+                        h.SELECT(nameof(o.teamat), o.teamat, orgs, label: "参　　团");
                         h.TEXT(nameof(o.addr), o.addr, label: "收货地址", max: 21, min: 2, required: true);
                         h._FIELDSET();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", style: Style.Primary)._BOTTOMBAR();

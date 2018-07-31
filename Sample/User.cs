@@ -16,28 +16,28 @@ namespace Samp
 
         public const short
             CTR = 1,
-            CTR_SUPPLY = 0b0011, // 3
-            CTR_DELIVER = 0b0101, // 5
-            CTR_MGR = 0b0111; // 7
+            CTR_SUPPLIER = 0b0011, // 3
+            CTR_DELIVERER = 0b0101, // 5
+            CTR_MANAGER = 0b0111; // 7
 
         public static readonly Map<short, string> Ctrs = new Map<short, string>
         {
-            {CTR_SUPPLY, "加工备货"},
-            {CTR_DELIVER, "派送"},
-            {CTR_MGR, "经理"},
+            {CTR_SUPPLIER, "加工备货"},
+            {CTR_DELIVERER, "派送"},
+            {CTR_MANAGER, "经理"},
         };
 
         internal int id;
         internal string name;
         internal string wx; // wexin openid
         internal string tel;
-        internal string grpat; // community group
+        internal string teamat; // community team
         internal string addr;
         public string credential;
         internal int score;
         internal int refid; // referee id
         internal short ctr;
-        internal short grp;
+        internal short team;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -48,7 +48,7 @@ namespace Samp
             s.Get(nameof(name), ref name);
             s.Get(nameof(wx), ref wx);
             s.Get(nameof(tel), ref tel);
-            s.Get(nameof(grpat), ref grpat);
+            s.Get(nameof(teamat), ref teamat);
             s.Get(nameof(addr), ref addr);
             if ((proj & PRIVACY) == PRIVACY)
             {
@@ -59,7 +59,7 @@ namespace Samp
             if ((proj & LATER) == LATER)
             {
                 s.Get(nameof(ctr), ref ctr);
-                s.Get(nameof(grp), ref grp);
+                s.Get(nameof(team), ref team);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Samp
             s.Put(nameof(name), name);
             s.Put(nameof(wx), wx);
             s.Put(nameof(tel), tel);
-            s.Put(nameof(grpat), grpat);
+            s.Put(nameof(teamat), teamat);
             s.Put(nameof(addr), addr);
             if ((proj & PRIVACY) == PRIVACY)
             {
@@ -83,7 +83,7 @@ namespace Samp
             if ((proj & LATER) == LATER)
             {
                 s.Put(nameof(ctr), ctr);
-                s.Put(nameof(grp), grp);
+                s.Put(nameof(team), team);
             }
         }
     }

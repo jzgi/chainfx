@@ -15,4 +15,11 @@ namespace Samp
         {
         }
     }
+
+    public class TeamUserVarWork : UserVarWork
+    {
+        public TeamUserVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
 }

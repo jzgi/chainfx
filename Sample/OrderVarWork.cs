@@ -5,16 +5,16 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    public abstract class OrdVarWork : Work
+    public abstract class OrderVarWork : Work
     {
-        protected OrdVarWork(WorkConfig cfg) : base(cfg)
+        protected OrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class MyOrdVarWork : OrdVarWork
+    public class MyOrderVarWork : OrderVarWork
     {
-        public MyOrdVarWork(WorkConfig cfg) : base(cfg)
+        public MyOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -27,13 +27,13 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Ord>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
-                    var item = Obtain<Map<(string, string), Item>>()[(o.ctrid, o.item)];
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
+                    var item = Obtain<Map<string, Item>>()[o.item];
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.LI_("货品").PIC("/" + o.ctrid + "/" + o.item + "/icon", w: 0x16).SP().T(o.item)._LI();
+                        h.LI_("货品").PIC("/" + o.item + "/icon", w: 0x16).SP().T(o.item)._LI();
 //                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();
@@ -46,7 +46,7 @@ namespace Samp
                 short qty = f[nameof(qty)];
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Ord>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
+                    var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
 //                    o.UpdItem(idx, qty);
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.item).Set(o.total).Set(o.score).Set(o.id));
                 }
@@ -55,16 +55,16 @@ namespace Samp
         }
     }
 
-    public class GrpOrdVarWork : OrdVarWork
+    public class TeamOrderVarWork : OrderVarWork
     {
-        public GrpOrdVarWork(WorkConfig cfg) : base(cfg)
+        public TeamOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
 
-    public class CtrNewOrdVarWork : OrdVarWork
+    public class CtrNewOrderVarWork : OrderVarWork
     {
-        public CtrNewOrdVarWork(WorkConfig cfg) : base(cfg)
+        public CtrNewOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -109,9 +109,9 @@ namespace Samp
         }
     }
 
-    public class CtrOldOrdVarWork : OrdVarWork
+    public class CtrOldOrderVarWork : OrderVarWork
     {
-        public CtrOldOrdVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOldOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

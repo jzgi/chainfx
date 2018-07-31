@@ -11,21 +11,9 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-07-29 14:07:31
+Date: 2018-07-31 16:03:17
 */
 
-
--- ----------------------------
--- Sequence structure for cashes_id_seq
--- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."cashes_id_seq";
-CREATE SEQUENCE "public"."cashes_id_seq"
- INCREMENT 1
- MINVALUE 1
- MAXVALUE 9223372036854775807
- START 31
- CACHE 1;
-SELECT setval('"public"."cashes_id_seq"', 31, true);
 
 -- ----------------------------
 -- Sequence structure for chats_id_seq1
@@ -40,15 +28,27 @@ CREATE SEQUENCE "public"."chats_id_seq1"
 SELECT setval('"public"."chats_id_seq1"', 1, true);
 
 -- ----------------------------
--- Sequence structure for orders_id_seq
+-- Sequence structure for orders_id_seq1
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
-CREATE SEQUENCE "public"."orders_id_seq"
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
+CREATE SEQUENCE "public"."orders_id_seq1"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
+
+-- ----------------------------
+-- Sequence structure for recs_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."recs_id_seq";
+CREATE SEQUENCE "public"."recs_id_seq"
+ INCREMENT 1
+ MINVALUE 1
+ MAXVALUE 9223372036854775807
+ START 31
+ CACHE 1;
+SELECT setval('"public"."recs_id_seq"', 31, true);
 
 -- ----------------------------
 -- Sequence structure for repays_id_seq
@@ -58,9 +58,8 @@ CREATE SEQUENCE "public"."repays_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 5
+ START 1
  CACHE 1;
-SELECT setval('"public"."repays_id_seq"', 5, true);
 
 -- ----------------------------
 -- Sequence structure for users_id_seq
@@ -109,54 +108,58 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
 "name" varchar(10) COLLATE "default" NOT NULL,
-"sort" varchar(6) COLLATE "default" NOT NULL,
 "descr" varchar(100) COLLATE "default",
 "remark" varchar(500) COLLATE "default",
+"mov" varchar(100) COLLATE "default",
 "icon" bytea,
+"sort" int2,
 "unit" varchar(4) COLLATE "default",
 "price" money,
+"supplyp" money,
+"teamp" money,
+"deliveryp" money,
 "min" int2,
 "step" int2,
 "refrig" bool,
-"mov" varchar(100) COLLATE "default",
-"vdrid" varchar(3) COLLATE "default",
+"supplierid" varchar(3) COLLATE "default",
 "demand" int2,
 "cap7" int2[],
-"status" int2,
-"_vdr" money,
-"_tm" money,
-"_dlvy" money
+"status" int2
 )
 WITH (OIDS=FALSE)
 
 ;
 
 -- ----------------------------
--- Table structure for ords
+-- Table structure for orders
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."ords";
-CREATE TABLE "public"."ords" (
-"id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
-"rev" int2 DEFAULT 0 NOT NULL,
-"tmid" varchar(4) COLLATE "default",
+DROP TABLE IF EXISTS "public"."orders";
+CREATE TABLE "public"."orders" (
+"id" int4 DEFAULT nextval('orders_id_seq1'::regclass) NOT NULL,
 "uid" int4 NOT NULL,
 "uname" varchar(10) COLLATE "default",
 "uwx" varchar(28) COLLATE "default",
 "utel" varchar(11) COLLATE "default",
 "uaddr" varchar(20) COLLATE "default",
+"teamid" varchar(4) COLLATE "default",
+"item" varchar(10) COLLATE "default",
+"unit" varchar(4) COLLATE "default",
+"price" numeric(38),
+"qty" int2,
 "total" money,
 "cash" money DEFAULT 0,
 "score" money,
-"posid" int4,
 "created" timestamp(6),
 "paid" timestamp(6),
 "aborted" timestamp(6),
+"supplierid" int4,
+"planned" timestamp(6),
+"supplied" timestamp(6),
+"delivererid" int4,
+"delivered" timestamp(6),
+"teamerid" int4,
 "ended" timestamp(6),
-"status" int2,
-"item" varchar(10) COLLATE "default",
-"unit" varchar(4) COLLATE "default",
-"price" numeric,
-"qty" int2
+"status" int2
 )
 WITH (OIDS=FALSE)
 
@@ -187,7 +190,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."recs";
 CREATE TABLE "public"."recs" (
-"id" int4 DEFAULT nextval('cashes_id_seq'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('recs_id_seq'::regclass) NOT NULL,
 "orgid" varchar(4) COLLATE "default" NOT NULL,
 "date" date,
 "code" int2,
@@ -206,7 +209,9 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
 "id" int4 DEFAULT nextval('repays_id_seq'::regclass) NOT NULL,
-"orgid" varchar(4) COLLATE "default" NOT NULL,
+"uid" int4,
+"uname" varchar(10) COLLATE "default" NOT NULL,
+"uwx" varchar(28) COLLATE "default",
 "fro" date NOT NULL,
 "till" date NOT NULL,
 "orders" int4,
@@ -241,15 +246,13 @@ CREATE TABLE "public"."users" (
 "name" varchar(10) COLLATE "default" NOT NULL,
 "wx" varchar(28) COLLATE "default" NOT NULL,
 "tel" varchar(11) COLLATE "default" NOT NULL,
-"grpat" varchar(3) COLLATE "default",
+"teamat" varchar(3) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
 "score" int4,
 "refid" int4,
-"opr" int2 DEFAULT 0,
-"supat" varchar(3) COLLATE "default",
-"sup" int2,
-"grp" int2
+"ctr" int2 DEFAULT 0,
+"team" int2
 )
 WITH (OIDS=FALSE)
 
@@ -258,9 +261,9 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
-ALTER SEQUENCE "public"."cashes_id_seq" OWNED BY "recs"."id";
 ALTER SEQUENCE "public"."chats_id_seq1" OWNED BY "chats"."id";
-ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "ords"."id";
+ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."recs_id_seq" OWNED BY "recs"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."users_id_seq" OWNED BY "users"."id";
 
@@ -270,14 +273,19 @@ ALTER SEQUENCE "public"."users_id_seq" OWNED BY "users"."id";
 ALTER TABLE "public"."chats" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
--- Indexes structure for table ords
+-- Primary Key structure for table items
 -- ----------------------------
-CREATE INDEX "orders_statuscustid" ON "public"."ords" USING btree ("status", "uid");
+ALTER TABLE "public"."items" ADD PRIMARY KEY ("name");
 
 -- ----------------------------
--- Primary Key structure for table ords
+-- Indexes structure for table orders
 -- ----------------------------
-ALTER TABLE "public"."ords" ADD PRIMARY KEY ("id");
+CREATE INDEX "orders_statuscustid" ON "public"."orders" USING btree ("status", "uid");
+
+-- ----------------------------
+-- Primary Key structure for table orders
+-- ----------------------------
+ALTER TABLE "public"."orders" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table orgs
@@ -297,7 +305,7 @@ ALTER TABLE "public"."recs" ADD PRIMARY KEY ("id");
 -- ----------------------------
 -- Indexes structure for table repays
 -- ----------------------------
-CREATE INDEX "replays_idx_orgidstatus" ON "public"."repays" USING btree ("orgid", "status");
+CREATE INDEX "replays_idx_orgidstatus" ON "public"."repays" USING btree ("uname", "status");
 
 -- ----------------------------
 -- Primary Key structure for table repays
