@@ -52,8 +52,25 @@ namespace Samp
         {
         }
 
+        public void @default(WebContext wc)
+        {
+            string name = wc[this];
+            var o = Obtain<Map<string, Item>>()[name];
+            wc.GivePane(200, h =>
+            {
+                // movie
+
+
+                // remark
+                h.ALERT(o.remark);
+
+
+                // schedule
+            });
+        }
+
         [UserAccess(true)]
-        [Ui("购买"), Tool(AOpen, size: 1), ItemState('A')]
+        [Ui("购买"), Tool(AOpen), ItemState('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;

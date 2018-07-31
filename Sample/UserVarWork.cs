@@ -16,9 +16,9 @@ namespace Samp
         }
     }
 
-    public class TeamUserVarWork : UserVarWork
+    public class GrpUserVarWork : UserVarWork
     {
-        public TeamUserVarWork(WorkConfig cfg) : base(cfg)
+        public GrpUserVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

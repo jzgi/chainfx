@@ -55,9 +55,9 @@ namespace Samp
         }
     }
 
-    public class TeamOrderVarWork : OrderVarWork
+    public class GrpOrderVarWork : OrderVarWork
     {
-        public TeamOrderVarWork(WorkConfig cfg) : base(cfg)
+        public GrpOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

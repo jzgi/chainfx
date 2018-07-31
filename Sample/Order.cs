@@ -39,7 +39,7 @@ namespace Samp
         internal string uwx; // weixin openid
         internal string utel;
         internal string uaddr; // may include area and site
-        internal string teamid;
+        internal string grpid;
         internal string item;
         internal string unit;
         internal decimal price;
@@ -56,7 +56,7 @@ namespace Samp
         internal DateTime supplied;
         internal int delivererid;
         internal DateTime delivered;
-        internal int teamerid;
+        internal int grperid;
         internal DateTime ended;
         internal short status;
 
@@ -71,7 +71,7 @@ namespace Samp
             s.Get(nameof(uwx), ref uwx);
             s.Get(nameof(utel), ref utel);
             s.Get(nameof(uaddr), ref uaddr);
-            s.Get(nameof(teamid), ref teamid);
+            s.Get(nameof(grpid), ref grpid);
             s.Get(nameof(item), ref item);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
@@ -89,7 +89,7 @@ namespace Samp
                 s.Get(nameof(supplied), ref supplied);
                 s.Get(nameof(delivererid), ref delivererid);
                 s.Get(nameof(delivered), ref delivered);
-                s.Get(nameof(teamerid), ref teamerid);
+                s.Get(nameof(grperid), ref grperid);
                 s.Get(nameof(ended), ref ended);
             }
             s.Get(nameof(status), ref status);
@@ -106,7 +106,7 @@ namespace Samp
             s.Put(nameof(uwx), uwx);
             s.Put(nameof(utel), utel);
             s.Put(nameof(uaddr), uaddr);
-            s.Put(nameof(teamid), teamid);
+            s.Put(nameof(grpid), grpid);
             s.Put(nameof(item), item);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
@@ -124,7 +124,7 @@ namespace Samp
                 s.Put(nameof(supplied), supplied);
                 s.Put(nameof(delivererid), delivererid);
                 s.Put(nameof(delivered), delivered);
-                s.Put(nameof(teamerid), teamerid);
+                s.Put(nameof(grperid), grperid);
                 s.Put(nameof(ended), ended);
             }
             s.Put(nameof(status), status);

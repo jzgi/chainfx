@@ -322,11 +322,9 @@ namespace Greatbone
         public HtmlContent TD(string v, string v2)
         {
             Add("<td>");
-            Add("<span>");
             AddEsc(v);
-            Add("</span><span>");
+            Add("&nbsp;");
             AddEsc(v2);
-            Add("</span>");
             Add("</td>");
             return this;
         }

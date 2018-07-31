@@ -45,11 +45,11 @@ namespace Samp
 
             if (team > 0)
             {
-                if ((o.team & team) != team) return false; // inclusive check
+                if ((o.grp & team) != team) return false; // inclusive check
                 string at = wc[typeof(IOrgVar)];
                 if (at != null)
                 {
-                    return o.teamat == at;
+                    return o.grpat == at;
                 }
                 return true;
             }

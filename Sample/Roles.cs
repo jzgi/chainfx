@@ -81,7 +81,7 @@ namespace Samp
                     {
                         dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
                         var arr = dc.Query<Org>();
-                        h.TABLE(arr, null, 
+                        h.TABLE(arr, null,
                             o => h.TD(o.name).TD(o.mgrname)
                         );
 
@@ -229,13 +229,31 @@ namespace Samp
                 wc.GivePane(200);
             }
         }
+
+        [UserAccess(CTR)]
+        [Ui("个款", "个人结款记录"), Tool(AOpen, size: 4)]
+        public void repays(WebContext wc)
+        {
+            var prin = (User) wc.Principal;
+            using (var dc = NewDbContext())
+            {
+                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 2 AND uid = @1 ORDER BY id DESC", p => p.Set(prin.id));
+                wc.GivePage(200, h =>
+                {
+                    h.TABLE(arr,
+                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
+                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                    );
+                });
+            }
+        }
     }
 
-    public class TeamWork : Work
+    public class GrpWork : Work
     {
-        public TeamWork(WorkConfig cfg) : base(cfg)
+        public GrpWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<TeamVarWork, string>(prin => ((User) prin).teamat);
+            CreateVar<GrpVarWork, string>(prin => ((User) prin).grpat);
         }
     }
 }

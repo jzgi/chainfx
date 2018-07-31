@@ -26,7 +26,7 @@ namespace Samp
                 h.BOARD(arr, o =>
                     {
                         h.T("<header class=\"uk-card-header uk-flex uk-flex-middle\">");
-                        h.T("<h5>").T(o.teamid).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
+                        h.T("<h5>").T(o.grpid).T("</h5>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
                         h.T("</header>");
 
                         h.UL_("uk-list uk-list-divider uk-card-body");
@@ -263,9 +263,9 @@ namespace Samp
     }
 
     [Ui("订单")]
-    public class TeamOrderWork : OrderWork<TeamOrderVarWork>
+    public class GrpOrderWork : OrderWork<GrpOrderVarWork>
     {
-        public TeamOrderWork(WorkConfig cfg) : base(cfg)
+        public GrpOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 

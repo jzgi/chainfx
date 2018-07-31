@@ -145,19 +145,17 @@ namespace Samp
 
     [UserAccess(team: 1)]
     [Ui("团员")]
-    public class TeamVarWork : UserWork<TeamUserVarWork>, IOrgVar
+    public class GrpVarWork : UserWork<GrpUserVarWork>, IOrgVar
     {
-        public TeamVarWork(WorkConfig cfg) : base(cfg)
+        public GrpVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<TeamOrderWork>("ord");
-
-            Create<OrgRecWork>("rec");
+            Create<GrpOrderWork>("ord");
         }
 
         public void @default(WebContext wc)
         {
-            string teamid = wc[this];
-            var team = Obtain<Map<string, Org>>()[teamid];
+            string grpid = wc[this];
+            var team = Obtain<Map<string, Org>>()[grpid];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
@@ -170,8 +168,8 @@ namespace Samp
                     h.TOOLBAR();
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE teamat = @1 ORDER BY id");
-                        var arr = dc.Query<User>(p => p.Set(teamid));
+                        dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE grpat = @1 ORDER BY id");
+                        var arr = dc.Query<User>(p => p.Set(grpid));
                         h.TABLE(arr, null,
                             o => h.TD(o.name).TD(o.tel)
                         );

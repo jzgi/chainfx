@@ -14,6 +14,7 @@ namespace Samp
         }
     }
 
+
     [Ui("结款")]
     public class CtrRepayWork : RepayWork<CtrRepayVarWork>
     {
@@ -21,42 +22,42 @@ namespace Samp
         {
         }
 
-        [Ui("新结"), Tool(A)]
-        public void @default(WebContext wc, int page)
+        [Ui("列未转"), Tool(A)]
+        public void @default(WebContext wc)
         {
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 0 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
+                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status < 2 ORDER BY id DESC");
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLE(arr,
-                        () => h.TH("网点").TH("期间").TH("总数").TH("单额").TH("净额").TH("转款"),
-                        o => h.TD(o.orgid).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
+                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
                     );
                 });
             }
         }
 
-        [Ui("已转"), Tool(A)]
+        [Ui("列已转"), Tool(A)]
         public void old(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 1 ORDER BY id DESC LIMIT 20 OFFSET @1", p => p.Set(page * 20));
+                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 2 ORDER BY id DESC LIMIT 30 OFFSET @1", p => p.Set(page * 30));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLE(arr,
-                        () => h.TH("网点").TH("期间").TH("总数").TH("单额").TH("净额").TH("转款"),
-                        o => h.TD(o.orgid).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.total).TD(o.cash).TD(o.payer)
+                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
+                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
                     );
                 });
             }
         }
 
-        [Ui("结算", "生成各网点结款单"), Tool(ButtonShow)]
-        public async Task reckon(WebContext wc)
+        [Ui("结算", "结算并生成人员结款单"), Tool(ButtonShow)]
+        public async Task calc(WebContext wc)
         {
             DateTime fro; // from date
             DateTime till; // till/before date
@@ -118,7 +119,7 @@ namespace Samp
             for (int i = 0; i < trans.Count; i++)
             {
                 var tr = trans[i];
-                string err = await ((SampService)Service).WeiXin.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
+                string err = await ((SampService) Service).WeiXin.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
                 // update data records
                 using (var dc = NewDbContext())
                 {
@@ -130,20 +131,6 @@ namespace Samp
                     {
                         // update repay status
                         dc.Execute("UPDATE repays SET err = NULL, payer = @1, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
-                        // add a cash journal entry
-                        var ety = new Rec
-                        {
-                            orgid = tr.orgid,
-                            date = DateTime.Now,
-                            code = 11, // sales income
-                            descr = "订单结款",
-                            receive = tr.cash,
-                            pay = 0,
-                            creator = prin.name
-                        };
-                        const byte proj = 0xff ^ Rec.ID;
-                        dc.Sql("INSERT INTO cashes")._(ety, proj)._VALUES_(ety, proj);
-                        dc.Execute(p => ety.Write(p, proj));
                     }
                 }
             }
