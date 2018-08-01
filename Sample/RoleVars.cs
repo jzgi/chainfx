@@ -143,8 +143,8 @@ namespace Samp
     }
 
 
-    [UserAccess(team: 1)]
-    [Ui("团员")]
+    [UserAccess(grp: 1)]
+    [Ui("团组")]
     public class GrpVarWork : UserWork<GrpUserVarWork>, IOrgVar
     {
         public GrpVarWork(WorkConfig cfg) : base(cfg)

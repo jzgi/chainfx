@@ -16,15 +16,15 @@ namespace Samp
 
         public const short
             CTR = 1,
-            CTR_SUPPLIER = 0b0011, // 3
-            CTR_DELIVERER = 0b0101, // 5
-            CTR_MANAGER = 0b0111; // 7
+            CTR_DVR = 0b0011, // 3
+            CTR_SPR = 0b0101, // 5
+            CTR_MGR = 0b1111; // 15
 
         public static readonly Map<short, string> Ctrs = new Map<short, string>
         {
-            {CTR_SUPPLIER, "加工备货"},
-            {CTR_DELIVERER, "派送"},
-            {CTR_MANAGER, "经理"},
+            {CTR_DVR, "派送"},
+            {CTR_SPR, "供货"},
+            {CTR_MGR, "经理"},
         };
 
         internal int id;

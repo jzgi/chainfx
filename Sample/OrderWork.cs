@@ -133,10 +133,10 @@ namespace Samp
         }
     }
 
-    [Ui("新单")]
-    public class CtrNewOrderWork : OrderWork<CtrNewOrderVarWork>
+    [Ui("来单"), UserAccess(CTR_MGR)]
+    public class CtrOrderWork : OrderWork<CtrOrderVarWork>
     {
-        public CtrNewOrderWork(WorkConfig cfg) : base(cfg)
+        public CtrOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -215,10 +215,13 @@ namespace Samp
         }
     }
 
-    [Ui("旧单"), UserAccess(CTR)]
-    public class CtrOldOrderWork : OrderWork<CtrOldOrderVarWork>
+    /// <summary>
+    /// The order workset as the <code>supplier</code> role
+    /// </summary>
+    [Ui("供单"), UserAccess(CTR_SPR)]
+    public class SprOrderWork : OrderWork<SprOrderVarWork>
     {
-        public CtrOldOrderWork(WorkConfig cfg) : base(cfg)
+        public SprOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -259,6 +262,21 @@ namespace Samp
                 }
             }
             wc.GiveRedirect();
+        }
+    }
+
+    /// <summary>
+    /// The order workset as the <code>deliverer</code> role
+    /// </summary>
+    [Ui("派单"), UserAccess(CTR_DVR)]
+    public class DvrOrderWork : OrderWork<DvrOrderVarWork>
+    {
+        public DvrOrderWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        public void @default(WebContext wc, int page)
+        {
         }
     }
 

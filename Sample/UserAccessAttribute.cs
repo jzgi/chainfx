@@ -14,13 +14,13 @@ namespace Samp
         readonly short ctr;
 
         // require group access
-        readonly short team;
+        readonly short grp;
 
-        public UserAccessAttribute(short ctr = 0, short team = 0)
+        public UserAccessAttribute(short ctr = 0, short grp = 0)
         {
             this.full = true;
             this.ctr = ctr;
-            this.team = team;
+            this.grp = grp;
         }
 
         public UserAccessAttribute(bool full)
@@ -43,9 +43,9 @@ namespace Samp
                 return (o.ctr & ctr) == ctr;
             }
 
-            if (team > 0)
+            if (grp > 0)
             {
-                if ((o.grp & team) != team) return false; // inclusive check
+                if ((o.grp & grp) != grp) return false; // inclusive check
                 string at = wc[typeof(IOrgVar)];
                 if (at != null)
                 {

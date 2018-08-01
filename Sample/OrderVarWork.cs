@@ -62,9 +62,9 @@ namespace Samp
         }
     }
 
-    public class CtrNewOrderVarWork : OrderVarWork
+    public class CtrOrderVarWork : OrderVarWork
     {
-        public CtrNewOrderVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -109,9 +109,16 @@ namespace Samp
         }
     }
 
-    public class CtrOldOrderVarWork : OrderVarWork
+    public class SprOrderVarWork : OrderVarWork
     {
-        public CtrOldOrderVarWork(WorkConfig cfg) : base(cfg)
+        public SprOrderVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
+
+    public class DvrOrderVarWork : OrderVarWork
+    {
+        public DvrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

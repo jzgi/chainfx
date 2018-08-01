@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
+using static Samp.User;
 
 namespace Samp
 {
@@ -14,8 +15,33 @@ namespace Samp
         }
     }
 
+    [Ui("个款"), UserAccess(CTR_SPR | CTR_DVR)]
+    public class MyCashWork : RepayWork<MyRepayVarWork>
+    {
+        public MyCashWork(WorkConfig cfg) : base(cfg)
+        {
+        }
 
-    [Ui("结款")]
+        public void @default(WebContext wc)
+        {
+            var prin = (User) wc.Principal;
+            using (var dc = NewDbContext())
+            {
+                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 2 AND uid = @1 ORDER BY id DESC", p => p.Set(prin.id));
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.TABLE(arr,
+                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
+                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                    );
+                });
+            }
+        }
+    }
+
+
+    [Ui("结款"), UserAccess(CTR_MGR)]
     public class CtrRepayWork : RepayWork<CtrRepayVarWork>
     {
         public CtrRepayWork(WorkConfig cfg) : base(cfg)

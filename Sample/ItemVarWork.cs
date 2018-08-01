@@ -165,7 +165,8 @@ namespace Samp
         {
         }
 
-        [Ui("修改"), Tool(ButtonShow, size: 2), UserAccess(CTR_SUPPLIER)]
+        [UserAccess(CTR_MGR)]
+        [Ui("修改"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
             string orgid = wc[-2];
@@ -209,7 +210,8 @@ namespace Samp
             }
         }
 
-        [Ui("照片"), Tool(ButtonCrop, size: 2), UserAccess(CTR_SUPPLIER)]
+        [UserAccess(CTR_MGR)]
+        [Ui("照片"), Tool(ButtonCrop, size: 4)]
         public new async Task icon(WebContext wc)
         {
             if (wc.GET)
@@ -231,6 +233,11 @@ namespace Samp
                     else wc.Give(500); // internal server error
                 }
             }
+        }
+
+        [Ui("计划"), Tool(ButtonShow, size: 4)]
+        public async Task plan(WebContext wc)
+        {
         }
     }
 }

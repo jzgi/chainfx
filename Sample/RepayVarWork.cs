@@ -9,9 +9,9 @@ namespace Samp
         }
     }
 
-    public class OrgRepayVarWork : RepayVarWork
+    public class MyRepayVarWork : RepayVarWork
     {
-        public OrgRepayVarWork(WorkConfig cfg) : base(cfg)
+        public MyRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

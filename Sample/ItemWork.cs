@@ -14,7 +14,7 @@ namespace Samp
     }
 
 
-    [Ui("货品"), UserAccess(CTR_SUPPLIER)]
+    [Ui("货品"), UserAccess(CTR_SPR)]
     public class CtrItemWork : ItemWork<CtrItemVarWork>
     {
         public CtrItemWork(WorkConfig cfg) : base(cfg)
@@ -48,7 +48,8 @@ namespace Samp
             }
         }
 
-        [Ui("新建"), Tool(ButtonShow, Style.Primary), UserAccess(CTR_SUPPLIER)]
+        [UserAccess(CTR_MGR)]
+        [Ui("新建"), Tool(ButtonShow, Style.Primary)]
         public async Task @new(WebContext wc)
         {
             if (wc.GET)
@@ -82,7 +83,8 @@ namespace Samp
             }
         }
 
-        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm), UserAccess(CTR_SUPPLIER)]
+        [UserAccess(CTR_MGR)]
+        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
             string orgid = wc[-1];

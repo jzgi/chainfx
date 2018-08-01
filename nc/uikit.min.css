@@ -1578,7 +1578,7 @@ select.uk-form-width-xsmall {
     -webkit-appearance: none;
     -moz-appearance: none;
     background: 0 0;
-    padding: 0 8px;
+    padding: 0 6px;
     margin: 0;
     white-space: nowrap;
     text-overflow: ellipsis;

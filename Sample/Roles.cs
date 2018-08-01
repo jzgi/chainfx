@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Greatbone;
 using static Samp.User;
 using static Greatbone.Modal;
+using static Greatbone.Style;
 
 namespace Samp
 {
@@ -58,15 +59,15 @@ namespace Samp
     {
         public CtrWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrNewOrderWork>("newo");
+            Create<CtrOrderWork>("ord");
 
-            Create<CtrOldOrderWork>("oldo");
+            Create<SprOrderWork>("spro");
+
+            Create<DvrOrderWork>("dvro");
 
             Create<CtrItemWork>("item");
 
             Create<CtrRepayWork>("repay");
-
-            Create<CtrUserWork>("user");
         }
 
         public void @default(WebContext wc)
@@ -84,17 +85,6 @@ namespace Samp
                         h.TABLE(arr, null,
                             o => h.TD(o.name).TD(o.mgrname)
                         );
-
-//                        h.BOARD(arr, o =>
-//                        {
-//                            h.T("<section class=\"uk-card-header\">").T(o.id).SP().T(o.name).T("</section>");
-//                            h.UL_("uk-card-body");
-//                            h.LI("地　址", o.addr);
-//                            h.LI_("坐　标").T(o.x).SP().T(o.y)._LI();
-//                            h.LI_("经　理").T(o.mgrname).SP().T(o.mgrtel)._LI();
-//                            h._UL();
-//                            h.VARTOOLS(css: "uk-card-footer");
-//                        });
                     }
                 });
             }
@@ -104,7 +94,8 @@ namespace Samp
             }
         }
 
-        [Ui("新建团"), Tool(ButtonShow, Style.Primary)]
+        [UserAccess(CTR_MGR)]
+        [Ui("新建团"), Tool(ButtonShow, Primary)]
         public async Task @new(WebContext wc)
         {
             const byte proj = 0xff;
@@ -135,7 +126,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(CTR_MANAGER)]
+        [UserAccess(CTR_MGR)]
         [Ui("人员", "设置操作人员"), Tool(ButtonOpen, size: 4)]
         public async Task acl(WebContext wc, int cmd)
         {
@@ -188,8 +179,8 @@ namespace Samp
             });
         }
 
-        [UserAccess(CTR_SUPPLIER)]
-        [Ui("状态"), Tool(Modal.ButtonShow)]
+        [UserAccess(CTR_MGR)]
+        [Ui("状态"), Tool(ButtonShow)]
         public async Task status(WebContext wc)
         {
             string orgid = wc[this];
@@ -227,24 +218,6 @@ namespace Samp
                     }
                 }
                 wc.GivePane(200);
-            }
-        }
-
-        [UserAccess(CTR)]
-        [Ui("个款", "个人结款记录"), Tool(AOpen, size: 4)]
-        public void repays(WebContext wc)
-        {
-            var prin = (User) wc.Principal;
-            using (var dc = NewDbContext())
-            {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 2 AND uid = @1 ORDER BY id DESC", p => p.Set(prin.id));
-                wc.GivePage(200, h =>
-                {
-                    h.TABLE(arr,
-                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
-                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
-                    );
-                });
             }
         }
     }

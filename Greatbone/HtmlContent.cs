@@ -1292,7 +1292,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte flag = 0)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte grou = 0)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
@@ -1344,7 +1344,7 @@ namespace Greatbone
                         for (int j = 0; j < actrs.Length; j++)
                         {
                             var actr = actrs[j];
-                            if (!actr.IsCapital && (actr.Group == 0 || flag == actr.Group))
+                            if (!actr.IsCapital && (actr.Grou == 0 || grou == actr.Grou))
                             {
                                 PutTool(actr);
                             }
@@ -1448,7 +1448,7 @@ namespace Greatbone
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
-                    int g = actr.Group;
+                    int g = actr.Grou;
                     if (g == 0 || (g & grou) > 0)
                     {
                         if (g != gogrp)
@@ -1511,7 +1511,7 @@ namespace Greatbone
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
-                    int g = actr.Group;
+                    int g = actr.Grou;
                     if (g == 0 || (g & grou) > 0)
                     {
                         if (g != gogrp)
@@ -1549,7 +1549,7 @@ namespace Greatbone
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
-                    int g = actr.Group;
+                    int g = actr.Grou;
                     if (g == 0 || (g & grou) > 0)
                     {
                         if (g != gogrp)
