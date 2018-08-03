@@ -133,7 +133,7 @@ namespace Samp
         }
     }
 
-    [Ui("来单"), UserAccess(CTR_MGR)]
+    [Ui("订购"), UserAccess(CTR_MGR)]
     public class CtrOrderWork : OrderWork<CtrOrderVarWork>
     {
         public CtrOrderWork(WorkConfig cfg) : base(cfg)
@@ -142,73 +142,95 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            using (var dc = NewDbContext())
+            wc.GivePage(200, h =>
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 0 AND 1 ORDER BY id DESC");
-                wc.GivePage(200, h =>
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
                 {
-                    h.TOOLBAR();
-                    h.GRID(arr, o =>
-                    {
-                        h.T("<section class=\"uk-accordion-title\">");
-                        h.T("<h4 class=\"uk-width-expand\">").T(o.uname).T("</h4>").BADGE(Statuses[o.status], o.status == 0 ? Warning : o.status == 1 ? Success : None);
-                        h.T("</section>");
-
-                        h.T("<section class=\"uk-accordion-content uk-grid\">");
-                        h.P_("收　货").SP().T(o.uname).SP().T(o.uaddr).SP().T(o.utel)._P();
-                        h.UL_("uk-grid");
-                        h.LI_();
-                        h.SPAN_(0x11).T(o.item)._SPAN().SPAN_(w: 0x23).T('￥').T(o.price).T("／").T(o.unit)._SPAN().SPAN(o.qty, w: 0x13);
-                        h._LI();
-                        h._UL();
-                        h.P_("总　额", w: 0x12).CUR(o.total)._P();
-
-                        h.VARTOOLS();
-
-                        h.T("</section>");
-                    }, null);
-                }, false, 2);
-            }
+                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 ORDER BY id");
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
         }
 
-        static readonly Map<string, string> MSGS = new Map<string, string>
+        [Ui("撤消", "确认要撤销此单吗？实收款项将退回给买家"), Tool(ButtonPickConfirm)]
+        public async Task abort(WebContext wc)
         {
-            ["订单处理"] = "我们已经接到您的订单（金额{0}元）",
-            ["派送通知"] = "销售人员正在派送您所购的商品",
-            ["sdf"] = "",
-        };
-
-
-        [Ui("清理", "清理三天以前未付款或者已撤销的订单"), Tool(ButtonConfirm)]
-        public void clean(WebContext wc)
-        {
-            string orgid = wc[-1];
+            string orgid = wc[-2];
+            int orderid = wc[this];
+            short rev = 0;
+            decimal cash = 0;
             using (var dc = NewDbContext())
             {
-                dc.Execute("DELETE FROM orders WHERE (status = 0 OR status = -1) AND ctrid = @1 AND (created + interval '3 day' < localtimestamp)", p => p.Set(orgid));
+                if (dc.Query1("SELECT rev, cash FROM orders WHERE id = @1 AND status = 1", p => p.Set(orderid)))
+                {
+                    dc.Let(out rev).Let(out cash);
+                }
             }
-            wc.GiveRedirect();
+            if (cash > 0)
+            {
+                string err = await ((SampService) Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
+                if (err == null) // success
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                    }
+                }
+            }
+            wc.GiveRedirect("../");
         }
     }
 
     /// <summary>
     /// The order workset as the <code>supplier</code> role
     /// </summary>
-    [Ui("供单"), UserAccess(CTR_SPR)]
+    [Ui("供应"), UserAccess(CTR_SPR)]
     public class SprOrderWork : OrderWork<SprOrderVarWork>
     {
         public SprOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        public void @default(WebContext wc, int page)
+        public void @default(WebContext wc)
         {
-            string orgid = wc[-1];
-            using (var dc = NewDbContext())
+            var prin = (User) wc.Principal;
+            wc.GivePage(200, h =>
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND ctrid = @1 ORDER BY id DESC LIMIT 20 OFFSET @2", p => p.Set(orgid).Set(page * 20));
-                GiveAccordionPage(wc, arr);
-            }
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Query("SELECT id, item, qty, status FROM orders WHERE status BETWEEN 1 AND 2 AND item IN (SELECT name FROM items WHERE supplierid = @1) ORDER BY item, id", p => p.Set(prin.id));
+
+                    string curitme = null; 
+                    while (dc.Next())
+                    {
+                        dc.Let(out int id).Let(out string item).Let(out short qty).Let(out short status);
+
+                        if (item != curitme)
+                        {
+                            if (curitme != null)
+                            {
+                                h.T("</main>");
+                                h.TOOLS(css: "uk-card-footer");
+                                h.T("</article>");
+                            }
+                            h.T("<article class=\"uk-card  uk-card-default\">");
+                            h.T("<header class=\"uk-card-header\">").T(item).T("</header>");
+                            h.T("<main class=\"uk-card-body\">");
+                        }
+
+                        h.T("<input type=\"checkbox\" name=\"").T(id).T("\"").T(" checked", status == 2).T("><label for=\"").T(id).T(" class=\"checkable\">").T(qty).T("</label>");
+
+                        curitme = item;
+                    }
+                    h.T("</main>");
+                    h.TOOLS(css: "uk-card-footer");
+                    h.T("</article>");
+                }
+            }, false, 2);
         }
 
         [Ui("查询"), Tool(AShow)]
@@ -244,7 +266,7 @@ namespace Samp
     /// <summary>
     /// The order workset as the <code>deliverer</code> role
     /// </summary>
-    [Ui("派单"), UserAccess(CTR_DVR)]
+    [Ui("派送"), UserAccess(CTR_DVR)]
     public class DvrOrderWork : OrderWork<DvrOrderVarWork>
     {
         public DvrOrderWork(WorkConfig cfg) : base(cfg)
@@ -274,7 +296,7 @@ namespace Samp
                 {
                     var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND grpid = @1 ORDER BY id", p => p.Set(grpid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
+                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
                 }
             });
@@ -291,6 +313,7 @@ namespace Samp
             }
             else
             {
+                string grpid = wc[-1];
                 tel = wc.Query[nameof(tel)];
                 using (var dc = NewDbContext())
                 {
@@ -299,7 +322,7 @@ namespace Samp
                     {
                         h.TOOLBAR(title: tel);
                         h.TABLE(arr, null,
-                            o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
+                            o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                         );
                     });
                 }
@@ -307,8 +330,43 @@ namespace Samp
         }
 
         [Ui("收货"), Tool(ButtonPickPrompt)]
-        public void receive(WebContext wc)
+        public async Task receive(WebContext wc)
         {
+            string grpid = wc[-1];
+            if (wc.GET)
+            {
+                int[] key = wc.Query[nameof(key)];
+                wc.GivePane(200, h =>
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT item, SUM(qty) AS num FROM orders WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1 GROUP BY item");
+                        dc.Query(p => p.SetIn(key).Set(grpid));
+                        h.FORM_();
+
+                        h.T("仅列出已送达货品");
+                        h.T("<table class=\"uk-table\">");
+                        while (dc.Next())
+                        {
+                            dc.Let(out string item).Let(out short num);
+                            h.TD(item).TD(num);
+                        }
+                        h.T("</table>");
+                        h.CHECKBOX("", false, "我确认收货", required: true);
+                        h._FORM();
+                    }
+                });
+            }
+            else // POST
+            {
+                int[] key = (await wc.ReadAsync<Form>())[nameof(key)];
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET status = 4 WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1");
+                    dc.Execute(p => p.SetIn(key).Set(grpid));
+                }
+                wc.GiveRedirect();
+            }
         }
 
         [Ui("递货"), Tool(ButtonPickPrompt)]

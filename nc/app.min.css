@@ -2,22 +2,21 @@
     padding: 0 4px 0 2.5rem;
 }
 
-.checked {
-    background-color: lavender;
+
+.checkable {
+    width: 4rem;
+    display: block;
+    padding: 8px;
+    float: left;
+    border: 1px solid #333;
 }
 
-.uk-card-primary > .uk-card-header {
-    background-color: #c0c0c0;
-    border: none;
+:checked + span {
+    background: brown;
 }
 
-.uk-card-primary > .uk-card-body.uk-list-divider {
-    border-top: 1px solid #c0c0c0;
-    border-bottom: 1px solid #c0c0c0;
-}
-
-.uk-card-primary > .uk-card-body.uk-list-divider li:nth-child(n+2) {
-    border-top: 1px solid #c0c0c0;
+.checkable > input {
+    display: none;
 }
 
 /* CROPPIE */

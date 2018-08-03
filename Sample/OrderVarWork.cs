@@ -67,46 +67,6 @@ namespace Samp
         public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
-
-        [Ui("撤消", "确认要撤销此单吗？实收款项将退回给买家"), Tool(ButtonConfirm)]
-        public async Task abort(WebContext wc)
-        {
-            string orgid = wc[-2];
-            int orderid = wc[this];
-            short rev = 0;
-            decimal cash = 0;
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query1("SELECT rev, cash FROM orders WHERE id = @1 AND status = 1", p => p.Set(orderid)))
-                {
-                    dc.Let(out rev).Let(out cash);
-                }
-            }
-            if (cash > 0)
-            {
-                string err = await ((SampService) Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
-                if (err == null) // success
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
-                    }
-                }
-            }
-            wc.GiveRedirect("../");
-        }
-
-        [Ui("完成", "确定结束该订单？"), Tool(ButtonConfirm), OrderState('E')]
-        public void end(WebContext wc)
-        {
-            string orgid = wc[-2];
-            int orderid = wc[this];
-            using (var dc = NewDbContext(ReadCommitted))
-            {
-                dc.Execute("UPDATE orders SET status = 2, ended = localtimestamp WHERE id = @1 AND orgid = @2 AND status = 1", p => p.Set(orderid).Set(orgid));
-            }
-            wc.GiveRedirect("../");
-        }
     }
 
     public class SprOrderVarWork : OrderVarWork

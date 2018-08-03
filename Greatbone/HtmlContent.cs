@@ -75,69 +75,99 @@ namespace Greatbone
             }
         }
 
-        public HtmlContent T(char v)
+        public HtmlContent T(char v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(bool v)
+        public HtmlContent T(bool v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(short v)
+        public HtmlContent T(short v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(int v)
+        public HtmlContent T(int v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(long v)
+        public HtmlContent T(long v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(DateTime v)
+        public HtmlContent T(DateTime v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(decimal v)
+        public HtmlContent T(decimal v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(double v)
+        public HtmlContent T(double v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(string v)
+        public HtmlContent T(string v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public HtmlContent T(string v, int offset, int len)
+        public HtmlContent T(string v, int offset, int len, bool cond = true)
         {
-            Add(v, offset, len);
+            if (cond)
+            {
+                Add(v, offset, len);
+            }
             return this;
         }
 
-        public HtmlContent T(string[] v)
+        public HtmlContent T(string[] v, bool cond = true)
         {
-            if (v != null)
+            if (cond && v != null)
             {
                 for (int i = 0; i < v.Length; i++)
                 {
@@ -148,74 +178,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent IF(char v)
-        {
-            if (v != ' ')
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public HtmlContent IF(short v)
-        {
-            if (v != 0)
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public HtmlContent IF(int v)
-        {
-            if (v != 0)
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public HtmlContent IF(long v)
-        {
-            if (v != 0)
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public HtmlContent IF(DateTime v)
-        {
-            Add(v);
-            return this;
-        }
-
-        public HtmlContent IF(decimal v)
-        {
-            if (v != 0)
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public HtmlContent IF(double v)
-        {
-            if (Math.Abs(v) > 0)
-            {
-                Add(v);
-            }
-            return this;
-        }
-
-        public HtmlContent IF(string v)
-        {
-            if (v != null)
-            {
-                Add(v);
-            }
-            return this;
-        }
 
         public HtmlContent BR()
         {

@@ -72,15 +72,16 @@ namespace Samp
 
         private int tick;
 
-        async Task<string> AccessToken()
+        async Task<string> GetAccessTokenAsync()
         {
-            if (accessToken == null)
+            int now = Environment.TickCount;
+            if (accessToken == null || now < tick || now - tick > 3600000)
             {
                 JObj jo = await Connector.GetAsync<JObj>("/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + appsecret, null);
                 string access_token = jo?[nameof(access_token)];
                 accessToken = access_token;
+                tick = now;
             }
-
             return accessToken;
         }
 
@@ -146,7 +147,7 @@ namespace Samp
             jc._OBJ();
             jc._OBJ();
             jc._OBJ();
-            var (_, jo) = await Connector.PostAsync<JObj>("/cgi-bin/qrcode/create?access_token=" + AccessToken(), jc);
+            var (_, jo) = await Connector.PostAsync<JObj>("/cgi-bin/qrcode/create?access_token=" + await GetAccessTokenAsync(), jc);
             return (jo["ticket"], jo["url"]);
         }
 
@@ -160,7 +161,7 @@ namespace Samp
             jc.Put("content", text);
             jc._OBJ();
             jc._OBJ();
-            await Connector.PostAsync<JObj>("/cgi-bin/message/custom/send?access_token=" + AccessToken(), jc);
+            await Connector.PostAsync<JObj>("/cgi-bin/message/custom/send?access_token=" + await GetAccessTokenAsync(), jc);
         }
 
         public async Task PostSendAsync(string openid, string title, string descr, string url, string picurl = null)
@@ -176,7 +177,7 @@ namespace Samp
             jc.Put("picurl", picurl);
             jc._OBJ()._ARR()._OBJ();
             jc._OBJ();
-            await Connector.PostAsync<JObj>("/cgi-bin/message/custom/send?access_token=" + AccessToken(), jc);
+            await Connector.PostAsync<JObj>("/cgi-bin/message/custom/send?access_token=" + await GetAccessTokenAsync(), jc);
         }
 
         public async Task<string> PostTransferAsync(int id, string openid, string username, decimal cash, string desc)

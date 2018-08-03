@@ -167,8 +167,9 @@ namespace Greatbone
                 obj.Read(inp, proj);
                 return obj;
             }
-            catch
+            catch (Exception ex)
             {
+                string m = ex.Message;
                 retryat = Environment.TickCount + AHEAD;
             }
             return default;

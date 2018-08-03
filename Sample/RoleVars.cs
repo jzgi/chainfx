@@ -126,18 +126,16 @@ namespace Samp
             }
         }
 
-        [Ui("推荐给"), Tool(AOpen)]
+        [Ui("推荐给", "让好友扫码关注全粮派"), Tool(AOpen)]
         public async Task share(WebContext wc)
         {
             var prin = (User) wc.Principal;
             var (ticket, url) = await ((SampService) Service).WeiXin.PostQrSceneAsync(prin.id);
             wc.GivePage(200, h =>
             {
-                h.FIELDSET_();
-
-                h.T("让您的好友扫分享码，成为TA的引荐人，一同享用健康产品。以后凡是TA下单购物，您也能得到相应的积分奖励。");
+                h.T("<div class=\"uk-padding uk-align-center uk-width-3-4\">");
                 h.IMG_().T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._IMG();
-                h._FIELDSET();
+                h.T("</div>");
             });
         }
     }
@@ -177,7 +175,7 @@ namespace Samp
                 });
             }
         }
-        
+
         [Ui("发通知"), Tool(ButtonPickShow)]
         public void send(WebContext wc)
         {
@@ -201,6 +199,5 @@ namespace Samp
                 wc.GivePane(200);
             }
         }
-
     }
 }
