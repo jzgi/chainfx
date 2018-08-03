@@ -399,9 +399,16 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TD_()
+        public HtmlContent TD_(string css = null)
         {
-            Add("<td>");
+            Add("<td");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
             return this;
         }
 
@@ -1330,7 +1337,7 @@ namespace Greatbone
                     Add("<tr>");
                     if (vw != null && w.HasPick)
                     {
-                        Add("<td>");
+                        Add("<td style=\"width: 1%\">");
                         Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
                         vw.PutVariableKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");

@@ -171,11 +171,36 @@ namespace Samp
                         dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE grpat = @1 ORDER BY id");
                         var arr = dc.Query<User>(p => p.Set(grpid));
                         h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel)
+                            o => h.TD(o.name).TD(o.tel).TD(o.addr)
                         );
                     }
                 });
             }
         }
+        
+        [Ui("发通知"), Tool(ButtonPickShow)]
+        public void send(WebContext wc)
+        {
+            long[] key = wc.Query[nameof(key)];
+            string msg = null;
+            if (wc.GET)
+            {
+                wc.GivePane(200, m =>
+                {
+                    m.FORM_();
+                    m._FORM();
+                });
+            }
+            else
+            {
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
+                    dc.Execute(prepare: false);
+                }
+                wc.GivePane(200);
+            }
+        }
+
     }
 }

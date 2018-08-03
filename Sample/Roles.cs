@@ -220,6 +220,11 @@ namespace Samp
                 wc.GivePane(200);
             }
         }
+
+        [Ui("查看客户"), Tool(AOpen, size: 4)]
+        public void user(WebContext wc)
+        {
+        }
     }
 
     public class GrpWork : Work

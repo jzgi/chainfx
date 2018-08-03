@@ -178,30 +178,6 @@ namespace Samp
             ["sdf"] = "",
         };
 
-        [Ui("通知"), Tool(ButtonPickShow)]
-        public void send(WebContext wc)
-        {
-            long[] key = wc.Query[nameof(key)];
-            string msg = null;
-            if (wc.GET)
-            {
-                wc.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.RADIOSET(nameof(msg), msg, MSGS, "消息通知买家", w: 0x4c);
-                    m._FORM();
-                });
-            }
-            else
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
-                    dc.Execute(prepare: false);
-                }
-                wc.GivePane(200);
-            }
-        }
 
         [Ui("清理", "清理三天以前未付款或者已撤销的订单"), Tool(ButtonConfirm)]
         public void clean(WebContext wc)
@@ -280,29 +256,69 @@ namespace Samp
         }
     }
 
-    [Ui("订单")]
+    [Ui("订购")]
     public class GrpOrderWork : OrderWork<GrpOrderVarWork>
     {
         public GrpOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
+        [Ui("当前"), Tool(A)]
         public void @default(WebContext wc)
         {
-            string grpid = wc[this];
-            var grp = Obtain<Map<string, Org>>()[grpid];
+            string grpid = wc[-1];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE teamid = @1 ORDER BY id");
-                    var arr = dc.Query<Order>(p => p.Set(grpid));
+                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND grpid = @1 ORDER BY id", p => p.Set(grpid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.uname).TD(o.item).TD(o.qty)
+                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                     );
                 }
             });
+        }
+
+        [Ui("查找"), Tool(APrompt)]
+        public void find(WebContext wc)
+        {
+            bool inner = wc.Query[nameof(inner)];
+            string tel = null;
+            if (inner)
+            {
+                wc.GivePane(200, h => { h.FORM_().FIELDSET_("手机号").TEL(nameof(tel), tel)._FIELDSET()._FORM(); });
+            }
+            else
+            {
+                tel = wc.Query[nameof(tel)];
+                using (var dc = NewDbContext())
+                {
+                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND utel = @1", p => p.Set(tel));
+                    wc.GivePage(200, h =>
+                    {
+                        h.TOOLBAR(title: tel);
+                        h.TABLE(arr, null,
+                            o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
+                        );
+                    });
+                }
+            }
+        }
+
+        [Ui("收货"), Tool(ButtonPickPrompt)]
+        public void receive(WebContext wc)
+        {
+        }
+
+        [Ui("递货"), Tool(ButtonPickPrompt)]
+        public void give(WebContext wc)
+        {
+        }
+
+        [Ui("查历史"), Tool(AOpen, size: 4)]
+        public void history(WebContext wc)
+        {
         }
     }
 }
