@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Greatbone;
-using static System.Data.IsolationLevel;
 using static Greatbone.Modal;
 
 namespace Samp
@@ -18,7 +17,7 @@ namespace Samp
         {
         }
 
-        [Ui("撤单"), Tool(AShow, size: 2)]
+        [Ui("撤单"), Tool(AShow), OrderState('C')]
         public async Task cancel(WebContext wc, int idx)
         {
             int orderid = wc[this];
@@ -69,9 +68,9 @@ namespace Samp
         }
     }
 
-    public class SprOrderVarWork : OrderVarWork
+    public class GvrOrderVarWork : OrderVarWork
     {
-        public SprOrderVarWork(WorkConfig cfg) : base(cfg)
+        public GvrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
@@ -79,6 +78,16 @@ namespace Samp
     public class DvrOrderVarWork : OrderVarWork
     {
         public DvrOrderVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        [Ui("送货", sort: 1), Tool(ButtonPickPrompt)]
+        public async Task receive(WebContext wc)
+        {
+        }
+
+        [Ui("送货", sort: 2), Tool(ButtonPickPrompt)]
+        public async Task dgrp(WebContext wc)
         {
         }
     }

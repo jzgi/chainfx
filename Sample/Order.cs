@@ -17,9 +17,10 @@ namespace Samp
             ORD_ABORTED = -1,
             ORD_CREATED = 0,
             ORD_PAID = 1,
-            ORD_PLANNED = 2,
-            ORD_SUPPLIED = 3,
-            ORD_DELIVERED = 4,
+            ORD_GIVING = 2,
+            ORD_GIVEN = 3,
+            ORD_SHIPPING = 4,
+            ORD_SHIPPED = 4,
             ORD_ENDED = 5;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
@@ -27,9 +28,10 @@ namespace Samp
             {ORD_ABORTED, "已撤单"},
             {ORD_CREATED, "新创建"},
             {ORD_PAID, "已付款"},
-            {ORD_PLANNED, "已排程"},
-            {ORD_SUPPLIED, "已供货"},
-            {ORD_DELIVERED, "已派送"},
+            {ORD_GIVING, "加工备货中"},
+            {ORD_GIVEN, "已加工备齐"},
+            {ORD_SHIPPING, "派送中"},
+            {ORD_SHIPPED, "已送达"},
             {ORD_ENDED, "已完成"}
         };
 
@@ -49,13 +51,14 @@ namespace Samp
         internal int score; // deduction of points
         internal DateTime created;
 
-        internal DateTime aborted;
         internal DateTime paid;
-        internal int supplierid;
-        internal DateTime planned;
-        internal DateTime supplied;
-        internal int delivererid;
-        internal DateTime delivered;
+        internal DateTime aborted;
+        internal int giverid;
+        internal DateTime giving;
+        internal DateTime given;
+        internal int shipperid;
+        internal DateTime shipping;
+        internal DateTime shipped;
         internal int grperid;
         internal DateTime ended;
         internal short status;
@@ -84,11 +87,11 @@ namespace Samp
             {
                 s.Get(nameof(aborted), ref aborted);
                 s.Get(nameof(paid), ref paid);
-                s.Get(nameof(supplierid), ref supplierid);
-                s.Get(nameof(planned), ref planned);
-                s.Get(nameof(supplied), ref supplied);
-                s.Get(nameof(delivererid), ref delivererid);
-                s.Get(nameof(delivered), ref delivered);
+                s.Get(nameof(giverid), ref giverid);
+                s.Get(nameof(giving), ref giving);
+                s.Get(nameof(given), ref given);
+                s.Get(nameof(shipperid), ref shipperid);
+                s.Get(nameof(shipped), ref shipped);
                 s.Get(nameof(grperid), ref grperid);
                 s.Get(nameof(ended), ref ended);
             }
@@ -119,11 +122,11 @@ namespace Samp
             {
                 s.Put(nameof(aborted), aborted);
                 s.Put(nameof(paid), paid);
-                s.Put(nameof(supplierid), supplierid);
-                s.Put(nameof(planned), planned);
-                s.Put(nameof(supplied), supplied);
-                s.Put(nameof(delivererid), delivererid);
-                s.Put(nameof(delivered), delivered);
+                s.Put(nameof(giverid), giverid);
+                s.Put(nameof(giving), giving);
+                s.Put(nameof(given), given);
+                s.Put(nameof(shipperid), shipperid);
+                s.Put(nameof(shipped), shipped);
                 s.Put(nameof(grperid), grperid);
                 s.Put(nameof(ended), ended);
             }

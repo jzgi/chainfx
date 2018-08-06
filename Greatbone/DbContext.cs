@@ -1664,18 +1664,18 @@ namespace Greatbone
 
         public IParams SetIn(string[] v)
         {
-            for (int i = 1; i <= v.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
-                Put(INS[i++], v);
+                Put(INS[i], v[i]);
             }
             return this;
         }
 
         public IParams SetIn(int[] v)
         {
-            for (int i = 1; i <= v.Length; i++)
+            for (int i = 0; i < v.Length; i++)
             {
-                Put(INS[i++], v);
+                Put(INS[i], v[i]);
             }
             return this;
         }

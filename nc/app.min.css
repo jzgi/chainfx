@@ -4,15 +4,28 @@
 
 
 .checkable {
-    width: 4rem;
     display: block;
-    padding: 8px;
+    padding: 4px;
     float: left;
-    border: 1px solid #333;
+    border: 1px solid #f1f1f1;
 }
 
-:checked + span {
-    background: brown;
+.checkable > span {
+    display: inline-block;
+    width: 2.75rem;
+    height: 1,75rem;
+    text-align: center;
+}
+
+.checkable > span.uk-active {
+    color: #b18250;
+}
+
+input:checked + span {
+    display: inline-block;
+    background: lavender;
+    width: 2.75rem;
+    height: 1,75rem;
 }
 
 .checkable > input {

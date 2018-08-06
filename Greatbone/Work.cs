@@ -92,7 +92,7 @@ namespace Greatbone
 
             if (tooled != null) // sort by group
             {
-                Array.Sort(tooled, (a, b) => a.Grou - b.Grou);
+                Array.Sort(tooled, (a, b) => a.Sort - b.Sort);
             }
         }
 
@@ -539,12 +539,12 @@ namespace Greatbone
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = holds[i];
-                    if (cell.Flag == 0 || (cell.Flag & flag) > 0)
+                    var h = holds[i];
+                    if (h.Flag == 0 || (h.Flag & flag) > 0)
                     {
-                        if (!cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                        if (!h.IsAsync && typeof(T).IsAssignableFrom(h.Typ))
                         {
-                            return cell.GetValue() as T;
+                            return h.GetValue() as T;
                         }
                     }
                 }

@@ -157,6 +157,7 @@ namespace Greatbone
             for (int i = 1; i <= vs.Length; i++)
             {
                 if (i > 1) Add(',');
+                Add('@');
                 Add('v');
                 Add(i);
             }

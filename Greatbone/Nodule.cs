@@ -20,7 +20,7 @@ namespace Greatbone
 
         readonly string tip;
 
-        readonly byte grou;
+        readonly byte sort;
 
         // access check
         internal readonly AccessAttribute access;
@@ -53,7 +53,7 @@ namespace Greatbone
             }
             this.label = ui?.Label ?? name.ToUpper();
             this.tip = ui?.Tip ?? label;
-            this.grou = ui?.Grou ?? 0;
+            this.sort = ui?.Sort ?? 0;
             // authorize
             if (access == null)
             {
@@ -86,7 +86,7 @@ namespace Greatbone
 
         public string Tip => tip;
 
-        public byte Grou => grou;
+        public byte Sort => sort;
 
         public AccessAttribute Access => access;
 

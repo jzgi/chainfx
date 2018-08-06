@@ -1,4 +1,5 @@
 using Greatbone;
+using static Samp.Order;
 
 namespace Samp
 {
@@ -16,11 +17,11 @@ namespace Samp
             if (stack[0] is Order o)
             {
                 if (state == 'P') // payable
-                    return o.status < Order.ORD_PAID;
-                if (state == 'A')
-                    return o.uaddr != null;
-                if (state == 'E') // enable
-                    return o.status >= Order.ORD_PAID;
+                    return o.status < ORD_PAID;
+                if (state == 'C') // 
+                    return o.status < ORD_GIVING;
+                if (state == 'E') // 
+                    return o.status >= ORD_PAID;
             }
             return false;
         }

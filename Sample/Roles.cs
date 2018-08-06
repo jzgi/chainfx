@@ -61,7 +61,7 @@ namespace Samp
         {
             Create<CtrOrderWork>("ord");
 
-            Create<SprOrderWork>("spro");
+            Create<GvrOrderWork>("spro");
 
             Create<DvrOrderWork>("dvro");
 

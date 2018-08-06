@@ -12,13 +12,13 @@ namespace Greatbone
 
         readonly string tip;
 
-        readonly byte grou;
+        readonly byte sort;
 
-        public UiAttribute(string label = null, string tip = null, byte grou = 0)
+        public UiAttribute(string label = null, string tip = null, byte sort = 0)
         {
             this.label = label;
             this.tip = tip ?? label;
-            this.grou = grou;
+            this.sort = sort;
         }
 
         public string Label => label;
@@ -26,8 +26,8 @@ namespace Greatbone
         public string Tip => tip;
 
         /// <summary>
-        /// A grouping number that refers to a particular functionality.
+        /// A sorting number that refers to a particular functionality.
         /// </summary>
-        public byte Grou => grou;
+        public byte Sort => sort;
     }
 }

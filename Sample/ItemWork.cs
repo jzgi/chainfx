@@ -38,7 +38,7 @@ namespace Samp
                         h.ICO_(css: "uk-width-1-4").T(o.name).T("/icon")._ICO();
                         h.UL_(css: "uk-width-3-4 uk-padding-small-left");
                         h.LI("描述", o.descr);
-                        h.LI_().FI("单价", o.price).FI("供价", o.supplyp).FI("运费", o.deliveryp).FI("团费", o.teamp)._LI();
+                        h.LI_().FI("单价", o.price).FI("供价", o.giverp).FI("运费", o.shipperp).FI("团费", o.grperp)._LI();
                         h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("存量", o.demand)._LI();
                         h._UL();
                         h.T("</main>");

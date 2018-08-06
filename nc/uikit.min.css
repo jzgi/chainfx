@@ -672,7 +672,6 @@ a.uk-link-reset:hover,
 
 .uk-table td {
     padding: 10px 6px;
-    vertical-align: top;
     color: #333;
 }
 
@@ -742,11 +741,7 @@ a.uk-link-reset:hover,
     min-width: 300px;
 }
 
-/* Cell link modifier
- ========================================================================== */
-/*
- * Does not work with `uk-table-justify` at the moment
- */
+
 .uk-table-link {
     padding: 0 !important;
 }
@@ -2431,7 +2426,7 @@ ul.uk-card-body li:nth-child(n+2) {
 
 .uk-card-default {
     background: #fff;
-    margin: 12px 6px;
+    margin: 8px 6px;
     border: 1px solid #dcdcdc;
 }
 
@@ -2814,6 +2809,11 @@ ul.uk-card-body li:nth-child(n+2) {
 label.uk-label {
     margin-right: 7px;
 }
+
+label > input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
 
 .uk-label-success {
     color: #fff;
@@ -4142,34 +4142,17 @@ ul.uk-nav-sub {
     color: rgba(102, 102, 102, 0.5);
 }
 
-/* Icon modifier
- ========================================================================== */
-/*
- * Previous
- */
-/*
- * Next
- */
-/* Size modifier
- ========================================================================== */
+
 .uk-slidenav-large {
     padding: 10px 10px;
 }
 
-/* Container
- ========================================================================== */
+
 .uk-slidenav-container {
     display: flex;
 }
 
-/* ========================================================================
-   Component: Dotnav
- ========================================================================== */
-/*
- * 1. Allow items to wrap into the next line
- * 2. Reset list
- * 3. Gutter
- */
+
 .uk-dotnav {
     display: flex;
     /* 1 */
@@ -4182,10 +4165,7 @@ ul.uk-nav-sub {
     margin-left: -12px;
 }
 
-/*
- * 1. Space is allocated solely based on content dimensions: 0 0 auto
- * 2. Gutter
- */
+
 .uk-dotnav > * {
     /* 1 */
     flex: none;
@@ -4193,12 +4173,7 @@ ul.uk-nav-sub {
     padding-left: 12px;
 }
 
-/* Items
- ========================================================================== */
-/*
- * Items
- * 1. Hide text if present
- */
+
 .uk-dotnav > * > * {
     display: block;
     box-sizing: border-box;
@@ -4215,7 +4190,7 @@ ul.uk-nav-sub {
     transition-property: background-color, border-color;
 }
 
-/* Hover + Focus */
+
 .uk-dotnav > * > :hover,
 .uk-dotnav > * > :focus {
     background-color: rgba(102, 102, 102, 0.6);
@@ -4223,24 +4198,19 @@ ul.uk-nav-sub {
     border-color: transparent;
 }
 
-/* OnClick */
+
 .uk-dotnav > * > :active {
     background-color: rgba(102, 102, 102, 0.2);
     border-color: transparent;
 }
 
-/* Active */
+
 .uk-dotnav > .uk-active > * {
     background-color: rgba(102, 102, 102, 0.6);
     border-color: transparent;
 }
 
-/* Modifier: 'uk-dotnav-vertical'
- ========================================================================== */
-/*
- * 1. Change direction
- * 2. Gutter
- */
+
 .uk-dotnav-vertical {
     /* 1 */
     flex-direction: column;
@@ -4255,14 +4225,7 @@ ul.uk-nav-sub {
     padding-top: 12px;
 }
 
-/* ========================================================================
-   Component: Thumbnav
- ========================================================================== */
-/*
- * 1. Allow items to wrap into the next line
- * 2. Reset list
- * 3. Gutter
- */
+
 .uk-thumbnav {
     display: flex;
     /* 1 */
@@ -4275,10 +4238,7 @@ ul.uk-nav-sub {
     margin-left: -15px;
 }
 
-/*
- * 1. Space is allocated solely based on content dimensions: 0 0 auto
- * 2. Gutter
- */
+
 .uk-thumbnav > * {
     /* 1 */
     flex: none;
@@ -4286,11 +4246,7 @@ ul.uk-nav-sub {
     padding-left: 15px;
 }
 
-/* Items
- ========================================================================== */
-/*
- * Items
- */
+
 .uk-thumbnav > * > * {
     display: inline-block;
     position: relative;
@@ -4423,14 +4379,7 @@ ul.uk-nav-sub {
     margin-bottom: 0;
 }
 
-/* ========================================================================
-   Component: Drop
- ========================================================================== */
-/*
- * 1. Hide by default
- * 2. Set position
- * 3. Set a default width
- */
+
 .uk-drop {
     /* 1 */
     display: none;
@@ -4447,9 +4396,7 @@ ul.uk-nav-sub {
     display: block;
 }
 
-/* Direction / Alignment modifiers
- ========================================================================== */
-/* Direction */
+
 [class*='uk-drop-top'] {
     margin-top: -20px;
 }
@@ -4466,21 +4413,12 @@ ul.uk-nav-sub {
     margin-left: 20px;
 }
 
-/* Grid modifiers
- ========================================================================== */
+
 .uk-drop-stack .uk-drop-grid > * {
     width: 100% !important;
 }
 
-/* ========================================================================
-   Component: Dropdown
- ========================================================================== */
-/*
- * 1. Hide by default
- * 2. Set position
- * 3. Set a default width
- * 4. Style
- */
+
 .uk-dropdown {
     /* 1 */
     display: none;
@@ -4502,9 +4440,7 @@ ul.uk-nav-sub {
     display: block;
 }
 
-/* Nav
- * Adopts `uk-nav`
- ========================================================================== */
+
 .uk-dropdown-nav {
     white-space: nowrap;
     font-size: 0.875rem;

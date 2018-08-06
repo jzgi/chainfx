@@ -41,7 +41,7 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY sort, status DESC");
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY cat, status DESC");
                         return dc.Query<string, Item>(proj: 0xff);
                     }
                 }, 120
@@ -196,12 +196,12 @@ namespace Samp
                 {
                     h.TOPBAR(true);
 
-                    for (int i = 0; i < Item.Sorts.Count; i++)
+                    for (int i = 0; i < Item.Cats.Count; i++)
                     {
-                        var sort = Item.Sorts.At(i);
-                        h.T("<h3>").T(sort.value).T("</h3>");
+                        var cat = Item.Cats.At(i);
+                        h.T("<h3>").T(cat.value).T("</h3>");
 
-                        h.LIST(arr.All(x => x.sort == sort.key), o =>
+                        h.LIST(arr.All(x => x.cat == cat.key), o =>
                         {
                             h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
                             h.COL_(0x23, css: "uk-padding-small");

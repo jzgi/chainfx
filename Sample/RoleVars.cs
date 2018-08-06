@@ -17,15 +17,15 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            var prin = (User) wc.Principal;
+            var o = (User) wc.Principal;
             wc.GivePage(200, h =>
             {
                 h.T("<section class=\"uk-card- uk-card-primary \">");
                 h.UL_("uk-card-body");
-                h.LI("用户昵称", prin.name);
-                h.LI("手　　机", prin.tel);
-                h.LI("收货地址", prin.addr);
-                h.LI("积　　分", prin.score);
+                h.LI("用户名称", o.name);
+                h.LI("手　　机", o.tel);
+                h.LI("收货地址", o.addr);
+                h.LI("积　　分", o.score);
                 h._UL();
                 h.TOOLS(css: "uk-card-footer");
                 h.T("</section>");

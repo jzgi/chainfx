@@ -1261,7 +1261,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte grou = 0)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
@@ -1313,7 +1313,7 @@ namespace Greatbone
                         for (int j = 0; j < actrs.Length; j++)
                         {
                             var actr = actrs[j];
-                            if (!actr.IsCapital && (actr.Grou == 0 || grou == actr.Grou))
+                            if (!actr.IsCapital && (actr.Sort == 0 || sort == actr.Sort))
                             {
                                 PutTool(actr);
                             }
@@ -1406,7 +1406,7 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte grou = 0x0f, string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR(byte sort = 0x0f, string title = null, bool refresh = true)
         {
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">");
@@ -1417,8 +1417,8 @@ namespace Greatbone
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
-                    int g = actr.Grou;
-                    if (g == 0 || (g & grou) > 0)
+                    int g = actr.Sort;
+                    if (g == 0 || (g & sort) > 0)
                     {
                         if (g != gogrp)
                         {
@@ -1462,9 +1462,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLS(byte grou = 0, string css = null)
+        public HtmlContent TOOLS(byte sort = 0, string css = null)
         {
-            Add("<form class=\"uk-flex uk-flex-center");
+            Add("<section class=\"uk-flex uk-flex-center");
             if (css != null)
             {
                 Add(' ');
@@ -1474,35 +1474,35 @@ namespace Greatbone
 
             int gogrp = -1;
             Work wrk = webCtx.Work;
-            var actrs = wrk.Tooled;
-            if (actrs != null)
+            var acts = wrk.Tooled;
+            if (acts != null)
             {
-                for (int i = 0; i < actrs.Length; i++)
+                for (int i = 0; i < acts.Length; i++)
                 {
-                    var actr = actrs[i];
-                    int g = actr.Grou;
-                    if (g == 0 || (g & grou) > 0)
+                    var act = acts[i];
+                    int g = act.Sort;
+                    if (g == 0 || (g & sort) > 0)
                     {
                         if (g != gogrp)
                         {
                             if (gogrp != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(actr);
+                        PutTool(act);
                     }
                     gogrp = g;
                 }
                 Add("</div>");
             }
 
-            Add("</form>");
+            Add("</section>");
             return this;
         }
 
 
-        public HtmlContent VARTOOLS(byte grou = 0, string css = null)
+        public HtmlContent VARTOOLS(byte sort = 0, string css = null)
         {
-            Add("<form class=\"uk-flex uk-flex-center uk-width-1-1");
+            Add("<div class=\"uk-flex uk-flex-center uk-width-1-1");
             if (css != null)
             {
                 Add(' ');
@@ -1518,8 +1518,8 @@ namespace Greatbone
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
-                    int g = actr.Grou;
-                    if (g == 0 || (g & grou) > 0)
+                    int g = actr.Sort;
+                    if (g == 0 || (g & sort) > 0)
                     {
                         if (g != gogrp)
                         {
@@ -1532,7 +1532,7 @@ namespace Greatbone
                 }
                 Add("</div>");
             }
-            Add("</form>");
+            Add("</div>");
             return this;
         }
 
@@ -1552,15 +1552,15 @@ namespace Greatbone
             return this;
         }
 
-        void PutTool(Actioner actr, int subscript = -1, string caption = null)
+        void PutTool(Actioner act, int subscript = -1, string caption = null)
         {
-            var tool = actr.Tool;
+            var tool = act.Tool;
 
             // check action's availability
-            bool ok = !tool.Auth || actr.CheckAccess(webCtx, out _);
+            bool ok = !tool.Auth || act.CheckAccess(webCtx, out _);
             if (ok && level >= 0)
             {
-                ok = actr.CheckState(webCtx, stack, level);
+                ok = act.CheckState(webCtx, stack, level);
             }
 
             if (tool.IsAnchorTag)
@@ -1577,7 +1577,7 @@ namespace Greatbone
                     else if (style == Style.Text) Add(" uk-button-text");
                     else if (style == Style.Link) Add(" uk-button-link");
                     else if (style == Style.Icon) Add(" uk-icon-button");
-                    if (actr == webCtx.Actioner) // if current action
+                    if (act == webCtx.Actioner) // if current action
                     {
                         Add(" uk-active");
                     }
@@ -1597,7 +1597,7 @@ namespace Greatbone
                         Add('/');
                     }
                 }
-                Add(actr.RealPath);
+                Add(act.RealPath);
                 if (subscript >= 0)
                 {
                     Add('-');
@@ -1618,7 +1618,7 @@ namespace Greatbone
                 else if (style == Style.Icon) Add(" uk-icon-button");
 
                 Add("\" name=\"");
-                Add(actr.Key);
+                Add(act.Key);
                 Add("\" formaction=\"");
                 if (level >= 0)
                 {
@@ -1630,7 +1630,7 @@ namespace Greatbone
                         Add('/');
                     }
                 }
-                Add(actr.Key);
+                Add(act.Key);
                 if (subscript >= 0)
                 {
                     Add('-');
@@ -1651,25 +1651,25 @@ namespace Greatbone
                     Add("!serialize(this.form) ? false : ");
                 }
                 Add("confirm('");
-                Add(actr.Tip ?? actr.Label);
+                Add(act.Tip ?? act.Label);
                 Add("');\"");
             }
             else if (tool.HasPrompt)
             {
-                OnClickDialog(2, tool.MustPick, tool.Size, actr.Tip);
+                OnClickDialog(2, tool.MustPick, tool.Size, act.Tip);
             }
             else if (tool.HasShow)
             {
-                OnClickDialog(4, tool.MustPick, tool.Size, actr.Tip);
+                OnClickDialog(4, tool.MustPick, tool.Size, act.Tip);
             }
             else if (tool.HasOpen)
             {
-                OnClickDialog(8, tool.MustPick, tool.Size, actr.Tip);
+                OnClickDialog(8, tool.MustPick, tool.Size, act.Tip);
             }
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return by"); // prefix to avoid js naming conflict
-                Add(actr.Lower);
+                Add(act.Lower);
                 Add("(this);\"");
             }
             else if (tool.HasCrop)
@@ -1679,12 +1679,12 @@ namespace Greatbone
                 Add(',');
                 Add(tool.Size);
                 Add(",'");
-                Add(actr.Tip);
+                Add(act.Tip);
                 Add("');\"");
             }
             Add(">");
 
-            Add(caption ?? actr.Label);
+            Add(caption ?? act.Label);
 
             // put the closing tag
             Add(tool.IsAnchorTag ? "</a>" : "</button>");
