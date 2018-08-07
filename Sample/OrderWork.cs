@@ -58,9 +58,9 @@ namespace Samp
     }
 
     [Ui("订购"), UserAccess(CTR_MGR)]
-    public class CtrOrderWork : OrderWork<CtrOrderVarWork>
+    public class MgrOrderWork : OrderWork<MgrOrderVarWork>
     {
-        public CtrOrderWork(WorkConfig cfg) : base(cfg)
+        public MgrOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -122,15 +122,12 @@ namespace Samp
         {
             var prin = (User) wc.Principal;
             var items = Obtain<Map<string, Item>>();
-            var names = items.GetRelatedItems(prin.id);
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(sort: 1);
+                h.TOOLBAR(@group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT id, item, qty, unit, status FROM orders WHERE status BETWEEN 1 AND 2 AND item")._IN_(names).T(" ORDER BY item, id");
-                    dc.Query(p => p.SetIn(names));
-
+                    dc.Query("SELECT id, item, qty, unit, status FROM orders WHERE status BETWEEN 1 AND 2 AND item IN (SELECT name FROM items WHERE giverid = @1) ORDER BY item, id", p => p.Set(prin.id));
                     string curitme = null;
                     while (dc.Next())
                     {
@@ -141,8 +138,8 @@ namespace Samp
                             if (curitme != null)
                             {
                                 h.T("</main>");
-                                h.TOOLS(sort: 2, css: "uk-card-footer");
-                                h.T("</article>");
+                                h.TOOLS(@group: 2, css: "uk-card-footer");
+                                h.T("</form>");
                             }
                             h.T("<form class=\"uk-card uk-card-default\">");
                             h.T("<header class=\"uk-card-header\">").T(item).T("（").T(unit).T("）</header>");
@@ -154,7 +151,7 @@ namespace Samp
                         curitme = item;
                     }
                     h.T("</main>");
-                    h.TOOLS(sort: 2, css: "uk-card-footer");
+                    h.TOOLS(@group: 2, css: "uk-card-footer");
                     h.T("</form>");
                 }
             }, false, 2);
@@ -263,7 +260,7 @@ namespace Samp
                         curgrpid = item;
                     }
                     h.T("</main>");
-                    h.VARTOOLS(sort: 2, css: "uk-card-footer");
+                    h.VARTOOLS(@group: 2, css: "uk-card-footer");
                     h.T("</article>");
                 }
             }, false, 2);
@@ -299,7 +296,7 @@ namespace Samp
                         curuid = uid;
                     }
                     h.T("</main>");
-                    h.VARTOOLS(sort: 2, css: "uk-card-footer");
+                    h.VARTOOLS(@group: 2, css: "uk-card-footer");
                     h.T("</article>");
                 }
             }, false, 2);

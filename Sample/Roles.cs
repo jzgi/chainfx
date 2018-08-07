@@ -59,9 +59,9 @@ namespace Samp
     {
         public CtrWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrOrderWork>("ord");
+            Create<MgrOrderWork>("mgro");
 
-            Create<GvrOrderWork>("spro");
+            Create<GvrOrderWork>("gvro");
 
             Create<DvrOrderWork>("dvro");
 

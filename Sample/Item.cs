@@ -35,13 +35,14 @@ namespace Samp
         internal string unit;
         internal decimal price;
         internal decimal giverp; // giver price
-        internal decimal grperp; // group cost
-        internal decimal shipperp; // deliver cost
+        internal decimal dvrerp; // deliver cost
+        internal decimal grperp; // grouper cost
         internal short min;
         internal short step;
         internal bool refrig;
         internal short demand;
-        internal Giver[] givers;
+        internal int giverid;
+        internal short[] cap7;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -57,13 +58,14 @@ namespace Samp
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
             s.Get(nameof(giverp), ref giverp);
+            s.Get(nameof(dvrerp), ref dvrerp);
             s.Get(nameof(grperp), ref grperp);
-            s.Get(nameof(shipperp), ref shipperp);
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
             s.Get(nameof(refrig), ref refrig);
             s.Get(nameof(demand), ref demand);
-            s.Get(nameof(givers), ref givers);
+            s.Get(nameof(giverid), ref giverid);
+            s.Get(nameof(cap7), ref cap7);
             s.Get(nameof(status), ref status);
         }
 
@@ -80,49 +82,17 @@ namespace Samp
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
             s.Put(nameof(giverp), giverp);
+            s.Put(nameof(dvrerp), dvrerp);
             s.Put(nameof(grperp), grperp);
-            s.Put(nameof(shipperp), shipperp);
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
             s.Put(nameof(refrig), refrig);
             s.Put(nameof(demand), demand);
-            s.Put(nameof(givers), givers);
+            s.Put(nameof(giverid), giverid);
+            s.Put(nameof(cap7), cap7);
             s.Put(nameof(status), status);
         }
 
         public string Key => name;
-
-        public short[] Cap7Of(int uid)
-        {
-            if (givers != null)
-            {
-                for (int i = 0; i < givers.Length; i++)
-                {
-                    return givers[i].cap7;
-                }
-            }
-            return null;
-        }
-    }
-
-    public struct Giver : IData
-    {
-        internal int uid;
-        internal string uname;
-        internal short[] cap7;
-
-        public void Read(ISource s, byte proj = 15)
-        {
-            s.Get(nameof(uid), ref uid);
-            s.Get(nameof(uname), ref uname);
-            s.Get(nameof(cap7), ref cap7);
-        }
-
-        public void Write(ISink s, byte proj = 15)
-        {
-            s.Put(nameof(uid), uid);
-            s.Put(nameof(uname), uname);
-            s.Put(nameof(cap7), cap7);
-        }
     }
 }

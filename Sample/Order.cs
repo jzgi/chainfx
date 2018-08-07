@@ -19,19 +19,19 @@ namespace Samp
             ORD_PAID = 1,
             ORD_GIVING = 2,
             ORD_GIVEN = 3,
-            ORD_SHIPPING = 4,
-            ORD_SHIPPED = 4,
-            ORD_ENDED = 5;
+            ORD_DVRING = 4,
+            ORD_DVRED = 5,
+            ORD_ENDED = 7;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {ORD_ABORTED, "已撤单"},
+            {ORD_ABORTED, "已撤销"},
             {ORD_CREATED, "新创建"},
             {ORD_PAID, "已付款"},
-            {ORD_GIVING, "加工备货中"},
-            {ORD_GIVEN, "已加工备齐"},
-            {ORD_SHIPPING, "派送中"},
-            {ORD_SHIPPED, "已送达"},
+            {ORD_GIVING, "排程中"},
+            {ORD_GIVEN, "已备齐"},
+            {ORD_DVRING, "派送中"},
+            {ORD_DVRED, "已送达"},
             {ORD_ENDED, "已完成"}
         };
 
@@ -56,9 +56,9 @@ namespace Samp
         internal int giverid;
         internal DateTime giving;
         internal DateTime given;
-        internal int shipperid;
-        internal DateTime shipping;
-        internal DateTime shipped;
+        internal int dvrerid;
+        internal DateTime dvring;
+        internal DateTime dvred;
         internal int grperid;
         internal DateTime ended;
         internal short status;
@@ -90,8 +90,9 @@ namespace Samp
                 s.Get(nameof(giverid), ref giverid);
                 s.Get(nameof(giving), ref giving);
                 s.Get(nameof(given), ref given);
-                s.Get(nameof(shipperid), ref shipperid);
-                s.Get(nameof(shipped), ref shipped);
+                s.Get(nameof(dvrerid), ref dvrerid);
+                s.Get(nameof(dvring), ref dvring);
+                s.Get(nameof(dvred), ref dvred);
                 s.Get(nameof(grperid), ref grperid);
                 s.Get(nameof(ended), ref ended);
             }
@@ -125,8 +126,9 @@ namespace Samp
                 s.Put(nameof(giverid), giverid);
                 s.Put(nameof(giving), giving);
                 s.Put(nameof(given), given);
-                s.Put(nameof(shipperid), shipperid);
-                s.Put(nameof(shipped), shipped);
+                s.Put(nameof(dvrerid), dvrerid);
+                s.Put(nameof(dvring), dvring);
+                s.Put(nameof(dvred), dvred);
                 s.Put(nameof(grperid), grperid);
                 s.Put(nameof(ended), ended);
             }

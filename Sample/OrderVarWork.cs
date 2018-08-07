@@ -33,7 +33,7 @@ namespace Samp
                         h.FORM_();
                         h.FIELDSET_("购买数量");
                         h.LI_("货品").PIC("/" + o.item + "/icon", w: 0x16).SP().T(o.item)._LI();
-//                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
+                        //                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -46,7 +46,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
-//                    o.UpdItem(idx, qty);
+                    //                    o.UpdItem(idx, qty);
                     dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.item).Set(o.total).Set(o.score).Set(o.id));
                 }
                 wc.GivePane(200);
@@ -61,9 +61,9 @@ namespace Samp
         }
     }
 
-    public class CtrOrderVarWork : OrderVarWork
+    public class MgrOrderVarWork : OrderVarWork
     {
-        public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
+        public MgrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

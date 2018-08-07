@@ -1350,7 +1350,7 @@ namespace Greatbone
                 {
                     D obj = arr[i];
                     stack[level] = obj;
-                    Add("<article class=\"uk-card");
+                    Add("<form class=\"uk-card");
                     if (article != null)
                     {
                         Add(' ');
@@ -1358,7 +1358,7 @@ namespace Greatbone
                     }
                     Add("\">");
                     card(obj);
-                    Add("</article>");
+                    Add("</form>");
                     stack[level] = null;
                 }
                 level--; // exit the level
@@ -1406,7 +1406,7 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte sort = 0x0f, string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR(byte group = 0x0f, string title = null, bool refresh = true)
         {
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">");
@@ -1418,7 +1418,7 @@ namespace Greatbone
                 {
                     var actr = actrs[i];
                     int g = actr.Sort;
-                    if (g == 0 || (g & sort) > 0)
+                    if (g == 0 || (g & group) > 0)
                     {
                         if (g != gogrp)
                         {
@@ -1462,9 +1462,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLS(byte sort = 0, string css = null)
+        public HtmlContent TOOLS(byte group = 0, string css = null)
         {
-            Add("<section class=\"uk-flex uk-flex-center");
+            Add("<nav class=\"uk-flex uk-flex-center");
             if (css != null)
             {
                 Add(' ');
@@ -1472,7 +1472,7 @@ namespace Greatbone
             }
             Add("\">");
 
-            int gogrp = -1;
+            int curg = -1;
             Work wrk = webCtx.Work;
             var acts = wrk.Tooled;
             if (acts != null)
@@ -1481,28 +1481,27 @@ namespace Greatbone
                 {
                     var act = acts[i];
                     int g = act.Sort;
-                    if (g == 0 || (g & sort) > 0)
+                    if (g == 0 || (g & group) > 0)
                     {
-                        if (g != gogrp)
+                        if (g != curg)
                         {
-                            if (gogrp != -1) Add("</div>");
+                            if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
                         PutTool(act);
+                        curg = g;
                     }
-                    gogrp = g;
                 }
                 Add("</div>");
             }
-
-            Add("</section>");
+            Add("</nav>");
             return this;
         }
 
 
-        public HtmlContent VARTOOLS(byte sort = 0, string css = null)
+        public HtmlContent VARTOOLS(byte group = 0, string css = null)
         {
-            Add("<div class=\"uk-flex uk-flex-center uk-width-1-1");
+            Add("<nav class=\"uk-flex uk-flex-center uk-width-1-1");
             if (css != null)
             {
                 Add(' ');
@@ -1510,29 +1509,29 @@ namespace Greatbone
             }
             Add("\">");
 
-            int gogrp = -1;
+            int curg = -1;
             Work wrk = webCtx.Work.VarWork;
-            var actrs = wrk?.Tooled;
-            if (actrs != null)
+            var acts = wrk?.Tooled;
+            if (acts != null)
             {
-                for (int i = 0; i < actrs.Length; i++)
+                for (int i = 0; i < acts.Length; i++)
                 {
-                    var actr = actrs[i];
+                    var actr = acts[i];
                     int g = actr.Sort;
-                    if (g == 0 || (g & sort) > 0)
+                    if (g == 0 || (g & group) > 0)
                     {
-                        if (g != gogrp)
+                        if (g != curg)
                         {
-                            if (gogrp != -1) Add("</div>");
+                            if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
                         PutTool(actr);
+                        curg = g;
                     }
-                    gogrp = g;
                 }
                 Add("</div>");
             }
-            Add("</div>");
+            Add("</nav>");
             return this;
         }
 
