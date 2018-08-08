@@ -11,27 +11,19 @@ namespace Samp
 
         public const byte PK = 1, LATER = 2;
 
-        // sorts
-        public static readonly Map<short, string> Cats = new Map<short, string>
-        {
-            {1, "粉面类"},
-            {11, "谷物类"},
-            {21, "其他类"},
-        };
-
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {0, "下架"},
             {1, "上架"},
             {2, "推荐"},
+            {3, "置顶"},
         };
 
         internal string name;
         internal string descr;
         internal string remark;
         internal string mov; // movie url
-        internal short cat;
         internal string unit;
         internal decimal price;
         internal decimal giverp; // giver price
@@ -40,6 +32,7 @@ namespace Samp
         internal short min;
         internal short step;
         internal bool refrig;
+
         internal short demand;
         internal int giverid;
         internal short[] cap7;
@@ -47,14 +40,13 @@ namespace Samp
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & PK) == PK)
+            if ((proj & PK) > 0)
             {
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(remark), ref remark);
             s.Get(nameof(mov), ref mov);
-            s.Get(nameof(cat), ref cat);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
             s.Get(nameof(giverp), ref giverp);
@@ -63,22 +55,24 @@ namespace Samp
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
             s.Get(nameof(refrig), ref refrig);
-            s.Get(nameof(demand), ref demand);
-            s.Get(nameof(giverid), ref giverid);
-            s.Get(nameof(cap7), ref cap7);
-            s.Get(nameof(status), ref status);
+            if ((proj & LATER) > 0)
+            {
+                s.Get(nameof(demand), ref demand);
+                s.Get(nameof(giverid), ref giverid);
+                s.Get(nameof(cap7), ref cap7);
+                s.Get(nameof(status), ref status);
+            }
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & PK) == PK)
+            if ((proj & PK) > 0)
             {
                 s.Put(nameof(name), name);
             }
             s.Put(nameof(descr), descr);
             s.Put(nameof(remark), remark);
             s.Put(nameof(mov), mov);
-            s.Put(nameof(cat), cat);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
             s.Put(nameof(giverp), giverp);
@@ -87,10 +81,13 @@ namespace Samp
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
             s.Put(nameof(refrig), refrig);
-            s.Put(nameof(demand), demand);
-            s.Put(nameof(giverid), giverid);
-            s.Put(nameof(cap7), cap7);
-            s.Put(nameof(status), status);
+            if ((proj & LATER) > 0)
+            {
+                s.Put(nameof(demand), demand);
+                s.Put(nameof(giverid), giverid);
+                s.Put(nameof(cap7), cap7);
+                s.Put(nameof(status), status);
+            }
         }
 
         public string Key => name;

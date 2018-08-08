@@ -41,7 +41,7 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY cat, status DESC");
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE status > 0 ORDER BY status DESC, name");
                         return dc.Query<string, Item>(proj: 0xff);
                     }
                 }, 120
@@ -191,31 +191,25 @@ namespace Samp
         [UserAccess(full: false)]
         public void @default(WebContext wc)
         {
-            var arr = Obtain<Map<string, Item>>();
+            var arr = Obtain<Map<string, Item>>().All();
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
 
-                    for (int i = 0; i < Item.Cats.Count; i++)
+                    h.LIST(arr, o =>
                     {
-                        var cat = Item.Cats.At(i);
-                        h.T("<h3>").T(cat.value).T("</h3>");
-
-                        h.LIST(arr.All(x => x.cat == cat.key), o =>
-                        {
-                            h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
-                            h.COL_(0x23, css: "uk-padding-small");
-                            h.T("<h3>").T(o.name).T("</h3>");
-                            h.FI(null, o.descr);
-                            h.ROW_();
-                            h.P_(w: 0x23).T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
-                            h.FORM_(css: "uk-width-auto");
-                            h.TOOL(nameof(SampVarWork.buy));
-                            h._FORM();
-                            h._ROW();
-                            h._COL();
-                        }, "uk-card-body uk-padding-remove");
-                    }
+                        h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
+                        h.COL_(0x23, css: "uk-padding-small");
+                        h.T("<h3>").T(o.name).T("</h3>");
+                        h.FI(null, o.descr);
+                        h.ROW_();
+                        h.P_(w: 0x23).T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                        h.FORM_(css: "uk-width-auto");
+                        h.TOOL(nameof(SampVarWork.buy));
+                        h._FORM();
+                        h._ROW();
+                        h._COL();
+                    }, "uk-card-body uk-padding-remove");
                 }, true, 60
             );
         }

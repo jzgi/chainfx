@@ -166,28 +166,90 @@ namespace Samp
         }
 
         [UserAccess(CTR_MGR)]
-        [Ui("修改"), Tool(ButtonShow, size: 2)]
+        [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
-            string orgid = wc[-2];
             string name = wc[this];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Item>("SELECT * FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name));
+                    var o = dc.Query1<Item>("SELECT * FROM items WHERE name = @1 ORDER BY status DESC, name", p => p.Set(name));
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("填写货品信息");
-                        h.STATIC(o.name, "名称");
-                        h.TEXTAREA(nameof(o.descr), o.descr, "描述", min: 20, max: 50, required: true);
+                        h.FIELDSET_(o.name);
+                        h.TEXTAREA(nameof(o.descr), o.descr, "简　介", min: 20, max: 100, required: true);
+                        h.TEXTAREA(nameof(o.remark), o.descr, "说　明", min: 100, max: 500, required: true);
+                        h.URL(nameof(o.mov), o.mov, "视　频");
+                        h.TEXT(nameof(o.unit), o.unit, "单　位", required: true);
+                        h.LI_().LABEL("单　价").NUMBER(nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(nameof(o.giverp), o.giverp, required: true)._LI();
+                        h.LI_().LABEL("派送费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true)._LI();
+                        h.LI_().LABEL("起　订").NUMBER(nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(nameof(o.step), o.step, min: (short) 1)._LI();
+                        h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
+                        h._FIELDSET();
+                        h._FORM();
+                    });
+                }
+            }
+            else // POST
+            {
+                const byte proj = 0;
+                var o = await wc.ReadObjectAsync<Item>(proj);
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE name = @1");
+                    dc.Execute(p =>
+                    {
+                        o.Write(p, proj);
+                        p.Set(name);
+                    });
+                }
+                wc.GivePane(200); // close
+            }
+        }
+
+        [UserAccess(CTR_MGR)]
+        [Ui("图片"), Tool(ButtonCrop, size: 1)]
+        public new async Task icon(WebContext wc)
+        {
+            if (wc.GET)
+            {
+                base.icon(wc);
+            }
+            else // POST
+            {
+                string name = wc[this];
+                var f = await wc.ReadAsync<Form>();
+                ArraySegment<byte> img = f[nameof(img)];
+                using (var dc = NewDbContext())
+                {
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE name = @2", p => p.Set(img).Set(name)) > 0)
+                    {
+                        wc.Give(200); // ok
+                    }
+                    else wc.Give(500); // internal server error
+                }
+            }
+        }
+
+        [Ui("调度"), Tool(ButtonShow, size: 4)]
+        public async Task plan(WebContext wc)
+        {
+            string name = wc[this];
+            if (wc.GET)
+            {
+                using (var dc = NewDbContext())
+                {
+                    var o = dc.Query1<Item>("SELECT * FROM items WHERE name = @1", p => p.Set(name));
+                    wc.GivePane(200, h =>
+                    {
+                        string tel = null;
+                        h.FORM_();
+                        h.FIELDSET_("填写供货信息");
+                        h.TEL(nameof(tel), tel, "手机");
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
-                        h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                        h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                        h.NUMBER(nameof(o.step), o.step, "增减", min: (short) 1);
                         h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
-                        h.NUMBER(nameof(o.demand), o.demand, "可供");
                         h._FIELDSET();
                         h._FORM();
                     });
@@ -200,44 +262,10 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE orgid = @1 AND name = @2");
-                    dc.Execute(p =>
-                    {
-                        o.Write(p, proj);
-                        p.Set(orgid).Set(name);
-                    });
+                    dc.Execute(p => { o.Write(p, proj); });
                 }
                 wc.GivePane(200); // close
             }
-        }
-
-        [UserAccess(CTR_MGR)]
-        [Ui("照片"), Tool(ButtonCrop, size: 4)]
-        public new async Task icon(WebContext wc)
-        {
-            if (wc.GET)
-            {
-                base.icon(wc);
-            }
-            else // POST
-            {
-                string orgid = wc[-2];
-                string name = wc[this];
-                var f = await wc.ReadAsync<Form>();
-                ArraySegment<byte> img = f[nameof(img)];
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Execute("UPDATE items SET icon = @1 WHERE orgid = @2 AND name = @3", p => p.Set(img).Set(orgid).Set(name)) > 0)
-                    {
-                        wc.Give(200); // ok
-                    }
-                    else wc.Give(500); // internal server error
-                }
-            }
-        }
-
-        [Ui("计划"), Tool(ButtonShow, size: 4)]
-        public async Task plan(WebContext wc)
-        {
         }
     }
 }

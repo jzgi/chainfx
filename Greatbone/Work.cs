@@ -92,7 +92,7 @@ namespace Greatbone
 
             if (tooled != null) // sort by group
             {
-                Array.Sort(tooled, (a, b) => a.Sort - b.Sort);
+                Array.Sort(tooled, (a, b) => a.Group - b.Group);
             }
         }
 

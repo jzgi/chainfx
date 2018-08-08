@@ -656,13 +656,13 @@ a.uk-link-reset:hover,
     border-spacing: 0;
     border-color: #c8c7cc;
     width: -webkit-fill-available;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     background-color: #fff;
     overflow-x: auto;
 }
 
 .uk-table th {
-    padding: 4px 8px;
+    padding: 6px;
     vertical-align: bottom;
     font-size: 0.875rem;
     font-weight: normal;
@@ -671,15 +671,8 @@ a.uk-link-reset:hover,
 }
 
 .uk-table td {
-    padding: 10px 6px;
+    padding: 8px 4px;
     color: #333;
-}
-
-/*
- * Remove margin from the last-child
- */
-.uk-table td > :last-child {
-    margin-bottom: 0;
 }
 
 .uk-table tfoot {
@@ -1134,7 +1127,7 @@ button.uk-icon:not(:disabled) {
 .uk-radio,
 .uk-checkbox {
     box-sizing: border-box;
-    margin: 0;
+    margin: 4px;
     border-radius: 0;
     font: inherit;
 }
@@ -1352,10 +1345,9 @@ select.uk-form-width-xsmall {
 .uk-radio,
 .uk-checkbox {
     display: inline-block;
-    height: 16px;
-    width: 16px;
+    height: 18px;
+    width: 18px;
     overflow: hidden;
-    margin-top: -3px;
     vertical-align: middle;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -2366,6 +2358,10 @@ a.uk-button-primary {
     transition: box-shadow 0.1s ease-in-out;
 }
 
+.uk-card.uk-active {
+    background-color: lavender;    
+}
+
 .uk-card-body {
     padding: 8px;
 }
@@ -2402,6 +2398,7 @@ ul.uk-card-body li:nth-child(n+2) {
 .uk-card-footer {
     padding: 0 8px 8px 8px;
     vertical-align: middle;
+    display: flex;
 }
 
 .uk-card-body::before,
@@ -4540,6 +4537,7 @@ ul.uk-nav-sub {
  */
 .uk-modal.uk-open {
     opacity: 1;
+    display: flex;
 }
 
 \.uk-modal-page {
@@ -4624,7 +4622,7 @@ ul.uk-nav-sub {
 
 .uk-modal-large .uk-modal-dialog {
     position: relative;
-    margin: 4rem auto;
+    margin: auto;
     height: 85%;
     max-height: 800px;
     width: 90%;

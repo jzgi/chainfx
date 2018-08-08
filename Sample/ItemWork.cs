@@ -25,25 +25,28 @@ namespace Samp
         {
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Item>("SELECT * FROM items WHERE status > 0 ORDER BY status DESC");
+                var arr = dc.Query<Item>("SELECT * FROM items ORDER BY status DESC");
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.BOARD(arr, o =>
                     {
                         h.T("<header class=\"uk-card-header\">");
-                        h.T(o.name);
+                        h.T(o.name).BADGE(Item.Statuses[o.status]);
                         h.T("</header>");
-                        h.T("<main class=\"uk-card-body uk-grid\">");
-                        h.ICO_(css: "uk-width-1-4").T(o.name).T("/icon")._ICO();
-                        h.UL_(css: "uk-width-3-4 uk-padding-small-left");
+                        h.T("<main class=\"uk-card-body uk-flex\">");
+                        h.ICO_(css: "uk-width-1-5").T(o.name).T("/icon")._ICO();
+                        h.UL_(css: "uk-width-4-5 uk-padding-small-left");
                         h.LI("描述", o.descr);
-                        h.LI_().FI("单价", o.price).FI("供价", o.giverp).FI("运费", o.dvrerp).FI("团费", o.grperp)._LI();
-                        h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("存量", o.demand)._LI();
+                        h.LI_().FI("单价", o.price).FI("供应", o.giverp).FI("派送", o.dvrerp).FI("团组", o.grperp)._LI();
+                        h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("冷藏", o.refrig)._LI();
                         h._UL();
                         h.T("</main>");
-                        h.VARTOOLS(css: "uk-card-footer");
-                    }, null);
+                        h.T("<footer class=\"uk-card-footer\">");
+                        h.CHECK(o).VARTOOLS();
+                        h.T("</footer>");
+//                        h.VARTOOLS(css: "uk-card-footer");
+                    });
                 });
             }
         }
@@ -59,25 +62,27 @@ namespace Samp
                 {
                     h.FORM_();
                     h.FIELDSET_("填写货品信息");
-                    h.TEXT(nameof(o.name), o.name, label: "名称", max: 10, required: true);
-                    h.TEXTAREA(nameof(o.descr), o.descr, "简述", min: 20, max: 50, required: true);
-                    h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
-                    h.NUMBER(nameof(o.price), o.price, "单价", required: true);
-                    h.NUMBER(nameof(o.min), o.min, "起订", min: (short) 1);
-                    h.NUMBER(nameof(o.step), o.step, "递增", min: (short) 1);
-                    h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
-                    h.NUMBER(nameof(o.demand), o.demand, "可供");
+                    h.TEXT(nameof(o.name), o.name, label: "品　名", max: 10, required: true);
+                    h.TEXTAREA(nameof(o.descr), o.descr, "简　介", min: 20, max: 100, required: true);
+                    h.TEXTAREA(nameof(o.remark), o.descr, "说　明", min: 100, max: 500, required: true);
+                    h.URL(nameof(o.mov), o.mov, "视　频");
+                    h.TEXT(nameof(o.unit), o.unit, "单　位", required: true);
+                    h.LI_().LABEL("单　价").NUMBER(nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(nameof(o.giverp), o.giverp, required: true)._LI();
+                    h.LI_().LABEL("派送费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true)._LI();
+                    h.LI_().LABEL("起　订").NUMBER(nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(nameof(o.step), o.step, min: (short) 1)._LI();
+                    h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                     h._FIELDSET();
                     h._FORM();
                 });
             }
             else // POST
             {
+                const byte proj = Item.PK;
                 var o = await wc.ReadObjectAsync<Item>();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("INSERT INTO items")._(Item.Empty)._VALUES_(Item.Empty);
-                    dc.Execute(p => o.Write(p));
+                    dc.Sql("INSERT INTO items")._(Item.Empty, proj)._VALUES_(Item.Empty, proj);
+                    dc.Execute(p => o.Write(p, proj));
                 }
                 wc.GivePane(200); // close dialog
             }

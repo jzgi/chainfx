@@ -1313,7 +1313,7 @@ namespace Greatbone
                         for (int j = 0; j < actrs.Length; j++)
                         {
                             var actr = actrs[j];
-                            if (!actr.IsCapital && (actr.Sort == 0 || sort == actr.Sort))
+                            if (!actr.IsCapital && (actr.Group == 0 || sort == actr.Group))
                             {
                                 PutTool(actr);
                             }
@@ -1333,15 +1333,22 @@ namespace Greatbone
             Add("</div>");
         }
 
-        public void BOARD<D>(D[] arr, Action<D> card, string main = null, string article = "uk-card-default")
+        public HtmlContent CHECK(object obj)
         {
-            Add("<main class=\"uk-board");
-            if (main != null)
+            Work w = webCtx.Work;
+            Work vw = w.varwork;
+            if (vw != null && w.HasPick)
             {
-                Add(' ');
-                Add(main);
+                Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+                vw.PutVariableKey(obj, this);
+                Add("\" onchange=\"checkit(this);\">");
             }
-            Add("\">");
+            return this;
+        }
+
+        public void BOARD<D>(D[] arr, Action<D> card, string css = "uk-card-default")
+        {
+            Add("<main class=\"uk-board\">");
             if (arr != null)
             {
                 if (stack == null) stack = new object[4]; // init contexts
@@ -1351,10 +1358,10 @@ namespace Greatbone
                     D obj = arr[i];
                     stack[level] = obj;
                     Add("<form class=\"uk-card");
-                    if (article != null)
+                    if (css != null)
                     {
                         Add(' ');
-                        Add(article);
+                        Add(css);
                     }
                     Add("\">");
                     card(obj);
@@ -1417,7 +1424,7 @@ namespace Greatbone
                 for (int i = 0; i < actrs.Length; i++)
                 {
                     var actr = actrs[i];
-                    int g = actr.Sort;
+                    int g = actr.Group;
                     if (g == 0 || (g & group) > 0)
                     {
                         if (g != gogrp)
@@ -1480,7 +1487,7 @@ namespace Greatbone
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
-                    int g = act.Sort;
+                    int g = act.Group;
                     if (g == 0 || (g & group) > 0)
                     {
                         if (g != curg)
@@ -1517,7 +1524,7 @@ namespace Greatbone
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var actr = acts[i];
-                    int g = actr.Sort;
+                    int g = actr.Group;
                     if (g == 0 || (g & group) > 0)
                     {
                         if (g != curg)
@@ -1767,6 +1774,47 @@ namespace Greatbone
             if (label != null) LI_(label);
 
             Add("<input class=\"uk-input\" type=\"tel\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(v);
+            Add("\"");
+            if (tip != null)
+            {
+                Add(" placeholder=\"");
+                Add(tip);
+                Add("\"");
+            }
+            if (pattern != null)
+            {
+                Add(" pattern=\"");
+                AddEsc(pattern);
+                Add("\"");
+            }
+            if (max > 0)
+            {
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
+            }
+            if (min > 0)
+            {
+                Add(" minlength=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            Add(">");
+
+            if (label != null) _LI();
+            return this;
+        }
+
+        public HtmlContent URL(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        {
+            if (label != null) LI_(label);
+
+            Add("<input class=\"uk-input\" type=\"url\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
@@ -2067,9 +2115,9 @@ namespace Greatbone
 
         public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false)
         {
-            Add("<li>");
             if (label != null)
             {
+                Add("<li>");
                 Add("<label>");
             }
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
@@ -2082,8 +2130,8 @@ namespace Greatbone
             {
                 Add(label);
                 Add("</label>");
+                Add("</li>");
             }
-            Add("</li>");
             return this;
         }
 
