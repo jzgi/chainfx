@@ -53,7 +53,7 @@ namespace Greatbone
             }
             this.label = ui?.Label ?? name.ToUpper();
             this.tip = ui?.Tip ?? label;
-            this.group = ui?.Sort ?? 0;
+            this.group = ui?.Group ?? 0;
             // authorize
             if (access == null)
             {

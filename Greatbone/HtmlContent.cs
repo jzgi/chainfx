@@ -1308,7 +1308,7 @@ namespace Greatbone
                     row(obj);
                     if (actrs != null) // triggers
                     {
-                        Add("<td>");
+                        Add("<td style=\"text-align: right\">");
                         Add("<form class=\"uk-button-group\">");
                         for (int j = 0; j < actrs.Length; j++)
                         {
@@ -1331,19 +1331,6 @@ namespace Greatbone
             }
             Add("</table>");
             Add("</div>");
-        }
-
-        public HtmlContent CHECK(object obj)
-        {
-            Work w = webCtx.Work;
-            Work vw = w.varwork;
-            if (vw != null && w.HasPick)
-            {
-                Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                vw.PutVariableKey(obj, this);
-                Add("\" onchange=\"checkit(this);\">");
-            }
-            return this;
         }
 
         public void BOARD<D>(D[] arr, Action<D> card, string css = "uk-card-default")
@@ -1418,12 +1405,12 @@ namespace Greatbone
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">");
             int gogrp = -1;
-            var actrs = webCtx.Work.Tooled;
-            if (actrs != null)
+            var acts = webCtx.Work.Tooled;
+            if (acts != null)
             {
-                for (int i = 0; i < actrs.Length; i++)
+                for (int i = 0; i < acts.Length; i++)
                 {
-                    var actr = actrs[i];
+                    var actr = acts[i];
                     int g = actr.Group;
                     if (g == 0 || (g & group) > 0)
                     {
@@ -1471,7 +1458,7 @@ namespace Greatbone
 
         public HtmlContent TOOLS(byte group = 0, string css = null)
         {
-            Add("<nav class=\"uk-flex uk-flex-center");
+            Add("<nav class=\"uk-flex");
             if (css != null)
             {
                 Add(' ');
@@ -1479,6 +1466,7 @@ namespace Greatbone
             }
             Add("\">");
 
+            // output button group(s)
             int curg = -1;
             Work wrk = webCtx.Work;
             var acts = wrk.Tooled;
@@ -1508,7 +1496,7 @@ namespace Greatbone
 
         public HtmlContent VARTOOLS(byte group = 0, string css = null)
         {
-            Add("<nav class=\"uk-flex uk-flex-center uk-width-1-1");
+            Add("<nav class=\"uk-flex uk-width-1-1");
             if (css != null)
             {
                 Add(' ');
@@ -1516,9 +1504,21 @@ namespace Greatbone
             }
             Add("\">");
 
+            Work w = webCtx.Work;
+            Work varw = w.varwork;
+
+            // output a pick check
+            if (varw != null && w.HasPick)
+            {
+                object obj = stack[level];
+                Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+                varw.PutVariableKey(obj, this);
+                Add("\" onchange=\"checkit(this);\">");
+            }
+
+            // output button group(s)
             int curg = -1;
-            Work wrk = webCtx.Work.VarWork;
-            var acts = wrk?.Tooled;
+            var acts = varw?.Tooled;
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)

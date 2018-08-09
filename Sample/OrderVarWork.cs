@@ -61,9 +61,9 @@ namespace Samp
         }
     }
 
-    public class MgrOrderVarWork : OrderVarWork
+    public class CtrOrderVarWork : OrderVarWork
     {
-        public MgrOrderVarWork(WorkConfig cfg) : base(cfg)
+        public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }
@@ -81,12 +81,12 @@ namespace Samp
         {
         }
 
-        [Ui("送货", sort: 1), Tool(ButtonPickPrompt)]
+        [Ui("送货", group: 1), Tool(ButtonPickPrompt)]
         public async Task receive(WebContext wc)
         {
         }
 
-        [Ui("送货", sort: 2), Tool(ButtonPickPrompt)]
+        [Ui("送货", group: 2), Tool(ButtonPickPrompt)]
         public async Task dgrp(WebContext wc)
         {
         }

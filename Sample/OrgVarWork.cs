@@ -19,6 +19,7 @@ namespace Samp
         {
         }
 
+
         [Ui("修改"), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {

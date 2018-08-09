@@ -30,15 +30,14 @@ namespace Samp
                 {
                     h.BOARD(arr, o =>
                         {
-                            h.UL_("uk-list uk-list-divider uk-card-body");
-                            h.LI("收货", o.uaddr, o.uname, o.utel);
-                            h.LI_();
-                            h.ICO_(css: "uk-width-1-3").T('/').T(o.item).T("/icon")._ICO();
-                            h.FI(null, o.item).P_(w: 0x16).CUR(o.price)._P().P_(w: 0x16).T(o.qty).T(o.unit)._P();
-                            h._LI();
-                            h._UL(); // uk-card-body
-
-                            h.VARTOOLS(css: "uk-card-footer");
+                            h.T("<header class=\"uk-card-header\">");
+                            h.T("收货：").T(o.uaddr).SP().T(o.uname).SP().T(o.utel);
+                            h.T("</header>");
+                            h.T("<main class=\"uk-card-body\">");
+                            h.ICO_(css: "uk-width-1-6").T('/').T(o.item).T("/icon")._ICO();
+                            h.CUR(o.price).T(o.qty).T(o.unit)._P();
+                            h.VARTOOLS(css: "uk-width-1-5");
+                            h.T("</main>");
                         }
                     );
                 }, false, 2, title: "我的订单");
@@ -58,9 +57,9 @@ namespace Samp
     }
 
     [Ui("订购"), UserAccess(CTR_MGR)]
-    public class MgrOrderWork : OrderWork<MgrOrderVarWork>
+    public class CtrOrderWork : OrderWork<CtrOrderVarWork>
     {
-        public MgrOrderWork(WorkConfig cfg) : base(cfg)
+        public CtrOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -151,20 +150,20 @@ namespace Samp
                         curitme = item;
                     }
                     h.T("</main>");
-                    h.TOOLS(@group: 2, css: "uk-card-footer");
+                    h.TOOLS(group: 0b0110, css: "uk-card-footer uk-flex-between");
                     h.T("</form>");
                 }
             }, false, 2);
         }
 
-        [Ui("概况", sort: 1), Tool(ButtonPickShow)]
+        [Ui("概况", group: 1), Tool(ButtonPickShow)]
         public void summary(WebContext wc)
         {
             bool range = true;
         }
 
 
-        [Ui("排程", "设为排程状态", sort: 2), Tool(ButtonPickShow)]
+        [Ui("排程", "设为排程状态", 0b0010), Tool(ButtonPickShow)]
         public void plan(WebContext wc)
         {
             bool range = true;
@@ -189,7 +188,7 @@ namespace Samp
             }
         }
 
-        [Ui("解排", "解除排程状态", sort: 2), Tool(ButtonPickShow)]
+        [Ui("解排", "解除排程状态", 0b0010), Tool(ButtonPickShow)]
         public async Task unplan(WebContext wc)
         {
             bool range = false;
@@ -212,6 +211,11 @@ namespace Samp
                 }
                 wc.GiveRedirect();
             }
+        }
+
+        [Ui("备齐", "解除排程状态", 0b0100), Tool(ButtonPickShow)]
+        public async Task ready(WebContext wc)
+        {
         }
     }
 

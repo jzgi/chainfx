@@ -19,26 +19,8 @@ namespace Samp
         {
         }
 
-        [Ui("员工"), Tool(A)]
-        public void @default(WebContext wc, int page)
-        {
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE oprat IS NOT NULL ORDER BY oprat LIMIT 20 OFFSET @1");
-                var arr = dc.Query<User>(p => p.Set(page * 20));
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-                    h.TABLE(arr,
-                        () => h.TH("姓名").TH("电话").TH("网点").TH("岗位"),
-                        o => h.TD(o.name).TD(o.tel).TD(o.grpat).TD(Ctrs[o.ctr])
-                    );
-                });
-            }
-        }
-
         [Ui("客户"), Tool(A)]
-        public void all(WebContext wc, int page)
+        public void @default(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
             {

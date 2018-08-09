@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Greatbone;
 using static Samp.User;
 using static Greatbone.Modal;
-using static Greatbone.Style;
 
 namespace Samp
 {
@@ -54,18 +53,20 @@ namespace Samp
     }
 
     [UserAccess(ctr: 1)]
-    [Ui("中心")]
-    public class CtrWork : OrgWork<CtrOrgVarWork>
+    [Ui("人员")]
+    public class CtrWork : UserWork<CtrUserVarWork>
     {
         public CtrWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MgrOrderWork>("mgro");
+            Create<CtrOrderWork>("mgro");
 
             Create<GvrOrderWork>("gvro");
 
             Create<DvrOrderWork>("dvro");
 
             Create<CtrItemWork>("item");
+
+            Create<CtrOrgWork>("org");
 
             Create<CtrRepayWork>("repay");
         }
@@ -75,155 +76,54 @@ namespace Samp
             bool inner = wc.Query[nameof(inner)];
             if (inner)
             {
-                wc.GivePage(200, h =>
+                using (var dc = NewDbContext())
                 {
-                    h.TOOLBAR();
-                    using (var dc = NewDbContext())
+                    dc.Sql("SELECT * FROM users WHERE ctr > 0 ORDER BY ctr");
+                    var arr = dc.Query<User>();
+                    wc.GivePage(200, h =>
                     {
-                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
-                        var arr = dc.Query<Org>();
+                        h.TOOLBAR();
                         h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.mgrname)
+                            o => h.TD(o.name).TD(o.tel).TD(Ctrs[o.ctr])
                         );
-                    }
-                });
+                    });
+                }
             }
             else
             {
-                wc.GiveFrame(200, false, 60 * 15, "后台作业功能");
+                wc.GiveFrame(200, false, 60 * 15, "调度作业");
             }
         }
 
         [UserAccess(CTR_MGR)]
-        [Ui("新建团"), Tool(ButtonShow, Primary)]
-        public async Task @new(WebContext wc)
-        {
-            const byte proj = 0xff;
-            if (wc.GET)
-            {
-                var o = new Org { };
-                o.Read(wc.Query, proj);
-                wc.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
-                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                    m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20).NUMBER(nameof(o.x), o.x, "纬度", max: 20);
-                    m._FORM();
-                });
-            }
-
-            else // post
-            {
-                var o = await wc.ReadObjectAsync<Org>(proj);
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("INSERT INTO orgs")._(Org.Empty, proj)._VALUES_(Org.Empty, proj);
-                    dc.Execute(p => o.Write(p, proj));
-                }
-                wc.GivePane(200); // created
-            }
-        }
-
-        [UserAccess(CTR_MGR)]
-        [Ui("人员", "设置操作人员"), Tool(ButtonOpen, size: 4)]
-        public async Task acl(WebContext wc, int cmd)
+        [Ui("添加", "添加中心操作人员"), Tool(ButtonShow, size: 1)]
+        public async Task add(WebContext wc, int cmd)
         {
             string tel = null;
             short ctr = 0;
-            var f = await wc.ReadAsync<Form>();
-            if (f != null)
-            {
-                tel = f[nameof(tel)];
-                ctr = f[nameof(ctr)];
-                if (cmd == 1) // remove
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET ctr = NULL WHERE tel = @1", p => p.Set(tel));
-                    }
-                }
-                else if (cmd == 2) // add
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET ctr = @1 WHERE tel = @2", p => p.Set(ctr).Set(tel));
-                    }
-                }
-            }
-            wc.GivePane(200, h =>
-            {
-                h.FORM_();
-                h.FIELDSET_("现有人员");
-                using (var dc = NewDbContext())
-                {
-                    if (dc.Query("SELECT name, tel, ctr FROM users WHERE ctr > 0"))
-                    {
-                        while (dc.Next())
-                        {
-                            dc.Let(out string name).Let(out tel).Let(out ctr);
-                            h.RADIO(nameof(tel), tel, tel + " " + name + " " + Ctrs[ctr], false);
-                        }
-                    }
-                }
-                h._FIELDSET();
-                h.BUTTON(nameof(acl), 1, "删除");
-
-                h.FIELDSET_("添加人员");
-                h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                h.SELECT(nameof(ctr), ctr, Ctrs, "角色");
-                h._FIELDSET();
-                h.BUTTON(nameof(acl), 2, "添加");
-                h._FORM();
-            });
-        }
-
-        [UserAccess(CTR_MGR)]
-        [Ui("状态"), Tool(ButtonShow)]
-        public async Task status(WebContext wc)
-        {
-            string orgid = wc[this];
-            var org = Obtain<Map<string, Org>>()[orgid];
-            User prin = (User) wc.Principal;
-            bool custsvc;
             if (wc.GET)
             {
-                custsvc = org.mgrwx == prin.wx;
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    //                    h.FIELDSET_("设置网点营业状态").SELECT(nameof(org.status), org.status, Statuses, "营业状态")._FIELDSET();
-                    h.FIELDSET_("客服设置");
-                    h.CHECKBOX(nameof(custsvc), custsvc, "我要作为上线客服");
+                    h.FIELDSET_("添加人员");
+                    h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
+                    h.SELECT(nameof(ctr), ctr, Ctrs, "角色");
                     h._FIELDSET();
                     h._FORM();
                 });
             }
             else
             {
-                var f = await wc.ReadAsync<Form>();
-                org.status = f[nameof(org.status)];
-                custsvc = f[nameof(custsvc)];
-                using (var dc = NewDbContext())
+                if (cmd == 2) // add
                 {
-                    dc.Execute("UPDATE orgs SET status = @1 WHERE id = @2", p => p.Set(org.status).Set(orgid));
-                    if (custsvc)
+                    using (var dc = NewDbContext())
                     {
-                        dc.Execute("UPDATE orgs SET oprwx = @1, oprtel = @2, oprname = @3 WHERE id = @4", p => p.Set(prin.wx).Set(prin.tel).Set(prin.name).Set(orgid));
-                    }
-                    else
-                    {
-                        dc.Execute("UPDATE orgs SET oprwx = NULL, oprtel = NULL, oprname = NULL WHERE id = @1", p => p.Set(orgid));
+                        dc.Execute("UPDATE users SET ctr = @1 WHERE tel = @2", p => p.Set(ctr).Set(tel));
                     }
                 }
                 wc.GivePane(200);
             }
-        }
-
-        [Ui("查看客户"), Tool(AOpen, size: 4)]
-        public void user(WebContext wc)
-        {
         }
     }
 

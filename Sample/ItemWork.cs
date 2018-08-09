@@ -31,9 +31,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.BOARD(arr, o =>
                     {
-                        h.T("<header class=\"uk-card-header\">");
-                        h.T(o.name).BADGE(Item.Statuses[o.status]);
-                        h.T("</header>");
+                        h.T("<header class=\"uk-card-header\">").T(o.name).BADGE(Item.Statuses[o.status]).T("</header>");
                         h.T("<main class=\"uk-card-body uk-flex\">");
                         h.ICO_(css: "uk-width-1-5").T(o.name).T("/icon")._ICO();
                         h.UL_(css: "uk-width-4-5 uk-padding-small-left");
@@ -42,10 +40,7 @@ namespace Samp
                         h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("冷藏", o.refrig)._LI();
                         h._UL();
                         h.T("</main>");
-                        h.T("<footer class=\"uk-card-footer\">");
-                        h.CHECK(o).VARTOOLS();
-                        h.T("</footer>");
-//                        h.VARTOOLS(css: "uk-card-footer");
+                        h.VARTOOLS(css: "uk-card-footer uk-flex-between");
                     });
                 });
             }

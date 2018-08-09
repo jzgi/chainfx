@@ -734,7 +734,6 @@ a.uk-link-reset:hover,
     min-width: 300px;
 }
 
-
 .uk-table-link {
     padding: 0 !important;
 }
@@ -2359,7 +2358,7 @@ a.uk-button-primary {
 }
 
 .uk-card.uk-active {
-    background-color: lavender;    
+    background-color: lavender;
 }
 
 .uk-card-body {
@@ -2810,7 +2809,6 @@ label.uk-label {
 label > input[type="checkbox"] {
     margin-right: 0.5rem;
 }
-
 
 .uk-label-success {
     color: #fff;
@@ -4044,7 +4042,7 @@ ul.uk-nav-sub {
 .uk-tab > * > a {
     display: block;
     text-align: center;
-    padding: 6px 12px;
+    padding: 6px 8px;
     color: #666;
     border-bottom: 2px solid transparent;
     text-transform: uppercase;
@@ -4139,16 +4137,13 @@ ul.uk-nav-sub {
     color: rgba(102, 102, 102, 0.5);
 }
 
-
 .uk-slidenav-large {
     padding: 10px 10px;
 }
 
-
 .uk-slidenav-container {
     display: flex;
 }
-
 
 .uk-dotnav {
     display: flex;
@@ -4162,14 +4157,12 @@ ul.uk-nav-sub {
     margin-left: -12px;
 }
 
-
 .uk-dotnav > * {
     /* 1 */
     flex: none;
     /* 2 */
     padding-left: 12px;
 }
-
 
 .uk-dotnav > * > * {
     display: block;
@@ -4187,7 +4180,6 @@ ul.uk-nav-sub {
     transition-property: background-color, border-color;
 }
 
-
 .uk-dotnav > * > :hover,
 .uk-dotnav > * > :focus {
     background-color: rgba(102, 102, 102, 0.6);
@@ -4195,18 +4187,15 @@ ul.uk-nav-sub {
     border-color: transparent;
 }
 
-
 .uk-dotnav > * > :active {
     background-color: rgba(102, 102, 102, 0.2);
     border-color: transparent;
 }
 
-
 .uk-dotnav > .uk-active > * {
     background-color: rgba(102, 102, 102, 0.6);
     border-color: transparent;
 }
-
 
 .uk-dotnav-vertical {
     /* 1 */
@@ -4222,7 +4211,6 @@ ul.uk-nav-sub {
     padding-top: 12px;
 }
 
-
 .uk-thumbnav {
     display: flex;
     /* 1 */
@@ -4235,14 +4223,12 @@ ul.uk-nav-sub {
     margin-left: -15px;
 }
 
-
 .uk-thumbnav > * {
     /* 1 */
     flex: none;
     /* 2 */
     padding-left: 15px;
 }
-
 
 .uk-thumbnav > * > * {
     display: inline-block;
@@ -4376,7 +4362,6 @@ ul.uk-nav-sub {
     margin-bottom: 0;
 }
 
-
 .uk-drop {
     /* 1 */
     display: none;
@@ -4392,7 +4377,6 @@ ul.uk-nav-sub {
 .uk-drop.uk-open {
     display: block;
 }
-
 
 [class*='uk-drop-top'] {
     margin-top: -20px;
@@ -4410,11 +4394,9 @@ ul.uk-nav-sub {
     margin-left: 20px;
 }
 
-
 .uk-drop-stack .uk-drop-grid > * {
     width: 100% !important;
 }
-
 
 .uk-dropdown {
     /* 1 */
@@ -4436,7 +4418,6 @@ ul.uk-nav-sub {
 .uk-dropdown.uk-open {
     display: block;
 }
-
 
 .uk-dropdown-nav {
     white-space: nowrap;
