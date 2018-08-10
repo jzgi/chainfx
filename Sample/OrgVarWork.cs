@@ -33,12 +33,12 @@ namespace Samp
                     var o = dc.Query1<Org>(p => p.Set(orgid), proj);
                     wc.GivePane(200, h =>
                     {
-                        h.FORM_().FIELDSET_("填写网点信息");
+                        h.FORM_().FIELDUL_("填写网点信息");
                         h.STATIC("编号", o.id);
-                        h.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                        h.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                        h.NUMBER(nameof(o.x), o.x, "经度").NUMBER(nameof(o.x), o.x, "纬度");
-                        h._FIELDSET()._FORM();
+                        h.TEXT("名称", nameof(o.name), o.name, max: 10, required: true);
+                        h.TEXT("地址", nameof(o.addr), o.addr, max: 20);
+                        h.NUMBER("经度", nameof(o.x), o.x).NUMBER("纬度", nameof(o.x), o.x);
+                        h._FIELDUL()._FORM();
                     });
                 }
             }
@@ -69,9 +69,9 @@ namespace Samp
                 wc.GivePane(200, m =>
                 {
                     m.FORM_();
-                    m.FIELDSET_("查询帐号（手机号）");
-                    m.SEARCH(nameof(forid), forid, pattern: "[0-9]+", max: 11, min: 11);
-                    m._FIELDSET();
+                    m.FIELDUL_("查询帐号（手机号）");
+                    m.SEARCH(null, nameof(forid), forid, pattern: "[0-9]+", max: 11, min: 11);
+                    m._FIELDUL();
                     if (forid != null)
                     {
                         using (var dc = NewDbContext())
@@ -79,9 +79,9 @@ namespace Samp
                             if (dc.Query1("SELECT concat(wx, ' ', tel, ' ', name) FROM users WHERE tel = @1", p => p.Set(forid)))
                             {
                                 dc.Let(out wx_tel_name);
-                                m.FIELDSET_("设置经理");
+                                m.FIELDUL_("设置经理");
                                 m.RADIO(nameof(wx_tel_name), wx_tel_name, wx_tel_name);
-                                m._FIELDSET();
+                                m._FIELDUL();
                             }
                         }
                     }

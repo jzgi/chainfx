@@ -44,7 +44,7 @@ namespace Samp
             string tel = null;
             if (inner)
             {
-                wc.GivePane(200, h => { h.FORM_().FIELDSET_("手机号").TEL(nameof(tel), tel)._FIELDSET()._FORM(); });
+                wc.GivePane(200, h => { h.FORM_().FIELDUL_("手机号").TEL(null, nameof(tel), tel)._FIELDUL()._FORM(); });
             }
             else
             {

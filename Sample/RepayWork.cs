@@ -94,10 +94,10 @@ namespace Samp
                     fro = (DateTime) dc.Scalar("SELECT till FROM repays ORDER BY id DESC LIMIT 1");
                     wc.GivePane(200, h =>
                     {
-                        h.FORM_().FIELDSET_("选择截至日期（不包含）");
-                        h.DATE(nameof(fro), fro, "起始", @readonly: true);
-                        h.DATE(nameof(till), DateTime.Today, "截至", max: DateTime.Today);
-                        h._FIELDSET()._FORM();
+                        h.FORM_().FIELDUL_("选择截至日期（不包含）");
+                        h.LI_().DATE("起　始", nameof(fro), fro, @readonly: true)._LI();
+                        h.LI_().DATE("截　至", nameof(till), DateTime.Today, max: DateTime.Today)._LI();
+                        h._FIELDUL()._FORM();
                     });
                 }
             }

@@ -171,9 +171,9 @@ namespace Samp
             {
                 wc.GivePage(200, h =>
                 {
-                    h.FORM_().FIELDSET_("个别选择还是区间选择");
+                    h.FORM_().FIELDUL_("个别选择还是区间选择");
                     h.CHECKBOX(nameof(range), range, "选择连续区间");
-                    h._FIELDSET()._FORM();
+                    h._FIELDUL()._FORM();
                 });
             }
             else
@@ -196,9 +196,9 @@ namespace Samp
             {
                 wc.GivePage(200, h =>
                 {
-                    h.FORM_().FIELDSET_("是特定选择还是区间选择");
+                    h.FORM_().FIELDUL_("是特定选择还是区间选择");
                     h.CHECKBOX(nameof(range), range, "选择连续区间");
-                    h._FIELDSET()._FORM();
+                    h._FIELDUL()._FORM();
                 });
             }
             else
@@ -338,7 +338,7 @@ namespace Samp
             string tel = null;
             if (inner)
             {
-                wc.GivePane(200, h => { h.FORM_().FIELDSET_("手机号").TEL(nameof(tel), tel)._FIELDSET()._FORM(); });
+                wc.GivePane(200, h => { h.FORM_().FIELDUL_("手机号").TEL(null, nameof(tel), tel)._FIELDUL()._FORM(); });
             }
             else
             {

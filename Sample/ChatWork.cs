@@ -60,7 +60,7 @@ namespace Samp
                 wc.GivePane(200, h =>
                 {
                     h.FORM_(mp: true);
-                    h.TEXT(nameof(subject), text, max: 20, tip: "输入文字");
+                    h.TEXT(null, nameof(subject), text, tip: "输入文字", max: 20);
                     h.TEXTAREA(null, nameof(text), text, tip: "输入文字", max: 500);
                     h._FORM();
                 });

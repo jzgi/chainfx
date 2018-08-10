@@ -165,14 +165,14 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("填写用户信息");
-                        h.TEXT(nameof(o.name), o.name, label: "用户昵称", max: 4, min: 2, required: true);
-                        h.TEXT(nameof(o.tel), o.tel, label: "手　　机", pattern: "[0-9]+", max: 11, min: 11, required: true);
+                        h.FIELDUL_("填写用户信息");
+                        h.LI_().TEXT("用户昵称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
+                        h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<string, Org>>();
-                        h.SELECT(label: "参　　团", name: nameof(o.grpat), v: o.grpat, opt: orgs);
-                        h.TEXT(nameof(o.addr), o.addr, label: "收货地址", max: 21, min: 2, required: true);
-                        h._FIELDSET();
+                        h.LI_().SELECT("参　　团", nameof(o.grpat), o.grpat, opt: orgs)._LI();
+                        h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
+                        h._FIELDUL();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();
                         h._FORM();
                     }, title: "用户注册");

@@ -75,10 +75,10 @@ namespace Samp
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.FIELDSET_();
-                    h.TEXT(nameof(o.subject), o.subject, "标题", min: 4, max: 20, required: true);
+                    h.FIELDUL_();
+                    h.TEXT("标题", nameof(o.subject), o.subject, max: 20, min: 4, required: true);
                     h.TEXTAREA("内容", nameof(o.text), o.text, max: 200, required: true);
-                    h._FIELDSET();
+                    h._FIELDUL();
                     h._FORM();
                 });
             }

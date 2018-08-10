@@ -56,11 +56,11 @@ namespace Samp
                     var o = dc.Query1<Tut>(p => p.Set(infid));
                     ac.GivePane(200, h =>
                     {
-                        h.FORM_().FIELDSET_();
-                        h.DATE(nameof(o.created), o.created, "日期");
-                        h.TEXT(nameof(o.subject), o.subject, "标题");
+                        h.FORM_().FIELDUL_();
+                        h.DATE("日期", nameof(o.created), o.created);
+                        h.TEXT("标题", nameof(o.subject), o.subject);
                         h.TEXTAREA("正文", nameof(o.text), o.text);
-                        h._FIELDSET()._FORM();
+                        h._FIELDUL()._FORM();
                     });
                 }
             }

@@ -29,10 +29,10 @@ namespace Samp
                 {
                     h.FORM_();
                     h.HIDDEN(nameof(prin.refid), prin.refid);
-                    h.FIELDSET_("会员信息");
-                    h.TEXT(nameof(prin.name), prin.name, label: "姓名", max: 4, min: 2, required: true);
-                    h.TEXT(nameof(prin.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                    h._FIELDSET();
+                    h.FIELDUL_("会员信息");
+                    h.TEXT(label: "姓名", name: nameof(prin.name), v: prin.name, max: 4, min: 2, required: true);
+                    h.TEXT(label: "手机", name: nameof(prin.tel), v: prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true);
+                    h._FIELDUL();
                     h.ALERT("确认后请关注公众号");
                     h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
                     h._FORM();
@@ -106,10 +106,10 @@ namespace Samp
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.FIELDSET_("添加人员");
-                    h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                    h.SELECT("角色", nameof(ctr), ctr, Ctrs);
-                    h._FIELDSET();
+                    h.FIELDUL_("添加人员");
+                    h.LI_().TEXT("手　机", nameof(tel), tel, pattern: "[0-9]+", max: 11, min: 11)._LI();
+                    h.LI_().SELECT("角　色", nameof(ctr), ctr, Ctrs)._LI();
+                    h._FIELDUL();
                     h._FORM();
                 });
             }

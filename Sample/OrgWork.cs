@@ -37,7 +37,7 @@ namespace Samp
         }
 
         [UserAccess(CTR_MGR)]
-        [Ui("新建团"), Tool(ButtonShow, "uk-button-primary")]
+        [Ui("新建", "创建新团组"), Tool(ButtonShow, "uk-button-primary")]
         public async Task @new(WebContext wc)
         {
             const byte proj = 0xff;
@@ -47,12 +47,12 @@ namespace Samp
                 o.Read(wc.Query, proj);
                 wc.GivePane(200, m =>
                 {
-                    m.FORM_();
-                    m.TEXT(nameof(o.id), o.id, "编号", max: 4, min: 4, required: true);
-                    m.TEXT(nameof(o.name), o.name, "名称", max: 10, required: true);
-                    m.TEXT(nameof(o.addr), o.addr, "地址", max: 20);
-                    m.NUMBER(nameof(o.x), o.x, "经度", max: 20).NUMBER(nameof(o.x), o.x, "纬度", max: 20);
-                    m._FORM();
+                    m.FORM_().FIELDUL_("填写团组资料");
+                    m.LI_().TEXT("编　号", nameof(o.id), o.id, max: 4, min: 4, required: true)._LI();
+                    m.LI_().TEXT("名　称", nameof(o.name), o.name, max: 10, required: true)._LI();
+                    m.LI_().TEXT("地　址", nameof(o.addr), o.addr, max: 20)._LI();
+                    m.LI_().NUMBER("经　度", nameof(o.x), o.x, max: 20).NUMBER("纬　度", nameof(o.x), o.x, max: 20)._LI();
+                    m._FIELDUL()._FORM();
                 });
             }
 

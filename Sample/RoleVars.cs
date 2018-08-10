@@ -18,44 +18,47 @@ namespace Samp
         public void @default(WebContext wc)
         {
             var o = (User) wc.Principal;
+            var orgs = Obtain<Map<string, Org>>();
             wc.GivePage(200, h =>
             {
-                h.T("<section class=\"uk-card- uk-card-primary \">");
-                h.UL_("uk-card-body");
+                h.DIV_(css: "uk-card- uk-card-primary");
+                h.UL_(css: "uk-card-body");
                 h.LI_().FI("用户名称", o.name)._LI();
                 h.LI_().FI("手　　机", o.tel)._LI();
+                h.LI_().FI("参　　团", orgs[o.grpat]?.name)._LI();
                 h.LI_().FI("收货地址", o.addr)._LI();
-                h.LI_().FI("积　　分", o.score)._LI();
                 h._UL();
-                h.TOOLS(css: "uk-card-footer");
-                h.T("</section>");
+                h.TOOLS(css: "uk-card-footer uk-flex-center");
+                h._DIV();
             }, title: "我的设置");
         }
 
-        const string VOIDPASS = "t#0^0z4R4pX7";
+        const string PASSMASK = "t#0^0z4R4pX7";
 
-        [Ui("修改"), Tool(ButtonShow)]
+        [Ui("设置", "填写我的设置"), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {
             var prin = (User) wc.Principal;
             string password = null;
             if (wc.GET)
             {
+                var orgs = Obtain<Map<string, Org>>();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE id = @1");
-                    var o = dc.Query1<User>(p => p.Set(prin.id));
-                    if (o.credential != null) password = VOIDPASS;
+                    var o = dc.Query1<User>("SELECT * FROM users WHERE id = @1", p => p.Set(prin.id));
+                    if (o.credential != null) password = PASSMASK;
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_("用户基本信息（必填）");
-                        h.TEXT(nameof(o.name), o.name, label: "姓名", max: 4, min: 2, required: true);
-                        h.TEXT(nameof(o.tel), prin.tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11, required: true);
-                        h._FIELDSET();
-                        h.FIELDSET_("用于从APP登录（可选）");
-                        h.PASSWORD(nameof(password), password, label: "密码", max: 12, min: 3);
-                        h._FIELDSET();
+                        h.FIELDUL_("用户基本信息");
+                        h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
+                        h.LI_().TEXT("手　　机", nameof(o.tel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.grpat), prin.grpat, orgs)._LI();
+                        h.LI_().TEXT("收货地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();
+                        h._FIELDUL();
+                        h.FIELDUL_("用于从微信以外登录（可选）");
+                        h.LI_().PASSWORD("外部密码", nameof(password), password, max: 12, min: 3)._LI();
+                        h._FIELDUL();
                         h._FORM();
                     });
                 }
@@ -63,79 +66,35 @@ namespace Samp
             else
             {
                 var f = await wc.ReadAsync<Form>();
-                string name = f[nameof(name)];
-                string tel = f[nameof(tel)];
+                prin.Read(f);
                 password = f[nameof(password)];
                 using (var dc = NewDbContext())
                 {
-                    if (password != VOIDPASS) // password being changed
+                    if (password != PASSMASK) // password being changed
                     {
                         string credential = TextUtility.MD5(prin.tel + ":" + password);
-                        dc.Execute("UPDATE users SET name = @1, tel = @2, credential = @3 WHERE id = @4", p => p.Set(name).Set(tel).Set(credential).Set(prin.id));
+                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4, credential = @5 WHERE id = @6", p => p.Set(prin.name).Set(prin.tel).Set(prin.grpat).Set(prin.addr).Set(credential).Set(prin.id));
                     }
                     else // password no change
                     {
-                        dc.Execute("UPDATE users SET name = @1, tel = @2 WHERE id = @3", p => p.Set(name).Set(tel).Set(prin.id));
+                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(prin.name).Set(prin.tel).Set(prin.grpat).Set(prin.addr).Set(prin.id));
                     }
-                    prin.name = name;
-                    prin.tel = tel;
                     wc.SetTokenCookie(prin, 0xff ^ PRIVACY);
                     wc.GivePane(200); // close dialog
                 }
             }
         }
 
-        [Ui("设密码", "设外部登录密码"), Tool(ButtonShow)]
-        public async Task pass(WebContext wc)
-        {
-            var prin = (User) wc.Principal;
-            string password = null;
-            if (wc.GET)
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("SELECT credential FROM users WHERE id = @1");
-                    var credential = (string) dc.Scalar("SELECT credential FROM users WHERE id = @1", p => p.Set(prin.id));
-                    if (credential != null)
-                    {
-                        password = VOIDPASS;
-                    }
-                    wc.GivePane(200, h =>
-                    {
-                        h.FORM_();
-                        h.FIELDSET_("用于从微信以外登录（可选）");
-                        h.PASSWORD(nameof(password), password, label: "密码", max: 12, min: 3);
-                        h._FIELDSET();
-                        h._FORM();
-                    });
-                }
-            }
-            else
-            {
-                var f = await wc.ReadAsync<Form>();
-                password = f[nameof(password)];
-                using (var dc = NewDbContext())
-                {
-                    if (password != VOIDPASS) // password being changed
-                    {
-                        string credential = TextUtility.MD5(prin.tel + ":" + password);
-                        dc.Execute("UPDATE users SET credential = @1 WHERE id = @2", p => p.Set(credential).Set(prin.id));
-                    }
-                    wc.GivePane(200); // close dialog
-                }
-            }
-        }
-
-        [Ui("推荐给", "让好友扫码关注全粮派"), Tool(AOpen)]
+        [Ui("推荐", "让好友扫码关注全粮派"), Tool(AOpen)]
         public async Task share(WebContext wc)
         {
             var prin = (User) wc.Principal;
             var (ticket, url) = await ((SampService) Service).WeiXin.PostQrSceneAsync(prin.id);
             wc.GivePage(200, h =>
             {
-                h.T("<div class=\"uk-padding uk-align-center uk-width-3-4\">");
+                h.DIV_("uk-padding uk-align-center uk-width-3-4");
                 h.ICO_().T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
-                h.T("</div>");
+                h._DIV();
             });
         }
     }

@@ -8,7 +8,7 @@ namespace Samp
 {
     public abstract class ItemVarWork : Work
     {
-        const int PICAGE = 60 * 60;
+        const int PicAge = 60 * 60;
 
         protected ItemVarWork(WorkConfig cfg) : base(cfg)
         {
@@ -23,9 +23,9 @@ namespace Samp
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
-                    else wc.Give(200, new StaticContent(bytes), true, PICAGE);
+                    else wc.Give(200, new StaticContent(bytes), true, PicAge);
                 }
-                else wc.Give(404, @public: true, maxage: PICAGE); // not found
+                else wc.Give(404, @public: true, maxage: PicAge); // not found
             }
         }
 
@@ -39,9 +39,9 @@ namespace Samp
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
-                    else wc.Give(200, new StaticContent(bytes), true, PICAGE);
+                    else wc.Give(200, new StaticContent(bytes), true, PicAge);
                 }
-                else wc.Give(404, @public: true, maxage: PICAGE); // not found
+                else wc.Give(404, @public: true, maxage: PicAge); // not found
             }
         }
     }
@@ -73,7 +73,7 @@ namespace Samp
         [Ui("购买"), Tool(AOpen), ItemState('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User) wc.Principal;
+            User prin = (User)wc.Principal;
             string itemname = wc[this];
             var item = Obtain<Map<string, Item>>()[itemname];
             short num;
@@ -90,10 +90,10 @@ namespace Samp
                             h.HIDDEN(nameof(posid), posid);
                         }
                         // quantity
-                        h.FIELDSET_("加入货品");
+                        h.FIELDUL_("加入货品");
                         h.LI_("货　品").ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
-                        h.LI_("数　量").NUMBER(nameof(num), posid > 0 ? 1 : item.min, min: posid > 0 ? 1 : item.min, max: item.demand, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
-                        h._FIELDSET();
+                        h.LI_("数　量").NUMBER(null, nameof(num), posid > 0 ? 1 : item.min, max: item.demand, min: posid > 0 ? 1 : item.min, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
+                        h._FIELDUL();
 
                         h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
 
@@ -117,7 +117,7 @@ namespace Samp
                     };
                     o.Read(f, proj);
                     num = f[nameof(num)];
-//                        o.AddItem(itemname, item.unit, item.price, num);
+                    //                        o.AddItem(itemname, item.unit, item.price, num);
                     dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
                     dc.Execute(p => o.Write(p, proj));
                 }
@@ -132,7 +132,7 @@ namespace Samp
         [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
-            var prin = (User) wc.Principal;
+            var prin = (User)wc.Principal;
             int orderid = wc[this];
             Order o;
             using (var dc = NewDbContext())
@@ -140,7 +140,7 @@ namespace Samp
                 dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
             }
-            var (prepay_id, _) = await ((SampService) Service).WeiXin.PostUnifiedOrderAsync(
+            var (prepay_id, _) = await ((SampService)Service).WeiXin.PostUnifiedOrderAsync(
                 orderid + "-",
                 o.cash,
                 prin.wx,
@@ -150,7 +150,7 @@ namespace Samp
             );
             if (prepay_id != null)
             {
-                wc.Give(200, ((SampService) Service).WeiXin.BuildPrepayContent(prepay_id));
+                wc.Give(200, ((SampService)Service).WeiXin.BuildPrepayContent(prepay_id));
             }
             else
             {
@@ -178,16 +178,16 @@ namespace Samp
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDSET_(o.name);
-                        h.TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true);
-                        h.TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true);
-                        h.URL(nameof(o.mov), o.mov, "视　频");
-                        h.TEXT(nameof(o.unit), o.unit, "单　位", required: true);
-                        h.LI_().LABEL("单　价").NUMBER(nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(nameof(o.giverp), o.giverp, required: true)._LI();
-                        h.LI_().LABEL("派送费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true)._LI();
-                        h.LI_().LABEL("起　订").NUMBER(nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(nameof(o.step), o.step, min: (short) 1)._LI();
+                        h.FIELDUL_(o.name);
+                        h.LI_().TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true)._LI();
+                        h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
+                        h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
+                        h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
+                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
+                        h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
+                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short)1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short)1)._LI();
                         h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
-                        h._FIELDSET();
+                        h._FIELDUL();
                         h._FORM();
                     });
                 }
@@ -246,11 +246,11 @@ namespace Samp
                     {
                         string tel = null;
                         h.FORM_();
-                        h.FIELDSET_("填写供货信息");
-                        h.TEL(nameof(tel), tel, "手机");
-                        h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
+                        h.FIELDUL_("填写供货信息");
+                        h.TEL("手机", nameof(tel), tel);
+                        h.TEXT("单位", nameof(o.unit), o.unit, required: true);
                         h.SELECT("状态", nameof(o.status), o.status, Item.Statuses);
-                        h._FIELDSET();
+                        h._FIELDUL();
                         h._FORM();
                     });
                 }

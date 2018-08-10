@@ -69,7 +69,7 @@ namespace Samp
             string text = null;
             if (wc.GET)
             {
-                wc.GivePane(200, h => { h.FORM_().FIELDSET_().TEXTAREA(null, nameof(text), text, max: 100, min: 1)._FIELDSET()._FORM(); });
+                wc.GivePane(200, h => { h.FORM_().FIELDUL_().TEXTAREA(null, nameof(text), text, max: 100, min: 1)._FIELDUL()._FORM(); });
             }
             else
             {
@@ -85,7 +85,7 @@ namespace Samp
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(custid));
                     }
                 }
-                await ((SampService)Service).WeiXin.PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
+                await ((SampService) Service).WeiXin.PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
                 wc.GivePane(200);
             }
         }

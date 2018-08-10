@@ -9,7 +9,7 @@ namespace Samp
     {
         protected ItemWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Item) obj).name);
+            CreateVar<V, string>(obj => ((Item)obj).name);
         }
     }
 
@@ -52,21 +52,21 @@ namespace Samp
         {
             if (wc.GET)
             {
-                var o = new Item {min = 1, step = 1};
+                var o = new Item { min = 1, step = 1 };
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.FIELDSET_("填写货品信息");
-                    h.TEXT(nameof(o.name), o.name, label: "品　名", max: 10, required: true);
-                    h.TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true);
-                    h.TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true);
-                    h.URL(nameof(o.mov), o.mov, "视　频");
-                    h.TEXT(nameof(o.unit), o.unit, "单　位", required: true);
-                    h.LI_().LABEL("单　价").NUMBER(nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(nameof(o.giverp), o.giverp, required: true)._LI();
-                    h.LI_().LABEL("派送费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(nameof(o.dvrerp), o.dvrerp, required: true)._LI();
-                    h.LI_().LABEL("起　订").NUMBER(nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(nameof(o.step), o.step, min: (short) 1)._LI();
+                    h.FIELDUL_("填写货品信息");
+                    h.LI_().TEXT(label: "品　名", name: nameof(o.name), v: o.name, max: 10, required: true)._LI();
+                    h.LI_().TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true)._LI();
+                    h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
+                    h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
+                    h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
+                    h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
+                    h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
+                    h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short)1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short)1)._LI();
                     h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
-                    h._FIELDSET();
+                    h._FIELDUL();
                     h._FORM();
                 });
             }
