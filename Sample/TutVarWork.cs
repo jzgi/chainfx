@@ -59,7 +59,7 @@ namespace Samp
                         h.FORM_().FIELDSET_();
                         h.DATE(nameof(o.created), o.created, "日期");
                         h.TEXT(nameof(o.subject), o.subject, "标题");
-                        h.TEXTAREA(nameof(o.text), o.text, "正文");
+                        h.TEXTAREA("正文", nameof(o.text), o.text);
                         h._FIELDSET()._FORM();
                     });
                 }

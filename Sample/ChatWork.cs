@@ -33,7 +33,7 @@ namespace Samp
 
                         h.LIST(arr, o =>
                         {
-                            h.COL_(0x23, css: "uk-padding-small");
+                            h.COL_(css: "uk-padding-small");
                             h.T("<h3>").T(o.uname).T("</h3>");
                             h.FI(null, o.posted);
                             h.ROW_();
@@ -61,7 +61,7 @@ namespace Samp
                 {
                     h.FORM_(mp: true);
                     h.TEXT(nameof(subject), text, max: 20, tip: "输入文字");
-                    h.TEXTAREA(nameof(text), text, max: 500, tip: "输入文字");
+                    h.TEXTAREA(null, nameof(text), text, tip: "输入文字", max: 500);
                     h._FORM();
                 });
             }

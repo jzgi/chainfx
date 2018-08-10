@@ -52,28 +52,6 @@ namespace Greatbone
             }
         }
 
-        void Width(byte w)
-        {
-            if (w > 0)
-            {
-                Add(" uk-width-");
-                if (w == 0x0f)
-                {
-                    Add("expand");
-                }
-                else
-                {
-                    int hi = w >> 4;
-                    int lo = w & 0x0f;
-                    if (hi > 0) // if a percentage value
-                    {
-                        Add(hi);
-                        Add('-');
-                    }
-                    Add(lo);
-                }
-            }
-        }
 
         public HtmlContent T(char v, bool cond = true)
         {
@@ -233,34 +211,46 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TD(short v)
+        public HtmlContent TD(short v, bool cond = true)
         {
             Add("<td style=\"text-align: right\">");
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             Add("</td>");
             return this;
         }
 
-        public HtmlContent TD(int v)
+        public HtmlContent TD(int v, bool cond = true)
         {
             Add("<td style=\"text-align: right\">");
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             Add("</td>");
             return this;
         }
 
-        public HtmlContent TD(long v)
+        public HtmlContent TD(long v, bool cond = true)
         {
             Add("<td style=\"text-align: right\">");
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             Add("</td>");
             return this;
         }
 
-        public HtmlContent TD(decimal v)
+        public HtmlContent TD(decimal v, bool cond = true)
         {
             Add("<td style=\"text-align: right\">");
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             Add("</td>");
             return this;
         }
@@ -306,61 +296,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TDIF(short v)
-        {
-            Add("<td style=\"text-align: right\">");
-            if (v != 0)
-            {
-                Add(v);
-            }
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TDIF(int v)
-        {
-            Add("<td style=\"text-align: right\">");
-            if (v != 0)
-            {
-                Add(v);
-            }
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TDIF(long v)
-        {
-            Add("<td style=\"text-align: right\">");
-            if (v != 0)
-            {
-                Add(v);
-            }
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TDIF(decimal v)
-        {
-            Add("<td style=\"text-align: right\">");
-            if (v != 0)
-            {
-                Add(v);
-            }
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlContent TDIF(DateTime v)
-        {
-            Add("<td style=\"text-align: center\">");
-            if (v != default)
-            {
-                Add(v);
-            }
-            Add("</td>");
-            return this;
-        }
-
         public HtmlContent TD_(string css = null)
         {
             Add("<td");
@@ -377,6 +312,317 @@ namespace Greatbone
         public HtmlContent _TD()
         {
             Add("</td>");
+            return this;
+        }
+
+
+        public HtmlContent LABEL(string caption)
+        {
+            if (caption != null)
+            {
+                Add("<label class=\"uk-label\">");
+                Add(caption);
+                Add("</label>");
+            }
+            return this;
+        }
+
+        public HtmlContent STATIC_(string label)
+        {
+            Add("<label class=\"uk-label\">");
+            Add(label);
+            Add("<span class=\"uk-static\">");
+            return this;
+        }
+
+        public HtmlContent _STATIC()
+        {
+            Add("</span>");
+            Add("</label>");
+            return this;
+        }
+
+        public HtmlContent STATIC<V>(string label, V v)
+        {
+            STATIC_(label);
+            AddPrimitive(v);
+            _STATIC();
+            return this;
+        }
+
+        public HtmlContent COL_(string css = null)
+        {
+            Add("<div class=\"uk-col");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _COL()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent SPAN_(string css = null)
+        {
+            Add("<span");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _SPAN()
+        {
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlContent SPAN<V>(V v, string css = null)
+        {
+            SPAN_(css);
+            AddPrimitive(v);
+            _SPAN();
+            return this;
+        }
+
+        public HtmlContent H2_(string css = null)
+        {
+            Add("<h2");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _H2()
+        {
+            Add("</h2>");
+            return this;
+        }
+
+        public HtmlContent H2<V>(V v, string css = null)
+        {
+            H2_(css);
+            AddPrimitive(v);
+            _H2();
+            return this;
+        }
+
+
+        public HtmlContent H3_(string css = null)
+        {
+            Add("<h3");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _H3()
+        {
+            Add("</h3>");
+            return this;
+        }
+
+        public HtmlContent H3<V>(V v, string css = null)
+        {
+            H3_(css);
+            AddPrimitive(v);
+            _H3();
+            return this;
+        }
+
+
+        public HtmlContent H4_(string css = null)
+        {
+            Add("<h4");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _H4()
+        {
+            Add("</h4>");
+            return this;
+        }
+
+        public HtmlContent H4<V>(V v, string css = null)
+        {
+            H4_(css);
+            AddPrimitive(v);
+            _H4();
+            return this;
+        }
+
+
+        public HtmlContent P_(string css = null)
+        {
+            Add("<p");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _P()
+        {
+            Add("</p>");
+            return this;
+        }
+
+        public HtmlContent DIV_(string css = null)
+        {
+            Add("<div");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _DIV()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent SECTION_(string css = null)
+        {
+            Add("<section");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _SECTION()
+        {
+            Add("</section>");
+            return this;
+        }
+
+        public HtmlContent MAIN_(string css = null)
+        {
+            Add("<main");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _MAIN()
+        {
+            Add("</main>");
+            return this;
+        }
+
+        public HtmlContent HEADER_(string css = null)
+        {
+            Add("<header");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _HEADER()
+        {
+            Add("</header>");
+            return this;
+        }
+
+        public HtmlContent FOOTER_(string css = null)
+        {
+            Add("<footer");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _FOOTER()
+        {
+            Add("</footer>");
+            return this;
+        }
+
+        public HtmlContent ARTICLE_(string css = null)
+        {
+            Add("<article");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _ARTICLE()
+        {
+            Add("</article>");
+            return this;
+        }
+
+        public HtmlContent NAV_(string css = null)
+        {
+            Add("<nav");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _NAV()
+        {
+            Add("</nav>");
             return this;
         }
 
@@ -400,143 +646,21 @@ namespace Greatbone
         }
 
 
-        public HtmlContent LI_(string label = null)
+        public HtmlContent LI_(string css = null)
         {
-            Add("<li>");
-            LABEL(label);
+            Add("<li");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
             return this;
         }
 
         public HtmlContent _LI()
         {
             Add("</li>");
-            return this;
-        }
-
-        public HtmlContent LI<V>(string label, V p)
-        {
-            Add("<li>");
-            Add("<label class=\"uk-label\">");
-            Add(label);
-            Add("</label>");
-            Add("<p>");
-            AddPrimitive(p);
-            Add("</p>");
-            Add("</li>");
-            return this;
-        }
-
-        public HtmlContent LI(string label, decimal p)
-        {
-            Add("<li>");
-            LABEL(label);
-            Add("<p>");
-            Add('¥');
-            Add(p);
-            Add("</p>");
-            Add("</li>");
-            return this;
-        }
-
-        public HtmlContent LI(string label, params string[] p)
-        {
-            Add("<li>");
-            Add("<label class=\"uk-label\">");
-            Add(label);
-            Add("</label>");
-            Add("<p>");
-            for (int i = 0; i < p.Length; i++)
-            {
-                if (i > 0) Add("&nbsp;");
-                Add(p[i]);
-            }
-            Add("</p>");
-            Add("</li>");
-            return this;
-        }
-
-        public HtmlContent LABEL(string caption)
-        {
-            if (caption != null)
-            {
-                Add("<label class=\"uk-label\">");
-                Add(caption);
-                Add("</label>");
-            }
-            return this;
-        }
-
-        public HtmlContent STATIC_(string label)
-        {
-            LI_(label);
-            Add("<span class=\"uk-static\">");
-            return this;
-        }
-
-        public HtmlContent _STATIC()
-        {
-            Add("</span>");
-            _LI();
-            return this;
-        }
-
-        public HtmlContent STATIC<V>(V v, string label)
-        {
-            STATIC_(label);
-            AddPrimitive(v);
-            _STATIC();
-            return this;
-        }
-
-        public HtmlContent COL_(byte w = 0x11, string css = null)
-        {
-            Add("<div class=\"uk-col");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-            if (w > 0)
-            {
-                int lo = w & 0x0f;
-                int hi = w >> 4;
-                Add(" uk-width-");
-                Add(hi);
-                Add('-');
-                Add(lo);
-            }
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _COL()
-        {
-            Add("</div>");
-            return this;
-        }
-
-        public HtmlContent P_(string label = null, byte w = 0x11)
-        {
-            Add("<p");
-            if (w > 0)
-            {
-                Add(" class=\"");
-                Width(w);
-                Add("\"");
-            }
-            Add(">");
-            if (label != null)
-            {
-                Add("<label class=\"uk-label\">");
-                Add(label);
-                Add("</label>");
-            }
-            return this;
-        }
-
-        public HtmlContent _P()
-        {
-            Add("</p>");
             return this;
         }
 
@@ -556,217 +680,10 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SPAN(short v, byte w = 0x11)
+        public HtmlContent CNY(decimal v)
         {
-            Add("<span class=\"uk-text-right");
-            Width(w);
-            Add("\">");
+            Add("￥");
             Add(v);
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent SPAN(int v, byte w = 0x11)
-        {
-            Add("<span class=\"uk-text-right");
-            Width(w);
-            Add("\">");
-            Add(v);
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent SPAN(decimal v, byte w = 0x11)
-        {
-            Add("<span class=\"uk-text-right");
-            Width(w);
-            Add("\">");
-            Add(v);
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent SPAN(DateTime v, byte w = 0x11)
-        {
-            Add("<span class=\"uk-text-center");
-            Width(w);
-            Add("\">");
-            Add(v);
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent SPAN(string v, byte w = 0x11)
-        {
-            Add("<span class=\"");
-            Width(w);
-            Add("\">");
-            Add(v);
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent NUMIF(int v, byte w = 0x11)
-        {
-            Add("<span class=\"uk-text-right");
-            if (w > 0)
-            {
-                int lo = w & 0x0f;
-                int hi = w >> 4;
-                Add(" uk-width-");
-                Add(hi);
-                Add('-');
-                Add(lo);
-            }
-            Add("\">");
-            if (v != 0)
-            {
-                Add(v);
-            }
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent NUMIF(decimal v, byte w = 0x11)
-        {
-            Add("<span class=\"uk-text-right");
-            if (w > 0)
-            {
-                int lo = w & 0x0f;
-                int hi = w >> 4;
-                Add(" uk-width-");
-                Add(hi);
-                Add('-');
-                Add(lo);
-            }
-            Add("\">");
-            if (v != 0)
-            {
-                Add(v);
-            }
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent CUR(decimal v, byte w = 0)
-        {
-            Add("<span class=\"uk-text-right");
-            Width(w);
-            Add("\">¥");
-            Add(v);
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent CELL<V>(V v, byte w = 0x11)
-        {
-            Add("<span");
-            Width(w);
-            Add(">");
-            if (v is short shortv)
-            {
-                Add(" uk-text-right");
-                Add(shortv);
-            }
-            else if (v is int intv)
-            {
-                Add(" uk-text-right");
-                Add(intv);
-            }
-            else if (v is long longv)
-            {
-                Add(" uk-text-right");
-                Add(longv);
-            }
-            else if (v is string strv)
-            {
-                Add(strv);
-            }
-            else if (v is decimal decv)
-            {
-                Add(" uk-text-right");
-                Add(decv);
-            }
-            else if (v is double doublev)
-            {
-                Add(doublev);
-            }
-            else if (v is DateTime dtv)
-            {
-                Add(" uk-text-center");
-                Add(dtv);
-            }
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent SPAN_(byte w = 0x11)
-        {
-            Add("<span");
-            if (w > 0)
-            {
-                int lo = w & 0x0f;
-                int hi = w >> 4;
-                Add(" class=\"uk-width-");
-                Add(hi);
-                Add('-');
-                Add(lo);
-                Add("\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _SPAN()
-        {
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent A_(string css = null, string href = null, string onclick = null)
-        {
-            Add("<a class=\"");
-            Add(css);
-            if (href != null)
-            {
-                Add("\" href=\"");
-                Add(href);
-            }
-            if (onclick != null)
-            {
-                Add("\" onclick=\"");
-                Add(onclick);
-            }
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent A_HREF_(string @class = null, string onclick = null)
-        {
-            Add("<a class=\"");
-            Add(@class);
-            if (onclick != null)
-            {
-                Add(" onclick=\"");
-                Add(onclick);
-            }
-            Add("\" href=\"");
-            return this;
-        }
-
-        public HtmlContent _HREF_()
-        {
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _A(string label = null)
-        {
-            if (label != null)
-            {
-                Add(label);
-            }
-            Add("</a>");
             return this;
         }
 
@@ -804,45 +721,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent IMG_(string @class = null, string alt = null)
-        {
-            Add("<img class=\"");
-            Add(@class);
-            if (alt != null)
-            {
-                Add(" alt=\"");
-                Add(alt);
-            }
-            Add("\" src=\"");
-            return this;
-        }
-
-        public HtmlContent _IMG()
-        {
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent PIC_(byte w = 0, string css = null)
-        {
-            Add("<div class=\"uk-margin-auto-vertical uk-text-center");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-            Width(w);
-            Add("\"><img alt=\"\" src=\"");
-            return this;
-        }
-
-        public HtmlContent _PIC()
-        {
-            Add("\">");
-            Add("</div>");
-            return this;
-        }
-
         public HtmlContent ICO_(string css = null, string alt = null)
         {
             Add("<div class=\"uk-margin-auto-vertical");
@@ -872,37 +750,6 @@ namespace Greatbone
             ICO_(css, alt);
             Add(src);
             _ICO();
-            return this;
-        }
-
-        public HtmlContent IMG(string src, string href = null, byte w = 0x0c)
-        {
-            if (href != null)
-            {
-                Add("<a href=\"");
-                Add(href);
-                Add("\">");
-            }
-            Add("<img class=\"uk-img");
-            Width(w);
-            Add("\" src=\"");
-            Add(src);
-            Add("\">");
-            if (href != null)
-            {
-                Add("</a>");
-            }
-            return this;
-        }
-
-        public HtmlContent PIC(string src, byte w = 0x0c)
-        {
-            Add("<div class=\"uk-margin-vertical-auto");
-            Width(w);
-            Add("\"><img class=\"uk-img");
-            Add("\" src=\"");
-            Add(src);
-            Add("\"></div>");
             return this;
         }
 
@@ -950,26 +797,12 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ALERT_(Style style = 0, bool close = false)
+        public HtmlContent ALERT_(string css = null, bool close = false)
         {
             Add("<div class=\"");
-            if (style > 0)
+            if (css != null)
             {
-                switch (style)
-                {
-                    case Style.Primary:
-                        Add("uk-alert-primary");
-                        break;
-                    case Style.Success:
-                        Add("uk-alert-success");
-                        break;
-                    case Style.Warning:
-                        Add("uk-alert-warning");
-                        break;
-                    case Style.Danger:
-                        Add("uk-alert-danger");
-                        break;
-                }
+                Add(css);
             }
             Add("\" uk-alert>");
             if (close)
@@ -985,55 +818,15 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ALERT(string p, Style style = 0, bool close = false)
+        public HtmlContent ALERT(string p, string css = null, bool close = false)
         {
-            ALERT_(style, close);
+            ALERT_(css, close);
             Add("<p>");
             Add(p);
             Add("</p>");
             _ALERT();
             return this;
         }
-
-        public HtmlContent BADGE_(Style style = 0)
-        {
-            Add("<span class=\"uk-badge");
-            if (style > 0)
-            {
-                switch (style)
-                {
-                    case Style.Primary:
-                        Add(" uk-badge-primary");
-                        break;
-                    case Style.Success:
-                        Add(" uk-badge-success");
-                        break;
-                    case Style.Warning:
-                        Add(" uk-badge-warning");
-                        break;
-                    case Style.Danger:
-                        Add(" uk-badge-danger");
-                        break;
-                }
-            }
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _BADGE()
-        {
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlContent BADGE(string caption, Style style = 0)
-        {
-            BADGE_(style);
-            Add(caption);
-            _BADGE();
-            return this;
-        }
-
 
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null, string css = null)
         {
@@ -1080,10 +873,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent FIELDSET_(string legend = null, byte w = 0x11)
+        public HtmlContent FIELDSET_(string legend = null, string css = null)
         {
             Add("<fieldset class=\"uk-fieldset");
-            Width(w);
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
             Add("\">");
             if (legend != null)
             {
@@ -1116,16 +913,10 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BUTTON(string name, int subcmd, string v, bool post = true, Style style = Style.Default)
+        public HtmlContent BUTTON(string name, int subcmd, string v, bool post = true, string css = "uk-button-default")
         {
-            Add("<button class=\"uk-button");
-            if (style == Style.Default) Add(" uk-button-default");
-            if (style == Style.Primary) Add(" uk-button-primary");
-            else if (style == Style.Secondary) Add(" uk-button-secondary");
-            else if (style == Style.Danger) Add(" uk-button-danger");
-            else if (style == Style.Text) Add(" uk-button-text");
-            else if (style == Style.Link) Add(" uk-button-link");
-            else if (style == Style.Icon) Add(" uk-icon-button");
+            Add("<button class=\"uk-button ");
+            Add(css);
             Add("\" formmethod=\"");
             Add(post ? "post" : "get");
             Add("\" formaction=\"");
@@ -1572,17 +1363,11 @@ namespace Greatbone
             if (tool.IsAnchorTag)
             {
                 Add("<a class=\"");
-                var style = tool.Style;
-                if (style > Style.None)
+                var css = tool.Css;
+                if (css != null)
                 {
-                    Add("uk-button");
-                    if (style == Style.Default) Add(" uk-button-default");
-                    if (style == Style.Primary) Add(" uk-button-primary");
-                    else if (style == Style.Secondary) Add(" uk-button-secondary");
-                    else if (style == Style.Danger) Add(" uk-button-danger");
-                    else if (style == Style.Text) Add(" uk-button-text");
-                    else if (style == Style.Link) Add(" uk-button-link");
-                    else if (style == Style.Icon) Add(" uk-icon-button");
+                    Add("uk-button ");
+                    Add(css);
                     if (act == webCtx.Actioner) // if current action
                     {
                         Add(" uk-active");
@@ -1613,16 +1398,9 @@ namespace Greatbone
             }
             else
             {
-                Add("<button  class=\"uk-button");
-                var style = tool.Style;
-                if (style == Style.Default) Add(" uk-button-default");
-                else if (style == Style.Primary) Add(" uk-button-primary");
-                else if (style == Style.Secondary) Add(" uk-button-secondary");
-                else if (style == Style.Danger) Add(" uk-button-danger");
-                else if (style == Style.Text) Add(" uk-button-text");
-                else if (style == Style.Link) Add(" uk-button-link");
-                else if (style == Style.Icon) Add(" uk-icon-button");
-
+                Add("<button  class=\"uk-button ");
+                var css = tool.Css;
+                Add(css);
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");
@@ -1851,12 +1629,11 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SEARCH(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false, byte w = 0)
+        public HtmlContent SEARCH(string name, string v, string label = null, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
         {
             if (label != null) LI_(label);
 
             Add("<div class=\"uk-inline");
-            Width(w);
             Add("\"><input type=\"search\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -2135,9 +1912,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent CHECKBOXSET(string name, string[] val, string[] opt, string legend = null, byte w = 0x0c)
+        public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
-            FIELDSET_(legend, w);
+            FIELDSET_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var e = opt[i];
@@ -2145,7 +1922,7 @@ namespace Greatbone
                 Add("<input type=\"checkbox\" name=\"");
                 Add(name);
                 Add("\"");
-                if (val != null && val.Contains(e))
+                if (v != null && v.Contains(e))
                 {
                     Add(" checked");
                 }
@@ -2211,9 +1988,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, bool required = false, byte w = 0x11, Predicate<V> filter = null)
+        public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDSET_(legend, w);
+            FIELDSET_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2255,9 +2032,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, bool required = false, byte w = 0x11, Predicate<V> filter = null)
+        public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDSET_(legend, w);
+            FIELDSET_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2308,9 +2085,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, bool required = false, byte w = 0x11)
+        public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
         {
-            FIELDSET_(legend, w);
+            FIELDSET_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var o = opt[i];
@@ -2320,12 +2097,23 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string v, string label = null, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false, byte w = 0)
+        public HtmlContent TEXTAREA(string label, string name, string v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
-            if (label != null) LI_(label);
+            TEXTAREA_(label, name, tip, max, min, @readonly, required);
+            Add(v);
+            _TEXTAREA(label != null);
+            return this;
+        }
+
+        public HtmlContent TEXTAREA_(string label, string name, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        {
+            if (label != null)
+            {
+                Add("<label class=\"uk-label\">");
+                Add(label);
+            }
 
             Add("<textarea class=\"uk-textarea");
-            Width(w);
             Add("\" name=\"");
             Add(name);
             Add("\"");
@@ -2355,123 +2143,31 @@ namespace Greatbone
             }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-
             Add(">");
-            AddEsc(v);
+            return this;
+        }
+
+        public HtmlContent _TEXTAREA(bool label = true)
+        {
             Add("</textarea>");
-
-            if (label != null) _LI();
+            if (label)
+            {
+                Add("</label>");
+            }
             return this;
         }
 
-        public HtmlContent TEXTAREA(string name, string[] val, string label = null, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        public HtmlContent SELECT_(string label, string name, bool multiple = false, bool required = false, int size = 0, bool refresh = false)
         {
-            if (label != null) LI_(label);
-
-            Add("<textarea class=\"uk-textarea\" name=\"");
-            Add(name);
-            Add("\"");
-
-            if (tip != null)
+            if (label != null)
             {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
+                Add("<label class=\"uk-label\">");
+                Add(label);
             }
-            if (max > 0)
-            {
-                Add(" maxlength=\"");
-                Add(max);
-                Add("\"");
-
-                Add(" rows=\"");
-                Add(max < 200 ? 3 :
-                    max < 400 ? 4 : 5);
-                Add("\"");
-            }
-            if (min > 0)
-            {
-                Add(" minlength=\"");
-                Add(min);
-                Add("\"");
-            }
-            if (@readonly) Add(" readonly");
-            if (required) Add(" required");
-
-            Add(">");
-            if (val != null)
-            {
-                for (int i = 0; i < val.Length; i++)
-                {
-                    if (i > 0)
-                    {
-                        Add('\n');
-                    }
-                    AddEsc(val[i]);
-                }
-            }
-            Add("</textarea>");
-
-            if (label != null) _LI();
-            return this;
-        }
-
-        public HtmlContent SELECT_(string name, string label = null, bool multiple = false, bool required = false, int size = 0)
-        {
-            LI_(label);
-
-            Add("<select name=\"");
-            Add(name);
-            Add("\"");
-            if (multiple) Add(" multiple");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            Add(">");
-            return this;
-        }
-
-        public HtmlContent _SELECT()
-        {
-            Add("</select>");
-            _LI();
-            return this;
-        }
-
-        public HtmlContent OPTION<T>(T val, string label, bool selected = false)
-        {
-            Add("<option value=\"");
-            if (val is short shortv)
-            {
-                Add(shortv);
-            }
-            else if (val is int intv)
-            {
-                Add(intv);
-            }
-            else if (val is string strv)
-            {
-                Add(strv);
-            }
-            Add("\"");
-            if (selected) Add(" selected");
-            Add(">");
-            Add(label);
-            Add("</option>");
-            return this;
-        }
-
-        public HtmlContent SELECT<K, V>(string name, K v, Map<K, V> opt, string label = null, string tip = null, bool required = false, sbyte size = 0, bool refresh = false, Predicate<V> filter = null)
-        {
-            if (label != null) LI_(label);
-
             Add("<select class=\"uk-select\" name=\"");
             Add(name);
             Add("\"");
+            if (multiple) Add(" multiple");
             if (required) Add(" required");
             if (size > 0)
             {
@@ -2484,6 +2180,45 @@ namespace Greatbone
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
             Add(">");
+            return this;
+        }
+
+        public HtmlContent _SELECT(bool label = true)
+        {
+            Add("</select>");
+            if (label)
+            {
+                Add("</label>");
+            }
+            return this;
+        }
+
+        public HtmlContent OPTION<T>(T v, string caption, bool selected = false)
+        {
+            Add("<option value=\"");
+            if (v is short shortv)
+            {
+                Add(shortv);
+            }
+            else if (v is int intv)
+            {
+                Add(intv);
+            }
+            else if (v is string strv)
+            {
+                Add(strv);
+            }
+            Add("\"");
+            if (selected) Add(" selected");
+            Add(">");
+            Add(caption);
+            Add("</option>");
+            return this;
+        }
+
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, Predicate<V> filter = null)
+        {
+            SELECT_(label, name, false, required, size, refresh);
             if (tip != null)
             {
                 Add("<option disabled selected>");
@@ -2541,31 +2276,13 @@ namespace Greatbone
                     }
                 }
             }
-            Add("</select>");
-            if (label != null) _LI();
+            _SELECT(label != null);
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K[] v, Map<K, V> opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<K, V>(string label, string name, K[] v, Map<K, V> opt, bool required = false, sbyte size = 0, bool refresh = false)
         {
-            if (label != null) LI_(label);
-
-            Add("<select name=\"");
-            Add(name);
-            Add("\" multiple");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            if (refresh)
-            {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
-            }
-            Add(">");
-
+            SELECT_(label, name, true, required, size, refresh);
             if (opt != null)
             {
                 lock (opt)
@@ -2595,30 +2312,13 @@ namespace Greatbone
                     }
                 }
             }
-            Add("</select>");
-            if (label != null) _LI();
+            _SELECT(label != null);
             return this;
         }
 
-        public HtmlContent SELECT(string name, string v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string label, string name, string v, string[] opt, bool required = false, sbyte size = 0, bool refresh = false)
         {
-            if (label != null) LI_(label);
-
-            Add("<select class=\"uk-select\" name=\"");
-            Add(name);
-            Add("\"");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            if (refresh)
-            {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
-            }
-            Add(">");
+            SELECT_(label, name, false, required, size, refresh);
             if (opt != null)
             {
                 lock (opt)
@@ -2636,32 +2336,13 @@ namespace Greatbone
                     }
                 }
             }
-            Add("</select>");
-
-            if (label != null) _LI();
+            _SELECT(label != null);
             return this;
         }
 
-        public HtmlContent SELECT(string name, string[] v, string[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT(string label, string name, string[] v, string[] opt, bool required = false, sbyte size = 0, bool refresh = false)
         {
-            if (label != null) LI_(label);
-
-            Add("<select name=\"");
-            Add(name);
-            Add("\" multiple");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            if (refresh)
-            {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
-            }
-            Add(">");
-
+            SELECT_(label, name, true, required, size, refresh);
             if (opt != null)
             {
                 for (int i = 0; i < opt.Length; i++)
@@ -2676,32 +2357,13 @@ namespace Greatbone
                     Add("</option>");
                 }
             }
-            Add("</select>");
-
-            if (label != null) _LI();
+            _SELECT(label != null);
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K val, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
+        public HtmlContent SELECT<K, V>(string label, string name, K val, V[] opt, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
         {
-            if (label != null) LI_(label);
-
-            Add("<select class=\"uk-select\" name=\"");
-            Add(name);
-            Add("\"");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            if (refresh)
-            {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
-            }
-            Add(">");
-
+            SELECT_(label, name, false, required, size, refresh);
             if (opt != null)
             {
                 for (int i = 0; i < opt.Length; i++)
@@ -2719,32 +2381,13 @@ namespace Greatbone
                     Add("</option>");
                 }
             }
-            Add("</select>");
-
-            if (label != null) _LI();
+            _SELECT(label != null);
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string name, K[] v, V[] opt, string label = null, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
+        public HtmlContent SELECT<K, V>(string label, string name, K[] v, V[] opt, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
         {
-            if (label != null) LI_(label);
-
-            Add("<select name=\"");
-            Add(name);
-            Add("\" multiple");
-            if (required) Add(" required");
-            if (size > 0)
-            {
-                Add(" size=\"");
-                Add(size);
-                Add("\"");
-            }
-            if (refresh)
-            {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + $(this.form).serialize();\"");
-            }
-            Add(">");
-
+            SELECT_(label, name, true, required, size, refresh);
             if (opt != null)
             {
                 for (int i = 0; i < opt.Length; i++)
@@ -2764,9 +2407,7 @@ namespace Greatbone
                     Add("</option>");
                 }
             }
-            Add("</select>");
-
-            if (label != null) _LI();
+            _SELECT(label != null);
             return this;
         }
 
@@ -2805,31 +2446,41 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent OUTPUT<V>(string name, V v, string label = null)
+        public HtmlContent OUTPUT<V>(string label, string name, V v)
         {
-            if (label != null) LI_(label);
-
+            if (label != null)
+            {
+                Add("<label class=\"uk-label\">");
+                Add(label);
+            }
             Add("<output class=\"uk-output\" name=\"");
             Add(name);
             Add("\">");
             AddPrimitive(v);
             Add("</output>");
-
-            if (label != null) _LI();
+            if (label != null)
+            {
+                Add("</label>");
+            }
             return this;
         }
 
         public HtmlContent OUTPUT(string name, decimal v, string label = null)
         {
-            if (label != null) LI_(label);
-
+            if (label != null)
+            {
+                Add("<label class=\"uk-label\">");
+                Add(label);
+            }
             Add("<output class=\"uk-output\" name=\"");
             Add(name);
             Add("\">¥");
             Add(v);
             Add("</output>");
-
-            if (label != null) _LI();
+            if (label != null)
+            {
+                Add("</label>");
+            }
             return this;
         }
 

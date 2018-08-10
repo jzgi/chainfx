@@ -129,7 +129,7 @@ namespace Samp
             }
         }
 
-        [Ui("付款"), Tool(ButtonScript, Style.Primary), OrderState('P')]
+        [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -179,8 +179,8 @@ namespace Samp
                     {
                         h.FORM_();
                         h.FIELDSET_(o.name);
-                        h.TEXTAREA(nameof(o.descr), o.descr, "简　介", min: 20, max: 100, required: true);
-                        h.TEXTAREA(nameof(o.remark), o.descr, "说　明", min: 100, max: 500, required: true);
+                        h.TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true);
+                        h.TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true);
                         h.URL(nameof(o.mov), o.mov, "视　频");
                         h.TEXT(nameof(o.unit), o.unit, "单　位", required: true);
                         h.LI_().LABEL("单　价").NUMBER(nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(nameof(o.giverp), o.giverp, required: true)._LI();
@@ -249,7 +249,7 @@ namespace Samp
                         h.FIELDSET_("填写供货信息");
                         h.TEL(nameof(tel), tel, "手机");
                         h.TEXT(nameof(o.unit), o.unit, "单位", required: true);
-                        h.SELECT(nameof(o.status), o.status, Item.Statuses, "状态");
+                        h.SELECT("状态", nameof(o.status), o.status, Item.Statuses);
                         h._FIELDSET();
                         h._FORM();
                     });

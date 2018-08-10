@@ -48,7 +48,7 @@ namespace Samp
         {
         }
 
-        [Ui("列未转"), Tool(A)]
+        [Ui("未转"), Tool(A)]
         public void @default(WebContext wc)
         {
             using (var dc = NewDbContext())
@@ -65,7 +65,7 @@ namespace Samp
             }
         }
 
-        [Ui("列已转"), Tool(A)]
+        [Ui("已转"), Tool(A)]
         public void old(WebContext wc, int page)
         {
             using (var dc = NewDbContext())

@@ -1117,6 +1117,7 @@ button.uk-icon:not(:disabled) {
 .uk-fieldset > ul > li {
     box-sizing: border-box;
     margin-left: 8px;
+    padding: 2px 0;
 }
 
 .uk-fieldset > ul > li:nth-child(n+2) {
@@ -1772,8 +1773,8 @@ a.uk-button-primary {
     display: inline-block;
 }
 
-.uk-button-group > * {
-    margin: 0 2px;
+.uk-button-group > *:not(:first-child) {
+    margin-left: 2px;
 }
 
 .uk-button-group .uk-button:hover,

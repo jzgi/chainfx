@@ -108,7 +108,7 @@ namespace Samp
                     h.FORM_();
                     h.FIELDSET_("添加人员");
                     h.TEXT(nameof(tel), tel, label: "手机", pattern: "[0-9]+", max: 11, min: 11);
-                    h.SELECT(nameof(ctr), ctr, Ctrs, "角色");
+                    h.SELECT("角色", nameof(ctr), ctr, Ctrs);
                     h._FIELDSET();
                     h._FORM();
                 });

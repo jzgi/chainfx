@@ -37,7 +37,7 @@ namespace Samp
         }
 
         [UserAccess(CTR_MGR)]
-        [Ui("新建团"), Tool(ButtonShow, Style.Primary)]
+        [Ui("新建团"), Tool(ButtonShow, "uk-button-primary")]
         public async Task @new(WebContext wc)
         {
             const byte proj = 0xff;

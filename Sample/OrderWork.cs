@@ -35,7 +35,7 @@ namespace Samp
                             h.T("</header>");
                             h.T("<main class=\"uk-card-body\">");
                             h.ICO_(css: "uk-width-1-6").T('/').T(o.item).T("/icon")._ICO();
-                            h.CUR(o.price).T(o.qty).T(o.unit)._P();
+                            h.CNY(o.price).T(o.qty).T(o.unit)._P();
                             h.VARTOOLS(css: "uk-width-1-5");
                             h.T("</main>");
                         }

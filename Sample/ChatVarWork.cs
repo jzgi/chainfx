@@ -69,7 +69,7 @@ namespace Samp
             string text = null;
             if (wc.GET)
             {
-                wc.GivePane(200, h => { h.FORM_().FIELDSET_().TEXTAREA(nameof(text), text, max: 100, min: 1)._FIELDSET()._FORM(); });
+                wc.GivePane(200, h => { h.FORM_().FIELDSET_().TEXTAREA(null, nameof(text), text, max: 100, min: 1)._FIELDSET()._FORM(); });
             }
             else
             {

@@ -31,8 +31,8 @@ namespace Samp
                     h.LIST(arr, o =>
                     {
                         h.T("<a class=\"uk-link-reset uk-grid uk-width-1-1\" href=\"").T(o.id).T("/\">");
-                        h.PIC_(w: 0x13).T(o.id).T("/icon")._PIC();
-                        h.COL_(0x23, css: "uk-padding-small");
+                        h.ICO_("uk-width-1-3").T(o.id).T("/icon")._ICO();
+                        h.COL_(css: "uk-padding-small");
                         h.T("<h3>").T(o.subject).T("</h3>");
                         h.FI(null, o.text);
                         h._COL();
@@ -77,7 +77,7 @@ namespace Samp
                     h.FORM_();
                     h.FIELDSET_();
                     h.TEXT(nameof(o.subject), o.subject, "标题", min: 4, max: 20, required: true);
-                    h.TEXTAREA(nameof(o.text), o.text, "内容", max: 200, required: true);
+                    h.TEXTAREA("内容", nameof(o.text), o.text, max: 200, required: true);
                     h._FIELDSET();
                     h._FORM();
                 });

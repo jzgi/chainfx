@@ -32,7 +32,7 @@ namespace Samp
                     {
                         h.FORM_();
                         h.FIELDSET_("购买数量");
-                        h.LI_("货品").PIC("/" + o.item + "/icon", w: 0x16).SP().T(o.item)._LI();
+                        h.LI_().LABEL("货品").ICO("/" + o.item + "/icon", css: "uk-width-1-6").SP().T(o.item)._LI();
                         //                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
                         h._FIELDSET();
                         h._FORM();

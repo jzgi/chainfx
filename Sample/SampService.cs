@@ -170,10 +170,10 @@ namespace Samp
                         h.TEXT(nameof(o.tel), o.tel, label: "手　　机", pattern: "[0-9]+", max: 11, min: 11, required: true);
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<string, Org>>();
-                        h.SELECT(nameof(o.grpat), o.grpat, orgs, label: "参　　团");
+                        h.SELECT(label: "参　　团", name: nameof(o.grpat), v: o.grpat, opt: orgs);
                         h.TEXT(nameof(o.addr), o.addr, label: "收货地址", max: 21, min: 2, required: true);
                         h._FIELDSET();
-                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", style: Style.Primary)._BOTTOMBAR();
+                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();
                         h._FORM();
                     }, title: "用户注册");
                 }
@@ -199,11 +199,11 @@ namespace Samp
                     h.LIST(arr, o =>
                     {
                         h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
-                        h.COL_(0x23, css: "uk-padding-small");
-                        h.T("<h3>").T(o.name).T("</h3>");
+                        h.COL_(css: "uk-padding-small");
+                        h.H3(o.name);
                         h.FI(null, o.descr);
                         h.ROW_();
-                        h.P_(w: 0x23).T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                        h.P_("uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
                         h.FORM_(css: "uk-width-auto");
                         h.TOOL(nameof(SampVarWork.buy));
                         h._FORM();

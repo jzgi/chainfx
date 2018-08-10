@@ -31,15 +31,15 @@ namespace Samp
                     h.TOOLBAR();
                     h.BOARD(arr, o =>
                     {
-                        h.T("<header class=\"uk-card-header\">").T(o.name).BADGE(Item.Statuses[o.status]).T("</header>");
-                        h.T("<main class=\"uk-card-body uk-flex\">");
+                        h.HEADER_("uk-card-header").T(o.name).SPAN(Item.Statuses[o.status])._HEADER();
+                        h.MAIN_("uk-card-body uk-flex");
                         h.ICO_(css: "uk-width-1-5").T(o.name).T("/icon")._ICO();
                         h.UL_(css: "uk-width-4-5 uk-padding-small-left");
-                        h.LI("描述", o.descr);
+                        h.LI_().FI("描述", o.descr)._LI();
                         h.LI_().FI("单价", o.price).FI("供应", o.giverp).FI("派送", o.dvrerp).FI("团组", o.grperp)._LI();
                         h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("冷藏", o.refrig)._LI();
                         h._UL();
-                        h.T("</main>");
+                        h._MAIN();
                         h.VARTOOLS(css: "uk-card-footer uk-flex-between");
                     });
                 });
@@ -47,7 +47,7 @@ namespace Samp
         }
 
         [UserAccess(CTR_MGR)]
-        [Ui("新建"), Tool(ButtonShow, Style.Primary)]
+        [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             if (wc.GET)
@@ -58,8 +58,8 @@ namespace Samp
                     h.FORM_();
                     h.FIELDSET_("填写货品信息");
                     h.TEXT(nameof(o.name), o.name, label: "品　名", max: 10, required: true);
-                    h.TEXTAREA(nameof(o.descr), o.descr, "简　介", min: 20, max: 100, required: true);
-                    h.TEXTAREA(nameof(o.remark), o.descr, "说　明", min: 100, max: 500, required: true);
+                    h.TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true);
+                    h.TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true);
                     h.URL(nameof(o.mov), o.mov, "视　频");
                     h.TEXT(nameof(o.unit), o.unit, "单　位", required: true);
                     h.LI_().LABEL("单　价").NUMBER(nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(nameof(o.giverp), o.giverp, required: true)._LI();

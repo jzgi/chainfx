@@ -22,10 +22,10 @@ namespace Samp
             {
                 h.T("<section class=\"uk-card- uk-card-primary \">");
                 h.UL_("uk-card-body");
-                h.LI("用户名称", o.name);
-                h.LI("手　　机", o.tel);
-                h.LI("收货地址", o.addr);
-                h.LI("积　　分", o.score);
+                h.LI_().FI("用户名称", o.name)._LI();
+                h.LI_().FI("手　　机", o.tel)._LI();
+                h.LI_().FI("收货地址", o.addr)._LI();
+                h.LI_().FI("积　　分", o.score)._LI();
                 h._UL();
                 h.TOOLS(css: "uk-card-footer");
                 h.T("</section>");
@@ -34,7 +34,7 @@ namespace Samp
 
         const string VOIDPASS = "t#0^0z4R4pX7";
 
-        [Ui("修改"), Tool(ButtonShow, Style.Primary)]
+        [Ui("修改"), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -134,7 +134,7 @@ namespace Samp
             wc.GivePage(200, h =>
             {
                 h.T("<div class=\"uk-padding uk-align-center uk-width-3-4\">");
-                h.IMG_().T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._IMG();
+                h.ICO_().T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
                 h.T("</div>");
             });
         }
