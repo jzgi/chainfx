@@ -11,27 +11,27 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-08-01 07:42:39
+Date: 2018-08-15 23:03:28
 */
 
 
 -- ----------------------------
--- Sequence structure for chats_id_seq1
+-- Sequence structure for chats_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."chats_id_seq1";
-CREATE SEQUENCE "public"."chats_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."chats_id_seq";
+CREATE SEQUENCE "public"."chats_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."chats_id_seq1"', 1, true);
+SELECT setval('"public"."chats_id_seq"', 1, true);
 
 -- ----------------------------
--- Sequence structure for orders_id_seq1
+-- Sequence structure for orders_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
-CREATE SEQUENCE "public"."orders_id_seq1"
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
+CREATE SEQUENCE "public"."orders_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
@@ -58,16 +58,16 @@ CREATE SEQUENCE "public"."users_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
+ START 28
  CACHE 1;
-SELECT setval('"public"."users_id_seq"', 1, true);
+SELECT setval('"public"."users_id_seq"', 28, true);
 
 -- ----------------------------
 -- Table structure for chats
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."chats";
 CREATE TABLE "public"."chats" (
-"id" int4 DEFAULT nextval('chats_id_seq1'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('chats_id_seq'::regclass) NOT NULL,
 "subject" varchar(20) COLLATE "default",
 "uid" int4 NOT NULL,
 "uname" varchar(254) COLLATE "default",
@@ -101,17 +101,16 @@ CREATE TABLE "public"."items" (
 "remark" varchar(500) COLLATE "default",
 "mov" varchar(100) COLLATE "default",
 "icon" bytea,
-"sort" int2,
 "unit" varchar(4) COLLATE "default",
 "price" money,
-"supplyp" money,
-"teamp" money,
-"deliveryp" money,
+"giverp" money,
+"grperp" money,
+"dvrerp" money,
 "min" int2,
 "step" int2,
 "refrig" bool,
-"supplierid" varchar(3) COLLATE "default",
 "demand" int2,
+"giverid" int4,
 "cap7" int2[],
 "status" int2
 )
@@ -124,7 +123,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-"id" int4 DEFAULT nextval('orders_id_seq1'::regclass) NOT NULL,
+"id" int4 DEFAULT nextval('orders_id_seq'::regclass) NOT NULL,
 "uid" int4 NOT NULL,
 "uname" varchar(10) COLLATE "default",
 "uwx" varchar(28) COLLATE "default",
@@ -137,15 +136,15 @@ CREATE TABLE "public"."orders" (
 "qty" int2,
 "total" money,
 "cash" money DEFAULT 0,
-"score" money,
 "created" timestamp(6),
 "paid" timestamp(6),
 "aborted" timestamp(6),
-"supplierid" int4,
-"planned" timestamp(6),
-"supplied" timestamp(6),
-"delivererid" int4,
-"delivered" timestamp(6),
+"giverid" int4,
+"giving" timestamp(6),
+"given" timestamp(6),
+"dvrerid" int4,
+"dvring" timestamp(6),
+"dvred" timestamp(6),
 "grperid" int4,
 "ended" timestamp(6),
 "status" int2
@@ -215,16 +214,16 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
 "id" int4 DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
-"name" varchar(10) COLLATE "default" NOT NULL,
-"wx" varchar(28) COLLATE "default" NOT NULL,
-"tel" varchar(11) COLLATE "default" NOT NULL,
+"wx" varchar(28) COLLATE "default",
+"refid" int4,
+"name" varchar(10) COLLATE "default",
+"tel" varchar(11) COLLATE "default",
+"credential" varchar(32) COLLATE "default",
 "grpat" varchar(3) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"credential" varchar(32) COLLATE "default",
-"score" int4,
-"refid" int4,
+"grp" int2,
 "ctr" int2 DEFAULT 0,
-"grp" int2
+"created" timestamp(6) DEFAULT ('now'::text)::timestamp without time zone
 )
 WITH (OIDS=FALSE)
 
@@ -233,8 +232,8 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
-ALTER SEQUENCE "public"."chats_id_seq1" OWNED BY "chats"."id";
-ALTER SEQUENCE "public"."orders_id_seq1" OWNED BY "orders"."id";
+ALTER SEQUENCE "public"."chats_id_seq" OWNED BY "chats"."id";
+ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."users_id_seq" OWNED BY "users"."id";
 
@@ -251,7 +250,7 @@ ALTER TABLE "public"."items" ADD PRIMARY KEY ("name");
 -- ----------------------------
 -- Indexes structure for table orders
 -- ----------------------------
-CREATE INDEX "orders_statuscustid" ON "public"."orders" USING btree ("status", "uid");
+CREATE INDEX "orders_statusuid" ON "public"."orders" USING btree ("status", "uid");
 
 -- ----------------------------
 -- Primary Key structure for table orders
@@ -272,18 +271,9 @@ ALTER TABLE "public"."repays" ADD PRIMARY KEY ("id");
 -- Indexes structure for table users
 -- ----------------------------
 CREATE INDEX "users_tel" ON "public"."users" USING hash ("tel") WHERE tel IS NOT NULL;
+CREATE UNIQUE INDEX "users_wx" ON "public"."users" USING btree ("wx");
 
 -- ----------------------------
 -- Primary Key structure for table users
 -- ----------------------------
 ALTER TABLE "public"."users" ADD PRIMARY KEY ("id");
-
--- ----------------------------
--- Foreign Key structure for table "public"."orders"
--- ----------------------------
-ALTER TABLE "public"."orders" ADD FOREIGN KEY ("uid") REFERENCES "public"."users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- ----------------------------
--- Foreign Key structure for table "public"."repays"
--- ----------------------------
-ALTER TABLE "public"."repays" ADD FOREIGN KEY ("uid") REFERENCES "public"."users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

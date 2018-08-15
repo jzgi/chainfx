@@ -10,7 +10,7 @@ namespace Samp
         // require a persisted principal
         readonly bool full;
 
-        // require operator access
+        // require center access
         readonly short ctr;
 
         // require group access
@@ -36,7 +36,7 @@ namespace Samp
             var o = (User) prin;
 
             // info incomplete
-            if (o.name == null || o.tel == null) return null; 
+            if (o.name == null || o.tel == null || o.addr == null) return null;
 
             // if requires center access
             if (ctr > 0)
@@ -44,6 +44,7 @@ namespace Samp
                 return (o.ctr & ctr) == ctr;
             }
 
+            // if requires group access
             if (grp > 0)
             {
                 if ((o.grp & grp) != grp) return false; // inclusive check

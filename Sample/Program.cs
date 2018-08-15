@@ -16,7 +16,7 @@ namespace Samp
         /// </summary>
         public static void Main(string[] args)
         {
-            bool deploy = args.Length > 0;
+            bool deploy = args.Length > 0 && args[0] == nameof(deploy);
 
             TryCreate<SampService>(
                 new ServiceConfig("nc")

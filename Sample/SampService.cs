@@ -131,14 +131,13 @@ namespace Samp
         {
             if (cmd == 1) // handle form submission
             {
-                var prin = (User) wc.Principal;
+                var o = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
-                prin.Read(f);
+                o.Read(f);
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("INSERT INTO users")._(prin, 0)._VALUES_(prin, 0).T(" RETURNING *");
-                    var o = dc.Query1<User>(p => prin.Write(p));
+                    dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(o.name).Set(o.tel).Set(o.grpat).Set(o.addr).Set(o.id));
                     wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                 }
                 wc.GiveRedirect(url);
@@ -165,12 +164,12 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDUL_("完成用户资料");
+                        h.FIELDUL_("完善用户资料");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<string, Org>>();
-                        h.LI_().SELECT("参　　团", nameof(o.grpat), o.grpat, opt: orgs, tip: "无")._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.grpat), o.grpat, orgs, tip: "（无）")._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();
