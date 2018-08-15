@@ -21,7 +21,7 @@ namespace Greatbone
             Add(str);
         }
 
-        public override string Type => "text/plain";
+        public override string Type { get; set; } = "text/plain";
 
         internal void Clear()
         {

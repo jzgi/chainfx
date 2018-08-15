@@ -1,4 +1,6 @@
 using System;
+using System.Text;
+using System.Web;
 using Greatbone;
 
 namespace Samp
@@ -14,10 +16,21 @@ namespace Samp
         // an invisible/unprintable char
         public const char SEPCHAR = '\u200f';
 
-        public static void GiveRedirect(this WebContext ac, string uri = null, bool? @public = null, int maxage = 60)
+        public static void GiveRedirect(this WebContext wc, string uri = null, bool? @public = null, int maxage = 60)
         {
-            ac.SetHeader("Location", uri ?? "./");
-            ac.Give(303);
+            string a;
+            if (uri != null)
+            {
+                FormContent c = new FormContent(false, 1024);
+                c.AddNonAscii(uri);
+                a = c.ToString();
+            }
+            else
+            {
+                a = "./";
+            }
+            wc.SetHeader("Location", a);
+            wc.Give(303);
         }
 
         public static void GiveFrame(this WebContext wc, int status, bool? @public = null, int maxage = 60, string title = null)

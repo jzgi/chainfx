@@ -30,8 +30,8 @@ namespace Samp
                 {
                     h.TOOLBAR();
                     h.TABLE(arr,
-                        () => h.TH("姓名").TH("电话").TH("网点").TH("积分"),
-                        o => h.TD(o.name).TD(o.tel).TD(o.grpat).TD(o.score)
+                        () => h.TH("姓名").TH("电话").TH("网点"),
+                        o => h.TD(o.name).TD(o.tel).TD(o.grpat)
                     );
                 });
             }
@@ -57,8 +57,8 @@ namespace Samp
                     {
                         h.TOOLBAR();
                         h.TABLE(arr,
-                            () => h.TH("姓名").TH("电话").TH("网点").TH("积分"),
-                            o => h.TD(o.name).TD(o.tel).TD(o.grpat).TD(o.score)
+                            () => h.TH("姓名").TH("电话").TH("网点"),
+                            o => h.TD(o.name).TD(o.tel).TD(o.grpat)
                         );
                     });
                 }

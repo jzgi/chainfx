@@ -19,7 +19,7 @@ namespace Greatbone
             this.boundary = boundary;
         }
 
-        public override string Type => Mime;
+        public override string Type { get; set; } = Mime;
 
         //
         // SINK

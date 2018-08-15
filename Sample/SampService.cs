@@ -131,14 +131,14 @@ namespace Samp
         {
             if (cmd == 1) // handle form submission
             {
-                var o = (User) wc.Principal;
+                var prin = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
-                o.Read(f);
+                prin.Read(f);
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("INSERT INTO users")._(o, 0)._VALUES_(o, 0);
-                    dc.Execute(p => o.Write(p));
+                    dc.Sql("INSERT INTO users")._(prin, 0)._VALUES_(prin, 0).T(" RETURNING *");
+                    var o = dc.Query1<User>(p => prin.Write(p));
                     wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                 }
                 wc.GiveRedirect(url);
@@ -165,12 +165,12 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDUL_("填写用户信息");
-                        h.LI_().TEXT("用户昵称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
+                        h.FIELDUL_("完成用户资料");
+                        h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<string, Org>>();
-                        h.LI_().SELECT("参　　团", nameof(o.grpat), o.grpat, opt: orgs)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.grpat), o.grpat, opt: orgs, tip: "无")._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();
@@ -188,18 +188,19 @@ namespace Samp
             }
         }
 
-        [UserAccess(full: false)]
+        [UserAccess(false)]
         public void @default(WebContext wc)
         {
             var arr = Obtain<Map<string, Item>>().All();
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
-
                     h.LIST(arr, o =>
                     {
-                        h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
-                        h.COL_(css: "uk-padding-small");
+                        h.T("<a class=\"uk-width-1-3 uk-margin-auto-vertical\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 1, '商品详情');\">");
+                        h.ICO_(css: "uk-padding-small").T(o.name).T("/icon")._ICO();
+                        h.T("</a>");
+                        h.COL_(css: "uk-width-2-3 uk-padding-small");
                         h.H3(o.name);
                         h.FI(null, o.descr);
                         h.ROW_();
@@ -209,52 +210,102 @@ namespace Samp
                         h._FORM();
                         h._ROW();
                         h._COL();
-                    }, "uk-card-body uk-padding-remove");
+                    }, "uk-padding-remove");
                 }, true, 60
             );
         }
 
-        const string Aliyun = "http://aliyun.com/";
+        public async Task onmsg(WebContext wc)
+        {
+            // wechat URL verification
+            string echostr = wc.Query[nameof(echostr)];
+            if (echostr != null)
+            {
+                wc.Give(200, echostr);
+                return;
+            }
 
+            // event handling
+            XElem xe = await wc.ReadAsync<XElem>();
+            string MsgType = xe.Child(nameof(MsgType));
+            if (MsgType == "event")
+            {
+                string Event = xe.Child(nameof(Event));
+                if (Event == "subscribe") // SUBSCRIBE
+                {
+                    string EventKey = xe.Child(nameof(EventKey));
+                    string FromUserName = xe.Child(nameof(FromUserName)); // wechat openid
+                    string ToUserName = xe.Child(nameof(ToUserName));
+                    using (var dc = NewDbContext())
+                    {
+                        if (EventKey.StartsWith("qrscene_"))
+                        {
+                            // make me same group as the referal
+                            int refid = EventKey.ToInt(start: 8);
+                            var grpat = (string) dc.Scalar("SELECT grpat FROM users WHERE id = @1", p => p.Set(refid));
+                            dc.Execute("INSERT INTO users (wx, refid, grpat) VALUES (@1, @2, #3) ON CONFLICT (wx) DO NOTHING", p => p.Set(FromUserName).Set(refid).Set(grpat));
+                        }
+                        else
+                        {
+                            dc.Execute("INSERT INTO users (wx) VALUES (@1) ON CONFLICT (wx) DO NOTHING", p => p.Set(FromUserName));
+                        }
+                    }
+                    // return msg
+                    XmlContent x = new XmlContent(true, 1024);
+                    x.ELEM("xml", null, () =>
+                    {
+                        x.ELEM("ToUserName", FromUserName);
+                        x.ELEM("FromUserName", ToUserName);
+                        x.ELEM("CreateTime", WeiXin.NowMillis);
+                        x.ELEM("MsgType", "text");
+                        x.ELEM("Content", "饮食里面包含智慧！\n\n愿您享受原造食品那奇妙的滋养和医治之能！和我们一起来维护这个健康、新鲜、良心的食品供应圈。");
+                    });
+                    wc.Give(200, x);
+                    return;
+                }
+            }
+            wc.Give(200);
+        }
 
         /// <summary>
         /// WCPay notify, without authentic context.
         /// </summary>
-        public async Task onpay(WebContext ac)
+        public async Task onpay(WebContext wc)
         {
-            XElem xe = await ac.ReadAsync<XElem>();
+            XElem xe = await wc.ReadAsync<XElem>();
             if (!WeiXin.OnNotified(xe, out var trade_no, out var cash))
             {
-                ac.Give(400);
+                wc.Give(400);
                 return;
             }
-
-            var orgs = Obtain<Map<string, Org>>();
-            var (orderid, _) = trade_no.To2Ints();
-
-            string orgid, custname, custaddr;
+            var orderid = trade_no.ToInt();
+            string grpid, uname, uaddr;
+            // update order status
             using (var dc = NewDbContext())
             {
-                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING orgid, custname, custaddr", (p) => p.Set(cash).Set(orderid)))
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING grpid, uname, uaddr", (p) => p.Set(cash).Set(orderid)))
                 {
                     return; // WCPay may send notification more than once
                 }
-                dc.Let(out orgid).Let(out custname).Let(out custaddr);
+                dc.Let(out grpid).Let(out uname).Let(out uaddr);
             }
-            // send weixin message
-            var oprwx = orgs[orgid]?.mgrwx;
-            if (oprwx != null)
+            // send message to the related grouper, if any
+            if (grpid != null)
             {
-                await WeiXin.PostSendAsync(oprwx, "订单收款", ("¥" + cash + " " + custname + " " + custaddr), NETADDR + "/opr//newo/");
+                var oprwx = Obtain<Map<string, Org>>()[grpid]?.mgrwx;
+                if (oprwx != null)
+                {
+                    await WeiXin.PostSendAsync(oprwx, "新订单", ("¥" + cash + " " + uname + " " + uaddr), NETADDR + "/grp//ord/");
+                }
+                // return xml to WCPay server
+                XmlContent x = new XmlContent(true, 1024);
+                x.ELEM("xml", null, () =>
+                {
+                    x.ELEM("return_code", "SUCCESS");
+                    x.ELEM("return_msg", "OK");
+                });
+                wc.Give(200, x);
             }
-            // return xml to WCPay server
-            XmlContent x = new XmlContent(true, 1024);
-            x.ELEM("xml", null, () =>
-            {
-                x.ELEM("return_code", "SUCCESS");
-                x.ELEM("return_msg", "OK");
-            });
-            ac.Give(200, x);
         }
     }
 }

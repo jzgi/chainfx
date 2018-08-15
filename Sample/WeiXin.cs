@@ -119,6 +119,8 @@ namespace Samp
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
 
+        public static long NowMillis => (long)(DateTime.Now - EPOCH).TotalMilliseconds;
+
         public IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;

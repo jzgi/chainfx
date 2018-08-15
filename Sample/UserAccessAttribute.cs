@@ -35,7 +35,8 @@ namespace Samp
 
             var o = (User) prin;
 
-            if (o.id == 0) return null;
+            // info incomplete
+            if (o.name == null || o.tel == null) return null; 
 
             // if requires center access
             if (ctr > 0)

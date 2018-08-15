@@ -9,6 +9,6 @@ namespace Greatbone
         {
         }
 
-        public override string Type => "text/plain";
+        public override string Type { get; set; } = "text/plain";
     }
 }

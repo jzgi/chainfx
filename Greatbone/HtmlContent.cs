@@ -18,7 +18,7 @@ namespace Greatbone
             this.webCtx = webCtx;
         }
 
-        public override string Type => "text/html; charset=utf-8";
+        public override string Type { get; set; } = "text/html; charset=utf-8";
 
         public WebContext WebCtx => webCtx;
 
@@ -719,7 +719,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ICO_(string css = null, string alt = null)
+        public HtmlContent ICO_(string css = null, bool circle = true)
         {
             Add("<div class=\"uk-margin-auto-vertical");
             if (css != null)
@@ -727,12 +727,12 @@ namespace Greatbone
                 Add(' ');
                 Add(css);
             }
-            Add("\"><img class=\"uk-border-circle\" alt=\"");
-            if (alt != null)
+            Add("\"><img");
+            if (circle)
             {
-                Add(alt);
+                Add(" class=\"uk-border-circle\"");
             }
-            Add("\" src=\"");
+            Add(" src=\"");
             return this;
         }
 
@@ -743,9 +743,9 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ICO(string src, string css = null, string alt = null)
+        public HtmlContent ICO(string src, string css = null, bool circle = true)
         {
-            ICO_(css, alt);
+            ICO_(css, circle);
             Add(src);
             _ICO();
             return this;
@@ -2170,7 +2170,12 @@ namespace Greatbone
             SELECT_(label, name, false, required, size, refresh);
             if (tip != null)
             {
-                Add("<option disabled selected>");
+                Add("<option value=\"\"");
+                if (required)
+                {
+                    Add(" disabled");
+                }
+                Add(">");
                 Add(tip);
                 Add("</option>");
             }
@@ -2310,7 +2315,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K val, V[] opt, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
+        public HtmlContent SELECT<K, V>(string label, string name, K v, V[] opt, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
         {
             SELECT_(label, name, false, required, size, refresh);
             if (opt != null)
@@ -2324,7 +2329,7 @@ namespace Greatbone
                     else if (key is int intv) Add(intv);
                     else if (key is string strv) Add(strv);
                     Add("\"");
-                    if (key.Equals(val)) Add(" selected");
+                    if (key.Equals(v)) Add(" selected");
                     Add(">");
                     Add(e.ToString());
                     Add("</option>");

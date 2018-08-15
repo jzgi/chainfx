@@ -59,40 +59,39 @@ namespace Samp
             wc.GivePane(200, h =>
             {
                 // movie
-
-
+                if (o.mov != null)
+                {
+                    h.T("<video loop muted playsinline uk-video=\"autoplay: inview\">");
+                    h.T("<source src=\"").T(o.mov).T("\" type=\"video/mp4\"");
+                    h.T("</video>");
+                }
                 // remark
                 h.ALERT(o.remark);
-
 
                 // schedule
             });
         }
 
         [UserAccess(true)]
-        [Ui("购买"), Tool(AOpen), ItemState('A')]
+        [Ui("购买", "订购商品"), Tool(AOpen, size: 1, auth: false), ItemState('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User)wc.Principal;
-            string itemname = wc[this];
-            var item = Obtain<Map<string, Item>>()[itemname];
+            User prin = (User) wc.Principal;
+            string name = wc[this];
+            var item = Obtain<Map<string, Item>>()[name];
             short num;
             if (wc.GET)
             {
-                int posid = wc.Query[nameof(posid)];
                 wc.GivePane(200, h =>
                 {
+                    bool ingrp = prin.grpat != null;
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
-                        if (posid > 0) // if in POS mode
-                        {
-                            h.HIDDEN(nameof(posid), posid);
-                        }
                         // quantity
                         h.FIELDUL_("加入货品");
-                        h.LI_("货　品").ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
-                        h.LI_("数　量").NUMBER(null, nameof(num), posid > 0 ? 1 : item.min, max: item.demand, min: posid > 0 ? 1 : item.min, step: posid > 0 ? 1 : item.step).T(item.unit)._LI();
+                        h.LI_().ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
+                        h.LI_().NUMBER(null, nameof(num),  item.min, max: item.demand, min: item.min, step: item.step).T(item.unit)._LI();
                         h._FIELDUL();
 
                         h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
@@ -132,7 +131,7 @@ namespace Samp
         [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
-            var prin = (User)wc.Principal;
+            var prin = (User) wc.Principal;
             int orderid = wc[this];
             Order o;
             using (var dc = NewDbContext())
@@ -140,7 +139,7 @@ namespace Samp
                 dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
             }
-            var (prepay_id, _) = await ((SampService)Service).WeiXin.PostUnifiedOrderAsync(
+            var (prepay_id, _) = await ((SampService) Service).WeiXin.PostUnifiedOrderAsync(
                 orderid + "-",
                 o.cash,
                 prin.wx,
@@ -150,7 +149,7 @@ namespace Samp
             );
             if (prepay_id != null)
             {
-                wc.Give(200, ((SampService)Service).WeiXin.BuildPrepayContent(prepay_id));
+                wc.Give(200, ((SampService) Service).WeiXin.BuildPrepayContent(prepay_id));
             }
             else
             {
@@ -185,7 +184,7 @@ namespace Samp
                         h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
                         h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
                         h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
-                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short)1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short)1)._LI();
+                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
                         h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                         h._FIELDUL();
                         h._FORM();

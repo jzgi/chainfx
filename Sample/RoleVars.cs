@@ -35,7 +35,7 @@ namespace Samp
 
         const string PASSMASK = "t#0^0z4R4pX7";
 
-        [Ui("设置", "填写我的设置"), Tool(ButtonShow)]
+        [Ui("填写设置", "填写我的设置"), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -53,7 +53,7 @@ namespace Samp
                         h.FIELDUL_("用户基本信息");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                        h.LI_().SELECT("参　　团", nameof(o.grpat), prin.grpat, orgs)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.grpat), prin.grpat, orgs, tip: "（无）")._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.FIELDUL_("用于从微信以外登录（可选）");
@@ -85,7 +85,7 @@ namespace Samp
             }
         }
 
-        [Ui("推荐", "让好友扫码关注全粮派"), Tool(AOpen)]
+        [Ui("推荐他人", "推荐扫码关注"), Tool(AOpen, size: 1)]
         public async Task share(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -93,7 +93,7 @@ namespace Samp
             wc.GivePage(200, h =>
             {
                 h.DIV_("uk-padding uk-align-center uk-width-3-4");
-                h.ICO_().T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
+                h.ICO_(circle: false).T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
                 h._DIV();
             });
         }

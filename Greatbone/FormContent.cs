@@ -19,7 +19,7 @@ namespace Greatbone
         {
         }
 
-        public override string Type => "application/x-www-form-urlencoded";
+        public override string Type { get; set; } = "application/x-www-form-urlencoded";
 
         void AddEsc(string v)
         {
@@ -42,25 +42,30 @@ namespace Greatbone
                 }
                 else
                 {
-                    if (c < 0x80)
-                    {
-                        // have at most seven bits
-                        AddEscByte((byte) c);
-                    }
-                    else if (c < 0x800)
-                    {
-                        // 2 char, 11 bits
-                        AddEscByte((byte) (0xc0 | (c >> 6)));
-                        AddEscByte((byte) (0x80 | (c & 0x3f)));
-                    }
-                    else
-                    {
-                        // 3 char, 16 bits
-                        AddEscByte((byte) (0xe0 | ((c >> 12))));
-                        AddEscByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                        AddEscByte((byte) (0x80 | (c & 0x3f)));
-                    }
+                    AddPercent(c);
                 }
+            }
+        }
+
+        void AddPercent(char c)
+        {
+            if (c < 0x80)
+            {
+                // have at most seven bits
+                AddEscByte((byte) c);
+            }
+            else if (c < 0x800)
+            {
+                // 2 char, 11 bits
+                AddEscByte((byte) (0xc0 | (c >> 6)));
+                AddEscByte((byte) (0x80 | (c & 0x3f)));
+            }
+            else
+            {
+                // 3 char, 16 bits
+                AddEscByte((byte) (0xe0 | ((c >> 12))));
+                AddEscByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+                AddEscByte((byte) (0x80 | (c & 0x3f)));
             }
         }
 
@@ -69,6 +74,22 @@ namespace Greatbone
             Add('%');
             Add(HEX[(b >> 4) & 0x0f]);
             Add(HEX[b & 0x0f]);
+        }
+
+        public void AddNonAscii(string v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                var c = v[i];
+                if (c < 128)
+                {
+                    Add(c);
+                }
+                else
+                {
+                    AddPercent(c);
+                }
+            }
         }
 
         //

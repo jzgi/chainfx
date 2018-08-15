@@ -11,8 +11,7 @@ namespace Greatbone
         {
         }
 
-        public override string Type => "application/xml";
-
+        public override string Type { get; set; } = "application/xml";
 
         void AddEsc(string v)
         {

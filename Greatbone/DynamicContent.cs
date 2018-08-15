@@ -99,7 +99,7 @@ namespace Greatbone
             count = 0;
         }
 
-        public abstract string Type { get; }
+        public abstract string Type { get; set; }
 
         public bool IsBin => bytebuf != null;
 

@@ -341,8 +341,12 @@ namespace Greatbone
             return (short) str.ToInt(0, str.Length);
         }
 
-        public static int ToInt(this string str, int start, int end)
+        public static int ToInt(this string str, int start, int end = -1)
         {
+            if (end == -1)
+            {
+                end = str.Length;
+            }
             int sum = 0;
             for (int i = start; i < end; i++)
             {

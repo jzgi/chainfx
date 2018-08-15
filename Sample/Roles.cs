@@ -12,44 +12,6 @@ namespace Samp
         {
             CreateVar<MyVarWork, int>((obj) => ((User) obj).id);
         }
-
-        public async Task @ref(WebContext wc)
-        {
-            var prin = (User) wc.Principal;
-            if (prin.id > 0)
-            {
-                wc.GivePage(200, h => { h.ALERT("您已经是会员，引荐操作无效。"); });
-                return;
-            }
-
-            if (wc.GET)
-            {
-                prin.refid = wc.Query[nameof(prin.refid)];
-                wc.GivePage(200, h =>
-                {
-                    h.FORM_();
-                    h.HIDDEN(nameof(prin.refid), prin.refid);
-                    h.FIELDUL_("会员信息");
-                    h.TEXT(label: "姓名", name: nameof(prin.name), v: prin.name, max: 4, min: 2, required: true);
-                    h.TEXT(label: "手机", name: nameof(prin.tel), v: prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true);
-                    h._FIELDUL();
-                    h.ALERT("确认后请关注公众号");
-                    h.BOTTOMBAR_().BUTTON("确定")._BOTTOMBAR();
-                    h._FORM();
-                });
-            }
-            else // POST
-            {
-                prin = await wc.ReadObjectAsync(obj: prin);
-                using (var dc = NewDbContext())
-                {
-                    const byte proj = 0xff ^ ID ^ LATER;
-                    dc.Sql("INSERT INTO users ")._(prin, proj)._VALUES_(prin, proj);
-                    dc.Execute(p => prin.Write(p));
-                }
-                wc.GiveRedirect(SampUtility.JOINADDR);
-            }
-        }
     }
 
     [UserAccess(ctr: 1)]

@@ -1600,6 +1600,10 @@ namespace Greatbone
 
         public IParams Set(string v)
         {
+            if (v == string.Empty)
+            {
+                v = null;
+            }
             Put(PARAMS[index++], v);
             return this;
         }
