@@ -2433,5 +2433,23 @@ namespace Greatbone
             Add("</meter>");
             return this;
         }
+
+        public HtmlContent CROP(string name, string caption, short width, short height)
+        {
+            Add("<a class=\"uk-button uk-button-default uk-margin-small\" onclick=\"document.getElementById(\'imginp\').click()\">");
+            Add(caption);
+            Add("</a>");
+            Add("<div id=\"imgbnd\" style=\"height: ");
+            Add(height + 16);
+            Add("px\">");
+            Add("<input type=\"file\" id=\"imginp\" style=\"display: none;\" name=\"");
+            Add(name);
+            Add("\" onchange=\"bind(this.parentNode, window.URL.createObjectURL(this.files[0]), 0, ");
+            Add(width);
+            Add(',');
+            Add(height);
+            Add(");\"></div>");
+            return this;
+        }
     }
 }

@@ -19,6 +19,27 @@ namespace Samp
         {
         }
 
+        public void @default(WebContext wc)
+        {
+            int chatid = wc[this];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT ").collst(Chat.Empty).T(" FROM chats WHERE id = @1");
+                var chat = dc.Query1<Chat>(p => p.Set(chatid));
+                wc.GivePage(200, h =>
+                    {
+                        h.LIST(chat.posts, o =>
+                        {
+                            h.DIV_("uk-col uk-link-heading uk-padding-small");
+                            h.H4_().T(o.text)._H4();
+                            h.FI(null, o.posted);
+                            h._DIV();
+                        });
+                    }, true, 60
+                );
+            }
+        }
+
         [Ui("发送"), Tool(Button)]
         public async Task say(WebContext wc)
         {

@@ -30,29 +30,22 @@ namespace Samp
                 wc.GivePage(200, h =>
                     {
                         h.TOPBAR(false);
-
                         h.LIST(arr, o =>
                         {
-                            h.COL_(css: "uk-padding-small");
-                            h.T("<h3>").T(o.uname).T("</h3>");
+                            h.T("<a class=\"uk-col uk-link-heading uk-padding-small\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '帖子详情');\">");
+                            h.T("<h4>").T(o.subject).T("</h4>");
                             h.FI(null, o.posted);
-                            h.ROW_();
-                            h.FORM_(css: "uk-width-auto");
-                            h._FORM();
-                            h._ROW();
-                            h._COL();
+                            h.T("</a>");
                         });
-
                         h.BOTTOMBAR_().TOOL(nameof(@new))._BOTTOMBAR();
                     }, true, 60
                 );
             }
         }
 
-        [Ui("发新帖"), Tool(ButtonShow, size: 2)]
+        [Ui("发新帖"), Tool(ButtonShow, css: "uk-button-primary", size: 2)]
         public async Task @new(WebContext wc)
         {
-            string ctrid = wc[-1];
             string subject = null;
             string text = null;
             if (wc.GET)
@@ -60,12 +53,15 @@ namespace Samp
                 wc.GivePane(200, h =>
                 {
                     h.FORM_(mp: true);
-                    h.TEXT(null, nameof(subject), text, tip: "输入文字", max: 20);
-                    h.TEXTAREA(null, nameof(text), text, tip: "输入文字", max: 500);
+                    h.FIELDUL_();
+                    h.LI_().TEXT(null, nameof(subject), text, tip: "填写标题", max: 20, required: true)._LI();
+                    h.LI_().TEXTAREA(null, nameof(text), text, tip: "输入内容", max: 500, required: true)._LI();
+                    h._FIELDUL();
+                    h.CROP("img", "附图片", 360, 270);
                     h._FORM();
                 });
             }
-            else
+            else // POST
             {
                 var prin = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();

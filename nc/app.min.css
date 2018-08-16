@@ -40,9 +40,6 @@ input:checked + span {
 
 .croppie-container .cr-image {
     z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
     transform-origin: 0 0;
     max-height: none;
     max-width: none;
