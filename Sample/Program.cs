@@ -12,7 +12,7 @@ namespace Samp
     public class Program : ServiceUtility
     {
         /// <summary>
-        /// The application entry point.
+        /// The entry point.
         /// </summary>
         public static void Main(string[] args)
         {

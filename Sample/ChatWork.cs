@@ -128,7 +128,7 @@ namespace Samp
                                 var m = o.posts[i];
                                 h.FI(m.uname, m.text);
                             }
-                            h.VARTOOLS();
+                            h.VARTOOLPAD();
                             h.T("</main>");
                         }
                     });

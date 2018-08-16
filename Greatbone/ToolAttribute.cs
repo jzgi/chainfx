@@ -20,7 +20,7 @@ namespace Greatbone
 
         readonly bool auth;
 
-        public ToolAttribute(Modal modal, string css = "uk-button-default", byte size = 0, bool auth = true)
+        public ToolAttribute(Modal modal, string css = null, byte size = 0, bool auth = true)
         {
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;

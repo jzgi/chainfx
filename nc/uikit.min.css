@@ -233,7 +233,7 @@ hr,
     overflow: visible;
     text-align: inherit;
     border: 0;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 /* Add margin if adjacent element */
@@ -280,7 +280,7 @@ pre {
     tab-size: 4;
     overflow: auto;
     padding: 10px;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #dcdcdc;
     border-radius: 3px;
     background: #fff;
 }
@@ -420,7 +420,7 @@ a.uk-link-reset:hover,
 
 .uk-heading-divider {
     padding-bottom: 10px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-heading-bullet {
@@ -435,7 +435,7 @@ a.uk-link-reset:hover,
     vertical-align: middle;
     height: 0.9em;
     margin-right: 10px;
-    border-left: 5px solid #e5e5e5;
+    border-left: 5px solid #dcdcdc;
 }
 
 .uk-heading-line {
@@ -492,7 +492,7 @@ a.uk-link-reset:hover,
     position: absolute;
     top: 50%;
     max-width: calc(50% - (50px / 2));
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-divider-icon::before {
@@ -514,7 +514,7 @@ a.uk-link-reset:hover,
     display: inline-block;
     width: 100px;
     max-width: 100%;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
     vertical-align: top;
 }
 
@@ -701,14 +701,14 @@ a.uk-link-reset:hover,
 .uk-table-divider > tr:not(:first-child),
 .uk-table-divider > :not(:first-child) > tr,
 .uk-table-divider > :first-child > tr:not(:first-child) {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-table-striped > tr:nth-of-type(odd),
 .uk-table-striped tbody tr:nth-of-type(odd) {
     background: #f8f8f8;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-table-small th,
@@ -1226,7 +1226,7 @@ button.uk-icon:not(:disabled) {
 .uk-textarea:disabled {
     background-color: #f8f8f8;
     color: #999;
-    border-color: #e5e5e5;
+    border-color: #dcdcdc;
 }
 
 .uk-input:-ms-input-placeholder {
@@ -1295,7 +1295,7 @@ button.uk-icon:not(:disabled) {
 }
 
 .uk-form-blank:focus {
-    border-color: #e5e5e5;
+    border-color: #dcdcdc;
     border-style: dashed;
 }
 
@@ -1397,7 +1397,7 @@ select.uk-form-width-xsmall {
 .uk-radio:disabled,
 .uk-checkbox:disabled {
     background-color: #f8f8f8;
-    border-color: #e5e5e5;
+    border-color: #dcdcdc;
 }
 
 .uk-radio:disabled:checked {
@@ -1594,6 +1594,7 @@ select.uk-form-width-xsmall {
 .uk-button-default {
     background-color: inherit;
     border: 1px solid #3caf36;
+    border-radius: 4px;
     color: #3caf36;
     line-height: 26px;
     height: 28px;
@@ -1619,6 +1620,7 @@ select.uk-form-width-xsmall {
     background-color: #3caf36;
     color: #fff;
     border: 1px solid #3caf36;
+    border-radius: 4px;
     line-height: 26px;
     height: 28px;
 }
@@ -1640,17 +1642,17 @@ a.uk-button-primary {
 }
 
 .uk-button-secondary {
-    background-color: #8e8e93;
-    color: #fff;
-    border: 1px solid transparent;
+    background-color: inherit;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    color: #3caf36;
     line-height: 26px;
     height: 28px;
 }
 
 .uk-button-secondary:hover,
 .uk-button-secondary:focus {
-    background-color: #151515;
-    color: #fff;
+    border: 1px solid #3caf36;
 }
 
 /* OnClick + Active */
@@ -1666,6 +1668,7 @@ a.uk-button-primary {
     background-color: #f0506e;
     color: #fff;
     border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .uk-button-danger:hover,
@@ -1745,14 +1748,16 @@ a.uk-button-primary {
 }
 
 .uk-button-link {
+    background-color: inherit;
+    border: 1px solid #fff;
+    color: #3caf36;
     line-height: 26px;
     height: 28px;
-    background: none;
-    color: #3caf36;
 }
 
 .uk-button-link:hover,
 .uk-button-link:focus {
+    border: 1px solid #3caf36;
     color: #3caf36;
     text-decoration: underline;
 }
@@ -2068,7 +2073,7 @@ a.uk-button-primary {
     position: absolute;
     top: 0;
     bottom: 0;
-    border-left: 1px solid #e5e5e5;
+    border-left: 1px solid #dcdcdc;
 }
 
 /* Vertical */
@@ -2077,7 +2082,7 @@ a.uk-button-primary {
     position: absolute;
     left: 0;
     right: 0;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*
@@ -3132,7 +3137,7 @@ label > input[type="checkbox"] {
     padding-left: 6px;
     padding-right: 6px;
     background: transparent;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #dcdcdc;
 }
 
 /* Focus */
@@ -3347,7 +3352,7 @@ ul.uk-nav-sub {
 }
 
 .uk-nav-default .uk-nav-divider {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-nav-default .uk-nav-sub a {
@@ -3392,7 +3397,7 @@ ul.uk-nav-sub {
  * Divider
  */
 .uk-nav-primary .uk-nav-divider {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*
@@ -3771,7 +3776,7 @@ ul.uk-nav-sub {
  * Divider
  */
 .uk-navbar-dropdown-nav .uk-nav-divider {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*
@@ -3828,7 +3833,7 @@ ul.uk-nav-sub {
     top: 0;
     bottom: 0;
     left: 25px;
-    border-left: 1px solid #e5e5e5;
+    border-left: 1px solid #dcdcdc;
 }
 
 /* Vertical */
@@ -3838,7 +3843,7 @@ ul.uk-nav-sub {
     top: -25px;
     left: 50px;
     right: 0;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-subnav {
@@ -4031,7 +4036,7 @@ ul.uk-nav-sub {
     bottom: 0;
     left: 0;
     right: 0;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-tab > * {
@@ -4091,7 +4096,7 @@ ul.uk-nav-sub {
     bottom: 0;
     left: auto;
     right: 0;
-    border-left: 1px solid #e5e5e5;
+    border-left: 1px solid #dcdcdc;
     border-bottom: none;
 }
 
@@ -4100,7 +4105,7 @@ ul.uk-nav-sub {
     bottom: 0;
     left: 0;
     right: auto;
-    border-left: 1px solid #e5e5e5;
+    border-left: 1px solid #dcdcdc;
     border-bottom: none;
 }
 
@@ -4318,15 +4323,15 @@ ul.uk-nav-sub {
 }
 
 .uk-accordion-content ul {
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
     width: 100%;
     padding: 0;
     background-color: #fff;
 }
 
 .uk-accordion-content > li:nth-child(n+2) {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 .uk-open > .uk-accordion-title::after {
@@ -4450,7 +4455,7 @@ ul.uk-nav-sub {
  * Divider
  */
 .uk-dropdown-nav .uk-nav-divider {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dcdcdc;
 }
 
 /*
@@ -5491,15 +5496,6 @@ ul.uk-nav-sub {
     color: #f0506e;
 }
 
-/* ========================================================================
-   Component: Tooltip
- ========================================================================== */
-/*
- * 1. Hide by default
- * 2. Position
- * 3. Dimensions
- * 4. Style
- */
 .uk-tooltip {
     /* 1 */
     display: none;
@@ -5522,9 +5518,7 @@ ul.uk-nav-sub {
     display: block;
 }
 
-/* Direction / Alignment modifiers
- ========================================================================== */
-/* Direction */
+
 [class*='uk-tooltip-top'] {
     margin-top: -10px;
 }
@@ -5541,14 +5535,12 @@ ul.uk-nav-sub {
     margin-left: 10px;
 }
 
-/* ========================================================================
-   Component: Placeholder
- ========================================================================== */
+
 .uk-placeholder {
     margin-bottom: 20px;
     padding: 30px 30px;
     background: transparent;
-    border: 1px dashed #e5e5e5;
+    border: 1px dashed #dcdcdc;
 }
 
 /* Add margin if adjacent element */
@@ -5563,16 +5555,7 @@ ul.uk-nav-sub {
     margin-bottom: 0;
 }
 
-/* ========================================================================
-   Component: Progress
- ========================================================================== */
-/*
- * 1. Remove default style
- * 2. Behave like a block element
- * 3. Remove borders in Firefox and Edge
- * 4. Set background color for progress container in Firefox, IE11 and Edge
- * 5. Style
- */
+
 .uk-progress {
     /* 1 */
     -webkit-appearance: none;
@@ -5638,23 +5621,17 @@ ul.uk-nav-sub {
     border: 0;
 }
 
-/* ========================================================================
-   Component: Sortable
- ========================================================================== */
+
 .uk-sortable {
     position: relative;
 }
 
-/*
- * Deactivate browser touch actions in IE11 and Edge
- */
+
 .uk-sortable > * {
     touch-action: none;
 }
 
-/*
- * Deactivate pointer-events on SVGs in Safari
- */
+
 .uk-sortable svg {
     pointer-events: none;
 }
@@ -5666,22 +5643,19 @@ ul.uk-nav-sub {
     margin-bottom: 0;
 }
 
-/* Drag
- ========================================================================== */
+
 .uk-sortable-drag {
     position: absolute !important;
     z-index: 1050 !important;
     pointer-events: none;
 }
 
-/* Placeholder
- ========================================================================== */
+
 .uk-sortable-placeholder {
     opacity: 0;
 }
 
-/* Empty modifier
- ========================================================================== */
+
 .uk-sortable-empty {
     min-height: 50px;
 }
@@ -5693,34 +5667,26 @@ ul.uk-nav-sub {
     cursor: move;
 }
 
-/* ========================================================================
-   Component: Countdown
- ========================================================================== */
-/* Item
- ========================================================================== */
-/*
- * 1. Center numbers and separators vertically
- */
+
 .uk-countdown-number,
 .uk-countdown-separator {
     /* 1 */
     line-height: 70px;
 }
 
-/* Number
- ========================================================================== */
+
 .uk-countdown-number {
     font-size: 2rem;
 }
 
-/* Phone landscape and bigger */
+
 @media (min-width: 640px) {
     .uk-countdown-number {
         font-size: 4rem;
     }
 }
 
-/* Tablet landscape and bigger */
+
 @media (min-width: 960px) {
     .uk-countdown-number {
         font-size: 6rem;
@@ -5747,29 +5713,20 @@ ul.uk-nav-sub {
     }
 }
 
-/* Label
- ========================================================================== */
-/* ========================================================================
-   Component: Animation
- ========================================================================== */
+
 [class*='uk-animation-'] {
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
     animation-fill-mode: both;
 }
 
-/* Direction modifier
- ========================================================================== */
+
 .uk-animation-reverse {
     animation-direction: reverse;
     animation-timing-function: ease-in;
 }
 
-/* Animations for scrollspy
- ========================================================================== */
-/*
- * Fade
- */
+
 .uk-animation-fade {
     animation-name: uk-fade;
     animation-duration: 0.8s;
@@ -7073,7 +7030,7 @@ td.uk-text-break {
 /* Divider */
 
 .uk-column-divider {
-    column-rule: 1px solid #e5e5e5;
+    column-rule: 1px solid #dcdcdc;
     /* 1 */
     column-gap: 60px;
 }
@@ -7558,7 +7515,7 @@ iframe.uk-cover {
 .uk-panel-scrollable {
     height: 170px;
     padding: 10px;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #dcdcdc;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     resize: both;

@@ -1056,7 +1056,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte group = 0)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
@@ -1101,16 +1101,16 @@ namespace Greatbone
                         Add("</td>");
                     }
                     row(obj);
-                    if (acts != null) // triggers
+                    if (acts != null) // output trigger buttons
                     {
                         Add("<td style=\"text-align: right\">");
                         Add("<form class=\"uk-button-group\">");
                         for (int j = 0; j < acts.Length; j++)
                         {
                             var act = acts[j];
-                            if (!act.IsCapital && (act.Group == 0 || sort == act.Group))
+                            if (act.Group == 0 || group == act.Group)
                             {
-                                PutTool(act);
+                                PutTool(act, altCss: "uk-button-secondary");
                             }
                         }
                         Add("</form>");
@@ -1204,8 +1204,8 @@ namespace Greatbone
             {
                 for (int i = 0; i < acts.Length; i++)
                 {
-                    var actr = acts[i];
-                    int g = actr.Group;
+                    var act = acts[i];
+                    int g = act.Group;
                     if (g == 0 || (g & group) > 0)
                     {
                         if (g != gogrp)
@@ -1213,7 +1213,7 @@ namespace Greatbone
                             if (gogrp != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(actr);
+                        PutTool(act, altCss: "uk-button-default");
                     }
                     gogrp = g;
                 }
@@ -1250,7 +1250,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLS(byte group = 0, string css = null)
+        public HtmlContent TOOLPAD(byte group = 0, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1277,7 +1277,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act);
+                        PutTool(act, altCss: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1288,7 +1288,7 @@ namespace Greatbone
         }
 
 
-        public HtmlContent VARTOOLS(byte group = 0, string css = null)
+        public HtmlContent VARTOOLPAD(byte group = 0, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1317,8 +1317,8 @@ namespace Greatbone
             {
                 for (int i = 0; i < acts.Length; i++)
                 {
-                    var actr = acts[i];
-                    int g = actr.Group;
+                    var act = acts[i];
+                    int g = act.Group;
                     if (g == 0 || (g & group) > 0)
                     {
                         if (g != curg)
@@ -1326,7 +1326,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(actr);
+                        PutTool(act, altCss: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1336,7 +1336,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null)
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string altcss = "uk-button-default")
         {
             // locate the proper work
             Work w = webCtx.Work;
@@ -1344,15 +1344,15 @@ namespace Greatbone
             {
                 w = w.varwork;
             }
-            var actr = w[action];
-            if (actr != null)
+            var act = w[action];
+            if (act != null)
             {
-                PutTool(actr, subscript, caption);
+                PutTool(act, subscript, caption, altcss);
             }
             return this;
         }
 
-        void PutTool(Actioner act, int subscript = -1, string caption = null)
+        void PutTool(Actioner act, int subscript = -1, string caption = null, string altCss = null)
         {
             var tool = act.Tool;
 
@@ -1363,18 +1363,14 @@ namespace Greatbone
                 ok = act.CheckState(webCtx, stack, level);
             }
 
+            var css = tool.Css ?? altCss;
             if (tool.IsAnchorTag)
             {
-                Add("<a class=\"");
-                var css = tool.Css;
-                if (css != null)
+                Add("<a class=\"uk-button ");
+                Add(css ?? "uk-button-link");
+                if (act == webCtx.Actioner) // if current action
                 {
-                    Add("uk-button ");
-                    Add(css);
-                    if (act == webCtx.Actioner) // if current action
-                    {
-                        Add(" uk-active");
-                    }
+                    Add(" uk-active");
                 }
                 if (!ok)
                 {
@@ -1402,7 +1398,6 @@ namespace Greatbone
             else
             {
                 Add("<button  class=\"uk-button ");
-                var css = tool.Css;
                 Add(css);
                 Add("\" name=\"");
                 Add(act.Key);

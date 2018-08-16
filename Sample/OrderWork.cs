@@ -36,7 +36,7 @@ namespace Samp
                             h.T("<main class=\"uk-card-body\">");
                             h.ICO_(css: "uk-width-1-6").T('/').T(o.item).T("/icon")._ICO();
                             h.CNY(o.price).T(o.qty).T(o.unit)._P();
-                            h.VARTOOLS(css: "uk-width-1-5");
+                            h.VARTOOLPAD(css: "uk-width-1-5");
                             h.T("</main>");
                         }
                     );
@@ -137,7 +137,7 @@ namespace Samp
                             if (curitme != null)
                             {
                                 h.T("</main>");
-                                h.TOOLS(@group: 2, css: "uk-card-footer");
+                                h.TOOLPAD(@group: 2, css: "uk-card-footer");
                                 h.T("</form>");
                             }
                             h.T("<form class=\"uk-card uk-card-default\">");
@@ -150,7 +150,7 @@ namespace Samp
                         curitme = item;
                     }
                     h.T("</main>");
-                    h.TOOLS(group: 0b0110, css: "uk-card-footer uk-flex-between");
+                    h.TOOLPAD(group: 0b0110, css: "uk-card-footer uk-flex-between");
                     h.T("</form>");
                 }
             }, false, 2);
@@ -163,7 +163,7 @@ namespace Samp
         }
 
 
-        [Ui("排程", "设为排程状态", 0b0010), Tool(ButtonPickShow)]
+        [Ui("排程", "设为排程状态", 0b0010), Tool(ButtonPickShow, css: "uk-button-secondary")]
         public void plan(WebContext wc)
         {
             bool range = true;
@@ -188,7 +188,7 @@ namespace Samp
             }
         }
 
-        [Ui("解排", "解除排程状态", 0b0010), Tool(ButtonPickShow)]
+        [Ui("解排", "解除排程状态", 0b0010), Tool(ButtonPickShow, css: "uk-button-secondary")]
         public async Task unplan(WebContext wc)
         {
             bool range = false;
@@ -213,7 +213,7 @@ namespace Samp
             }
         }
 
-        [Ui("备齐", "解除排程状态", 0b0100), Tool(ButtonPickShow)]
+        [Ui("备齐", "解除排程状态", 0b0100), Tool(ButtonPickShow, css: "uk-button-secondary")]
         public async Task ready(WebContext wc)
         {
         }
@@ -229,7 +229,7 @@ namespace Samp
         {
         }
 
-        [Ui("团购"), Tool(A)]
+        [Ui("团购"), Tool(A, "uk-button-link")]
         public void @default(WebContext wc, int page)
         {
             var prin = (User) wc.Principal;
@@ -251,7 +251,7 @@ namespace Samp
                             if (curgrpid != null)
                             {
                                 h.T("</main>");
-                                h.TOOLS(css: "uk-card-footer");
+                                h.TOOLPAD(css: "uk-card-footer");
                                 h.T("</article>");
                             }
                             h.T("<article class=\"uk-card  uk-card-default\">");
@@ -264,13 +264,13 @@ namespace Samp
                         curgrpid = item;
                     }
                     h.T("</main>");
-                    h.VARTOOLS(@group: 2, css: "uk-card-footer");
+                    h.VARTOOLPAD(@group: 2, css: "uk-card-footer");
                     h.T("</article>");
                 }
             }, false, 2);
         }
 
-        [Ui("个单"), Tool(A)]
+        [Ui("个单"), Tool(A, "uk-button-link")]
         public void lone(WebContext wc, int page)
         {
             var prin = (User) wc.Principal;
@@ -289,7 +289,7 @@ namespace Samp
                             if (curuid > 0)
                             {
                                 h.T("</main>");
-                                h.TOOLS(css: "uk-card-footer");
+                                h.TOOLPAD(css: "uk-card-footer");
                                 h.T("</article>");
                             }
                             h.T("<article class=\"uk-card  uk-card-default\">");
@@ -300,7 +300,7 @@ namespace Samp
                         curuid = uid;
                     }
                     h.T("</main>");
-                    h.VARTOOLS(@group: 2, css: "uk-card-footer");
+                    h.VARTOOLPAD(@group: 2, css: "uk-card-footer");
                     h.T("</article>");
                 }
             }, false, 2);

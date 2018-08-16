@@ -40,7 +40,7 @@ namespace Samp
                         h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("冷藏", o.refrig)._LI();
                         h._UL();
                         h._MAIN();
-                        h.VARTOOLS(css: "uk-card-footer uk-flex-between");
+                        h.VARTOOLPAD(css: "uk-card-footer uk-flex-between");
                     });
                 });
             }

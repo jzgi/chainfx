@@ -28,14 +28,14 @@ namespace Samp
                 h.LI_().FI("参　　团", orgs[o.grpat]?.name)._LI();
                 h.LI_().FI("收货地址", o.addr)._LI();
                 h._UL();
-                h.TOOLS(css: "uk-card-footer uk-flex-center");
+                h.TOOLPAD(css: "uk-card-footer uk-flex-center");
                 h._DIV();
             }, title: "我的设置");
         }
 
         const string PASSMASK = "t#0^0z4R4pX7";
 
-        [Ui("填写设置", "填写我的设置"), Tool(ButtonShow)]
+        [Ui("填写设置", "填写我的设置"), Tool(ButtonShow, css: "uk-button-secondary")]
         public async Task edit(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -85,7 +85,7 @@ namespace Samp
             }
         }
 
-        [Ui("推荐他人", "推荐扫码关注"), Tool(AOpen, size: 1)]
+        [Ui("推荐他人", "推荐扫码关注"), Tool(AOpen, size: 1, css: "uk-button-secondary")]
         public async Task share(WebContext wc)
         {
             var prin = (User) wc.Principal;
