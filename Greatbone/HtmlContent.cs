@@ -472,6 +472,32 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent H5_(string css = null)
+        {
+            Add("<h5");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _H5()
+        {
+            Add("</h5>");
+            return this;
+        }
+
+        public HtmlContent H5<V>(V v, string css = null)
+        {
+            H5_(css);
+            AddPrimitive(v);
+            _H5();
+            return this;
+        }
+
 
         public HtmlContent P_(string css = null)
         {
@@ -2436,7 +2462,7 @@ namespace Greatbone
 
         public HtmlContent CROP(string name, string caption, short width, short height)
         {
-            Add("<a class=\"uk-button uk-button-default uk-margin-small\" onclick=\"document.getElementById(\'imginp\').click()\">");
+            Add("<a class=\"uk-button uk-button-default uk-margin-small-bottom\" onclick=\"document.getElementById(\'imginp\').click()\">");
             Add(caption);
             Add("</a>");
             Add("<div id=\"imgbnd\" style=\"height: ");

@@ -25,15 +25,15 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ Chat.DETAIL;
-                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY posted DESC OFFSET @1 LIMIT 20");
+                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY top, posted DESC OFFSET @1 LIMIT 20");
                 var arr = dc.Query<Chat>(p => p.Set(page * 20), proj);
                 wc.GivePage(200, h =>
                     {
                         h.TOPBAR(false);
                         h.LIST(arr, o =>
                         {
-                            h.T("<a class=\"uk-col uk-link-heading uk-padding-small\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '帖子详情');\">");
-                            h.T("<h4>").T(o.subject).T("</h4>");
+                            h.T("<a class=\"uk-col uk-link-heading uk-padding-small\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.subject).T("');\">");
+                            h.H4(o.subject);
                             h.FI(null, o.posted);
                             h.T("</a>");
                         });
@@ -55,7 +55,7 @@ namespace Samp
                     h.FORM_(mp: true);
                     h.FIELDUL_();
                     h.LI_().TEXT(null, nameof(subject), text, tip: "填写标题", max: 20, required: true)._LI();
-                    h.LI_().TEXTAREA(null, nameof(text), text, tip: "输入内容", max: 500, required: true)._LI();
+                    h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写文字内容", max: 500, required: true)._LI();
                     h._FIELDUL();
                     h.CROP("img", "附图片", 360, 270);
                     h._FORM();

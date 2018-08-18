@@ -18,8 +18,8 @@ namespace Samp
         internal string uname;
         internal Post[] posts;
         internal short replies;
-        internal short imgs;
         internal DateTime posted;
+        internal bool top;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -35,8 +35,8 @@ namespace Samp
                 s.Get(nameof(posts), ref posts);
             }
             s.Get(nameof(replies), ref replies);
-            s.Get(nameof(imgs), ref imgs);
             s.Get(nameof(posted), ref posted);
+            s.Get(nameof(top), ref top);
         }
 
         public const int NUM = 6;
@@ -55,8 +55,8 @@ namespace Samp
                 s.Put(nameof(posts), posts);
             }
             s.Put(nameof(replies), replies);
-            s.Put(nameof(imgs), imgs);
             s.Put(nameof(posted), posted);
+            s.Put(nameof(top), top);
         }
     }
 

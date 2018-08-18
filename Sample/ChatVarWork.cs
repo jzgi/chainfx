@@ -26,15 +26,23 @@ namespace Samp
             {
                 dc.Sql("SELECT ").collst(Chat.Empty).T(" FROM chats WHERE id = @1");
                 var chat = dc.Query1<Chat>(p => p.Set(chatid));
+                string text = null;
                 wc.GivePage(200, h =>
                     {
                         h.LIST(chat.posts, o =>
                         {
                             h.DIV_("uk-col uk-link-heading uk-padding-small");
-                            h.H4_().T(o.text)._H4();
+                            h.T("<span uk-icon=\"user\"></span>").T(o.uname);
+                            h.H5(o.text);
                             h.FI(null, o.posted);
                             h._DIV();
                         });
+                        h.FORM_(mp: true);
+                        h.FIELDUL_("我要回复");
+                        h.LI_().TEXTAREA(null, nameof(text), text, tip: "输入内容", max: 500, required: true)._LI();
+                        h._FIELDUL();
+                        h.CROP("img", "附图片", 360, 270);
+                        h._FORM();
                     }, true, 60
                 );
             }

@@ -69,7 +69,7 @@ strong {
 em {
     font-style: normal;
     font-size: 1.25rem;
-    color: #e36209;
+    color: #ff9500;
 }
 
 ins {
@@ -1054,14 +1054,13 @@ button.uk-icon:not(:disabled) {
     width: 100%;
     top: 0;
     font-size: 1rem;
-    background: #fff;
+    background-color: lightgray;
     z-index: 9;
     display: flex;
     box-sizing: border-box;
     align-items: center;
     justify-content: space-between;
     padding: 0 4px;
-    border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-top-placeholder {
@@ -1084,8 +1083,7 @@ button.uk-icon:not(:disabled) {
     box-sizing: border-box;
     justify-content: space-around;
     align-items: center;
-    background-color: #f2f2f2;
-    border-top: 1px solid #dcdcdc;
+    background-color: lightgray;
 }
 
 .uk-fieldset {
@@ -1749,7 +1747,9 @@ a.uk-button-primary {
 
 .uk-button-link {
     background-color: inherit;
-    border: 1px solid #fff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
     color: #3caf36;
     line-height: 26px;
     height: 28px;
@@ -1759,7 +1759,6 @@ a.uk-button-primary {
 .uk-button-link:focus {
     border: 1px solid #3caf36;
     color: #3caf36;
-    text-decoration: underline;
 }
 
 .uk-button-link:active,
@@ -4699,10 +4698,8 @@ ul.uk-nav-sub {
     align-items: center;
     justify-content: center;
     height: 2.75rem;
-    background: #fff;
     box-sizing: border-box;
-    background-color: #f2f2f2;
-    border-bottom: 1px solid #dcdcdc;
+    background-color: lightgray;
 }
 
 .uk-modal-footer {
@@ -4711,8 +4708,7 @@ ul.uk-nav-sub {
     justify-content: center;
     height: 2.75rem;
     box-sizing: border-box;
-    background-color: #f2f2f2;
-    border-top: 1px solid #dcdcdc;
+    background-color: lightgray;
 }
 
 /*
