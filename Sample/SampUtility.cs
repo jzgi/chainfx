@@ -192,7 +192,7 @@ namespace Samp
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 60, string title = null)
+        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 15, string title = null)
         {
             HtmlContent h = new HtmlContent(wc, true, 32 * 1024);
 
@@ -250,7 +250,8 @@ namespace Samp
             h.Add("<script>");
             if (main != null) // enable the ok button
             {
-                h.Add("window.parent.document.getElementById('okbtn').disabled = (document.forms.length == 0);");
+                h.Add("var btn = window.parent.document.getElementById('okbtn');");
+                h.Add("if (btn) btn.disabled = (document.forms.length == 0);");
             }
             else // trigger click on the close-button
             {
@@ -279,7 +280,7 @@ namespace Samp
                 h.T("<li class=\"uk-active \"><a href=\"#\">社区交流</a></li>");
             }
             h.T("</ul>");
-            h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"album\"></a>");
+            h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"album\" onclick=\"return dialog(this, 8, false, 4, '我的订单');\"></a>");
             h.T("</nav>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

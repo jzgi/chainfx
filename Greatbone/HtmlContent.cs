@@ -943,16 +943,19 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BUTTON(string name, int subcmd, string v, bool post = true, string css = "uk-button-default")
+        public HtmlContent BUTTON(string action, int subcmd, string v, bool post = true, string css = "uk-button-default")
         {
             Add("<button class=\"uk-button ");
             Add(css);
             Add("\" formmethod=\"");
             Add(post ? "post" : "get");
             Add("\" formaction=\"");
-            Add(name);
-            Add('-');
-            Add(subcmd);
+            Add(action);
+            if (subcmd > 0)
+            {
+                Add('-');
+                Add(subcmd);
+            }
             Add("\">");
             AddEsc(v);
             Add("</button>");

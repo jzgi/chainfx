@@ -159,7 +159,6 @@ h6,
 .uk-h6 {
     font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-weight: normal;
-    color: #222;
     text-transform: none;
     display: inline-block;
 }
@@ -199,12 +198,14 @@ h5,
 .uk-h5 {
     font-size: 0.875rem;
     margin: 0.25rem 0;
+    color: #333;
 }
 
 h6,
 .uk-h6 {
     font-size: 0.75rem;
     margin: 0.125rem 0;
+    color: #333;
 }
 
 /*
@@ -547,25 +548,15 @@ a.uk-link-reset:hover,
     list-style: none;
 }
 
-/*
- * Style
- */
-.uk-list > li:nth-child(n+2) {
-    margin-top: 4px;
-    padding-top: 4px;
-}
-
-.uk-list.uk-list-divider::before {
+.uk-list-divider::before {
     border-top: 1px solid #dcdcdc;
 }
 
-.uk-list.uk-list-divider::after {
+.uk-list-divider::after {
     border-bottom: 1px solid #dcdcdc;
 }
 
 .uk-list-divider > li:nth-child(n+2) {
-    margin-top: 4px;
-    padding-top: 4px;
     border-top: 1px solid #dcdcdc;
 }
 
@@ -1415,6 +1406,7 @@ select.uk-form-width-xsmall {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    width: 100%;
 }
 
 .uk-row {
@@ -4853,17 +4845,6 @@ ul.uk-nav-sub {
     overflow: hidden;
 }
 
-/* Item
- ========================================================================== */
-/*
- * 1. Center child within the viewport
- * 2. Not visible by default
- * 3. Color needed for spinner icon
- * 4. Optimize animation
- * 5. Responsiveness
- *    Using `vh` for `max-height` to fix image proportions after resize in Safari and Opera
- *    Using `vh` and `vw` to make responsive image work in IE11
- */
 .uk-lightbox-items > * {
     /* 1 */
     position: absolute;
@@ -4896,8 +4877,6 @@ ul.uk-nav-sub {
     display: flex;
 }
 
-/* Toolbar
- ========================================================================== */
 .uk-lightbox-toolbar {
     padding: 10px 10px;
     background: rgba(0, 0, 0, 0.3);
@@ -4908,8 +4887,6 @@ ul.uk-nav-sub {
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* Toolbar Icon (Close)
- ========================================================================== */
 .uk-lightbox-toolbar-icon {
     padding: 5px;
     color: rgba(255, 255, 255, 0.7);
@@ -4922,11 +4899,6 @@ ul.uk-nav-sub {
     color: #fff;
 }
 
-/* Button (Slidenav)
- ========================================================================== */
-/*
- * 1. Center icon vertically and horizontally
- */
 .uk-lightbox-button {
     box-sizing: border-box;
     width: 50px;
@@ -4946,34 +4918,16 @@ ul.uk-nav-sub {
     color: #fff;
 }
 
-/* Caption
- ========================================================================== */
-/* Iframe
- ========================================================================== */
 .uk-lightbox-iframe {
     width: 80%;
     height: 80%;
 }
 
-/* ========================================================================
-   Component: Slideshow
- ========================================================================== */
-/*
- * 1. Prevent tab highlighting on iOS.
- */
 .uk-slideshow {
     /* 1 */
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Items
- ========================================================================== */
-/*
- * 1. Create position and stacking context
- * 2. Reset list
- * 3. Clip child elements
- * 4. Prevent displaying the callout information on iOS.
- */
 .uk-slideshow-items {
     /* 1 */
     position: relative;
@@ -4988,15 +4942,6 @@ ul.uk-nav-sub {
     -webkit-touch-callout: none;
 }
 
-/* Item
- ========================================================================== */
-/*
- * 1. Position items above each other
- * 2. Take the full width
- * 3. Clip child elements, e.g. for `uk-cover`
- * 4. Optimize animation
- * 5. Disable horizontal panning gestures in IE11 and Edge
- */
 .uk-slideshow-items > * {
     /* 1 */
     position: absolute;
@@ -5020,33 +4965,16 @@ ul.uk-nav-sub {
     display: none;
 }
 
-/* ========================================================================
-   Component: Slider
- ========================================================================== */
-/*
- * 1. Prevent tab highlighting on iOS.
- */
 .uk-slider {
     /* 1 */
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Container
- ========================================================================== */
-/*
- * 1. Clip child elements
- */
 .uk-slider-container {
     /* 1 */
     overflow: hidden;
 }
 
-/* Items
- ========================================================================== */
-/*
- * 1. Optimize animation
- * 2. Create a containing block. In Safari it's neither created by `transform` nor `will-change`.
- */
 .uk-slider-items {
     /* 1 */
     will-change: transform;
@@ -5054,10 +4982,6 @@ ul.uk-nav-sub {
     position: relative;
 }
 
-/*
- * 1. Reset list style without interfering with grid
- * 2. Prevent displaying the callout information on iOS.
- */
 .uk-slider-items:not(.uk-grid) {
     display: flex;
     /* 1 */
@@ -5088,12 +5012,6 @@ ul.uk-nav-sub {
     touch-action: pan-y;
 }
 
-/* ========================================================================
-   Component: Sticky
- ========================================================================== */
-/*
- * 1. Resolve frame rate issues on devices with lower frame rates by forcing hardware acceleration
- */
 .uk-sticky-fixed {
     z-index: 980;
     box-sizing: border-box;
@@ -6788,7 +6706,7 @@ ul.uk-nav-sub {
 /* Component: Text */
 
 .uk-text-lead {
-    font-size: 1.5rem;
+    font-size: 1rem;
     line-height: 1.5;
     color: #333;
 }

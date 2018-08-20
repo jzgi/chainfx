@@ -8,6 +8,8 @@ namespace Samp
 {
     public abstract class ChatWork<V> : Work where V : ChatVarWork
     {
+        public const short PicWidth = 360, PicHeight = 270;
+
         protected ChatWork(WorkConfig cfg) : base(cfg)
         {
         }
@@ -32,13 +34,16 @@ namespace Samp
                         h.TOPBAR(false);
                         h.LIST(arr, o =>
                         {
+                            var org = Obtain<Map<string, Org>>()[o.id];
                             h.T("<a class=\"uk-col uk-link-heading uk-padding-small\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.subject).T("');\">");
-                            h.H4(o.subject);
-                            h.FI(null, o.posted);
+                            h.DIV_("uk-row uk-flex-between").DIV_("uk-text-lead").T(o.subject)._DIV();
+                            h.T(o.replies)._DIV();
+                            h.DIV_("uk-row uk-flex-between uk-text-muted").SPAN_().T("<span uk-icon=\"user\"></span>&nbsp;").T(o.uname)._SPAN().SPAN_().T(o.rname).SP().T(o.posted)._DIV();
+                            h._DIV();
                             h.T("</a>");
                         });
                         h.BOTTOMBAR_().TOOL(nameof(@new))._BOTTOMBAR();
-                    }, true, 60
+                    }, true
                 );
             }
         }
@@ -48,6 +53,7 @@ namespace Samp
         {
             string subject = null;
             string text = null;
+            ArraySegment<byte> img;
             if (wc.GET)
             {
                 wc.GivePane(200, h =>
@@ -57,38 +63,50 @@ namespace Samp
                     h.LI_().TEXT(null, nameof(subject), text, tip: "填写标题", max: 20, required: true)._LI();
                     h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写文字内容", max: 500, required: true)._LI();
                     h._FIELDUL();
-                    h.CROP("img", "附图片", 360, 270);
+                    h.CROP(nameof(img), "附图片", PicWidth, PicHeight);
                     h._FORM();
                 });
             }
             else // POST
             {
+                var now = DateTime.Now;
                 var prin = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
-                text = f[nameof(text)];
                 subject = f[nameof(subject)];
-
+                text = f[nameof(text)];
+                img = f[nameof(img)];
                 var chat = new Chat
                 {
                     subject = subject,
-                    uid = prin.id,
                     uname = prin.name,
                     posts = new[]
                     {
                         new Post
                         {
-                            uid = prin.id,
-                            uname = prin.name,
-                            text = text
+                            uid = prin.id, uname = prin.name, grpat = prin.grpat, text = text,
+                            img = (short) (img.Count == 0 ? 0 : 1),
+                            time = now
                         }
                     },
-                    posted = DateTime.Now
+                    posted = now
                 };
                 using (var dc = NewDbContext())
                 {
                     const byte proj = 0xff ^ Chat.ID;
-                    dc.Sql("INSERT INTO chats")._(chat, proj)._VALUES_(chat, proj);
-                    dc.Execute(p => chat.Write(p));
+                    if (img.Count == 0)
+                    {
+                        dc.Sql("INSERT INTO chats")._(chat, proj)._VALUES_(chat, proj);
+                        dc.Execute(p => { chat.Write(p, proj); });
+                    }
+                    else
+                    {
+                        dc.Sql("INSERT INTO chats")._(chat, proj, "img1")._VALUES_(chat, proj, "@1");
+                        dc.Execute(p =>
+                        {
+                            chat.Write(p, proj);
+                            p.Set(img);
+                        });
+                    }
                 }
                 wc.GivePane(200);
             }
@@ -96,12 +114,12 @@ namespace Samp
     }
 
     [UserAccess(CTR)]
-    [Ui("客服")]
+    [Ui("社区")]
     public class CtrChatWork : ChatWork<CtrChatVarWork>
     {
         public CtrChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).uid);
+            CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).id);
         }
 
         public void @default(WebContext wc)

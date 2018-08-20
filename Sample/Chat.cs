@@ -14,8 +14,8 @@ namespace Samp
 
         internal int id;
         internal string subject;
-        internal int uid;
         internal string uname;
+        internal string rname;
         internal Post[] posts;
         internal short replies;
         internal DateTime posted;
@@ -28,8 +28,8 @@ namespace Samp
                 s.Get(nameof(id), ref id);
             }
             s.Get(nameof(subject), ref subject);
-            s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
+            s.Get(nameof(rname), ref rname);
             if ((proj & DETAIL) > 0)
             {
                 s.Get(nameof(posts), ref posts);
@@ -48,8 +48,8 @@ namespace Samp
                 s.Put(nameof(id), id);
             }
             s.Put(nameof(subject), subject);
-            s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
+            s.Put(nameof(rname), rname);
             if ((proj & DETAIL) > 0)
             {
                 s.Put(nameof(posts), posts);
@@ -64,26 +64,29 @@ namespace Samp
     {
         internal int uid;
         internal string uname;
+        internal string grpat;
         internal string text;
         internal short img;
-        internal DateTime posted;
+        internal DateTime time;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
+            s.Get(nameof(grpat), ref grpat);
             s.Get(nameof(text), ref text);
             s.Get(nameof(img), ref img);
-            s.Get(nameof(posted), ref posted);
+            s.Get(nameof(time), ref time);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
+            s.Put(nameof(grpat), grpat);
             s.Put(nameof(text), text);
             s.Put(nameof(img), img);
-            s.Put(nameof(posted), posted);
+            s.Put(nameof(time), time);
         }
     }
 }
