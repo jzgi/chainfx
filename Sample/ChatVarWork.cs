@@ -48,10 +48,10 @@ namespace Samp
                             }, css: "uk-card-primary");
                             h.FORM_(mp: true);
                             h.FIELDUL_();
-                            h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写回复内容", max: 400, required: true)._LI();
+                            h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写跟帖内容", max: 400, required: true)._LI();
                             h._FIELDUL();
-                            h.CROP(nameof(img), "附图片", PicWidth, PicHeight);
-                            h.BOTTOMBAR_().BUTTON(null, 0, "回复", css: "uk-button-primary")._BOTTOMBAR();
+                            h.CROP(nameof(img), "图片（可选）", PicWidth, PicHeight);
+                            h.BOTTOMBAR_().BUTTON(null, 0, "跟帖", css: "uk-button-primary")._BOTTOMBAR();
                             h._FORM();
                         }, true, 60
                     );
@@ -76,11 +76,11 @@ namespace Samp
                     });
                     if (img.Count > 0 && last.img < 10)
                     {
-                        dc.Execute($"UPDATE chats SET posts = @1, posted = @2, img{ord} = @3 WHERE id = @4", p => p.Set(posts).Set(now).Set(img).Set(chatid));
+                        dc.Execute($"UPDATE chats SET posts = @1, posted = @2, fcount = @3, fname = @4, img{ord} = @5 WHERE id = @6", p => p.Set(posts).Set(now).Set(posts.Length - 1).Set(prin.name).Set(img).Set(chatid));
                     }
                     else
                     {
-                        dc.Execute("UPDATE chats SET posts = @1, posted = @2 WHERE id = @3", p => p.Set(posts).Set(now).Set(chatid));
+                        dc.Execute("UPDATE chats SET posts = @1, posted = @2, fcount = @3, fname = @4 WHERE id = @5", p => p.Set(posts).Set(now).Set(posts.Length - 1).Set(prin.name).Set(chatid));
                     }
                 }
                 wc.GiveRedirect();
@@ -100,38 +100,6 @@ namespace Samp
                 }
                 else wc.Give(404, @public: true, maxage: 120); // not found
             }
-        }
-
-        [Ui("发送"), Tool(Button)]
-        public async Task say(WebContext wc)
-        {
-            string orgid = wc[this];
-            User prin = (User) wc.Principal;
-            string text = null;
-            var f = await wc.ReadAsync<Form>();
-            text = f[nameof(text)];
-            using (var dc = NewDbContext())
-            {
-                var msg = new Post {uname = prin.name, text = text};
-                if (dc.Query1("SELECT msgs FROM chats WHERE orgid = @1 AND custid = @2", p => p.Set(orgid).Set(prin.id)))
-                {
-                    dc.Let(out Post[] msgs);
-                    msgs = msgs.AddOf(msg, limit: 10);
-                    dc.Execute("UPDATE chats SET msgs = @1, quested = localtimestamp WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(prin.id));
-                }
-                else
-                {
-                    var o = new Chat()
-                    {
-                        uname = prin.name,
-                        posts = new[] {msg},
-                        posted = DateTime.Now
-                    };
-                    dc.Sql("INSERT INTO chats")._(Chat.Empty)._VALUES_(Chat.Empty);
-                    dc.Execute(p => o.Write(p));
-                }
-            }
-            wc.GiveRedirect("../?orgid=" + orgid);
         }
     }
 

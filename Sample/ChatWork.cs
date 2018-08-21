@@ -37,8 +37,8 @@ namespace Samp
                             var org = Obtain<Map<string, Org>>()[o.id];
                             h.T("<a class=\"uk-col uk-link-heading uk-padding-small\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.subject).T("');\">");
                             h.DIV_("uk-row uk-flex-between").DIV_("uk-text-lead").T(o.subject)._DIV();
-                            h.T(o.replies)._DIV();
-                            h.DIV_("uk-row uk-flex-between uk-text-muted").SPAN_().T("<span uk-icon=\"user\"></span>&nbsp;").T(o.uname)._SPAN().SPAN_().T(o.rname).SP().T(o.posted)._DIV();
+                            h.T(o.fcount)._DIV();
+                            h.DIV_("uk-row uk-flex-between uk-text-muted").SPAN_().T("<span uk-icon=\"user\"></span>&nbsp;").T(o.uname)._SPAN().SPAN_().T(o.fname).SP().T(o.posted)._DIV();
                             h._DIV();
                             h.T("</a>");
                         });

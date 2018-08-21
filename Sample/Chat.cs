@@ -15,10 +15,10 @@ namespace Samp
         internal int id;
         internal string subject;
         internal string uname;
-        internal string rname;
         internal Post[] posts;
-        internal short replies;
         internal DateTime posted;
+        internal short fcount;
+        internal string fname;
         internal bool top;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -29,13 +29,13 @@ namespace Samp
             }
             s.Get(nameof(subject), ref subject);
             s.Get(nameof(uname), ref uname);
-            s.Get(nameof(rname), ref rname);
             if ((proj & DETAIL) > 0)
             {
                 s.Get(nameof(posts), ref posts);
             }
-            s.Get(nameof(replies), ref replies);
             s.Get(nameof(posted), ref posted);
+            s.Get(nameof(fcount), ref fcount);
+            s.Get(nameof(fname), ref fname);
             s.Get(nameof(top), ref top);
         }
 
@@ -49,13 +49,13 @@ namespace Samp
             }
             s.Put(nameof(subject), subject);
             s.Put(nameof(uname), uname);
-            s.Put(nameof(rname), rname);
             if ((proj & DETAIL) > 0)
             {
                 s.Put(nameof(posts), posts);
             }
-            s.Put(nameof(replies), replies);
             s.Put(nameof(posted), posted);
+            s.Put(nameof(fcount), fcount);
+            s.Put(nameof(fname), fname);
             s.Put(nameof(top), top);
         }
     }

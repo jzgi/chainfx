@@ -196,7 +196,7 @@ namespace Samp
                     h.TOPBAR(true);
                     h.LIST(arr, o =>
                     {
-                        h.T("<a class=\"uk-width-1-3 uk-margin-auto-vertical\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 1, '商品详情');\">");
+                        h.T("<a class=\"uk-width-1-3 uk-margin-auto-vertical\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 4, '商品详情');\">");
                         h.ICO_(css: "uk-padding-small").T(o.name).T("/icon")._ICO();
                         h.T("</a>");
                         h.COL_(css: "uk-width-2-3 uk-padding-small");

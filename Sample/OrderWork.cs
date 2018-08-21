@@ -30,15 +30,15 @@ namespace Samp
                 {
                     h.BOARD(arr, o =>
                         {
-                            h.T("<header class=\"uk-card-header\">");
+                            h.HEADER_("uk-card-header");
                             h.T("收货：").T(o.uaddr).SP().T(o.uname).SP().T(o.utel);
-                            h.T("</header>");
-                            h.T("<main class=\"uk-card-body\">");
+                            h._HEADER();
+                            h.MAIN_("uk-card-body uk-row");
                             h.ICO_(css: "uk-width-1-6").T('/').T(o.item).T("/icon")._ICO();
-                            h.CNY(o.price).T(o.qty).T(o.unit)._P();
-                            h.VARTOOLPAD(css: "uk-width-1-5");
-                            h.T("</main>");
-                        }
+                            h.DIV_("uk-width-2-3").SP().T(o.item).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
+                            h.VARTOOLPAD(css: "uk-width-1-6");
+                            h._MAIN();
+                        }, css: "uk-card-primary"
                     );
                 }, false, 2, title: "我的订单");
             }
@@ -123,7 +123,7 @@ namespace Samp
             var items = Obtain<Map<string, Item>>();
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(@group: 1);
+                h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
                     dc.Query("SELECT id, item, qty, unit, status FROM orders WHERE status BETWEEN 1 AND 2 AND item IN (SELECT name FROM items WHERE giverid = @1) ORDER BY item, id", p => p.Set(prin.id));
@@ -137,7 +137,7 @@ namespace Samp
                             if (curitme != null)
                             {
                                 h.T("</main>");
-                                h.TOOLPAD(@group: 2, css: "uk-card-footer");
+                                h.TOOLPAD(group: 2, css: "uk-card-footer");
                                 h.T("</form>");
                             }
                             h.T("<form class=\"uk-card uk-card-default\">");
@@ -314,7 +314,7 @@ namespace Samp
         {
         }
 
-        [Ui("当前"), Tool(A)]
+        [Ui("当前"), Tool(A, "uk-button-link")]
         public void @default(WebContext wc)
         {
             string grpid = wc[-1];
@@ -331,7 +331,7 @@ namespace Samp
             });
         }
 
-        [Ui("查找"), Tool(APrompt)]
+        [Ui("查找"), Tool(APrompt, "uk-button-link")]
         public void find(WebContext wc)
         {
             bool inner = wc.Query[nameof(inner)];

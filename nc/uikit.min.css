@@ -4494,7 +4494,7 @@ ul.uk-nav-sub {
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 16px 16px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     opacity: 0;
     transition: opacity 0.15s linear;
 }
