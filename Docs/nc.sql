@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-08-15 23:03:28
+Date: 2018-08-21 21:19:12
 */
 
 
@@ -23,9 +23,8 @@ CREATE SEQUENCE "public"."chats_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
+ START 7
  CACHE 1;
-SELECT setval('"public"."chats_id_seq"', 1, true);
 
 -- ----------------------------
 -- Sequence structure for orders_id_seq
@@ -58,9 +57,9 @@ CREATE SEQUENCE "public"."users_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 28
+ START 30
  CACHE 1;
-SELECT setval('"public"."users_id_seq"', 28, true);
+SELECT setval('"public"."users_id_seq"', 30, true);
 
 -- ----------------------------
 -- Table structure for chats
@@ -69,13 +68,12 @@ DROP TABLE IF EXISTS "public"."chats";
 CREATE TABLE "public"."chats" (
 "id" int4 DEFAULT nextval('chats_id_seq'::regclass) NOT NULL,
 "subject" varchar(20) COLLATE "default",
-"uid" int4 NOT NULL,
 "uname" varchar(254) COLLATE "default",
-"msgs" jsonb,
-"replies" int2 NOT NULL,
+"posts" jsonb,
 "posted" timestamp(6),
+"fcount" int2 NOT NULL,
+"fname" varchar(10) COLLATE "default",
 "top" bool,
-"img0" bytea,
 "img1" bytea,
 "img2" bytea,
 "img3" bytea,
@@ -84,8 +82,7 @@ CREATE TABLE "public"."chats" (
 "img6" bytea,
 "img7" bytea,
 "img8" bytea,
-"img9" bytea,
-"imgs" int2
+"img9" bytea
 )
 WITH (OIDS=FALSE)
 
@@ -236,6 +233,11 @@ ALTER SEQUENCE "public"."chats_id_seq" OWNED BY "chats"."id";
 ALTER SEQUENCE "public"."orders_id_seq" OWNED BY "orders"."id";
 ALTER SEQUENCE "public"."repays_id_seq" OWNED BY "repays"."id";
 ALTER SEQUENCE "public"."users_id_seq" OWNED BY "users"."id";
+
+-- ----------------------------
+-- Indexes structure for table chats
+-- ----------------------------
+CREATE INDEX "chats_topposted" ON "public"."chats" USING btree ("top", "posted" DESC);
 
 -- ----------------------------
 -- Primary Key structure for table chats
