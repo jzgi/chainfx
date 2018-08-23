@@ -4016,11 +4016,15 @@ ul.uk-nav-sub {
 
 .uk-tab {
     display: flex;
-    flex-wrap: wrap;
     margin-left: -20px;
     padding: 0;
     list-style: none;
     position: relative;
+    overflow-x: scroll;
+}
+
+.uk-tab::-webkit-scrollbar {
+    display:none;
 }
 
 .uk-tab::before {
@@ -4494,7 +4498,7 @@ ul.uk-nav-sub {
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 16px 16px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
     opacity: 0;
     transition: opacity 0.15s linear;
 }
@@ -4603,9 +4607,9 @@ ul.uk-nav-sub {
 .uk-modal-large .uk-modal-dialog {
     position: relative;
     margin: auto;
-    height: 85%;
+    height: 90%;
     max-height: 800px;
-    width: 90%;
+    width: 96%;
     max-width: 800px;
     transform: translateY(0);
     display: flex;

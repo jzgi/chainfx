@@ -29,11 +29,11 @@ namespace Greatbone
         // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 
-        // the publishes of data event sources
-        readonly EventPub[] pubs;
+        // the publishing of data flows
+        List<Publish> pubs;
 
         // the subscribes of data flows
-        List<EventSub> subs;
+        List<Subscribe> subs;
 
         // the data flow polling schesuler thread
         Thread scheduler;
@@ -89,20 +89,6 @@ namespace Greatbone
                 }
             }
 
-            // init data flow publishes
-            Roll<EventPub> evts = new Roll<EventPub>();
-            using (var dc = NewDbContext())
-            {
-                // tables/views with names in form of pub_* and the pub_id column 
-                dc.Query("SELECT DISTINCT table_name FROM INFORMATION_SCHEMA.columns WHERE table_schema = current_schema AND table_name LIKE 'pub_%' AND column_name = 'pub_id'");
-                while (dc.Next())
-                {
-                    dc.Let(out string tname);
-                    evts.Add(new EventPub(tname));
-                }
-            }
-            pubs = evts.ToArray();
-
             // init the response cache
             if (cfg.cache)
             {
@@ -130,7 +116,7 @@ namespace Greatbone
 
         public Map<string, Client> Clients => clients;
 
-        public List<EventSub> Subs => subs;
+        public List<Subscribe> Subscribes => subs;
 
         public string Describe()
         {
@@ -156,9 +142,9 @@ namespace Greatbone
             string path = wc.Path;
             try // handling
             {
-                if ("/*".Equals(path)) // handle an event poll request
+                if (path.StartsWith("/*")) // handle as flow poll
                 {
-                    Poll(wc);
+                    Provide(wc);
                 }
                 else // handle a regular request
                 {
@@ -257,7 +243,7 @@ namespace Greatbone
             }
 
             // create and start the scheduler thead
-            if (clients != null)
+            if (subs != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -269,10 +255,10 @@ namespace Greatbone
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < Clients.Count; i++)
+                        for (int i = 0; i < subs.Count; i++)
                         {
-                            Client client = Clients[i];
-                            client.TryPoll(tick);
+                            var sub = subs[i];
+                            sub.TryPoll(tick);
                         }
                     }
                 });
@@ -283,34 +269,56 @@ namespace Greatbone
         //
         // data event
 
-        internal void Poll(WebContext wc)
+        public void Publish(string flow, FlowProvider provider)
         {
-            string x_flow = wc.Header("X-Flow");
-            var pub = pubs.First(x => x.Flow == x_flow);
-            long? x_id = wc.HeaderLong("X-ID");
-            int? limit = wc.HeaderInt("X-Limit");
-            using (var dc = NewDbContext())
+            if (pubs == null)
             {
-//                dc.Query(pub.Sql, p => p.Set(x_id.Value).Set(limit.Value));
-                var cnt = dc.Dump();
-                wc.Give(200, cnt);
+                pubs = new List<Publish>(4);
             }
+            pubs.Add(new Publish(flow, provider));
         }
 
-        public void Subscribe(string peering, string flow, EventHandler handler)
+        public void Subscribe(string svcspec, string flow, FlowConsumer consumer)
         {
+            if (subs == null)
+            {
+                subs = new List<Subscribe>(4);
+            }
+            var sub = new Subscribe(svcspec, flow, consumer);
+            // resolve the client(s) used to connect, maybe many
             for (int i = 0; i < clients.Count; i++)
             {
-                var pid = clients[i].PeerId;
-                if (peering.EndsWith('-') && pid.StartsWith(peering) || pid == peering) // wildcast or equal
+                var cli = clients[i];
+                if (svcspec.EndsWith('-') && cli.PeerId.StartsWith(svcspec) || cli.PeerId == svcspec) // wildcast or equal
                 {
-                    if (subs == null)
-                    {
-                        subs = new List<EventSub>(8);
-                    }
-                    subs.Add(new EventSub(pid, flow, handler));
+                    sub.Clients.Add(cli);
                 }
             }
+            if (sub.Clients.Count == 0)
+            {
+                throw new ServiceException("no client configured: " + svcspec);
+            }
+            subs.Add(sub);
+        }
+
+        internal void Provide(WebContext wc)
+        {
+            var flow = wc.Path.Substring(2);
+            long last = wc.Query[nameof(last)];
+            if (pubs != null)
+            {
+                for (int i = 0; i < pubs.Count; i++)
+                {
+                    if (pubs[i].Flow == flow)
+                    {
+                        var content = pubs[i].Provider(last);
+                        wc.Give(200, content);
+                        return;
+                    }
+                }
+            }
+            // not found
+            wc.Give(404, (IContent) null, true, 60);
         }
 
         internal Client GetClient(string peerId)
@@ -543,13 +551,12 @@ namespace Greatbone
             {
                 DBG(e.Message);
             }
-
             // handling
             try
             {
-                if ("/*".Equals(path)) // handle an event poll request
+                if (path.StartsWith("/*")) // handle as flow poll
                 {
-                    Poll(wc);
+                    Provide(wc);
                 }
                 else // handle a regular request
                 {

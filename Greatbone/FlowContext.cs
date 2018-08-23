@@ -3,16 +3,9 @@
 namespace Greatbone
 {
     /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="pack"></param>
-    /// <returns>the last eventid that has been received and handled</returns>
-    public delegate int EventHandler(EventPack pack);
-
-    /// <summary>
     /// The pack of a set of recent events.
     /// </summary>
-    public class EventPack : ISource
+    public class FlowContext : ISource
     {
         byte[] buffer;
 
@@ -20,11 +13,13 @@ namespace Greatbone
 
         int pos;
 
-        public EventPack(ArraySegment<byte> bytea)
+        public FlowContext(ArraySegment<byte> bytea)
         {
             this.buffer = bytea.Array;
             this.length = bytea.Count;
         }
+
+        public long RevId => pos;
 
         public bool Get(string name, ref bool v)
         {
