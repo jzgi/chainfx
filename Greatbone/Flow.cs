@@ -2,17 +2,12 @@
 
 namespace Greatbone
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="pack"></param>
-    /// <returns>the last eventid that has been received and handled</returns>
     public delegate FlowContent FlowProvider(long last);
 
     public delegate long FlowConsumer(FlowContext fc);
 
     /// <summary>
-    /// The publishing of data revision.
+    /// The publishing of a data flow.
     /// </summary>
     public struct Publish
     {
@@ -32,11 +27,11 @@ namespace Greatbone
     }
 
     /// <summary>
-    /// The subscribingof a particular type of data events.
+    /// The subscribing of a data flow.
     /// </summary>
     public struct Subscribe
     {
-        readonly string svcspec;
+        readonly string keySpec;
 
         readonly string flow;
 
@@ -45,9 +40,9 @@ namespace Greatbone
         // relevant http client connectors
         readonly List<Client> clients;
 
-        public Subscribe(string svcspec, string flow, FlowConsumer consumer)
+        public Subscribe(string keySpec, string flow, FlowConsumer consumer)
         {
-            this.svcspec = svcspec;
+            this.keySpec = keySpec;
             this.flow = flow;
             this.consumer = consumer;
             this.clients = new List<Client>(4);

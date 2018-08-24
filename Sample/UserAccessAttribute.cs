@@ -28,12 +28,12 @@ namespace Samp
             this.full = full;
         }
 
-        public override bool? Check(WebContext wc, IData prin)
+        public override bool? Check(WebContext wc)
         {
             // if not require persisted
             if (!full) return true;
 
-            var o = (User) prin;
+            var o = (User) wc.Principal;
 
             // info incomplete
             if (o.name == null || o.tel == null || o.addr == null) return null;

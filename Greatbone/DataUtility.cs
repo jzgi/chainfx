@@ -30,6 +30,10 @@ namespace Greatbone
             {
                 return new XmlParser(buffer, length).Parse();
             }
+            if (ctyp.StartsWith("application/data-flow"))
+            {
+                return new FlowContext(buffer, length);
+            }
             if (ctyp.StartsWith("text/"))
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))

@@ -73,7 +73,7 @@ namespace Greatbone
                 for (int i = 0; i < services.Count; i++)
                 {
                     var svc = services[i];
-                    if (svc.Id == svcId) return svc;
+                    if (svc.Key == svcId) return svc;
                 }
             }
             return null;

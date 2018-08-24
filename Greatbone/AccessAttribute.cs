@@ -9,11 +9,10 @@ namespace Greatbone
     public abstract class AccessAttribute : Attribute
     {
         /// <summary>
-        /// An authorization check
+        /// An access check, such as against the current user, or other kinds of targets.
         /// </summary>
         /// <param name="wc"></param>
-        /// <param name="prin"></param>
         /// <returns></returns>
-        public abstract bool? Check(WebContext wc, IData prin);
+        public abstract bool? Check(WebContext wc);
     }
 }

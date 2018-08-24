@@ -332,7 +332,6 @@ namespace Greatbone
                         throw AccessException.FalseResultEx;
                     }
                 }
-
                 wc.Chain(varwork, key, prinkey);
                 return varwork.Resolve(ref relative, wc);
             }

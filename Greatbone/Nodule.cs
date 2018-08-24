@@ -76,7 +76,7 @@ namespace Greatbone
             }
         }
 
-        public string Key => name;
+        public virtual string Key => name;
 
         public bool IsCapital => capital;
 
@@ -102,27 +102,16 @@ namespace Greatbone
 
         public bool CheckAccess(WebContext wc, out AccessException except)
         {
-            except = null;
             if (access != null)
             {
-                IData prin = wc.Principal;
-                if (prin == null)
+                bool? result = access.Check(wc);
+                if (result != true)
                 {
-                    except = AccessException.NoPrincipalEx;
+                    except = new AccessException(result, access);
                     return false;
                 }
-                bool? ret = access.Check(wc, prin);
-                if (ret == null)
-                {
-                    except = AccessException.NullResultEx;
-                    return false;
-                }
-                if (!ret.Value)
-                {
-                    except = AccessException.FalseResultEx;
-                }
-                return ret.Value;
             }
+            except = null;
             return true;
         }
 

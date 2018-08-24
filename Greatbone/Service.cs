@@ -20,8 +20,8 @@ namespace Greatbone
     /// </summary>
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
-        // the peer id of this service instance
-        readonly string id;
+        // the identifier of this service instance
+        readonly string key;
 
         // the embedded server
         readonly KestrelServer server;
@@ -48,7 +48,7 @@ namespace Greatbone
         {
             cfg.Service = this;
 
-            id = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
+            key = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
 
             // init the file-based logger
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
@@ -74,7 +74,7 @@ namespace Greatbone
                 addrs.Add(a.Trim());
             }
 
-            // init client
+            // initialize client connectors
             var refs = Refs;
             if (refs != null)
             {
@@ -85,11 +85,11 @@ namespace Greatbone
                     {
                         clients = new Map<string, Client>(refs.Count * 2);
                     }
-                    clients.Add(new Client(this, e.Key, e.Value));
+                    clients.Add(new Client(e.Key, e.Value));
                 }
             }
 
-            // init the response cache
+            // create the response cache
             if (cfg.cache)
             {
                 int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
@@ -112,7 +112,7 @@ namespace Greatbone
         ///
         /// Uniquely identify a service instance.
         ///
-        public string Id => id;
+        public override string Key => key;
 
         public Map<string, Client> Clients => clients;
 
@@ -278,25 +278,29 @@ namespace Greatbone
             pubs.Add(new Publish(flow, provider));
         }
 
-        public void Subscribe(string svcspec, string flow, FlowConsumer consumer)
+        public void Subscribe(string keySpec, string flow, FlowConsumer consumer)
         {
+            if (clients == null)
+            {
+                throw new ServiceException("no client configured");
+            }
             if (subs == null)
             {
                 subs = new List<Subscribe>(4);
             }
-            var sub = new Subscribe(svcspec, flow, consumer);
+            var sub = new Subscribe(keySpec, flow, consumer);
             // resolve the client(s) used to connect, maybe many
             for (int i = 0; i < clients.Count; i++)
             {
                 var cli = clients[i];
-                if (svcspec.EndsWith('-') && cli.PeerId.StartsWith(svcspec) || cli.PeerId == svcspec) // wildcast or equal
+                if (keySpec.EndsWith('-') && cli.Key.StartsWith(keySpec) || cli.Key == keySpec) // wildcast or equal
                 {
                     sub.Clients.Add(cli);
                 }
             }
             if (sub.Clients.Count == 0)
             {
-                throw new ServiceException("no client configured: " + svcspec);
+                throw new ServiceException("no client configured for keySpec: " + keySpec);
             }
             subs.Add(sub);
         }

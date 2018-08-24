@@ -13,10 +13,10 @@ namespace Greatbone
 
         int pos;
 
-        public FlowContext(ArraySegment<byte> bytea)
+        public FlowContext(byte[] buffer, int length)
         {
-            this.buffer = bytea.Array;
-            this.length = bytea.Count;
+            this.buffer = buffer;
+            this.length = length;
         }
 
         public long RevId => pos;

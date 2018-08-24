@@ -144,7 +144,7 @@ namespace Samp
             }
             else if (wc.Except is AccessException ace)
             {
-                if (ace.NoPrincipal)
+                if (ace.Result == null && wc.Principal == null)
                 {
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
@@ -157,7 +157,7 @@ namespace Samp
                         wc.Give(401); // unauthorized
                     }
                 }
-                else if (ace.NullResult)
+                else if (ace.Result == null && wc.Principal != null)
                 {
                     var o = (User) wc.Principal;
                     string url = wc.Path;

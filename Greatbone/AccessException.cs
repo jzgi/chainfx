@@ -7,32 +7,23 @@ namespace Greatbone
     /// </summary>
     public class AccessException : Exception
     {
-        internal static readonly AccessException NoPrincipalEx = new AccessException(0, "no principal");
+        internal static readonly AccessException NoPrincipalEx = new AccessException(null, null, "must have principal");
 
-        internal static readonly AccessException NullResultEx = new AccessException(1, "access check with null result");
+        internal static readonly AccessException FalseResultEx = new AccessException(false, null, "no access");
 
-        internal static readonly AccessException FalseResultEx = new AccessException(2, "access check with false result");
 
-        readonly int code;
+        readonly bool? result;
 
-        private AccessException(int code, string msg) : base(msg)
+        readonly AccessAttribute attribute;
+
+        internal AccessException(bool? result, AccessAttribute attribute = null, string msg = "access exception") : base(msg)
         {
-            this.code = code;
+            this.attribute = attribute;
+            this.result = result;
         }
 
-        /// <summary>
-        /// No principal is presented.
-        /// </summary>
-        public bool NoPrincipal => code == 0;
+        public bool? Result => result;
 
-        /// <summary>
-        /// A principal is presented but a check operation returns null because of incompleteness of the principal.
-        /// </summary>
-        public bool NullResult => code == 1;
-
-        /// <summary>
-        /// A principal is presented but a check operation returns false.
-        /// </summary>
-        public bool FalseResult => code == 2;
+        public AccessAttribute Attribute => attribute;
     }
 }

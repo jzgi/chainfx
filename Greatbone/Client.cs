@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using static Greatbone.DataUtility;
 
@@ -14,79 +13,85 @@ namespace Greatbone
     {
         const int AHEAD = 1000 * 12;
 
-        static readonly Uri PollUri = new Uri("*", UriKind.Relative);
-
-        readonly Service service;
-
-        // remote peer id 
-        readonly string peerId;
+        // remote service key 
+        readonly string rkey;
 
         // this field is only accessed by the scheduler
         Task pollTask;
 
+        long last;
+
         // point of time to retry, set due to timeout or disconnection
-        volatile int retryat;
+        volatile int retryPt;
 
-        public string PeerId => peerId;
-
+        /// <summary>
+        /// Used to construct a secure client by passing handler with certificate.
+        /// </summary>
+        /// <param name="handler"></param>
         public Client(HttpClientHandler handler) : base(handler)
         {
         }
 
-        public Client(string raddr) : this(null, null, raddr)
+        /// <summary>
+        /// Used to construct a random client that does not necessarily connect to a remote service. 
+        /// </summary>
+        /// <param name="raddr"></param>
+        public Client(string raddr) : this(null, raddr)
         {
         }
 
-        internal Client(Service service, string peerId, string raddr)
+        /// <summary>
+        /// Used to construct a service client that connects to a remote service. 
+        /// </summary>
+        /// <param name="rkey">remote service key</param>
+        /// <param name="raddr">remote address</param>
+        internal Client(string rkey, string raddr)
         {
-            this.service = service;
-            this.peerId = peerId;
-
-
+            this.rkey = rkey;
             BaseAddress = new Uri(raddr);
             Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public string Key => peerId;
+        public string Key => rkey;
 
 
-        public void TryPoll(int ticks)
+        internal void TryPoll(FlowConsumer consumer, int ticks)
         {
-            if (ticks < retryat)
+            if (ticks < retryPt)
             {
                 return;
             }
-
             if (pollTask != null && !pollTask.IsCompleted)
             {
                 return;
+            }
+            // initialize lastid by the consumer itself
+            if (last == 0)
+            {
+                last = consumer(null);
             }
 
             pollTask = Task.Run(async () =>
             {
                 for (;;)
                 {
-                    HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollUri);
-                    HttpRequestHeaders reqhs = req.Headers;
-                    reqhs.TryAddWithoutValidation("From", service.Id);
-
-                    HttpResponseMessage rsp;
+                    var uri = new Uri("*" + rkey + "?last=" + last, UriKind.Relative);
+                    HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
                     try
                     {
-                        rsp = await SendAsync(req);
+                        var rsp = await SendAsync(req);
                         if (rsp.StatusCode == HttpStatusCode.NoContent)
                         {
                             break;
                         }
+                        byte[] cont = await rsp.Content.ReadAsByteArrayAsync();
+                        last = consumer(new FlowContext(cont, cont.Length));
                     }
                     catch
                     {
-                        retryat = Environment.TickCount + AHEAD;
+                        retryPt = Environment.TickCount + AHEAD;
                         return;
                     }
-
-                    HttpResponseHeaders rsphs = rsp.Headers;
-                    byte[] cont = await rsp.Content.ReadAsByteArrayAsync();
                 }
             });
         }
@@ -100,7 +105,7 @@ namespace Greatbone
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peerId != null && ac != null)
+                if (rkey != null && ac != null)
                 {
                     if (ac.Token != null)
                     {
@@ -113,9 +118,8 @@ namespace Greatbone
             }
             catch
             {
-                retryat = Environment.TickCount + AHEAD;
+                retryPt = Environment.TickCount + AHEAD;
             }
-
             return null;
         }
 
@@ -124,7 +128,7 @@ namespace Greatbone
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peerId != null && token != null)
+                if (rkey != null && token != null)
                 {
                     req.Headers.Add("Authorization", "Token " + token);
                 }
@@ -140,7 +144,7 @@ namespace Greatbone
             }
             catch
             {
-                retryat = Environment.TickCount + AHEAD;
+                retryPt = Environment.TickCount + AHEAD;
             }
             return null;
         }
@@ -150,7 +154,7 @@ namespace Greatbone
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peerId != null && token != null)
+                if (rkey != null && token != null)
                 {
                     req.Headers.Add("Authorization", "Token " + token);
                 }
@@ -167,10 +171,9 @@ namespace Greatbone
                 obj.Read(inp, proj);
                 return obj;
             }
-            catch (Exception ex)
+            catch
             {
-                string m = ex.Message;
-                retryat = Environment.TickCount + AHEAD;
+                retryPt = Environment.TickCount + AHEAD;
             }
             return default;
         }
@@ -180,7 +183,7 @@ namespace Greatbone
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (peerId != null && token != null)
+                if (rkey != null && token != null)
                 {
                     req.Headers.Add("Authorization", "Token " + token);
                 }
@@ -197,7 +200,7 @@ namespace Greatbone
             }
             catch
             {
-                retryat = Environment.TickCount + AHEAD;
+                retryPt = Environment.TickCount + AHEAD;
             }
             return null;
         }
@@ -207,7 +210,7 @@ namespace Greatbone
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-                if (peerId != null && token != null)
+                if (rkey != null && token != null)
                 {
                     req.Headers.Add("Authorization", "Token " + token);
                 }
@@ -220,7 +223,7 @@ namespace Greatbone
             }
             catch
             {
-                retryat = Environment.TickCount + AHEAD;
+                retryPt = Environment.TickCount + AHEAD;
             }
             finally
             {
@@ -260,7 +263,7 @@ namespace Greatbone
             }
             catch
             {
-                retryat = Environment.TickCount + AHEAD;
+                retryPt = Environment.TickCount + AHEAD;
             }
             finally
             {
@@ -269,7 +272,7 @@ namespace Greatbone
                     BufferUtility.Return(cont);
                 }
             }
-            return default((int, M));
+            return default;
         }
     }
 }
