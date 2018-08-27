@@ -30,10 +30,12 @@ namespace Samp
 
         public override bool? Check(WebContext wc)
         {
+            var o = (User) wc.Principal;
+
+            if (o == null) return false;
+
             // if not require persisted
             if (!full) return true;
-
-            var o = (User) wc.Principal;
 
             // info incomplete
             if (o.name == null || o.tel == null || o.addr == null) return null;

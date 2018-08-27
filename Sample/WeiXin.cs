@@ -72,7 +72,7 @@ namespace Samp
 
         private int tick;
 
-        async Task<string> GetAccessTokenAsync()
+        public async Task<string> GetAccessTokenAsync()
         {
             int now = Environment.TickCount;
             if (accessToken == null || now < tick || now - tick > 3600000)

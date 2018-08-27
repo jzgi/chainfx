@@ -269,13 +269,22 @@ namespace Greatbone
         //
         // data event
 
-        public void Publish(string flow, FlowProvider provider)
+        public void Publish(string flow, FlowSource source)
         {
             if (pubs == null)
             {
                 pubs = new List<Publish>(4);
             }
-            pubs.Add(new Publish(flow, provider));
+            pubs.Add(new Publish(flow, source));
+        }
+
+        public void Publish(string flow, FlowSourceAsync source)
+        {
+            if (pubs == null)
+            {
+                pubs = new List<Publish>(4);
+            }
+//            pubs.Add(new Publish(flow, source));
         }
 
         public void Subscribe(string keySpec, string flow, FlowConsumer consumer)
@@ -315,7 +324,7 @@ namespace Greatbone
                 {
                     if (pubs[i].Flow == flow)
                     {
-                        var content = pubs[i].Provider(last);
+                        var content = pubs[i].Source(last);
                         wc.Give(200, content);
                         return;
                     }

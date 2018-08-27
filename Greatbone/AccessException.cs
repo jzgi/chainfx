@@ -7,7 +7,7 @@ namespace Greatbone
     /// </summary>
     public class AccessException : Exception
     {
-        internal static readonly AccessException NoPrincipalEx = new AccessException(null, null, "must have principal");
+        internal static readonly AccessException NoPrincipalEx = new AccessException(false, null, "must have principal");
 
         internal static readonly AccessException FalseResultEx = new AccessException(false, null, "no access");
 

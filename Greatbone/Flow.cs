@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Greatbone
 {
-    public delegate FlowContent FlowProvider(long last);
+    public delegate FlowContent FlowSource(long last);
+
+    public delegate Task<FlowContent> FlowSourceAsync(long last);
 
     public delegate long FlowConsumer(FlowContext fc);
 
@@ -13,17 +17,17 @@ namespace Greatbone
     {
         readonly string flow;
 
-        readonly FlowProvider provider;
+        readonly FlowSource _source;
 
-        internal Publish(string flow, FlowProvider provider)
+        internal Publish(string flow,  FlowSource source)
         {
             this.flow = flow;
-            this.provider = provider;
+            this._source = source;
         }
 
         public string Flow => flow;
 
-        public FlowProvider Provider => provider;
+        public FlowSource Source => _source;
     }
 
     /// <summary>

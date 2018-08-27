@@ -219,6 +219,11 @@ namespace Greatbone
             throw new NotImplementedException();
         }
 
+        public void WriteTo<S>(S cnt) where S : ISink
+        {
+            throw new NotImplementedException();
+        }
+
         public IContent Dump()
         {
             throw new NotImplementedException();

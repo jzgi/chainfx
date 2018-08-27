@@ -53,7 +53,7 @@ namespace Samp
                             h.CROP(nameof(img), "图片（可选）", PicWidth, PicHeight);
                             h.BOTTOMBAR_().BUTTON(null, 0, "跟帖", css: "uk-button-primary")._BOTTOMBAR();
                             h._FORM();
-                        }, true, 60
+                        }, true, 15
                     );
                 }
             }

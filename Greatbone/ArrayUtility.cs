@@ -96,6 +96,20 @@ namespace Greatbone
             return default;
         }
 
+        public static E Last<E>(this E[] arr, Predicate<E> cond)
+        {
+            if (arr != null)
+            {
+                int len = arr.Length;
+                for (int i = len - 1; i > 0; i--)
+                {
+                    E e = arr[i];
+                    if (cond(e)) return e;
+                }
+            }
+            return default;
+        }
+
         public static int IndexOf<E>(this E[] arr, Predicate<E> cond)
         {
             if (arr != null)

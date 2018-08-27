@@ -144,7 +144,7 @@ namespace Samp
             }
             else if (wc.Except is AccessException ace)
             {
-                if (ace.Result == null && wc.Principal == null)
+                if (ace.Result == false && wc.Principal == null)
                 {
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
