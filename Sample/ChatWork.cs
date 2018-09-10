@@ -113,7 +113,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(HUB)]
+    [UserAccess(HUB_SCHEDULE)]
     [Ui("交流")]
     public class HubChatWork : ChatWork<CtrChatVarWork>
     {
@@ -122,12 +122,13 @@ namespace Samp
             CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).id);
         }
 
-        public void @default(WebContext wc)
+        public void @default(WebContext wc, int page)
         {
-            string orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Chat>("SELECT * FROM chats WHERE orgid = @1", p => p.Set(orgid));
+                const byte proj = 0xff ^ Chat.DETAIL;
+                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY top, posted DESC OFFSET @1 LIMIT 20");
+                var arr = dc.Query<Chat>(p => p.Set(page * 20), proj);
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();

@@ -1,5 +1,4 @@
 using Greatbone;
-using static Samp.User;
 
 namespace Samp
 {
@@ -13,7 +12,7 @@ namespace Samp
     }
 
     [UserAccess(hub: 1)]
-    [Ui("主页")]
+    [Ui("首页")]
     public class HubWork : Work
     {
         public HubWork(WorkConfig cfg) : base(cfg)
@@ -38,20 +37,24 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT * FROM users WHERE ctr > 0 ORDER BY ctr");
-                    var arr = dc.Query<User>();
                     wc.GivePage(200, h =>
                     {
                         h.TOOLBAR();
-                        h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel).TD(Hubly[o.hub])
-                        );
+                        h.SECTION_("uk-card uk-card-default");
+                        h.HEADER_("uk-card-header").H4("网点")._HEADER();
+                        h.MAIN_("uk-card-body")._MAIN();
+                        h._SECTION();
+
+                        h.SECTION_("uk-card uk-card-default");
+                        h.HEADER_("uk-card-header").H4("订单")._HEADER();
+                        h.MAIN_("uk-card-body")._MAIN();
+                        h._SECTION();
                     });
                 }
             }
             else
             {
-                wc.GiveFrame(200, false, 60 * 15, "调度作业");
+                wc.GiveFrame(200, false, 900, "调度服务");
             }
         }
     }

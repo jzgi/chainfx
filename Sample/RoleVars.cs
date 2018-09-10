@@ -101,12 +101,14 @@ namespace Samp
 
 
     [UserAccess(shop: 1)]
-    [Ui("动态")]
+    [Ui("首页")]
     public class ShopVarWork : Work, IOrgVar
     {
         public ShopVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<ShopOrderWork>("order");
+
+            Create<ShopUserWork>("user");
 
             Create<OrgRepayWork>("repay");
         }
@@ -128,7 +130,7 @@ namespace Samp
     }
 
     [UserAccess(team: 1)]
-    [Ui("概况")]
+    [Ui("首页")]
     public class TeamVarWork : Work, IOrgVar
     {
         public TeamVarWork(WorkConfig cfg) : base(cfg)
@@ -155,12 +157,12 @@ namespace Samp
                 {
                     h.TOOLBAR();
 
-                    h.SECTION_("uk-card uk-card-primary");
+                    h.SECTION_("uk-card uk-card-default");
                     h.HEADER_("uk-card-header").H4("团组")._HEADER();
                     h.MAIN_("uk-card-body")._MAIN();
                     h._SECTION();
 
-                    h.SECTION_("uk-card uk-card-primary");
+                    h.SECTION_("uk-card uk-card-default");
                     h.HEADER_("uk-card-header").H4("订单")._HEADER();
                     h.MAIN_("uk-card-body")._MAIN();
                     h._SECTION();

@@ -16,15 +16,22 @@ namespace Samp
         public static readonly Map<short, string> Teamly = new Map<short, string>
         {
             {0, null},
-            {TEAM_AID, "帮手"},
-            {TEAM_MGMT, "团长"},
+            {1, "助手"},
+            {15, "团长"},
+        };
+
+        public static readonly Map<short, string> Shoply = new Map<short, string>
+        {
+            {0, null},
+            {1, "助手"},
+            {15, "经理"},
         };
 
         public const short HUB = 1, HUB_SCHEDULE = 0b0011, HUB_MGMT = 15;
 
         public static readonly Map<short, string> Hubly = new Map<short, string>
         {
-            {HUB, "帮手"},
+            {HUB, "助手"},
             {HUB_SCHEDULE, "调度"},
             {HUB_MGMT, "经理"},
         };

@@ -31,41 +31,29 @@ namespace Samp
                 {
                     h.TOOLBAR();
                     h.TABLE(arr, null,
-                        o => h.TD(o.name).TD(o.tel).TD_().T(Teamly[o.team])
+                        o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.team])
                     );
                 });
             }
         }
 
         [UserAccess(HUB_MGMT)]
-        [Ui("加为帮手"), Tool(ButtonPickShow, size: 1)]
+        [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
-            string tel = null;
-            short ctr = 0;
-            if (wc.GET)
+            string teamid = wc[-1];
+            var f = await wc.ReadAsync<Form>();
+            int[] key = f[nameof(key)];
+            using (var dc = NewDbContext())
             {
-                wc.GivePane(200, h =>
+                dc.Sql("UPDATE users SET team = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE teamat = @1 AND team <> 15 AND id")._IN_(key);
+                dc.Execute(p =>
                 {
-                    h.FORM_();
-                    h.FIELDUL_("添加人员");
-                    h.LI_().TEXT("手　机", nameof(tel), tel, pattern: "[0-9]+", max: 11, min: 11)._LI();
-                    h.LI_().SELECT("角　色", nameof(ctr), ctr, Hubly)._LI();
-                    h._FIELDUL();
-                    h._FORM();
+                    p.Set(teamid);
+                    p.SetIn(key);
                 });
             }
-            else
-            {
-                if (cmd == 2) // add
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET ctr = @1 WHERE tel = @2", p => p.Set(ctr).Set(tel));
-                    }
-                }
-                wc.GivePane(200);
-            }
+            wc.GiveRedirect();
         }
     }
 
@@ -74,6 +62,57 @@ namespace Samp
     {
         public ShopUserWork(WorkConfig cfg) : base(cfg)
         {
+        }
+
+        public void @default(WebContext wc)
+        {
+            wc.GivePage(200, h => { h.TOOLBAR(); });
+        }
+
+        [Ui("查找"), Tool(APrompt)]
+        public void find(WebContext wc)
+        {
+            string shopid = wc[-1];
+            string tel = null;
+            bool inner = wc.Query[nameof(inner)];
+            if (inner)
+            {
+                wc.GivePane(200, h => { h.FORM_().FIELDUL_("手机号").TEL(null, nameof(tel), tel)._FIELDUL()._FORM(); });
+            }
+            else
+            {
+                tel = wc.Query[nameof(tel)];
+                using (var dc = NewDbContext())
+                {
+                    var arr = dc.Query<User>("SELECT * FROM users WHERE shopat = @1 AND tel = @2", p => p.Set(shopid).Set(tel));
+                    wc.GivePage(200, h =>
+                    {
+                        h.TOOLBAR(title: tel);
+                        h.TABLE(arr, null,
+                            o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Shoply[o.shop])
+                        );
+                    });
+                }
+            }
+        }
+
+        [UserAccess(shop: 15)]
+        [Ui("加减助手"), Tool(ButtonPickConfirm)]
+        public async Task add(WebContext wc, int cmd)
+        {
+            string shopid = wc[-1];
+            var f = await wc.ReadAsync<Form>();
+            int[] key = f[nameof(key)];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("UPDATE users SET shop = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE shopat = @1 AND shop < 15 AND id")._IN_(key);
+                dc.Execute(p =>
+                {
+                    p.Set(shopid);
+                    p.SetIn(key);
+                });
+            }
+            wc.GiveRedirect();
         }
     }
 
