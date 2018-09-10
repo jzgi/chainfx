@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
 using Greatbone;
 using static Samp.User;
-using static Greatbone.Modal;
 
 namespace Samp
 {
@@ -14,23 +12,23 @@ namespace Samp
         }
     }
 
-    [UserAccess(ctr: 1)]
-    [Ui("人员")]
-    public class CtrWork : UserWork<CtrUserVarWork>
+    [UserAccess(hub: 1)]
+    [Ui("主页")]
+    public class HubWork : Work
     {
-        public CtrWork(WorkConfig cfg) : base(cfg)
+        public HubWork(WorkConfig cfg) : base(cfg)
         {
-            Create<CtrOrderWork>("mgro");
+            Create<HubOrderWork>("order");
 
-            Create<GvrOrderWork>("gvro");
+            Create<HubItemWork>("item");
 
-            Create<DvrOrderWork>("dvro");
+            Create<HubChatWork>("chat");
 
-            Create<CtrItemWork>("item");
+            Create<HubUserWork>("user");
 
-            Create<CtrOrgWork>("org");
+            Create<HubOrgWork>("org");
 
-            Create<CtrRepayWork>("repay");
+            Create<HubRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -46,7 +44,7 @@ namespace Samp
                     {
                         h.TOOLBAR();
                         h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel).TD(Ctrs[o.ctr])
+                            o => h.TD(o.name).TD(o.tel).TD(Hubly[o.hub])
                         );
                     });
                 }
@@ -56,44 +54,22 @@ namespace Samp
                 wc.GiveFrame(200, false, 60 * 15, "调度作业");
             }
         }
+    }
 
-        [UserAccess(CTR_MGR)]
-        [Ui("添加", "添加中心操作人员"), Tool(ButtonShow, size: 1)]
-        public async Task add(WebContext wc, int cmd)
+    public class ShopWork : Work
+    {
+        public ShopWork(WorkConfig cfg) : base(cfg)
         {
-            string tel = null;
-            short ctr = 0;
-            if (wc.GET)
-            {
-                wc.GivePane(200, h =>
-                {
-                    h.FORM_();
-                    h.FIELDUL_("添加人员");
-                    h.LI_().TEXT("手　机", nameof(tel), tel, pattern: "[0-9]+", max: 11, min: 11)._LI();
-                    h.LI_().SELECT("角　色", nameof(ctr), ctr, Ctrs)._LI();
-                    h._FIELDUL();
-                    h._FORM();
-                });
-            }
-            else
-            {
-                if (cmd == 2) // add
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE users SET ctr = @1 WHERE tel = @2", p => p.Set(ctr).Set(tel));
-                    }
-                }
-                wc.GivePane(200);
-            }
+            CreateVar<ShopVarWork, string>(prin => ((User) prin).shopat);
         }
     }
 
-    public class GrpWork : Work
+
+    public class TeamWork : Work
     {
-        public GrpWork(WorkConfig cfg) : base(cfg)
+        public TeamWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<GrpVarWork, string>(prin => ((User) prin).grpat);
+            CreateVar<TeamVarWork, string>(prin => ((User) prin).teamat);
         }
     }
 }

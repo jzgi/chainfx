@@ -15,10 +15,10 @@ namespace Samp
         }
     }
 
-    [Ui("个款"), UserAccess(CTR_SPR | CTR_DVR)]
-    public class MyCashWork : RepayWork<MyRepayVarWork>
+    [Ui("结款")]
+    public class OrgRepayWork : RepayWork<OrgRepayVarWork>
     {
-        public MyCashWork(WorkConfig cfg) : base(cfg)
+        public OrgRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -41,10 +41,10 @@ namespace Samp
     }
 
 
-    [Ui("结款"), UserAccess(CTR_MGR)]
-    public class CtrRepayWork : RepayWork<CtrRepayVarWork>
+    [Ui("结款"), UserAccess(HUB_MGMT)]
+    public class HubRepayWork : RepayWork<HubRepayVarWork>
     {
-        public CtrRepayWork(WorkConfig cfg) : base(cfg)
+        public HubRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 

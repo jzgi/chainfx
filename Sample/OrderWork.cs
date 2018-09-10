@@ -56,13 +56,14 @@ namespace Samp
         }
     }
 
-    [Ui("订购"), UserAccess(CTR_MGR)]
-    public class CtrOrderWork : OrderWork<CtrOrderVarWork>
+    [Ui("订单"), UserAccess(HUB_MGMT)]
+    public class HubOrderWork : OrderWork<HubOrderVarWork>
     {
-        public CtrOrderWork(WorkConfig cfg) : base(cfg)
+        public HubOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
+        [Ui("新收"), Tool(A)]
         public void @default(WebContext wc)
         {
             wc.GivePage(200, h =>
@@ -78,42 +79,29 @@ namespace Samp
             });
         }
 
-        [Ui("撤消", "确认要撤销此单吗？实收款项将退回给买家"), Tool(ButtonPickConfirm)]
-        public async Task abort(WebContext wc)
+        [Ui("产供"), Tool(A)]
+        public void confirmed(WebContext wc)
         {
-            string orgid = wc[-2];
-            int orderid = wc[this];
-            short rev = 0;
-            decimal cash = 0;
-            using (var dc = NewDbContext())
-            {
-                if (dc.Query1("SELECT rev, cash FROM orders WHERE id = @1 AND status = 1", p => p.Set(orderid)))
-                {
-                    dc.Let(out rev).Let(out cash);
-                }
-            }
-            if (cash > 0)
-            {
-                string err = await ((SampService) Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
-                if (err == null) // success
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
-                    }
-                }
-            }
-            wc.GiveRedirect("../");
+        }
+
+        [Ui("派送"), Tool(A)]
+        public void loaded(WebContext wc)
+        {
+        }
+
+        [Ui("历史"), Tool(A)]
+        public void shipped(WebContext wc)
+        {
         }
     }
 
     /// <summary>
     /// The order workset as the <code>supplier</code> role
     /// </summary>
-    [Ui("供应"), UserAccess(CTR_SPR)]
-    public class GvrOrderWork : OrderWork<GvrOrderVarWork>
+    [Ui("订单")]
+    public class ShopOrderWork : OrderWork<ShopOrderVarWork>
     {
-        public GvrOrderWork(WorkConfig cfg) : base(cfg)
+        public ShopOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -219,111 +207,40 @@ namespace Samp
         }
     }
 
-    /// <summary>
-    /// The order workset as the <code>deliverer</code> role
-    /// </summary>
-    [Ui("派送"), UserAccess(CTR_DVR)]
-    public class DvrOrderWork : OrderWork<DvrOrderVarWork>
+    [Ui("订单")]
+    public class TeamOrderWork : OrderWork<TeamOrderVarWork>
     {
-        public DvrOrderWork(WorkConfig cfg) : base(cfg)
+        public TeamOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("团购"), Tool(A, "uk-button-link")]
-        public void @default(WebContext wc, int page)
-        {
-            var prin = (User) wc.Principal;
-            var orgs = Obtain<Map<string, Org>>();
-            wc.GivePage(200, h =>
-            {
-                h.TOOLBAR();
-                using (var dc = NewDbContext())
-                {
-                    dc.Query("SELECT grpid, item, SUM(qty) AS num FROM orders WHERE status = 3 AND grpid IS NOT NULL GROUP BY grpid, item", p => p.Set(prin.id));
-
-                    string curgrpid = null;
-                    while (dc.Next())
-                    {
-                        dc.Let(out string grpid).Let(out string item).Let(out short num);
-
-                        if (grpid != curgrpid)
-                        {
-                            if (curgrpid != null)
-                            {
-                                h.T("</main>");
-                                h.TOOLPAD(css: "uk-card-footer");
-                                h.T("</article>");
-                            }
-                            h.T("<article class=\"uk-card  uk-card-default\">");
-                            h.T("<header class=\"uk-card-header\">").T(orgs[grpid].ToString()).T("</header>");
-                            h.T("<main class=\"uk-card-body\">");
-                        }
-
-                        h.T("<li>").T(item).T("\"").T(":").T(num).T("</li>");
-
-                        curgrpid = item;
-                    }
-                    h.T("</main>");
-                    h.VARTOOLPAD(@group: 2, css: "uk-card-footer");
-                    h.T("</article>");
-                }
-            }, false, 2);
-        }
-
-        [Ui("个单"), Tool(A, "uk-button-link")]
-        public void lone(WebContext wc, int page)
-        {
-            var prin = (User) wc.Principal;
-            wc.GivePage(200, h =>
-            {
-                h.TOOLBAR();
-                using (var dc = NewDbContext())
-                {
-                    dc.Query("SELECT uid, uname, item, SUM(qty) AS num FROM orders WHERE status = 3 AND grpid IS NULL GROUP BY uid, uname, item", p => p.Set(prin.id));
-                    int curuid = 0;
-                    while (dc.Next())
-                    {
-                        dc.Let(out int uid).Let(out string uname).Let(out string item).Let(out short num);
-                        if (uid != curuid)
-                        {
-                            if (curuid > 0)
-                            {
-                                h.T("</main>");
-                                h.TOOLPAD(css: "uk-card-footer");
-                                h.T("</article>");
-                            }
-                            h.T("<article class=\"uk-card  uk-card-default\">");
-                            h.T("<header class=\"uk-card-header\">").T(uname).T("</header>");
-                            h.T("<main class=\"uk-card-body\">");
-                        }
-                        h.T("<li>").T(item).T("\"").T(":").T(num).T("</li>");
-                        curuid = uid;
-                    }
-                    h.T("</main>");
-                    h.VARTOOLPAD(@group: 2, css: "uk-card-footer");
-                    h.T("</article>");
-                }
-            }, false, 2);
-        }
-    }
-
-    [Ui("订购")]
-    public class GrpOrderWork : OrderWork<GrpOrderVarWork>
-    {
-        public GrpOrderWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-
-        [Ui("当前"), Tool(A, "uk-button-link")]
+        [Ui("到货"), Tool(A, "uk-button-link")]
         public void @default(WebContext wc)
         {
-            string grpid = wc[-1];
+            string teamid = wc[-1];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND grpid = @1 ORDER BY id", p => p.Set(grpid));
+                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status = 5 AND teamid = @1 ORDER BY id", p => p.Set(teamid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
+        }
+
+        [Ui("在途"), Tool(A, "uk-button-link")]
+        public void way(WebContext wc)
+        {
+            string teamid = wc[-1];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND teamid = @1 ORDER BY id", p => p.Set(teamid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
@@ -356,56 +273,6 @@ namespace Samp
                     });
                 }
             }
-        }
-
-        [Ui("收货"), Tool(ButtonPickPrompt)]
-        public async Task receive(WebContext wc)
-        {
-            string grpid = wc[-1];
-            if (wc.GET)
-            {
-                int[] key = wc.Query[nameof(key)];
-                wc.GivePane(200, h =>
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Sql("SELECT item, SUM(qty) AS num FROM orders WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1 GROUP BY item");
-                        dc.Query(p => p.SetIn(key).Set(grpid));
-                        h.FORM_();
-
-                        h.T("仅列出已送达货品");
-                        h.T("<table class=\"uk-table\">");
-                        while (dc.Next())
-                        {
-                            dc.Let(out string item).Let(out short num);
-                            h.TD(item).TD(num);
-                        }
-                        h.T("</table>");
-                        h.CHECKBOX("", false, "我确认收货", required: true);
-                        h._FORM();
-                    }
-                });
-            }
-            else // POST
-            {
-                int[] key = (await wc.ReadAsync<Form>())[nameof(key)];
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("UPDATE orders SET status = 4 WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1");
-                    dc.Execute(p => p.SetIn(key).Set(grpid));
-                }
-                wc.GiveRedirect();
-            }
-        }
-
-        [Ui("递货"), Tool(ButtonPickPrompt)]
-        public void give(WebContext wc)
-        {
-        }
-
-        [Ui("查历史"), Tool(AOpen, size: 4)]
-        public void history(WebContext wc)
-        {
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Samp
             {
                 wc.GivePane(200, h =>
                 {
-                    bool ingrp = prin.grpat != null;
+                    bool ingrp = prin.teamat != null;
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
@@ -112,7 +112,7 @@ namespace Samp
                         uid = prin.id,
                         uname = prin.name,
                         uwx = prin.wx,
-                        created = DateTime.Now
+                        paid = DateTime.Now
                     };
                     o.Read(f, proj);
                     num = f[nameof(num)];
@@ -158,13 +158,13 @@ namespace Samp
         }
     }
 
-    public class CtrItemVarWork : ItemVarWork
+    public class HubItemVarWork : ItemVarWork
     {
-        public CtrItemVarWork(WorkConfig cfg) : base(cfg)
+        public HubItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [UserAccess(CTR_MGR)]
+        [UserAccess(HUB_MGMT)]
         [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
@@ -208,7 +208,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(CTR_MGR)]
+        [UserAccess(HUB_MGMT)]
         [Ui("图片"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {

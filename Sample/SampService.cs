@@ -7,7 +7,7 @@ using static Samp.SampUtility;
 namespace Samp
 {
     /// <summary>
-    /// The sample service includes the gospel and the health provision.
+    /// The sample service that hosts all functionalities of the app.
     /// </summary>
     [Ui("全粮派")]
     public class SampService : Service<User>, IAuthenticateAsync
@@ -22,16 +22,18 @@ namespace Samp
 
             Create<MyWork>("my"); // personal
 
-            Create<GrpWork>("grp"); // group
+            Create<TeamWork>("team"); // customer team
 
-            Create<CtrWork>("ctr"); // central operation
+            Create<ShopWork>("shop"); // supplying shop
+
+            Create<HubWork>("hub"); // central 
 
 
             Register(delegate
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY id");
+                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY typ, name");
                         return dc.Query<string, Org>(proj: 0xff);
                     }
                 }, 1800
@@ -137,7 +139,7 @@ namespace Samp
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(o.name).Set(o.tel).Set(o.grpat).Set(o.addr).Set(o.id));
+                    dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(o.name).Set(o.tel).Set(o.teamat).Set(o.addr).Set(o.id));
                     wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                 }
                 wc.GiveRedirect(url);
@@ -169,7 +171,7 @@ namespace Samp
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<string, Org>>();
-                        h.LI_().SELECT("参　　团", nameof(o.grpat), o.grpat, orgs, tip: "（无）")._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.teamat), o.teamat, orgs, tip: "（无）")._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();

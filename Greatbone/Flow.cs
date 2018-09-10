@@ -4,50 +4,54 @@ using System.Threading.Tasks;
 
 namespace Greatbone
 {
-    public delegate FlowContent FlowSource(long last);
-
-    public delegate Task<FlowContent> FlowSourceAsync(long last);
-
-    public delegate long FlowConsumer(FlowContext fc);
-
     /// <summary>
-    /// The publishing of a data flow.
+    /// The publishing of a data source.
     /// </summary>
     public struct Publish
     {
-        readonly string flow;
+        readonly string key;
 
-        readonly FlowSource _source;
+        readonly Func<long, DataContent> provide;
 
-        internal Publish(string flow,  FlowSource source)
+        readonly Func<long, Task<DataContent>> provideAsync;
+
+        internal Publish(string key, Func<long, DataContent> provide)
         {
-            this.flow = flow;
-            this._source = source;
+            this.key = key;
+            this.provide = provide;
+            this.provideAsync = null;
         }
 
-        public string Flow => flow;
+        internal Publish(string key, Func<long, Task<DataContent>> provideAsync)
+        {
+            this.key = key;
+            this.provide = null;
+            this.provideAsync = provideAsync;
+        }
 
-        public FlowSource Source => _source;
+        public string Key => key;
+
+        public Func<long, DataContent> Provide => provide;
     }
 
     /// <summary>
-    /// The subscribing of a data flow.
+    /// The subscribing of a data source.
     /// </summary>
     public struct Subscribe
     {
         readonly string keySpec;
 
-        readonly string flow;
+        readonly string src;
 
-        readonly FlowConsumer consumer;
+        readonly Action<DataContext> consumer;
 
         // relevant http client connectors
         readonly List<Client> clients;
 
-        public Subscribe(string keySpec, string flow, FlowConsumer consumer)
+        public Subscribe(string keySpec, string src, Action<DataContext> consumer)
         {
             this.keySpec = keySpec;
-            this.flow = flow;
+            this.src = src;
             this.consumer = consumer;
             this.clients = new List<Client>(4);
         }

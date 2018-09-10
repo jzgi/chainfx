@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90606
 File Encoding         : 65001
 
-Date: 2018-08-21 21:19:12
+Date: 2018-09-10 12:40:19
 */
 
 
@@ -23,8 +23,9 @@ CREATE SEQUENCE "public"."chats_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 7
+ START 17
  CACHE 1;
+SELECT setval('"public"."chats_id_seq"', 17, true);
 
 -- ----------------------------
 -- Sequence structure for orders_id_seq
@@ -45,9 +46,9 @@ CREATE SEQUENCE "public"."repays_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 1
+ START 5
  CACHE 1;
-SELECT setval('"public"."repays_id_seq"', 1, true);
+SELECT setval('"public"."repays_id_seq"', 5, true);
 
 -- ----------------------------
 -- Sequence structure for users_id_seq
@@ -57,9 +58,8 @@ CREATE SEQUENCE "public"."users_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 30
+ START 1
  CACHE 1;
-SELECT setval('"public"."users_id_seq"', 30, true);
 
 -- ----------------------------
 -- Table structure for chats
@@ -126,23 +126,19 @@ CREATE TABLE "public"."orders" (
 "uwx" varchar(28) COLLATE "default",
 "utel" varchar(11) COLLATE "default",
 "uaddr" varchar(20) COLLATE "default",
-"grpid" varchar(4) COLLATE "default",
+"teamid" varchar(3) COLLATE "default",
 "item" varchar(10) COLLATE "default",
 "unit" varchar(4) COLLATE "default",
 "price" numeric(38),
 "qty" int2,
 "total" money,
 "cash" money DEFAULT 0,
-"created" timestamp(6),
 "paid" timestamp(6),
-"aborted" timestamp(6),
-"giverid" int4,
-"giving" timestamp(6),
-"given" timestamp(6),
-"dvrerid" int4,
-"dvring" timestamp(6),
-"dvred" timestamp(6),
-"grperid" int4,
+"shopid" varchar(3) COLLATE "default",
+"assigned" timestamp(6),
+"supplied" timestamp(6),
+"shipuid" int4,
+"shipped" timestamp(6),
 "ended" timestamp(6),
 "status" int2
 )
@@ -156,14 +152,15 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "public"."orgs";
 CREATE TABLE "public"."orgs" (
 "id" varchar(3) COLLATE "default" NOT NULL,
+"typ" int2,
 "name" varchar(10) COLLATE "default",
+"tel" varchar(11) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
 "x" float8,
 "y" float8,
 "mgrid" int4,
 "mgrname" varchar(10) COLLATE "default",
 "mgrwx" varchar(28) COLLATE "default",
-"mgrtel" varchar(11) COLLATE "default",
 "status" int2
 )
 WITH (OIDS=FALSE)
@@ -216,10 +213,12 @@ CREATE TABLE "public"."users" (
 "name" varchar(10) COLLATE "default",
 "tel" varchar(11) COLLATE "default",
 "credential" varchar(32) COLLATE "default",
-"grpat" varchar(3) COLLATE "default",
 "addr" varchar(20) COLLATE "default",
-"grp" int2,
-"ctr" int2 DEFAULT 0,
+"teamat" varchar(3) COLLATE "default",
+"team" int2,
+"shopat" varchar(3) COLLATE "default",
+"shop" int2,
+"hub" int2 DEFAULT 0,
 "created" timestamp(6) DEFAULT ('now'::text)::timestamp without time zone
 )
 WITH (OIDS=FALSE)

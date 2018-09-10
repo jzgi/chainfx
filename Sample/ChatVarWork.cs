@@ -72,7 +72,7 @@ namespace Samp
                     short ord = (short) (img.Count == 0 ? 0 : last.img + 1);
                     posts = posts.AddOf(new Post
                     {
-                        uid = prin.id, uname = prin.name, grpat = prin.grpat, text = text, img = ord, time = now
+                        uid = prin.id, uname = prin.name, grpat = prin.teamat, text = text, img = ord, time = now
                     });
                     if (img.Count > 0 && last.img < 10)
                     {

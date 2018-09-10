@@ -19,7 +19,7 @@ namespace Samp
                 if (state == 'P') // payable
                     return o.status < ORD_PAID;
                 if (state == 'C') // 
-                    return o.status < ORD_GIVING;
+                    return o.status < ORD_ASSIGNED;
                 if (state == 'E') // 
                     return o.status >= ORD_PAID;
             }

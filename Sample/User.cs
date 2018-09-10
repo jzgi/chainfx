@@ -3,7 +3,7 @@
 namespace Samp
 {
     /// <summary>
-    /// A user data object that is a principal.
+    /// A user data object that can act as a principal.
     /// </summary>
     public class User : IData
     {
@@ -11,17 +11,22 @@ namespace Samp
 
         public const byte ID = 1, PRIVACY = 2;
 
-        public const short
-            CTR = 1,
-            CTR_DVR = 0b0011, // 3
-            CTR_SPR = 0b0101, // 5
-            CTR_MGR = 0b1111; // 15
+        public const short TEAM = 1, TEAM_AID = 1, TEAM_MGMT = 15;
 
-        public static readonly Map<short, string> Ctrs = new Map<short, string>
+        public static readonly Map<short, string> Teamly = new Map<short, string>
         {
-            {CTR_DVR, "派送"},
-            {CTR_SPR, "供货"},
-            {CTR_MGR, "经理"},
+            {0, null},
+            {TEAM_AID, "帮手"},
+            {TEAM_MGMT, "团长"},
+        };
+
+        public const short HUB = 1, HUB_SCHEDULE = 0b0011, HUB_MGMT = 15;
+
+        public static readonly Map<short, string> Hubly = new Map<short, string>
+        {
+            {HUB, "帮手"},
+            {HUB_SCHEDULE, "调度"},
+            {HUB_MGMT, "经理"},
         };
 
         internal int id;
@@ -30,10 +35,12 @@ namespace Samp
         internal string name;
         internal string tel;
         public string credential;
-        internal string grpat; // community team
         internal string addr;
-        internal short grp;
-        internal short ctr;
+        internal string teamat;
+        internal short team;
+        internal string shopat;
+        internal short shop;
+        internal short hub;
         internal short created;
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -47,10 +54,12 @@ namespace Samp
             {
                 s.Get(nameof(credential), ref credential);
             }
-            s.Get(nameof(grpat), ref grpat);
             s.Get(nameof(addr), ref addr);
-            s.Get(nameof(grp), ref grp);
-            s.Get(nameof(ctr), ref ctr);
+            s.Get(nameof(teamat), ref teamat);
+            s.Get(nameof(team), ref team);
+            s.Get(nameof(shopat), ref shopat);
+            s.Get(nameof(shop), ref shop);
+            s.Get(nameof(hub), ref hub);
             s.Get(nameof(created), ref created);
         }
 
@@ -65,10 +74,12 @@ namespace Samp
             {
                 s.Put(nameof(credential), credential);
             }
-            s.Put(nameof(grpat), grpat);
             s.Put(nameof(addr), addr);
-            s.Put(nameof(grp), grp);
-            s.Put(nameof(ctr), ctr);
+            s.Put(nameof(teamat), teamat);
+            s.Put(nameof(team), team);
+            s.Put(nameof(shopat), shopat);
+            s.Put(nameof(shop), shop);
+            s.Put(nameof(hub), hub);
             s.Put(nameof(created), created);
         }
     }

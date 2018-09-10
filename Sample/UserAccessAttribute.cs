@@ -10,17 +10,21 @@ namespace Samp
         // require a persisted principal
         readonly bool full;
 
-        // require center access
-        readonly short ctr;
+        // required hub access
+        readonly short hub;
 
-        // require group access
-        readonly short grp;
+        // required shop access
+        readonly short shop;
 
-        public UserAccessAttribute(short ctr = 0, short grp = 0)
+        // required customer team access
+        readonly short team;
+
+        public UserAccessAttribute(short hub = 0, short shop = 0, short team = 0)
         {
             this.full = true;
-            this.ctr = ctr;
-            this.grp = grp;
+            this.hub = hub;
+            this.shop = shop;
+            this.team = team;
         }
 
         public UserAccessAttribute(bool full)
@@ -40,20 +44,30 @@ namespace Samp
             // info incomplete
             if (o.name == null || o.tel == null || o.addr == null) return null;
 
-            // if requires center access
-            if (ctr > 0)
+            // if requires hub access
+            if (hub > 0)
             {
-                return (o.ctr & ctr) == ctr;
+                return (o.hub & hub) > 0;
             }
-
-            // if requires group access
-            if (grp > 0)
+            // if requires shop access
+            if (shop > 0)
             {
-                if ((o.grp & grp) != grp) return false; // inclusive check
+                if ((o.team & shop) != shop) return false; // inclusive check
                 string at = wc[typeof(IOrgVar)];
                 if (at != null)
                 {
-                    return o.grpat == at;
+                    return o.shopat == at;
+                }
+                return true;
+            }
+            // if requires customer team access
+            if (team > 0)
+            {
+                if ((o.team & team) != team) return false; // inclusive check
+                string at = wc[typeof(IOrgVar)];
+                if (at != null)
+                {
+                    return o.teamat == at;
                 }
                 return true;
             }

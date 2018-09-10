@@ -9,15 +9,15 @@ namespace Samp
     {
         protected ItemWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Item)obj).name);
+            CreateVar<V, string>(obj => ((Item) obj).name);
         }
     }
 
 
-    [Ui("货品"), UserAccess(CTR_SPR)]
-    public class CtrItemWork : ItemWork<CtrItemVarWork>
+    [Ui("货品")]
+    public class HubItemWork : ItemWork<HubItemVarWork>
     {
-        public CtrItemWork(WorkConfig cfg) : base(cfg)
+        public HubItemWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -46,13 +46,13 @@ namespace Samp
             }
         }
 
-        [UserAccess(CTR_MGR)]
+        [UserAccess(HUB_MGMT)]
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             if (wc.GET)
             {
-                var o = new Item { min = 1, step = 1 };
+                var o = new Item {min = 1, step = 1};
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
@@ -64,7 +64,7 @@ namespace Samp
                     h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
                     h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
                     h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
-                    h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short)1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short)1)._LI();
+                    h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
                     h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                     h._FIELDUL();
                     h._FORM();
@@ -83,7 +83,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(CTR_MGR)]
+        [UserAccess(HUB_MGMT)]
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {

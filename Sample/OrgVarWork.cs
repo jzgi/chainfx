@@ -13,9 +13,9 @@ namespace Samp
         }
     }
 
-    public class CtrOrgVarWork : OrgVarWork
+    public class HubOrgVarWork : OrgVarWork
     {
-        public CtrOrgVarWork(WorkConfig cfg) : base(cfg)
+        public HubOrgVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -96,7 +96,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Execute(@"UPDATE orgs SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
-                        UPDATE users SET opr = " + CTR_MGR + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
+                        UPDATE users SET opr = " + HUB_MGMT + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
                 }
                 wc.GivePane(200);
             }

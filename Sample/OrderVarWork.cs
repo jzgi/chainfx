@@ -54,31 +54,38 @@ namespace Samp
         }
     }
 
-    public class GrpOrderVarWork : OrderVarWork
+    public class HubOrderVarWork : OrderVarWork
     {
-        public GrpOrderVarWork(WorkConfig cfg) : base(cfg)
+        public HubOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
-    }
 
-    public class CtrOrderVarWork : OrderVarWork
-    {
-        public CtrOrderVarWork(WorkConfig cfg) : base(cfg)
+        [Ui("撤消", "确认要撤销此单吗？实收款项将退回给买家"), Tool(ButtonPickConfirm)]
+        public async Task abort(WebContext wc)
         {
-        }
-    }
-
-    public class GvrOrderVarWork : OrderVarWork
-    {
-        public GvrOrderVarWork(WorkConfig cfg) : base(cfg)
-        {
-        }
-    }
-
-    public class DvrOrderVarWork : OrderVarWork
-    {
-        public DvrOrderVarWork(WorkConfig cfg) : base(cfg)
-        {
+            string orgid = wc[-2];
+            int orderid = wc[this];
+            short rev = 0;
+            decimal cash = 0;
+            using (var dc = NewDbContext())
+            {
+                if (dc.Query1("SELECT rev, cash FROM orders WHERE id = @1 AND status = 1", p => p.Set(orderid)))
+                {
+                    dc.Let(out rev).Let(out cash);
+                }
+            }
+            if (cash > 0)
+            {
+                string err = await ((SampService) Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
+                if (err == null) // success
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                    }
+                }
+            }
+            wc.GiveRedirect("../");
         }
 
         [Ui("送货", group: 1), Tool(ButtonPickPrompt)]
@@ -88,6 +95,65 @@ namespace Samp
 
         [Ui("送货", group: 2), Tool(ButtonPickPrompt)]
         public async Task dgrp(WebContext wc)
+        {
+        }
+    }
+
+    public class TeamOrderVarWork : OrderVarWork
+    {
+        public TeamOrderVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+
+        [Ui("收货"), Tool(ButtonPickPrompt)]
+        public async Task receive(WebContext wc)
+        {
+            string grpid = wc[-1];
+            if (wc.GET)
+            {
+                int[] key = wc.Query[nameof(key)];
+                wc.GivePane(200, h =>
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT item, SUM(qty) AS num FROM orders WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1 GROUP BY item");
+                        dc.Query(p => p.SetIn(key).Set(grpid));
+                        h.FORM_();
+
+                        h.T("仅列出已送达货品");
+                        h.T("<table class=\"uk-table\">");
+                        while (dc.Next())
+                        {
+                            dc.Let(out string item).Let(out short num);
+                            h.TD(item).TD(num);
+                        }
+                        h.T("</table>");
+                        h.CHECKBOX("", false, "我确认收货", required: true);
+                        h._FORM();
+                    }
+                });
+            }
+            else // POST
+            {
+                int[] key = (await wc.ReadAsync<Form>())[nameof(key)];
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET status = 4 WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1");
+                    dc.Execute(p => p.SetIn(key).Set(grpid));
+                }
+                wc.GiveRedirect();
+            }
+        }
+
+        [Ui("递货"), Tool(ButtonPickPrompt)]
+        public void give(WebContext wc)
+        {
+        }
+    }
+
+    public class ShopOrderVarWork : OrderVarWork
+    {
+        public ShopOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

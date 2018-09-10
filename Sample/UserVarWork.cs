@@ -12,13 +12,27 @@ namespace Samp
         }
     }
 
-    public class CtrUserVarWork : UserVarWork
+    public class TeamUserVarWork : UserVarWork
     {
-        public CtrUserVarWork(WorkConfig cfg) : base(cfg)
+        public TeamUserVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
+
+    public class ShopUserVarWork : UserVarWork
+    {
+        public ShopUserVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
+
+    public class HubUserVarWork : UserVarWork
+    {
+        public HubUserVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [UserAccess(CTR_MGR)]
+        [UserAccess(HUB_MGMT)]
         [Ui("x", "删除此操作人员？"), Tool(ButtonConfirm)]
         public void rm(WebContext wc, int cmd)
         {

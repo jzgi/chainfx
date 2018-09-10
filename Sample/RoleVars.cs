@@ -25,7 +25,7 @@ namespace Samp
                 h.UL_(css: "uk-card-body");
                 h.LI_().FI("用户名称", o.name)._LI();
                 h.LI_().FI("手　　机", o.tel)._LI();
-                h.LI_().FI("参　　团", orgs[o.grpat]?.name)._LI();
+                h.LI_().FI("参　　团", orgs[o.teamat]?.name)._LI();
                 h.LI_().FI("收货地址", o.addr)._LI();
                 h._UL();
                 h.TOOLPAD(css: "uk-card-footer uk-flex-center");
@@ -53,7 +53,7 @@ namespace Samp
                         h.FIELDUL_("用户基本信息");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                        h.LI_().SELECT("参　　团", nameof(o.grpat), prin.grpat, orgs, tip: "（无）")._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.teamat), prin.teamat, orgs, tip: "（无）")._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.FIELDUL_("用于从微信以外登录（可选）");
@@ -73,11 +73,11 @@ namespace Samp
                     if (password != PASSMASK) // password being changed
                     {
                         string credential = TextUtility.MD5(prin.tel + ":" + password);
-                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4, credential = @5 WHERE id = @6", p => p.Set(prin.name).Set(prin.tel).Set(prin.grpat).Set(prin.addr).Set(credential).Set(prin.id));
+                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4, credential = @5 WHERE id = @6", p => p.Set(prin.name).Set(prin.tel).Set(prin.teamat).Set(prin.addr).Set(credential).Set(prin.id));
                     }
                     else // password no change
                     {
-                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(prin.name).Set(prin.tel).Set(prin.grpat).Set(prin.addr).Set(prin.id));
+                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(prin.name).Set(prin.tel).Set(prin.teamat).Set(prin.addr).Set(prin.id));
                     }
                     wc.SetTokenCookie(prin, 0xff ^ PRIVACY);
                     wc.GivePane(200); // close dialog
@@ -100,37 +100,70 @@ namespace Samp
     }
 
 
-    [UserAccess(grp: 1)]
-    [Ui("团组")]
-    public class GrpVarWork : UserWork<GrpUserVarWork>, IOrgVar
+    [UserAccess(shop: 1)]
+    [Ui("动态")]
+    public class ShopVarWork : Work, IOrgVar
     {
-        public GrpVarWork(WorkConfig cfg) : base(cfg)
+        public ShopVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<GrpOrderWork>("ord");
+            Create<ShopOrderWork>("order");
+
+            Create<OrgRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
         {
-            string grpid = wc[this];
-            var team = Obtain<Map<string, Org>>()[grpid];
+            string orgid = wc[this];
+            var shop = Obtain<Map<string, Org>>()[orgid];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
-                wc.GiveFrame(200, false, 60 * 15, team?.name);
+                wc.GiveFrame(200, false, 900, shop?.name);
+            }
+            else
+            {
+                wc.GivePage(200, h => { h.TOOLBAR(); });
+            }
+        }
+    }
+
+    [UserAccess(team: 1)]
+    [Ui("概况")]
+    public class TeamVarWork : Work, IOrgVar
+    {
+        public TeamVarWork(WorkConfig cfg) : base(cfg)
+        {
+            Create<TeamOrderWork>("order");
+
+            Create<TeamUserWork>("user");
+
+            Create<OrgRepayWork>("repay");
+        }
+
+        public void @default(WebContext wc)
+        {
+            string teamid = wc[this];
+            var team = Obtain<Map<string, Org>>()[teamid];
+            bool inner = wc.Query[nameof(inner)];
+            if (!inner)
+            {
+                wc.GiveFrame(200, false, 900, team?.name);
             }
             else
             {
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE grpat = @1 ORDER BY id");
-                        var arr = dc.Query<User>(p => p.Set(grpid));
-                        h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel).TD(o.addr)
-                        );
-                    }
+
+                    h.SECTION_("uk-card uk-card-primary");
+                    h.HEADER_("uk-card-header").H4("团组")._HEADER();
+                    h.MAIN_("uk-card-body")._MAIN();
+                    h._SECTION();
+
+                    h.SECTION_("uk-card uk-card-primary");
+                    h.HEADER_("uk-card-header").H4("订单")._HEADER();
+                    h.MAIN_("uk-card-body")._MAIN();
+                    h._SECTION();
                 });
             }
         }

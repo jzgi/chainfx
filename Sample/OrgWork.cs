@@ -13,10 +13,10 @@ namespace Samp
         }
     }
 
-    [Ui("团组")]
-    public class CtrOrgWork : OrgWork<CtrOrgVarWork>
+    [Ui("网点")]
+    public class HubOrgWork : OrgWork<HubOrgVarWork>
     {
-        public CtrOrgWork(WorkConfig cfg) : base(cfg)
+        public HubOrgWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -36,8 +36,8 @@ namespace Samp
             });
         }
 
-        [UserAccess(CTR_MGR)]
-        [Ui("新建", "创建新团组"), Tool(ButtonShow)]
+        [UserAccess(HUB_MGMT)]
+        [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             const byte proj = 0xff;
@@ -47,8 +47,9 @@ namespace Samp
                 o.Read(wc.Query, proj);
                 wc.GivePane(200, m =>
                 {
-                    m.FORM_().FIELDUL_("填写团组资料");
+                    m.FORM_().FIELDUL_("填写网点资料");
                     m.LI_().TEXT("编　号", nameof(o.id), o.id, max: 4, min: 4, required: true)._LI();
+                    m.LI_().SELECT("类　型", nameof(o.typ), o.typ, Org.Typs, required: true)._LI();
                     m.LI_().TEXT("名　称", nameof(o.name), o.name, max: 10, required: true)._LI();
                     m.LI_().TEXT("地　址", nameof(o.addr), o.addr, max: 20)._LI();
                     m.LI_().NUMBER("经　度", nameof(o.x), o.x, max: 20).NUMBER("纬　度", nameof(o.x), o.x, max: 20)._LI();

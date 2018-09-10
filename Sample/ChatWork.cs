@@ -83,7 +83,7 @@ namespace Samp
                     {
                         new Post
                         {
-                            uid = prin.id, uname = prin.name, grpat = prin.grpat, text = text,
+                            uid = prin.id, uname = prin.name, grpat = prin.teamat, text = text,
                             img = (short) (img.Count == 0 ? 0 : 1),
                             time = now
                         }
@@ -113,11 +113,11 @@ namespace Samp
         }
     }
 
-    [UserAccess(CTR)]
-    [Ui("社区")]
-    public class CtrChatWork : ChatWork<CtrChatVarWork>
+    [UserAccess(HUB)]
+    [Ui("交流")]
+    public class HubChatWork : ChatWork<CtrChatVarWork>
     {
-        public CtrChatWork(WorkConfig cfg) : base(cfg)
+        public HubChatWork(WorkConfig cfg) : base(cfg)
         {
             CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).id);
         }

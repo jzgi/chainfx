@@ -32,7 +32,7 @@ namespace Greatbone
             }
             if (ctyp.StartsWith("application/data-flow"))
             {
-                return new FlowContext(buffer, length);
+                return new DataContext(buffer, length);
             }
             if (ctyp.StartsWith("text/"))
             {

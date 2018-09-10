@@ -55,7 +55,7 @@ namespace Greatbone
         public string Key => rkey;
 
 
-        internal void TryPoll(FlowConsumer consumer, int ticks)
+        internal void TryPoll(Action<DataContext> consumer, int ticks)
         {
             if (ticks < retryPt)
             {
@@ -68,7 +68,7 @@ namespace Greatbone
             // initialize lastid by the consumer itself
             if (last == 0)
             {
-                last = consumer(null);
+//                last = consumer(null);
             }
 
             pollTask = Task.Run(async () =>
@@ -85,7 +85,7 @@ namespace Greatbone
                             break;
                         }
                         byte[] cont = await rsp.Content.ReadAsByteArrayAsync();
-                        last = consumer(new FlowContext(cont, cont.Length));
+                        consumer(new DataContext(cont, cont.Length));
                     }
                     catch
                     {

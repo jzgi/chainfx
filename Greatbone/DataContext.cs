@@ -5,7 +5,7 @@ namespace Greatbone
     /// <summary>
     /// The pack of a set of recent events.
     /// </summary>
-    public class FlowContext : ISource
+    public class DataContext : ISource
     {
         byte[] buffer;
 
@@ -13,7 +13,7 @@ namespace Greatbone
 
         int pos;
 
-        public FlowContext(byte[] buffer, int length)
+        public DataContext(byte[] buffer, int length)
         {
             this.buffer = buffer;
             this.length = length;
