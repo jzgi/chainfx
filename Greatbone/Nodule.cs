@@ -7,11 +7,8 @@ namespace Greatbone
     /// </summary>
     public abstract class Nodule : IKeyable<string>
     {
-        // identifier as appeared in URI
+        // uri segment
         readonly string name;
-
-        // whether captital leading
-        readonly bool capital;
 
         // name in lowercase
         readonly string lower;
@@ -23,62 +20,42 @@ namespace Greatbone
         readonly byte group;
 
         // access check
-        internal readonly AccessAttribute access;
+        internal readonly AuthAttribute auth;
 
-        // pre- operation
-        readonly IBefore before;
+        // pre-action and post-action operation
+        internal readonly FilterAttribute filter;
 
-        readonly IBeforeAsync beforeAsync;
-
-        // post- operation
-        readonly IAfter after;
-
-        readonly IAfterAsync afterAsync;
-
-        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AccessAttribute access = null)
+        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthAttribute auth = null)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
-            this.capital = !string.IsNullOrEmpty(name) && char.IsUpper(name[0]);
             this.lower = name.ToLower();
+
             // either methodinfo or typeinfo
             if (attrp == null)
             {
                 attrp = GetType().GetTypeInfo();
             }
-            // retrieve Ui annotation 
+
             if (ui == null)
             {
                 var uis = (UiAttribute[]) attrp.GetCustomAttributes(typeof(UiAttribute), true);
-                ui = uis.Length > 0 ? uis[0] : null;
+                if (uis.Length > 0) ui = uis[0];
             }
             this.label = ui?.Label ?? name.ToUpper();
             this.tip = ui?.Tip ?? label;
             this.group = ui?.Group ?? 0;
-            // authorize
-            if (access == null)
+
+            if (auth == null)
             {
-                var accs = (AccessAttribute[]) attrp.GetCustomAttributes(typeof(AccessAttribute), true);
-                if (accs.Length > 0)
-                {
-                    access = accs[0];
-                }
+                var aas = (AuthAttribute[]) attrp.GetCustomAttributes(typeof(AuthAttribute), true);
+                if (aas.Length > 0) this.auth = aas[0];
             }
-            this.access = access;
-            // filters
-            var attrs = attrp.GetCustomAttributes(true);
-            for (int i = 0; i < attrs.Length; i++)
-            {
-                var attr = attrs[i];
-                if (attr is IBefore b) before = b;
-                if (attr is IBeforeAsync basync) beforeAsync = basync;
-                if (attr is IAfter a) after = a;
-                if (attr is IAfterAsync aasync) afterAsync = aasync;
-            }
+
+            var fas = (FilterAttribute[]) attrp.GetCustomAttributes(typeof(FilterAttribute), true);
+            if (fas.Length > 0) filter = fas[0];
         }
 
         public virtual string Key => name;
-
-        public bool IsCapital => capital;
 
         public string Lower => lower;
 
@@ -88,27 +65,21 @@ namespace Greatbone
 
         public byte Group => group;
 
-        public AccessAttribute Access => access;
+        public AuthAttribute Auth => auth;
 
-        public IBefore Before => before;
+        public FilterAttribute Filter => filter;
 
-        public IBeforeAsync BeforeAsync => beforeAsync;
-
-        public IAfter After => after;
-
-        public IAfterAsync AfterAsync => afterAsync;
-
-        public bool HasAuthorize => access != null;
+        public bool HasAuthorize => auth != null;
 
         public bool CheckAccess(WebContext wc, out AccessException except)
         {
-            if (access != null)
+            if (auth != null)
             {
-                bool? result = access.Check(wc);
-                if (result != true)
+                bool result = auth.Authenticate(wc);
+                if (result)
                 {
-                    except = new AccessException(result, access);
-                    return false;
+//                    except = new AccessException(result, auth);
+//                    return false;
                 }
             }
             except = null;

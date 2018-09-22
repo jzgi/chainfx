@@ -1,12 +1,11 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
 
 namespace Samp
 {
-    [UserAccess]
+    [UserAuth]
     public abstract class ChatVarWork : Work
     {
         public const short PicWidth = 360, PicHeight = 270;
@@ -45,7 +44,7 @@ namespace Samp
                                     h.DIV_("uk-margin-auto").T("<img data-src=\"img-").T(o.img).T("\" width=\"").T(PicWidth).T("\" height=\"").T(PicHeight).T("\" uk-img>")._DIV();
                                 }
                                 h._MAIN();
-                            }, css: "uk-card-primary");
+                            });
                             h.FORM_(mp: true);
                             h.FIELDUL_();
                             h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写跟帖内容", max: 400, required: true)._LI();
@@ -103,9 +102,9 @@ namespace Samp
         }
     }
 
-    public class CtrChatVarWork : ChatVarWork
+    public class RegChatVarWork : ChatVarWork
     {
-        public CtrChatVarWork(WorkConfig cfg) : base(cfg)
+        public RegChatVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -135,7 +134,7 @@ namespace Samp
                         dc.Execute("UPDATE chats SET msgs = @1 WHERE orgid = @2 AND custid = @3", p => p.Set(msgs).Set(orgid).Set(custid));
                     }
                 }
-                await ((SampService) Service).WeiXin.PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
+//                await ((SampService) Service).Hub.PostSendAsync(custwx, "【" + orgs[orgid].name + "】" + text + "<a href=\"" + SampUtility.NETADDR + "/my//chat/?orgid=" + orgid + "\">（去回复）</a>");
                 wc.GivePane(200);
             }
         }

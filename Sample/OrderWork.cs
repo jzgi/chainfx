@@ -56,10 +56,10 @@ namespace Samp
         }
     }
 
-    [Ui("订单"), UserAccess(HUB_MGMT)]
-    public class HubOrderWork : OrderWork<HubOrderVarWork>
+    [Ui("订单"), UserAuth(RegMgmt)]
+    public class RegOrderWork : OrderWork<RegOrderVarWork>
     {
-        public HubOrderWork(WorkConfig cfg) : base(cfg)
+        public RegOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 

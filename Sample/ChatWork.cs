@@ -113,13 +113,13 @@ namespace Samp
         }
     }
 
-    [UserAccess(HUB_SCHEDULE)]
+    [UserAuth(RegScheduler)]
     [Ui("交流")]
-    public class HubChatWork : ChatWork<CtrChatVarWork>
+    public class RegChatWork : ChatWork<RegChatVarWork>
     {
-        public HubChatWork(WorkConfig cfg) : base(cfg)
+        public RegChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<CtrChatVarWork, int>((obj) => ((Chat) obj).id);
+            CreateVar<RegChatVarWork, int>((obj) => ((Chat) obj).id);
         }
 
         public void @default(WebContext wc, int page)

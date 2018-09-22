@@ -26,13 +26,13 @@ namespace Samp
         }
     }
 
-    public class HubUserVarWork : UserVarWork
+    public class RegUserVarWork : UserVarWork
     {
-        public HubUserVarWork(WorkConfig cfg) : base(cfg)
+        public RegUserVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [UserAccess(HUB_MGMT)]
+        [UserAuth(RegMgmt)]
         [Ui("x", "删除此操作人员？"), Tool(ButtonConfirm)]
         public void rm(WebContext wc, int cmd)
         {

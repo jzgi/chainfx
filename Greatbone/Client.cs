@@ -55,7 +55,7 @@ namespace Greatbone
         public string Key => rkey;
 
 
-        internal void TryPoll(Action<DataContext> consumer, int ticks)
+        internal void TryPoll(Action<WebContext> consumer, int ticks)
         {
             if (ticks < retryPt)
             {
@@ -85,7 +85,7 @@ namespace Greatbone
                             break;
                         }
                         byte[] cont = await rsp.Content.ReadAsByteArrayAsync();
-                        consumer(new DataContext(cont, cont.Length));
+//                        consumer(new WebContext(cont, cont.Length));
                     }
                     catch
                     {

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.WebSockets;
 using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -406,7 +407,30 @@ namespace Greatbone
 
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
-            ((Service<P>) Service).SetTokenCookie(this, prin, proj, maxage);
+            StringBuilder sb = new StringBuilder("Token=");
+            string token = Service.Encrypt(prin, proj);
+            sb.Append(token);
+            if (maxage > 0)
+            {
+                sb.Append("; Max-Age=").Append(maxage);
+            }
+            // obtain and add the domain attribute
+            string host = Header("Host");
+            if (host != null)
+            {
+                int dot = host.LastIndexOf('.');
+                if (dot > 0)
+                {
+                    dot = host.LastIndexOf('.', dot - 1);
+                }
+                if (dot > 0)
+                {
+                    string domain = host.Substring(dot);
+                    sb.Append("; Domain=").Append(domain);
+                }
+            }
+            sb.Append("; Path=/; HttpOnly");
+            SetHeader("Set-Cookie", sb.ToString());
         }
 
         public bool InCache { get; internal set; }

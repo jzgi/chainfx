@@ -14,9 +14,9 @@ namespace Greatbone
 
         readonly bool? result;
 
-        readonly AccessAttribute attribute;
+        readonly AuthAttribute attribute;
 
-        internal AccessException(bool? result, AccessAttribute attribute = null, string msg = "access exception") : base(msg)
+        internal AccessException(bool? result, AuthAttribute attribute = null, string msg = "access exception") : base(msg)
         {
             this.attribute = attribute;
             this.result = result;
@@ -24,6 +24,6 @@ namespace Greatbone
 
         public bool? Result => result;
 
-        public AccessAttribute Attribute => attribute;
+        public AuthAttribute Attribute => attribute;
     }
 }

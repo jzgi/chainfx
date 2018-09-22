@@ -41,10 +41,10 @@ namespace Samp
     }
 
 
-    [Ui("结款"), UserAccess(HUB_MGMT)]
-    public class HubRepayWork : RepayWork<HubRepayVarWork>
+    [Ui("结款"), UserAuth(RegMgmt)]
+    public class RegRepayWork : RepayWork<RegRepayVarWork>
     {
-        public HubRepayWork(WorkConfig cfg) : base(cfg)
+        public RegRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -145,19 +145,19 @@ namespace Samp
             for (int i = 0; i < trans.Count; i++)
             {
                 var tr = trans[i];
-                string err = await ((SampService) Service).WeiXin.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
+//                string err = await ((SampService) Service).Hub.PostTransferAsync(tr.id, tr.mgrwx, tr.mgrname, tr.cash, "订单结款");
                 // update data records
                 using (var dc = NewDbContext())
                 {
-                    if (err != null) // error occured
-                    {
-                        dc.Execute("UPDATE repays SET err = @1 WHERE id = @2", p => p.Set(err).Set(tr.id));
-                    }
-                    else
-                    {
-                        // update repay status
-                        dc.Execute("UPDATE repays SET err = NULL, payer = @1, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
-                    }
+//                    if (err != null) // error occured
+//                    {
+//                        dc.Execute("UPDATE repays SET err = @1 WHERE id = @2", p => p.Set(err).Set(tr.id));
+//                    }
+//                    else
+//                    {
+//                        // update repay status
+//                        dc.Execute("UPDATE repays SET err = NULL, payer = @1, status = 1 WHERE id = @2", p => p.Set(prin.name).Set(tr.id));
+//                    }
                 }
             }
             wc.GiveRedirect();

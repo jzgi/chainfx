@@ -25,16 +25,10 @@ namespace Greatbone
         // state check annotation
         internal readonly StateAttribute state;
 
-        // void procedure(WebContext)
+        // 4 possible forms of the action method
         readonly Action<WebContext> @do;
-
-        // async Task procedure(WebContext)
         readonly Func<WebContext, Task> doAsync;
-
-        // void action(WebContext, int)
         readonly Action<WebContext, int> do2;
-
-        // async Task action(WebContext, int)
         readonly Func<WebContext, int, Task> do2Async;
 
         internal Actioner(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
@@ -79,6 +73,7 @@ namespace Greatbone
         public bool IsAsync => async;
 
         public bool HasSubscript => subscript;
+
 
         public bool HasTool => tool != null;
 

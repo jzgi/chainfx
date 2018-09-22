@@ -29,11 +29,8 @@ namespace Greatbone
         // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 
-        // the publishing of data flows
-        List<Publish> pubs;
-
-        // the subscribes of data flows
-        List<Subscribe> subs;
+        // the regular data pollers
+        List<Poller> pollers;
 
         // the data flow polling schesuler thread
         Thread scheduler;
@@ -97,6 +94,8 @@ namespace Greatbone
             }
         }
 
+        public ServiceConfig Config => (ServiceConfig) cfg;
+
         public string Shard => ((ServiceConfig) cfg).shard;
 
         public string[] Addrs => ((ServiceConfig) cfg).addrs;
@@ -116,7 +115,7 @@ namespace Greatbone
 
         public Map<string, Client> Clients => clients;
 
-        public List<Subscribe> Subscribes => subs;
+        public List<Poller> Subscribes => pollers;
 
         public string Describe()
         {
@@ -142,21 +141,8 @@ namespace Greatbone
             string path = wc.Path;
             try // handling
             {
-                if (path.StartsWith("/*")) // handle as flow poll
-                {
-                    Provide(wc);
-                }
-                else // handle a regular request
-                {
-                    string relative = path.Substring(1);
-                    Work work = Resolve(ref relative, wc);
-                    if (work == null)
-                    {
-                        wc.Give(404); // not found
-                        return;
-                    }
-                    await work.HandleAsync(relative, wc);
-                }
+                string relative = path.Substring(1);
+                await HandleAsync(relative, wc);
             }
             catch (Exception ex)
             {
@@ -168,11 +154,9 @@ namespace Greatbone
                 }
                 else
                 {
-                    WAR(ex.Message, ex);
                     wc.Give(500, ex.Message);
                 }
             }
-
             // sending
             try
             {
@@ -180,7 +164,6 @@ namespace Greatbone
             }
             catch (Exception e)
             {
-                ERR(e.Message, e);
                 wc.Give(500, e.Message);
             }
         }
@@ -243,7 +226,7 @@ namespace Greatbone
             }
 
             // create and start the scheduler thead
-            if (subs != null)
+            if (pollers != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -255,9 +238,9 @@ namespace Greatbone
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < subs.Count; i++)
+                        for (int i = 0; i < pollers.Count; i++)
                         {
-                            var sub = subs[i];
+                            var sub = pollers[i];
                             sub.TryPoll(tick);
                         }
                     }
@@ -266,38 +249,17 @@ namespace Greatbone
             }
         }
 
-        //
-        // data event
-
-        public void Publish(string flow, Func<long, DataContent> provide)
-        {
-            if (pubs == null)
-            {
-                pubs = new List<Publish>(4);
-            }
-            pubs.Add(new Publish(flow, provide));
-        }
-
-        public void Publish(string flow, Func<long, Task<DataContent>> source)
-        {
-            if (pubs == null)
-            {
-                pubs = new List<Publish>(4);
-            }
-//            pubs.Add(new Publish(flow, source));
-        }
-
-        public void Subscribe(string keySpec, string flow, Action<DataContext> consumer)
+        public void Subscribe(string keySpec, string flow, Action<WebContext> consumer)
         {
             if (clients == null)
             {
                 throw new ServiceException("no client configured");
             }
-            if (subs == null)
+            if (pollers == null)
             {
-                subs = new List<Subscribe>(4);
+                pollers = new List<Poller>(4);
             }
-            var sub = new Subscribe(keySpec, flow, consumer);
+            var sub = new Poller(keySpec, flow, consumer);
             // resolve the client(s) used to connect, maybe many
             for (int i = 0; i < clients.Count; i++)
             {
@@ -311,27 +273,7 @@ namespace Greatbone
             {
                 throw new ServiceException("no client configured for keySpec: " + keySpec);
             }
-            subs.Add(sub);
-        }
-
-        internal void Provide(WebContext wc)
-        {
-            var flow = wc.Path.Substring(2);
-            long last = wc.Query[nameof(last)];
-            if (pubs != null)
-            {
-                for (int i = 0; i < pubs.Count; i++)
-                {
-                    if (pubs[i].Key == flow)
-                    {
-                        var content = pubs[i].Provide(last);
-                        wc.Give(200, content);
-                        return;
-                    }
-                }
-            }
-            // not found
-            wc.Give(404, (IContent) null, true, 60);
+            pollers.Add(sub);
         }
 
         internal Client GetClient(string peerId)
@@ -440,6 +382,82 @@ namespace Greatbone
             return false;
         }
 
+        public string Encrypt<P>(P prin, byte proj) where P : IData
+        {
+            JsonContent cont = new JsonContent(true, 4096);
+            cont.Put(null, prin, proj);
+            byte[] bytebuf = cont.ByteBuffer;
+            int count = cont.Size;
+
+            int mask = (int) Cipher;
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            char[] charbuf = new char[count * 2]; // the target
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = bytebuf[i] ^ masks[i % 4];
+
+                //transform
+                charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                charbuf[p++] = HEX[(b) & 0x0f];
+
+                // reordering
+            }
+
+            // return pool
+            BufferUtility.Return(bytebuf);
+            return new string(charbuf, 0, charbuf.Length);
+        }
+
+        public P Decrypt<P>(string token) where P : IData, new()
+        {
+            int mask = (int) Cipher;
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int len = token.Length / 2;
+            var str = new Text(1024);
+            int p = 0;
+            for (int i = 0; i < len; i++)
+            {
+                // TODO reordering
+
+                // transform to byte
+                int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
+                // masking
+                str.Accept((byte) (b ^ masks[i % 4]));
+            }
+
+            // deserialize
+            try
+            {
+                JObj jo = (JObj) new JsonParser(str.ToString()).Parse();
+                P prin = new P();
+                prin.Read(jo, 0xff);
+                return prin;
+            }
+            catch
+            {
+                return default;
+            }
+        }
+
+        // hexidecimal characters
+        readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+        // return digit value
+        static int Dv(char hex)
+        {
+            int v = hex - '0';
+            if (v >= 0 && v <= 9)
+            {
+                return v;
+            }
+            v = hex - 'A';
+            if (v >= 0 && v <= 5) return 10 + v;
+            return 0;
+        }
+
+
         /// <summary>
         /// A prior response for caching that might be cleared but not removed, for better reusability. 
         /// </summary>
@@ -530,186 +548,6 @@ namespace Greatbone
                 Interlocked.Add(ref hits, old.Hits);
                 return this;
             }
-        }
-    }
-
-    /// <summary>
-    /// A service that implements authentication and authorization.
-    /// </summary>
-    /// <typeparam name="P">the principal type.</typeparam>
-    public abstract class Service<P> : Service where P : class, IData, new()
-    {
-        protected Service(ServiceConfig cfg) : base(cfg)
-        {
-        }
-
-        /// <summary>
-        /// To asynchronously process the request with authentication support.
-        /// </summary>
-        public override async Task ProcessRequestAsync(HttpContext context)
-        {
-            WebContext wc = (WebContext) context;
-            string path = wc.Path;
-            try // handling
-            {
-                bool cont = true;
-                if (this is IAuthenticateAsync auth2) cont = await auth2.AuthenticateAsync(wc);
-                else if (this is IAuthenticate auth) cont = auth.Authenticate(wc);
-                if (!cont)
-                {
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                DBG(e.Message);
-            }
-            // handling
-            try
-            {
-                if (path.StartsWith("/*")) // handle as flow poll
-                {
-                    Provide(wc);
-                }
-                else // handle a regular request
-                {
-                    string relative = path.Substring(1);
-                    Work work = Resolve(ref relative, wc);
-                    if (work == null)
-                    {
-                        wc.Give(404); // not found
-                        return;
-                    }
-                    await work.HandleAsync(relative, wc);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (Catch != null)
-                {
-                    wc.Except = ex; // attatch exception to current context
-                    if (Catch.IsAsync) await Catch.DoAsync(wc, 0);
-                    else Catch.Do(wc, 0);
-                }
-                else
-                {
-                    WAR(ex.Message, ex);
-                    wc.Give(500, ex.Message);
-                }
-            }
-
-            try // sending
-            {
-                await wc.SendAsync();
-            }
-            catch (Exception e)
-            {
-                ERR(e.Message, e);
-                wc.Give(500, e.Message);
-            }
-        }
-
-        internal void SetTokenCookie(WebContext wc, P prin, byte proj, int maxage = 0)
-        {
-            StringBuilder sb = new StringBuilder("Token=");
-            string token = Encrypt(prin, proj);
-            sb.Append(token);
-            if (maxage > 0)
-            {
-                sb.Append("; Max-Age=").Append(maxage);
-            }
-            // obtain and add the domain attribute
-            string host = wc.Header("Host");
-            if (host != null)
-            {
-                int dot = host.LastIndexOf('.');
-                if (dot > 0)
-                {
-                    dot = host.LastIndexOf('.', dot - 1);
-                }
-                if (dot > 0)
-                {
-                    string domain = host.Substring(dot);
-                    sb.Append("; Domain=").Append(domain);
-                }
-            }
-            sb.Append("; Path=/; HttpOnly");
-            wc.SetHeader("Set-Cookie", sb.ToString());
-        }
-
-        public string Encrypt(P prin, byte proj)
-        {
-            JsonContent cont = new JsonContent(true, 4096);
-            cont.Put(null, prin, proj);
-            byte[] bytebuf = cont.ByteBuffer;
-            int count = cont.Size;
-
-            int mask = (int) Cipher;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            char[] charbuf = new char[count * 2]; // the target
-            int p = 0;
-            for (int i = 0; i < count; i++)
-            {
-                // masking
-                int b = bytebuf[i] ^ masks[i % 4];
-
-                //transform
-                charbuf[p++] = HEX[(b >> 4) & 0x0f];
-                charbuf[p++] = HEX[(b) & 0x0f];
-
-                // reordering
-            }
-
-            // return pool
-            BufferUtility.Return(bytebuf);
-            return new string(charbuf, 0, charbuf.Length);
-        }
-
-        public P Decrypt(string token)
-        {
-            int mask = (int) Cipher;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            int len = token.Length / 2;
-            var str = new Text(1024);
-            int p = 0;
-            for (int i = 0; i < len; i++)
-            {
-                // TODO reordering
-
-                // transform to byte
-                int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
-                // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
-            }
-
-            // deserialize
-            try
-            {
-                JObj jo = (JObj) new JsonParser(str.ToString()).Parse();
-                P prin = new P();
-                prin.Read(jo, 0xff);
-                return prin;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        // hexidecimal characters
-        readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
-        // return digit value
-        static int Dv(char hex)
-        {
-            int v = hex - '0';
-            if (v >= 0 && v <= 9)
-            {
-                return v;
-            }
-            v = hex - 'A';
-            if (v >= 0 && v <= 5) return 10 + v;
-            return 0;
         }
     }
 }

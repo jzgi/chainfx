@@ -9,14 +9,14 @@ namespace Samp
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Org) obj).id);
+//            CreateVar<V, string>(obj => ((Org) obj).id);
         }
     }
 
     [Ui("网点")]
-    public class HubOrgWork : OrgWork<HubOrgVarWork>
+    public class RegOrgWork : OrgWork<RegOrgVarWork>
     {
-        public HubOrgWork(WorkConfig cfg) : base(cfg)
+        public RegOrgWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -36,7 +36,7 @@ namespace Samp
             });
         }
 
-        [UserAccess(HUB_MGMT)]
+        [UserAuth(RegMgmt)]
         [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
@@ -48,8 +48,8 @@ namespace Samp
                 wc.GivePane(200, m =>
                 {
                     m.FORM_().FIELDUL_("填写网点资料");
-                    m.LI_().TEXT("编　号", nameof(o.id), o.id, max: 4, min: 4, required: true)._LI();
-                    m.LI_().SELECT("类　型", nameof(o.typ), o.typ, Org.Typs, required: true)._LI();
+//                    m.LI_().TEXT("编　号", nameof(o.id), o.id, max: 4, min: 4, required: true)._LI();
+//                    m.LI_().SELECT("类　型", nameof(o.hubid), o.hubid, Org.Typs, required: true)._LI();
                     m.LI_().TEXT("名　称", nameof(o.name), o.name, max: 10, required: true)._LI();
                     m.LI_().TEXT("地　址", nameof(o.addr), o.addr, max: 20)._LI();
                     m.LI_().NUMBER("经　度", nameof(o.x), o.x, max: 20).NUMBER("纬　度", nameof(o.x), o.x, max: 20)._LI();

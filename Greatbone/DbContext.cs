@@ -1331,9 +1331,7 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new DataContent(512 * 1024);
-            cnt.PutFrom(this);
-            return cnt;
+            return null;
         }
 
 

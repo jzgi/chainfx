@@ -45,7 +45,7 @@ namespace Greatbone
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Auth)
         {
             this.cfg = cfg;
 
@@ -132,12 +132,12 @@ namespace Greatbone
         /// </summary>
         /// <param name="keyer"></param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="access">to override class-wise Authorize attribute</param>
+        /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AccessAttribute access = null) where W : Work
+        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AuthAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -155,7 +155,7 @@ namespace Greatbone
             WorkConfig config = new WorkConfig(VAR)
             {
                 Ui = ui,
-                Access = access,
+                Auth = auth,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -173,11 +173,11 @@ namespace Greatbone
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="access">to override class-wise Authorize attribute</param>
+        /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, UiAttribute ui = null, AccessAttribute access = null) where W : Work
+        protected W Create<W>(string name, UiAttribute ui = null, AuthAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -200,7 +200,7 @@ namespace Greatbone
             WorkConfig config = new WorkConfig(name)
             {
                 Ui = ui,
-                Access = access,
+                Auth = auth,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -301,111 +301,113 @@ namespace Greatbone
 
         public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];
 
-        internal Work Resolve(ref string relative, WebContext wc)
-        {
-            if (!CheckAccess(wc, out AccessException except)) throw except;
-
-            int slash = relative.IndexOf('/');
-            if (slash == -1)
-            {
-                return this;
-            }
-
-            // seek subworks/varwork
-            string key = relative.Substring(0, slash);
-            relative = relative.Substring(slash + 1); // adjust relative
-            if (works != null && works.TryGet(key, out var work)) // if child
-            {
-                wc.Chain(work, key);
-                return work.Resolve(ref relative, wc);
-            }
-
-            if (varwork != null) // if variable-key sub
-            {
-                IData prin = wc.Principal;
-                object prinkey = null;
-                if (key.Length == 0) // resolve shortcut
-                {
-                    if (prin == null) throw AccessException.NoPrincipalEx;
-                    if ((prinkey = varwork.GetVariableKey(prin)) == null)
-                    {
-                        throw AccessException.FalseResultEx;
-                    }
-                }
-                wc.Chain(varwork, key, prinkey);
-                return varwork.Resolve(ref relative, wc);
-            }
-
-            return null;
-        }
-
         /// <summary>
         /// To hndle a request/response context. authorize, before/after filters
         /// </summary>
         /// <param name="rsc">the resource path</param>
         /// <param name="wc">WebContext</param>
         /// <exception cref="AccessException">Thrown when authorization is required and false is returned by checking</exception>
-        /// <seealso cref="AccessAttribute.Check"/>
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
-            wc.Work = this;
-            // any before filterings
-            if (Before?.Do(wc) == false) goto WorkExit;
-            if (BeforeAsync != null && !(await BeforeAsync.DoAsync(wc))) goto WorkExit;
-            int dot = rsc.LastIndexOf('.');
-            if (dot != -1) // file
-            {
-                if (!Service.TryGiveFromCache(wc)) // try in cache
-                {
-                    DoFile(rsc, rsc.Substring(dot), wc);
-                    Service.TryCacheUp(wc);
-                }
-            }
-            else // procedure
-            {
-                string name = rsc;
-                int subscpt = 0;
-                int dash = rsc.LastIndexOf('-');
-                if (dash != -1)
-                {
-                    name = rsc.Substring(0, dash);
-                    wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
-                }
+//            if (!CheckAccess(wc, out AccessException except)) throw except;
 
-                Actioner actr = this[name];
-                if (actr == null)
-                {
-                    wc.Give(404); // not found
-                    return;
-                }
+            int slash = rsc.IndexOf('/');
+            if (slash == -1) // this work is the target work
+            {
+                wc.Work = this;
 
-                if (!actr.CheckAccess(wc, out AccessException except)) throw except;
-                wc.Actioner = actr;
                 // any before filterings
-                if (actr.Before?.Do(wc) == false) goto ProcedureExit;
-                if (actr.BeforeAsync != null && !(await actr.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
-
-                // try in cache
-                if (!Service.TryGiveFromCache(wc))
+                if (filter != null && filter.IsBefore)
                 {
-                    // method invocation
-                    if (actr.IsAsync) await actr.DoAsync(wc, subscpt); // invoke procedure method
-                    else actr.Do(wc, subscpt);
-
-                    Service.TryCacheUp(wc);
+                    if (filter.IsAsync)
+                    {
+                        if (!(await filter.OnBeforeAsync((wc)))) goto WorkExit;
+                    }
+                    else
+                    {
+                        if (!(filter.OnBefore((wc)))) goto WorkExit;
+                    }
                 }
 
-                ProcedureExit:
-                // procedure's after filtering
-                actr.After?.Do(wc);
-                if (actr.AfterAsync != null) await actr.AfterAsync.DoAsync(wc);
-                wc.Actioner = null;
-            }
+                int dot = rsc.LastIndexOf('.');
+                if (dot != -1) // file
+                {
+                    if (!Service.TryGiveFromCache(wc)) // try in cache
+                    {
+                        DoFile(rsc, rsc.Substring(dot), wc);
+                        Service.TryCacheUp(wc);
+                    }
+                }
+                else // procedure
+                {
+                    string name = rsc;
+                    int subscpt = 0;
+                    int dash = rsc.LastIndexOf('-');
+                    if (dash != -1)
+                    {
+                        name = rsc.Substring(0, dash);
+                        wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
+                    }
 
-            WorkExit:
-            After?.Do(wc);
-            if (AfterAsync != null) await AfterAsync.DoAsync(wc);
-            wc.Work = null;
+                    Actioner actr = this[name];
+                    if (actr == null)
+                    {
+                        wc.Give(404); // not found
+                        return;
+                    }
+
+                    if (!actr.CheckAccess(wc, out AccessException except)) throw except;
+                    wc.Actioner = actr;
+                    // any before filterings
+                    if (actr.Filter?.OnBefore(wc) == false) goto ProcedureExit;
+//                    if (actr.BeforeAsync != null && !(await actr.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
+
+                    // try in cache
+                    if (!Service.TryGiveFromCache(wc))
+                    {
+                        // method invocation
+                        if (actr.IsAsync) await actr.DoAsync(wc, subscpt); // invoke procedure method
+                        else actr.Do(wc, subscpt);
+
+                        Service.TryCacheUp(wc);
+                    }
+
+                    ProcedureExit:
+                    // procedure's after filtering
+//                    actr.After?.Do(wc);
+//                    if (actr.AfterAsync != null) await actr.AfterAsync.DoAsync(wc);
+                    wc.Actioner = null;
+                }
+
+                WorkExit:
+                filter?.OnAfter(wc);
+                if (filter != null) await filter.OnAfterAsync(wc);
+                wc.Work = null;
+            }
+            else // sub works
+            {
+                string key = rsc.Substring(0, slash);
+                if (works != null && works.TryGet(key, out var wrk)) // if child
+                {
+                    wc.Chain(wrk, key);
+                    await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
+                }
+                else if (varwork != null) // if variable-key sub
+                {
+                    IData prin = wc.Principal;
+                    object prinkey = null;
+                    if (key.Length == 0) // resolve shortcut
+                    {
+                        if (prin == null) throw AccessException.NoPrincipalEx;
+                        if ((prinkey = varwork.GetVariableKey(prin)) == null)
+                        {
+                            throw AccessException.FalseResultEx;
+                        }
+                    }
+                    wc.Chain(varwork, key, prinkey);
+                    await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
+                }
+            }
         }
 
         public void DoFile(string filename, string ext, WebContext ac)

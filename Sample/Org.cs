@@ -3,18 +3,18 @@
 namespace Samp
 {
     /// <summary>
-    /// An organizational unit such as a supplying shop or a customer group.
+    /// An organizational unit such as a work shop or a customer team.
     /// </summary>
-    public class Org : IData, IKeyable<string>
+    public class Org : IData, IGroupKeyable<(string, short)>
     {
         public static readonly Org Empty = new Org();
 
-        public const byte ID = 1, LATER = 2;
+        public const byte PK = 1, LATER = 2;
 
         public static readonly Map<short, string> Typs = new Map<short, string>
         {
             {0, "团组"},
-            {1, "作坊"},
+            {1, "产供"},
         };
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
@@ -24,7 +24,8 @@ namespace Samp
             {2, "工作"}
         };
 
-        internal string id;
+        internal short id;
+        internal string regid;
         internal short typ;
         internal string name;
         internal string tel;
@@ -38,10 +39,11 @@ namespace Samp
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & ID) > 0)
+            if ((proj & PK) > 0)
             {
                 s.Get(nameof(id), ref id);
             }
+            s.Get(nameof(regid), ref regid);
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(name), ref name);
             s.Get(nameof(tel), ref tel);
@@ -59,10 +61,11 @@ namespace Samp
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & ID) > 0)
+            if ((proj & PK) > 0)
             {
                 s.Put(nameof(id), id);
             }
+            s.Put(nameof(regid), regid);
             s.Put(nameof(typ), typ);
             s.Put(nameof(name), name);
             s.Put(nameof(tel), tel);
@@ -78,12 +81,13 @@ namespace Samp
             s.Put(nameof(status), status);
         }
 
-        public string Key => id;
+        public (string, short) Key => (regid, id);
+
+        public bool GroupAs((string, short) akey)
+        {
+            return regid == akey.Item1;
+        }
 
         public override string ToString() => name;
-
-        public bool IsSupply => id.Length == 1;
-
-        public bool IsGroup => id.Length == 3;
     }
 }

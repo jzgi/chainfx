@@ -2,7 +2,6 @@ using Greatbone;
 
 namespace Samp
 {
-    [UserAccess(true)]
     public class MyWork : Work
     {
         public MyWork(WorkConfig cfg) : base(cfg)
@@ -11,23 +10,23 @@ namespace Samp
         }
     }
 
-    [UserAccess(hub: 1)]
+    [UserAuth(reg: 1)]
     [Ui("首页")]
-    public class HubWork : Work
+    public class RegWork : Work
     {
-        public HubWork(WorkConfig cfg) : base(cfg)
+        public RegWork(WorkConfig cfg) : base(cfg)
         {
-            Create<HubOrderWork>("order");
+            Create<RegOrderWork>("order");
 
-            Create<HubItemWork>("item");
+            Create<RegItemWork>("item");
 
-            Create<HubChatWork>("chat");
+            Create<RegChatWork>("chat");
 
-            Create<HubUserWork>("user");
+            Create<RegUserWork>("user");
 
-            Create<HubOrgWork>("org");
+            Create<RegOrgWork>("org");
 
-            Create<HubRepayWork>("repay");
+            Create<RegRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -63,7 +62,7 @@ namespace Samp
     {
         public ShopWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<ShopVarWork, string>(prin => ((User) prin).shopat);
+            CreateVar<OprVarWork, string>(prin => ((User) prin).shopat);
         }
     }
 

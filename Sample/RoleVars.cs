@@ -5,7 +5,6 @@ using static Samp.User;
 
 namespace Samp
 {
-    [UserAccess(true)]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -89,22 +88,22 @@ namespace Samp
         public async Task share(WebContext wc)
         {
             var prin = (User) wc.Principal;
-            var (ticket, url) = await ((SampService) Service).WeiXin.PostQrSceneAsync(prin.id);
-            wc.GivePage(200, h =>
-            {
-                h.DIV_("uk-padding uk-align-center uk-width-3-4");
-                h.ICO_(circle: false).T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
-                h._DIV();
-            });
+//            var (ticket, url) = await ((SampService) Service).Hub.PostQrSceneAsync(prin.id);
+//            wc.GivePage(200, h =>
+//            {
+//                h.DIV_("uk-padding uk-align-center uk-width-3-4");
+//                h.ICO_(circle: false).T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
+//                h._DIV();
+//            });
         }
     }
 
 
-    [UserAccess(shop: 1)]
+    [UserAuth(shop: 1)]
     [Ui("首页")]
-    public class ShopVarWork : Work, IOrgVar
+    public class OprVarWork : Work, IOrgVar
     {
-        public ShopVarWork(WorkConfig cfg) : base(cfg)
+        public OprVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<ShopOrderWork>("order");
 
@@ -129,7 +128,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(team: 1)]
+    [UserAuth(team: 1)]
     [Ui("首页")]
     public class TeamVarWork : Work, IOrgVar
     {

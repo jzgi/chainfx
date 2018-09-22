@@ -13,9 +13,9 @@ namespace Samp
         }
     }
 
-    public class HubOrgVarWork : OrgVarWork
+    public class RegOrgVarWork : OrgVarWork
     {
-        public HubOrgVarWork(WorkConfig cfg) : base(cfg)
+        public RegOrgVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -47,10 +47,10 @@ namespace Samp
                 var o = await wc.ReadObjectAsync<Org>(proj);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("UPDATE orgs")._SET_(Org.Empty, proj ^ Org.ID).T(" WHERE id = @1");
+                    dc.Sql("UPDATE orgs")._SET_(Org.Empty, proj ^ Org.PK).T(" WHERE id = @1");
                     dc.Execute(p =>
                     {
-                        o.Write(p, proj ^ Org.ID);
+                        o.Write(p, proj ^ Org.PK);
                         p.Set(orgid);
                     });
                 }
@@ -96,7 +96,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Execute(@"UPDATE orgs SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
-                        UPDATE users SET opr = " + HUB_MGMT + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
+                        UPDATE users SET opr = " + RegMgmt + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
                 }
                 wc.GivePane(200);
             }

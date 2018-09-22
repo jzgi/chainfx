@@ -31,13 +31,13 @@ namespace Samp
                 {
                     h.TOOLBAR();
                     h.TABLE(arr, null,
-                        o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.team])
+                        o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.teamly])
                     );
                 });
             }
         }
 
-        [UserAccess(HUB_MGMT)]
+        [UserAuth(RegMgmt)]
         [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -89,14 +89,14 @@ namespace Samp
                     {
                         h.TOOLBAR(title: tel);
                         h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Shoply[o.shop])
+                            o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Shoply[o.shoply])
                         );
                     });
                 }
             }
         }
 
-        [UserAccess(shop: 15)]
+        [UserAuth(shop: 15)]
         [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -117,9 +117,9 @@ namespace Samp
     }
 
     [Ui("人员")]
-    public class HubUserWork : UserWork<HubUserVarWork>
+    public class RegUserWork : UserWork<RegUserVarWork>
     {
-        public HubUserWork(WorkConfig cfg) : base(cfg)
+        public RegUserWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -169,7 +169,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(HUB_MGMT)]
+        [UserAuth(RegMgmt)]
         [Ui("添加", "添加中心操作人员"), Tool(ButtonShow, size: 1)]
         public async Task add(WebContext wc, int cmd)
         {

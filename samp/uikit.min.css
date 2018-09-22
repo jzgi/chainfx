@@ -650,6 +650,8 @@ a.uk-link-reset:hover,
     margin-bottom: 16px;
     background-color: #fff;
     overflow-x: auto;
+    border: 1px solid #dcdcdc;
+    margin: 8px 4px;
 }
 
 .uk-table th {
@@ -1772,7 +1774,7 @@ a.uk-button-primary {
 }
 
 .uk-button-group > *:not(:first-child) {
-    margin-left: 2px;
+    margin-left: 4px;
 }
 
 .uk-button-group .uk-button:hover,
@@ -2421,7 +2423,7 @@ ul.uk-card-body li:nth-child(n+2) {
 
 .uk-card-default {
     background: #fff;
-    margin: 8px 6px;
+    margin: 8px 4px;
     border: 1px solid #dcdcdc;
 }
 
@@ -4016,7 +4018,7 @@ ul.uk-nav-sub {
 
 .uk-tab {
     display: flex;
-    margin-left: -20px;
+    margin-left: 4px;
     padding: 0;
     list-style: none;
     position: relative;
@@ -4038,14 +4040,14 @@ ul.uk-nav-sub {
 
 .uk-tab > * {
     flex: none;
-    padding-left: 8px;
+    padding-left: 4px;
     position: relative;
 }
 
 .uk-tab > * > a {
     display: block;
     text-align: center;
-    padding: 6px 8px;
+    padding: 6px 10px;
     color: #666;
     border-bottom: 2px solid transparent;
     text-transform: uppercase;
@@ -4607,9 +4609,9 @@ ul.uk-nav-sub {
 .uk-modal-large .uk-modal-dialog {
     position: relative;
     margin: auto;
-    height: 98%;
+    height: 90%;
     max-height: 800px;
-    width: 96%;
+    width: 90%;
     max-width: 800px;
     transform: translateY(0);
     display: flex;

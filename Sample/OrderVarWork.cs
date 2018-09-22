@@ -54,9 +54,9 @@ namespace Samp
         }
     }
 
-    public class HubOrderVarWork : OrderVarWork
+    public class RegOrderVarWork : OrderVarWork
     {
-        public HubOrderVarWork(WorkConfig cfg) : base(cfg)
+        public RegOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -76,14 +76,14 @@ namespace Samp
             }
             if (cash > 0)
             {
-                string err = await ((SampService) Service).WeiXin.PostRefundAsync(orderid + "-" + rev, cash, cash);
-                if (err == null) // success
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
-                    }
-                }
+//                string err = await ((SampService) Service).Hub.PostRefundAsync(orderid + "-" + rev, cash, cash);
+//                if (err == null) // success
+//                {
+//                    using (var dc = NewDbContext())
+//                    {
+//                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+//                    }
+//                }
             }
             wc.GiveRedirect("../");
         }

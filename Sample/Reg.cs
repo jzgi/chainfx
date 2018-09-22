@@ -8,29 +8,33 @@ using Greatbone;
 
 namespace Samp
 {
-    public class WeiXin : IData
+    /// <summary>
+    /// A region of operation that has its own weixin official acount.
+    /// </summary>
+    public class Reg : IData, IKeyable<string>
     {
         public const string WXAUTH = "wxauth";
+
+        public static readonly Reg Empty = new Reg();
 
         static readonly Client Connector = new Client("https://api.weixin.qq.com");
 
         Client WCPay;
 
+        internal string id;
+        internal string name;
         internal string appid;
-
         internal string appsecret;
-
         internal string mchid;
-
         internal string noncestr;
-
         internal string spbillcreateip;
-
         internal string key;
 
 
         public void Read(ISource s, byte proj = 0x0f)
         {
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(name), ref name);
             s.Get(nameof(appid), ref appid);
             s.Get(nameof(appsecret), ref appsecret);
             s.Get(nameof(mchid), ref mchid);
@@ -41,6 +45,8 @@ namespace Samp
 
         public void Write(ISink s, byte proj = 0x0f)
         {
+            s.Put(nameof(id), id);
+            s.Put(nameof(name), name);
             s.Put(nameof(appid), appid);
             s.Put(nameof(appsecret), appsecret);
             s.Put(nameof(mchid), mchid);
@@ -48,6 +54,11 @@ namespace Samp
             s.Put(nameof(spbillcreateip), spbillcreateip);
             s.Put(nameof(key), key);
         }
+
+
+        public string Key => id;
+
+        public override string ToString() => name;
 
         // apiclient_cert.p12
         internal void InitWCPay(string p12file)
@@ -119,7 +130,7 @@ namespace Samp
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
 
-        public static long NowMillis => (long)(DateTime.Now - EPOCH).TotalMilliseconds;
+        public static long NowMillis => (long) (DateTime.Now - EPOCH).TotalMilliseconds;
 
         public IContent BuildPrepayContent(string prepay_id)
         {
