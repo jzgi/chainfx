@@ -67,8 +67,8 @@ namespace Samp
                         h.FORM_();
                         h.FIELDUL_(o.name);
                         h.LI_().TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true)._LI();
-                        h.LI_().TEXTAREA("说　明", nameof(o.rich), o.descr, max: 500, min: 100, required: true)._LI();
-                        h.LI_().URL("视　频", nameof(o.mp4), o.mp4)._LI();
+                        h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
+                        h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
                         h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
                         h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
                         h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();

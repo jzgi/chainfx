@@ -23,8 +23,8 @@ namespace Samp
         internal string regid;
         internal string name;
         internal string descr;
-        internal string rich;
-        internal string mp4; // movie url
+        internal string remark;
+        internal string mov; // movie url
         internal string unit;
         internal decimal price;
         internal decimal giverp; // giver price
@@ -43,11 +43,12 @@ namespace Samp
         {
             if ((proj & PK) > 0)
             {
+                s.Get(nameof(regid), ref regid);
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);
-            s.Get(nameof(rich), ref rich);
-            s.Get(nameof(mp4), ref mp4);
+            s.Get(nameof(remark), ref remark);
+            s.Get(nameof(mov), ref mov);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
             s.Get(nameof(giverp), ref giverp);
@@ -72,8 +73,8 @@ namespace Samp
                 s.Put(nameof(name), name);
             }
             s.Put(nameof(descr), descr);
-            s.Put(nameof(rich), rich);
-            s.Put(nameof(mp4), mp4);
+            s.Put(nameof(remark), remark);
+            s.Put(nameof(mov), mov);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
             s.Put(nameof(giverp), giverp);

@@ -84,26 +84,32 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            var arr = Obtain<Map<string, Item>>().All();
+            string regid = wc[this];
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
-                    h.LIST(arr, o =>
+
+                    using (var dc = NewDbContext())
                     {
-                        h.T("<a class=\"uk-width-1-3 uk-margin-auto-vertical\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 4, '商品详情');\">");
-                        h.ICO_(css: "uk-padding-small").T(o.name).T("/icon")._ICO();
-                        h.T("</a>");
-                        h.COL_(css: "uk-width-2-3 uk-padding-small");
-                        h.H3(o.name);
-                        h.FI(null, o.descr);
-                        h.ROW_();
-                        h.P_("uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
-                        h.FORM_(css: "uk-width-auto");
-                        h.TOOL(nameof(SampVarWork.buy));
-                        h._FORM();
-                        h._ROW();
-                        h._COL();
-                    }, "uk-padding-remove");
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE regid = @1 AND status > 0");
+                        var arr = dc.Query<Item>(p => p.Set(regid));
+                        h.LIST(arr, o =>
+                        {
+                            h.T("<a class=\"uk-width-1-3 uk-margin-auto-vertical\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 4, '商品详情');\">");
+                            h.ICO_(css: "uk-padding-small").T(o.name).T("/icon")._ICO();
+                            h.T("</a>");
+                            h.COL_(css: "uk-width-2-3 uk-padding-small");
+                            h.H3(o.name);
+                            h.FI(null, o.descr);
+                            h.ROW_();
+                            h.P_("uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                            h.FORM_(css: "uk-width-auto");
+                            h.TOOL(nameof(SampVarWork.buy));
+                            h._FORM();
+                            h._ROW();
+                            h._COL();
+                        }, "uk-padding-remove");
+                    }
                 }, true, 60
             );
         }

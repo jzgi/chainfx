@@ -9,16 +9,20 @@ namespace Greatbone
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class FilterAttribute : Attribute
     {
-        private int v;
+        readonly int mod;
 
-        protected FilterAttribute(int v)
+        protected FilterAttribute(int mod)
         {
-            this.v = v;
+            this.mod = mod;
         }
 
-        public bool IsBefore => (v & 1) > 0;
+        public bool IsBefore => (mod & 1) > 0;
 
-        public bool IsAsync => (v & 0b10) > 0;
+        public bool IsAfter => (mod & 2) > 0;
+
+        public bool IsSync => (mod & 4) == 0;
+
+        public bool IsAsync => (mod & 4) > 0;
 
         public abstract bool OnBefore(WebContext wc);
 

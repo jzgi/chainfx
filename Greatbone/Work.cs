@@ -301,12 +301,6 @@ namespace Greatbone
 
         public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];
 
-        /// <summary>
-        /// To hndle a request/response context. authorize, before/after filters
-        /// </summary>
-        /// <param name="rsc">the resource path</param>
-        /// <param name="wc">WebContext</param>
-        /// <exception cref="AccessException">Thrown when authorization is required and false is returned by checking</exception>
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
 //            if (!CheckAccess(wc, out AccessException except)) throw except;
@@ -316,21 +310,14 @@ namespace Greatbone
             {
                 wc.Work = this;
 
-                // any before filterings
+                // execute before filtering
                 if (filter != null && filter.IsBefore)
                 {
-                    if (filter.IsAsync)
-                    {
-                        if (!(await filter.OnBeforeAsync((wc)))) goto WorkExit;
-                    }
-                    else
-                    {
-                        if (!(filter.OnBefore((wc)))) goto WorkExit;
-                    }
+                    if (filter.IsSync && !(filter.OnBefore((wc))) || filter.IsAsync && !(await filter.OnBeforeAsync((wc)))) goto WorkExit;
                 }
 
                 int dot = rsc.LastIndexOf('.');
-                if (dot != -1) // file
+                if (dot != -1) // as a static file
                 {
                     if (!Service.TryGiveFromCache(wc)) // try in cache
                     {
@@ -338,7 +325,7 @@ namespace Greatbone
                         Service.TryCacheUp(wc);
                     }
                 }
-                else // procedure
+                else // as an action
                 {
                     string name = rsc;
                     int subscpt = 0;
@@ -352,30 +339,37 @@ namespace Greatbone
                     Actioner actr = this[name];
                     if (actr == null)
                     {
-                        wc.Give(404); // not found
+                        wc.Give(404, "action not found", true, 12);
                         return;
                     }
 
                     if (!actr.CheckAccess(wc, out AccessException except)) throw except;
                     wc.Actioner = actr;
-                    // any before filterings
-                    if (actr.Filter?.OnBefore(wc) == false) goto ProcedureExit;
-//                    if (actr.BeforeAsync != null && !(await actr.BeforeAsync.DoAsync(wc))) goto ProcedureExit;
 
-                    // try in cache
+                    // try in the cache first
                     if (!Service.TryGiveFromCache(wc))
                     {
-                        // method invocation
-                        if (actr.IsAsync) await actr.DoAsync(wc, subscpt); // invoke procedure method
+                        // do before filtering
+                        var f = actr.filter;
+                        if (f != null && f.IsBefore)
+                        {
+                            if (f.IsSync && !(f.OnBefore((wc))) || f.IsAsync && !(await f.OnBeforeAsync((wc)))) goto ActionExit;
+                        }
+
+                        // invoke action method 
+                        if (actr.IsAsync) await actr.DoAsync(wc, subscpt);
                         else actr.Do(wc, subscpt);
+
+                        ActionExit:
+                        // do after filtering
+                        if (f != null && f.IsAfter)
+                        {
+                            if (f.IsSync && !(f.OnAfter((wc))) || f.IsAsync && !(await f.OnAfterAsync((wc)))) ;
+                        }
 
                         Service.TryCacheUp(wc);
                     }
 
-                    ProcedureExit:
-                    // procedure's after filtering
-//                    actr.After?.Do(wc);
-//                    if (actr.AfterAsync != null) await actr.AfterAsync.DoAsync(wc);
                     wc.Actioner = null;
                 }
 
@@ -496,37 +490,37 @@ namespace Greatbone
         //
         // OBJECT PROVIDER
 
-        Hold[] holds;
+        Holder[] holders;
 
         int size;
 
         public void Register(object value, byte flag = 0)
         {
-            if (holds == null)
+            if (holders == null)
             {
-                holds = new Hold[16];
+                holders = new Holder[16];
             }
-            holds[size++] = new Hold(value, flag);
+            holders[size++] = new Holder(value, flag);
         }
 
         public void Register<V>(Func<V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holds == null)
+            if (holders == null)
             {
-                holds = new Hold[8];
+                holders = new Holder[8];
             }
 
-            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
+            holders[size++] = new Holder(typeof(V), fetch, maxage, flag);
         }
 
         public void Register<V>(Func<Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holds == null)
+            if (holders == null)
             {
-                holds = new Hold[8];
+                holders = new Holder[8];
             }
 
-            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
+            holders[size++] = new Holder(typeof(V), fetchAsync, maxage, flag);
         }
 
         /// <summary>
@@ -536,11 +530,11 @@ namespace Greatbone
         /// <returns>the result object or null</returns>
         public T Obtain<T>(byte flag = 0) where T : class
         {
-            if (holds != null)
+            if (holders != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var h = holds[i];
+                    var h = holders[i];
                     if (h.Flag == 0 || (h.Flag & flag) > 0)
                     {
                         if (!h.IsAsync && typeof(T).IsAssignableFrom(h.Typ))
@@ -555,11 +549,11 @@ namespace Greatbone
 
         public async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (holds != null)
+            if (holders != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = holds[i];
+                    var cell = holders[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -601,7 +595,7 @@ namespace Greatbone
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Hold
+        class Holder
         {
             readonly Type typ;
 
@@ -618,14 +612,14 @@ namespace Greatbone
 
             readonly byte flag;
 
-            internal Hold(object value, byte flag)
+            internal Holder(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
                 this.flag = flag;
             }
 
-            internal Hold(Type typ, Func<object> fetch, int maxage, byte flag)
+            internal Holder(Type typ, Func<object> fetch, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;
