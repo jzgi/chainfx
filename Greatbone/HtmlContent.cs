@@ -1139,7 +1139,7 @@ namespace Greatbone
                             var act = acts[j];
                             if (act.Group == 0 || group == act.Group)
                             {
-                                PutTool(act, altCss: "uk-button-secondary");
+                                PutTool(act, css: "uk-button-secondary");
                             }
                         }
                         Add("</form>");
@@ -1242,7 +1242,7 @@ namespace Greatbone
                             if (gogrp != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, altCss: "uk-button-default");
+                        PutTool(act, css: "uk-button-default");
                     }
                     gogrp = g;
                 }
@@ -1306,7 +1306,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, altCss: "uk-button-secondary");
+                        PutTool(act, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1355,7 +1355,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, altCss: "uk-button-secondary");
+                        PutTool(act, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1365,38 +1365,34 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string altcss = "uk-button-default")
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string css = "uk-button-default")
         {
             // locate the proper work
             Work w = webCtx.Work;
-            for (int i = -1; i < level; i++)
-            {
-                w = w.varwork;
-            }
             var act = w[action];
             if (act != null)
             {
-                PutTool(act, subscript, caption, altcss);
+                PutTool(act, subscript, caption, css);
             }
             return this;
         }
 
-        void PutTool(Actioner act, int subscript = -1, string caption = null, string altCss = null)
+        void PutTool(Actioner act, int subscript = -1, string caption = null, string css = null)
         {
             var tool = act.Tool;
 
             // check action's availability
-            bool ok = !tool.Auth || act.CheckAccess(webCtx, out _);
+            bool ok = !tool.Access || act.Authorize(webCtx);
             if (ok && level >= 0)
             {
                 ok = act.CheckState(webCtx, stack, level);
             }
 
-            var css = tool.Css ?? altCss;
+            var realcss = tool.Css ?? css;
             if (tool.IsAnchorTag)
             {
                 Add("<a class=\"uk-button ");
-                Add(css ?? "uk-button-link");
+                Add(realcss ?? "uk-button-link");
                 if (act == webCtx.Actioner) // if current action
                 {
                     Add(" uk-active");
@@ -1427,7 +1423,7 @@ namespace Greatbone
             else
             {
                 Add("<button  class=\"uk-button ");
-                Add(css);
+                Add(realcss);
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");

@@ -63,6 +63,8 @@ namespace Greatbone
         ///
         public IData Principal { get; set; }
 
+        public bool Authenticated { get; internal set; }
+
         /// A token string.
         ///
         internal string Token { get; }

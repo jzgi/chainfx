@@ -10,7 +10,7 @@ namespace Samp
         }
     }
 
-    [UserAuth(reg: 1)]
+    [UserAccess(reg: 1)]
     [Ui("首页")]
     public class RegWork : Work
     {

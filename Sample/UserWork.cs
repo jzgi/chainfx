@@ -37,7 +37,7 @@ namespace Samp
             }
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -69,7 +69,7 @@ namespace Samp
             wc.GivePage(200, h => { h.TOOLBAR(); });
         }
 
-        [Ui("查找"), Tool(APrompt)]
+        [Ui("查找"), Tool(AnchorPrompt)]
         public void find(WebContext wc)
         {
             string shopid = wc[-1];
@@ -96,7 +96,7 @@ namespace Samp
             }
         }
 
-        [UserAuth(shop: 15)]
+        [UserAccess(shop: 15)]
         [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -123,7 +123,7 @@ namespace Samp
         {
         }
 
-        [Ui("客户"), Tool(A)]
+        [Ui("客户"), Tool(Anchor)]
         public void @default(WebContext wc, int page)
         {
             using (var dc = NewDbContext())
@@ -141,7 +141,7 @@ namespace Samp
             }
         }
 
-        [Ui("查找"), Tool(APrompt)]
+        [Ui("查找"), Tool(AnchorPrompt)]
         public void find(WebContext wc)
         {
             bool inner = wc.Query[nameof(inner)];
@@ -169,7 +169,7 @@ namespace Samp
             }
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("添加", "添加中心操作人员"), Tool(ButtonShow, size: 1)]
         public async Task add(WebContext wc, int cmd)
         {

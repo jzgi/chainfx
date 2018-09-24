@@ -7,11 +7,11 @@ namespace Greatbone
     /// To implement authentication and authorization.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public abstract class AuthAttribute : Attribute
+    public abstract class AccessAttribute : Attribute
     {
         private int v;
 
-        protected AuthAttribute(int v)
+        protected AccessAttribute(int v)
         {
             this.v = v;
         }

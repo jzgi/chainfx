@@ -9,7 +9,7 @@ namespace Samp
     /// To check access to an annotated work or action method. 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class UserAuthAttribute : AuthAttribute
+    public class UserAccessAttribute : AccessAttribute
     {
         // required reg access
         readonly short reg;
@@ -20,7 +20,7 @@ namespace Samp
         // required customer team access
         readonly short team;
 
-        public UserAuthAttribute(short reg = 0, short shop = 0, short team = 0) : base(1)
+        public UserAccessAttribute(short reg = 0, short shop = 0, short team = 0) : base(1)
         {
             this.reg = reg;
             this.shop = shop;
@@ -48,25 +48,27 @@ namespace Samp
                 {
                     return false;
                 }
-//                (_, string openid) = await Reg.GetAccessorAsync(code);
 
-//                INF("openid = " + openid);
-//                if (openid == null)
-//                {
-//                    return false;
-//                }
-//                // check in db
-//                using (var dc = NewDbContext())
-//                {
-//                    if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
-//                    {
-//                        prin = dc.ToObject<User>(0xff ^ User.PRIVACY);
-//                    }
-//                    else
-//                    {
-//                        prin = new User {wx = openid}; // create a minimal principal object
-//                    }
-//                }
+                string regid = wc[0];
+                var reg = wc.Work.Obtain<Map<string, Reg>>()[regid];
+                (_, string openid) = await reg.GetAccessorAsync(code);
+
+                if (openid == null)
+                {
+                    return false;
+                }
+                // check in db
+                using (var dc = wc.Service.NewDbContext())
+                {
+                    if (dc.Query1("SELECT * FROM users WHERE wx = @1", p => p.Set(openid)))
+                    {
+                        prin = dc.ToObject<User>(0xff ^ User.PRIVACY);
+                    }
+                    else
+                    {
+                        prin = new User {wx = openid}; // create a minimal principal object
+                    }
+                }
             }
             else
             {

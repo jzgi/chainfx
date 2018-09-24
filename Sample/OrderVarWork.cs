@@ -17,7 +17,7 @@ namespace Samp
         {
         }
 
-        [Ui("撤单"), Tool(AShow), OrderState('C')]
+        [Ui("撤单"), Tool(AnchorShow), OrderState('C')]
         public async Task cancel(WebContext wc, int idx)
         {
             int orderid = wc[this];

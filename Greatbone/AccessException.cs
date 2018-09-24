@@ -7,23 +7,13 @@ namespace Greatbone
     /// </summary>
     public class AccessException : Exception
     {
-        internal static readonly AccessException NoPrincipalEx = new AccessException(false, null, "must have principal");
+        readonly AccessAttribute attribute;
 
-        internal static readonly AccessException FalseResultEx = new AccessException(false, null, "no access");
-
-
-        readonly bool? result;
-
-        readonly AuthAttribute attribute;
-
-        internal AccessException(bool? result, AuthAttribute attribute = null, string msg = "access exception") : base(msg)
+        internal AccessException(AccessAttribute attribute = null, string msg = "access exception") : base(msg)
         {
             this.attribute = attribute;
-            this.result = result;
         }
 
-        public bool? Result => result;
-
-        public AuthAttribute Attribute => attribute;
+        public AccessAttribute Attribute => attribute;
     }
 }

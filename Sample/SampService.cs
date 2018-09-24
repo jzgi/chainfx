@@ -5,7 +5,6 @@ namespace Samp
     /// <summary>
     /// The sample service that hosts all regional operations.
     /// </summary>
-    [Ui("全粮派")]
     public class SampService : Service
     {
         public SampService(ServiceConfig cfg) : base(cfg)

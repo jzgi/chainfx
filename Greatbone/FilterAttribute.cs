@@ -16,13 +16,13 @@ namespace Greatbone
             this.mod = mod;
         }
 
-        public bool IsBefore => (mod & 1) > 0;
+        public bool Before => (mod & 0b01) > 0;
 
-        public bool IsAfter => (mod & 2) > 0;
+        public bool BeforeAsync => (mod & 0b11) > 0;
 
-        public bool IsSync => (mod & 4) == 0;
+        public bool After => (mod & 0b0100) > 0;
 
-        public bool IsAsync => (mod & 4) > 0;
+        public bool AfterAsync => (mod & 0b1100) > 0;
 
         public abstract bool OnBefore(WebContext wc);
 

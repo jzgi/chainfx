@@ -113,7 +113,7 @@ namespace Samp
         }
     }
 
-    [UserAuth(RegScheduler)]
+    [UserAccess(RegScheduler)]
     [Ui("交流")]
     public class RegChatWork : ChatWork<RegChatVarWork>
     {

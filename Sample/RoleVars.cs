@@ -84,7 +84,7 @@ namespace Samp
             }
         }
 
-        [Ui("推荐他人", "推荐扫码关注"), Tool(AOpen, size: 1, css: "uk-button-secondary")]
+        [Ui("推荐他人", "推荐扫码关注"), Tool(AnchorOpen, size: 1, css: "uk-button-secondary")]
         public async Task share(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -99,7 +99,7 @@ namespace Samp
     }
 
 
-    [UserAuth(shop: 1)]
+    [UserAccess(shop: 1)]
     [Ui("首页")]
     public class OprVarWork : Work, IOrgVar
     {
@@ -128,7 +128,7 @@ namespace Samp
         }
     }
 
-    [UserAuth(team: 1)]
+    [UserAccess(team: 1)]
     [Ui("首页")]
     public class TeamVarWork : Work, IOrgVar
     {

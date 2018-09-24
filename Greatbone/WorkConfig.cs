@@ -18,7 +18,7 @@ namespace Greatbone
 
         internal UiAttribute Ui { get; set; }
 
-        internal AuthAttribute Auth { get; set; }
+        internal AccessAttribute Auth { get; set; }
 
         public string Name => name;
 

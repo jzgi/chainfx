@@ -137,7 +137,7 @@ namespace Greatbone
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AuthAttribute auth = null) where W : Work
+        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -177,7 +177,7 @@ namespace Greatbone
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, UiAttribute ui = null, AuthAttribute auth = null) where W : Work
+        protected W Create<W>(string name, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -303,104 +303,125 @@ namespace Greatbone
 
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
-//            if (!CheckAccess(wc, out AccessException except)) throw except;
-
-            int slash = rsc.IndexOf('/');
-            if (slash == -1) // this work is the target work
+            wc.Work = this;
+            try
             {
-                wc.Work = this;
-
-                // execute before filtering
-                if (filter != null && filter.IsBefore)
+                if (AccessRequired)
                 {
-                    if (filter.IsSync && !(filter.OnBefore((wc))) || filter.IsAsync && !(await filter.OnBeforeAsync((wc)))) goto WorkExit;
+                    if (AccessSync && !CheckAccess(wc) || AccessAsync && !await CheckAccessAsync(wc)) return;
                 }
 
-                int dot = rsc.LastIndexOf('.');
-                if (dot != -1) // as a static file
+                int slash = rsc.IndexOf('/');
+                if (slash == -1) // this work is the target work
                 {
-                    if (!Service.TryGiveFromCache(wc)) // try in cache
+                    // execute before filtering
+                    if (filter != null)
                     {
-                        DoFile(rsc, rsc.Substring(dot), wc);
-                        Service.TryCacheUp(wc);
-                    }
-                }
-                else // as an action
-                {
-                    string name = rsc;
-                    int subscpt = 0;
-                    int dash = rsc.LastIndexOf('-');
-                    if (dash != -1)
-                    {
-                        name = rsc.Substring(0, dash);
-                        wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
+                        if (filter.Before && !(filter.OnBefore((wc))) || filter.BeforeAsync && !(await filter.OnBeforeAsync((wc)))) goto WorkExit;
                     }
 
-                    Actioner actr = this[name];
-                    if (actr == null)
-                    {
-                        wc.Give(404, "action not found", true, 12);
-                        return;
-                    }
+                    //
+                    // resolve the resource
 
-                    if (!actr.CheckAccess(wc, out AccessException except)) throw except;
-                    wc.Actioner = actr;
-
-                    // try in the cache first
-                    if (!Service.TryGiveFromCache(wc))
+                    int dot = rsc.LastIndexOf('.');
+                    if (dot != -1) // the resource is a static file
                     {
-                        // do before filtering
-                        var f = actr.filter;
-                        if (f != null && f.IsBefore)
+                        if (!Service.TryGiveFromCache(wc)) // try in cache
                         {
-                            if (f.IsSync && !(f.OnBefore((wc))) || f.IsAsync && !(await f.OnBeforeAsync((wc)))) goto ActionExit;
+                            DoFile(rsc, rsc.Substring(dot), wc);
+                            Service.TryCacheUp(wc);
+                        }
+                    }
+                    else // the resource is an action
+                    {
+                        string name = rsc;
+                        int subscpt = 0;
+                        int dash = rsc.LastIndexOf('-');
+                        if (dash != -1)
+                        {
+                            name = rsc.Substring(0, dash);
+                            wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
+                        }
+                        Actioner actr = this[name];
+                        if (actr == null)
+                        {
+                            wc.Give(404, "action not found", true, 12);
+                            return;
                         }
 
-                        // invoke action method 
-                        if (actr.IsAsync) await actr.DoAsync(wc, subscpt);
-                        else actr.Do(wc, subscpt);
-
-                        ActionExit:
-                        // do after filtering
-                        if (f != null && f.IsAfter)
+                        wc.Actioner = actr;
+                        if (actr.AccessRequired)
                         {
-                            if (f.IsSync && !(f.OnAfter((wc))) || f.IsAsync && !(await f.OnAfterAsync((wc)))) ;
+                            if (actr.AccessSync && !actr.CheckAccess(wc) || actr.AccessAsync && !await actr.CheckAccessAsync(wc)) return;
                         }
 
-                        Service.TryCacheUp(wc);
+                        // try in the cache first
+                        if (!Service.TryGiveFromCache(wc))
+                        {
+                            if (actr.filter != null)
+                            {
+                                if (actr.filter.Before && !(actr.filter.OnBefore((wc))) || actr.filter.BeforeAsync && !(await actr.filter.OnBeforeAsync((wc)))) goto ActionExit;
+                            }
+                            // invoke action method 
+                            if (actr.IsAsync) await actr.DoAsync(wc, subscpt);
+                            else actr.Do(wc, subscpt);
+                            ActionExit:
+                            if (actr.filter != null)
+                            {
+                                if (actr.filter.After && !(actr.filter.OnAfter((wc))) || actr.filter.AfterAsync && !(await actr.filter.OnAfterAsync((wc))))
+                                {
+                                }
+                            }
+                            Service.TryCacheUp(wc);
+                        }
+                        wc.Actioner = null;
                     }
 
-                    wc.Actioner = null;
+                    WorkExit:
+                    if (filter != null)
+                    {
+                        if (filter.After && !(filter.OnAfter((wc))) || filter.AfterAsync && !await filter.OnAfterAsync((wc)))
+                        {
+                        }
+                    }
                 }
-
-                WorkExit:
-                filter?.OnAfter(wc);
-                if (filter != null) await filter.OnAfterAsync(wc);
-                wc.Work = null;
+                else // sub works
+                {
+                    string key = rsc.Substring(0, slash);
+                    if (works != null && works.TryGet(key, out var wrk)) // if child
+                    {
+                        wc.Chain(wrk, key);
+                        await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
+                    }
+                    else if (varwork != null) // if variable-key sub
+                    {
+                        IData prin = wc.Principal;
+                        object prinkey = null;
+                        if (key.Length == 0) // resolve shortcut
+                        {
+                            if (prin == null) throw except;
+                            if ((prinkey = varwork.GetVariableKey(prin)) == null)
+                            {
+                                throw except;
+                            }
+                        }
+                        wc.Chain(varwork, key, prinkey);
+                        await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
+                    }
+                }
             }
-            else // sub works
+            catch (Exception e)
             {
-                string key = rsc.Substring(0, slash);
-                if (works != null && works.TryGet(key, out var wrk)) // if child
+                if (@catch != null) // an exception catch defined by this work
                 {
-                    wc.Chain(wrk, key);
-                    await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
+                    if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
+                    else @catch.Do(wc, 0);
                 }
-                else if (varwork != null) // if variable-key sub
-                {
-                    IData prin = wc.Principal;
-                    object prinkey = null;
-                    if (key.Length == 0) // resolve shortcut
-                    {
-                        if (prin == null) throw AccessException.NoPrincipalEx;
-                        if ((prinkey = varwork.GetVariableKey(prin)) == null)
-                        {
-                            throw AccessException.FalseResultEx;
-                        }
-                    }
-                    wc.Chain(varwork, key, prinkey);
-                    await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
-                }
+                else throw;
+            }
+            finally
+            {
+                wc.Work = null;
             }
         }
 
@@ -509,7 +530,6 @@ namespace Greatbone
             {
                 holders = new Holder[8];
             }
-
             holders[size++] = new Holder(typeof(V), fetch, maxage, flag);
         }
 
@@ -519,7 +539,6 @@ namespace Greatbone
             {
                 holders = new Holder[8];
             }
-
             holders[size++] = new Holder(typeof(V), fetchAsync, maxage, flag);
         }
 
@@ -571,14 +590,6 @@ namespace Greatbone
         }
 
         public void Invalidate<T>(byte flag = 0) where T : class
-        {
-        }
-
-        public void Flush<T>(byte flag = 0) where T : class
-        {
-        }
-
-        public async Task FlushAsync<T>(byte flag = 0) where T : class
         {
         }
 

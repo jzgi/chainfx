@@ -44,7 +44,7 @@ namespace Samp
             }
         }
 
-        [Ui("查看历史订单"), Tool(AOpen, size: 2)]
+        [Ui("查看历史订单"), Tool(AnchorOpen, size: 2)]
         public void old(WebContext wc, int page)
         {
             int myid = wc[-1];
@@ -56,14 +56,14 @@ namespace Samp
         }
     }
 
-    [Ui("订单"), UserAuth(RegMgmt)]
+    [Ui("订单"), UserAccess(RegMgmt)]
     public class RegOrderWork : OrderWork<RegOrderVarWork>
     {
         public RegOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("新收"), Tool(A)]
+        [Ui("新收"), Tool(Anchor)]
         public void @default(WebContext wc)
         {
             wc.GivePage(200, h =>
@@ -79,17 +79,17 @@ namespace Samp
             });
         }
 
-        [Ui("产供"), Tool(A)]
+        [Ui("产供"), Tool(Anchor)]
         public void confirmed(WebContext wc)
         {
         }
 
-        [Ui("派送"), Tool(A)]
+        [Ui("派送"), Tool(Anchor)]
         public void loaded(WebContext wc)
         {
         }
 
-        [Ui("历史"), Tool(A)]
+        [Ui("历史"), Tool(Anchor)]
         public void shipped(WebContext wc)
         {
         }
@@ -214,7 +214,7 @@ namespace Samp
         {
         }
 
-        [Ui("到货"), Tool(A, "uk-button-link")]
+        [Ui("到货"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
             string teamid = wc[-1];
@@ -231,7 +231,7 @@ namespace Samp
             });
         }
 
-        [Ui("在途"), Tool(A, "uk-button-link")]
+        [Ui("在途"), Tool(Anchor, "uk-button-link")]
         public void way(WebContext wc)
         {
             string teamid = wc[-1];
@@ -248,7 +248,7 @@ namespace Samp
             });
         }
 
-        [Ui("查找"), Tool(APrompt, "uk-button-link")]
+        [Ui("查找"), Tool(AnchorPrompt, "uk-button-link")]
         public void find(WebContext wc)
         {
             bool inner = wc.Query[nameof(inner)];

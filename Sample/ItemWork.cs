@@ -46,7 +46,7 @@ namespace Samp
             }
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
@@ -83,7 +83,7 @@ namespace Samp
             }
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {

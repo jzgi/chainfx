@@ -41,14 +41,14 @@ namespace Samp
     }
 
 
-    [Ui("结款"), UserAuth(RegMgmt)]
+    [Ui("结款"), UserAccess(RegMgmt)]
     public class RegRepayWork : RepayWork<RegRepayVarWork>
     {
         public RegRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("未转"), Tool(A, "uk-button-link")]
+        [Ui("未转"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
             using (var dc = NewDbContext())
@@ -65,7 +65,7 @@ namespace Samp
             }
         }
 
-        [Ui("已转"), Tool(A, "uk-button-link")]
+        [Ui("已转"), Tool(Anchor, "uk-button-link")]
         public void old(WebContext wc, int page)
         {
             using (var dc = NewDbContext())

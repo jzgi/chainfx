@@ -52,7 +52,7 @@ namespace Samp
         {
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
@@ -96,7 +96,7 @@ namespace Samp
             }
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("图片"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {

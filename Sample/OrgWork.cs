@@ -36,7 +36,7 @@ namespace Samp
             });
         }
 
-        [UserAuth(RegMgmt)]
+        [UserAccess(RegMgmt)]
         [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {

@@ -5,7 +5,7 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    [UserAuth]
+    [UserAccess]
     public abstract class ChatVarWork : Work
     {
         public const short PicWidth = 360, PicHeight = 270;

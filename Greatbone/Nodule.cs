@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Greatbone
 {
@@ -19,13 +20,15 @@ namespace Greatbone
 
         readonly byte group;
 
-        // access check
-        internal readonly AuthAttribute auth;
+        // authentication & authorization
+        internal readonly AccessAttribute access;
+
+        internal readonly AccessException except;
 
         // pre-action and post-action operation
         internal readonly FilterAttribute filter;
 
-        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthAttribute auth = null)
+        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AccessAttribute auth = null)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
             this.lower = name.ToLower();
@@ -47,8 +50,16 @@ namespace Greatbone
 
             if (auth == null)
             {
-                var aas = (AuthAttribute[]) attrp.GetCustomAttributes(typeof(AuthAttribute), true);
-                if (aas.Length > 0) this.auth = aas[0];
+                var aas = (AccessAttribute[]) attrp.GetCustomAttributes(typeof(AccessAttribute), true);
+                if (aas.Length > 0)
+                {
+                    auth = aas[0];
+                }
+            }
+            if (auth != null)
+            {
+                this.access = auth;
+                except = new AccessException(auth);
             }
 
             var fas = (FilterAttribute[]) attrp.GetCustomAttributes(typeof(FilterAttribute), true);
@@ -65,25 +76,59 @@ namespace Greatbone
 
         public byte Group => group;
 
-        public AuthAttribute Auth => auth;
+        public AccessAttribute Access => access;
 
         public FilterAttribute Filter => filter;
 
-        public bool HasAuthorize => auth != null;
+        public bool AccessRequired => access != null;
 
-        public bool CheckAccess(WebContext wc, out AccessException except)
+        public bool AccessAsync => access.IsAsync;
+
+        public bool AccessSync => !access.IsAsync;
+
+        public bool CheckAccess(WebContext wc)
         {
-            if (auth != null)
+            if (access != null)
             {
-                bool result = auth.Authenticate(wc);
-                if (result)
+                if (!wc.Authenticated) // if not yet authenticated
                 {
-//                    except = new AccessException(result, auth);
-//                    return false;
+                    if (access.Authenticate(wc))
+                    {
+                        return false;
+                    }
+                    wc.Authenticated = true;
+                }
+                if (access.Authorize(wc))
+                {
+                    throw except;
                 }
             }
-            except = null;
             return true;
+        }
+
+        public async Task<bool> CheckAccessAsync(WebContext wc)
+        {
+            if (access != null)
+            {
+                if (!wc.Authenticated) // if not yet authenticated
+                {
+                    if (!await access.AuthenticateAsync(wc))
+                    {
+                        return false;
+                    }
+                    wc.Authenticated = true;
+                }
+                if (access.Authorize(wc))
+                {
+                    throw except;
+                }
+            }
+            return true;
+        }
+
+        public bool Authorize(WebContext wc)
+        {
+            return access == null || access.Authorize(wc);
         }
 
         public override string ToString()

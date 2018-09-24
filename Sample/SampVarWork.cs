@@ -4,7 +4,8 @@ using Greatbone;
 
 namespace Samp
 {
-    [UserAuth]
+    [UserAccess]
+    [Ui("全粮派")]
     public class SampVarWork : ItemVarWork
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
@@ -17,7 +18,7 @@ namespace Samp
 
             Create<ShopWork>("shop"); // supplying shop
 
-            Create<RegWork>("hub"); // central 
+            Create<RegWork>("reg"); // central 
         }
 
         public async Task @catch(WebContext wc, int cmd)
@@ -39,7 +40,7 @@ namespace Samp
             }
             else if (wc.Except is AccessException ace)
             {
-                if (ace.Result == false && wc.Principal == null)
+                if (wc.Principal == null)
                 {
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
@@ -52,7 +53,7 @@ namespace Samp
                         wc.Give(401); // unauthorized
                     }
                 }
-                else if (ace.Result == null && wc.Principal != null)
+                else if (wc.Principal != null)
                 {
                     var o = (User) wc.Principal;
                     string url = wc.Path;
@@ -104,7 +105,7 @@ namespace Samp
                             h.ROW_();
                             h.P_("uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
                             h.FORM_(css: "uk-width-auto");
-                            h.TOOL(nameof(SampVarWork.buy));
+                            h.TOOL(nameof(buy));
                             h._FORM();
                             h._ROW();
                             h._COL();
@@ -115,7 +116,7 @@ namespace Samp
         }
 
 
-        [Ui("购买", "订购商品"), Tool(Modal.AOpen, size: 1, auth: false), ItemState('A')]
+        [Ui("购买", "订购商品"), Tool(Modal.AnchorOpen, size: 1, access: false), ItemState('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;

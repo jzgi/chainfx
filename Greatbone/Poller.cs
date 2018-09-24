@@ -8,24 +8,21 @@ namespace Greatbone
     /// </summary>
     public class Poller
     {
-        readonly string keySpec;
-
-        readonly string src;
+        readonly string key;
 
         readonly Action<WebContext> consumer;
 
         // relevant http client connectors
-        readonly List<Client> clients;
+        readonly List<Client> refs;
 
-        public Poller(string keySpec, string src, Action<WebContext> consumer)
+        public Poller(string key, Action<WebContext> consumer)
         {
-            this.keySpec = keySpec;
-            this.src = src;
+            this.key = key;
             this.consumer = consumer;
-            this.clients = new List<Client>(4);
+            this.refs = new List<Client>(4);
         }
 
-        public List<Client> Clients => clients;
+        public List<Client> Refs => refs;
 
         internal void TryPoll(int tick)
         {

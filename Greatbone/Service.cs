@@ -29,10 +29,10 @@ namespace Greatbone
         // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 
-        // the regular data pollers
+        // the regular web pollers
         List<Poller> pollers;
 
-        // the data flow polling schesuler thread
+        // the polling schesuler thread
         Thread scheduler;
 
         // the response cache
@@ -139,10 +139,9 @@ namespace Greatbone
         {
             WebContext wc = (WebContext) context;
             string path = wc.Path;
-            try // handling
+            try 
             {
-                string relative = path.Substring(1);
-                await HandleAsync(relative, wc);
+                await HandleAsync(path.Substring(1), wc);
             }
             catch (Exception ex)
             {
@@ -240,8 +239,8 @@ namespace Greatbone
                         int tick = Environment.TickCount;
                         for (int i = 0; i < pollers.Count; i++)
                         {
-                            var sub = pollers[i];
-                            sub.TryPoll(tick);
+                            var poller = pollers[i];
+                            poller.TryPoll(tick);
                         }
                     }
                 });
@@ -249,7 +248,7 @@ namespace Greatbone
             }
         }
 
-        public void Subscribe(string keySpec, string flow, Action<WebContext> consumer)
+        public void Poll(string svc, Action<WebContext> consumer)
         {
             if (clients == null)
             {
@@ -259,24 +258,15 @@ namespace Greatbone
             {
                 pollers = new List<Poller>(4);
             }
-            var sub = new Poller(keySpec, flow, consumer);
-            // resolve the client(s) used to connect, maybe many
-            for (int i = 0; i < clients.Count; i++)
+            var poller = new Poller(svc, consumer);
+            if (poller.Refs.Count == 0)
             {
-                var cli = clients[i];
-                if (keySpec.EndsWith('-') && cli.Key.StartsWith(keySpec) || cli.Key == keySpec) // wildcast or equal
-                {
-                    sub.Clients.Add(cli);
-                }
+                throw new ServiceException("no client configured for keySpec: " + svc);
             }
-            if (sub.Clients.Count == 0)
-            {
-                throw new ServiceException("no client configured for keySpec: " + keySpec);
-            }
-            pollers.Add(sub);
+            pollers.Add(poller);
         }
 
-        internal Client GetClient(string peerId)
+        internal Client GetRef(string peerId)
         {
             for (int i = 0; i < clients.Count; i++)
             {

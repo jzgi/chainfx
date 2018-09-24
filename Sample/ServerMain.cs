@@ -25,7 +25,7 @@ namespace Samp
                     cipher = 0x4a78be76,
                     db = new Db
                     {
-                        host = "nc.144000.tv",
+                        host = "144000.tv",
                         port = 5432,
                         username = "postgres",
                         password = "721004"
