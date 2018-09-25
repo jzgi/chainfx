@@ -3,7 +3,7 @@
     {
       "type": "view",
       "name": "下单／社区交流",
-      "url": "http://nc.144000.tv/",
+      "url": "http://144000.tv/nc/",
       "sub_button": []
     },
     {
@@ -18,25 +18,25 @@
         {
           "type": "view",
           "name": "调度操作🔒",
-          "url": "http://nc.144000.tv/hub/",
+          "url": "http://144000.tv/nc/reg/",
           "sub_button": []
         },
         {
           "type": "view",
           "name": "生产部门操作🔒",
-          "url": "http://nc.144000.tv/shop//",
+          "url": "http://144000.tv/nc/shop//",
           "sub_button": []
         },
         {
           "type": "view",
           "name": "团组操作🔒",
-          "url": "http://nc.144000.tv/team//",
+          "url": "http://144000.tv/nc/team//",
           "sub_button": []
         },
         {
           "type": "view",
           "name": "我的设置",
-          "url": "http://nc.144000.tv/my//",
+          "url": "http://144000.tv/nc/my//",
           "sub_button": []
         }
       ]

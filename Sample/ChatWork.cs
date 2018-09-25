@@ -34,7 +34,6 @@ namespace Samp
                         h.TOPBAR(false);
                         h.LIST(arr, o =>
                         {
-                            var org = Obtain<Map<string, Org>>()[o.id];
                             h.T("<a class=\"uk-col uk-link-heading uk-padding-small\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.subject).T("');\">");
                             h.DIV_("uk-row uk-flex-between").DIV_("uk-text-lead").T(o.subject)._DIV();
                             h.T(o.fcount)._DIV();

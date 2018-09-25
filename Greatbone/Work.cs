@@ -414,6 +414,7 @@ namespace Greatbone
             {
                 if (@catch != null) // an exception catch defined by this work
                 {
+                    wc.Except = e;
                     if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
                     else @catch.Do(wc, 0);
                 }

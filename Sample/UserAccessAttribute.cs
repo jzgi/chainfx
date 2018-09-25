@@ -48,7 +48,6 @@ namespace Samp
                 {
                     return false;
                 }
-
                 string regid = wc[0];
                 var reg = wc.Work.Obtain<Map<string, Reg>>()[regid];
                 (_, string openid) = await reg.GetAccessorAsync(code);
@@ -111,8 +110,7 @@ namespace Samp
         {
             var o = (User) wc.Principal;
 
-            // info incomplete
-            if (o?.name == null || o.tel == null || o.addr == null) return false;
+            if (o == null || o.IsIncomplete) return false;
 
             // if requires hub access
             if (reg > 0)

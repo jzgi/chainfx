@@ -86,5 +86,7 @@ namespace Samp
             s.Put(nameof(regly), regly);
             s.Put(nameof(created), created);
         }
+
+        public bool IsIncomplete => name == null || tel == null | addr == null;
     }
 }
