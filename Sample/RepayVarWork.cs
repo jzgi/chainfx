@@ -16,9 +16,9 @@ namespace Samp
         }
     }
 
-    public class RegRepayVarWork : RepayVarWork
+    public class HubRepayVarWork : RepayVarWork
     {
-        public RegRepayVarWork(WorkConfig cfg) : base(cfg)
+        public HubRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

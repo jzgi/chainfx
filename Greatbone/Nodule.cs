@@ -98,7 +98,7 @@ namespace Greatbone
                     }
                     wc.Authenticated = true;
                 }
-                if (access.Authorize(wc))
+                if (!access.Authorize(wc))
                 {
                     throw except;
                 }
@@ -118,7 +118,7 @@ namespace Greatbone
                     }
                     wc.Authenticated = true;
                 }
-                if (access.Authorize(wc))
+                if (!access.Authorize(wc))
                 {
                     throw except;
                 }

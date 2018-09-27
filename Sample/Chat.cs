@@ -64,7 +64,7 @@ namespace Samp
     {
         internal int uid;
         internal string uname;
-        internal string grpat;
+        internal string teamat;
         internal string text;
         internal short img;
         internal DateTime time;
@@ -73,7 +73,7 @@ namespace Samp
         {
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
-            s.Get(nameof(grpat), ref grpat);
+            s.Get(nameof(teamat), ref teamat);
             s.Get(nameof(text), ref text);
             s.Get(nameof(img), ref img);
             s.Get(nameof(time), ref time);
@@ -83,7 +83,7 @@ namespace Samp
         {
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
-            s.Put(nameof(grpat), grpat);
+            s.Put(nameof(teamat), teamat);
             s.Put(nameof(text), text);
             s.Put(nameof(img), img);
             s.Put(nameof(time), time);

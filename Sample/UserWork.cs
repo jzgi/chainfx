@@ -117,9 +117,9 @@ namespace Samp
     }
 
     [Ui("人员")]
-    public class RegUserWork : UserWork<RegUserVarWork>
+    public class HubUserWork : UserWork<HubUserVarWork>
     {
-        public RegUserWork(WorkConfig cfg) : base(cfg)
+        public HubUserWork(WorkConfig cfg) : base(cfg)
         {
         }
 

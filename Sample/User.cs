@@ -37,6 +37,7 @@ namespace Samp
         };
 
         internal int id;
+        internal string hubid;
         internal string name;
         internal string tel;
         public string credential;
@@ -46,12 +47,13 @@ namespace Samp
         internal short teamly;
         internal string shopat;
         internal short shoply;
-        internal short regly;
+        internal short hubly;
         internal short created;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(id), ref id);
+            s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(name), ref name);
             s.Get(nameof(tel), ref tel);
             if ((proj & PRIVACY) == PRIVACY)
@@ -64,13 +66,14 @@ namespace Samp
             s.Get(nameof(teamly), ref teamly);
             s.Get(nameof(shopat), ref shopat);
             s.Get(nameof(shoply), ref shoply);
-            s.Get(nameof(regly), ref regly);
+            s.Get(nameof(hubly), ref hubly);
             s.Get(nameof(created), ref created);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(id), id);
+            s.Put(nameof(hubid), hubid);
             s.Put(nameof(name), name);
             s.Put(nameof(tel), tel);
             if ((proj & PRIVACY) == PRIVACY)
@@ -83,7 +86,7 @@ namespace Samp
             s.Put(nameof(teamly), teamly);
             s.Put(nameof(shopat), shopat);
             s.Put(nameof(shoply), shoply);
-            s.Put(nameof(regly), regly);
+            s.Put(nameof(hubly), hubly);
             s.Put(nameof(created), created);
         }
 

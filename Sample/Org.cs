@@ -25,7 +25,7 @@ namespace Samp
         };
 
         internal short id;
-        internal string regid;
+        internal string hubid;
         internal short typ;
         internal string name;
         internal string tel;
@@ -43,7 +43,7 @@ namespace Samp
             {
                 s.Get(nameof(id), ref id);
             }
-            s.Get(nameof(regid), ref regid);
+            s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(name), ref name);
             s.Get(nameof(tel), ref tel);
@@ -65,7 +65,7 @@ namespace Samp
             {
                 s.Put(nameof(id), id);
             }
-            s.Put(nameof(regid), regid);
+            s.Put(nameof(hubid), hubid);
             s.Put(nameof(typ), typ);
             s.Put(nameof(name), name);
             s.Put(nameof(tel), tel);
@@ -81,11 +81,11 @@ namespace Samp
             s.Put(nameof(status), status);
         }
 
-        public (string, short) Key => (regid, id);
+        public (string, short) Key => (hubid, id);
 
         public bool GroupAs((string, short) akey)
         {
-            return regid == akey.Item1;
+            return hubid == akey.Item1;
         }
 
         public override string ToString() => name;

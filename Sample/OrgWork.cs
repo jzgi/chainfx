@@ -14,9 +14,9 @@ namespace Samp
     }
 
     [Ui("网点")]
-    public class RegOrgWork : OrgWork<RegOrgVarWork>
+    public class HubOrgWork : OrgWork<HubOrgVarWork>
     {
-        public RegOrgWork(WorkConfig cfg) : base(cfg)
+        public HubOrgWork(WorkConfig cfg) : base(cfg)
         {
         }
 

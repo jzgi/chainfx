@@ -426,24 +426,24 @@ namespace Greatbone
             }
         }
 
-        public void DoFile(string filename, string ext, WebContext ac)
+        public void DoFile(string filename, string ext, WebContext wc)
         {
             if (filename.StartsWith("$")) // private resource
             {
-                ac.Give(403); // forbidden
+                wc.Give(403); // forbidden
                 return;
             }
 
             if (!StaticContent.TryGetType(ext, out var ctyp))
             {
-                ac.Give(415); // unsupported media type
+                wc.Give(415); // unsupported media type
                 return;
             }
 
             string path = Path.Combine(cfg.Directory, filename);
             if (!File.Exists(path))
             {
-                ac.Give(404); // not found
+                wc.Give(404); // not found
                 return;
             }
 
@@ -472,14 +472,14 @@ namespace Greatbone
                 }
             }
 
-            StaticContent cont = new StaticContent(bytes, bytes.Length)
+            StaticContent cnt = new StaticContent(bytes, bytes.Length)
             {
                 Key = filename,
                 Type = ctyp,
                 Modified = modified,
                 GZip = gzip
             };
-            ac.Give(200, cont, @public: true, maxage: 60 * 15);
+            wc.Give(200, cnt, @public: true, maxage: 60 * 15);
         }
 
         // LOGGING

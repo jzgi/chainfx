@@ -13,9 +13,9 @@ namespace Samp
         }
     }
 
-    public class RegOrgVarWork : OrgVarWork
+    public class HubOrgVarWork : OrgVarWork
     {
-        public RegOrgVarWork(WorkConfig cfg) : base(cfg)
+        public HubOrgVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

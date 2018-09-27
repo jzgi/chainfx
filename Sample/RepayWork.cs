@@ -42,9 +42,9 @@ namespace Samp
 
 
     [Ui("结款"), UserAccess(RegMgmt)]
-    public class RegRepayWork : RepayWork<RegRepayVarWork>
+    public class HubRepayWork : RepayWork<HubRepayVarWork>
     {
-        public RegRepayWork(WorkConfig cfg) : base(cfg)
+        public HubRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 

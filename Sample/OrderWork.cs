@@ -57,9 +57,9 @@ namespace Samp
     }
 
     [Ui("订单"), UserAccess(RegMgmt)]
-    public class RegOrderWork : OrderWork<RegOrderVarWork>
+    public class HubOrderWork : OrderWork<HubOrderVarWork>
     {
-        public RegOrderWork(WorkConfig cfg) : base(cfg)
+        public HubOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 

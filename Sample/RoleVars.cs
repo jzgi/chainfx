@@ -9,7 +9,7 @@ namespace Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MyOrderWork>("ord");
+            Create<MyOrderWork>("order");
 
             Create<SampChatWork>("chat");
         }
@@ -101,9 +101,9 @@ namespace Samp
 
     [UserAccess(shop: 1)]
     [Ui("首页")]
-    public class OprVarWork : Work, IOrgVar
+    public class ShopVarWork : Work, IOrgVar
     {
-        public OprVarWork(WorkConfig cfg) : base(cfg)
+        public ShopVarWork(WorkConfig cfg) : base(cfg)
         {
             Create<ShopOrderWork>("order");
 
@@ -114,8 +114,9 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string orgid = wc[this];
-            var shop = Obtain<Map<string, Org>>()[orgid];
+            string hubid = wc[-2];
+            short id = wc[-1];
+            var shop = Obtain<Map<(string, short), Org>>()[(hubid, id)];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
@@ -143,8 +144,9 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string teamid = wc[this];
-            var team = Obtain<Map<string, Org>>()[teamid];
+            string hubid = wc[-2];
+            short id = wc[-1];
+            var team = Obtain<Map<(string, short), Org>>()[(hubid, id)];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {

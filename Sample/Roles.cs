@@ -12,21 +12,21 @@ namespace Samp
 
     [UserAccess(reg: 1)]
     [Ui("首页")]
-    public class RegWork : Work
+    public class HubWork : Work
     {
-        public RegWork(WorkConfig cfg) : base(cfg)
+        public HubWork(WorkConfig cfg) : base(cfg)
         {
-            Create<RegOrderWork>("order");
+            Create<HubOrderWork>("order");
 
-            Create<RegItemWork>("item");
+            Create<HubItemWork>("item");
 
-            Create<RegChatWork>("chat");
+            Create<HubChatWork>("chat");
 
-            Create<RegUserWork>("user");
+            Create<HubUserWork>("user");
 
-            Create<RegOrgWork>("org");
+            Create<HubOrgWork>("org");
 
-            Create<RegRepayWork>("repay");
+            Create<HubRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -62,7 +62,7 @@ namespace Samp
     {
         public ShopWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<OprVarWork, string>(prin => ((User) prin).shopat);
+            CreateVar<ShopVarWork, string>(prin => ((User) prin).shopat);
         }
     }
 

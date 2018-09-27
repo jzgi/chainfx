@@ -53,10 +53,24 @@ namespace Samp
         {
         }
 
+        public void @default(WebContext wc)
+        {
+            string hubid = wc[-1];
+            string name = wc[0];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND name = @2");
+                var o = dc.Query1<Item>(p => p.Set(hubid).Set(name));
+                wc.GivePage(200, h =>
+                {
+                });
+            }
+        }
+
         [Ui("购买", "订购商品"), Tool(Modal.AnchorOpen, size: 1, access: false), ItemState('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User) wc.Principal;
+            User prin = (User)wc.Principal;
             string name = wc[this];
             var item = Obtain<Map<string, Item>>()[name];
             short num;
@@ -111,7 +125,7 @@ namespace Samp
         [Ui("付款"), Tool(Modal.ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
-            var prin = (User) wc.Principal;
+            var prin = (User)wc.Principal;
             int orderid = wc[this];
             Order o;
             using (var dc = NewDbContext())
@@ -119,28 +133,28 @@ namespace Samp
                 dc.Sql("SELECT ").collst(User.Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
             }
-//            var (prepay_id, _) = await ((SampService) Service).Hub.PostUnifiedOrderAsync(
-//                orderid + "-",
-//                o.cash,
-//                prin.wx,
-//                wc.RemoteAddr.ToString(),
-//                SampUtility.NETADDR + "/" + nameof(SampService.onpay),
-//                "粗粮达人-健康产品"
-//            );
-//            if (prepay_id != null)
-//            {
-//                wc.Give(200, ((SampService) Service).Hub.BuildPrepayContent(prepay_id));
-//            }
-//            else
-//            {
-//                wc.Give(500);
-//            }
+            //            var (prepay_id, _) = await ((SampService) Service).Hub.PostUnifiedOrderAsync(
+            //                orderid + "-",
+            //                o.cash,
+            //                prin.wx,
+            //                wc.RemoteAddr.ToString(),
+            //                SampUtility.NETADDR + "/" + nameof(SampService.onpay),
+            //                "粗粮达人-健康产品"
+            //            );
+            //            if (prepay_id != null)
+            //            {
+            //                wc.Give(200, ((SampService) Service).Hub.BuildPrepayContent(prepay_id));
+            //            }
+            //            else
+            //            {
+            //                wc.Give(500);
+            //            }
         }
     }
 
-    public class RegItemVarWork : ItemVarWork
+    public class HubItemVarWork : ItemVarWork
     {
-        public RegItemVarWork(WorkConfig cfg) : base(cfg)
+        public HubItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -164,7 +178,7 @@ namespace Samp
                         h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
                         h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
                         h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
-                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
+                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short)1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short)1)._LI();
                         h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                         h._FIELDUL();
                         h._FORM();

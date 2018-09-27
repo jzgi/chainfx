@@ -20,7 +20,7 @@ namespace Samp
             {3, "置顶"},
         };
 
-        internal string regid;
+        internal string hubid;
         internal string name;
         internal string descr;
         internal string remark;
@@ -43,7 +43,7 @@ namespace Samp
         {
             if ((proj & PK) > 0)
             {
-                s.Get(nameof(regid), ref regid);
+                s.Get(nameof(hubid), ref hubid);
                 s.Get(nameof(name), ref name);
             }
             s.Get(nameof(descr), ref descr);

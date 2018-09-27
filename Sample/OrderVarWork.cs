@@ -54,9 +54,9 @@ namespace Samp
         }
     }
 
-    public class RegOrderVarWork : OrderVarWork
+    public class HubOrderVarWork : OrderVarWork
     {
-        public RegOrderVarWork(WorkConfig cfg) : base(cfg)
+        public HubOrderVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

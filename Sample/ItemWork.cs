@@ -15,9 +15,9 @@ namespace Samp
 
 
     [Ui("货品")]
-    public class RegItemWork : ItemWork<RegItemVarWork>
+    public class HubItemWork : ItemWork<HubItemVarWork>
     {
-        public RegItemWork(WorkConfig cfg) : base(cfg)
+        public HubItemWork(WorkConfig cfg) : base(cfg)
         {
         }
 

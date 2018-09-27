@@ -26,9 +26,9 @@ namespace Samp
         }
     }
 
-    public class RegUserVarWork : UserVarWork
+    public class HubUserVarWork : UserVarWork
     {
-        public RegUserVarWork(WorkConfig cfg) : base(cfg)
+        public HubUserVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

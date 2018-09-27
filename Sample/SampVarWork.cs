@@ -9,7 +9,7 @@ namespace Samp
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampItemVarWork, string>();
+            CreateVar<SampItemVarWork, string>(obj => ((Item)obj).name);
 
             Create<SampChatWork>("chat"); // chat
 
@@ -19,15 +19,15 @@ namespace Samp
 
             Create<ShopWork>("shop"); // supplying shop
 
-            Create<RegWork>("reg"); // central 
+            Create<HubWork>("hub"); // central 
         }
 
         public async Task @catch(WebContext wc, int cmd)
         {
-            string regid = wc[0];
+            string hubid = wc[0];
             if (cmd == 1) // handle form submission
             {
-                var o = (User) wc.Principal;
+                var o = (User)wc.Principal;
                 var f = await wc.ReadAsync<Form>();
                 o.Read(f);
                 string url = f[nameof(url)];
@@ -47,8 +47,8 @@ namespace Samp
                     // weixin authorization challenge
                     if (wc.ByWeiXinClient) // weixin
                     {
-                        var reg = Obtain<Map<string, Reg>>()[regid];
-                        reg.GiveRedirectWeiXinAuthorize(wc, SampUtility.NETADDR);
+                        var hub = Obtain<Map<string, Hub>>()[hubid];
+                        hub.GiveRedirectWeiXinAuthorize(wc, SampUtility.NETADDR);
                     }
                     else // challenge BASIC scheme
                     {
@@ -56,19 +56,19 @@ namespace Samp
                         wc.Give(401); // unauthorized
                     }
                 }
-                else if (((User) wc.Principal).IsIncomplete)
+                else if (((User)wc.Principal).IsIncomplete)
                 {
-                    var o = (User) wc.Principal;
+                    var o = (User)wc.Principal;
                     string url = wc.Path;
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDUL_("完善用户资料");
+                        h.FIELDUL_("填写用户资料");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<string, Org>>();
-                        h.LI_().SELECT("参　　团", nameof(o.teamat), o.teamat, orgs, tip: "（无）", filter: x => x.regid == regid)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.teamat), o.teamat, orgs, tip: "（无）", filter: x => x.hubid == hubid)._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();
@@ -88,30 +88,27 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string regid = wc[this];
+            string hubid = wc[this];
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
 
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE regid = @1 AND status > 0");
-                        var arr = dc.Query<Item>(p => p.Set(regid));
+                        dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND status > 0");
+                        var arr = dc.Query<Item>(p => p.Set(hubid));
                         h.LIST(arr, o =>
                         {
-                            h.T("<a class=\"uk-width-1-3 uk-margin-auto-vertical\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 4, '商品详情');\">");
-                            h.ICO_(css: "uk-padding-small").T(o.name).T("/icon")._ICO();
-                            h.T("</a>");
+                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.name).T("');\">");
+                            h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
                             h.COL_(css: "uk-width-2-3 uk-padding-small");
                             h.H3(o.name);
                             h.FI(null, o.descr);
                             h.ROW_();
                             h.P_("uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
-                            h.FORM_(css: "uk-width-auto");
-//                            h.TOOL(nameof(buy));
-                            h._FORM();
                             h._ROW();
                             h._COL();
+                            h.T("</a>");
                         }, "uk-padding-remove");
                     }
                 }, true, 60
@@ -120,44 +117,46 @@ namespace Samp
 
 
         /// <summary>
-        /// WCPay notify, without authentic context.
+        /// A WCPay payment notification
         /// </summary>
         public async Task onpay(WebContext wc)
         {
+            string hubid = wc[this];
+            var hub = Obtain<Map<string, Hub>>()[hubid];
             XElem xe = await wc.ReadAsync<XElem>();
-//            if (!Reg.OnNotified(xe, out var trade_no, out var cash))
-//            {
-//                wc.Give(400);
-//                return;
-//            }
-//            var orderid = trade_no.ToInt();
-//            string grpid, uname, uaddr;
-//            // update order status
-//            using (var dc = NewDbContext())
-//            {
-//                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING grpid, uname, uaddr", (p) => p.Set(cash).Set(orderid)))
-//                {
-//                    return; // WCPay may send notification more than once
-//                }
-//                dc.Let(out grpid).Let(out uname).Let(out uaddr);
-//            }
-//            // send message to the related grouper, if any
-//            if (grpid != null)
-//            {
-//                var oprwx = Obtain<Map<string, Org>>()[grpid]?.mgrwx;
-//                if (oprwx != null)
-//                {
-//                    await Reg.PostSendAsync(oprwx, "新订单", ("¥" + cash + " " + uname + " " + uaddr), NETADDR + "/grp//ord/");
-//                }
-//                // return xml to WCPay server
-//                XmlContent x = new XmlContent(true, 1024);
-//                x.ELEM("xml", null, () =>
-//                {
-//                    x.ELEM("return_code", "SUCCESS");
-//                    x.ELEM("return_msg", "OK");
-//                });
-//                wc.Give(200, x);
-//            }
+            if (!hub.OnNotified(xe, out var trade_no, out var cash))
+            {
+                wc.Give(400);
+                return;
+            }
+            var orderid = trade_no.ToInt();
+            string teamid, uname, uaddr;
+            // update order status
+            using (var dc = NewDbContext())
+            {
+                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING grpid, uname, uaddr", (p) => p.Set(cash).Set(orderid)))
+                {
+                    return; // WCPay may send notification more than once
+                }
+                dc.Let(out teamid).Let(out uname).Let(out uaddr);
+            }
+            // send message to the related grouper, if any
+            if (teamid != null)
+            {
+                var oprwx = Obtain<Map<string, Org>>()[teamid]?.mgrwx;
+                if (oprwx != null)
+                {
+                    await hub.PostSendAsync(oprwx, "新订单", ("¥" + cash + " " + uname + " " + uaddr), SampUtility.NETADDR + "/grp//ord/");
+                }
+                // return xml to WCPay server
+                XmlContent x = new XmlContent(true, 1024);
+                x.ELEM("xml", null, () =>
+                {
+                    x.ELEM("return_code", "SUCCESS");
+                    x.ELEM("return_msg", "OK");
+                });
+                wc.Give(200, x);
+            }
         }
     }
 }

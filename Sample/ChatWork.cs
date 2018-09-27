@@ -82,7 +82,7 @@ namespace Samp
                     {
                         new Post
                         {
-                            uid = prin.id, uname = prin.name, grpat = prin.teamat, text = text,
+                            uid = prin.id, uname = prin.name, teamat = prin.teamat, text = text,
                             img = (short) (img.Count == 0 ? 0 : 1),
                             time = now
                         }
@@ -114,11 +114,11 @@ namespace Samp
 
     [UserAccess(RegScheduler)]
     [Ui("交流")]
-    public class RegChatWork : ChatWork<RegChatVarWork>
+    public class HubChatWork : ChatWork<HubChatVarWork>
     {
-        public RegChatWork(WorkConfig cfg) : base(cfg)
+        public HubChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<RegChatVarWork, int>((obj) => ((Chat) obj).id);
+            CreateVar<HubChatVarWork, int>((obj) => ((Chat) obj).id);
         }
 
         public void @default(WebContext wc, int page)

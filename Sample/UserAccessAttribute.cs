@@ -41,16 +41,17 @@ namespace Samp
             // resolve principal thru OAuth2 or HTTP-basic
             User prin = null;
             string state = wc.Query[nameof(state)];
-            if (Reg.WXAUTH.Equals(state)) // if weixin auth
+            if (Hub.WXAUTH.Equals(state)) // if weixin auth
             {
                 string code = wc.Query[nameof(code)];
                 if (code == null)
                 {
                     return false;
                 }
-                string regid = wc[0];
-                var reg = wc.Work.Obtain<Map<string, Reg>>()[regid];
-                (_, string openid) = await reg.GetAccessorAsync(code);
+                string hubid = wc[0];
+                wc.Work.INF("hubid := " + hubid);
+                var hub = wc.Work.Obtain<Map<string, Hub>>()[hubid];
+                (_, string openid) = await hub.GetAccessorAsync(code);
 
                 if (openid == null)
                 {
@@ -115,7 +116,7 @@ namespace Samp
             // if requires hub access
             if (reg > 0)
             {
-                return (o.regly & reg) > 0;
+                return (o.hubly & reg) > 0;
             }
             // if requires shop access
             if (shop > 0)

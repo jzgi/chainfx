@@ -7,7 +7,7 @@ namespace Samp
     {
         public const string BIZ = "全粮派";
 
-        public const string NETADDR = "http://nc.144000.tv";
+        public const string NETADDR = "http://144000.tv";
 
         public const string JOINADDR = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUyNTkxNzM3Nw==&scene=124#wechat_redirect";
 

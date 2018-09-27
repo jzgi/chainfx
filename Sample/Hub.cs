@@ -9,13 +9,13 @@ using Greatbone;
 namespace Samp
 {
     /// <summary>
-    /// A region of operation that has its own weixin official acount.
+    /// A hub of operation that has its own weixin official acount.
     /// </summary>
-    public class Reg : IData, IKeyable<string>
+    public class Hub : IData, IKeyable<string>
     {
         public const string WXAUTH = "wxauth";
 
-        public static readonly Reg Empty = new Reg();
+        public static readonly Hub Empty = new Hub();
 
         static readonly Client Connector = new Client("https://api.weixin.qq.com");
 
@@ -125,17 +125,17 @@ namespace Samp
             JObj jo = await Connector.GetAsync<JObj>("/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN", null);
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User {wx = openid, name = nickname};
+            return new User { wx = openid, name = nickname };
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
 
-        public static long NowMillis => (long) (DateTime.Now - EPOCH).TotalMilliseconds;
+        public static long NowMillis => (long)(DateTime.Now - EPOCH).TotalMilliseconds;
 
         public IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
             JObj jo = new JObj
             {
                 {"appId", appid},
@@ -277,7 +277,7 @@ namespace Samp
             if (sign != Sign(xe, "sign")) return false;
 
             int total_fee = xe.Child(nameof(total_fee)); // in cent
-            total = ((decimal) total_fee) / 100;
+            total = ((decimal)total_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }
@@ -408,7 +408,7 @@ namespace Samp
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Key).Append('=').Append((string) mbr);
+                sb.Append(mbr.Key).Append('=').Append((string)mbr);
             }
             sb.Append("&key=").Append(key);
             return TextUtility.MD5(sb.ToString());
