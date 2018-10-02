@@ -20,12 +20,13 @@ namespace Samp
         {
         }
 
-        public void @default(WebContext wc)
+        public void @default(WebContext wc, int page)
         {
-            int myid = wc[-1];
+            string hubid = wc[0];
+            int uid = wc[Parent];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 0 AND 4 AND uid = @1 ORDER BY id DESC", p => p.Set(myid));
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE uid = @1 ORDER BY id DESC", p => p.Set(uid));
                 wc.GivePage(200, h =>
                 {
                     h.BOARD(arr, o =>
@@ -34,29 +35,18 @@ namespace Samp
                             h.T("收货：").T(o.uaddr).SP().T(o.uname).SP().T(o.utel);
                             h._HEADER();
                             h.MAIN_("uk-card-body uk-row");
-                            h.ICO_(css: "uk-width-1-6").T('/').T(o.item).T("/icon")._ICO();
-                            h.DIV_("uk-width-2-3").SP().T(o.item).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
+                            h.ICO_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._ICO();
+                            h.DIV_("uk-width-2-3").SP().T(o.itemname).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
                             h.VARTOOLPAD(css: "uk-width-1-6");
                             h._MAIN();
-                        }, css: "uk-card-primary"
+                        }
                     );
-                }, false, 2, title: "我的订单");
-            }
-        }
-
-        [Ui("查看历史订单"), Tool(AnchorOpen, size: 2)]
-        public void old(WebContext wc, int page)
-        {
-            int myid = wc[-1];
-            using (var dc = NewDbContext())
-            {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE status >= 2 AND custid = @1 ORDER BY id DESC", p => p.Set(myid));
-//                GiveBoardPage(wc, arr, false);
+                }, false, 3, title: "我的订单", refresh: 120);
             }
         }
     }
 
-    [Ui("订单"), UserAccess(RegMgmt)]
+    [Ui("订单"), UserAccess(HubMgmt)]
     public class HubOrderWork : OrderWork<HubOrderVarWork>
     {
         public HubOrderWork(WorkConfig cfg) : base(cfg)
@@ -73,7 +63,7 @@ namespace Samp
                 {
                     var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 ORDER BY id");
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
                 }
             });
@@ -214,10 +204,10 @@ namespace Samp
         {
         }
 
-        [Ui("到货"), Tool(Anchor, "uk-button-link")]
+        [Ui("已到货"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
-            string teamid = wc[-1];
+            short teamid = wc[Parent];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
@@ -225,16 +215,16 @@ namespace Samp
                 {
                     var arr = dc.Query<Order>("SELECT * FROM orders WHERE status = 5 AND teamid = @1 ORDER BY id", p => p.Set(teamid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
                 }
             });
         }
 
-        [Ui("在途"), Tool(Anchor, "uk-button-link")]
+        [Ui("未到货"), Tool(Anchor, "uk-button-link")]
         public void way(WebContext wc)
         {
-            string teamid = wc[-1];
+            short teamid = wc[Parent];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
@@ -242,7 +232,7 @@ namespace Samp
                 {
                     var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND teamid = @1 ORDER BY id", p => p.Set(teamid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
                 }
             });
@@ -268,7 +258,7 @@ namespace Samp
                     {
                         h.TOOLBAR(title: tel);
                         h.TABLE(arr, null,
-                            o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                            o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                         );
                     });
                 }

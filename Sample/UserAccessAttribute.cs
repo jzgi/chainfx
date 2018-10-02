@@ -11,20 +11,20 @@ namespace Samp
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UserAccessAttribute : AccessAttribute
     {
-        // required reg access
-        readonly short reg;
+        // required hub access
+        readonly short hubly;
 
         // required shop access
-        readonly short shop;
+        readonly short shoply;
 
         // required customer team access
-        readonly short team;
+        readonly short teamly;
 
-        public UserAccessAttribute(short reg = 0, short shop = 0, short team = 0) : base(1)
+        public UserAccessAttribute(short hubly = 0, short shoply = 0, short teamly = 0) : base(1)
         {
-            this.reg = reg;
-            this.shop = shop;
-            this.team = team;
+            this.hubly = hubly;
+            this.shoply = shoply;
+            this.teamly = teamly;
         }
 
         public override bool Authenticate(WebContext wc) => throw new NotImplementedException();
@@ -66,7 +66,7 @@ namespace Samp
                     }
                     else
                     {
-                        prin = new User {wx = openid}; // create a minimal principal object
+                        prin = new User { wx = openid }; // create a minimal principal object
                     }
                 }
             }
@@ -109,32 +109,32 @@ namespace Samp
 
         public override bool Authorize(WebContext wc)
         {
-            var o = (User) wc.Principal;
+            var o = (User)wc.Principal;
 
             if (o == null || o.IsIncomplete) return false;
 
             // if requires hub access
-            if (reg > 0)
+            if (hubly > 0)
             {
-                return (o.hubly & reg) > 0;
+                return (o.hubly & hubly) > 0;
             }
             // if requires shop access
-            if (shop > 0)
+            if (shoply > 0)
             {
-                if ((o.teamly & shop) != shop) return false; // inclusive check
-                string at = wc[typeof(IOrgVar)];
-                if (at != null)
+                if ((o.teamly & shoply) != shoply) return false; // inclusive check
+                short at = wc[typeof(IOrgVar)];
+                if (at != 0)
                 {
                     return o.shopat == at;
                 }
                 return true;
             }
             // if requires customer team access
-            if (team > 0)
+            if (teamly > 0)
             {
-                if ((o.teamly & team) != team) return false; // inclusive check
-                string at = wc[typeof(IOrgVar)];
-                if (at != null)
+                if ((o.teamly & teamly) != teamly) return false; // inclusive check
+                short at = wc[typeof(IOrgVar)];
+                if (at != 0)
                 {
                     return o.teamat == at;
                 }

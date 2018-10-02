@@ -32,7 +32,7 @@ namespace Samp
         {
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(HubMgmt)]
         [Ui("x", "删除此操作人员？"), Tool(ButtonConfirm)]
         public void rm(WebContext wc, int cmd)
         {

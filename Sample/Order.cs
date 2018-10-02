@@ -14,23 +14,21 @@ namespace Samp
 
         // status
         public const short
-            ORD_ABORTED = -1,
-            ORD_CREATED = 0,
-            ORD_PAID = 1,
-            ORD_ASSIGNED = 2,
-            ORD_SUPPLIED = 3,
-            ORD_SHIPPED = 5,
-            ORD_ENDED = 7;
+            OrdAborted = -1,
+            OrdCreated = 0,
+            OrdPaid = 1,
+            OrdProvided = 3,
+            OrdShipped = 5,
+            OrdEnded = 7;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {ORD_ABORTED, "已撤"},
-            {ORD_CREATED, null},
-            {ORD_PAID, "新收"},
-            {ORD_ASSIGNED, "已排"},
-            {ORD_SUPPLIED, "已备"},
-            {ORD_SHIPPED, "已送"},
-            {ORD_ENDED, "完成"}
+            {OrdAborted, "已撤"},
+            {OrdCreated, null},
+            {OrdPaid, "新收"},
+            {OrdProvided, "已备"},
+            {OrdShipped, "已送"},
+            {OrdEnded, "完成"}
         };
 
         internal int id;
@@ -40,19 +38,17 @@ namespace Samp
         internal string utel;
         internal string uaddr; // may include area and site
         internal string teamid;
-        internal string item;
+        internal short itemid;
+        internal string itemname;
         internal string unit;
         internal decimal price;
         internal short qty;
         internal decimal total; // total price
         internal decimal cash; // cash paid
-        internal int score; // deduction of points
-        internal DateTime paid;
-        internal string shopid; // shop org id
-        internal DateTime assigned;
-        internal DateTime supplied;
-        internal int shipuid;
-        internal DateTime shipped;
+        internal DateTime paidon;
+        internal short shopid; // workshop's orgid
+        internal int shipperid; // shipper's userid, 
+        internal DateTime shippedon;
         internal DateTime ended;
         internal short status;
 
@@ -68,21 +64,19 @@ namespace Samp
             s.Get(nameof(utel), ref utel);
             s.Get(nameof(uaddr), ref uaddr);
             s.Get(nameof(teamid), ref teamid);
-            s.Get(nameof(item), ref item);
+            s.Get(nameof(itemid), ref itemid);
+            s.Get(nameof(itemname), ref itemname);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
             s.Get(nameof(qty), ref qty);
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
-            s.Get(nameof(score), ref score);
-            s.Get(nameof(paid), ref paid);
+            s.Get(nameof(paidon), ref paidon);
             if ((proj & LATER) > 0)
             {
                 s.Get(nameof(shopid), ref shopid);
-                s.Get(nameof(assigned), ref assigned);
-                s.Get(nameof(supplied), ref supplied);
-                s.Get(nameof(shipuid), ref shipuid);
-                s.Get(nameof(shipped), ref shipped);
+                s.Get(nameof(shipperid), ref shipperid);
+                s.Get(nameof(shippedon), ref shippedon);
                 s.Get(nameof(ended), ref ended);
             }
             s.Get(nameof(status), ref status);
@@ -100,21 +94,19 @@ namespace Samp
             s.Put(nameof(utel), utel);
             s.Put(nameof(uaddr), uaddr);
             s.Put(nameof(teamid), teamid);
-            s.Put(nameof(item), item);
+            s.Put(nameof(itemid), itemid);
+            s.Put(nameof(itemname), itemname);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
             s.Put(nameof(qty), qty);
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
-            s.Put(nameof(score), score);
-            s.Put(nameof(paid), paid);
+            s.Put(nameof(paidon), paidon);
             if ((proj & LATER) > 0)
             {
                 s.Put(nameof(shopid), shopid);
-                s.Put(nameof(assigned), assigned);
-                s.Put(nameof(supplied), supplied);
-                s.Put(nameof(shipuid), shipuid);
-                s.Put(nameof(shipped), shipped);
+                s.Put(nameof(shipperid), shipperid);
+                s.Put(nameof(shippedon), shippedon);
                 s.Put(nameof(ended), ended);
             }
             s.Put(nameof(status), status);

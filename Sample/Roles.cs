@@ -10,7 +10,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(reg: 1)]
+    [UserAccess(hubly: 1)]
     [Ui("首页")]
     public class HubWork : Work
     {
@@ -62,7 +62,7 @@ namespace Samp
     {
         public ShopWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<ShopVarWork, string>(prin => ((User) prin).shopat);
+            CreateVar<ShopVarWork, short>(prin => ((User) prin).shopat);
         }
     }
 
@@ -71,7 +71,7 @@ namespace Samp
     {
         public TeamWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<TeamVarWork, string>(prin => ((User) prin).teamat);
+            CreateVar<TeamVarWork, short>(prin => ((User) prin).teamat);
         }
     }
 }

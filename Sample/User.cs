@@ -9,31 +9,31 @@ namespace Samp
     {
         public static readonly User Empty = new User();
 
-        public const byte ID = 1, PRIVACY = 2, LATER = 4;
+        public const byte ID = 1, PRIVACY = 2, MISC = 4;
 
         public const short TEAM = 1, TEAM_AID = 1, TEAM_MGMT = 15;
 
         public static readonly Map<short, string> Teamly = new Map<short, string>
         {
             {0, null},
-            {1, "助手"},
-            {15, "团长"},
+            {1, "帮手"},
+            {3, "团长"},
         };
 
         public static readonly Map<short, string> Shoply = new Map<short, string>
         {
             {0, null},
             {1, "助手"},
-            {15, "经理"},
+            {3, "经理"},
         };
 
-        public const short Reg = 1, RegScheduler = 0b0011, RegMgmt = 15;
+        public const short Hub = 1, HubSchedule = 3, HubMgmt = 7;
 
         public static readonly Map<short, string> Hubly = new Map<short, string>
         {
-            {Reg, "助手"},
-            {RegScheduler, "调度"},
-            {RegMgmt, "经理"},
+            {Hub, "帮手"},
+            {HubSchedule, "调度"},
+            {HubMgmt, "经理"},
         };
 
         internal int id;
@@ -43,51 +43,63 @@ namespace Samp
         public string credential;
         internal string wx; // wexin openid
         internal string addr;
-        internal string teamat;
+        internal short teamat;
         internal short teamly;
-        internal string shopat;
+        internal short shopat;
         internal short shoply;
         internal short hubly;
         internal short created;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            s.Get(nameof(id), ref id);
+            if ((proj & ID) > 0)
+            {
+                s.Get(nameof(id), ref id);
+            }
             s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(name), ref name);
             s.Get(nameof(tel), ref tel);
-            if ((proj & PRIVACY) == PRIVACY)
+            if ((proj & PRIVACY) > 0)
             {
                 s.Get(nameof(credential), ref credential);
             }
             s.Get(nameof(wx), ref wx);
             s.Get(nameof(addr), ref addr);
-            s.Get(nameof(teamat), ref teamat);
-            s.Get(nameof(teamly), ref teamly);
-            s.Get(nameof(shopat), ref shopat);
-            s.Get(nameof(shoply), ref shoply);
-            s.Get(nameof(hubly), ref hubly);
-            s.Get(nameof(created), ref created);
+            if ((proj & MISC) > 0)
+            {
+                s.Get(nameof(teamat), ref teamat);
+                s.Get(nameof(teamly), ref teamly);
+                s.Get(nameof(shopat), ref shopat);
+                s.Get(nameof(shoply), ref shoply);
+                s.Get(nameof(hubly), ref hubly);
+                s.Get(nameof(created), ref created);
+            }
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            s.Put(nameof(id), id);
+            if ((proj & ID) > 0)
+            {
+                s.Put(nameof(id), id);
+            }
             s.Put(nameof(hubid), hubid);
             s.Put(nameof(name), name);
             s.Put(nameof(tel), tel);
-            if ((proj & PRIVACY) == PRIVACY)
+            if ((proj & PRIVACY) > 0)
             {
                 s.Put(nameof(credential), credential);
             }
             s.Put(nameof(wx), wx);
             s.Put(nameof(addr), addr);
-            s.Put(nameof(teamat), teamat);
-            s.Put(nameof(teamly), teamly);
-            s.Put(nameof(shopat), shopat);
-            s.Put(nameof(shoply), shoply);
-            s.Put(nameof(hubly), hubly);
-            s.Put(nameof(created), created);
+            if ((proj & MISC) > 0)
+            {
+                s.Put(nameof(teamat), teamat);
+                s.Put(nameof(teamly), teamly);
+                s.Put(nameof(shopat), shopat);
+                s.Put(nameof(shoply), shoply);
+                s.Put(nameof(hubly), hubly);
+                s.Put(nameof(created), created);
+            }
         }
 
         public bool IsIncomplete => name == null || tel == null | addr == null;

@@ -9,7 +9,7 @@ namespace Samp
     {
         protected ItemWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, string>(obj => ((Item) obj).name);
+            CreateVar<V, short>(obj => ((Item) obj).id);
         }
     }
 
@@ -23,6 +23,7 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
+            string hubid = wc[0];
             using (var dc = NewDbContext())
             {
                 var arr = dc.Query<Item>("SELECT * FROM items ORDER BY status DESC");
@@ -33,10 +34,10 @@ namespace Samp
                     {
                         h.HEADER_("uk-card-header").T(o.name).SPAN(Item.Statuses[o.status])._HEADER();
                         h.MAIN_("uk-card-body uk-flex");
-                        h.ICO_(css: "uk-width-1-5").T(o.name).T("/icon")._ICO();
+                        h.ICO_(css: "uk-width-1-5").T(o.id).T("/icon")._ICO();
                         h.UL_(css: "uk-width-4-5 uk-padding-small-left");
                         h.LI_().FI("描述", o.descr)._LI();
-                        h.LI_().FI("单价", o.price).FI("供应", o.giverp).FI("派送", o.dvrerp).FI("团组", o.grperp)._LI();
+                        h.LI_().FI("单价", o.price).FI("供应", o.provp).FI("派送", o.fee).FI("团组", o.teamp)._LI();
                         h.LI_().FI("单位", o.unit).FI("起订", o.min).FI("递增", o.step).FI("冷藏", o.refrig)._LI();
                         h._UL();
                         h._MAIN();
@@ -46,7 +47,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(hubly: HubMgmt)]
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
@@ -62,8 +63,8 @@ namespace Samp
                     h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
                     h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
                     h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
-                    h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
-                    h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
+                    h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.provp), o.provp, required: true)._LI();
+                    h.LI_().NUMBER("派送费", nameof(o.fee), o.fee, required: true).LABEL("团组费").NUMBER(null, nameof(o.fee), o.fee, required: true)._LI();
                     h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
                     h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                     h._FIELDUL();
@@ -83,7 +84,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(HubMgmt)]
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {

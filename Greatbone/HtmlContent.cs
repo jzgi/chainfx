@@ -739,12 +739,6 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent _BUTTON()
-        {
-            Add("</button>");
-            return this;
-        }
-
         public HtmlContent ICO_(string css = null, bool circle = true)
         {
             Add("<div class=\"uk-margin-auto-vertical");
@@ -929,16 +923,18 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BUTTON(string v, bool post = true, bool top = false)
+        public HtmlContent BUTTON(string caption, bool post = true, string css = "uk-button-default", bool top = false)
         {
-            Add("<button class=\"uk-button uk-button-default\" formmethod=\"");
+            Add("<button class=\"uk-button ");
+            Add(css);
+            Add("\" formmethod=\"");
             Add(post ? "post" : "get");
             if (top)
             {
                 Add("\" formtarget=\"_top");
             }
             Add("\">");
-            AddEsc(v);
+            AddEsc(caption);
             Add("</button>");
             return this;
         }

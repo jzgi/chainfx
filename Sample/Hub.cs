@@ -29,6 +29,8 @@ namespace Samp
         internal string noncestr;
         internal string spbillcreateip;
         internal string key;
+        internal string watchurl;
+        internal short status;
 
 
         public void Read(ISource s, byte proj = 0x0f)
@@ -41,6 +43,8 @@ namespace Samp
             s.Get(nameof(noncestr), ref noncestr);
             s.Get(nameof(spbillcreateip), ref spbillcreateip);
             s.Get(nameof(key), ref key);
+            s.Get(nameof(watchurl), ref watchurl);
+            s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
@@ -53,6 +57,8 @@ namespace Samp
             s.Put(nameof(noncestr), noncestr);
             s.Put(nameof(spbillcreateip), spbillcreateip);
             s.Put(nameof(key), key);
+            s.Put(nameof(watchurl), watchurl);
+            s.Put(nameof(status), status);
         }
 
 
@@ -125,17 +131,17 @@ namespace Samp
             JObj jo = await Connector.GetAsync<JObj>("/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN", null);
             string nickname = jo[nameof(nickname)];
             string city = jo[nameof(city)];
-            return new User { wx = openid, name = nickname };
+            return new User {wx = openid, name = nickname};
         }
 
         static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
 
-        public static long NowMillis => (long)(DateTime.Now - EPOCH).TotalMilliseconds;
+        public static long NowMillis => (long) (DateTime.Now - EPOCH).TotalMilliseconds;
 
         public IContent BuildPrepayContent(string prepay_id)
         {
             string package = "prepay_id=" + prepay_id;
-            string timeStamp = ((int)(DateTime.Now - EPOCH).TotalSeconds).ToString();
+            string timeStamp = ((int) (DateTime.Now - EPOCH).TotalSeconds).ToString();
             JObj jo = new JObj
             {
                 {"appId", appid},
@@ -277,7 +283,7 @@ namespace Samp
             if (sign != Sign(xe, "sign")) return false;
 
             int total_fee = xe.Child(nameof(total_fee)); // in cent
-            total = ((decimal)total_fee) / 100;
+            total = ((decimal) total_fee) / 100;
             out_trade_no = xe.Child(nameof(out_trade_no)); // 商户订单号
             return true;
         }
@@ -408,7 +414,7 @@ namespace Samp
                 {
                     sb.Append('&');
                 }
-                sb.Append(mbr.Key).Append('=').Append((string)mbr);
+                sb.Append(mbr.Key).Append('=').Append((string) mbr);
             }
             sb.Append("&key=").Append(key);
             return TextUtility.MD5(sb.ToString());

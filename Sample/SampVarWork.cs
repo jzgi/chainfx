@@ -9,7 +9,7 @@ namespace Samp
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampItemVarWork, string>(obj => ((Item)obj).name);
+            CreateVar<SampItemVarWork, string>(obj => ((Item) obj).name);
 
             Create<SampChatWork>("chat"); // chat
 
@@ -20,20 +20,42 @@ namespace Samp
             Create<ShopWork>("shop"); // supplying shop
 
             Create<HubWork>("hub"); // central 
+
+            // register cached active hubs
+            Register(delegate
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(Hub.Empty).T(" FROM hubs WHERE status > 0 ORDER BY name");
+                        return dc.Query<string, Hub>(proj: 0xff);
+                    }
+                }, 3600
+            );
+
+            // register cached active orgs
+            Register(delegate
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY hubid, name");
+                        return dc.Query<short, Org>(proj: 0xff);
+                    }
+                }, 300
+            );
         }
 
         public async Task @catch(WebContext wc, int cmd)
         {
-            string hubid = wc[0];
+            string hubid = wc[this];
             if (cmd == 1) // handle form submission
             {
-                var o = (User)wc.Principal;
+                var o = (User) wc.Principal;
                 var f = await wc.ReadAsync<Form>();
                 o.Read(f);
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    const byte proj = 0xff ^ User.ID ^ User.LATER;
+                    const byte proj = 0xff ^ User.ID ^ User.MISC;
                     dc.Sql("INSERT INTO users ")._(User.Empty, proj)._VALUES_(User.Empty, proj).T(" ON CONFLICT () UPDATE SET ").setlst(User.Empty, proj);
                     dc.Execute(p => o.Write(p));
                     wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
@@ -56,9 +78,9 @@ namespace Samp
                         wc.Give(401); // unauthorized
                     }
                 }
-                else if (((User)wc.Principal).IsIncomplete)
+                else if (((User) wc.Principal).IsIncomplete)
                 {
-                    var o = (User)wc.Principal;
+                    var o = (User) wc.Principal;
                     string url = wc.Path;
                     wc.GivePage(200, h =>
                     {
@@ -67,7 +89,7 @@ namespace Samp
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
-                        var orgs = Obtain<Map<string, Org>>();
+                        var orgs = Obtain<Map<short, Org>>();
                         h.LI_().SELECT("参　　团", nameof(o.teamat), o.teamat, orgs, tip: "（无）", filter: x => x.hubid == hubid)._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
@@ -99,8 +121,8 @@ namespace Samp
                         var arr = dc.Query<Item>(p => p.Set(hubid));
                         h.LIST(arr, o =>
                         {
-                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.name).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.name).T("');\">");
-                            h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.name).T("/icon")._ICO();
+                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.name).T("');\">");
+                            h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.id).T("/icon")._ICO();
                             h.COL_(css: "uk-width-2-3 uk-padding-small");
                             h.H3(o.name);
                             h.FI(null, o.descr);
@@ -111,7 +133,7 @@ namespace Samp
                             h.T("</a>");
                         }, "uk-padding-remove");
                     }
-                }, true, 60
+                }, true, 12
             );
         }
 

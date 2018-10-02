@@ -17,7 +17,8 @@ namespace Samp
         public void @default(WebContext wc)
         {
             var o = (User) wc.Principal;
-            var orgs = Obtain<Map<string, Org>>();
+            string hubid = wc[0];
+            var orgs = Obtain<Map<short, Org>>();
             wc.GivePage(200, h =>
             {
                 h.DIV_(css: "uk-card- uk-card-primary");
@@ -25,7 +26,7 @@ namespace Samp
                 h.LI_().FI("用户名称", o.name)._LI();
                 h.LI_().FI("手　　机", o.tel)._LI();
                 h.LI_().FI("参　　团", orgs[o.teamat]?.name)._LI();
-                h.LI_().FI("收货地址", o.addr)._LI();
+                h.LI_().FI("上门地址", o.addr)._LI();
                 h._UL();
                 h.TOOLPAD(css: "uk-card-footer uk-flex-center");
                 h._DIV();
@@ -34,14 +35,23 @@ namespace Samp
 
         const string PASSMASK = "t#0^0z4R4pX7";
 
-        [Ui("填写设置", "填写我的设置"), Tool(ButtonShow, css: "uk-button-secondary")]
+        [Ui("修改设置", "修改用户设置"), Tool(ButtonOpen, css: "uk-button-primary")]
         public async Task edit(WebContext wc)
         {
+            string hubid = wc[0];
             var prin = (User) wc.Principal;
+
+            // if caused by scanning a referrer's code
+            short refid = wc.Query[nameof(refid)];
+            if (refid > 0)
+            {
+                prin.teamat = refid;
+            }
+
             string password = null;
             if (wc.GET)
             {
-                var orgs = Obtain<Map<string, Org>>();
+                var orgs = Obtain<Map<short, Org>>();
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<User>("SELECT * FROM users WHERE id = @1", p => p.Set(prin.id));
@@ -52,12 +62,13 @@ namespace Samp
                         h.FIELDUL_("用户基本信息");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                        h.LI_().SELECT("参　　团", nameof(o.teamat), prin.teamat, orgs, tip: "（无）")._LI();
-                        h.LI_().TEXT("收货地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.teamat), prin.teamat, orgs, filter: x => x.hubid == hubid)._LI();
+                        h.LI_().TEXT("上门地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.FIELDUL_("用于从微信以外登录（可选）");
                         h.LI_().PASSWORD("外部密码", nameof(password), password, max: 12, min: 3)._LI();
                         h._FIELDUL();
+                        h.BOTTOMBAR_().BUTTON("确定", css: "uk-button-primary")._BOTTOMBAR();
                         h._FORM();
                     });
                 }
@@ -71,35 +82,32 @@ namespace Samp
                 {
                     if (password != PASSMASK) // password being changed
                     {
-                        string credential = TextUtility.MD5(prin.tel + ":" + password);
-                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4, credential = @5 WHERE id = @6", p => p.Set(prin.name).Set(prin.tel).Set(prin.teamat).Set(prin.addr).Set(credential).Set(prin.id));
+                        prin.credential = TextUtility.MD5(prin.tel + ":" + password);
+                        dc.Sql("INSERT INTO users ")._(prin, PRIVACY)._VALUES_(prin, PRIVACY).T(" ON CONFLICT (wx) DO UPDATE ")._SET_(prin, PRIVACY).T(" WHERE users.id = @1");
+                        dc.Execute(p => prin.Write(p, PRIVACY | ID));
                     }
                     else // password no change
                     {
-                        dc.Execute("UPDATE users SET name = @1, tel = @2, grpat = @3, addr = @4 WHERE id = @5", p => p.Set(prin.name).Set(prin.tel).Set(prin.teamat).Set(prin.addr).Set(prin.id));
+                        dc.Sql("INSERT INTO users ")._(prin, 0)._VALUES_(prin, 0).T(" ON CONFLICT (wx) DO UPDATE ")._SET_(prin, 0).T(" WHERE users.id = @id");
+                        dc.Execute(p => prin.Write(p, ID));
                     }
                     wc.SetTokenCookie(prin, 0xff ^ PRIVACY);
-                    wc.GivePane(200); // close dialog
+                    if (refid > 0) // if was opened by referring qrcode
+                    {
+                        var hub = Obtain<Map<string, Hub>>()[hubid];
+                        wc.GiveRedirect(hub.watchurl); // redirect to the weixin account watch page
+                    }
+                    else // was opened manually
+                    {
+                        wc.GivePane(200); // close dialog
+                    }
                 }
             }
-        }
-
-        [Ui("推荐他人", "推荐扫码关注"), Tool(AnchorOpen, size: 1, css: "uk-button-secondary")]
-        public async Task share(WebContext wc)
-        {
-            var prin = (User) wc.Principal;
-//            var (ticket, url) = await ((SampService) Service).Hub.PostQrSceneAsync(prin.id);
-//            wc.GivePage(200, h =>
-//            {
-//                h.DIV_("uk-padding uk-align-center uk-width-3-4");
-//                h.ICO_(circle: false).T("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=").T(ticket)._ICO();
-//                h._DIV();
-//            });
         }
     }
 
 
-    [UserAccess(shop: 1)]
+    [UserAccess(shoply: 1)]
     [Ui("首页")]
     public class ShopVarWork : Work, IOrgVar
     {
@@ -129,8 +137,8 @@ namespace Samp
         }
     }
 
-    [UserAccess(team: 1)]
-    [Ui("首页")]
+    [UserAccess(teamly: 1)]
+    [Ui("动态")]
     public class TeamVarWork : Work, IOrgVar
     {
         public TeamVarWork(WorkConfig cfg) : base(cfg)
@@ -144,13 +152,13 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string hubid = wc[-2];
-            short id = wc[-1];
-            var team = Obtain<Map<(string, short), Org>>()[(hubid, id)];
+            string hubid = wc[0];
+            short id = wc[this];
+            var org = Obtain<Map<short, Org>>()[id];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
-                wc.GiveFrame(200, false, 900, team?.name);
+                wc.GiveFrame(200, false, 900, org?.name);
             }
             else
             {
@@ -168,30 +176,6 @@ namespace Samp
                     h.MAIN_("uk-card-body")._MAIN();
                     h._SECTION();
                 });
-            }
-        }
-
-        [Ui("发通知"), Tool(ButtonPickShow)]
-        public void send(WebContext wc)
-        {
-            long[] key = wc.Query[nameof(key)];
-            string msg = null;
-            if (wc.GET)
-            {
-                wc.GivePane(200, m =>
-                {
-                    m.FORM_();
-                    m._FORM();
-                });
-            }
-            else
-            {
-                using (var dc = NewDbContext())
-                {
-                    dc.Sql("SELECT wx FROM orders WHERE id")._IN_(key);
-                    dc.Execute(prepare: false);
-                }
-                wc.GivePane(200);
             }
         }
     }

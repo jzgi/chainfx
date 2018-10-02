@@ -84,7 +84,7 @@ namespace Greatbone
             chain[level++] = new Seg(work, key, prinkey);
         }
 
-        public Seg this[int position] => position <= 0 ? chain[level + position - 1] : chain[position];
+        public Seg this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
 
         public Seg this[Type typ]
         {
@@ -104,12 +104,11 @@ namespace Greatbone
         {
             get
             {
-                for (int i = 0; i < level; i++)
+                for (int i = level - 1; i >= 0; i--)
                 {
                     Seg seg = chain[i];
                     if (seg.Work == work) return seg;
                 }
-
                 return default;
             }
         }

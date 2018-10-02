@@ -11,19 +11,13 @@
       "sub_button": [
         {
           "type": "view",
-          "name": "《生命的奥秘》",
-          "url": "http://144000.tv/tut/",
-          "sub_button": []
-        },
-        {
-          "type": "view",
           "name": "调度操作🔒",
           "url": "http://144000.tv/nc/hub/",
           "sub_button": []
         },
         {
           "type": "view",
-          "name": "生产部门操作🔒",
+          "name": "产供操作🔒",
           "url": "http://144000.tv/nc/shop//",
           "sub_button": []
         },

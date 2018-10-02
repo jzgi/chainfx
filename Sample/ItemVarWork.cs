@@ -16,10 +16,10 @@ namespace Samp
 
         public void icon(WebContext wc)
         {
-            string name = wc[this];
+            short id = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT icon FROM items WHERE name = @1", p => p.Set(name)))
+                if (dc.Query1("SELECT icon FROM items WHERE id = @1", p => p.Set(id)))
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
@@ -31,11 +31,10 @@ namespace Samp
 
         public void img(WebContext wc, int ordinal)
         {
-            string orgid = wc[-1];
-            string name = wc[this];
+            short id = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE orgid = @1 AND name = @2", p => p.Set(orgid).Set(name)))
+                if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE id = @2", p => p.Set(id)))
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
@@ -56,21 +55,19 @@ namespace Samp
         public void @default(WebContext wc)
         {
             string hubid = wc[-1];
-            string name = wc[0];
+            string name = wc[this];
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND name = @2");
                 var o = dc.Query1<Item>(p => p.Set(hubid).Set(name));
-                wc.GivePage(200, h =>
-                {
-                });
+                wc.GivePage(200, h => { });
             }
         }
 
-        [Ui("购买", "订购商品"), Tool(Modal.AnchorOpen, size: 1, access: false), ItemState('A')]
+        [Ui("购买", "订购商品"), Tool(AnchorOpen, size: 1, access: false), ItemState('A')]
         public async Task buy(WebContext wc)
         {
-            User prin = (User)wc.Principal;
+            User prin = (User) wc.Principal;
             string name = wc[this];
             var item = Obtain<Map<string, Item>>()[name];
             short num;
@@ -85,7 +82,7 @@ namespace Samp
                         // quantity
                         h.FIELDUL_("加入货品");
                         h.LI_().ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
-                        h.LI_().NUMBER(null, nameof(num), item.min, max: item.demand, min: item.min, step: item.step).T(item.unit)._LI();
+                        h.LI_().NUMBER(null, nameof(num), item.min, max: item.piled, min: item.min, step: item.step).T(item.unit)._LI();
                         h._FIELDUL();
 
                         h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
@@ -106,7 +103,7 @@ namespace Samp
                         uid = prin.id,
                         uname = prin.name,
                         uwx = prin.wx,
-                        paid = DateTime.Now
+                        paidon = DateTime.Now
                     };
                     o.Read(f, proj);
                     num = f[nameof(num)];
@@ -122,15 +119,15 @@ namespace Samp
             }
         }
 
-        [Ui("付款"), Tool(Modal.ButtonScript, "uk-button-primary"), OrderState('P')]
+        [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
-            var prin = (User)wc.Principal;
+            var prin = (User) wc.Principal;
             int orderid = wc[this];
             Order o;
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(User.Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
+                dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
             }
             //            var (prepay_id, _) = await ((SampService) Service).Hub.PostUnifiedOrderAsync(
@@ -158,7 +155,7 @@ namespace Samp
         {
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(HubMgmt)]
         [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
@@ -176,9 +173,9 @@ namespace Samp
                         h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
                         h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
                         h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
-                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.giverp), o.giverp, required: true)._LI();
-                        h.LI_().NUMBER("派送费", nameof(o.dvrerp), o.dvrerp, required: true).LABEL("团组费").NUMBER(null, nameof(o.dvrerp), o.dvrerp, required: true)._LI();
-                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short)1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short)1)._LI();
+                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.provp), o.provp, required: true)._LI();
+                        h.LI_().NUMBER("派送费", nameof(o.fee), o.fee, required: true).LABEL("团组费").NUMBER(null, nameof(o.fee), o.fee, required: true)._LI();
+                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
                         h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                         h._FIELDUL();
                         h._FORM();
@@ -202,7 +199,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(HubMgmt)]
         [Ui("图片"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {

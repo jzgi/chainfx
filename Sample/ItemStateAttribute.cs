@@ -16,7 +16,7 @@ namespace Samp
             if (state == 'A')
             {
                 var item = stack[0] as Item;
-                return item?.demand > 0;
+                return item?.piled > 0;
             }
             return false;
         }

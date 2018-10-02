@@ -41,7 +41,7 @@ namespace Samp
     }
 
 
-    [Ui("结款"), UserAccess(RegMgmt)]
+    [Ui("结款"), UserAccess(HubMgmt)]
     public class HubRepayWork : RepayWork<HubRepayVarWork>
     {
         public HubRepayWork(WorkConfig cfg) : base(cfg)
@@ -108,7 +108,7 @@ namespace Samp
                 till = f[nameof(till)];
                 using (var dc = NewDbContext(IsolationLevel.ReadUncommitted))
                 {
-                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.ORD_ENDED + " AND ended BETWEEN @1 AND @2 GROUP BY orgid", p => p.Set(fro).Set(till));
+                    dc.Execute(@"INSERT INTO repays (orgid, fro, till, orders, total, cash) SELECT orgid, @1, @2, COUNT(*), SUM(total), SUM(total * 0.994) FROM orders WHERE status = " + Order.OrdEnded + " AND ended BETWEEN @1 AND @2 GROUP BY orgid", p => p.Set(fro).Set(till));
                 }
                 wc.GivePane(200);
             }

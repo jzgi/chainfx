@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// An organizational unit such as a work shop or a customer team.
     /// </summary>
-    public class Org : IData, IGroupKeyable<(string, short)>
+    public class Org : IData, IKeyable<short>
     {
         public static readonly Org Empty = new Org();
 
@@ -81,12 +81,7 @@ namespace Samp
             s.Put(nameof(status), status);
         }
 
-        public (string, short) Key => (hubid, id);
-
-        public bool GroupAs((string, short) akey)
-        {
-            return hubid == akey.Item1;
-        }
+        public short Key => id;
 
         public override string ToString() => name;
     }

@@ -190,7 +190,7 @@ namespace Samp
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 15, string title = null)
+        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 15, string title = null, int refresh = 0)
         {
             HtmlContent h = new HtmlContent(wc, true, 32 * 1024);
 
@@ -201,6 +201,12 @@ namespace Samp
             h.Add("<title>");
             h.Add(title ?? BIZ);
             h.Add("</title>");
+            if (refresh > 0) // auto refresh of the page
+            {
+                h.Add("<meta http-equiv=\"refresh\" content=\"");
+                h.Add(refresh);
+                h.Add("\">");
+            }
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -278,7 +284,7 @@ namespace Samp
                 h.T("<li class=\"uk-active \"><a href=\"#\">社区交流</a></li>");
             }
             h.T("</ul>");
-            h.T("<a class=\"uk-icon-button uk-active\" href=\"/my//ord/\" uk-icon=\"album\" onclick=\"return dialog(this, 8, false, 4, '我的订单');\"></a>");
+            h.T("<a class=\"uk-button uk-button-link\" href=\"my//order/\">我的订单</a>");
             h.T("</nav>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

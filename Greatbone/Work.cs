@@ -146,7 +146,7 @@ namespace Greatbone
 
             // create instance
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkConfig) });
             if (ci == null)
             {
                 throw new ServiceException(typ + " need public and WorkConfig");
@@ -163,7 +163,7 @@ namespace Greatbone
                 Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
                 Keyer = keyer,
             };
-            W w = (W) ci.Invoke(new object[] {config});
+            W w = (W)ci.Invoke(new object[] { config });
             varwork = w;
             return w;
         }
@@ -191,7 +191,7 @@ namespace Greatbone
 
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkConfig) });
             if (ci == null)
             {
                 throw new ServiceException(typ + " need public and WorkConfig");
@@ -208,7 +208,7 @@ namespace Greatbone
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
             };
             // init sub work
-            W w = (W) ci.Invoke(new object[] {config});
+            W w = (W)ci.Invoke(new object[] { config });
             works.Add(w.Key, w);
             return w;
         }
@@ -377,7 +377,7 @@ namespace Greatbone
                         wc.Actioner = null;
                     }
 
-                    WorkExit:
+                WorkExit:
                     if (filter != null)
                     {
                         if (filter.After && !(filter.OnAfter((wc))) || filter.AfterAsync && !await filter.OnAfterAsync((wc)))
@@ -453,7 +453,7 @@ namespace Greatbone
             bool gzip = false;
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                int len = (int) fs.Length;
+                int len = (int)fs.Length;
                 if (len > 2048)
                 {
                     var ms = new MemoryStream(len);

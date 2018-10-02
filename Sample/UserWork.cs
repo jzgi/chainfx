@@ -13,31 +13,33 @@ namespace Samp
         }
     }
 
-    [Ui("人员")]
+    [Ui("成员")]
     public class TeamUserWork : UserWork<TeamUserVarWork>
     {
         public TeamUserWork(WorkConfig cfg) : base(cfg)
         {
         }
 
+        const int PageSize = 30;
+
         public void @default(WebContext wc, int page)
         {
-            string teamid = wc[-1];
+            short teamid = wc[Parent];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 ORDER BY name LIMIT 20 OFFSET @2");
-                var arr = dc.Query<User>(p => p.Set(teamid).Set(page * 20));
+                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @2");
+                var arr = dc.Query<User>(p => p.Set(teamid).Set(page * PageSize));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLE(arr, null,
                         o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.teamly])
                     );
-                });
+                }, @public: false, maxage: 3, refresh: 300);
             }
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(HubMgmt)]
         [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -96,7 +98,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(shop: 15)]
+        [UserAccess(shoply: 15)]
         [Ui("加减助手"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -169,7 +171,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(RegMgmt)]
+        [UserAccess(HubMgmt)]
         [Ui("添加", "添加中心操作人员"), Tool(ButtonShow, size: 1)]
         public async Task add(WebContext wc, int cmd)
         {

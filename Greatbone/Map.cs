@@ -49,7 +49,7 @@ namespace Greatbone
 
         public V this[int idx] => entries[idx].value;
 
-        public V[] GetGroup(K key)
+        public V[] GroupOf(K key)
         {
             int idx = IndexOf(key);
             if (idx > -1)
@@ -64,49 +64,6 @@ namespace Greatbone
                 return arr;
             }
             return null;
-        }
-
-        public V[] GroupFor(K key, bool inclusive = true)
-        {
-            string str = key as string;
-            // iterate through group heads
-            int p = 0;
-            while (p < count)
-            {
-                int tail = entries[p].tail;
-                if (tail == -1) break;
-                // if meet the target group head
-                if (entries[p].value is IGroupKeyable<K> gkeyable)
-                {
-                    if (gkeyable.GroupAs(key))
-                    {
-                        int ret = inclusive ? tail - p + 1 : tail - p;
-                        V[] arr = new V[ret];
-                        for (int i = 0; i < ret; i++)
-                        {
-                            arr[i] = entries[inclusive ? p + i : p + 1 + i].value;
-                        }
-                        return arr;
-                    }
-                }
-                p = tail + 1;
-            }
-            return null;
-        }
-
-        public V[] Heads()
-        {
-            Roll<V> roll = new Roll<V>(16);
-            // iterate through group heads
-            int p = 0;
-            while (p < count)
-            {
-                int tail = entries[p].tail;
-                if (tail == -1) break;
-                roll.Add(entries[p].value);
-                p = tail + 1;
-            }
-            return roll.ToArray();
         }
 
         public int IndexOf(K key)
@@ -369,7 +326,7 @@ namespace Greatbone
                 {"010303", "cox"},
             };
 
-            var r = m.GroupFor("0103");
+            var r = m.GroupOf("010101");
         }
     }
 }

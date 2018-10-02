@@ -27,7 +27,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 const byte proj = 0xff ^ Chat.DETAIL;
-                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY top, posted DESC OFFSET @1 LIMIT 20");
+                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY status, posted DESC OFFSET @1 LIMIT 20");
                 var arr = dc.Query<Chat>(p => p.Set(page * 20), proj);
                 wc.GivePage(200, h =>
                     {
@@ -112,7 +112,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(RegScheduler)]
+    [UserAccess(HubSchedule)]
     [Ui("交流")]
     public class HubChatWork : ChatWork<HubChatVarWork>
     {
@@ -146,7 +146,7 @@ namespace Samp
                             h.T("</main>");
                         }
                     });
-                });
+                }, true, 6);
             }
         }
 

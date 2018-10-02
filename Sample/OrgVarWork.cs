@@ -96,7 +96,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Execute(@"UPDATE orgs SET mgrwx = @1, mgrtel = @2, mgrname = @3 WHERE id = @4; 
-                        UPDATE users SET opr = " + RegMgmt + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
+                        UPDATE users SET opr = " + HubMgmt + ", oprat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
                 }
                 wc.GivePane(200);
             }

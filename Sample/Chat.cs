@@ -19,7 +19,7 @@ namespace Samp
         internal DateTime posted;
         internal short fcount;
         internal string fname;
-        internal bool top;
+        internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -36,7 +36,7 @@ namespace Samp
             s.Get(nameof(posted), ref posted);
             s.Get(nameof(fcount), ref fcount);
             s.Get(nameof(fname), ref fname);
-            s.Get(nameof(top), ref top);
+            s.Get(nameof(status), ref status);
         }
 
         public const int NUM = 6;
@@ -56,7 +56,7 @@ namespace Samp
             s.Put(nameof(posted), posted);
             s.Put(nameof(fcount), fcount);
             s.Put(nameof(fname), fname);
-            s.Put(nameof(top), top);
+            s.Put(nameof(status), status);
         }
     }
 
@@ -64,7 +64,7 @@ namespace Samp
     {
         internal int uid;
         internal string uname;
-        internal string teamat;
+        internal short teamat;
         internal string text;
         internal short img;
         internal DateTime time;
