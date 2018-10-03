@@ -22,16 +22,17 @@ namespace Samp
 
         const int PageSize = 30;
 
+        [Ui("正式"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc, int page)
         {
             short teamid = wc[Parent];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @2");
+                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 AND teamly > 0 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @2");
                 var arr = dc.Query<User>(p => p.Set(teamid).Set(page * PageSize));
                 wc.GivePage(200, h =>
                 {
-                    h.TOOLBAR();
+                    h.TOOLBAR(group: 1);
                     h.TABLE(arr, null,
                         o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.teamly])
                     );
@@ -39,9 +40,45 @@ namespace Samp
             }
         }
 
-        [UserAccess(HubMgmt)]
-        [Ui("加减助手"), Tool(ButtonPickConfirm)]
-        public async Task add(WebContext wc, int cmd)
+        [Ui("待批"), Tool(Anchor, "uk-button-link")]
+        public void pre(WebContext wc, int page)
+        {
+            short teamid = wc[Parent];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 AND teamly = 0 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @2");
+                var arr = dc.Query<User>(p => p.Set(teamid).Set(page * PageSize));
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR(group: 2);
+                    h.TABLE(arr, null,
+                        o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.teamly])
+                    );
+                }, @public: false, maxage: 3, refresh: 300);
+            }
+        }
+
+        [UserAccess(hubly: 7)]
+        [Ui("副手", group: 1), Tool(ButtonPickConfirm)]
+        public async Task aid(WebContext wc, int cmd)
+        {
+            string teamid = wc[-1];
+            var f = await wc.ReadAsync<Form>();
+            int[] key = f[nameof(key)];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("UPDATE users SET team = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE teamat = @1 AND team <> 15 AND id")._IN_(key);
+                dc.Execute(p =>
+                {
+                    p.Set(teamid);
+                    p.SetIn(key);
+                });
+            }
+            wc.GiveRedirect();
+        }
+
+        [Ui("批准", group: 2), Tool(ButtonPickConfirm)]
+        public async Task apprv(WebContext wc, int cmd)
         {
             string teamid = wc[-1];
             var f = await wc.ReadAsync<Form>();
@@ -171,7 +208,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(HubMgmt)]
+        [UserAccess(hubly: 7)]
         [Ui("添加", "添加中心操作人员"), Tool(ButtonShow, size: 1)]
         public async Task add(WebContext wc, int cmd)
         {

@@ -36,7 +36,7 @@ namespace Samp
             });
         }
 
-        [UserAccess(HubMgmt)]
+        [UserAccess(hubly: 7)]
         [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {

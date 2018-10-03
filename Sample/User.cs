@@ -11,29 +11,24 @@ namespace Samp
 
         public const byte ID = 1, PRIVACY = 2, MISC = 4;
 
-        public const short TEAM = 1, TEAM_AID = 1, TEAM_MGMT = 15;
-
         public static readonly Map<short, string> Teamly = new Map<short, string>
         {
-            {0, null},
-            {1, "帮手"},
-            {3, "团长"},
+            {1, "成员"},
+            {3, "副手"},
+            {7, "团长"},
         };
 
         public static readonly Map<short, string> Shoply = new Map<short, string>
         {
-            {0, null},
-            {1, "助手"},
+            {1, "副手"},
             {3, "经理"},
         };
 
-        public const short Hub = 1, HubSchedule = 3, HubMgmt = 7;
-
         public static readonly Map<short, string> Hubly = new Map<short, string>
         {
-            {Hub, "帮手"},
-            {HubSchedule, "调度"},
-            {HubMgmt, "经理"},
+            {1, "成员"},
+            {3, "副手"},
+            {7, "经理"},
         };
 
         internal int id;

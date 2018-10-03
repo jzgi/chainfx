@@ -1777,6 +1777,10 @@ a.uk-button-primary {
     margin-left: 4px;
 }
 
+.uk-button-group:not(:first-of-type) {
+    margin-left: 4px;
+}
+
 .uk-button-group .uk-button:hover,
 .uk-button-group .uk-button:focus,
 .uk-button-group .uk-button:active,

@@ -10,28 +10,26 @@ namespace Samp
     {
         public static readonly Order Empty = new Order();
 
-        public const byte KEY = 1, LATER = 4;
+        public const byte ID = 1, LATER = 4;
 
         // status
         public const short
-            OrdAborted = -1,
-            OrdCreated = 0,
-            OrdPaid = 1,
-            OrdProvided = 3,
-            OrdShipped = 5,
-            OrdEnded = 7;
+            OrdAborted = -1, OrdCreated = 0, OrdPaid = 1, OrdGiven = 3, OrdTaken = 4, OrdSent = 5, OrdReceived = 5, OrdEnded = 7;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {OrdAborted, "已撤"},
+            {OrdAborted, "已撤销"},
             {OrdCreated, null},
-            {OrdPaid, "新收"},
-            {OrdProvided, "已备"},
-            {OrdShipped, "已送"},
+            {OrdPaid, "已收款"},
+            {OrdGiven, "货已交"},
+            {OrdTaken, "货已接"},
+            {OrdSent, "货已派"},
+            {OrdReceived, "货已收"},
             {OrdEnded, "完成"}
         };
 
         internal int id;
+        internal string hubid;
         internal int uid;
         internal string uname; // customer name
         internal string uwx; // weixin openid
@@ -45,19 +43,26 @@ namespace Samp
         internal short qty;
         internal decimal total; // total price
         internal decimal cash; // cash paid
-        internal DateTime paidon;
+        internal DateTime paid;
         internal short shopid; // workshop's orgid
-        internal int shipperid; // shipper's userid, 
-        internal DateTime shippedon;
+        internal int giverid; // giving forth goods
+        internal DateTime given;
+        internal int takerid; // taking goods from the giver to the storage 
+        internal DateTime taken;
+        internal int senderid; // sending goods to the team 
+        internal DateTime sent;
+        internal int receiverid; // receiving goods for the team 
+        internal DateTime received;
         internal DateTime ended;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & KEY) > 0)
+            if ((proj & ID) > 0)
             {
                 s.Get(nameof(id), ref id);
             }
+            s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
             s.Get(nameof(uwx), ref uwx);
@@ -71,12 +76,18 @@ namespace Samp
             s.Get(nameof(qty), ref qty);
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
-            s.Get(nameof(paidon), ref paidon);
+            s.Get(nameof(paid), ref paid);
             if ((proj & LATER) > 0)
             {
                 s.Get(nameof(shopid), ref shopid);
-                s.Get(nameof(shipperid), ref shipperid);
-                s.Get(nameof(shippedon), ref shippedon);
+                s.Get(nameof(giverid), ref giverid);
+                s.Get(nameof(given), ref given);
+                s.Get(nameof(takerid), ref takerid);
+                s.Get(nameof(taken), ref taken);
+                s.Get(nameof(senderid), ref senderid);
+                s.Get(nameof(sent), ref sent);
+                s.Get(nameof(receiverid), ref receiverid);
+                s.Get(nameof(received), ref received);
                 s.Get(nameof(ended), ref ended);
             }
             s.Get(nameof(status), ref status);
@@ -84,10 +95,11 @@ namespace Samp
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & KEY) > 0)
+            if ((proj & ID) > 0)
             {
                 s.Put(nameof(id), id);
             }
+            s.Put(nameof(hubid), hubid);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
             s.Put(nameof(uwx), uwx);
@@ -101,21 +113,21 @@ namespace Samp
             s.Put(nameof(qty), qty);
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
-            s.Put(nameof(paidon), paidon);
+            s.Put(nameof(paid), paid);
             if ((proj & LATER) > 0)
             {
                 s.Put(nameof(shopid), shopid);
-                s.Put(nameof(shipperid), shipperid);
-                s.Put(nameof(shippedon), shippedon);
+                s.Put(nameof(giverid), giverid);
+                s.Put(nameof(given), given);
+                s.Put(nameof(takerid), takerid);
+                s.Put(nameof(taken), taken);
+                s.Put(nameof(senderid), senderid);
+                s.Put(nameof(sent), sent);
+                s.Put(nameof(receiverid), receiverid);
+                s.Put(nameof(received), received);
                 s.Put(nameof(ended), ended);
             }
             s.Put(nameof(status), status);
-        }
-
-        public string Err()
-        {
-            if (uaddr == null) return "您尚未填写地址哦！";
-            return null;
         }
     }
 }

@@ -3,13 +3,13 @@
 namespace Samp
 {
     /// <summary>
-    /// An organizational unit such as a work shop or a customer team.
+    /// An organizational unit such as a virtual shop / workshop, or a customer team.
     /// </summary>
     public class Org : IData, IKeyable<short>
     {
         public static readonly Org Empty = new Org();
 
-        public const byte PK = 1, LATER = 2;
+        public const byte ID = 1, MISC = 2;
 
         public static readonly Map<short, string> Typs = new Map<short, string>
         {
@@ -39,7 +39,7 @@ namespace Samp
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & PK) > 0)
+            if ((proj & ID) > 0)
             {
                 s.Get(nameof(id), ref id);
             }
@@ -50,7 +50,7 @@ namespace Samp
             s.Get(nameof(addr), ref addr);
             s.Get(nameof(x), ref x);
             s.Get(nameof(y), ref y);
-            if ((proj & LATER) == LATER)
+            if ((proj & MISC) == MISC)
             {
                 s.Get(nameof(mgrid), ref mgrid);
                 s.Get(nameof(mgrname), ref mgrname);
@@ -61,7 +61,7 @@ namespace Samp
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & PK) > 0)
+            if ((proj & ID) > 0)
             {
                 s.Put(nameof(id), id);
             }
@@ -72,7 +72,7 @@ namespace Samp
             s.Put(nameof(addr), addr);
             s.Put(nameof(x), x);
             s.Put(nameof(y), y);
-            if ((proj & LATER) == LATER)
+            if ((proj & MISC) == MISC)
             {
                 s.Put(nameof(mgrid), mgrid);
                 s.Put(nameof(mgrname), mgrname);

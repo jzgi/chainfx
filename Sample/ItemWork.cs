@@ -47,7 +47,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(hubly: HubMgmt)]
+        [UserAccess(hubly: 7)]
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
@@ -84,7 +84,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(HubMgmt)]
+        [UserAccess(7)]
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {

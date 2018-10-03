@@ -95,7 +95,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    const byte proj = 0xff ^ Order.KEY ^ Order.LATER;
+                    const byte proj = 0xff ^ Order.ID ^ Order.LATER;
                     var f = await wc.ReadAsync<Form>();
                     string posid = f[nameof(posid)];
                     var o = new Order
@@ -103,7 +103,7 @@ namespace Samp
                         uid = prin.id,
                         uname = prin.name,
                         uwx = prin.wx,
-                        paidon = DateTime.Now
+                        paid = DateTime.Now
                     };
                     o.Read(f, proj);
                     num = f[nameof(num)];
@@ -155,7 +155,7 @@ namespace Samp
         {
         }
 
-        [UserAccess(HubMgmt)]
+        [UserAccess(7)]
         [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
@@ -199,7 +199,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(HubMgmt)]
+        [UserAccess(7)]
         [Ui("图片"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {

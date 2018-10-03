@@ -112,7 +112,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(HubSchedule)]
+    [UserAccess(3)]
     [Ui("交流")]
     public class HubChatWork : ChatWork<HubChatVarWork>
     {

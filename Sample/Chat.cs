@@ -13,6 +13,7 @@ namespace Samp
         public const byte ID = 1, DETAIL = 2;
 
         internal int id;
+        internal string hubid;
         internal string subject;
         internal string uname;
         internal Post[] posts;
@@ -27,6 +28,7 @@ namespace Samp
             {
                 s.Get(nameof(id), ref id);
             }
+            s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(subject), ref subject);
             s.Get(nameof(uname), ref uname);
             if ((proj & DETAIL) > 0)
@@ -47,6 +49,7 @@ namespace Samp
             {
                 s.Put(nameof(id), id);
             }
+            s.Put(nameof(hubid), hubid);
             s.Put(nameof(subject), subject);
             s.Put(nameof(uname), uname);
             if ((proj & DETAIL) > 0)

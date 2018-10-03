@@ -108,7 +108,7 @@ namespace Samp
 
 
     [UserAccess(shoply: 1)]
-    [Ui("首页")]
+    [Ui("动态")]
     public class ShopVarWork : Work, IOrgVar
     {
         public ShopVarWork(WorkConfig cfg) : base(cfg)
@@ -122,9 +122,9 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string hubid = wc[-2];
+            string hubid = wc[0];
             short id = wc[-1];
-            var shop = Obtain<Map<(string, short), Org>>()[(hubid, id)];
+            var shop = Obtain<Map<short, Org>>()[id];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
@@ -132,7 +132,20 @@ namespace Samp
             }
             else
             {
-                wc.GivePage(200, h => { h.TOOLBAR(); });
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+
+                    h.SECTION_("uk-card uk-card-default");
+                    h.HEADER_("uk-card-header").H4("订单")._HEADER();
+                    h.MAIN_("uk-card-body")._MAIN();
+                    h._SECTION();
+
+                    h.SECTION_("uk-card uk-card-default");
+                    h.HEADER_("uk-card-header").H4("成员")._HEADER();
+                    h.MAIN_("uk-card-body")._MAIN();
+                    h._SECTION();
+                });
             }
         }
     }
@@ -167,12 +180,12 @@ namespace Samp
                     h.TOOLBAR();
 
                     h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("团组")._HEADER();
+                    h.HEADER_("uk-card-header").H4("订单")._HEADER();
                     h.MAIN_("uk-card-body")._MAIN();
                     h._SECTION();
 
                     h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("订单")._HEADER();
+                    h.HEADER_("uk-card-header").H4("成员")._HEADER();
                     h.MAIN_("uk-card-body")._MAIN();
                     h._SECTION();
                 });

@@ -28,6 +28,7 @@ namespace Samp
         };
 
         internal int id;
+        internal string hubid;
         internal short job;
         internal int uid;
         internal string uname;
@@ -44,6 +45,7 @@ namespace Samp
         public void Read(ISource s, byte proj = 0x0f)
         {
             s.Get(nameof(id), ref id);
+            s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(job), ref job);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
@@ -61,6 +63,7 @@ namespace Samp
         public void Write(ISink s, byte proj = 0x0f)
         {
             s.Put(nameof(id), id);
+            s.Put(nameof(hubid), hubid);
             s.Put(nameof(job), job);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);

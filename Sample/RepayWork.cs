@@ -40,8 +40,8 @@ namespace Samp
         }
     }
 
-
-    [Ui("结款"), UserAccess(HubMgmt)]
+    [UserAccess(hubly: 7)]
+    [Ui("结款")]
     public class HubRepayWork : RepayWork<HubRepayVarWork>
     {
         public HubRepayWork(WorkConfig cfg) : base(cfg)

@@ -2,7 +2,6 @@
 using Greatbone;
 using static Greatbone.Modal;
 using static Samp.Order;
-using static Samp.User;
 
 namespace Samp
 {
@@ -46,22 +45,25 @@ namespace Samp
         }
     }
 
-    [Ui("订单"), UserAccess(HubMgmt)]
+    [UserAccess(hubly: 7)]
+    [Ui("订单")]
     public class HubOrderWork : OrderWork<HubOrderVarWork>
     {
         public HubOrderWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("新收"), Tool(Anchor)]
+        [Ui("新收款"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
+            string hubid = wc[0];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 ORDER BY id");
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdPaid).T(" AND hubid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(hubid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
@@ -69,14 +71,58 @@ namespace Samp
             });
         }
 
-        [Ui("产供"), Tool(Anchor)]
-        public void confirmed(WebContext wc)
+        [Ui("已交货"), Tool(Anchor, "uk-button-link")]
+        public void given(WebContext wc)
         {
+            string hubid = wc[0];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdGiven).T(" AND hubid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(hubid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
         }
 
-        [Ui("派送"), Tool(Anchor)]
-        public void loaded(WebContext wc)
+        [Ui("货到中库"), Tool(Anchor, "uk-button-link")]
+        public void taken(WebContext wc)
         {
+            string hubid = wc[0];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdTaken).T(" AND hubid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(hubid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
+        }
+
+        [Ui("货已派"), Tool(Anchor, "uk-button-link")]
+        public void sent(WebContext wc)
+        {
+            string hubid = wc[0];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdSent).T(" AND hubid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(hubid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
         }
 
         [Ui("历史"), Tool(Anchor)]
@@ -95,20 +141,23 @@ namespace Samp
         {
         }
 
+        [Ui("新订单"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
+            string hubid = wc[0];
+            short orgid = wc[-2];
             var prin = (User) wc.Principal;
-            var items = Obtain<Map<string, Item>>();
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Query("SELECT id, item, qty, unit, status FROM orders WHERE status BETWEEN 1 AND 2 AND item IN (SELECT name FROM items WHERE giverid = @1) ORDER BY item, id", p => p.Set(prin.id));
+                    dc.Sql("SELECT itemid, itemname, SUM(qty), unit FROM orders WHERE status =").T(OrdPaid).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @1) GROUP BY itemid, itemname, unit");
+                    dc.Query(p => p.Set(orgid));
                     string curitme = null;
                     while (dc.Next())
                     {
-                        dc.Let(out int id).Let(out string item).Let(out short qty).Let(out short unit).Let(out short status);
+                        dc.Let(out int id).Let(out string item).Let(out short qty).Let(out short unit);
 
                         if (item != curitme)
                         {
@@ -122,8 +171,6 @@ namespace Samp
                             h.T("<header class=\"uk-card-header\">").T(item).T("（").T(unit).T("）</header>");
                             h.T("<main class=\"uk-card-body\">");
                         }
-
-                        h.T("<label class=\"checkable\"><input type=\"checkbox\" name=\"").T(id).T("\"").T("><span").T(" class=\"uk-active\"", status == 2).T(">").T(qty).T("</span></label>");
 
                         curitme = item;
                     }
@@ -204,7 +251,7 @@ namespace Samp
         {
         }
 
-        [Ui("已到货"), Tool(Anchor, "uk-button-link")]
+        [Ui("货到团"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
             short teamid = wc[Parent];
@@ -213,7 +260,8 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status = 5 AND teamid = @1 ORDER BY id", p => p.Set(teamid));
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdReceived).T(" AND teamid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(teamid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
@@ -221,7 +269,7 @@ namespace Samp
             });
         }
 
-        [Ui("未到货"), Tool(Anchor, "uk-button-link")]
+        [Ui("货到中库"), Tool(Anchor, "uk-button-link")]
         public void way(WebContext wc)
         {
             short teamid = wc[Parent];
@@ -230,7 +278,26 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND teamid = @1 ORDER BY id", p => p.Set(teamid));
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdTaken).T(" AND teamid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(teamid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
+        }
+
+        [Ui("货未妥"), Tool(Anchor, "uk-button-link")]
+        public void not(WebContext wc)
+        {
+            short teamid = wc[Parent];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status BETWEEN ").T(OrdPaid).T(" AND ").T(OrdGiven).T(" AND teamid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(teamid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
                     );
