@@ -11,7 +11,7 @@ namespace Samp
     }
 
     [UserAccess(hubly: 1)]
-    [Ui("首页")]
+    [Ui("动态")]
     public class HubWork : Work
     {
         public HubWork(WorkConfig cfg) : base(cfg)
@@ -31,6 +31,7 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
+            string hubid = wc[0];
             bool inner = wc.Query[nameof(inner)];
             if (inner)
             {
@@ -53,7 +54,8 @@ namespace Samp
             }
             else
             {
-                wc.GiveFrame(200, false, 900, "调度服务");
+                var hub = Obtain<Map<string, Hub>>()[hubid];
+                wc.GiveFrame(200, false, 900, hub.name);
             }
         }
     }

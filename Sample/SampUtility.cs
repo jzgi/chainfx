@@ -5,8 +5,6 @@ namespace Samp
 {
     public static class SampUtility
     {
-        public const string BIZ = "全粮派";
-
         public const string NETADDR = "http://144000.tv";
 
         public const string JOINADDR = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUyNTkxNzM3Nw==&scene=124#wechat_redirect";
@@ -40,7 +38,7 @@ namespace Samp
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? BIZ);
+            h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -116,7 +114,7 @@ namespace Samp
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? BIZ);
+            h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
@@ -199,7 +197,7 @@ namespace Samp
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? BIZ);
+            h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
             if (refresh > 0) // auto refresh of the page
             {
@@ -236,9 +234,6 @@ namespace Samp
             h.Add("<html>");
 
             h.Add("<head>");
-            h.Add("<title>");
-            h.Add(BIZ);
-            h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -284,7 +279,8 @@ namespace Samp
                 h.T("<li class=\"uk-active \"><a href=\"#\">社区交流</a></li>");
             }
             h.T("</ul>");
-            h.T("<a class=\"uk-button uk-button-link\" href=\"my//order/\">我的订单</a>");
+            string hubid = h.WebCtx[0];
+            h.T("<a class=\"uk-button uk-button-link\" href=\"/").T(hubid).T("/my//order/\">我的订单</a>");
             h.T("</nav>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

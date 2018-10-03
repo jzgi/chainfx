@@ -82,7 +82,7 @@ namespace Samp
                         // quantity
                         h.FIELDUL_("加入货品");
                         h.LI_().ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
-                        h.LI_().NUMBER(null, nameof(num), item.min, max: item.piled, min: item.min, step: item.step).T(item.unit)._LI();
+                        h.LI_().NUMBER(null, nameof(num), item.min, max: item.queue, min: item.min, step: item.step).T(item.unit)._LI();
                         h._FIELDUL();
 
                         h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
@@ -173,7 +173,7 @@ namespace Samp
                         h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
                         h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
                         h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
-                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.provp), o.provp, required: true)._LI();
+                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.shopp), o.shopp, required: true)._LI();
                         h.LI_().NUMBER("派送费", nameof(o.fee), o.fee, required: true).LABEL("团组费").NUMBER(null, nameof(o.fee), o.fee, required: true)._LI();
                         h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
                         h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();

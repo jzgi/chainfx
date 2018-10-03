@@ -4,7 +4,6 @@ using Greatbone;
 namespace Samp
 {
     [UserAccess]
-    [Ui("全粮派")]
     public class SampVarWork : Work
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
@@ -111,6 +110,7 @@ namespace Samp
         public void @default(WebContext wc)
         {
             string hubid = wc[this];
+            var hub = Obtain<Map<string, Hub>>()[hubid];
             wc.GivePage(200, h =>
                 {
                     h.TOPBAR(true);
@@ -133,7 +133,7 @@ namespace Samp
                             h.T("</a>");
                         }, "uk-padding-remove");
                     }
-                }, true, 12
+                }, true, 12, title: hub.name
             );
         }
 

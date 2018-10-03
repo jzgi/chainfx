@@ -12,7 +12,7 @@
  Target Server Version : 90606
  File Encoding         : 65001
 
- Date: 01/10/2018 11:29:47
+ Date: 03/10/2018 23:19:55
 */
 
 
@@ -39,10 +39,10 @@ START 1
 CACHE 1;
 
 -- ----------------------------
--- Sequence structure for orders_id_seq1
+-- Sequence structure for orders_id_seq
 -- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."orders_id_seq1";
-CREATE SEQUENCE "public"."orders_id_seq1" 
+DROP SEQUENCE IF EXISTS "public"."orders_id_seq";
+CREATE SEQUENCE "public"."orders_id_seq" 
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 9223372036854775807
@@ -88,7 +88,7 @@ CACHE 1;
 DROP TABLE IF EXISTS "public"."chats";
 CREATE TABLE "public"."chats" (
   "id" int4 NOT NULL DEFAULT nextval('chats_id_seq1'::regclass),
-  "hubid" varchar(2) COLLATE "pg_catalog"."default",
+  "hubid" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
   "subject" varchar(20) COLLATE "pg_catalog"."default",
   "uname" varchar(254) COLLATE "pg_catalog"."default",
   "posts" jsonb,
@@ -113,7 +113,8 @@ CREATE TABLE "public"."hubs" (
   "noncestr" varchar(10) COLLATE "pg_catalog"."default",
   "spbillcreateip" varchar(15) COLLATE "pg_catalog"."default",
   "key" varchar(32) COLLATE "pg_catalog"."default",
-  "status" int2
+  "status" int2,
+  "watchurl" varchar(100) COLLATE "pg_catalog"."default"
 )
 ;
 
@@ -123,7 +124,7 @@ CREATE TABLE "public"."hubs" (
 DROP TABLE IF EXISTS "public"."items";
 CREATE TABLE "public"."items" (
   "id" int2 NOT NULL DEFAULT nextval('items_id_seq1'::regclass),
-  "hubid" varchar(2) COLLATE "pg_catalog"."default",
+  "hubid" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
   "name" varchar(10) COLLATE "pg_catalog"."default" NOT NULL,
   "descr" varchar(100) COLLATE "pg_catalog"."default",
   "remark" varchar(500) COLLATE "pg_catalog"."default",
@@ -131,15 +132,16 @@ CREATE TABLE "public"."items" (
   "icon" bytea,
   "unit" varchar(4) COLLATE "pg_catalog"."default",
   "price" money,
-  "provp" money,
+  "fee" money,
+  "shopp" money,
   "teamp" money,
-  "dvrp" money,
+  "senderp" money,
   "min" int2,
   "step" int2,
   "refrig" bool,
-  "demand" int2,
-  "provid" int4,
-  "cap7" int2[],
+  "cap" int4,
+  "queue" int4,
+  "shopid" int2,
   "status" int2
 )
 ;
@@ -149,8 +151,8 @@ CREATE TABLE "public"."items" (
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."orders";
 CREATE TABLE "public"."orders" (
-  "id" int4 NOT NULL DEFAULT nextval('orders_id_seq1'::regclass),
-  "hubid" varchar(2) COLLATE "pg_catalog"."default",
+  "id" int4 NOT NULL DEFAULT nextval('orders_id_seq'::regclass),
+  "hubid" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
   "uid" int4 NOT NULL,
   "uname" varchar(10) COLLATE "pg_catalog"."default",
   "uwx" varchar(28) COLLATE "pg_catalog"."default",
@@ -166,10 +168,14 @@ CREATE TABLE "public"."orders" (
   "cash" money DEFAULT 0,
   "paid" timestamp(6),
   "shopid" varchar(3) COLLATE "pg_catalog"."default",
-  "assigned" timestamp(6),
-  "supplied" timestamp(6),
-  "shipuid" int4,
-  "shipped" timestamp(6),
+  "giverid" int4,
+  "given" timestamp(6),
+  "senderid" int4,
+  "sent" timestamp(6),
+  "takerid" int4,
+  "taken" timestamp(6),
+  "receiverid" int4,
+  "received" timestamp(6),
   "ended" timestamp(6),
   "status" int2
 )
@@ -181,7 +187,7 @@ CREATE TABLE "public"."orders" (
 DROP TABLE IF EXISTS "public"."orgs";
 CREATE TABLE "public"."orgs" (
   "id" int2 NOT NULL DEFAULT nextval('orgs_id_seq1'::regclass),
-  "hubid" varchar(2) COLLATE "pg_catalog"."default",
+  "hubid" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
   "typ" int2,
   "name" varchar(10) COLLATE "pg_catalog"."default",
   "tel" varchar(11) COLLATE "pg_catalog"."default",
@@ -201,7 +207,7 @@ CREATE TABLE "public"."orgs" (
 DROP TABLE IF EXISTS "public"."repays";
 CREATE TABLE "public"."repays" (
   "id" int4 NOT NULL DEFAULT nextval('repays_id_seq'::regclass),
-  "hubid" varchar(2) COLLATE "pg_catalog"."default",
+  "hubid" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
   "job" int2 NOT NULL,
   "uid" int4 NOT NULL,
   "uname" varchar(10) COLLATE "pg_catalog"."default" NOT NULL,
@@ -233,17 +239,17 @@ CREATE TABLE "public"."tuts" (
 DROP TABLE IF EXISTS "public"."users";
 CREATE TABLE "public"."users" (
   "id" int4 NOT NULL DEFAULT nextval('users_id_seq'::regclass),
-  "hubid" varchar(2) COLLATE "pg_catalog"."default",
+  "hubid" varchar(2) COLLATE "pg_catalog"."default" NOT NULL,
   "name" varchar(10) COLLATE "pg_catalog"."default",
   "wx" varchar(28) COLLATE "pg_catalog"."default",
   "tel" varchar(11) COLLATE "pg_catalog"."default",
   "credential" varchar(32) COLLATE "pg_catalog"."default",
   "addr" varchar(20) COLLATE "pg_catalog"."default",
   "teamat" int2,
-  "teamly" int2,
+  "teamly" int2 NOT NULL DEFAULT 0,
   "shopat" int2,
-  "shoply" int2,
-  "hubly" int2 DEFAULT 0,
+  "shoply" int2 NOT NULL DEFAULT 0,
+  "hubly" int2 NOT NULL DEFAULT 0,
   "created" timestamp(6) DEFAULT ('now'::text)::timestamp without time zone
 )
 ;
@@ -257,9 +263,9 @@ SELECT setval('"public"."chats_id_seq1"', 2, false);
 ALTER SEQUENCE "public"."items_id_seq1"
 OWNED BY "public"."items"."id";
 SELECT setval('"public"."items_id_seq1"', 2, false);
-ALTER SEQUENCE "public"."orders_id_seq1"
+ALTER SEQUENCE "public"."orders_id_seq"
 OWNED BY "public"."orders"."id";
-SELECT setval('"public"."orders_id_seq1"', 2, false);
+SELECT setval('"public"."orders_id_seq"', 2, false);
 ALTER SEQUENCE "public"."orgs_id_seq1"
 OWNED BY "public"."orgs"."id";
 SELECT setval('"public"."orgs_id_seq1"', 2, false);
@@ -268,7 +274,7 @@ OWNED BY "public"."repays"."id";
 SELECT setval('"public"."repays_id_seq"', 2, false);
 ALTER SEQUENCE "public"."users_id_seq"
 OWNED BY "public"."users"."id";
-SELECT setval('"public"."users_id_seq"', 2, false);
+SELECT setval('"public"."users_id_seq"', 7, true);
 
 -- ----------------------------
 -- Primary Key structure for table chats
@@ -283,7 +289,7 @@ ALTER TABLE "public"."hubs" ADD CONSTRAINT "hubs_pkey" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table items
 -- ----------------------------
-ALTER TABLE "public"."items" ADD CONSTRAINT "items_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."items" ADD CONSTRAINT "items_pkey1" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table orders
@@ -296,7 +302,7 @@ CREATE INDEX "orders_statusuid" ON "public"."orders" USING btree (
 -- ----------------------------
 -- Primary Key structure for table orders
 -- ----------------------------
-ALTER TABLE "public"."orders" ADD CONSTRAINT "orders_pkey1" PRIMARY KEY ("id");
+ALTER TABLE "public"."orders" ADD CONSTRAINT "orders_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table orgs
