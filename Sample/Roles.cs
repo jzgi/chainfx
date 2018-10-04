@@ -20,8 +20,6 @@ namespace Samp
 
             Create<HubItemWork>("item");
 
-            Create<HubChatWork>("chat");
-
             Create<HubUserWork>("user");
 
             Create<HubOrgWork>("org");

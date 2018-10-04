@@ -92,7 +92,7 @@ namespace Samp
                         h.LI_().SELECT("参　　团", nameof(o.teamat), o.teamat, orgs, tip: "（无）", filter: x => x.hubid == hubid)._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
-                        h.BOTTOMBAR_().BUTTON("/catch", 1, "确定", css: "uk-button-primary")._BOTTOMBAR();
+                        h.BOTTOMBAR_().BUTTON("确定", "/catch", css: "uk-button-primary")._BOTTOMBAR();
                         h._FORM();
                     }, title: "用户注册");
                 }

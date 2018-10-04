@@ -36,7 +36,7 @@ namespace Samp
         const string PASSMASK = "t#0^0z4R4pX7";
 
         [Ui("修改设置", "修改用户设置"), Tool(ButtonOpen, css: "uk-button-primary")]
-        public async Task edit(WebContext wc)
+        public async Task upd(WebContext wc)
         {
             string hubid = wc[0];
             var prin = (User) wc.Principal;
@@ -68,7 +68,7 @@ namespace Samp
                         h.FIELDUL_("用于从微信以外登录（可选）");
                         h.LI_().PASSWORD("外部密码", nameof(password), password, max: 12, min: 3)._LI();
                         h._FIELDUL();
-                        h.BOTTOMBAR_().BUTTON("确定", css: "uk-button-primary")._BOTTOMBAR();
+                        h.BOTTOMBAR_().BUTTON(caption: "确定", css: "uk-button-primary")._BOTTOMBAR();
                         h._FORM();
                     });
                 }

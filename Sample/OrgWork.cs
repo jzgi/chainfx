@@ -20,15 +20,35 @@ namespace Samp
         {
         }
 
+        [Ui("团组"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
+            string hubid = wc[0];
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs ORDER BY id");
-                    var arr = dc.Query<Org>();
+                    dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE hubid = @1 AND typ = 0 ORDER BY id");
+                    var arr = dc.Query<Org>(p => p.Set(hubid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.name).TD(o.mgrname)
+                    );
+                }
+            });
+        }
+
+        [Ui("产供"), Tool(Anchor, "uk-button-link")]
+        public void shop(WebContext wc)
+        {
+            string hubid = wc[0];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE hubid = @1 AND typ = 1 ORDER BY id");
+                    var arr = dc.Query<Org>(p => p.Set(hubid));
                     h.TABLE(arr, null,
                         o => h.TD(o.name).TD(o.mgrname)
                     );

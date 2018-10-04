@@ -111,48 +111,4 @@ namespace Samp
             }
         }
     }
-
-    [UserAccess(3)]
-    [Ui("交流")]
-    public class HubChatWork : ChatWork<HubChatVarWork>
-    {
-        public HubChatWork(WorkConfig cfg) : base(cfg)
-        {
-            CreateVar<HubChatVarWork, int>((obj) => ((Chat) obj).id);
-        }
-
-        public void @default(WebContext wc, int page)
-        {
-            using (var dc = NewDbContext())
-            {
-                const byte proj = 0xff ^ Chat.DETAIL;
-                dc.Sql("SELECT ").collst(Chat.Empty, proj).T(" FROM chats ORDER BY top, posted DESC OFFSET @1 LIMIT 20");
-                var arr = dc.Query<Chat>(p => p.Set(page * 20), proj);
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-                    h.ACCORDION(arr, o =>
-                    {
-                        h.T("<header class=\"uk-accordion-title\">").T(o.uname).T("</header>");
-                        if (o.posts != null)
-                        {
-                            h.T("<main class=\"uk-accordion-content uk-grid\">");
-                            for (int i = 0; i < o.posts.Length; i++)
-                            {
-                                var m = o.posts[i];
-                                h.FI(m.uname, m.text);
-                            }
-                            h.VARTOOLPAD();
-                            h.T("</main>");
-                        }
-                    });
-                }, true, 6);
-            }
-        }
-
-        [Ui("删除"), Tool(ButtonConfirm)]
-        public void del(WebContext wc)
-        {
-        }
-    }
 }

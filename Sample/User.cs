@@ -21,14 +21,14 @@ namespace Samp
         public static readonly Map<short, string> Shoply = new Map<short, string>
         {
             {1, "副手"},
-            {3, "经理"},
+            {3, "负责"},
         };
 
         public static readonly Map<short, string> Hubly = new Map<short, string>
         {
             {1, "成员"},
             {3, "副手"},
-            {7, "经理"},
+            {7, "负责"},
         };
 
         internal int id;

@@ -923,37 +923,19 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BUTTON(string caption, bool post = true, string css = "uk-button-default", bool top = false)
+        public HtmlContent BUTTON(string caption, string action = null, bool post = true, string css = "uk-button-default")
         {
             Add("<button class=\"uk-button ");
             Add(css);
             Add("\" formmethod=\"");
             Add(post ? "post" : "get");
-            if (top)
+            if (action != null)
             {
-                Add("\" formtarget=\"_top");
+                Add("\" formaction=\"");
+                Add(action);
             }
             Add("\">");
             AddEsc(caption);
-            Add("</button>");
-            return this;
-        }
-
-        public HtmlContent BUTTON(string action, int subcmd, string v, bool post = true, string css = "uk-button-default")
-        {
-            Add("<button class=\"uk-button ");
-            Add(css);
-            Add("\" formmethod=\"");
-            Add(post ? "post" : "get");
-            Add("\" formaction=\"");
-            Add(action);
-            if (subcmd > 0)
-            {
-                Add('-');
-                Add(subcmd);
-            }
-            Add("\">");
-            AddEsc(v);
             Add("</button>");
             return this;
         }
@@ -1078,6 +1060,20 @@ namespace Greatbone
             }
             // pagination if any
             Add("</ul>");
+            return this;
+        }
+
+        public HtmlContent TABLE_()
+        {
+            Add("<div class=\"uk-overflow-auto\">");
+            Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
+            return this;
+        }
+
+        public HtmlContent _TABLE()
+        {
+            Add("</table>");
+            Add("</div>");
             return this;
         }
 

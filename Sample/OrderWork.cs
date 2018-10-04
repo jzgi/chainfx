@@ -71,7 +71,7 @@ namespace Samp
             });
         }
 
-        [Ui("已交货"), Tool(Anchor, "uk-button-link")]
+        [Ui("已供货"), Tool(Anchor, "uk-button-link")]
         public void given(WebContext wc)
         {
             string hubid = wc[0];
@@ -80,16 +80,22 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdGiven).T(" AND hubid = @1 ORDER BY id");
-                    var arr = dc.Query<Order>(p => p.Set(hubid));
-                    h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
-                    );
+                    dc.Sql("SELECT shopid, itemid, sum(qty), array_agg(id) FROM orders WHERE hubid = @1 AND status = ").T(OrdGiven).T(" GROUP BY shopid, itemid");
+                    dc.Query(p => p.Set(hubid));
+                    h.TABLE_();
+                    while (dc.Next())
+                    {
+                        h.T("<tr>");
+                        dc.Let(out short shopid).Let(out short itemid).Let(out short qty).Let(out int[] key);
+                        h.TD(shopid).TD(itemid).TD_(css: "uk-text-right").T(qty).SP()._TD().TD_().BUTTON("入库","take?")._TD();
+                        h.T("</tr>");
+                    }
+                    h._TABLE();
                 }
             });
         }
 
-        [Ui("货到中库"), Tool(Anchor, "uk-button-link")]
+        [Ui("货到中转"), Tool(Anchor, "uk-button-link")]
         public void taken(WebContext wc)
         {
             string hubid = wc[0];
@@ -107,7 +113,7 @@ namespace Samp
             });
         }
 
-        [Ui("货已派"), Tool(Anchor, "uk-button-link")]
+        [Ui("在派送"), Tool(Anchor, "uk-button-link")]
         public void sent(WebContext wc)
         {
             string hubid = wc[0];
@@ -125,9 +131,22 @@ namespace Samp
             });
         }
 
-        [Ui("历史"), Tool(Anchor)]
-        public void shipped(WebContext wc)
+        [Ui("已送达"), Tool(Anchor, "uk-button-link")]
+        public void received(WebContext wc)
         {
+            string hubid = wc[0];
+            wc.GivePage(200, h =>
+            {
+                h.TOOLBAR();
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdSent).T(" AND hubid = @1 ORDER BY id");
+                    var arr = dc.Query<Order>(p => p.Set(hubid));
+                    h.TABLE(arr, null,
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    );
+                }
+            });
         }
     }
 

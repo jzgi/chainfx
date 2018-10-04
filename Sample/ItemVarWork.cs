@@ -75,7 +75,7 @@ namespace Samp
             {
                 wc.GivePane(200, h =>
                 {
-                    bool ingrp = prin.teamat != null;
+                    bool ingrp = prin.teamat > 0;
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();

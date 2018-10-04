@@ -21,10 +21,10 @@ namespace Samp
             {OrdAborted, "已撤销"},
             {OrdCreated, null},
             {OrdPaid, "已收款"},
-            {OrdGiven, "货已交"},
-            {OrdTaken, "货已接"},
-            {OrdSent, "货已派"},
-            {OrdReceived, "货已收"},
+            {OrdGiven, "已供货"},
+            {OrdTaken, "货到中转"},
+            {OrdSent, "在派送"},
+            {OrdReceived, "已送达"},
             {OrdEnded, "完成"}
         };
 
