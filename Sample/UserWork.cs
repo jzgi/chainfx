@@ -59,7 +59,7 @@ namespace Samp
         }
 
         [UserAccess(hubly: 7)]
-        [Ui("副手", group: 1), Tool(ButtonPickConfirm)]
+        [Ui("副手", @group: 1), Tool(ButtonPickConfirm)]
         public async Task aid(WebContext wc, int cmd)
         {
             string teamid = wc[-1];
@@ -68,16 +68,12 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 dc.Sql("UPDATE users SET team = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE teamat = @1 AND team <> 15 AND id")._IN_(key);
-                dc.Execute(p =>
-                {
-                    p.Set(teamid);
-                    p.SetIn(key);
-                });
+                dc.Execute(p => p.Set(teamid));
             }
             wc.GiveRedirect();
         }
 
-        [Ui("批准", group: 2), Tool(ButtonPickConfirm)]
+        [Ui("批准", @group: 2), Tool(ButtonPickConfirm)]
         public async Task apprv(WebContext wc, int cmd)
         {
             string teamid = wc[-1];
@@ -86,11 +82,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 dc.Sql("UPDATE users SET team = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE teamat = @1 AND team <> 15 AND id")._IN_(key);
-                dc.Execute(p =>
-                {
-                    p.Set(teamid);
-                    p.SetIn(key);
-                });
+                dc.Execute(p => p.Set(teamid));
             }
             wc.GiveRedirect();
         }
@@ -145,11 +137,7 @@ namespace Samp
             using (var dc = NewDbContext())
             {
                 dc.Sql("UPDATE users SET shop = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE shopat = @1 AND shop < 15 AND id")._IN_(key);
-                dc.Execute(p =>
-                {
-                    p.Set(shopid);
-                    p.SetIn(key);
-                });
+                dc.Execute(p => p.Set(shopid));
             }
             wc.GiveRedirect();
         }
@@ -180,7 +168,7 @@ namespace Samp
         }
 
         [UserAccess(hubly: 7)]
-        [Ui("添加", "添加工作人员"), Tool(ButtonShow, size: 1)]
+        [Ui("添加", icon: "plus", tip: "添加工作人员"), Tool(ButtonShow, size: 1)]
         public async Task add(WebContext wc, int cmd)
         {
             string tel = null;

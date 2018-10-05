@@ -1357,19 +1357,19 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string css = "uk-button-default")
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string icon = null, string css = "uk-button-default")
         {
             // locate the proper work
             Work w = webCtx.Work;
             var act = w[action];
             if (act != null)
             {
-                PutTool(act, subscript, caption, css);
+                PutTool(act, subscript, caption, icon, css);
             }
             return this;
         }
 
-        void PutTool(Actioner act, int subscript = -1, string caption = null, string css = null)
+        void PutTool(Actioner act, int subscript = -1, string caption = null, string icon = null, string css = null)
         {
             var tool = act.Tool;
 
@@ -1483,7 +1483,18 @@ namespace Greatbone
             }
             Add(">");
 
-            Add(caption ?? act.Label);
+            string ico = icon ?? act.Icon;
+            if (ico != null && ico.Length != 0)
+            {
+                Add("<span uk-icon=\"icon: ");
+                Add(ico);
+                Add("\"></span>");
+            }
+            string cap = caption ?? act.Label;
+            if (cap != null && cap.Length != 0)
+            {
+                Add(cap);
+            }
 
             // put the closing tag
             Add(tool.IsAnchorTag ? "</a>" : "</button>");

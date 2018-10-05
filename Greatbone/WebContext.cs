@@ -19,7 +19,7 @@ namespace Greatbone
     ///
     /// The encapsulation of a web request/response exchange context. It supports multiplexity occuring in SSE and WebSocket.
     ///
-    public class WebContext : HttpContext, IDisposable
+    public sealed class WebContext : HttpContext, IDisposable
     {
         readonly IFeatureCollection features;
 

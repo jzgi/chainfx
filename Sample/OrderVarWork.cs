@@ -88,12 +88,12 @@ namespace Samp
             wc.GiveRedirect("../");
         }
 
-        [Ui("送货", group: 1), Tool(ButtonPickPrompt)]
+        [Ui("送货", @group: 1), Tool(ButtonPickPrompt)]
         public async Task receive(WebContext wc)
         {
         }
 
-        [Ui("送货", group: 2), Tool(ButtonPickPrompt)]
+        [Ui("送货", @group: 2), Tool(ButtonPickPrompt)]
         public async Task dgrp(WebContext wc)
         {
         }
@@ -116,8 +116,8 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT item, SUM(qty) AS num FROM orders WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1 GROUP BY item");
-                        dc.Query(p => p.SetIn(key).Set(grpid));
+                        dc.Sql("SELECT item, sum(qty) AS num FROM orders WHERE id")._IN_(key).T(" AND status = 3 AND teamid = @1 GROUP BY item");
+                        dc.Query(p => p.Set(grpid));
                         h.FORM_();
 
                         h.T("仅列出已送达货品");
@@ -139,7 +139,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Sql("UPDATE orders SET status = 4 WHERE id")._IN_(key).T(" AND status = 3 AND grpid = @1");
-                    dc.Execute(p => p.SetIn(key).Set(grpid));
+                    dc.Execute(p => p.Set(grpid));
                 }
                 wc.GiveRedirect();
             }

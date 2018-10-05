@@ -1586,7 +1586,6 @@ select.uk-form-width-xsmall {
 .uk-button-default {
     background-color: inherit;
     border: 1px solid #3caf36;
-    border-radius: 4px;
     color: #3caf36;
     line-height: 26px;
     height: 28px;
@@ -1612,7 +1611,6 @@ select.uk-form-width-xsmall {
     background-color: #3caf36;
     color: #fff;
     border: 1px solid #3caf36;
-    border-radius: 4px;
     line-height: 26px;
     height: 28px;
 }
@@ -1636,7 +1634,6 @@ a.uk-button-primary {
 .uk-button-secondary {
     background-color: inherit;
     border: 1px solid #dcdcdc;
-    border-radius: 4px;
     color: #3caf36;
     line-height: 26px;
     height: 28px;
@@ -1660,7 +1657,6 @@ a.uk-button-primary {
     background-color: #f0506e;
     color: #fff;
     border: 1px solid transparent;
-    border-radius: 4px;
 }
 
 .uk-button-danger:hover,

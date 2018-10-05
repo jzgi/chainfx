@@ -9,18 +9,12 @@ namespace Greatbone
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
     /// </summary>
-    public class DbContext : ISource, IParams, IDisposable
+    public sealed class DbContext : ISource, IParams, IDisposable
     {
         static readonly string[] PARAMS =
         {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
             "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"
-        };
-
-        static readonly string[] INS =
-        {
-            "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
-            "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31", "v32"
         };
 
         readonly Service service;
@@ -53,7 +47,7 @@ namespace Greatbone
             };
         }
 
-        void Clear(bool reread = true)
+        void Clear()
         {
             // reader reset
             if (reader != null)
@@ -115,7 +109,7 @@ namespace Greatbone
             if (transact != null && !transact.IsCompleted)
             {
                 // indicate disposing the instance 
-                Clear(false);
+                Clear();
                 transact.Rollback();
                 command.Transaction = null;
                 transact = null;
@@ -414,7 +408,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear(false);
+            Clear();
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -431,7 +425,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear(false);
+            Clear();
             command.CommandText = sql.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -448,7 +442,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear(false);
+            Clear();
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -470,7 +464,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear(false);
+            Clear();
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -488,7 +482,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear(false);
+            Clear();
             command.CommandText = sql.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -505,7 +499,7 @@ namespace Greatbone
             {
                 connection.Open();
             }
-            Clear(false);
+            Clear();
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -1661,24 +1655,6 @@ namespace Greatbone
         public IParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
             Put(PARAMS[index++], v, proj);
-            return this;
-        }
-
-        public IParams SetIn(string[] v)
-        {
-            for (int i = 0; i < v.Length; i++)
-            {
-                Put(INS[i], v[i]);
-            }
-            return this;
-        }
-
-        public IParams SetIn(int[] v)
-        {
-            for (int i = 0; i < v.Length; i++)
-            {
-                Put(INS[i], v[i]);
-            }
             return this;
         }
     }

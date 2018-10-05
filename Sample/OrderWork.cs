@@ -87,7 +87,7 @@ namespace Samp
                     {
                         h.T("<tr>");
                         dc.Let(out short shopid).Let(out short itemid).Let(out short qty).Let(out int[] key);
-                        h.TD(shopid).TD(itemid).TD_(css: "uk-text-right").T(qty).SP()._TD().TD_().BUTTON("入库","take?")._TD();
+                        h.TD(shopid).TD(itemid).TD_(css: "uk-text-right").T(qty).SP()._TD().TD_().BUTTON("入库", "take?")._TD();
                         h.T("</tr>");
                     }
                     h._TABLE();
@@ -200,14 +200,14 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("概况", group: 1), Tool(ButtonPickShow)]
+        [Ui("概况", @group: 1), Tool(ButtonPickShow)]
         public void summary(WebContext wc)
         {
             bool range = true;
         }
 
 
-        [Ui("排程", "设为排程状态", 0b0010), Tool(ButtonPickShow, css: "uk-button-secondary")]
+        [Ui("排程", tip: "设为排程状态", group: 2), Tool(ButtonPickShow, css: "uk-button-secondary")]
         public void plan(WebContext wc)
         {
             bool range = true;
@@ -232,7 +232,7 @@ namespace Samp
             }
         }
 
-        [Ui("解排", "解除排程状态", 0b0010), Tool(ButtonPickShow, css: "uk-button-secondary")]
+        [Ui("解排", tip: "解除排程状态", group: 2), Tool(ButtonPickShow, css: "uk-button-secondary")]
         public async Task unplan(WebContext wc)
         {
             bool range = false;
@@ -255,11 +255,6 @@ namespace Samp
                 }
                 wc.GiveRedirect();
             }
-        }
-
-        [Ui("备齐", "解除排程状态", 0b0100), Tool(ButtonPickShow, css: "uk-button-secondary")]
-        public async Task ready(WebContext wc)
-        {
         }
     }
 

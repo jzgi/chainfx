@@ -31,7 +31,7 @@ namespace Samp
         }
 
         [UserAccess(hubly: 7)]
-        [Ui("x", "删除此操作人员？"), Tool(ButtonConfirm)]
+        [Ui(icon: "trash", tip: "删除此操作人员？"), Tool(ButtonConfirm)]
         public void rm(WebContext wc, int cmd)
         {
             int id = wc[this];

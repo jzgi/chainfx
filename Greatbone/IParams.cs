@@ -46,9 +46,5 @@ namespace Greatbone
         IParams Set(IData v, byte proj = 0x0f);
 
         IParams Set<D>(D[] v, byte proj = 0x0f) where D : IData;
-
-        IParams SetIn(string[] v);
-        
-        IParams SetIn(int[] v);
     }
 }
