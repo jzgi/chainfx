@@ -12,7 +12,7 @@
  Target Server Version : 90606
  File Encoding         : 65001
 
- Date: 06/10/2018 07:34:44
+ Date: 08/10/2018 00:28:41
 */
 
 
@@ -139,10 +139,11 @@ CREATE TABLE "public"."items" (
   "min" int2,
   "step" int2,
   "refrig" bool,
-  "cap" int4,
+  "cap7" int4,
   "queue" int4,
   "shopid" int2,
-  "status" int2
+  "status" int2,
+  "img" bytea
 )
 ;
 
@@ -167,13 +168,13 @@ CREATE TABLE "public"."orders" (
   "total" money,
   "cash" money DEFAULT 0,
   "paid" timestamp(6),
-  "shopid" varchar(3) COLLATE "pg_catalog"."default",
-  "giverid" int4,
-  "given" timestamp(6),
+  "shopid" int2,
+  "accepterid" int4,
+  "accepted" timestamp(6),
   "senderid" int4,
   "sent" timestamp(6),
-  "takerid" int4,
-  "taken" timestamp(6),
+  "stockerid" int4,
+  "stocked" timestamp(6),
   "receiverid" int4,
   "received" timestamp(6),
   "ended" timestamp(6),
@@ -287,7 +288,7 @@ OWNED BY "public"."items"."id";
 SELECT setval('"public"."items_id_seq1"', 2, false);
 ALTER SEQUENCE "public"."orders_id_seq"
 OWNED BY "public"."orders"."id";
-SELECT setval('"public"."orders_id_seq"', 2, false);
+SELECT setval('"public"."orders_id_seq"', 3, true);
 ALTER SEQUENCE "public"."orgs_id_seq1"
 OWNED BY "public"."orgs"."id";
 SELECT setval('"public"."orgs_id_seq1"', 2, false);
@@ -311,7 +312,7 @@ ALTER TABLE "public"."hubs" ADD CONSTRAINT "hubs_pkey" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table items
 -- ----------------------------
-ALTER TABLE "public"."items" ADD CONSTRAINT "items_pkey1" PRIMARY KEY ("id");
+ALTER TABLE "public"."items" ADD CONSTRAINT "items_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table orders

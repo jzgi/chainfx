@@ -14,7 +14,7 @@ namespace Samp
     }
 
 
-    [Ui("货品")]
+    [Ui("货架")]
     public class HubItemWork : ItemWork<HubItemVarWork>
     {
         public HubItemWork(WorkConfig cfg) : base(cfg)
@@ -26,7 +26,8 @@ namespace Samp
             string hubid = wc[0];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Item>("SELECT * FROM items ORDER BY status DESC");
+                dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND status > 0 ORDER BY status DESC");
+                var arr = dc.Query<Item>(p => p.Set(hubid));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
@@ -73,7 +74,7 @@ namespace Samp
             }
             else // POST
             {
-                const byte proj = Item.PK;
+                const byte proj = Item.ID;
                 var o = await wc.ReadObjectAsync<Item>();
                 using (var dc = NewDbContext())
                 {

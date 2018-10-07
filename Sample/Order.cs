@@ -14,7 +14,7 @@ namespace Samp
 
         // status
         public const short
-            OrdAborted = -1, OrdCreated = 0, OrdPaid = 1, OrdAccepted = 2, OrdTaken = 3, OrdSent = 4, OrdReceived = 5, OrdEnded = 6;
+            OrdAborted = -1, OrdCreated = 0, OrdPaid = 1, OrdAccepted = 2, OrdStocked = 3, OrdSent = 4, OrdReceived = 5, OrdEnded = 6;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -22,7 +22,7 @@ namespace Samp
             {OrdCreated, null},
             {OrdPaid, "待备货"},
             {OrdAccepted, "备货中"},
-            {OrdTaken, "中转站"},
+            {OrdStocked, "中转站"},
             {OrdSent, "运送中"},
             {OrdReceived, "已运达"},
             {OrdEnded, "完成"}
@@ -47,8 +47,8 @@ namespace Samp
         internal short shopid; // workshop's orgid
         internal int accepterid; // giving forth goods
         internal DateTime accepted;
-        internal int takerid; // taking goods from the giver to the storage 
-        internal DateTime taken;
+        internal int stockerid; // taking goods from the giver to the storage 
+        internal DateTime stocked;
         internal int senderid; // sending goods to the team 
         internal DateTime sent;
         internal int receiverid; // receiving goods for the team 
@@ -82,8 +82,8 @@ namespace Samp
                 s.Get(nameof(shopid), ref shopid);
                 s.Get(nameof(accepterid), ref accepterid);
                 s.Get(nameof(accepted), ref accepted);
-                s.Get(nameof(takerid), ref takerid);
-                s.Get(nameof(taken), ref taken);
+                s.Get(nameof(stockerid), ref stockerid);
+                s.Get(nameof(stocked), ref stocked);
                 s.Get(nameof(senderid), ref senderid);
                 s.Get(nameof(sent), ref sent);
                 s.Get(nameof(receiverid), ref receiverid);
@@ -119,8 +119,8 @@ namespace Samp
                 s.Put(nameof(shopid), shopid);
                 s.Put(nameof(accepterid), accepterid);
                 s.Put(nameof(accepted), accepted);
-                s.Put(nameof(takerid), takerid);
-                s.Put(nameof(taken), taken);
+                s.Put(nameof(stockerid), stockerid);
+                s.Put(nameof(stocked), stocked);
                 s.Put(nameof(senderid), senderid);
                 s.Put(nameof(sent), sent);
                 s.Put(nameof(receiverid), receiverid);

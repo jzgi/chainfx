@@ -1,4 +1,4 @@
-﻿﻿using Greatbone;
+﻿using Greatbone;
 
 namespace Samp
 {
@@ -9,7 +9,7 @@ namespace Samp
     {
         public static readonly Item Empty = new Item();
 
-        public const byte PK = 1, LATER = 2;
+        public const byte ID = 1, LATER = 2;
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
@@ -35,14 +35,14 @@ namespace Samp
         internal short min;
         internal short step;
         internal bool refrig;
-        internal int cap; // total capacity in 7 days
-        internal int queue; // ordered but not fulfilled
+        internal int cap7; // total capacity in 7 days
+        internal int queue; // ordered but not stocked
         internal int shopid;
         internal short status;
 
         public void Read(ISource s, byte proj = 0x0f)
         {
-            if ((proj & PK) > 0)
+            if ((proj & ID) > 0)
             {
                 s.Get(nameof(id), ref id);
             }
@@ -50,28 +50,28 @@ namespace Samp
             s.Get(nameof(name), ref name);
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(remark), ref remark);
-            s.Get(nameof(mov), ref mov);
             s.Get(nameof(unit), ref unit);
+            s.Get(nameof(min), ref min);
+            s.Get(nameof(step), ref step);
+            s.Get(nameof(refrig), ref refrig);
+            s.Get(nameof(mov), ref mov);
             s.Get(nameof(price), ref price);
             s.Get(nameof(fee), ref fee);
             s.Get(nameof(shopp), ref shopp);
             s.Get(nameof(senderp), ref senderp);
             s.Get(nameof(teamp), ref teamp);
-            s.Get(nameof(min), ref min);
-            s.Get(nameof(step), ref step);
-            s.Get(nameof(refrig), ref refrig);
             if ((proj & LATER) > 0)
             {
                 s.Get(nameof(queue), ref queue);
                 s.Get(nameof(shopid), ref shopid);
-                s.Get(nameof(cap), ref cap);
+                s.Get(nameof(cap7), ref cap7);
+                s.Get(nameof(status), ref status);
             }
-            s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 0x0f)
         {
-            if ((proj & PK) > 0)
+            if ((proj & ID) > 0)
             {
                 s.Put(nameof(id), id);
             }
@@ -79,23 +79,23 @@ namespace Samp
             s.Put(nameof(name), name);
             s.Put(nameof(descr), descr);
             s.Put(nameof(remark), remark);
-            s.Put(nameof(mov), mov);
             s.Put(nameof(unit), unit);
+            s.Put(nameof(min), min);
+            s.Put(nameof(step), step);
+            s.Put(nameof(refrig), refrig);
+            s.Put(nameof(mov), mov);
             s.Put(nameof(price), price);
             s.Put(nameof(fee), fee);
             s.Put(nameof(shopp), shopp);
             s.Put(nameof(senderp), senderp);
             s.Put(nameof(teamp), teamp);
-            s.Put(nameof(min), min);
-            s.Put(nameof(step), step);
-            s.Put(nameof(refrig), refrig);
             if ((proj & LATER) > 0)
             {
                 s.Put(nameof(queue), queue);
                 s.Put(nameof(shopid), shopid);
-                s.Put(nameof(cap), cap);
+                s.Put(nameof(cap7), cap7);
+                s.Put(nameof(status), status);
             }
-            s.Put(nameof(status), status);
         }
     }
 }

@@ -101,7 +101,7 @@ namespace Samp
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid, itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(OrdTaken).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid, itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(OrdStocked).T(" GROUP BY teamid, itemid");
                     dc.Query(p => p.Set(hubid));
                     while (dc.Next())
                     {
@@ -231,7 +231,7 @@ namespace Samp
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status BETWEEN ").T(OrdTaken).T(" AND ").T(OrdReceived).T(" AND shopid = @2 GROUP BY itemid");
+                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status BETWEEN ").T(OrdStocked).T(" AND ").T(OrdReceived).T(" AND shopid = @2 GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                     while (dc.Next())
                     {
@@ -367,7 +367,7 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdTaken).T(" AND teamid = @1 ORDER BY id");
+                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdStocked).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(orgid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()

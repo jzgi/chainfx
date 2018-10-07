@@ -159,24 +159,27 @@ namespace Samp
         [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
-            string name = wc[this];
+            string hubid = wc[0];
+            short id = wc[this];
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Item>("SELECT * FROM items WHERE name = @1 ORDER BY status DESC, name", p => p.Set(name));
+                    dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE id = @1");
+                    var o = dc.Query1<Item>(p => p.Set(id));
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDUL_(o.name);
+                        h.FIELDUL_();
+                        h.LI_().TEXT("品　名", nameof(o.name), o.name, required: true)._LI();
                         h.LI_().TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true)._LI();
                         h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
+                        h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true).LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
                         h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
-                        h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true)._LI();
-                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true).LABEL("供应价").NUMBER(null, nameof(o.shopp), o.shopp, required: true)._LI();
-                        h.LI_().NUMBER("派送费", nameof(o.fee), o.fee, required: true).LABEL("团组费").NUMBER(null, nameof(o.fee), o.fee, required: true)._LI();
-                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).LABEL("增　减").NUMBER(null, nameof(o.step), o.step, min: (short) 1)._LI();
-                        h.LI_().LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
+                        h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).NUMBER("增　减", nameof(o.step), o.step, min: (short) 1)._LI();
+                        h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true)._LI();
+                        h.LI_().NUMBER("产供档", nameof(o.shopp), o.shopp, required: true).NUMBER("派送档", nameof(o.senderp), o.senderp, required: true)._LI();
+                        h.LI_().NUMBER("团组档", nameof(o.teamp), o.teamp, required: true).NUMBER("上门费", nameof(o.fee), o.fee, required: true)._LI();
                         h._FIELDUL();
                         h._FORM();
                     });
@@ -186,13 +189,14 @@ namespace Samp
             {
                 const byte proj = 0;
                 var o = await wc.ReadObjectAsync<Item>(proj);
+                o.hubid = hubid;
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE name = @1");
+                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE id = @1");
                     dc.Execute(p =>
                     {
                         o.Write(p, proj);
-                        p.Set(name);
+                        p.Set(id);
                     });
                 }
                 wc.GivePane(200); // close
@@ -223,23 +227,28 @@ namespace Samp
             }
         }
 
-        [Ui("调度"), Tool(ButtonShow, size: 4)]
+        [Ui("调度"), Tool(ButtonShow, size: 2)]
         public async Task plan(WebContext wc)
         {
-            string name = wc[this];
+            string hubid = wc[0];
+            short id = wc[this];
+            short shopid;
+            short cap7;
+            short status;
             if (wc.GET)
             {
                 using (var dc = NewDbContext())
                 {
-                    var o = dc.Query1<Item>("SELECT * FROM items WHERE name = @1", p => p.Set(name));
+                    dc.Query1("SELECT shopid, cap7, status FROM items WHERE id = @1", p => p.Set(id));
+                    dc.Let(out shopid).Let(out cap7).Let(out status);
                     wc.GivePane(200, h =>
                     {
-                        string tel = null;
+                        var orgs = Obtain<Map<short, Org>>();
                         h.FORM_();
                         h.FIELDUL_("填写供货信息");
-                        h.TEL("手机", nameof(tel), tel);
-                        h.TEXT("单位", nameof(o.unit), o.unit, required: true);
-                        h.SELECT("状态", nameof(o.status), o.status, Item.Statuses);
+                        h.LI_().SELECT("产供方", nameof(shopid), shopid, orgs, filter:x=>x.hubid == hubid && x.typ == 1)._LI();
+                        h.LI_().NUMBER("周产量", nameof(cap7), cap7, required: true)._LI();
+                        h.LI_().SELECT("状　态", nameof(status), status, Item.Statuses)._LI();
                         h._FIELDUL();
                         h._FORM();
                     });
@@ -247,12 +256,14 @@ namespace Samp
             }
             else // POST
             {
-                const byte proj = 0xff ^ Item.PK;
-                var o = await wc.ReadObjectAsync<Item>(proj);
+                var f = await wc.ReadAsync<Form>();
+                shopid = f[nameof(shopid)];
+                cap7 = f[nameof(cap7)];
+                status = f[nameof(status)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("UPDATE items")._SET_(Item.Empty, proj).T(" WHERE orgid = @1 AND name = @2");
-                    dc.Execute(p => { o.Write(p, proj); });
+                    dc.Sql("UPDATE items SET shopid = @1, cap7 = @2, status = @3 WHERE id = @4");
+                    dc.Execute(p => p.Set(shopid).Set(cap7).Set(status).Set(id));
                 }
                 wc.GivePane(200); // close
             }
