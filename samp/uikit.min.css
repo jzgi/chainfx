@@ -1634,6 +1634,7 @@ a.uk-button-primary {
 .uk-button-secondary {
     background-color: inherit;
     border: 1px solid #dcdcdc;
+    border-radius: 12px;
     color: #3caf36;
     line-height: 26px;
     height: 28px;

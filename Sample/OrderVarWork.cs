@@ -87,16 +87,6 @@ namespace Samp
             }
             wc.GiveRedirect("../");
         }
-
-        [Ui("送货", @group: 1), Tool(ButtonPickPrompt)]
-        public async Task receive(WebContext wc)
-        {
-        }
-
-        [Ui("送货", @group: 2), Tool(ButtonPickPrompt)]
-        public async Task dgrp(WebContext wc)
-        {
-        }
     }
 
     public class TeamOrderVarWork : OrderVarWork
@@ -143,11 +133,6 @@ namespace Samp
                 }
                 wc.GiveRedirect();
             }
-        }
-
-        [Ui("递货"), Tool(ButtonPickPrompt)]
-        public void give(WebContext wc)
-        {
         }
     }
 

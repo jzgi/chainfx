@@ -38,7 +38,7 @@ namespace Samp
 
             h.Add("<head>");
             h.Add("<title>");
-            h.Add(title ?? wc.Work.Label);
+            h.Add(title);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");

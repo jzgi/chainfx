@@ -12,7 +12,7 @@
  Target Server Version : 90606
  File Encoding         : 65001
 
- Date: 03/10/2018 23:19:55
+ Date: 06/10/2018 07:34:44
 */
 
 
@@ -253,6 +253,28 @@ CREATE TABLE "public"."users" (
   "created" timestamp(6) DEFAULT ('now'::text)::timestamp without time zone
 )
 ;
+
+-- ----------------------------
+-- Function structure for first_agg
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."first_agg"(anyelement, anyelement);
+CREATE OR REPLACE FUNCTION "public"."first_agg"(anyelement, anyelement)
+  RETURNS "pg_catalog"."anyelement" AS $BODY$
+SELECT $1;
+$BODY$
+  LANGUAGE sql IMMUTABLE STRICT
+  COST 100;
+
+-- ----------------------------
+-- Function structure for last_agg
+-- ----------------------------
+DROP FUNCTION IF EXISTS "public"."last_agg"(anyelement, anyelement);
+CREATE OR REPLACE FUNCTION "public"."last_agg"(anyelement, anyelement)
+  RETURNS "pg_catalog"."anyelement" AS $BODY$
+SELECT $2;
+$BODY$
+  LANGUAGE sql IMMUTABLE STRICT
+  COST 100;
 
 -- ----------------------------
 -- Alter sequences owned by

@@ -123,12 +123,12 @@ namespace Samp
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
-            short id = wc[-1];
+            short id = wc[this];
             var shop = Obtain<Map<short, Org>>()[id];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
-                wc.GiveFrame(200, false, 900, shop?.name);
+                wc.GiveFrame(200, false, 900, title: shop?.name);
             }
             else
             {
@@ -142,7 +142,7 @@ namespace Samp
                     h._SECTION();
 
                     h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("成员")._HEADER();
+                    h.HEADER_("uk-card-header").H4("人员")._HEADER();
                     h.MAIN_("uk-card-body")._MAIN();
                     h._SECTION();
                 });

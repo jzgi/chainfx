@@ -97,38 +97,23 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            wc.GivePage(200, h => { h.TOOLBAR(); });
-        }
-
-        [Ui("查找"), Tool(AnchorPrompt)]
-        public void find(WebContext wc)
-        {
-            string shopid = wc[-1];
-            string tel = null;
-            bool inner = wc.Query[nameof(inner)];
-            if (inner)
+            short orgid = wc[-1];
+            using (var dc = NewDbContext())
             {
-                wc.GivePane(200, h => { h.FORM_().FIELDUL_("手机号").TEL(null, nameof(tel), tel)._FIELDUL()._FORM(); });
-            }
-            else
-            {
-                tel = wc.Query[nameof(tel)];
-                using (var dc = NewDbContext())
+                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE shopat = @1 AND shoply > 0 ORDER BY name");
+                var arr = dc.Query<User>(p => p.Set(orgid));
+                wc.GivePage(200, h =>
                 {
-                    var arr = dc.Query<User>("SELECT * FROM users WHERE shopat = @1 AND tel = @2", p => p.Set(shopid).Set(tel));
-                    wc.GivePage(200, h =>
-                    {
-                        h.TOOLBAR(title: tel);
-                        h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Shoply[o.shoply])
-                        );
-                    });
-                }
+                    h.TOOLBAR(group: 2);
+                    h.TABLE(arr, null,
+                        o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Shoply[o.shoply])
+                    );
+                }, @public: false, maxage: 3, refresh: 300);
             }
         }
 
         [UserAccess(shoply: 15)]
-        [Ui("加减助手"), Tool(ButtonPickConfirm)]
+        [Ui("添加", icon: "plus"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
             string shopid = wc[-1];
