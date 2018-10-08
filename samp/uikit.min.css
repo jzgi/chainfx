@@ -1565,6 +1565,14 @@ select.uk-form-width-xsmall {
     align-items: center;
 }
 
+a.uk-button {
+    border-radius: 0;
+}
+
+button.uk-button {
+    border-radius: 12px;
+}
+
 .uk-button:not(:disabled) {
     cursor: pointer;
 }
@@ -1634,7 +1642,6 @@ a.uk-button-primary {
 .uk-button-secondary {
     background-color: inherit;
     border: 1px solid #dcdcdc;
-    border-radius: 12px;
     color: #3caf36;
     line-height: 26px;
     height: 28px;
@@ -1642,13 +1649,13 @@ a.uk-button-primary {
 
 .uk-button-secondary:hover,
 .uk-button-secondary:focus {
-    border: 1px solid #3caf36;
+    border: 1px solid #dcdcdc;
 }
 
-/* OnClick + Active */
 .uk-button-secondary:active,
 .uk-button-secondary.uk-active {
-    border-radius: 0;
+    background-color: #3caf36;
+    color: #fff;
 }
 
 /*

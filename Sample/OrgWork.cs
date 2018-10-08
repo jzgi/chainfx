@@ -9,7 +9,7 @@ namespace Samp
     {
         protected OrgWork(WorkConfig cfg) : base(cfg)
         {
-//            CreateVar<V, string>(obj => ((Org) obj).id);
+            CreateVar<V, short>(obj => ((Org) obj).id);
         }
     }
 
@@ -20,7 +20,7 @@ namespace Samp
         {
         }
 
-        [Ui("团组"), Tool(Anchor, "uk-button-link")]
+        [Ui("团"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];

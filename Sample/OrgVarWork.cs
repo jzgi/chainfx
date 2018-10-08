@@ -18,10 +18,10 @@ namespace Samp
         }
 
 
-        [Ui("修改"), Tool(ButtonShow)]
+        [Ui(icon: "file-edit"), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {
-            string orgid = wc[this];
+            short orgid = wc[this];
             const byte proj = 0xff;
             if (wc.GET)
             {
@@ -32,10 +32,9 @@ namespace Samp
                     wc.GivePane(200, h =>
                     {
                         h.FORM_().FIELDUL_("填写网点信息");
-                        h.STATIC("编号", o.id);
-                        h.TEXT("名称", nameof(o.name), o.name, max: 10, required: true);
-                        h.TEXT("地址", nameof(o.addr), o.addr, max: 20);
-                        h.NUMBER("经度", nameof(o.x), o.x).NUMBER("纬度", nameof(o.x), o.x);
+                        h.LI_().TEXT("名称", nameof(o.name), o.name, max: 10, required: true)._LI();
+                        h.LI_().TEXT("地址", nameof(o.addr), o.addr, max: 20)._LI();
+                        h.LI_().NUMBER("经度", nameof(o.x), o.x).NUMBER("纬度", nameof(o.x), o.x)._LI();
                         h._FIELDUL()._FORM();
                     });
                 }

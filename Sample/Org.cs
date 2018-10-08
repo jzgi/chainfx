@@ -28,12 +28,12 @@ namespace Samp
         internal string hubid;
         internal short typ;
         internal string name;
-        internal string tel;
         internal string addr;
         internal double x;
         internal double y;
         internal int mgrid;
         internal string mgrname;
+        internal string mgrtel;
         internal string mgrwx;
         internal short status;
 
@@ -46,7 +46,6 @@ namespace Samp
             s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(tel), ref tel);
             s.Get(nameof(addr), ref addr);
             s.Get(nameof(x), ref x);
             s.Get(nameof(y), ref y);
@@ -54,6 +53,7 @@ namespace Samp
             {
                 s.Get(nameof(mgrid), ref mgrid);
                 s.Get(nameof(mgrname), ref mgrname);
+                s.Get(nameof(mgrtel), ref mgrtel);
                 s.Get(nameof(mgrwx), ref mgrwx);
             }
             s.Get(nameof(status), ref status);
@@ -68,7 +68,6 @@ namespace Samp
             s.Put(nameof(hubid), hubid);
             s.Put(nameof(typ), typ);
             s.Put(nameof(name), name);
-            s.Put(nameof(tel), tel);
             s.Put(nameof(addr), addr);
             s.Put(nameof(x), x);
             s.Put(nameof(y), y);
@@ -76,6 +75,7 @@ namespace Samp
             {
                 s.Put(nameof(mgrid), mgrid);
                 s.Put(nameof(mgrname), mgrname);
+                s.Put(nameof(mgrtel), mgrtel);
                 s.Put(nameof(mgrwx), mgrwx);
             }
             s.Put(nameof(status), status);
