@@ -106,7 +106,7 @@ namespace Greatbone
 
         public string Directory => cfg.Directory;
 
-        public bool HasKeyer => cfg.Keyer != null;
+        public bool HasPrinci => cfg.Princi != null;
 
         public Map<string, Actioner> Actioners => actioners;
 
@@ -130,14 +130,14 @@ namespace Greatbone
         /// <summary>
         /// Create a variable-key subwork.
         /// </summary>
-        /// <param name="keyer">to resolve key from the principal object</param>
+        /// <param name="princi">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W MountVar<W>(Func<IData, object> keyer = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W MountVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -161,7 +161,7 @@ namespace Greatbone
                 Level = Level + 1,
                 IsVar = true,
                 Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
-                Keyer = keyer,
+                Princi = princi,
             };
             W w = (W) ci.Invoke(new object[] {config});
             varwork = w;
@@ -213,9 +213,9 @@ namespace Greatbone
             return w;
         }
 
-        public object ResolveKey(IData prin)
+        public object GetPrinci(IData prin)
         {
-            var keyer = cfg.Keyer;
+            var keyer = cfg.Princi;
             return keyer?.Invoke(prin);
         }
 
@@ -367,16 +367,16 @@ namespace Greatbone
                     else if (varwork != null) // if variable-key sub
                     {
                         IData prin = wc.Principal;
-                        object prinkey = null;
+                        object princi = null;
                         if (key.Length == 0) // resolve shortcut
                         {
                             if (prin == null) throw except;
-                            if ((prinkey = varwork.ResolveKey(prin)) == null)
+                            if ((princi = varwork.GetPrinci(prin)) == null)
                             {
                                 throw except;
                             }
                         }
-                        wc.Chain(varwork, key, prinkey);
+                        wc.Chain(varwork, key, princi);
                         await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                     }
                 }
