@@ -6,7 +6,7 @@ namespace Samp
     {
         public MyWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<MyVarWork, int>((obj) => ((User) obj).id);
+            MountVar<MyVarWork>((obj) => ((User) obj).id);
         }
     }
 
@@ -16,15 +16,15 @@ namespace Samp
     {
         public HubWork(WorkConfig cfg) : base(cfg)
         {
-            Create<HubOrderWork>("order");
+            Mount<HubOrderWork>("order");
 
-            Create<HubItemWork>("item");
+            Mount<HubItemWork>("item");
 
-            Create<HubOrgWork>("org");
+            Mount<HubOrgWork>("org");
 
-            Create<HubUserWork>("user");
+            Mount<HubUserWork>("user");
 
-            Create<HubRepayWork>("repay");
+            Mount<HubRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -62,7 +62,7 @@ namespace Samp
     {
         public ShopWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<ShopVarWork, short>(prin => ((User) prin).shopat);
+            MountVar<ShopVarWork>(prin => ((User) prin).shopat);
         }
     }
 
@@ -71,7 +71,7 @@ namespace Samp
     {
         public TeamWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<TeamVarWork, short>(prin => ((User) prin).teamat);
+            MountVar<TeamVarWork>(prin => ((User) prin).teamat);
         }
     }
 }

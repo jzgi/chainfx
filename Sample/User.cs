@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// A user data object that can act as a principal.
     /// </summary>
-    public class User : IData
+    public class User : IData, IKeyable<int>
     {
         public static readonly User Empty = new User();
 
@@ -98,5 +98,9 @@ namespace Samp
         }
 
         public bool IsIncomplete => name == null || tel == null | addr == null;
+
+        public int Key => id;
+
+        public override string ToString() => name;
     }
 }

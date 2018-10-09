@@ -3,7 +3,6 @@ using System.Data;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.User;
 
 namespace Samp
 {
@@ -11,7 +10,7 @@ namespace Samp
     {
         protected RepayWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>();
+            MountVar<V>();
         }
     }
 

@@ -8,17 +8,17 @@ namespace Samp
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampItemVarWork, string>(obj => ((Item) obj).name);
+            MountVar<SampItemVarWork>();
 
-            Create<SampChatWork>("chat"); // chat
+            Mount<SampChatWork>("chat"); // chat
 
-            Create<MyWork>("my"); // personal
+            Mount<MyWork>("my"); // personal
 
-            Create<TeamWork>("team"); // customer team
+            Mount<TeamWork>("team"); // customer team
 
-            Create<ShopWork>("shop"); // supplying shop
+            Mount<ShopWork>("shop"); // supplying shop
 
-            Create<HubWork>("hub"); // central 
+            Mount<HubWork>("hub"); // central 
 
             // register cached active hubs
             Register(delegate

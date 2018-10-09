@@ -9,9 +9,9 @@ namespace Samp
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<MyOrderWork>("order");
+            Mount<MyOrderWork>("order");
 
-            Create<SampChatWork>("chat");
+            Mount<SampChatWork>("chat");
         }
 
         public void @default(WebContext wc)
@@ -113,11 +113,11 @@ namespace Samp
     {
         public ShopVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<ShopOrderWork>("order");
+            Mount<ShopOrderWork>("order");
 
-            Create<ShopUserWork>("user");
+            Mount<ShopUserWork>("user");
 
-            Create<OrgRepayWork>("repay");
+            Mount<OrgRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -156,11 +156,11 @@ namespace Samp
     {
         public TeamVarWork(WorkConfig cfg) : base(cfg)
         {
-            Create<TeamOrderWork>("order");
+            Mount<TeamOrderWork>("order");
 
-            Create<TeamUserWork>("user");
+            Mount<TeamUserWork>("user");
 
-            Create<OrgRepayWork>("repay");
+            Mount<OrgRepayWork>("repay");
         }
 
         public void @default(WebContext wc)

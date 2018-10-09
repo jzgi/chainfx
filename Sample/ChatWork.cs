@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.User;
 
 namespace Samp
 {
@@ -12,6 +11,7 @@ namespace Samp
 
         protected ChatWork(WorkConfig cfg) : base(cfg)
         {
+            MountVar<V>();
         }
     }
 
@@ -19,7 +19,6 @@ namespace Samp
     {
         public SampChatWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<SampChatVarWork, int>((obj) => ((Chat) obj).id);
         }
 
         public void @default(WebContext wc, int page)

@@ -130,14 +130,14 @@ namespace Greatbone
         /// <summary>
         /// Create a variable-key subwork.
         /// </summary>
-        /// <param name="keyer"></param>
+        /// <param name="keyer">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W CreateVar<W, K>(Func<object, K> keyer = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W MountVar<W>(Func<IData, object> keyer = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -146,7 +146,7 @@ namespace Greatbone
 
             // create instance
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkConfig) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " need public and WorkConfig");
@@ -163,7 +163,7 @@ namespace Greatbone
                 Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
                 Keyer = keyer,
             };
-            W w = (W)ci.Invoke(new object[] { config });
+            W w = (W) ci.Invoke(new object[] {config});
             varwork = w;
             return w;
         }
@@ -177,7 +177,7 @@ namespace Greatbone
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Create<W>(string name, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W Mount<W>(string name, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -191,7 +191,7 @@ namespace Greatbone
 
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WorkConfig) });
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WorkConfig)});
             if (ci == null)
             {
                 throw new ServiceException(typ + " need public and WorkConfig");
@@ -208,67 +208,38 @@ namespace Greatbone
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
             };
             // init sub work
-            W w = (W)ci.Invoke(new object[] { config });
+            W w = (W) ci.Invoke(new object[] {config});
             works.Add(w.Key, w);
             return w;
         }
 
-        public object GetVariableKey(object obj)
+        public object ResolveKey(IData prin)
         {
-            Delegate keyer = cfg.Keyer;
-            if (keyer is Func<object, string> fstr)
-            {
-                return fstr(obj);
-            }
-            if (keyer is Func<object, int> fint)
-            {
-                return fint(obj);
-            }
-            if (keyer is Func<object, long> flong)
-            {
-                return flong(obj);
-            }
-            if (keyer is Func<object, short> fshort)
-            {
-                return fshort(obj);
-            }
-            if (keyer is Func<object, string[]> fstrs)
-            {
-                return fstrs(obj);
-            }
-            if (keyer is Func<object, int[]> fints)
-            {
-                return fints(obj);
-            }
-            if (keyer is Func<object, long[]> flongs)
-            {
-                return flongs(obj);
-            }
-            if (keyer is Func<object, short[]> fshorts)
-            {
-                return fshorts(obj);
-            }
-            return null;
+            var keyer = cfg.Keyer;
+            return keyer?.Invoke(prin);
         }
 
         public void PutVariableKey(object obj, DynamicContent cont)
         {
-            Delegate keyer = cfg.Keyer;
-            if (keyer is Func<object, string> fstr)
+            if (obj is IKeyable<string> kstr)
             {
-                cont.Add(fstr(obj));
+                cont.Add(kstr.Key);
             }
-            else if (keyer is Func<object, long> flong)
+            else if (obj is IKeyable<short> kshort)
             {
-                cont.Add(flong(obj));
+                cont.Add(kshort.Key);
             }
-            else if (keyer is Func<object, int> fint)
+            else if (obj is IKeyable<int> kint)
             {
-                cont.Add(fint(obj));
+                cont.Add(kint.Key);
             }
-            else if (keyer is Func<object, short> fshort)
+            else if (obj is IKeyable<long> klong)
             {
-                cont.Add(fshort(obj));
+                cont.Add(klong.Key);
+            }
+            else
+            {
+                cont.Add(obj.ToString());
             }
         }
 
@@ -377,7 +348,7 @@ namespace Greatbone
                         wc.Actioner = null;
                     }
 
-                WorkExit:
+                    WorkExit:
                     if (filter != null)
                     {
                         if (filter.After && !(filter.OnAfter((wc))) || filter.AfterAsync && !await filter.OnAfterAsync((wc)))
@@ -400,7 +371,7 @@ namespace Greatbone
                         if (key.Length == 0) // resolve shortcut
                         {
                             if (prin == null) throw except;
-                            if ((prinkey = varwork.GetVariableKey(prin)) == null)
+                            if ((prinkey = varwork.ResolveKey(prin)) == null)
                             {
                                 throw except;
                             }
@@ -453,7 +424,7 @@ namespace Greatbone
             bool gzip = false;
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                int len = (int)fs.Length;
+                int len = (int) fs.Length;
                 if (len > 2048)
                 {
                     var ms = new MemoryStream(len);

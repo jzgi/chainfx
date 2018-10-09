@@ -9,7 +9,7 @@ namespace Samp
     {
         protected TutWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, short>(obj => ((Tut) obj).id);
+            MountVar<V>();
         }
     }
 

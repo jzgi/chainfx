@@ -9,7 +9,7 @@ namespace Samp
     {
         protected UserWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>((obj) => ((User) obj).id);
+            MountVar<V>();
         }
     }
 
@@ -146,7 +146,7 @@ namespace Samp
                 {
                     h.TOOLBAR();
                     h.TABLE(arr, null,
-                        o => h.TD(o.name).TD(o.tel).TD(User.Hubly[o.hubly])
+                        o => h.TD(o.name).TD(o.tel).TD(Hubly[o.hubly])
                     );
                 });
             }

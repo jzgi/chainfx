@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.User;
 
 namespace Samp
 {
@@ -9,7 +8,7 @@ namespace Samp
     {
         protected ItemWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, short>(obj => ((Item) obj).id);
+            MountVar<V>();
         }
     }
 

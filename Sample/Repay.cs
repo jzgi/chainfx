@@ -6,7 +6,7 @@ namespace Samp
     /// <summary>
     /// A repay data object.
     ///  </summary>
-    public class Repay : IData
+    public class Repay : IData, IKeyable<int>
     {
         public static readonly Repay Empty = new Repay();
 
@@ -77,5 +77,7 @@ namespace Samp
             s.Put(nameof(err), err);
             s.Put(nameof(status), status);
         }
+
+        public int Key => id;
     }
 }

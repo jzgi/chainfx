@@ -32,8 +32,8 @@ namespace Greatbone
 
         public string Directory { get; internal set; }
 
-        // to obtain a string key from a model object.
-        public Delegate Keyer { get; internal set; }
+        // to resolve key from the principal object.
+        public Func<IData, object> Keyer { get; internal set; }
 
         public string GetFilePath(string file)
         {

@@ -9,7 +9,6 @@ namespace Samp
     {
         protected OrderWork(WorkConfig cfg) : base(cfg)
         {
-            CreateVar<V, int>((obj) => ((Order) obj).id);
         }
     }
 

@@ -6,7 +6,7 @@ namespace Samp
     /// <summary>
     /// An order data object.
     /// </summary>
-    public class Order : IData
+    public class Order : IData, IKeyable<int>
     {
         public static readonly Order Empty = new Order();
 
@@ -129,5 +129,7 @@ namespace Samp
             }
             s.Put(nameof(status), status);
         }
+
+        public int Key => id;
     }
 }

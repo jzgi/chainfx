@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// An item data object that represents a product or service.
     /// </summary>
-    public class Item : IData
+    public class Item : IData, IKeyable<short>
     {
         public static readonly Item Empty = new Item();
 
@@ -97,5 +97,9 @@ namespace Samp
                 s.Put(nameof(status), status);
             }
         }
+
+        public short Key => id;
+
+        public override string ToString() => name;
     }
 }
