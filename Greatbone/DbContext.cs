@@ -518,11 +518,6 @@ namespace Greatbone
         {
             D obj = new D();
             obj.Read(this, proj);
-            // add shard if any
-            if (obj is IShardable sharded)
-            {
-                sharded.Shard = service.Shard;
-            }
             return obj;
         }
 
@@ -533,11 +528,6 @@ namespace Greatbone
             {
                 D obj = new D();
                 obj.Read(this, proj);
-                // add shard if any
-                if (obj is IShardable sharded)
-                {
-                    sharded.Shard = service.Shard;
-                }
                 roll.Add(obj);
             }
             return roll.ToArray();
@@ -550,11 +540,6 @@ namespace Greatbone
             {
                 D obj = new D();
                 obj.Read(this, proj);
-                // add shard name if any
-                if (obj is IShardable sharded)
-                {
-                    sharded.Shard = service.Shard;
-                }
                 K key;
                 if (keyer != null)
                 {
@@ -774,11 +759,6 @@ namespace Greatbone
                     JObj jo = (JObj) p.Parse();
                     v = new D();
                     v.Read(jo, proj);
-                    // add shard if any
-                    if (v is IShardable sharded)
-                    {
-                        sharded.Shard = service.Shard;
-                    }
                     return true;
                 }
             }
@@ -916,13 +896,6 @@ namespace Greatbone
                         JObj jo = ja[i];
                         D obj = new D();
                         obj.Read(jo, proj);
-
-                        // add shard if any
-                        if (obj is IShardable sharded)
-                        {
-                            sharded.Shard = service.Shard;
-                        }
-
                         v[i] = obj;
                     }
                     return true;
@@ -1226,11 +1199,6 @@ namespace Greatbone
                     JObj jo = (JObj) p.Parse();
                     v = new D();
                     v.Read(jo, proj);
-                    // add shard if any
-                    if (v is IShardable sharded)
-                    {
-                        sharded.Shard = service.Shard;
-                    }
                     return this;
                 }
             }
@@ -1258,12 +1226,6 @@ namespace Greatbone
                         JObj jo = ja[i];
                         D obj = new D();
                         obj.Read(jo, proj);
-
-                        // add shard if any
-                        if (obj is IShardable sharded)
-                        {
-                            sharded.Shard = service.Shard;
-                        }
                         v[i] = obj;
                     }
                     return this;

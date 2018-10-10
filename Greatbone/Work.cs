@@ -128,7 +128,7 @@ namespace Greatbone
         }
 
         /// <summary>
-        /// Create a variable-key subwork.
+        /// Create and add a variable-key subwork.
         /// </summary>
         /// <param name="princi">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
@@ -137,7 +137,7 @@ namespace Greatbone
         /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W MountVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W MakeVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -177,7 +177,7 @@ namespace Greatbone
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Mount<W>(string name, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W Make<W>(string name, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {

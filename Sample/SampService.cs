@@ -9,7 +9,7 @@ namespace Samp
     {
         public SampService(ServiceConfig cfg) : base(cfg)
         {
-            MountVar<SampVarWork>();
+            MakeVar<SampVarWork>();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Samp
     {
         protected TutWork(WorkConfig cfg) : base(cfg)
         {
-            MountVar<V>();
+            MakeVar<V>();
         }
     }
 

@@ -11,7 +11,7 @@ namespace Samp
 
         protected ChatWork(WorkConfig cfg) : base(cfg)
         {
-            MountVar<V>();
+            MakeVar<V>();
         }
     }
 

@@ -10,7 +10,7 @@ namespace Samp
     {
         protected RepayWork(WorkConfig cfg) : base(cfg)
         {
-            MountVar<V>();
+            MakeVar<V>();
         }
     }
 

@@ -45,7 +45,7 @@ namespace Greatbone
         {
             cfg.Service = this;
 
-            key = (Shard == null) ? cfg.Name : cfg.Name + "-" + Shard;
+            key = cfg.Name;
 
             // init the file-based logger
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
@@ -96,8 +96,6 @@ namespace Greatbone
 
         public ServiceConfig Config => (ServiceConfig) cfg;
 
-        public string Shard => ((ServiceConfig) cfg).shard;
-
         public string[] Addrs => ((ServiceConfig) cfg).addrs;
 
         public Db Db => ((ServiceConfig) cfg).db;
@@ -139,7 +137,7 @@ namespace Greatbone
         {
             WebContext wc = (WebContext) context;
             string path = wc.Path;
-            try 
+            try
             {
                 await HandleAsync(path.Substring(1), wc);
             }

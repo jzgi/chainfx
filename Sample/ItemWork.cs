@@ -8,7 +8,7 @@ namespace Samp
     {
         protected ItemWork(WorkConfig cfg) : base(cfg)
         {
-            MountVar<V>();
+            MakeVar<V>();
         }
     }
 

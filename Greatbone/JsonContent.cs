@@ -469,12 +469,6 @@ namespace Greatbone
             {
                 counts[++level] = 0; // enter
                 Add('{');
-                // put shard property if any
-                string shard = (v as IShardable)?.Shard;
-                if (shard != null)
-                {
-                    Put("#", shard);
-                }
                 v.Write(this, proj);
                 Add('}');
                 level--; // exit

@@ -24,7 +24,15 @@ namespace Greatbone
 
         static readonly List<Service> services = new List<Service>(8);
 
-        public static S TryCreate<S>(ServiceConfig cfg, bool load) where S : Service
+        /// <summary>
+        /// To mount a service with the underlying file folder and a designated HTTP endpoint
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <param name="loadCfg"></param>
+        /// <typeparam name="S"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ServiceException"></exception>
+        public static S Mount<S>(ServiceConfig cfg, bool loadCfg) where S : Service
         {
             // initialize config
             cfg.Parent = null;
@@ -32,10 +40,13 @@ namespace Greatbone
             cfg.IsVar = false;
             cfg.Directory = cfg.Name;
 
-            if (!Directory.Exists(cfg.Directory)) return null;
+            if (!Directory.Exists(cfg.Directory))
+            {
+                return null;
+            }
 
             // may load from the configuration file
-            if (load)
+            if (loadCfg)
             {
                 string file = cfg.GetFilePath(CONFIG);
                 if (!File.Exists(file)) return null;

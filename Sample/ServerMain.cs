@@ -18,10 +18,9 @@ namespace Samp
         {
             bool deploy = args.Length > 0 && args[0] == nameof(deploy);
 
-            TryCreate<SampService>(
-                new ServiceConfig("samp")
+            Mount<SampService>(new ServiceConfig("samp")
                 {
-                    addrs = new[] { "http://localhost:8080" },
+                    addrs = new[] {"http://localhost:8080"},
                     cipher = 0x4a78be76,
                     db = new Db
                     {

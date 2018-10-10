@@ -7,9 +7,6 @@ namespace Greatbone
     /// </summary>
     public class ServiceConfig : WorkConfig, IData
     {
-        // the shard id of the service instance, can be null
-        public string shard;
-
         // the bound addresses 
         public string[] addrs;
 
@@ -58,7 +55,6 @@ namespace Greatbone
 
         public virtual void Read(ISource s, byte proj = 0x0f)
         {
-            s.Get(nameof(shard), ref shard);
             s.Get(nameof(addrs), ref addrs);
             s.Get(nameof(db), ref db);
             s.Get(nameof(refs), ref refs);
@@ -68,7 +64,6 @@ namespace Greatbone
 
         public virtual void Write(ISink s, byte proj = 0x0f)
         {
-            s.Put(nameof(shard), shard);
             s.Put(nameof(addrs), addrs);
             s.Put(nameof(db), db);
             s.Put(nameof(refs), refs);
