@@ -1762,8 +1762,7 @@ a.uk-button-primary {
 .uk-button-link:active,
 .uk-button-link.uk-active {
     border: 1px solid #3caf36;
-    color: #fff;
-    background-color: #3caf36;
+    color: #3caf36;
 }
 
 .uk-button-link:disabled {

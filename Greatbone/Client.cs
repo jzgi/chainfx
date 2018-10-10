@@ -100,17 +100,13 @@ namespace Greatbone
         // RPC
         //
 
-        public async Task<byte[]> GetAsync(WebContext ac, string uri)
+        public async Task<byte[]> GetAsync(WebContext wc, string uri)
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (rkey != null && ac != null)
+                if (rkey != null && wc != null)
                 {
-                    if (ac.Token != null)
-                    {
-                        req.Headers.Add("Authorization", "Token " + ac.Token);
-                    }
                 }
 
                 HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);

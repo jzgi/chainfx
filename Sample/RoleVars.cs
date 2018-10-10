@@ -28,7 +28,7 @@ namespace Samp
                 h.LI_().FI("参　　团", orgs[o.teamat]?.name)._LI();
                 h.LI_().FI("上门地址", o.addr)._LI();
                 h._UL();
-                h.TOOLPAD(css: "uk-card-footer uk-flex-center");
+                h.TOOLS(css: "uk-card-footer uk-flex-center");
                 h._DIV();
             }, title: "我的设置");
         }

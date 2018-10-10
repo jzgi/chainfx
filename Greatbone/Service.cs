@@ -206,8 +206,7 @@ namespace Greatbone
                     while (!token.IsCancellationRequested)
                     {
                         // cleaning cycle
-                        Thread.Sleep(1000 * 30); // 30 seconds 
-
+                        Thread.Sleep(3000); // every 3 seconds 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
                         foreach (var re in cache)
@@ -505,7 +504,6 @@ namespace Greatbone
                         maxage = 0;
                         stamp = now; // time being cleared
                     }
-
                     return true;
                 }
             }
@@ -514,19 +512,18 @@ namespace Greatbone
             {
                 lock (this)
                 {
-                    if (status == 0) return false;
-
-                    int remain = ((stamp + maxage * 1000) - now) / 1000; // remaining in seconds
+                    if (status == 0)
+                    {
+                        return false;
+                    }
+                    short remain = (short) (((stamp + maxage * 1000) - now) / 1000); // remaining in seconds
                     if (remain > 0)
                     {
                         wc.InCache = true;
                         wc.Give(status, content, true, remain);
-
                         Interlocked.Increment(ref hits);
-
                         return true;
                     }
-
                     return false;
                 }
             }

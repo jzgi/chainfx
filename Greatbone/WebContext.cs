@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable 618
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -31,21 +32,15 @@ namespace Greatbone
 
         readonly IHttpResponseFeature fResponse;
 
-        readonly ResponseCookiesFeature fResponseCookies;
-
         readonly IHttpWebSocketFeature fWebSocket;
 
         internal WebContext(IFeatureCollection features)
         {
             this.features = features;
             connection = new DefaultConnectionInfo(features);
-
             fRequest = features.Get<IHttpRequestFeature>();
             fRequestCookies = new RequestCookiesFeature(features);
-
             fResponse = features.Get<IHttpResponseFeature>();
-            fResponseCookies = new ResponseCookiesFeature(features);
-
             fWebSocket = features.Get<IHttpWebSocketFeature>();
         }
 
@@ -64,10 +59,6 @@ namespace Greatbone
         public IData Principal { get; set; }
 
         public bool Authenticated { get; internal set; }
-
-        /// A token string.
-        ///
-        internal string Token { get; }
 
         // levels of keys along the URI path
         Seg[] chain;
@@ -95,7 +86,6 @@ namespace Greatbone
                     Seg seg = chain[i];
                     if (seg.Work.IsOf(typ)) return seg;
                 }
-
                 return default;
             }
         }
@@ -448,9 +438,9 @@ namespace Greatbone
         public bool? Public { get; internal set; }
 
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
-        public int MaxAge { get; internal set; }
+        public short MaxAge { get; internal set; }
 
-        public void Give(int status, IContent cont = null, bool? @public = null, int maxage = 60)
+        public void Give(int status, IContent cont = null, bool? @public = null, short maxage = 12)
         {
             Status = status;
             Content = cont;
@@ -458,11 +448,10 @@ namespace Greatbone
             MaxAge = maxage;
         }
 
-        public void Give(int status, string text, bool? @public = null, int maxage = 60)
+        public void Give(int status, string text, bool? @public = null, short maxage = 12)
         {
             TextContent cont = new TextContent(true);
             cont.Add(text);
-
             // set response states
             Status = status;
             Content = cont;
@@ -470,7 +459,7 @@ namespace Greatbone
             MaxAge = maxage;
         }
 
-        public void Give(int status, IData obj, byte proj = 0x0f, bool? pub = null, int maxage = 60)
+        public void Give(int status, IData obj, byte proj = 0x0f, bool? pub = null, short maxage = 12)
         {
             JsonContent cont = new JsonContent(true);
             cont.Put(null, obj, proj);
@@ -480,7 +469,7 @@ namespace Greatbone
             MaxAge = maxage;
         }
 
-        public void Give<D>(int status, D[] arr, byte proj = 0x0f, bool? pub = null, int maxage = 60) where D : IData
+        public void Give<D>(int status, D[] arr, byte proj = 0x0f, bool? pub = null, short maxage = 12) where D : IData
         {
             JsonContent cont = new JsonContent(true);
             cont.Put(null, arr, proj);
@@ -538,7 +527,6 @@ namespace Greatbone
                     SetHeader("Content-Encoding", "gzip");
                 }
             }
-
             // send out the content async
             fResponse.Headers["Content-Length"] = Content.Size.ToString();
             fResponse.Headers["Content-Type"] = Content.Type;

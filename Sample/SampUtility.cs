@@ -29,7 +29,7 @@ namespace Samp
             wc.Give(303);
         }
 
-        public static void GiveFrame(this WebContext wc, int status, bool? @public = null, int maxage = 60, string title = null)
+        public static void GiveFrame(this WebContext wc, int status, bool? @public = null, short maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(wc, true, 8 * 1024);
 
@@ -105,7 +105,7 @@ namespace Samp
             wc.Give(status, h, @public, maxage);
         }
 
-        public static void GiveOffCanvas(this WebContext wc, int status, bool? @public = null, int maxage = 60, string title = null)
+        public static void GiveOffCanvas(this WebContext wc, int status, bool? @public = null, short maxage = 60, string title = null)
         {
             HtmlContent h = new HtmlContent(wc, true, 8 * 1024);
 
@@ -188,7 +188,7 @@ namespace Samp
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, int maxage = 15, string title = null, int refresh = 0)
+        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, short maxage = 12, string title = null, int refresh = 0)
         {
             HtmlContent h = new HtmlContent(wc, true, 32 * 1024);
 
@@ -226,7 +226,7 @@ namespace Samp
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, int maxage = 60)
+        public static void GivePane(this WebContext ac, int status, Action<HtmlContent> main = null, bool? @public = null, short maxage = 12)
         {
             HtmlContent h = new HtmlContent(ac, true, 8 * 1024);
 

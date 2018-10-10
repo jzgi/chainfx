@@ -18,13 +18,13 @@ namespace Samp
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {OrdAborted, "已撤销"},
+            {OrdAborted, "撤销"},
             {OrdCreated, null},
-            {OrdPaid, "待备货"},
-            {OrdAccepted, "备货中"},
-            {OrdStocked, "中转站"},
-            {OrdSent, "运送中"},
-            {OrdReceived, "已运达"},
+            {OrdPaid, "排队"},
+            {OrdAccepted, "备货"},
+            {OrdStocked, "中转"},
+            {OrdSent, "派运"},
+            {OrdReceived, "运达"},
             {OrdEnded, "完成"}
         };
 

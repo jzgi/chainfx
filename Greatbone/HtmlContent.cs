@@ -1234,7 +1234,7 @@ namespace Greatbone
                             if (gogrp != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, css: "uk-button-default");
+                        PutTool(act);
                     }
                     gogrp = g;
                 }
@@ -1271,7 +1271,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLPAD(byte group = 0, string css = null)
+        public HtmlContent TOOLS(byte group = 0, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1309,7 +1309,7 @@ namespace Greatbone
         }
 
 
-        public HtmlContent VARTOOLPAD(byte group = 0, string css = null)
+        public HtmlContent VARTOOLS(byte group = 0, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1380,11 +1380,11 @@ namespace Greatbone
                 ok = act.CheckState(webCtx, stack, level);
             }
 
-            var realcss = tool.Css ?? css;
+            var anycss = css ?? tool.Css;
             if (tool.IsAnchorTag)
             {
                 Add("<a class=\"uk-button ");
-                Add(realcss ?? "uk-button-link");
+                Add(anycss ?? "uk-button-link");
                 if (act == webCtx.Actioner) // if current action
                 {
                     Add(" uk-active");
@@ -1415,7 +1415,7 @@ namespace Greatbone
             else
             {
                 Add("<button  class=\"uk-button ");
-                Add(realcss);
+                Add(anycss ?? "uk-button-default");
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");
