@@ -75,7 +75,7 @@ namespace Samp
             {
                 wc.GivePane(200, h =>
                 {
-                    bool ingrp = prin.teamat > 0;
+                    bool ingrp = prin.teamid > 0;
                     using (var dc = NewDbContext())
                     {
                         h.FORM_();
@@ -130,22 +130,24 @@ namespace Samp
                 dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
                 o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
             }
-            //            var (prepay_id, _) = await ((SampService) Service).Hub.PostUnifiedOrderAsync(
-            //                orderid + "-",
-            //                o.cash,
-            //                prin.wx,
-            //                wc.RemoteAddr.ToString(),
-            //                SampUtility.NETADDR + "/" + nameof(SampService.onpay),
-            //                "粗粮达人-健康产品"
-            //            );
-            //            if (prepay_id != null)
-            //            {
-            //                wc.Give(200, ((SampService) Service).Hub.BuildPrepayContent(prepay_id));
-            //            }
-            //            else
-            //            {
-            //                wc.Give(500);
-            //            }
+            string hubid = wc[0];
+            var hub = Obtain<Map<string, Hub>>()[hubid];
+            var (prepay_id, _) = await hub.PostUnifiedOrderAsync(
+                orderid + "-",
+                o.cash,
+                prin.wx,
+                wc.RemoteAddr.ToString(),
+                SampUtility.NetAddr + "/" + nameof(SampVarWork.onpay),
+                "粗粮达人-健康产品"
+            );
+            if (prepay_id != null)
+            {
+                wc.Give(200, hub.BuildPrepayContent(prepay_id));
+            }
+            else
+            {
+                wc.Give(500);
+            }
         }
     }
 
@@ -243,10 +245,10 @@ namespace Samp
                     dc.Let(out shopid).Let(out cap7).Let(out status);
                     wc.GivePane(200, h =>
                     {
-                        var orgs = Obtain<Map<short, Org>>();
+                        var orgs = Obtain<Map<short, Team>>();
                         h.FORM_();
                         h.FIELDUL_("填写供货信息");
-                        h.LI_().SELECT("产供方", nameof(shopid), shopid, orgs, filter:x=>x.hubid == hubid && x.typ == 1)._LI();
+                        h.LI_().SELECT("产供方", nameof(shopid), shopid, orgs, filter: x => x.hubid == hubid)._LI();
                         h.LI_().NUMBER("周产量", nameof(cap7), cap7, required: true)._LI();
                         h.LI_().SELECT("状　态", nameof(status), status, Item.Statuses)._LI();
                         h._FIELDUL();

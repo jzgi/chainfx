@@ -71,7 +71,7 @@ namespace Samp
                     short ord = (short) (img.Count == 0 ? 0 : last.img + 1);
                     posts = posts.AddOf(new Post
                     {
-                        uid = prin.id, uname = prin.name, teamat = prin.teamat, text = text, img = ord, time = now
+                        uid = prin.id, uname = prin.name, teamat = prin.teamid, text = text, img = ord, time = now
                     });
                     if (img.Count > 0 && last.img < 10)
                     {
@@ -112,7 +112,7 @@ namespace Samp
         public async Task say(WebContext wc)
         {
             string orgid = wc[-2];
-            var orgs = Obtain<Map<string, Org>>();
+            var orgs = Obtain<Map<string, Team>>();
             int custid = wc[this];
             User prin = (User) wc.Principal;
             string text = null;

@@ -125,7 +125,7 @@ namespace Samp
                 short at = wc[typeof(IOrgVar)];
                 if (at != 0)
                 {
-                    return o.shopat == at;
+                    return o.shopid == at;
                 }
                 return true;
             }
@@ -136,7 +136,7 @@ namespace Samp
                 short at = wc[typeof(IOrgVar)];
                 if (at != 0)
                 {
-                    return o.teamat == at;
+                    return o.teamid == at;
                 }
                 return true;
             }

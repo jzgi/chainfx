@@ -22,14 +22,15 @@ namespace Samp
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CREATED, "新创建"},
-            {FAILED, "转款失败"},
-            {PAID, "已转款"}
+            {CREATED, null},
+            {FAILED, "失败"},
+            {PAID, "已转"}
         };
 
         internal int id;
         internal string hubid;
-        internal short job;
+        internal short typ;
+        internal short orgid;
         internal int uid;
         internal string uname;
         internal string uwx;
@@ -46,7 +47,8 @@ namespace Samp
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(hubid), ref hubid);
-            s.Get(nameof(job), ref job);
+            s.Get(nameof(typ), ref typ);
+            s.Get(nameof(orgid), ref orgid);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
             s.Get(nameof(uwx), ref uwx);
@@ -64,7 +66,8 @@ namespace Samp
         {
             s.Put(nameof(id), id);
             s.Put(nameof(hubid), hubid);
-            s.Put(nameof(job), job);
+            s.Put(nameof(typ), typ);
+            s.Put(nameof(orgid), orgid);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
             s.Put(nameof(uwx), uwx);

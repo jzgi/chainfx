@@ -13,85 +13,54 @@ namespace Samp
         }
     }
 
-    [Ui("成员")]
-    public class TeamUserWork : UserWork<TeamUserVarWork>
+    [Ui("人员")]
+    public class TeamlyUserWork : UserWork<TeamUserVarWork>
     {
-        public TeamUserWork(WorkConfig cfg) : base(cfg)
+        public TeamlyUserWork(WorkConfig cfg) : base(cfg)
         {
         }
 
         const int PageSize = 30;
 
-        [Ui("正式"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc, int page)
         {
-            short teamid = wc[Parent];
+            string hubid = wc[0];
+            short orgid = wc[Parent];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 AND teamly > 0 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @2");
-                var arr = dc.Query<User>(p => p.Set(teamid).Set(page * PageSize));
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR(group: 1);
-                    h.TABLE(arr, null,
-                        o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.teamly])
-                    );
-                }, @public: false, maxage: 3, refresh: 300);
-            }
-        }
-
-        [Ui("待批"), Tool(Anchor, "uk-button-link")]
-        public void pre(WebContext wc, int page)
-        {
-            short teamid = wc[Parent];
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE teamat = @1 AND teamly = 0 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @2");
-                var arr = dc.Query<User>(p => p.Set(teamid).Set(page * PageSize));
+                dc.Sql("SELECT ").collst(Empty).T(" FROM users WHERE hubid = @1 AND teamat = @2 ORDER BY name LIMIT ").T(PageSize).T(" OFFSET @3");
+                var arr = dc.Query<User>(p => p.Set(hubid).Set(orgid).Set(page * PageSize));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR(group: 2);
                     h.TABLE(arr, null,
                         o => h.TD(o.name).TD(o.tel).TD(o.addr).TD_().T(Teamly[o.teamly])
                     );
-                }, @public: false, maxage: 3, refresh: 300);
+                }, @public: false, maxage: 6, refresh: 300);
             }
         }
 
-        [UserAccess(hubly: 7)]
-        [Ui("副手", @group: 1), Tool(ButtonPickConfirm)]
-        public async Task aid(WebContext wc, int cmd)
+        [UserAccess(hubly: 3)]
+        [Ui("副手", tip: "副手设置"), Tool(ButtonPickConfirm)]
+        public async Task aid(WebContext wc)
         {
-            string teamid = wc[-1];
+            string hubid = wc[0];
+            short orgid = wc[Parent];
             var f = await wc.ReadAsync<Form>();
             int[] key = f[nameof(key)];
             using (var dc = NewDbContext())
             {
-                dc.Sql("UPDATE users SET team = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE teamat = @1 AND team <> 15 AND id")._IN_(key);
-                dc.Execute(p => p.Set(teamid));
-            }
-            wc.GiveRedirect();
-        }
-
-        [Ui("批准", @group: 2), Tool(ButtonPickConfirm)]
-        public async Task apprv(WebContext wc, int cmd)
-        {
-            string teamid = wc[-1];
-            var f = await wc.ReadAsync<Form>();
-            int[] key = f[nameof(key)];
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("UPDATE users SET team = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE teamat = @1 AND team <> 15 AND id")._IN_(key);
-                dc.Execute(p => p.Set(teamid));
+                dc.Sql("UPDATE users SET teamly = CASE WHEN teamly = 1 THEN 0 ELSE 1 END WHERE hubid = @1 AND teamat = @2 AND teamly < 3 AND id")._IN_(key);
+                dc.Execute(p => p.Set(hubid).Set(orgid), prepare: false);
             }
             wc.GiveRedirect();
         }
     }
 
     [Ui("人员")]
-    public class ShopUserWork : UserWork<ShopUserVarWork>
+    public class ShopOprWork : UserWork<ShopUserVarWork>
     {
-        public ShopUserWork(WorkConfig cfg) : base(cfg)
+        public ShopOprWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -135,6 +104,7 @@ namespace Samp
         {
         }
 
+        [Ui("员工"), Tool(Anchor)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -152,31 +122,61 @@ namespace Samp
             }
         }
 
-        [UserAccess(hubly: 7)]
-        [Ui("添加", icon: "plus", tip: "添加工作人员"), Tool(ButtonShow, size: 1)]
-        public async Task add(WebContext wc, int cmd)
+        [Ui(icon: "search", tip: "查找"), Tool(AnchorPrompt)]
+        public void search(WebContext wc)
         {
+            bool inner = wc.Query[nameof(inner)];
             string tel = null;
-            short ctr = 0;
+            if (inner)
+            {
+                wc.GivePane(200, h => { h.FORM_().FIELDUL_("手机号").TEL(null, nameof(tel), tel)._FIELDUL()._FORM(); });
+            }
+            else
+            {
+                string hubid = wc[0];
+                tel = wc.Query[nameof(tel)];
+                using (var dc = NewDbContext())
+                {
+                    var arr = dc.Query<User>("SELECT * FROM users WHERE hubid = @1 AND tel = @2", p => p.Set(hubid).Set(tel));
+                    wc.GivePage(200, h =>
+                    {
+                        h.TOOLBAR();
+                        h.TABLE(arr, null,
+                            o => h.TD(o.name).TD(o.tel).TD(Hubly[o.hubly])
+                        );
+                    });
+                }
+            }
+        }
+
+        [UserAccess(hubly: 7)]
+        [Ui("设为..."), Tool(ButtonPickPrompt, size: 1)]
+        public async Task role(WebContext wc, int cmd)
+        {
+            short hubly = 0;
             if (wc.GET)
             {
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.FIELDUL_("添加人员");
-                    h.LI_().TEXT("手　机", nameof(tel), tel, pattern: "[0-9]+", max: 11, min: 11)._LI();
-                    h.LI_().SELECT("岗　位", nameof(ctr), ctr, Hubly)._LI();
+                    h.FIELDUL_("设置操作岗位");
+                    h.LI_().SELECT("岗　位", nameof(hubly), hubly, Hubly)._LI();
                     h._FIELDUL();
                     h._FORM();
                 });
             }
             else
             {
+                string hubid = wc[0];
+                var f = await wc.ReadAsync<Form>();
+                hubly = f[nameof(hubly)];
+                int[] key = f[nameof(key)];
                 if (cmd == 2) // add
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Execute("UPDATE users SET ctr = @1 WHERE tel = @2", p => p.Set(ctr).Set(tel));
+                        dc.Sql("UPDATE users SET hubly = @1 WHERE hubid = @2 AND id ")._IN_(key);
+                        dc.Execute(p => p.Set(hubly).Set(hubid));
                     }
                 }
                 wc.GivePane(200);

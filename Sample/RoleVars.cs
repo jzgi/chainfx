@@ -18,14 +18,14 @@ namespace Samp
         {
             var o = (User) wc.Principal;
             string hubid = wc[0];
-            var orgs = Obtain<Map<short, Org>>();
+            var orgs = Obtain<Map<short, Team>>();
             wc.GivePage(200, h =>
             {
                 h.DIV_(css: "uk-card- uk-card-primary");
                 h.UL_(css: "uk-card-body");
                 h.LI_().FI("用户名称", o.name)._LI();
                 h.LI_().FI("手　　机", o.tel)._LI();
-                h.LI_().FI("参　　团", orgs[o.teamat]?.name)._LI();
+                h.LI_().FI("参　　团", orgs[o.teamid]?.name)._LI();
                 h.LI_().FI("上门地址", o.addr)._LI();
                 h._UL();
                 h.TOOLS(css: "uk-card-footer uk-flex-center");
@@ -45,13 +45,13 @@ namespace Samp
             short refid = wc.Query[nameof(refid)];
             if (refid > 0)
             {
-                prin.teamat = refid;
+                prin.teamid = refid;
             }
 
             string password = null;
             if (wc.GET)
             {
-                var orgs = Obtain<Map<short, Org>>();
+                var orgs = Obtain<Map<short, Team>>();
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<User>("SELECT * FROM users WHERE id = @1", p => p.Set(prin.id));
@@ -62,7 +62,7 @@ namespace Samp
                         h.FIELDUL_("用户基本信息");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                        h.LI_().SELECT("参　　团", nameof(o.teamat), prin.teamat, orgs, filter: x => x.hubid == hubid)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.teamid), prin.teamid, orgs, filter: x => x.hubid == hubid)._LI();
                         h.LI_().TEXT("上门地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.FIELDUL_("用于从微信以外登录（可选）");
@@ -109,13 +109,13 @@ namespace Samp
 
     [UserAccess(shoply: 1)]
     [Ui("动态")]
-    public class ShopVarWork : Work, IOrgVar
+    public class ShoplyVarWork : Work, IOrgVar
     {
-        public ShopVarWork(WorkConfig cfg) : base(cfg)
+        public ShoplyVarWork(WorkConfig cfg) : base(cfg)
         {
             Make<ShopOrderWork>("order");
 
-            Make<ShopUserWork>("user");
+            Make<ShopOprWork>("user");
 
             Make<OrgRepayWork>("repay");
         }
@@ -124,7 +124,7 @@ namespace Samp
         {
             string hubid = wc[0];
             short id = wc[this];
-            var shop = Obtain<Map<short, Org>>()[id];
+            var shop = Obtain<Map<short, Team>>()[id];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {
@@ -152,13 +152,13 @@ namespace Samp
 
     [UserAccess(teamly: 1)]
     [Ui("动态")]
-    public class TeamVarWork : Work, IOrgVar
+    public class TeamlyVarWork : Work, IOrgVar
     {
-        public TeamVarWork(WorkConfig cfg) : base(cfg)
+        public TeamlyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Make<TeamOrderWork>("order");
+            Make<TeamlyOrderWork>("order");
 
-            Make<TeamUserWork>("user");
+            Make<TeamlyUserWork>("user");
 
             Make<OrgRepayWork>("repay");
         }
@@ -167,7 +167,7 @@ namespace Samp
         {
             string hubid = wc[0];
             short id = wc[this];
-            var org = Obtain<Map<short, Org>>()[id];
+            var org = Obtain<Map<short, Team>>()[id];
             bool inner = wc.Query[nameof(inner)];
             if (!inner)
             {

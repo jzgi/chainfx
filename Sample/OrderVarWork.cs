@@ -76,14 +76,16 @@ namespace Samp
             }
             if (cash > 0)
             {
-//                string err = await ((SampService) Service).Hub.PostRefundAsync(orderid + "-" + rev, cash, cash);
-//                if (err == null) // success
-//                {
-//                    using (var dc = NewDbContext())
-//                    {
-//                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
-//                    }
-//                }
+                string hubid = wc[0];
+                var hub = Obtain<Map<string, Hub>>()[hubid];
+                string err = await hub.PostRefundAsync(orderid + "-" + rev, cash, cash);
+                if (err == null) // success
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Execute("UPDATE orders SET status = -1, aborted = localtimestamp WHERE id = @1 AND orgid = @2", p => p.Set(orderid).Set(orgid));
+                    }
+                }
             }
             wc.GiveRedirect("../");
         }

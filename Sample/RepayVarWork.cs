@@ -1,4 +1,5 @@
 using Greatbone;
+using static Greatbone.Modal;
 
 namespace Samp
 {

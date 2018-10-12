@@ -12,17 +12,19 @@ namespace Samp
 
     [UserAccess(hubly: 1)]
     [Ui("动态")]
-    public class HubWork : Work
+    public class HublyWork : Work
     {
-        public HubWork(WorkConfig cfg) : base(cfg)
+        public HublyWork(WorkConfig cfg) : base(cfg)
         {
             Make<HubOrderWork>("order");
 
             Make<HubItemWork>("item");
 
-            Make<HubOrgWork>("org");
+            Make<HublyTeamWork>("org");
 
-            Make<HubUserWork>("user");
+            Make<HublyShopWork>("shop");
+
+            Make<HubUserWork>("opr");
 
             Make<HubRepayWork>("repay");
         }
@@ -58,20 +60,20 @@ namespace Samp
         }
     }
 
-    public class ShopWork : Work
+    public class ShoplyWork : Work
     {
-        public ShopWork(WorkConfig cfg) : base(cfg)
+        public ShoplyWork(WorkConfig cfg) : base(cfg)
         {
-            MakeVar<ShopVarWork>(prin => ((User) prin).shopat);
+            MakeVar<ShoplyVarWork>(prin => ((User) prin).shopid);
         }
     }
 
 
-    public class TeamWork : Work
+    public class OrglyWork : Work
     {
-        public TeamWork(WorkConfig cfg) : base(cfg)
+        public OrglyWork(WorkConfig cfg) : base(cfg)
         {
-            MakeVar<TeamVarWork>(prin => ((User) prin).teamat);
+            MakeVar<TeamlyVarWork>(prin => ((User) prin).teamid);
         }
     }
 }

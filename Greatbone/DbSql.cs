@@ -127,6 +127,18 @@ namespace Greatbone
             return this;
         }
 
+        public DbSql _IN_(short[] vals)
+        {
+            Add(" IN (");
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(vals[i]);
+            }
+            Add(')');
+            return this;
+        }
+
         public DbSql _IN_(int[] vals)
         {
             Add(" IN (");

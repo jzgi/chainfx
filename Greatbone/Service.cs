@@ -206,7 +206,7 @@ namespace Greatbone
                     while (!token.IsCancellationRequested)
                     {
                         // cleaning cycle
-                        Thread.Sleep(3000); // every 3 seconds 
+                        Thread.Sleep(30000); // every 30 seconds 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
                         foreach (var re in cache)

@@ -13,9 +13,9 @@ namespace Samp
 
         public static readonly Map<short, string> Teamly = new Map<short, string>
         {
-            {1, "成员"},
-            {3, "副手"},
-            {7, "团长"},
+            {0, null},
+            {1, "副手"},
+            {3, "团长"},
         };
 
         public static readonly Map<short, string> Shoply = new Map<short, string>
@@ -38,9 +38,9 @@ namespace Samp
         public string credential;
         internal string wx; // wexin openid
         internal string addr;
-        internal short teamat;
+        internal short teamid;
         internal short teamly;
-        internal short shopat;
+        internal short shopid;
         internal short shoply;
         internal short hubly;
         internal short created;
@@ -62,9 +62,9 @@ namespace Samp
             s.Get(nameof(addr), ref addr);
             if ((proj & MISC) > 0)
             {
-                s.Get(nameof(teamat), ref teamat);
+                s.Get(nameof(teamid), ref teamid);
                 s.Get(nameof(teamly), ref teamly);
-                s.Get(nameof(shopat), ref shopat);
+                s.Get(nameof(shopid), ref shopid);
                 s.Get(nameof(shoply), ref shoply);
                 s.Get(nameof(hubly), ref hubly);
                 s.Get(nameof(created), ref created);
@@ -88,9 +88,9 @@ namespace Samp
             s.Put(nameof(addr), addr);
             if ((proj & MISC) > 0)
             {
-                s.Put(nameof(teamat), teamat);
+                s.Put(nameof(teamid), teamid);
                 s.Put(nameof(teamly), teamly);
-                s.Put(nameof(shopat), shopat);
+                s.Put(nameof(shopid), shopid);
                 s.Put(nameof(shoply), shoply);
                 s.Put(nameof(hubly), hubly);
                 s.Put(nameof(created), created);

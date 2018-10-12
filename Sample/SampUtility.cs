@@ -5,12 +5,7 @@ namespace Samp
 {
     public static class SampUtility
     {
-        public const string NETADDR = "http://144000.tv";
-
-        public const string JOINADDR = "https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUyNTkxNzM3Nw==&scene=124#wechat_redirect";
-
-        // an invisible/unprintable char
-        public const char SEPCHAR = '\u200f';
+        public const string NetAddr = "http://144000.tv";
 
         public static void GiveRedirect(this WebContext wc, string uri = null, bool? @public = null, int maxage = 60)
         {
@@ -286,14 +281,14 @@ namespace Samp
             return h;
         }
 
-        public static HtmlContent A_POI(this HtmlContent h, double x, double y, string title, string addr, string tel = null)
+        public static HtmlContent POI(this HtmlContent h, double x, double y, string title, string addr, string tel = null)
         {
-            h.T("<a class=\"uk-label\" href=\"http://apis.map.qq.com/uri/v1/marker?marker=coord:").T(y).T(',').T(x).T(";title:").T(title).T(";addr:").T(addr);
+            h.T("<a class=\"\" href=\"http://apis.map.qq.com/uri/v1/marker?marker=coord:").T(y).T(',').T(x).T(";title:").T(title).T(";addr:").T(addr);
             if (tel != null)
             {
                 h.T(";tel:").T(tel);
             }
-            h.T("&referer=粗狼达人\">地图</a>");
+            h.T("&referer=\">").T(addr).T("</a>");
             return h;
         }
     }

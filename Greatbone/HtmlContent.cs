@@ -1781,7 +1781,7 @@ namespace Greatbone
         public HtmlContent NUMBER<V>(string label, string name, V v, string tip = null, V max = default, V min = default, V step = default, bool @readonly = false, bool required = false)
         {
             LABEL(label);
-            bool grp = !step.Equals(default(V)); // input group with up and down
+            bool grp = v is short && !step.Equals(default(V)); // input group with up and down
             if (grp)
             {
                 Add("<div class=\"uk-inline uk-width-1-2\">");
@@ -1925,7 +1925,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false)
+        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false, bool disabled = false)
         {
             Add("<label>");
             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
@@ -1940,6 +1940,10 @@ namespace Greatbone
             if (@checked)
             {
                 Add(" checked");
+            }
+            if (disabled)
+            {
+                Add(" disabled");
             }
             Add(">");
             Add(label);

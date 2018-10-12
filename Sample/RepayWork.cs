@@ -32,7 +32,7 @@ namespace Samp
                     h.TOOLBAR();
                     h.TABLE(arr,
                         () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
-                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                        o => h.TD(Repay.Jobs[o.typ], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
                     );
                 });
             }
@@ -47,41 +47,23 @@ namespace Samp
         {
         }
 
-        [Ui("未转"), Tool(Anchor, "uk-button-link")]
         public void @default(WebContext wc)
         {
+            string hubid = wc[0];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status < 2 ORDER BY id DESC");
+                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE hubid = @1 AND status < 2 ORDER BY typ DESC", p => p.Set(hubid));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLE(arr,
-                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
-                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                    h.TABLE(arr, null,
+                        o => h.TD(Repay.Jobs[o.typ], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
                     );
                 });
             }
         }
 
-        [Ui("已转"), Tool(Anchor, "uk-button-link")]
-        public void old(WebContext wc, int page)
-        {
-            using (var dc = NewDbContext())
-            {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 2 ORDER BY id DESC LIMIT 30 OFFSET @1", p => p.Set(page * 30));
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-                    h.TABLE(arr,
-                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
-                        o => h.TD(Repay.Jobs[o.job], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
-                    );
-                });
-            }
-        }
-
-        [Ui("结算", "结算并生成人员结款单"), Tool(ButtonShow)]
+        [Ui("结算", "计算并生成结款单"), Tool(ButtonShow)]
         public async Task calc(WebContext wc)
         {
             DateTime fro; // from date
@@ -160,6 +142,11 @@ namespace Samp
                 }
             }
             wc.GiveRedirect();
+        }
+
+        [Ui(icon: "check", tip: "强制设为已转款"), Tool(ButtonPickConfirm)]
+        public void over(WebContext wc)
+        {
         }
     }
 }

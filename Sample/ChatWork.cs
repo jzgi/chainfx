@@ -81,7 +81,7 @@ namespace Samp
                     {
                         new Post
                         {
-                            uid = prin.id, uname = prin.name, teamat = prin.teamat, text = text,
+                            uid = prin.id, uname = prin.name, teamat = prin.teamid, text = text,
                             img = (short) (img.Count == 0 ? 0 : 1),
                             time = now
                         }

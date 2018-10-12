@@ -1,5 +1,4 @@
 ﻿using Greatbone;
-using static Greatbone.Modal;
 
 namespace Samp
 {
@@ -30,21 +29,7 @@ namespace Samp
         {
         }
 
-        [UserAccess(hubly: 7)]
-        [Ui(icon: "trash", tip: "删除此操作人员？"), Tool(ButtonConfirm)]
-        public void rm(WebContext wc, int cmd)
-        {
-            int id = wc[this];
-            using (var dc = NewDbContext())
-            {
-                dc.Execute("UPDATE users SET ctr = NULL WHERE id = @1", p => p.Set(id));
-            }
-        }
-    }
-
-    public class GrpUserVarWork : UserVarWork
-    {
-        public GrpUserVarWork(WorkConfig cfg) : base(cfg)
+        public void @default(WebContext wc)
         {
         }
     }

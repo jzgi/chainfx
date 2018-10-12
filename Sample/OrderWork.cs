@@ -96,7 +96,7 @@ namespace Samp
         public void taken(WebContext wc)
         {
             string hubid = wc[0];
-            var orgs = Obtain<Map<short, Org>>();
+            var orgs = Obtain<Map<short, Team>>();
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(group: 1);
@@ -370,9 +370,9 @@ namespace Samp
     }
 
     [Ui("订单")]
-    public class TeamOrderWork : OrderWork
+    public class TeamlyOrderWork : OrderWork
     {
-        public TeamOrderWork(WorkConfig cfg) : base(cfg)
+        public TeamlyOrderWork(WorkConfig cfg) : base(cfg)
         {
             MakeVar<TeamOrderVarWork>();
         }

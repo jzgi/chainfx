@@ -14,11 +14,11 @@ namespace Samp
 
             Make<MyWork>("my"); // personal
 
-            Make<TeamWork>("team"); // customer team
+            Make<OrglyWork>("team"); // customer team
 
-            Make<ShopWork>("shop"); // supplying shop
+            Make<ShoplyWork>("shop"); // supplying shop
 
-            Make<HubWork>("hub"); // central 
+            Make<HublyWork>("hub"); // central 
 
             // register cached active hubs
             Register(delegate
@@ -26,18 +26,29 @@ namespace Samp
                     using (var dc = NewDbContext())
                     {
                         dc.Sql("SELECT ").collst(Hub.Empty).T(" FROM hubs WHERE status > 0 ORDER BY name");
-                        return dc.Query<string, Hub>(proj: 0xff);
+                        return dc.Query<string, Hub>();
                     }
                 }, 3600
             );
 
-            // register cached active orgs
+            // register cached active teams
             Register(delegate
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT ").collst(Org.Empty).T(" FROM orgs WHERE status > 0 ORDER BY hubid, name");
-                        return dc.Query<short, Org>(proj: 0xff);
+                        dc.Sql("SELECT ").collst(Team.Empty).T(" FROM teams WHERE status > 0 ORDER BY hubid, name");
+                        return dc.Query<short, Team>();
+                    }
+                }, 300
+            );
+
+            // register cached active workshops
+            Register(delegate
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(Shop.Empty).T(" FROM shops WHERE status > 0 ORDER BY hubid, name");
+                        return dc.Query<short, Shop>();
                     }
                 }, 300
             );
@@ -69,7 +80,7 @@ namespace Samp
                     if (wc.ByWeiXinClient) // weixin
                     {
                         var hub = Obtain<Map<string, Hub>>()[hubid];
-                        hub.GiveRedirectWeiXinAuthorize(wc, SampUtility.NETADDR);
+                        hub.GiveRedirectWeiXinAuthorize(wc, SampUtility.NetAddr);
                     }
                     else // challenge BASIC scheme
                     {
@@ -88,8 +99,8 @@ namespace Samp
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
-                        var orgs = Obtain<Map<short, Org>>();
-                        h.LI_().SELECT("参　　团", nameof(o.teamat), o.teamat, orgs, tip: "（无）", filter: x => x.hubid == hubid)._LI();
+                        var orgs = Obtain<Map<short, Team>>();
+                        h.LI_().SELECT("参　　团", nameof(o.teamid), o.teamid, orgs, tip: "（无）", filter: x => x.hubid == hubid)._LI();
                         h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
                         h._FIELDUL();
                         h.BOTTOMBAR_().BUTTON("确定", "/catch", css: "uk-button-primary")._BOTTOMBAR();
@@ -165,10 +176,10 @@ namespace Samp
             // send message to the related grouper, if any
             if (teamid != null)
             {
-                var oprwx = Obtain<Map<string, Org>>()[teamid]?.mgrwx;
+                var oprwx = Obtain<Map<string, Team>>()[teamid]?.mgrwx;
                 if (oprwx != null)
                 {
-                    await hub.PostSendAsync(oprwx, "新订单", ("¥" + cash + " " + uname + " " + uaddr), SampUtility.NETADDR + "/grp//ord/");
+                    await hub.PostSendAsync(oprwx, "新订单", ("¥" + cash + " " + uname + " " + uaddr), SampUtility.NetAddr + "/grp//ord/");
                 }
                 // return xml to WCPay server
                 XmlContent x = new XmlContent(true, 1024);
