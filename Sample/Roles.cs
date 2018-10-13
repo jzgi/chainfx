@@ -20,13 +20,13 @@ namespace Samp
 
             Make<HubItemWork>("item");
 
-            Make<HublyTeamWork>("org");
-
             Make<HublyShopWork>("shop");
 
-            Make<HubUserWork>("opr");
+            Make<HublyTeamWork>("team");
 
-            Make<HubRepayWork>("repay");
+            Make<HublyOprWork>("opr");
+
+            Make<HublyRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -40,13 +40,24 @@ namespace Samp
                     wc.GivePage(200, h =>
                     {
                         h.TOOLBAR();
+
                         h.SECTION_("uk-card uk-card-default");
-                        h.HEADER_("uk-card-header").H4("网点")._HEADER();
+                        h.HEADER_("uk-card-header").H4("订单")._HEADER();
                         h.MAIN_("uk-card-body")._MAIN();
                         h._SECTION();
 
                         h.SECTION_("uk-card uk-card-default");
-                        h.HEADER_("uk-card-header").H4("订单")._HEADER();
+                        h.HEADER_("uk-card-header").H4("货架")._HEADER();
+                        h.MAIN_("uk-card-body")._MAIN();
+                        h._SECTION();
+
+                        h.SECTION_("uk-card uk-card-default");
+                        h.HEADER_("uk-card-header").H4("工坊")._HEADER();
+                        h.MAIN_("uk-card-body")._MAIN();
+                        h._SECTION();
+
+                        h.SECTION_("uk-card uk-card-default");
+                        h.HEADER_("uk-card-header").H4("客团")._HEADER();
                         h.MAIN_("uk-card-body")._MAIN();
                         h._SECTION();
                     });
@@ -69,9 +80,9 @@ namespace Samp
     }
 
 
-    public class OrglyWork : Work
+    public class TeamlyWork : Work
     {
-        public OrglyWork(WorkConfig cfg) : base(cfg)
+        public TeamlyWork(WorkConfig cfg) : base(cfg)
         {
             MakeVar<TeamlyVarWork>(prin => ((User) prin).teamid);
         }

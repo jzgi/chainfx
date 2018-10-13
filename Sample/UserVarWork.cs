@@ -23,9 +23,9 @@ namespace Samp
         }
     }
 
-    public class HubUserVarWork : UserVarWork
+    public class HublyOprVarWork : UserVarWork
     {
-        public HubUserVarWork(WorkConfig cfg) : base(cfg)
+        public HublyOprVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

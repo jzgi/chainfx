@@ -98,13 +98,12 @@ namespace Samp
     }
 
     [Ui("人员")]
-    public class HubUserWork : UserWork<HubUserVarWork>
+    public class HublyOprWork : UserWork<HublyOprVarWork>
     {
-        public HubUserWork(WorkConfig cfg) : base(cfg)
+        public HublyOprWork(WorkConfig cfg) : base(cfg)
         {
         }
 
-        [Ui("员工"), Tool(Anchor)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -122,35 +121,8 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "search", tip: "查找"), Tool(AnchorPrompt)]
-        public void search(WebContext wc)
-        {
-            bool inner = wc.Query[nameof(inner)];
-            string tel = null;
-            if (inner)
-            {
-                wc.GivePane(200, h => { h.FORM_().FIELDUL_("手机号").TEL(null, nameof(tel), tel)._FIELDUL()._FORM(); });
-            }
-            else
-            {
-                string hubid = wc[0];
-                tel = wc.Query[nameof(tel)];
-                using (var dc = NewDbContext())
-                {
-                    var arr = dc.Query<User>("SELECT * FROM users WHERE hubid = @1 AND tel = @2", p => p.Set(hubid).Set(tel));
-                    wc.GivePage(200, h =>
-                    {
-                        h.TOOLBAR();
-                        h.TABLE(arr, null,
-                            o => h.TD(o.name).TD(o.tel).TD(Hubly[o.hubly])
-                        );
-                    });
-                }
-            }
-        }
-
         [UserAccess(hubly: 7)]
-        [Ui("设为..."), Tool(ButtonPickPrompt, size: 1)]
+        [Ui("添加"), Tool(ButtonPickPrompt, size: 1)]
         public async Task role(WebContext wc, int cmd)
         {
             short hubly = 0;
@@ -182,5 +154,12 @@ namespace Samp
                 wc.GivePane(200);
             }
         }
+
+        [UserAccess(hubly: 7)]
+        [Ui("删除"), Tool(ButtonPickPrompt, size: 1)]
+        public async Task del(WebContext wc, int cmd)
+        {
+        }
+
     }
 }

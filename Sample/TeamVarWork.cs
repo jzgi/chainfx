@@ -30,7 +30,7 @@ namespace Samp
                     var o = dc.Query1<Team>(p => p.Set(orgid), 0);
                     wc.GivePane(200, h =>
                     {
-                        h.FORM_().FIELDUL_("填写团组资料");
+                        h.FORM_().FIELDUL_("填写资料");
                         h.LI_().TEXT("名　称", nameof(o.name), o.name, max: 10, required: true)._LI();
                         h.LI_().TEXT("地　址", nameof(o.addr), o.addr, max: 20)._LI();
                         h.LI_().NUMBER("经　度", nameof(o.x), o.x, step: 0.000001).NUMBER("纬　度", nameof(o.y), o.y, step: 0.000001)._LI();
@@ -39,7 +39,7 @@ namespace Samp
                     });
                 }
             }
-            else // post
+            else // POST
             {
                 var o = await wc.ReadObjectAsync<Team>(0);
                 o.hubid = hubid;

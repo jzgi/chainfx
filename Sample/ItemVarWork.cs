@@ -29,12 +29,12 @@ namespace Samp
             }
         }
 
-        public void img(WebContext wc, int ordinal)
+        public void img(WebContext wc)
         {
             short id = wc[this];
             using (var dc = NewDbContext())
             {
-                if (dc.Query1("SELECT img" + ordinal + " FROM items WHERE id = @2", p => p.Set(id)))
+                if (dc.Query1("SELECT img FROM items WHERE id = @1", p => p.Set(id)))
                 {
                     dc.Let(out byte[] bytes);
                     if (bytes == null) wc.Give(204); // no content 
@@ -55,12 +55,19 @@ namespace Samp
         public void @default(WebContext wc)
         {
             string hubid = wc[-1];
-            string name = wc[this];
+            short id = wc[this];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND name = @2");
-                var o = dc.Query1<Item>(p => p.Set(hubid).Set(name));
-                wc.GivePage(200, h => { });
+                dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND id = @2");
+                var o = dc.Query1<Item>(p => p.Set(hubid).Set(id));
+                wc.GivePage(200, h =>
+                {
+                    h.DIV_(css: "uk-inline");
+                    h.ICO_(circle: false).T("img")._ICO();
+                    h.DIV_(css: "uk-overlay uk-overlay-primary uk-position-bottom").H4(o.name)._DIV();
+                    h._DIV();
+                    h.T(o.remark);
+                });
             }
         }
 
@@ -180,8 +187,8 @@ namespace Samp
                         h.LI_().URL("视　频", nameof(o.mov), o.mov)._LI();
                         h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).NUMBER("增　减", nameof(o.step), o.step, min: (short) 1)._LI();
                         h.LI_().NUMBER("单　价", nameof(o.price), o.price, required: true)._LI();
-                        h.LI_().NUMBER("产供档", nameof(o.shopp), o.shopp, required: true).NUMBER("派送档", nameof(o.senderp), o.senderp, required: true)._LI();
-                        h.LI_().NUMBER("团组档", nameof(o.teamp), o.teamp, required: true).NUMBER("上门费", nameof(o.fee), o.fee, required: true)._LI();
+                        h.LI_().NUMBER("工坊值", nameof(o.shopp), o.shopp, required: true).NUMBER("派送值", nameof(o.senderp), o.senderp, required: true)._LI();
+                        h.LI_().NUMBER("团组值", nameof(o.teamp), o.teamp, required: true).NUMBER("上门费", nameof(o.fee), o.fee, required: true)._LI();
                         h._FIELDUL();
                         h._FORM();
                     });
@@ -206,7 +213,7 @@ namespace Samp
         }
 
         [UserAccess(7)]
-        [Ui("图片"), Tool(ButtonCrop, size: 1)]
+        [Ui("图标"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {
             if (wc.GET)
@@ -215,12 +222,36 @@ namespace Samp
             }
             else // POST
             {
-                string name = wc[this];
+                short id = wc[this];
                 var f = await wc.ReadAsync<Form>();
                 ArraySegment<byte> img = f[nameof(img)];
                 using (var dc = NewDbContext())
                 {
-                    if (dc.Execute("UPDATE items SET icon = @1 WHERE name = @2", p => p.Set(img).Set(name)) > 0)
+                    if (dc.Execute("UPDATE items SET icon = @1 WHERE id = @2", p => p.Set(img).Set(id)) > 0)
+                    {
+                        wc.Give(200); // ok
+                    }
+                    else wc.Give(500); // internal server error
+                }
+            }
+        }
+
+        [UserAccess(7)]
+        [Ui("照片"), Tool(ButtonCrop, size: 2)]
+        public new async Task img(WebContext wc)
+        {
+            if (wc.GET)
+            {
+                base.img(wc);
+            }
+            else // POST
+            {
+                short id = wc[this];
+                var f = await wc.ReadAsync<Form>();
+                ArraySegment<byte> img = f[nameof(img)];
+                using (var dc = NewDbContext())
+                {
+                    if (dc.Execute("UPDATE items SET img = @1 WHERE id = @2", p => p.Set(img).Set(id)) > 0)
                     {
                         wc.Give(200); // ok
                     }

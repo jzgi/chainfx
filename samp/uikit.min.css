@@ -4702,7 +4702,7 @@ ul.uk-nav-sub {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 2.75rem;
+    min-height: 2.75rem;
     box-sizing: border-box;
     background-color: lightgray;
 }
@@ -4711,7 +4711,7 @@ ul.uk-nav-sub {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 2.75rem;
+    min-height: 2.75rem;
     box-sizing: border-box;
     background-color: lightgray;
 }

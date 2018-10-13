@@ -41,9 +41,9 @@ namespace Samp
 
     [UserAccess(hubly: 7)]
     [Ui("结款")]
-    public class HubRepayWork : RepayWork<HubRepayVarWork>
+    public class HublyRepayWork : RepayWork<HublyRepayVarWork>
     {
-        public HubRepayWork(WorkConfig cfg) : base(cfg)
+        public HublyRepayWork(WorkConfig cfg) : base(cfg)
         {
         }
 

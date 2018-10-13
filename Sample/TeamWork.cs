@@ -11,7 +11,7 @@ namespace Samp
         }
     }
 
-    [Ui("团组")]
+    [Ui("客团")]
     public class HublyTeamWork : TeamWork
     {
         public HublyTeamWork(WorkConfig cfg) : base(cfg)
@@ -82,5 +82,40 @@ namespace Samp
             }
             wc.GiveRedirect();
         }
+
+        [UserAccess(hubly: 7)]
+        [Ui("客户", icon: "search"), Tool(ButtonPrompt, size: 1)]
+        public async Task search(WebContext wc, int cmd)
+        {
+            short hubly = 0;
+            if (wc.GET)
+            {
+                wc.GivePane(200, h =>
+                {
+                    h.FORM_();
+                    h.FIELDUL_("设置操作岗位");
+                    // h.LI_().SELECT("岗　位", nameof(hubly), hubly, Hubly)._LI();
+                    h._FIELDUL();
+                    h._FORM();
+                });
+            }
+            else
+            {
+                string hubid = wc[0];
+                var f = await wc.ReadAsync<Form>();
+                hubly = f[nameof(hubly)];
+                int[] key = f[nameof(key)];
+                if (cmd == 2) // add
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("UPDATE users SET hubly = @1 WHERE hubid = @2 AND id ")._IN_(key);
+                        dc.Execute(p => p.Set(hubly).Set(hubid));
+                    }
+                }
+                wc.GivePane(200);
+            }
+        }
+
     }
 }

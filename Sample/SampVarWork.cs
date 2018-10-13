@@ -9,15 +9,11 @@ namespace Samp
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
             MakeVar<SampItemVarWork>();
-
+            
             Make<SampChatWork>("chat"); // chat
-
             Make<MyWork>("my"); // personal
-
-            Make<OrglyWork>("team"); // customer team
-
+            Make<TeamlyWork>("team"); // customer team
             Make<ShoplyWork>("shop"); // supplying shop
-
             Make<HublyWork>("hub"); // central 
 
             // register cached active hubs
@@ -30,18 +26,6 @@ namespace Samp
                     }
                 }, 3600
             );
-
-            // register cached active teams
-            Register(delegate
-                {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Sql("SELECT ").collst(Team.Empty).T(" FROM teams WHERE status > 0 ORDER BY hubid, name");
-                        return dc.Query<short, Team>();
-                    }
-                }, 300
-            );
-
             // register cached active workshops
             Register(delegate
                 {
@@ -49,6 +33,16 @@ namespace Samp
                     {
                         dc.Sql("SELECT ").collst(Shop.Empty).T(" FROM shops WHERE status > 0 ORDER BY hubid, name");
                         return dc.Query<short, Shop>();
+                    }
+                }, 300
+            );
+            // register cached active teams
+            Register(delegate
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT ").collst(Team.Empty).T(" FROM teams WHERE status > 0 ORDER BY hubid, name");
+                        return dc.Query<short, Team>();
                     }
                 }, 300
             );
@@ -132,7 +126,7 @@ namespace Samp
                         var arr = dc.Query<Item>(p => p.Set(hubid));
                         h.LIST(arr, o =>
                         {
-                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '").T(o.name).T("');\">");
+                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '商品详情');\">");
                             h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.id).T("/icon")._ICO();
                             h.COL_(css: "uk-width-2-3 uk-padding-small");
                             h.H3(o.name);
