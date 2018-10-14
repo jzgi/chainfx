@@ -183,7 +183,7 @@ namespace Samp
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, short maxage = 12, string title = null, int refresh = 0)
+        public static void GivePage(this WebContext wc, int status, Action<HtmlContent> main, bool? @public = null, short maxage = 12, string title = null, short refresh = 0)
         {
             HtmlContent h = new HtmlContent(wc, true, 32 * 1024);
 

@@ -50,7 +50,7 @@ namespace Samp
                             h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写跟帖内容", max: 400, required: true)._LI();
                             h._FIELDUL();
                             h.CROP(nameof(img), "图片（可选）", PicWidth, PicHeight);
-                            h.BOTTOMBAR_().BUTTON("跟帖", css: "uk-button-primary")._BOTTOMBAR();
+                            h.BOTTOM_().BUTTON("跟帖", css: "uk-button-primary")._BOTTOM();
                             h._FORM();
                         }, true, 15
                     );

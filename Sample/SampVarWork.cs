@@ -9,14 +9,14 @@ namespace Samp
         public SampVarWork(WorkConfig cfg) : base(cfg)
         {
             MakeVar<SampItemVarWork>();
-            
+
             Make<SampChatWork>("chat"); // chat
             Make<MyWork>("my"); // personal
             Make<TeamlyWork>("team"); // customer team
-            Make<ShoplyWork>("shop"); // supplying shop
+            Make<ShoplyWork>("shop"); // workshop
             Make<HublyWork>("hub"); // central 
 
-            // register cached active hubs
+            // register cached active central hubs
             Register(delegate
                 {
                     using (var dc = NewDbContext())
@@ -36,7 +36,7 @@ namespace Samp
                     }
                 }, 300
             );
-            // register cached active teams
+            // register cached active customer teams
             Register(delegate
                 {
                     using (var dc = NewDbContext())
@@ -59,8 +59,7 @@ namespace Samp
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    const byte proj = 0xff ^ User.ID ^ User.MISC;
-                    dc.Sql("INSERT INTO users ")._(User.Empty, proj)._VALUES_(User.Empty, proj).T(" ON CONFLICT () UPDATE SET ").setlst(User.Empty, proj);
+                    dc.Sql("INSERT INTO users ")._(User.Empty, 0)._VALUES_(User.Empty, 0).T(" ON CONFLICT () UPDATE SET ").setlst(User.Empty, 0);
                     dc.Execute(p => o.Write(p));
                     wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                 }
@@ -82,24 +81,24 @@ namespace Samp
                         wc.Give(401); // unauthorized
                     }
                 }
-                else if (((User) wc.Principal).IsIncomplete)
+                else if (!((User) wc.Principal).IsTeamed)
                 {
                     var o = (User) wc.Principal;
                     string url = wc.Path;
                     wc.GivePage(200, h =>
                     {
                         h.FORM_();
-                        h.FIELDUL_("填写用户资料");
+                        h.FIELDUL_("填写用户信息");
                         h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.HIDDEN(nameof(url), url);
                         var orgs = Obtain<Map<short, Team>>();
-                        h.LI_().SELECT("参　　团", nameof(o.teamid), o.teamid, orgs, tip: "（无）", filter: x => x.hubid == hubid)._LI();
-                        h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 21, min: 2, required: true)._LI();
+                        h.LI_().SELECT("参　　团", nameof(o.teamid), o.teamid, orgs, filter: x => x.hubid == hubid)._LI();
+                        h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 30, required: true)._LI();
                         h._FIELDUL();
-                        h.BOTTOMBAR_().BUTTON("确定", "/catch", css: "uk-button-primary")._BOTTOMBAR();
+                        h.BOTTOM_().BUTTON("确定", "/catch", css: "uk-button-primary")._BOTTOM();
                         h._FORM();
-                    }, title: "用户注册");
+                    }, title: "填写用户信息");
                 }
                 else // IsNotAllowed
                 {

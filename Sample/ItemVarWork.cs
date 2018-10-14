@@ -56,6 +56,7 @@ namespace Samp
         {
             string hubid = wc[-1];
             short id = wc[this];
+            short num;
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND id = @2");
@@ -67,11 +68,15 @@ namespace Samp
                     h.DIV_(css: "uk-overlay uk-overlay-primary uk-position-bottom").H4(o.name)._DIV();
                     h._DIV();
                     h.T(o.remark);
+                    h.BOTTOM_();
+                    h.NUMBER(null, nameof(num), o.min, max: o.queue, min: o.min, step: o.step).T(o.unit);
+                    h.TOOL(nameof(prepay));
+                    h._BOTTOM();
                 });
             }
         }
 
-        [Ui("购买", "订购商品"), Tool(AnchorOpen, size: 1, access: false), ItemState('A')]
+        [Ui("购买", "订购商品"), Tool(ButtonScript), ItemState('A')]
         public async Task buy(WebContext wc)
         {
             User prin = (User) wc.Principal;
@@ -92,7 +97,7 @@ namespace Samp
                         h.LI_().NUMBER(null, nameof(num), item.min, max: item.queue, min: item.min, step: item.step).T(item.unit)._LI();
                         h._FIELDUL();
 
-                        h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
+                        h.BOTTOM_().TOOL(nameof(prepay))._BOTTOM();
 
                         h._FORM();
                     }
@@ -121,7 +126,7 @@ namespace Samp
                 wc.GivePane(200, m =>
                 {
                     m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
-                    m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
+                    m.BOTTOM_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOM();
                 });
             }
         }

@@ -13,8 +13,6 @@ namespace Samp
     /// </summary>
     public class Hub : IData, IKeyable<string>
     {
-        public const string WXAUTH = "wxauth";
-
         public static readonly Hub Empty = new Hub();
 
         static readonly Client Connector = new Client("https://api.weixin.qq.com");

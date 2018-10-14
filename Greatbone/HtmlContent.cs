@@ -1113,11 +1113,11 @@ namespace Greatbone
                     stack[level] = obj;
 
                     Add("<tr>");
-                    if (vw != null && w.HasPick)
+                    if (w.HasPick)
                     {
                         Add("<td style=\"width: 1%\">");
                         Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                        vw.PutVariableKey(obj, this);
+                        Work.PutVariableKey(obj, this);
                         Add("\" onchange=\"checkit(this);\">");
                         Add("</td>");
                     }
@@ -1258,14 +1258,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BOTTOMBAR_()
+        public HtmlContent BOTTOM_()
         {
             Add("<div class=\"uk-bottom-placeholder\"></div>");
             Add("<footer class=\"uk-bottom-bar\">");
             return this;
         }
 
-        public HtmlContent _BOTTOMBAR()
+        public HtmlContent _BOTTOM()
         {
             Add("</footer>");
             return this;
@@ -1327,7 +1327,7 @@ namespace Greatbone
             {
                 object obj = stack[level];
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                varw.PutVariableKey(obj, this);
+                Work.PutVariableKey(obj, this);
                 Add("\" onchange=\"checkit(this);\">");
             }
 
@@ -1357,7 +1357,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string icon = null, string css = "uk-button-default")
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string icon = null, string css = null)
         {
             // locate the proper work
             Work w = webCtx.Work;
@@ -1400,7 +1400,7 @@ namespace Greatbone
                     for (int i = 0; i <= level; i++)
                     {
                         w = w.varwork;
-                        w.PutVariableKey(stack[i], this);
+                        Work.PutVariableKey(stack[i], this);
                         Add('/');
                     }
                 }
@@ -1425,7 +1425,7 @@ namespace Greatbone
                     for (int i = 0; i <= level; i++)
                     {
                         w = w.varwork;
-                        w.PutVariableKey(stack[i], this);
+                        Work.PutVariableKey(stack[i], this);
                         Add('/');
                     }
                 }

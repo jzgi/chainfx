@@ -68,7 +68,7 @@ namespace Samp
                         h.FIELDUL_("用于从微信以外登录（可选）");
                         h.LI_().PASSWORD("外部密码", nameof(password), password, max: 12, min: 3)._LI();
                         h._FIELDUL();
-                        h.BOTTOMBAR_().BUTTON(caption: "确定", css: "uk-button-primary")._BOTTOMBAR();
+                        h.BOTTOM_().BUTTON(caption: "确定", css: "uk-button-primary")._BOTTOM();
                         h._FORM();
                     });
                 }
@@ -113,9 +113,9 @@ namespace Samp
     {
         public ShoplyVarWork(WorkConfig cfg) : base(cfg)
         {
-            Make<ShopOrderWork>("order");
+            Make<ShoplyOrderWork>("order");
 
-            Make<ShopOprWork>("user");
+            Make<ShoplyOprWork>("user");
 
             Make<OrgRepayWork>("repay");
         }
@@ -159,6 +159,8 @@ namespace Samp
             Make<TeamlyOrderWork>("order");
 
             Make<TeamlyUserWork>("user");
+
+            Make<TeamlyOprWork>("opr");
 
             Make<OrgRepayWork>("repay");
         }

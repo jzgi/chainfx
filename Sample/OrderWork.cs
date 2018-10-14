@@ -191,9 +191,9 @@ namespace Samp
     /// The order processing in a workshop.
     /// </summary>
     [Ui("订单")]
-    public class ShopOrderWork : OrderWork
+    public class ShoplyOrderWork : OrderWork
     {
-        public ShopOrderWork(WorkConfig cfg) : base(cfg)
+        public ShoplyOrderWork(WorkConfig cfg) : base(cfg)
         {
             MakeVar<ShopOrderVarWork>();
         }

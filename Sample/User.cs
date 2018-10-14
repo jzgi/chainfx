@@ -14,21 +14,22 @@ namespace Samp
         public static readonly Map<short, string> Teamly = new Map<short, string>
         {
             {0, null},
-            {1, "副手"},
-            {3, "团长"},
+            {1, "帮手"}, // routine
+            {3, "助理"}, // operator and customer mgmt
+            {7, "团长"}, // finance
         };
 
         public static readonly Map<short, string> Shoply = new Map<short, string>
         {
-            {1, "副手"},
-            {3, "负责"},
+            {1, "帮手"},
+            {3, "经理"},
         };
 
         public static readonly Map<short, string> Hubly = new Map<short, string>
         {
-            {1, "成员"},
-            {3, "副手"},
-            {7, "负责"},
+            {1, "帮手"},
+            {3, "助理"},
+            {7, "经理"},
         };
 
         internal int id;
@@ -97,7 +98,7 @@ namespace Samp
             }
         }
 
-        public bool IsIncomplete => name == null || tel == null | addr == null;
+        public bool IsTeamed => id > 0 && name != null && tel != null;
 
         public int Key => id;
 

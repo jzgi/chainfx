@@ -45,7 +45,7 @@ namespace Greatbone
         readonly bool pick;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Auth)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
         {
             this.cfg = cfg;
 
@@ -134,7 +134,6 @@ namespace Greatbone
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
-        /// <typeparam name="K"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
         protected W MakeVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
@@ -155,7 +154,7 @@ namespace Greatbone
             WorkConfig config = new WorkConfig(VAR)
             {
                 Ui = ui,
-                Auth = auth,
+                Access = auth,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -169,15 +168,15 @@ namespace Greatbone
         }
 
         /// <summary>
-        /// Create a fixed-key subwork.
+        /// Create and add a fixed-key subwork.
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="auth">to override class-wise Authorize attribute</param>
+        /// <param name="access">to override class-wise Authorize attribute</param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Make<W>(string name, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W Make<W>(string name, UiAttribute ui = null, AccessAttribute access = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -200,7 +199,7 @@ namespace Greatbone
             WorkConfig config = new WorkConfig(name)
             {
                 Ui = ui,
-                Auth = auth,
+                Access = access,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
@@ -219,7 +218,7 @@ namespace Greatbone
             return keyer?.Invoke(prin);
         }
 
-        public void PutVariableKey(object obj, DynamicContent cont)
+        public static void PutVariableKey(object obj, DynamicContent cont)
         {
             if (obj is IKeyable<string> kstr)
             {
@@ -481,37 +480,37 @@ namespace Greatbone
         }
 
         //
-        // OBJECT PROVIDER
+        // object provider
 
-        Holder[] holders;
+        Hold[] holds;
 
         int size;
 
         public void Register(object value, byte flag = 0)
         {
-            if (holders == null)
+            if (holds == null)
             {
-                holders = new Holder[16];
+                holds = new Hold[16];
             }
-            holders[size++] = new Holder(value, flag);
+            holds[size++] = new Hold(value, flag);
         }
 
         public void Register<V>(Func<V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holders == null)
+            if (holds == null)
             {
-                holders = new Holder[8];
+                holds = new Hold[8];
             }
-            holders[size++] = new Holder(typeof(V), fetch, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
         }
 
         public void Register<V>(Func<Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holders == null)
+            if (holds == null)
             {
-                holders = new Holder[8];
+                holds = new Hold[8];
             }
-            holders[size++] = new Holder(typeof(V), fetchAsync, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
         }
 
         /// <summary>
@@ -521,11 +520,11 @@ namespace Greatbone
         /// <returns>the result object or null</returns>
         public T Obtain<T>(byte flag = 0) where T : class
         {
-            if (holders != null)
+            if (holds != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var h = holders[i];
+                    var h = holds[i];
                     if (h.Flag == 0 || (h.Flag & flag) > 0)
                     {
                         if (!h.IsAsync && typeof(T).IsAssignableFrom(h.Typ))
@@ -540,11 +539,11 @@ namespace Greatbone
 
         public async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (holders != null)
+            if (holds != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = holders[i];
+                    var cell = holds[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -578,7 +577,7 @@ namespace Greatbone
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Holder
+        class Hold
         {
             readonly Type typ;
 
@@ -595,14 +594,14 @@ namespace Greatbone
 
             readonly byte flag;
 
-            internal Holder(object value, byte flag)
+            internal Hold(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
                 this.flag = flag;
             }
 
-            internal Holder(Type typ, Func<object> fetch, int maxage, byte flag)
+            internal Hold(Type typ, Func<object> fetch, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;

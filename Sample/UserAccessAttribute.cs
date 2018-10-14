@@ -11,6 +11,8 @@ namespace Samp
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UserAccessAttribute : AccessAttribute
     {
+        const string WXAUTH = "wxauth";
+
         // required hub access
         readonly short hubly;
 
@@ -41,7 +43,7 @@ namespace Samp
             // resolve principal thru OAuth2 or HTTP-basic
             User prin = null;
             string state = wc.Query[nameof(state)];
-            if (Hub.WXAUTH.Equals(state)) // if weixin auth
+            if (WXAUTH.Equals(state)) // if weixin auth
             {
                 string code = wc.Query[nameof(code)];
                 if (code == null)
@@ -49,10 +51,8 @@ namespace Samp
                     return false;
                 }
                 string hubid = wc[0];
-                wc.Work.INF("hubid := " + hubid);
                 var hub = wc.Work.Obtain<Map<string, Hub>>()[hubid];
                 (_, string openid) = await hub.GetAccessorAsync(code);
-
                 if (openid == null)
                 {
                     return false;
@@ -66,7 +66,7 @@ namespace Samp
                     }
                     else
                     {
-                        prin = new User { wx = openid }; // create a minimal principal object
+                        prin = new User {wx = openid}; // create a minimal principal object
                     }
                 }
             }
@@ -109,9 +109,9 @@ namespace Samp
 
         public override bool Authorize(WebContext wc)
         {
-            var o = (User)wc.Principal;
+            var o = (User) wc.Principal;
 
-            if (o == null || o.IsIncomplete) return false;
+            if (o == null) return false;
 
             // if requires hub access
             if (hubly > 0)
