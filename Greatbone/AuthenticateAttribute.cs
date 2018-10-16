@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Greatbone
 {
     /// <summary>
-    /// To implement principal authentication for the current web request/response context. 
+    /// To determine principal identity based on current web context. The interaction with user, however, is not included.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public abstract class AuthenticateAttribute : Attribute

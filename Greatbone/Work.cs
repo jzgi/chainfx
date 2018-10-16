@@ -307,7 +307,7 @@ namespace Greatbone
                     {
                         if (before.IsAsync && !await before.DoAsync(wc) || !before.IsAsync && before.Do(wc))
                         {
-                            goto WorkExit;
+                            return;
                         }
                     }
                     //
@@ -355,7 +355,6 @@ namespace Greatbone
                         wc.Actioner = null;
                     }
 
-                    WorkExit:
                     if (after != null)
                     {
                         if (after.IsAsync && !await after.DoAsync(wc) || !after.IsAsync && after.Do(wc))

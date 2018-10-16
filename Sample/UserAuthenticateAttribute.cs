@@ -6,7 +6,7 @@ using Greatbone;
 namespace Samp
 {
     /// <summary>
-    /// To check access to an annotated work or action method. 
+    /// To determine principal identity based on current web context. 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public class UserAuthenticateAttribute : AuthenticateAttribute

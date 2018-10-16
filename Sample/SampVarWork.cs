@@ -107,6 +107,7 @@ namespace Samp
                 }
                 if (cmd == 2) // if was saved with suggested teamid
                 {
+                    wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                     var hub = Obtain<Map<string, Hub>>()[hubid];
                     wc.GiveRedirect(hub.watchurl); // redirect to the weixin account watch page
                 }
@@ -149,17 +150,22 @@ namespace Samp
         {
             string hubid = wc[this];
             var hub = Obtain<Map<string, Hub>>()[hubid];
+            int uid = wc.Query[nameof(uid)];
             wc.GivePage(200, h =>
                 {
-                    h.TOPBAR(true);
-
+                    h.TOPBAR(true, uid);
                     using (var dc = NewDbContext())
                     {
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND status > 0");
                         var arr = dc.Query<Item>(p => p.Set(hubid));
                         h.LIST(arr, o =>
                         {
-                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.id).T("/\" onclick=\"return dialog(this, 8, false, 2, '商品详情');\">");
+                            h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.id).T("/");
+                            if (uid > 0)
+                            {
+                                h.T("?uid=").T(uid);
+                            }
+                            h.T("\" onclick=\"return dialog(this, 8, false, 2, '商品详情');\">");
                             h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.id).T("/icon")._ICO();
                             h.COL_(css: "uk-width-2-3 uk-padding-small");
                             h.H3(o.name);

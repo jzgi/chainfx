@@ -33,7 +33,7 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLE(arr, null, o => h.TD_().T("<a href=\"/").T(hubid).T("/?forid=").T(o.id).T("\">").T(o.name).T("</a>")._TD().TD(o.tel).TD(o.addr));
+                    h.TABLE(arr, null, o => h.TD_().T("<a href=\"/").T(hubid).T("/?uid=").T(o.id).T("\">").T(o.name).T("</a>")._TD().TD(o.tel).TD(o.addr));
                 }, @public: false, maxage: 3, refresh: 720);
             }
         }

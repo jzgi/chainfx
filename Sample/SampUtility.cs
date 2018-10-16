@@ -259,23 +259,23 @@ namespace Samp
             ac.Give(status, h, @public, maxage);
         }
 
-        public static HtmlContent TOPBAR(this HtmlContent h, bool def)
+        public static HtmlContent TOPBAR(this HtmlContent h, bool def, int uid = 0)
         {
             h.T("<nav class=\"uk-top-bar\">");
             h.T("<ul class=\"uk-subnav\">");
             if (def)
             {
                 h.T("<li class=\"uk-active \"><a href=\"#\">下单</a></li>");
-                h.T("<li><a href=\"chat/\">社区交流</a></li>");
+                if (uid == 0) h.T("<li><a href=\"chat/\">社区交流</a></li>");
             }
             else
             {
                 h.T("<li><a href=\"../\">下单</a></li>");
-                h.T("<li class=\"uk-active \"><a href=\"#\">社区交流</a></li>");
+                if (uid == 0) h.T("<li class=\"uk-active \"><a href=\"#\">社区交流</a></li>");
             }
             h.T("</ul>");
             string hubid = h.WebCtx[0];
-            h.T("<a class=\"uk-button uk-button-link\" href=\"/").T(hubid).T("/my//order/\">我的订单</a>");
+            h.T("<a class=\"uk-button uk-button-link\" href=\"/").T(hubid).T("/my/").T(uid, uid > 0).T("/order/\"><span uk-icon=\"album\"></span>订单</a>");
             h.T("</nav>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

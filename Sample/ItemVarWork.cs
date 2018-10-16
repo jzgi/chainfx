@@ -54,13 +54,14 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
-            string hubid = wc[-1];
-            short id = wc[this];
+            string hubid = wc[0];
+            short itemid = wc[this];
+            int uid = wc.Query[nameof(uid)];
             short num;
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND id = @2");
-                var o = dc.Query1<Item>(p => p.Set(hubid).Set(id));
+                var o = dc.Query1<Item>(p => p.Set(hubid).Set(itemid));
                 wc.GivePage(200, h =>
                 {
                     h.DIV_(css: "uk-inline");
@@ -76,60 +77,6 @@ namespace Samp
             }
         }
 
-        [Ui("购买", "订购商品"), Tool(ButtonScript), ItemState('A')]
-        public async Task buy(WebContext wc)
-        {
-            User prin = (User) wc.Principal;
-            string name = wc[this];
-            var item = Obtain<Map<string, Item>>()[name];
-            short num;
-            if (wc.GET)
-            {
-                wc.GivePane(200, h =>
-                {
-                    bool ingrp = prin.teamid > 0;
-                    using (var dc = NewDbContext())
-                    {
-                        h.FORM_();
-                        // quantity
-                        h.FIELDUL_("加入货品");
-                        h.LI_().ICO_("uk-width-1-6").T("icon")._ICO().SP().T(item.name)._LI();
-                        h.LI_().NUMBER(null, nameof(num), item.min, max: item.queue, min: item.min, step: item.step).T(item.unit)._LI();
-                        h._FIELDUL();
-
-                        h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
-
-                        h._FORM();
-                    }
-                });
-            }
-            else // POST
-            {
-                using (var dc = NewDbContext())
-                {
-                    const byte proj = 0xff ^ Order.ID ^ Order.LATER;
-                    var f = await wc.ReadAsync<Form>();
-                    string posid = f[nameof(posid)];
-                    var o = new Order
-                    {
-                        uid = prin.id,
-                        uname = prin.name,
-                        uwx = prin.wx,
-                        paid = DateTime.Now
-                    };
-                    o.Read(f, proj);
-                    num = f[nameof(num)];
-                    //                        o.AddItem(itemname, item.unit, item.price, num);
-                    dc.Sql("INSERT INTO orders ")._(o, proj)._VALUES_(o, proj);
-                    dc.Execute(p => o.Write(p, proj));
-                }
-                wc.GivePane(200, m =>
-                {
-                    m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
-                    m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
-                });
-            }
-        }
 
         [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
