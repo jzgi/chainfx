@@ -143,13 +143,13 @@ namespace Greatbone
         /// <summary>
         /// Create and add a variable-key subwork.
         /// </summary>
-        /// <param name="princi">to resolve key from the principal object</param>
+        /// <param name="prinlet">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W MakeVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
+        protected W MakeVar<W>(Func<IData, object> prinlet = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -173,7 +173,7 @@ namespace Greatbone
                 Level = Level + 1,
                 IsVar = true,
                 Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
-                Princi = princi,
+                Princi = prinlet,
             };
             W w = (W) ci.Invoke(new object[] {config});
             varwork = w;
@@ -225,7 +225,7 @@ namespace Greatbone
             return w;
         }
 
-        public object GetPrinci(IData prin)
+        public object GetPrinlet(IData prin)
         {
             var keyer = cfg.Princi;
             return keyer?.Invoke(prin);
@@ -374,16 +374,16 @@ namespace Greatbone
                     else if (varwork != null) // if variable-key sub
                     {
                         IData prin = wc.Principal;
-                        object princi = null;
-                        if (key.Length == 0) // resolve shortcut
+                        object let = null;
+                        if (key.Length == 0) // resolve prinlet
                         {
                             if (prin == null) throw except;
-                            if ((princi = varwork.GetPrinci(prin)) == null)
+                            if ((let = varwork.GetPrinlet(prin)) == null)
                             {
                                 throw except;
                             }
                         }
-                        wc.Chain(varwork, key, princi);
+                        wc.Chain(varwork, key, let);
                         await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                     }
                 }
