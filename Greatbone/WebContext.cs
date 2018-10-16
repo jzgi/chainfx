@@ -58,8 +58,6 @@ namespace Greatbone
         ///
         public IData Principal { get; set; }
 
-        public bool Authenticated { get; internal set; }
-
         // levels of keys along the URI path
         Seg[] chain;
 

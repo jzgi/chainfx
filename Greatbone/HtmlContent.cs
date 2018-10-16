@@ -1258,14 +1258,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent BOTTOM_()
+        public HtmlContent BOTTOMBAR_()
         {
             Add("<div class=\"uk-bottom-placeholder\"></div>");
             Add("<footer class=\"uk-bottom-bar\">");
             return this;
         }
 
-        public HtmlContent _BOTTOM()
+        public HtmlContent _BOTTOMBAR()
         {
             Add("</footer>");
             return this;
@@ -1374,7 +1374,7 @@ namespace Greatbone
             var tool = act.Tool;
 
             // check action's availability
-            bool ok = !tool.Access || act.Authorize(webCtx);
+            bool ok = !tool.Access || act.DoAuthorize(webCtx);
             if (ok && level >= 0)
             {
                 ok = act.CheckState(webCtx, stack, level);

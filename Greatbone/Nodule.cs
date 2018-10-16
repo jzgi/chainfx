@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Greatbone
 {
@@ -22,15 +21,12 @@ namespace Greatbone
 
         readonly byte group;
 
-        // authentication & authorization
-        internal readonly AccessAttribute access;
+        // permission check
+        internal readonly AuthorizeAttribute authorize;
 
-        internal readonly AccessException except;
+        internal readonly AuthorizeException except;
 
-        // pre-action and post-action operation
-        internal readonly FilterAttribute filter;
-
-        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AccessAttribute auth = null)
+        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthorizeAttribute access = null)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
             this.lower = name.ToLower();
@@ -51,22 +47,19 @@ namespace Greatbone
             tip = ui?.Tip ?? label;
             group = ui?.Group ?? 0;
 
-            if (auth == null)
+            if (access == null)
             {
-                var aas = (AccessAttribute[]) attrp.GetCustomAttributes(typeof(AccessAttribute), true);
+                var aas = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), true);
                 if (aas.Length > 0)
                 {
-                    auth = aas[0];
+                    access = aas[0];
                 }
             }
-            if (auth != null)
+            if (access != null)
             {
-                this.access = auth;
-                except = new AccessException(auth);
+                this.authorize = access;
+                except = new AuthorizeException(access);
             }
-
-            var fas = (FilterAttribute[]) attrp.GetCustomAttributes(typeof(FilterAttribute), true);
-            if (fas.Length > 0) filter = fas[0];
         }
 
         public virtual string Key => name;
@@ -81,59 +74,9 @@ namespace Greatbone
 
         public byte Group => group;
 
-        public AccessAttribute Access => access;
-
-        public FilterAttribute Filter => filter;
-
-        public bool AccessRequired => access != null;
-
-        public bool AccessAsync => access.IsAsync;
-
-        public bool AccessSync => !access.IsAsync;
-
-        public bool CheckAccess(WebContext wc)
+        public bool DoAuthorize(WebContext wc)
         {
-            if (access != null)
-            {
-                if (!wc.Authenticated) // if not yet authenticated
-                {
-                    if (access.Authenticate(wc))
-                    {
-                        return false;
-                    }
-                    wc.Authenticated = true;
-                }
-                if (!access.Authorize(wc))
-                {
-                    throw except;
-                }
-            }
-            return true;
-        }
-
-        public async Task<bool> CheckAccessAsync(WebContext wc)
-        {
-            if (access != null)
-            {
-                if (!wc.Authenticated) // if not yet authenticated
-                {
-                    if (!await access.AuthenticateAsync(wc))
-                    {
-                        return false;
-                    }
-                    wc.Authenticated = true;
-                }
-                if (!access.Authorize(wc))
-                {
-                    throw except;
-                }
-            }
-            return true;
-        }
-
-        public bool Authorize(WebContext wc)
-        {
-            return access == null || access.Authorize(wc);
+            return authorize == null || authorize.Do(wc);
         }
 
         public override string ToString()

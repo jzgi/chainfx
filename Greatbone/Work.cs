@@ -44,14 +44,27 @@ namespace Greatbone
         // if there is any procedure that must pick form value
         readonly bool pick;
 
+        internal readonly AuthenticateAttribute authenticate;
+
+        // pre-action operation
+        internal readonly BeforeAttribute before;
+
+        // post-action operation
+        internal readonly AfterAttribute after;
+
         // to obtain a string key from a data object.
         protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
         {
             this.cfg = cfg;
 
+            this.type = GetType();
+
+            this.authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
+            this.before = (BeforeAttribute) type.GetCustomAttribute(typeof(BeforeAttribute), false);
+            this.after = (AfterAttribute) type.GetCustomAttribute(typeof(AfterAttribute), false);
+
             // gather procedures
             actioners = new Map<string, Actioner>(32);
-            this.type = GetType();
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
@@ -136,7 +149,7 @@ namespace Greatbone
         /// <typeparam name="W"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W MakeVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AccessAttribute auth = null) where W : Work
+        protected W MakeVar<W>(Func<IData, object> princi = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -176,7 +189,7 @@ namespace Greatbone
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W Make<W>(string name, UiAttribute ui = null, AccessAttribute access = null) where W : Work
+        protected W Make<W>(string name, UiAttribute ui = null, AuthorizeAttribute access = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -276,20 +289,27 @@ namespace Greatbone
             wc.Work = this;
             try
             {
-                if (AccessRequired)
+                if (authenticate != null)
                 {
-                    if (AccessSync && !CheckAccess(wc) || AccessAsync && !await CheckAccessAsync(wc)) return;
+                    if (authenticate.IsAsync && !await authenticate.DoAsync(wc) || !authenticate.IsAsync && authenticate.Do(wc))
+                    {
+                        wc.Give(401, "authentication failed"); // unauthenticated
+                        return;
+                    }
                 }
+
+                if (!DoAuthorize(wc)) throw except;
 
                 int slash = rsc.IndexOf('/');
                 if (slash == -1) // this work is the target work
                 {
-                    // execute before filtering
-                    if (filter != null)
+                    if (before != null)
                     {
-                        if (filter.Before && !(filter.OnBefore((wc))) || filter.BeforeAsync && !(await filter.OnBeforeAsync((wc)))) goto WorkExit;
+                        if (before.IsAsync && !await before.DoAsync(wc) || !before.IsAsync && before.Do(wc))
+                        {
+                            goto WorkExit;
+                        }
                     }
-
                     //
                     // resolve the resource
 
@@ -312,46 +332,35 @@ namespace Greatbone
                             name = rsc.Substring(0, dash);
                             wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                         }
-                        Actioner actr = this[name];
-                        if (actr == null)
+                        Actioner act = this[name];
+                        if (act == null)
                         {
                             wc.Give(404, "action not found", true, 12);
                             return;
                         }
 
-                        wc.Actioner = actr;
-                        if (actr.AccessRequired)
-                        {
-                            if (actr.AccessSync && !actr.CheckAccess(wc) || actr.AccessAsync && !await actr.CheckAccessAsync(wc)) return;
-                        }
+                        wc.Actioner = act;
+
+                        if (!act.DoAuthorize(wc)) throw act.except;
 
                         // try in the cache first
                         if (!Service.TryGiveFromCache(wc))
                         {
-                            if (actr.filter != null)
-                            {
-                                if (actr.filter.Before && !(actr.filter.OnBefore((wc))) || actr.filter.BeforeAsync && !(await actr.filter.OnBeforeAsync((wc)))) goto ActionExit;
-                            }
                             // invoke action method 
-                            if (actr.IsAsync) await actr.DoAsync(wc, subscpt);
-                            else actr.Do(wc, subscpt);
+                            if (act.IsAsync) await act.DoAsync(wc, subscpt);
+                            else act.Do(wc, subscpt);
                             ActionExit:
-                            if (actr.filter != null)
-                            {
-                                if (actr.filter.After && !(actr.filter.OnAfter((wc))) || actr.filter.AfterAsync && !(await actr.filter.OnAfterAsync((wc))))
-                                {
-                                }
-                            }
                             Service.TryCacheUp(wc);
                         }
                         wc.Actioner = null;
                     }
 
                     WorkExit:
-                    if (filter != null)
+                    if (after != null)
                     {
-                        if (filter.After && !(filter.OnAfter((wc))) || filter.AfterAsync && !await filter.OnAfterAsync((wc)))
+                        if (after.IsAsync && !await after.DoAsync(wc) || !after.IsAsync && after.Do(wc))
                         {
+                            return;
                         }
                     }
                 }

@@ -9,29 +9,17 @@ namespace Samp
     /// To check access to an annotated work or action method. 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class UserAccessAttribute : AccessAttribute
+    public class UserAuthenticateAttribute : AuthenticateAttribute
     {
         const string WXAUTH = "wxauth";
 
-        // required hub access
-        readonly short hubly;
+        public override bool Do(WebContext wc) => throw new NotImplementedException();
 
-        // required shop access
-        readonly short shoply;
-
-        // required customer team access
-        readonly short teamly;
-
-        public UserAccessAttribute(short hubly = 0, short shoply = 0, short teamly = 0) : base(1)
+        public UserAuthenticateAttribute() : base(true)
         {
-            this.hubly = hubly;
-            this.shoply = shoply;
-            this.teamly = teamly;
         }
 
-        public override bool Authenticate(WebContext wc) => throw new NotImplementedException();
-
-        public override async Task<bool> AuthenticateAsync(WebContext wc)
+        public override async Task<bool> DoAsync(WebContext wc)
         {
             // if principal already in cookie
             if (wc.Cookies.TryGetValue("Token", out var token))
@@ -66,7 +54,7 @@ namespace Samp
                     }
                     else
                     {
-                        prin = new User {wx = openid}; // create a minimal principal object
+                        prin = new User {wx = openid}; // create a tempary principal
                     }
                 }
             }
@@ -96,49 +84,16 @@ namespace Samp
                     return true;
                 }
             }
+
             // setup principal and cookie
             if (prin != null)
             {
                 // set token success
                 wc.Principal = prin;
-                wc.SetTokenCookie(prin, 0xff ^ User.PRIVACY);
-            }
-            return true;
-        }
-
-
-        public override bool Authorize(WebContext wc)
-        {
-            var o = (User) wc.Principal;
-
-            if (o == null) return false;
-
-            // if requires hub access
-            if (hubly > 0)
-            {
-                return (o.hubly & hubly) > 0;
-            }
-            // if requires shop access
-            if (shoply > 0)
-            {
-                if ((o.teamly & shoply) != shoply) return false; // inclusive check
-                short at = wc[typeof(IOrgVar)];
-                if (at != 0)
+                if (!prin.IsTemporary)
                 {
-                    return o.shopid == at;
+                    wc.SetTokenCookie(prin, 0xff ^ User.PRIVACY);
                 }
-                return true;
-            }
-            // if requires customer team access
-            if (teamly > 0)
-            {
-                if ((o.teamly & teamly) != teamly) return false; // inclusive check
-                short at = wc[typeof(IOrgVar)];
-                if (at != 0)
-                {
-                    return o.teamid == at;
-                }
-                return true;
             }
             return true;
         }

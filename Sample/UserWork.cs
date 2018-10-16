@@ -130,7 +130,7 @@ namespace Samp
         }
 
         [Ui("添加", tip: "添加操作人员"), Tool(ButtonShow)]
-        public async Task add(WebContext wc, int cmd)
+        public async Task add(WebContext wc)
         {
             string hubid = wc[0];
             short teamid = wc[Parent];
@@ -153,19 +153,16 @@ namespace Samp
                 var f = await wc.ReadAsync<Form>();
                 tel = f[nameof(tel)];
                 role = f[nameof(role)];
-                if (cmd == 2) // add
+                using (var dc = NewDbContext())
                 {
-                    using (var dc = NewDbContext())
-                    {
-                        dc.Sql("UPDATE users SET teamid = @1, teamly = @2 WHERE hubid = @2 AND tel = @3");
-                        dc.Execute(p => p.Set(teamid).Set(role).Set(tel));
-                    }
+                    dc.Sql("UPDATE users SET teamid = @1, teamly = @2 WHERE hubid = @2 AND tel = @3");
+                    dc.Execute(p => p.Set(teamid).Set(role).Set(tel));
                 }
                 wc.GivePane(200);
             }
         }
 
-        [UserAccess(hubly: 7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("删除", "确定删除选中操作人员吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
@@ -205,7 +202,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(shoply: 15)]
+        [UserAuthorize(shoply: 7)]
         [Ui("添加", icon: "plus"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
@@ -221,7 +218,7 @@ namespace Samp
         }
     }
 
-    [Ui("人员")]
+    [Ui("操作")]
     public class HublyOprWork : UserWork
     {
         public HublyOprWork(WorkConfig cfg) : base(cfg)
@@ -238,25 +235,25 @@ namespace Samp
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLE(arr, null,
-                        o => h.TD(o.name).TD(o.tel).TD(User.Hubly[o.hubly])
-                    );
+                    h.TABLE(arr, null, o => h.TD(o.name).TD(o.tel).TD(User.Hubly[o.hubly]));
                 });
             }
         }
 
-        [UserAccess(hubly: 7)]
-        [Ui("添加"), Tool(ButtonPickPrompt, size: 1)]
+        [UserAuthorize(hubly: 7)]
+        [Ui("添加", tip: "添加操作人员"), Tool(ButtonShow)]
         public async Task role(WebContext wc, int cmd)
         {
-            short hubly = 0;
+            string tel = null;
+            short role = 0;
             if (wc.GET)
             {
                 wc.GivePane(200, h =>
                 {
                     h.FORM_();
-                    h.FIELDUL_("设置操作岗位");
-                    h.LI_().SELECT("岗　位", nameof(hubly), hubly, User.Hubly)._LI();
+                    h.FIELDUL_("填写被添加人的手机号和操作权限");
+                    h.LI_().TEXT("手　机", nameof(tel), tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
+                    h.LI_().SELECT("权　限", nameof(role), role, User.Hubly)._LI();
                     h._FIELDUL();
                     h._FORM();
                 });
@@ -265,24 +262,33 @@ namespace Samp
             {
                 string hubid = wc[0];
                 var f = await wc.ReadAsync<Form>();
-                hubly = f[nameof(hubly)];
-                int[] key = f[nameof(key)];
+                tel = f[nameof(tel)];
+                role = f[nameof(role)];
                 if (cmd == 2) // add
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("UPDATE users SET hubly = @1 WHERE hubid = @2 AND id ")._IN_(key);
-                        dc.Execute(p => p.Set(hubly).Set(hubid));
+                        dc.Sql("UPDATE users SET hubly = @1 WHERE hubid = @2 AND tel = @3 ");
+                        dc.Execute(p => p.Set(role).Set(hubid).Set(tel));
                     }
                 }
                 wc.GivePane(200);
             }
         }
 
-        [UserAccess(hubly: 7)]
-        [Ui("删除"), Tool(ButtonPickPrompt, size: 1)]
-        public async Task del(WebContext wc, int cmd)
+        [UserAuthorize(hubly: 7)]
+        [Ui("删除", "确定删除选中操作人员吗？"), Tool(ButtonPickConfirm)]
+        public async Task del(WebContext wc)
         {
+            string hubid = wc[0];
+            var f = await wc.ReadAsync<Form>();
+            short[] key = f[nameof(key)];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("UPDATE users SET hubly = 0 WHERE hubid = @1 AND id")._IN_(key);
+                dc.Execute(p => p.Set(hubid));
+            }
+            wc.GiveRedirect();
         }
     }
 }

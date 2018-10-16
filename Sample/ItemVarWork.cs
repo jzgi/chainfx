@@ -68,10 +68,10 @@ namespace Samp
                     h.DIV_(css: "uk-overlay uk-overlay-primary uk-position-bottom").H4(o.name)._DIV();
                     h._DIV();
                     h.T(o.remark);
-                    h.BOTTOM_();
+                    h.BOTTOMBAR_();
                     h.NUMBER(null, nameof(num), o.min, max: o.queue, min: o.min, step: o.step).T(o.unit);
                     h.TOOL(nameof(prepay));
-                    h._BOTTOM();
+                    h._BOTTOMBAR();
                 });
             }
         }
@@ -97,7 +97,7 @@ namespace Samp
                         h.LI_().NUMBER(null, nameof(num), item.min, max: item.queue, min: item.min, step: item.step).T(item.unit)._LI();
                         h._FIELDUL();
 
-                        h.BOTTOM_().TOOL(nameof(prepay))._BOTTOM();
+                        h.BOTTOMBAR_().TOOL(nameof(prepay))._BOTTOMBAR();
 
                         h._FORM();
                     }
@@ -126,7 +126,7 @@ namespace Samp
                 wc.GivePane(200, m =>
                 {
                     m.MSG_(true, "成功加入购物车", "商品已经成功加入购物车");
-                    m.BOTTOM_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOM();
+                    m.BOTTOMBAR_().A_GOTO("去付款", "cart", href: "/my//ord/")._BOTTOMBAR();
                 });
             }
         }
@@ -169,7 +169,7 @@ namespace Samp
         {
         }
 
-        [UserAccess(7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("资料", "填写货品资料"), Tool(ButtonShow, size: 2)]
         public async Task upd(WebContext wc)
         {
@@ -217,7 +217,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("图标"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {
@@ -241,7 +241,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("照片"), Tool(ButtonCrop, size: 2)]
         public new async Task img(WebContext wc)
         {

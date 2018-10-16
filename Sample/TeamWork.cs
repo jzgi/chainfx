@@ -11,7 +11,7 @@ namespace Samp
         }
     }
 
-    [Ui("客团")]
+    [Ui("团组")]
     public class HublyTeamWork : TeamWork
     {
         public HublyTeamWork(WorkConfig cfg) : base(cfg)
@@ -36,7 +36,7 @@ namespace Samp
             });
         }
 
-        [UserAccess(hubly: 7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
@@ -68,7 +68,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(hubly: 7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("删除", "确定删除选中的网点吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
@@ -83,7 +83,7 @@ namespace Samp
             wc.GiveRedirect();
         }
 
-        [UserAccess(hubly: 7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("客户", icon: "search"), Tool(ButtonPrompt, size: 1)]
         public async Task search(WebContext wc, int cmd)
         {
@@ -116,6 +116,5 @@ namespace Samp
                 wc.GivePane(200);
             }
         }
-
     }
 }

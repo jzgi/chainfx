@@ -5,7 +5,7 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    [UserAccess]
+    [UserAuthenticate]
     public abstract class ChatVarWork : Work
     {
         public const short PicWidth = 360, PicHeight = 270;
@@ -50,7 +50,7 @@ namespace Samp
                             h.LI_().TEXTAREA(null, nameof(text), text, tip: "填写跟帖内容", max: 400, required: true)._LI();
                             h._FIELDUL();
                             h.CROP(nameof(img), "图片（可选）", PicWidth, PicHeight);
-                            h.BOTTOM_().BUTTON("跟帖", css: "uk-button-primary")._BOTTOM();
+                            h.BOTTOMBAR_().BUTTON("跟帖", css: "uk-button-primary")._BOTTOMBAR();
                             h._FORM();
                         }, true, 15
                     );

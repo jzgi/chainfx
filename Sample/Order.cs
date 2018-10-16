@@ -43,6 +43,9 @@ namespace Samp
         internal short qty;
         internal decimal total; // total price
         internal decimal cash; // cash paid
+        internal int creatorid;
+        internal string creatorname;
+
         internal DateTime paid;
         internal short shopid; // workshop's orgid
         internal int accepterid; // giving forth goods
@@ -76,6 +79,8 @@ namespace Samp
             s.Get(nameof(qty), ref qty);
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
+            s.Get(nameof(creatorid), ref creatorid);
+            s.Get(nameof(creatorname), ref creatorname);
             s.Get(nameof(paid), ref paid);
             if ((proj & LATER) > 0)
             {
@@ -113,6 +118,8 @@ namespace Samp
             s.Put(nameof(qty), qty);
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
+            s.Put(nameof(creatorid), creatorid);
+            s.Put(nameof(creatorname), creatorname);
             s.Put(nameof(paid), paid);
             if ((proj & LATER) > 0)
             {

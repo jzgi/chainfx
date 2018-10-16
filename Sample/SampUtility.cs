@@ -57,7 +57,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.Authorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc)) continue;
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -76,7 +76,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.Authorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc)) continue;
                     h.Add("<li style=\"height: 100%\"><iframe id=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
@@ -140,7 +140,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.Authorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc)) continue;
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -163,7 +163,7 @@ namespace Samp
                 for (int i = 0; i < subs.Count; i++)
                 {
                     Work sub = subs[i];
-                    if (!sub.Authorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc)) continue;
                     h.Add("<li style=\"height: 100%\"><iframe src=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");

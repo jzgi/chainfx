@@ -39,7 +39,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(hubly: 7)]
+    [UserAuthorize(hubly: 7)]
     [Ui("结款")]
     public class HublyRepayWork : RepayWork<HublyRepayVarWork>
     {

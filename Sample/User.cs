@@ -98,7 +98,7 @@ namespace Samp
             }
         }
 
-        public bool IsTeamed => id > 0 && name != null && tel != null;
+        public bool IsTemporary => id == 0;
 
         public int Key => id;
 

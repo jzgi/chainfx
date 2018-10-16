@@ -45,11 +45,10 @@ namespace Samp
         }
     }
 
-    [UserAccess(hubly: 1)]
     [Ui("订单")]
-    public class HubOrderWork : OrderWork
+    public class HublyOrderWork : OrderWork
     {
-        public HubOrderWork(WorkConfig cfg) : base(cfg)
+        public HublyOrderWork(WorkConfig cfg) : base(cfg)
         {
             MakeVar<HubOrderVarWork>();
         }

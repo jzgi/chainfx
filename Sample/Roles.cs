@@ -10,15 +10,15 @@ namespace Samp
         }
     }
 
-    [UserAccess(hubly: 1)]
+    [UserAuthorize(hubly: 1)]
     [Ui("动态")]
     public class HublyWork : Work
     {
         public HublyWork(WorkConfig cfg) : base(cfg)
         {
-            Make<HubOrderWork>("order");
+            Make<HublyOrderWork>("order");
 
-            Make<HubItemWork>("item");
+            Make<HublyItemWork>("item");
 
             Make<HublyShopWork>("shop");
 
@@ -57,7 +57,7 @@ namespace Samp
                         h._SECTION();
 
                         h.SECTION_("uk-card uk-card-default");
-                        h.HEADER_("uk-card-header").H4("客团")._HEADER();
+                        h.HEADER_("uk-card-header").H4("团组")._HEADER();
                         h.MAIN_("uk-card-body")._MAIN();
                         h._SECTION();
                     });

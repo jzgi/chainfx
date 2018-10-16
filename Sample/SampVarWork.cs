@@ -3,7 +3,7 @@ using Greatbone;
 
 namespace Samp
 {
-    [UserAccess]
+    [UserAuthenticate]
     public class SampVarWork : Work
     {
         public SampVarWork(WorkConfig cfg) : base(cfg)
@@ -48,69 +48,103 @@ namespace Samp
             );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wc"></param>
+        /// <param name="cmd">0 - being dispatched due to expcetion, 1 - form submission, 2 - form submission with suggested teamid, 3 - suggested sign up form</param>
+        /// <returns></returns>
         public async Task @catch(WebContext wc, int cmd)
         {
             string hubid = wc[this];
-            if (cmd == 1) // handle form submission
+            if (cmd == 0)
             {
                 var o = (User) wc.Principal;
+                if (wc.Except is AuthorizeException)
+                {
+                    if (o == null)
+                    {
+                        // weixin authorization challenge
+                        if (wc.ByWeiXinClient) // weixin
+                        {
+                            var hub = Obtain<Map<string, Hub>>()[hubid];
+                            hub.GiveRedirectWeiXinAuthorize(wc, SampUtility.NetAddr);
+                        }
+                        else // challenge BASIC scheme
+                        {
+                            wc.SetHeader("WWW-Authenticate", "Basic realm=\"APP\"");
+                            wc.Give(401); // unauthorized
+                        }
+                    }
+                    else if (o.IsTemporary)
+                    {
+                        GiveSignForm(o, wc.Path);
+                    }
+                    else
+                    {
+                        wc.GivePage(403, h => { h.ALERT("您要使用的功能需要管理员授权。"); }, title: "没有访问权限");
+                    }
+                }
+                else
+                {
+                    wc.Give(500, wc.Except.Message);
+                }
+            }
+            else if (cmd == 1 || cmd == 2) // handle form submission
+            {
+                var o = (User) wc.Principal ?? new User();
+                o.hubid = hubid;
                 var f = await wc.ReadAsync<Form>();
                 o.Read(f);
                 string url = f[nameof(url)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("INSERT INTO users ")._(User.Empty, 0)._VALUES_(User.Empty, 0).T(" ON CONFLICT () UPDATE SET ").setlst(User.Empty, 0);
-                    dc.Execute(p => o.Write(p));
-                    wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
-                }
-                wc.GiveRedirect(url);
-            }
-            else if (wc.Except is AccessException)
-            {
-                if (wc.Principal == null)
-                {
-                    // weixin authorization challenge
-                    if (wc.ByWeiXinClient) // weixin
+                    dc.Sql("INSERT INTO users ")._(User.Empty, 0)._VALUES_(User.Empty, 0).T(" ON CONFLICT (tel) DO UPDATE SET ").setlst(User.Empty, 0).T(" WHERE users.wx IS NULL AND users.tel = @tel AND users.name = @name");
+                    if (dc.Execute(p => o.Write(p, 0)) > 0)
                     {
-                        var hub = Obtain<Map<string, Hub>>()[hubid];
-                        hub.GiveRedirectWeiXinAuthorize(wc, SampUtility.NetAddr);
-                    }
-                    else // challenge BASIC scheme
-                    {
-                        wc.SetHeader("WWW-Authenticate", "Basic realm=\"APP\"");
-                        wc.Give(401); // unauthorized
+                        wc.SetTokenCookie(o, 0xff ^ User.PRIVACY);
                     }
                 }
-                else if (!((User) wc.Principal).IsTeamed)
+                if (cmd == 2) // if was saved with suggested teamid
                 {
-                    var o = (User) wc.Principal;
-                    string url = wc.Path;
-                    wc.GivePage(200, h =>
-                    {
-                        h.FORM_();
-                        h.FIELDUL_("填写用户信息");
-                        h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
-                        h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                        h.HIDDEN(nameof(url), url);
-                        var orgs = Obtain<Map<short, Team>>();
-                        h.LI_().SELECT("参　　团", nameof(o.teamid), o.teamid, orgs, filter: x => x.hubid == hubid)._LI();
-                        h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 30, required: true)._LI();
-                        h._FIELDUL();
-                        h.BOTTOM_().BUTTON("确定", "/catch", css: "uk-button-primary")._BOTTOM();
-                        h._FORM();
-                    }, title: "填写用户信息");
+                    var hub = Obtain<Map<string, Hub>>()[hubid];
+                    wc.GiveRedirect(hub.watchurl); // redirect to the weixin account watch page
                 }
-                else // IsNotAllowed
+                else // was opened manually
                 {
-                    wc.GivePage(403, h => { h.ALERT("您要使用的功能需要管理员授权。"); }, title: "没有访问权限");
+                    wc.GiveRedirect(url);
                 }
             }
             else
             {
-                wc.Give(500, wc.Except.Message);
+                var o = (User) wc.Principal;
+                short teamid = wc.Query[nameof(teamid)];
+                GiveSignForm(o ?? new User() {teamid = teamid}, wc.Path);
+            }
+
+            void GiveSignForm(User o, string url)
+            {
+                wc.GivePage(200, h =>
+                {
+                    h.FORM_();
+
+                    h.HIDDEN(nameof(o.wx), o.wx);
+                    h.HIDDEN(nameof(url), url);
+
+                    h.FIELDUL_("填写用户信息");
+                    h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
+                    h.LI_().TEXT("您的姓名", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
+                    var orgs = Obtain<Map<short, Team>>();
+                    h.LI_().SELECT("参　　团", nameof(o.teamid), o.teamid, orgs, filter: x => x.hubid == hubid)._LI();
+                    h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 30, required: true)._LI();
+                    h._FIELDUL();
+                    h.BOTTOMBAR_().BUTTON("确定", "/" + hubid + "/catch-2", css: "uk-button-primary")._BOTTOMBAR();
+                    h._FORM();
+                }, title: "填写用户信息");
             }
         }
 
+        [UserAuthorize]
         public void @default(WebContext wc)
         {
             string hubid = wc[this];

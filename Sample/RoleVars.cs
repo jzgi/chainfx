@@ -68,7 +68,7 @@ namespace Samp
                         h.FIELDUL_("用于从微信以外登录（可选）");
                         h.LI_().PASSWORD("外部密码", nameof(password), password, max: 12, min: 3)._LI();
                         h._FIELDUL();
-                        h.BOTTOM_().BUTTON(caption: "确定", css: "uk-button-primary")._BOTTOM();
+                        h.BOTTOMBAR_().BUTTON(caption: "确定", css: "uk-button-primary")._BOTTOMBAR();
                         h._FORM();
                     });
                 }
@@ -107,7 +107,7 @@ namespace Samp
     }
 
 
-    [UserAccess(shoply: 1)]
+    [UserAuthorize(shoply: 1)]
     [Ui("动态")]
     public class ShoplyVarWork : Work, IOrgVar
     {
@@ -150,7 +150,7 @@ namespace Samp
         }
     }
 
-    [UserAccess(teamly: 1)]
+    [UserAuthorize(teamly: 1)]
     [Ui("动态")]
     public class TeamlyVarWork : Work, IOrgVar
     {

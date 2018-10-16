@@ -14,9 +14,9 @@ namespace Samp
 
 
     [Ui("货架")]
-    public class HubItemWork : ItemWork<HubItemVarWork>
+    public class HublyItemWork : ItemWork<HubItemVarWork>
     {
-        public HubItemWork(WorkConfig cfg) : base(cfg)
+        public HublyItemWork(WorkConfig cfg) : base(cfg)
         {
         }
 
@@ -47,7 +47,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(hubly: 7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
@@ -84,7 +84,7 @@ namespace Samp
             }
         }
 
-        [UserAccess(7)]
+        [UserAuthorize(hubly: 7)]
         [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {

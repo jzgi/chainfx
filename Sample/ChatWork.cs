@@ -40,7 +40,7 @@ namespace Samp
                             h._DIV();
                             h.T("</a>");
                         });
-                        h.BOTTOM_().TOOL(nameof(@new))._BOTTOM();
+                        h.BOTTOMBAR_().TOOL(nameof(@new))._BOTTOMBAR();
                     }, true
                 );
             }
