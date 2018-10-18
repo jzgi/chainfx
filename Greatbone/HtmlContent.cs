@@ -371,8 +371,9 @@ namespace Greatbone
             Add("<span");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
@@ -397,8 +398,9 @@ namespace Greatbone
             Add("<h2");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
@@ -424,8 +426,9 @@ namespace Greatbone
             Add("<h3");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
@@ -451,8 +454,9 @@ namespace Greatbone
             Add("<h4");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
@@ -477,8 +481,9 @@ namespace Greatbone
             Add("<h5");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
@@ -504,8 +509,9 @@ namespace Greatbone
             Add("<p");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
@@ -739,7 +745,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ICO_(string css = null, bool circle = true)
+        public HtmlContent PIC_(string css = null, bool circle = true)
         {
             Add("<div class=\"uk-margin-auto-vertical");
             if (css != null)
@@ -756,18 +762,37 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent _ICO()
+        public HtmlContent _PIC()
         {
             Add("\">");
             Add("</div>");
             return this;
         }
 
-        public HtmlContent ICO(string src, string css = null, bool circle = true)
+        public HtmlContent PIC(string src, string css = null, bool circle = true)
         {
-            ICO_(css, circle);
+            PIC_(css, circle);
             Add(src);
-            _ICO();
+            _PIC();
+            return this;
+        }
+
+        public HtmlContent PROGRESS<V>(V v, V max = default, string css = null)
+        {
+            Add("<progress class=\"uk-progress");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\" value=\"");
+            AddPrimitive(v);
+            if (!max.Equals(default))
+            {
+                Add("\" max=\"");
+                AddPrimitive(max);
+            }
+            Add("\"></progress>");
             return this;
         }
 
@@ -1781,11 +1806,11 @@ namespace Greatbone
         public HtmlContent NUMBER<V>(string label, string name, V v, string tip = null, V max = default, V min = default, V step = default, bool @readonly = false, bool required = false)
         {
             LABEL(label);
-            bool grp = v is short && !step.Equals(default(V)); // input group with up and down
+            bool grp = (step is short || step is int) && !step.Equals(default(V)); // input group with up and down
             if (grp)
             {
                 Add("<div class=\"uk-inline uk-width-1-2\">");
-                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown();this.nextSibling.form.oninput();\"></a>");
+                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown();this.nextSibling.onchange();\"></a>");
             }
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
@@ -1822,7 +1847,7 @@ namespace Greatbone
             Add(">");
             if (grp)
             {
-                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp();this.previousSibling.form.oninput();\"></a>");
+                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp();this.previousSibling.onchange();\"></a>");
                 Add("</div>");
             }
             return this;
@@ -2408,22 +2433,6 @@ namespace Greatbone
                 Add("</option>");
             }
             Add("</datalist>");
-            return this;
-        }
-
-        public HtmlContent PROGRES<V>(V max, V val, bool percent = false)
-        {
-            Add("<progress max=\"");
-            AddPrimitive(max);
-            Add("\" value=\"");
-            AddPrimitive(val);
-            Add("\">");
-            if (percent)
-            {
-                AddPrimitive(val);
-                Add('%');
-            }
-            Add("</progress>");
             return this;
         }
 

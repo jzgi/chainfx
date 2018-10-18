@@ -35,10 +35,11 @@ namespace Samp
         internal short min;
         internal short step;
         internal bool refrig;
-        internal int cap7; // total capacity in 7 days
-        internal int queue; // ordered but not stocked
+        internal short cap7; // total capacity in 7 days
         internal int shopid;
         internal short status;
+
+        public short ongoing; // qty in progress
 
         public void Read(ISource s, byte proj = 0x0f)
         {
@@ -62,7 +63,6 @@ namespace Samp
             s.Get(nameof(teamp), ref teamp);
             if ((proj & LATER) > 0)
             {
-                s.Get(nameof(queue), ref queue);
                 s.Get(nameof(shopid), ref shopid);
                 s.Get(nameof(cap7), ref cap7);
                 s.Get(nameof(status), ref status);
@@ -91,7 +91,6 @@ namespace Samp
             s.Put(nameof(teamp), teamp);
             if ((proj & LATER) > 0)
             {
-                s.Put(nameof(queue), queue);
                 s.Put(nameof(shopid), shopid);
                 s.Put(nameof(cap7), cap7);
                 s.Put(nameof(status), status);
@@ -99,6 +98,8 @@ namespace Samp
         }
 
         public short Key => id;
+
+        public short Avail => (short) (cap7 - ongoing);
 
         public override string ToString() => name;
     }

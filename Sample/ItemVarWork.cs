@@ -57,20 +57,28 @@ namespace Samp
             string hubid = wc[0];
             short itemid = wc[this];
             int uid = wc.Query[nameof(uid)];
+            bool door = false;
             short num;
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND id = @2");
                 var o = dc.Query1<Item>(p => p.Set(hubid).Set(itemid));
+                dc.Query1("SELECT sum(qty) FROM orders WHERE hubid = @1 AND status BETWEEN 0 AND 5 AND itemid = @2 GROUP BY itemid", p => p.Set(hubid).Set(itemid));
+                dc.Let(out o.ongoing);
                 wc.GivePage(200, h =>
                 {
                     h.DIV_(css: "uk-inline");
-                    h.ICO_(circle: false).T("img")._ICO();
+                    h.PIC_(circle: false).T("img")._PIC();
                     h.DIV_(css: "uk-overlay uk-overlay-primary uk-position-bottom").H4(o.name)._DIV();
                     h._DIV();
                     h.T(o.remark);
                     h.BOTTOMBAR_();
-                    h.NUMBER(null, nameof(num), o.min, max: o.queue, min: o.min, step: o.step).T(o.unit);
+                    h.DIV_(css: "uk-width-1-3");
+                    h.NUMBER(null, nameof(num), o.min, max: o.Avail, min: o.min, step: o.step == 0 ? (short) 1 : o.step).T(o.unit);
+                    h._DIV();
+
+                    h.CHECKBOX(nameof(door), door, label: "送货上门");
+
                     h.TOOL(nameof(prepay));
                     h._BOTTOMBAR();
                 });
@@ -81,23 +89,42 @@ namespace Samp
         [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
         public async Task prepay(WebContext wc)
         {
+            string hubid = wc[0];
+            var f = await wc.ReadAsync<Form>();
+            int uid = f[nameof(uid)];
+
+            short itemid = f[nameof(itemid)];
+            short qty = f[nameof(qty)];
+
+            bool door = f[nameof(door)];
+
             var prin = (User) wc.Principal;
             int orderid = wc[this];
-            Order o;
+            Order o = new Order()
+            {
+                hubid = hubid,
+                // teamid
+
+                uid = uid,
+                uwx = ",",
+                uname = "",
+                uaddr = "",
+            };
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE id = @1 AND custid = @2");
-                o = dc.Query1<Order>(p => p.Set(orderid).Set(prin.id));
+                // create new order
+                dc.Sql("INSERT INTO orders ")._(Order.Empty, 0)._VALUES_(Order.Empty, 0).T(" RETURNING id");
+                dc.Query1(p => o.Write(p));
+                dc.Let(out orderid);
             }
-            string hubid = wc[0];
             var hub = Obtain<Map<string, Hub>>()[hubid];
             var (prepay_id, _) = await hub.PostUnifiedOrderAsync(
-                orderid + "-",
+                orderid.ToString(),
                 o.cash,
                 prin.wx,
                 wc.RemoteAddr.ToString(),
-                SampUtility.NetAddr + "/" + nameof(SampVarWork.onpay),
-                "粗粮达人-健康产品"
+                SampUtility.NetAddr + "/" + hub.id + "/" + nameof(SampVarWork.onpay),
+                hub.name
             );
             if (prepay_id != null)
             {

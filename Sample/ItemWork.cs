@@ -34,7 +34,7 @@ namespace Samp
                     {
                         h.HEADER_("uk-card-header").T(o.name).SPAN(Item.Statuses[o.status])._HEADER();
                         h.MAIN_("uk-card-body uk-flex");
-                        h.ICO_(css: "uk-width-1-5").T(o.id).T("/icon")._ICO();
+                        h.PIC_(css: "uk-width-1-5").T(o.id).T("/icon")._PIC();
                         h.UL_(css: "uk-width-4-5 uk-padding-small-left");
                         h.LI_().FI("描述", o.descr)._LI();
                         h.LI_().FI("单价", o.price).FI("供应", o.shopp).FI("派送", o.fee).FI("团组", o.teamp)._LI();

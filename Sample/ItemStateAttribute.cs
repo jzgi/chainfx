@@ -16,7 +16,7 @@ namespace Samp
             if (state == 'A')
             {
                 var item = stack[0] as Item;
-                return item?.queue > 0;
+                return item?.status > 0;
             }
             return false;
         }

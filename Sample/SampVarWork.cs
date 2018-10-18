@@ -158,6 +158,17 @@ namespace Samp
                     {
                         dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND status > 0");
                         var arr = dc.Query<Item>(p => p.Set(hubid));
+
+                        // load availability
+                        var map = new Map<short, short>();
+                        dc.Query("SELECT itemid, sum(qty) FROM orders WHERE hubid = @1 AND status BETWEEN 0 AND 5 GROUP BY itemid", p => p.Set(hubid));
+                        while (dc.Next())
+                        {
+                            dc.Let(out short itemid).Let(out short qty);
+                            map.Add(itemid, qty);
+                        }
+                        foreach (var a in arr) a.ongoing = map[a.id];
+
                         h.LIST(arr, o =>
                         {
                             h.T("<a class=\"uk-grid uk-width-1-1 uk-link-reset\" href=\"").T(o.id).T("/");
@@ -166,12 +177,13 @@ namespace Samp
                                 h.T("?uid=").T(uid);
                             }
                             h.T("\" onclick=\"return dialog(this, 8, false, 2, '商品详情');\">");
-                            h.ICO_(css: "uk-width-1-3 uk-padding-small").T(o.id).T("/icon")._ICO();
+                            h.PIC_(css: "uk-width-1-3 uk-padding-small").T(o.id).T("/icon")._PIC();
                             h.COL_(css: "uk-width-2-3 uk-padding-small");
                             h.H3(o.name);
                             h.FI(null, o.descr);
                             h.ROW_();
-                            h.P_("uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                            h.P_("").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                            h.PROGRESS(o.ongoing, o.cap7);
                             h._ROW();
                             h._COL();
                             h.T("</a>");
@@ -187,7 +199,7 @@ namespace Samp
         /// </summary>
         public async Task onpay(WebContext wc)
         {
-            string hubid = wc[this];
+            string hubid = wc[0];
             var hub = Obtain<Map<string, Hub>>()[hubid];
             XElem xe = await wc.ReadAsync<XElem>();
             if (!hub.OnNotified(xe, out var trade_no, out var cash))
@@ -200,29 +212,18 @@ namespace Samp
             // update order status
             using (var dc = NewDbContext())
             {
-                if (!dc.Query1("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING grpid, uname, uaddr", (p) => p.Set(cash).Set(orderid)))
-                {
-                    return; // WCPay may send notification more than once
-                }
-                dc.Let(out teamid).Let(out uname).Let(out uaddr);
+                // WCPay may send notification more than once
+                dc.Sql("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING grpid, uname, uaddr");
+                dc.Execute(p => p.Set(cash).Set(orderid));
             }
-            // send message to the related grouper, if any
-            if (teamid != null)
+            // return xml to WCPay server
+            XmlContent x = new XmlContent(true, 1024);
+            x.ELEM("xml", null, () =>
             {
-                var oprwx = Obtain<Map<string, Team>>()[teamid]?.mgrwx;
-                if (oprwx != null)
-                {
-                    await hub.PostSendAsync(oprwx, "新订单", ("¥" + cash + " " + uname + " " + uaddr), SampUtility.NetAddr + "/grp//ord/");
-                }
-                // return xml to WCPay server
-                XmlContent x = new XmlContent(true, 1024);
-                x.ELEM("xml", null, () =>
-                {
-                    x.ELEM("return_code", "SUCCESS");
-                    x.ELEM("return_msg", "OK");
-                });
-                wc.Give(200, x);
-            }
+                x.ELEM("return_code", "SUCCESS");
+                x.ELEM("return_msg", "OK");
+            });
+            wc.Give(200, x);
         }
     }
 }

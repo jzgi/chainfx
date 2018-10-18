@@ -31,7 +31,7 @@ namespace Samp
                     h.LIST(arr, o =>
                     {
                         h.T("<a class=\"uk-link-reset uk-grid uk-width-1-1\" href=\"").T(o.id).T("/\">");
-                        h.ICO_("uk-width-1-3").T(o.id).T("/icon")._ICO();
+                        h.PIC_("uk-width-1-3").T(o.id).T("/icon")._PIC();
                         h.COL_(css: "uk-padding-small");
                         h.T("<h3>").T(o.subject).T("</h3>");
                         h.FI(null, o.text);

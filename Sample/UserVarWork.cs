@@ -34,7 +34,7 @@ namespace Samp
                             h.T("收货：").T(o.uaddr).SP().T(o.uname).SP().T(o.utel);
                             h._HEADER();
                             h.MAIN_("uk-card-body uk-row");
-                            h.ICO_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._ICO();
+                            h.PIC_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._PIC();
                             h.DIV_("uk-width-2-3").SP().T(o.itemname).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
                             h.VARTOOLS(css: "uk-width-1-6");
                             h._MAIN();
