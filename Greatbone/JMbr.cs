@@ -93,6 +93,16 @@ namespace Greatbone
             return v.type == JType.True;
         }
 
+        public static implicit operator char(JMbr v)
+        {
+            if (v.type == JType.String)
+            {
+                var str = (string) v.refv;
+                return str.Length == 0 ? '\0' : str[0];
+            }
+            return '\0';
+        }
+
         public static implicit operator short(JMbr v)
         {
             if (v.type == JType.Number)

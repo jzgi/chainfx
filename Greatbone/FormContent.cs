@@ -121,6 +121,19 @@ namespace Greatbone
             Add(v ? "true" : "false");
         }
 
+        public void Put(string name, char v)
+        {
+            ordinal++;
+
+            if (ordinal > 0)
+            {
+                Add('&');
+            }
+            Add(name);
+            Add('=');
+            Add(v);
+        }
+
         public void Put(string name, short v)
         {
             ordinal++;

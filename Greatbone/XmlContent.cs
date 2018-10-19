@@ -209,6 +209,16 @@ namespace Greatbone
             Add('"');
         }
 
+        public void Put(string name, char v)
+        {
+            Add(' ');
+            Add(name);
+            Add('=');
+            Add('"');
+            Add(v);
+            Add('"');
+        }
+
         public void Put(string name, short v)
         {
             Add(' ');

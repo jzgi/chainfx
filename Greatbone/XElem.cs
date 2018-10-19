@@ -120,6 +120,16 @@ namespace Greatbone
             return false;
         }
 
+        public bool Get(string name, ref char v)
+        {
+            if (attrs.TryGet(name, out var attr))
+            {
+                v = attr.ToChar();
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref short v)
         {
             if (attrs.TryGet(name, out var attr))
@@ -246,6 +256,11 @@ namespace Greatbone
         //
 
         public ISource Let(out bool v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out char v)
         {
             throw new NotImplementedException();
         }

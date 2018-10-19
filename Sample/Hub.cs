@@ -27,6 +27,7 @@ namespace Samp
         internal string noncestr;
         internal string spbillcreateip;
         internal string key;
+        internal byte[] p12; // p12 file
         internal string watchurl;
         internal short status;
 
@@ -41,6 +42,7 @@ namespace Samp
             s.Get(nameof(noncestr), ref noncestr);
             s.Get(nameof(spbillcreateip), ref spbillcreateip);
             s.Get(nameof(key), ref key);
+            s.Get(nameof(p12), ref p12);
             s.Get(nameof(watchurl), ref watchurl);
             s.Get(nameof(status), ref status);
         }
@@ -55,6 +57,7 @@ namespace Samp
             s.Put(nameof(noncestr), noncestr);
             s.Put(nameof(spbillcreateip), spbillcreateip);
             s.Put(nameof(key), key);
+            s.Put(nameof(p12), p12);
             s.Put(nameof(watchurl), watchurl);
             s.Put(nameof(status), status);
         }
@@ -65,21 +68,24 @@ namespace Samp
         public override string ToString() => name;
 
         // apiclient_cert.p12
-        internal void InitWCPay(string p12file)
+        internal void InitWCPay()
         {
-            if (p12file != null)
+            if (p12 != null)
             {
                 // load and init client certificate
                 var handler = new HttpClientHandler
                 {
                     ClientCertificateOptions = ClientCertificateOption.Manual
                 };
-                X509Certificate2 cert = new X509Certificate2(p12file, mchid, X509KeyStorageFlags.MachineKeySet);
+                X509Certificate2 cert = new X509Certificate2(p12, mchid, X509KeyStorageFlags.MachineKeySet);
                 handler.ClientCertificates.Add(cert);
                 WCPay = new Client(handler)
                 {
                     BaseAddress = new Uri("https://api.mch.weixin.qq.com")
                 };
+            } else
+            {
+                WCPay = new Client("https://api.mch.weixin.qq.com");
             }
         }
 

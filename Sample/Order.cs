@@ -32,19 +32,20 @@ namespace Samp
         internal string hubid;
         internal int uid;
         internal string uname; // customer name
-        internal string uwx; // weixin openid
         internal string utel;
         internal string uaddr; // may include area and site
-        internal string teamid;
+        internal short teamid;
         internal short itemid;
         internal string itemname;
         internal string unit;
         internal decimal price;
+        internal decimal fee;
         internal short qty;
-        internal decimal total; // total price
-        internal decimal cash; // cash paid
+        internal decimal total; // total
+        internal decimal cash; // cash = total paid
         internal int creatorid;
         internal string creatorname;
+        internal string creatorwx; // weixin openid
 
         internal DateTime paid;
         internal short shopid; // workshop's orgid
@@ -68,7 +69,6 @@ namespace Samp
             s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(uid), ref uid);
             s.Get(nameof(uname), ref uname);
-            s.Get(nameof(uwx), ref uwx);
             s.Get(nameof(utel), ref utel);
             s.Get(nameof(uaddr), ref uaddr);
             s.Get(nameof(teamid), ref teamid);
@@ -76,11 +76,13 @@ namespace Samp
             s.Get(nameof(itemname), ref itemname);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
+            s.Get(nameof(fee), ref fee);
             s.Get(nameof(qty), ref qty);
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
             s.Get(nameof(creatorid), ref creatorid);
             s.Get(nameof(creatorname), ref creatorname);
+            s.Get(nameof(creatorwx), ref creatorwx);
             s.Get(nameof(paid), ref paid);
             if ((proj & LATER) > 0)
             {
@@ -107,7 +109,6 @@ namespace Samp
             s.Put(nameof(hubid), hubid);
             s.Put(nameof(uid), uid);
             s.Put(nameof(uname), uname);
-            s.Put(nameof(uwx), uwx);
             s.Put(nameof(utel), utel);
             s.Put(nameof(uaddr), uaddr);
             s.Put(nameof(teamid), teamid);
@@ -115,11 +116,13 @@ namespace Samp
             s.Put(nameof(itemname), itemname);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
+            s.Put(nameof(fee), fee);
             s.Put(nameof(qty), qty);
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
             s.Put(nameof(creatorid), creatorid);
             s.Put(nameof(creatorname), creatorname);
+            s.Put(nameof(creatorwx), creatorwx);
             s.Put(nameof(paid), paid);
             if ((proj & LATER) > 0)
             {

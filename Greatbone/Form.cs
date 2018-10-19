@@ -56,6 +56,16 @@ namespace Greatbone
             return false;
         }
 
+        public bool Get(string name, ref char v)
+        {
+            if (TryGet(name, out var fld))
+            {
+                v = fld;
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref short v)
         {
             if (TryGet(name, out var fld))
@@ -215,6 +225,18 @@ namespace Greatbone
                 return this;
             }
             v = false;
+            return this;
+        }
+
+        public ISource Let(out char v)
+        {
+            int ord = ordinal++;
+            if (ord < Count)
+            {
+                v = this[ord];
+                return this;
+            }
+            v = '\0';
             return this;
         }
 

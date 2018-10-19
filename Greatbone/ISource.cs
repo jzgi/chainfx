@@ -9,6 +9,8 @@ namespace Greatbone
     {
         bool Get(string name, ref bool v);
 
+        bool Get(string name, ref char v);
+
         bool Get(string name, ref short v);
 
         bool Get(string name, ref int v);
@@ -44,6 +46,8 @@ namespace Greatbone
         bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new();
 
         ISource Let(out bool v);
+
+        ISource Let(out char v);
 
         ISource Let(out short v);
 

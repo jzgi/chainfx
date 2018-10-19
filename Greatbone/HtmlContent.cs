@@ -1405,7 +1405,7 @@ namespace Greatbone
                 ok = act.CheckState(webCtx, stack, level);
             }
 
-            var anycss = css ?? tool.Css;
+            var anycss = tool.Css ?? css;
             if (tool.IsAnchorTag)
             {
                 Add("<a class=\"uk-button ");

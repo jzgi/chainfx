@@ -167,6 +167,21 @@ namespace Greatbone
             Add(v ? "true" : "false");
         }
 
+        public void Put(string name, char v)
+        {
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add('"');
+            Add(v);
+            Add('"');
+        }
+
         public void Put(string name, short v)
         {
             if (counts[level]++ > 0) Add(',');

@@ -22,7 +22,13 @@ namespace Samp
                     using (var dc = NewDbContext())
                     {
                         dc.Sql("SELECT ").collst(Hub.Empty).T(" FROM hubs WHERE status > 0 ORDER BY name");
-                        return dc.Query<string, Hub>();
+                        var map = dc.Query<string, Hub>();
+                        // init weixin pay for each hub
+                        for (int i = 0; i < map.Count; i++)
+                        {
+                            map[i].InitWCPay();
+                        }
+                        return map;
                     }
                 }, 3600
             );
@@ -208,12 +214,11 @@ namespace Samp
                 return;
             }
             var orderid = trade_no.ToInt();
-            string teamid, uname, uaddr;
             // update order status
             using (var dc = NewDbContext())
             {
                 // WCPay may send notification more than once
-                dc.Sql("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0 RETURNING grpid, uname, uaddr");
+                dc.Sql("UPDATE orders SET cash = @1, paid = localtimestamp, status = 1 WHERE id = @2 AND status = 0");
                 dc.Execute(p => p.Set(cash).Set(orderid));
             }
             // return xml to WCPay server

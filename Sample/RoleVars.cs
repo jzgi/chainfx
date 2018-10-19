@@ -26,9 +26,14 @@ namespace Samp
                 h.LI_().FI("用户名称", o.name)._LI();
                 h.LI_().FI("手　　机", o.tel)._LI();
                 h.LI_().FI("参　　团", orgs[o.teamid]?.name)._LI();
-                h.LI_().FI("上门地址", o.addr)._LI();
+                h.LI_().FI("送货地址", o.addr)._LI();
                 h._UL();
                 h.TOOLS(css: "uk-card-footer uk-flex-center");
+                h._DIV();
+
+                h.DIV_(css: "uk-card- uk-card-primary uk-card-body");
+                h.QRCODE("http://144000.tv/nc/catch-3?teamid=" + o.teamid);
+                h.DIV_(css: "uk-card-footer uk-flex-center").T("推荐码")._DIV();
                 h._DIV();
             }, title: "我的设置");
         }

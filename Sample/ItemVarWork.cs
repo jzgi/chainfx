@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.User;
 
 namespace Samp
 {
@@ -54,11 +53,16 @@ namespace Samp
 
         public void @default(WebContext wc)
         {
+            var prin = (User) wc.Principal;
             string hubid = wc[0];
             short itemid = wc[this];
             int uid = wc.Query[nameof(uid)];
+            if (uid == 0)
+            {
+                uid = prin.id;
+            }
             bool door = false;
-            short num;
+            short qty;
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE hubid = @1 AND id = @2");
@@ -71,57 +75,69 @@ namespace Samp
                     h.PIC_(circle: false).T("img")._PIC();
                     h.DIV_(css: "uk-overlay uk-overlay-primary uk-position-bottom").H4(o.name)._DIV();
                     h._DIV();
+
                     h.T(o.remark);
-                    h.BOTTOMBAR_();
-                    h.DIV_(css: "uk-width-1-3");
-                    h.NUMBER(null, nameof(num), o.min, max: o.Avail, min: o.min, step: o.step == 0 ? (short) 1 : o.step).T(o.unit);
-                    h._DIV();
 
-                    h.CHECKBOX(nameof(door), door, label: "送货上门");
-
+                    h.FORM_(post: true);
+                    h.NUMBER(null, nameof(qty), o.min, max: o.Avail, min: o.min, step: o.step == 0 ? (short) 1 : o.step).T(o.unit);
+                    h.HIDDEN(nameof(uid), uid);
+                    h.HIDDEN(nameof(itemid), itemid);
+                    h.CHECKBOX(nameof(door), door, label: "小区到户");
                     h.TOOL(nameof(prepay));
-                    h._BOTTOMBAR();
+
+                    h._FORM();
                 });
             }
         }
 
 
-        [Ui("付款"), Tool(ButtonScript, "uk-button-primary"), OrderState('P')]
+        [Ui("付款"), Tool(ButtonScript, "uk-button-primary")]
         public async Task prepay(WebContext wc)
         {
+            var prin = (User) wc.Principal;
             string hubid = wc[0];
+            short itemid = wc[this];
             var f = await wc.ReadAsync<Form>();
             int uid = f[nameof(uid)];
-
-            short itemid = f[nameof(itemid)];
             short qty = f[nameof(qty)];
-
             bool door = f[nameof(door)];
-
-            var prin = (User) wc.Principal;
-            int orderid = wc[this];
-            Order o = new Order()
-            {
-                hubid = hubid,
-                // teamid
-
-                uid = uid,
-                uwx = ",",
-                uname = "",
-                uaddr = "",
-            };
+            Order o;
             using (var dc = NewDbContext())
             {
-                // create new order
+                dc.Sql("SELECT ").collst(Item.Empty).T(" FROM items WHERE id = @1");
+                var m = dc.Query1<Item>(p => p.Set(itemid));
+                dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE id = @1");
+                var u = dc.Query1<User>(p => p.Set(uid));
+                // create and insert a new order
+                o = new Order()
+                {
+                    hubid = hubid,
+                    uid = uid,
+                    uname = u.name,
+                    utel = u.tel,
+                    uaddr = u.addr,
+                    teamid = u.teamid,
+                    itemid = itemid,
+                    itemname = m.name,
+                    price = m.price,
+                    fee = m.fee,
+                    qty = qty,
+                    unit = m.unit,
+                    total = m.price * qty + (door ? decimal.Ceiling(m.fee * qty) : 0),
+                    creatorid = prin.id,
+                    creatorname = prin.name,
+                    creatorwx = prin.wx,
+                };
                 dc.Sql("INSERT INTO orders ")._(Order.Empty, 0)._VALUES_(Order.Empty, 0).T(" RETURNING id");
-                dc.Query1(p => o.Write(p));
-                dc.Let(out orderid);
+                dc.Query1(p => o.Write(p, 0));
+                dc.Let(out o.id);
             }
+            // call WeChatPay to prepare order there
             var hub = Obtain<Map<string, Hub>>()[hubid];
             var (prepay_id, _) = await hub.PostUnifiedOrderAsync(
-                orderid.ToString(),
-                o.cash,
-                prin.wx,
+                o.id.ToString(),
+                o.total,
+                o.creatorwx, // the payer is always the current user
                 wc.RemoteAddr.ToString(),
                 SampUtility.NetAddr + "/" + hub.id + "/" + nameof(SampVarWork.onpay),
                 hub.name
@@ -137,9 +153,9 @@ namespace Samp
         }
     }
 
-    public class HubItemVarWork : ItemVarWork
+    public class HublyItemVarWork : ItemVarWork
     {
-        public HubItemVarWork(WorkConfig cfg) : base(cfg)
+        public HublyItemVarWork(WorkConfig cfg) : base(cfg)
         {
         }
 

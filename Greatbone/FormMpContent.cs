@@ -54,6 +54,12 @@ namespace Greatbone
             Add(v ? "true" : "false");
         }
 
+        public void Put(string name, char v)
+        {
+            Part(name);
+            Add(v);
+        }
+
         public void Put(string name, short v)
         {
             Part(name);

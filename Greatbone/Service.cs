@@ -26,10 +26,6 @@ namespace Greatbone
         // the embedded server
         readonly KestrelServer server;
         
-        readonly Func<WebContext, bool> auth;
-        readonly Func<WebContext, Task<bool>> authAsync;
-
-
         // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 

@@ -14,7 +14,7 @@ namespace Samp
 
 
     [Ui("货架")]
-    public class HublyItemWork : ItemWork<HubItemVarWork>
+    public class HublyItemWork : ItemWork<HublyItemVarWork>
     {
         public HublyItemWork(WorkConfig cfg) : base(cfg)
         {

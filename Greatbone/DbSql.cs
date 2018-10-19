@@ -237,6 +237,20 @@ namespace Greatbone
             }
         }
 
+        public void Put(string name, char v)
+        {
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add('\'');
+                Add(v);
+                Add('\'');
+            }
+        }
+
         public void Put(string name, short v)
         {
             if (name != null)
@@ -330,7 +344,7 @@ namespace Greatbone
 
         public void Put(string name, byte[] v)
         {
-            throw new NotImplementedException();
+            Build(name);
         }
 
         public void Put(string name, short[] v)

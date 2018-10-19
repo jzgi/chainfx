@@ -349,7 +349,7 @@ namespace Greatbone
                             // invoke action method 
                             if (act.IsAsync) await act.DoAsync(wc, subscpt);
                             else act.Do(wc, subscpt);
-                            ActionExit:
+
                             Service.TryCacheUp(wc);
                         }
                         wc.Actioner = null;

@@ -68,6 +68,12 @@ namespace Greatbone
             return jo != null && jo.Get(name, ref v);
         }
 
+        public bool Get(string name, ref char v)
+        {
+            JObj jo = elements[current];
+            return jo != null && jo.Get(name, ref v);
+        }
+
         public bool Get(string name, ref short v)
         {
             JObj jo = elements[current];
@@ -173,6 +179,12 @@ namespace Greatbone
         //
 
         public ISource Let(out bool v)
+        {
+            v = elements[current];
+            return this;
+        }
+
+        public ISource Let(out char v)
         {
             v = elements[current];
             return this;

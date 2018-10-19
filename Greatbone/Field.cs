@@ -29,7 +29,6 @@ namespace Greatbone
             contentbuf = null;
             offset = 0;
             count = 0;
-            Err = null;
         }
 
         internal Field(string key, string filename, byte[] contentbuf, int offset, int count)
@@ -40,12 +39,9 @@ namespace Greatbone
             this.contentbuf = contentbuf;
             this.offset = offset;
             this.count = count;
-            Err = null;
         }
 
         public string Key => name;
-
-        public string Err { get; set; }
 
         internal void Add(string v)
         {
@@ -87,6 +83,16 @@ namespace Greatbone
                 return "true".Equals(str) || "1".Equals(str) || "on".Equals(str);
             }
             return false;
+        }
+
+        public static implicit operator char(Field v)
+        {
+            string str = v.First;
+            if (str != null && str.Length > 0)
+            {
+                return str[0];
+            }
+            return '\0';
         }
 
         public static implicit operator short(Field v)

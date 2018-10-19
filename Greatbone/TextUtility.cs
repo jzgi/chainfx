@@ -336,6 +336,11 @@ namespace Greatbone
             return str == "true" || str == "1";
         }
 
+        public static char ToChar(this string str)
+        {
+            return string.IsNullOrEmpty(str) ? '\0' : str[0];
+        }
+
         public static short ToShort(this string str)
         {
             return (short) str.ToInt(0, str.Length);

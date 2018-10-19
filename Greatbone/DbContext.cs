@@ -578,6 +578,23 @@ namespace Greatbone
             return false;
         }
 
+        public bool Get(string name, ref char v)
+        {
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetChar(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
         public bool Get(string name, ref short v)
         {
             try
@@ -927,6 +944,24 @@ namespace Greatbone
             {
             }
             v = false;
+            return this;
+        }
+
+        public ISource Let(out char v)
+        {
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetChar(ord);
+                    return this;
+                }
+            }
+            catch
+            {
+            }
+            v = '\0';
             return this;
         }
 
@@ -1310,6 +1345,14 @@ namespace Greatbone
         public void Put(string name, bool v)
         {
             command.Parameters.Add(new NpgsqlParameter<bool>(name, NpgsqlDbType.Boolean)
+            {
+                TypedValue = v
+            });
+        }
+
+        public void Put(string name, char v)
+        {
+            command.Parameters.Add(new NpgsqlParameter<char>(name, NpgsqlDbType.Char)
             {
                 TypedValue = v
             });

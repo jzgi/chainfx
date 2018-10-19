@@ -92,6 +92,11 @@ namespace Greatbone
             throw new NotImplementedException();
         }
 
+        public bool Get(string name, ref char v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref short v)
         {
             throw new NotImplementedException();
@@ -182,6 +187,11 @@ namespace Greatbone
         //
 
         public ISource Let(out bool v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISource Let(out char v)
         {
             throw new NotImplementedException();
         }

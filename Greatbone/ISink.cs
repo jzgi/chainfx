@@ -13,6 +13,8 @@ namespace Greatbone
 
         void Put(string name, bool v);
 
+        void Put(string name, char v);
+
         void Put(string name, short v);
 
         void Put(string name, int v);
