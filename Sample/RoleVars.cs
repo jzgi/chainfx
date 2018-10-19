@@ -54,7 +54,7 @@ namespace Samp
             }
 
             string password = null;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 var orgs = Obtain<Map<short, Team>>();
                 using (var dc = NewDbContext())

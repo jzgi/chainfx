@@ -49,7 +49,7 @@ namespace Samp
         {
             string hubid = wc[0];
             short uid = wc[this];
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {

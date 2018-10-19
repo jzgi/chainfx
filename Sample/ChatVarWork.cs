@@ -26,7 +26,7 @@ namespace Samp
             int chatid = wc[this];
             string text = null;
             ArraySegment<byte> img;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {
@@ -116,7 +116,7 @@ namespace Samp
             int custid = wc[this];
             User prin = (User) wc.Principal;
             string text = null;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 wc.GivePane(200, h => { h.FORM_().FIELDUL_().TEXTAREA(null, nameof(text), text, max: 100, min: 1)._FIELDUL()._FORM(); });
             }

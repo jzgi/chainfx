@@ -307,7 +307,7 @@ namespace Samp
             string hubid = wc[0];
             short orgid = wc[-2];
             bool range = true;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {
@@ -340,7 +340,7 @@ namespace Samp
             string hubid = wc[0];
             short orgid = wc[-1];
             bool range = true;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {

@@ -72,7 +72,7 @@ namespace Samp
         [Ui("新建", tip: "手工创建新客户"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 var o = new User { };
                 o.Read(wc.Query, 0);
@@ -136,7 +136,7 @@ namespace Samp
             short teamid = wc[Parent];
             short role = 0;
             string tel = null;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
                 {
@@ -246,7 +246,7 @@ namespace Samp
         {
             string tel = null;
             short role = 0;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
                 {

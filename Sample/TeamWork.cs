@@ -40,7 +40,7 @@ namespace Samp
         [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 var o = new Team { };
                 o.Read(wc.Query, 0);
@@ -88,7 +88,7 @@ namespace Samp
         public async Task search(WebContext wc, int cmd)
         {
             short hubly = 0;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
                 {

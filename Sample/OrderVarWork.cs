@@ -22,7 +22,7 @@ namespace Samp
         {
             int orderid = wc[this];
             int myid = wc[-2];
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {
@@ -101,7 +101,7 @@ namespace Samp
         public async Task receive(WebContext wc)
         {
             string grpid = wc[-1];
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 int[] key = wc.Query[nameof(key)];
                 wc.GivePane(200, h =>

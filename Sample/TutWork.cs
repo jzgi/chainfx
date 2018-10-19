@@ -69,7 +69,7 @@ namespace Samp
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 var o = new Tut();
                 wc.GivePane(200, h =>

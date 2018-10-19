@@ -345,7 +345,7 @@ namespace Greatbone
 
         internal void TryCacheUp(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 if (!wc.InCache && wc.Public == true && Resp.IsCacheable(wc.Status))
                 {
@@ -358,7 +358,7 @@ namespace Greatbone
 
         internal bool TryGiveFromCache(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 if (cache.TryGetValue(wc.Uri, out var re))
                 {

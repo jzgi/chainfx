@@ -280,6 +280,31 @@ namespace Greatbone
                 });
         }
 
+        public void Print(HtmlContent h)
+        {
+            h.ARTICLE_();
+
+            for (int i = 0; i < actioners?.Count; i++)
+            {
+                var a = actioners[i];
+                for (int k = 0; k < a.Comments?.Count; k++)
+                {
+                    var c = a.Comments[k];
+                    c.Print(h);
+                }
+            }
+
+            varwork?.Print(h);
+
+            for (int i = 0; i < works?.Count; i++)
+            {
+                var w = works[i];
+                w.Print(h);
+            }
+
+            h._ARTICLE();
+        }
+
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
         public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];

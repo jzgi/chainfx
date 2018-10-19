@@ -145,9 +145,9 @@ namespace Greatbone
 
         public string Method => fRequest.Method;
 
-        public bool GET => "GET".Equals(fRequest.Method);
+        public bool IsGet => "GET".Equals(fRequest.Method);
 
-        public bool POST => "POST".Equals(fRequest.Method);
+        public bool IsPost => "POST".Equals(fRequest.Method);
 
         public string UserAgent => Header("User-Agent");
 
@@ -294,7 +294,6 @@ namespace Greatbone
                     {
                     }
                 }
-
                 // parse
                 string ctyp = Header("Content-Type");
                 entity = ParseContent(ctyp, buffer, count, typeof(M));

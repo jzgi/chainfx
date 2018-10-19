@@ -40,7 +40,7 @@ namespace Samp
         [Ui("新建", "创建新网点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 var o = new Shop { };
                 o.Read(wc.Query, 0);

@@ -165,7 +165,7 @@ namespace Samp
         {
             string hubid = wc[0];
             short id = wc[this];
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {
@@ -211,7 +211,7 @@ namespace Samp
         [Ui("图标"), Tool(ButtonCrop, size: 1)]
         public new async Task icon(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 base.icon(wc);
             }
@@ -235,7 +235,7 @@ namespace Samp
         [Ui("照片"), Tool(ButtonCrop, size: 2)]
         public new async Task img(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 base.img(wc);
             }
@@ -263,7 +263,7 @@ namespace Samp
             short shopid;
             short cap7;
             short status;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {

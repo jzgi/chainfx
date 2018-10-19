@@ -52,7 +52,7 @@ namespace Samp
             string subject = null;
             string text = null;
             ArraySegment<byte> img;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
                 {

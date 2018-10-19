@@ -22,7 +22,7 @@ namespace Samp
         {
             string hubid = wc[0];
             short orgid = wc[this];
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {
@@ -61,7 +61,7 @@ namespace Samp
         {
             string orgid = wc[this];
             string tel_name_wx;
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 string forid = wc.Query[nameof(forid)];
                 wc.GivePane(200, m =>

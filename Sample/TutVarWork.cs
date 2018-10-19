@@ -48,7 +48,7 @@ namespace Samp
         public async Task edit(WebContext ac)
         {
             short infid = ac[this];
-            if (ac.GET)
+            if (ac.IsGet)
             {
                 using (var dc = NewDbContext())
                 {
@@ -80,7 +80,7 @@ namespace Samp
         public new async Task icon(WebContext wc)
         {
             short infid = wc[this];
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 base.icon(wc);
             }

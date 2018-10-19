@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -30,6 +31,8 @@ namespace Greatbone
         readonly Func<WebContext, Task> doAsync;
         readonly Action<WebContext, int> do2;
         readonly Func<WebContext, int, Task> do2Async;
+
+        readonly List<IComment> comments;
 
         internal Actioner(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
@@ -64,6 +67,16 @@ namespace Greatbone
                     @do = (Action<WebContext>) mi.CreateDelegate(typeof(Action<WebContext>), work);
                 }
             }
+
+            // comments
+            foreach (var m in mi.GetCustomAttributes())
+            {
+                if (m is IComment c)
+                {
+                    if (comments == null) comments = new List<IComment>(4);
+                    comments.Add(c);
+                }
+            }
         }
 
         public Work Work => work;
@@ -78,6 +91,8 @@ namespace Greatbone
         public bool HasTool => tool != null;
 
         public ToolAttribute Tool => tool;
+
+        public List<IComment> Comments => comments;
 
         public bool CheckState(WebContext wc, object[] stack, int level)
         {

@@ -68,7 +68,7 @@ namespace Samp
         {
             DateTime fro; // from date
             DateTime till; // till/before date
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 using (var dc = NewDbContext())
                 {

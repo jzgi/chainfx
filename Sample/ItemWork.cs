@@ -51,7 +51,7 @@ namespace Samp
         [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            if (wc.GET)
+            if (wc.IsGet)
             {
                 var o = new Item {min = 1, step = 1};
                 wc.GivePane(200, h =>
