@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Greatbone
 {
@@ -18,7 +17,7 @@ namespace Greatbone
 
         internal UiAttribute Ui { get; set; }
 
-        internal AuthorizeAttribute Access { get; set; }
+        internal AuthorizeAttribute Authorize { get; set; }
 
         public string Name => name;
 
@@ -32,12 +31,14 @@ namespace Greatbone
 
         public string Directory { get; internal set; }
 
+        public string Path { get; internal set; }
+
         // to resolve from the principal object.
-        public Func<IData, object> Princi { get; internal set; }
+        public Func<IData, object> Principalet { get; internal set; }
 
         public string GetFilePath(string file)
         {
-            return Path.Combine(Directory, file);
+            return System.IO.Path.Combine(Directory, file);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Greatbone
         // max nesting levels
         const int MaxNesting = 8;
 
-        const string VAR = "var";
+        const string _VAR_ = "_var_";
 
         protected readonly WorkConfig cfg;
 
@@ -53,7 +53,7 @@ namespace Greatbone
         internal readonly AfterAttribute after;
 
         // to obtain a string key from a data object.
-        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Access)
+        protected Work(WorkConfig cfg) : base(cfg.Name, null, cfg.Ui, cfg.Authorize)
         {
             this.cfg = cfg;
 
@@ -119,7 +119,9 @@ namespace Greatbone
 
         public string Directory => cfg.Directory;
 
-        public bool HasPrinci => cfg.Princi != null;
+        public string Path => cfg.Path;
+
+        public bool HasPrinci => cfg.Principalet != null;
 
         public Map<string, Actioner> Actioners => actioners;
 
@@ -137,19 +139,19 @@ namespace Greatbone
 
         public string GetFilePath(string file)
         {
-            return Path.Combine(Directory, file);
+            return System.IO.Path.Combine(Directory, file);
         }
 
         /// <summary>
         /// Create and add a variable-key subwork.
         /// </summary>
-        /// <param name="prinlet">to resolve key from the principal object</param>
+        /// <param name="principalet">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W MakeVar<W>(Func<IData, object> prinlet = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
+        protected W MakeVar<W>(Func<IData, object> principalet = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -164,16 +166,17 @@ namespace Greatbone
                 throw new ServiceException(typ + " need public and WorkConfig");
             }
 
-            WorkConfig config = new WorkConfig(VAR)
+            WorkConfig config = new WorkConfig(_VAR_)
             {
                 Ui = ui,
-                Access = auth,
+                Authorize = auth,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
                 IsVar = true,
-                Directory = (Parent == null) ? VAR : Path.Combine(Parent.Directory, VAR),
-                Princi = prinlet,
+                Directory = (Parent == null) ? _VAR_ : System.IO.Path.Combine(Parent.Directory, _VAR_),
+                Path = Path + (principalet == null ? _VAR_ : string.Empty) + "/",
+                Principalet = principalet,
             };
             W w = (W) ci.Invoke(new object[] {config});
             varwork = w;
@@ -212,12 +215,13 @@ namespace Greatbone
             WorkConfig config = new WorkConfig(name)
             {
                 Ui = ui,
-                Access = access,
+                Authorize = access,
                 Service = Service,
                 Parent = this,
                 Level = Level + 1,
                 IsVar = false,
-                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
+                Directory = (Parent == null) ? name : System.IO.Path.Combine(Parent.Directory, name),
+                Path = Path + name + "/",
             };
             // init sub work
             W w = (W) ci.Invoke(new object[] {config});
@@ -227,7 +231,7 @@ namespace Greatbone
 
         public object GetPrinlet(IData prin)
         {
-            var keyer = cfg.Princi;
+            var keyer = cfg.Principalet;
             return keyer?.Invoke(prin);
         }
 
@@ -255,15 +259,15 @@ namespace Greatbone
             }
         }
 
-        internal void Describe(XmlContent cnt)
+        protected void Describe(XmlContent xc)
         {
-            cnt.ELEM(Key,
+            xc.ELEM(Key,
                 delegate
                 {
                     for (int i = 0; i < actioners.Count; i++)
                     {
                         Actioner actr = actioners[i];
-                        cnt.Put(actr.Key, "");
+                        xc.Put(actr.Key, "");
                     }
                 },
                 delegate
@@ -273,36 +277,38 @@ namespace Greatbone
                         for (int i = 0; i < works.Count; i++)
                         {
                             Work wrk = works[i];
-                            wrk.Describe(cnt);
+                            wrk.Describe(xc);
                         }
                     }
-                    varwork?.Describe(cnt);
+                    varwork?.Describe(xc);
                 });
         }
 
-        public void Print(HtmlContent h)
+        protected void Describe(HtmlContent hc)
         {
-            h.ARTICLE_();
-
             for (int i = 0; i < actioners?.Count; i++)
             {
                 var a = actioners[i];
-                for (int k = 0; k < a.Comments?.Count; k++)
+                if (a.Comments != null)
                 {
-                    var c = a.Comments[k];
-                    c.Print(h);
+                    hc.T("<article style=\"border: 1px solid silver; padding: 4px;\">");
+                    hc.H3_().T(Path).T(a.Key)._H3();
+                    for (int k = 0; k < a.Comments.Count; k++)
+                    {
+                        var c = a.Comments[k];
+                        c.Print(hc);
+                    }
+                    hc.T("</article>");
                 }
             }
 
-            varwork?.Print(h);
+            varwork?.Describe(hc);
 
             for (int i = 0; i < works?.Count; i++)
             {
                 var w = works[i];
-                w.Print(h);
+                w.Describe(hc);
             }
-
-            h._ARTICLE();
         }
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
@@ -443,7 +449,7 @@ namespace Greatbone
                 return;
             }
 
-            string path = Path.Combine(cfg.Directory, filename);
+            string path = System.IO.Path.Combine(cfg.Directory, filename);
             if (!File.Exists(path))
             {
                 wc.Give(404); // not found

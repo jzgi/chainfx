@@ -14,7 +14,7 @@ namespace Greatbone
         readonly Work work;
 
         // relative path
-        readonly string rpath;
+        readonly string relative;
 
         readonly bool async;
 
@@ -32,12 +32,12 @@ namespace Greatbone
         readonly Action<WebContext, int> do2;
         readonly Func<WebContext, int, Task> do2Async;
 
-        readonly List<IComment> comments;
+        readonly List<TagAttribute> comments;
 
         internal Actioner(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
             this.work = work;
-            this.rpath = Key == string.Empty ? "./" : Key;
+            this.relative = Key == string.Empty ? "./" : Key;
             this.async = async;
             this.subscript = subscript;
 
@@ -71,9 +71,9 @@ namespace Greatbone
             // comments
             foreach (var m in mi.GetCustomAttributes())
             {
-                if (m is IComment c)
+                if (m is TagAttribute c)
                 {
-                    if (comments == null) comments = new List<IComment>(4);
+                    if (comments == null) comments = new List<TagAttribute>(4);
                     comments.Add(c);
                 }
             }
@@ -81,7 +81,7 @@ namespace Greatbone
 
         public Work Work => work;
 
-        public string RealPath => rpath;
+        public string Relative => relative;
 
         public bool IsAsync => async;
 
@@ -92,7 +92,7 @@ namespace Greatbone
 
         public ToolAttribute Tool => tool;
 
-        public List<IComment> Comments => comments;
+        public List<TagAttribute> Comments => comments;
 
         public bool CheckState(WebContext wc, object[] stack, int level)
         {

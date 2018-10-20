@@ -3,35 +3,31 @@
 namespace Greatbone
 {
     /// <summary>
-    /// To document a POST request to the target action.
+    /// To document the response returned by the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class PostAttribute : TagAttribute
+    public class ResultAttribute : TagAttribute
     {
-        readonly string query;
+        readonly short status;
+
+        readonly string tip;
 
         readonly string headers;
 
         readonly string body;
 
-        readonly string tip;
-
-        public PostAttribute(string tip = null, string query = null, string headers = null, string body = null)
+        public ResultAttribute(short status, string tip = null, string headers = null, string body = null)
         {
-            this.query = query;
+            this.status = status;
+            this.tip = tip;
             this.headers = headers;
             this.body = body;
-            this.tip = tip;
         }
 
         internal override void Print(HtmlContent h)
         {
-            h.SECTION_();
-            h.T("POST").SP().T(tip);
-            if (query != null)
-            {
-                h.T("<pre>").T(query).T("</pre>");
-            }
+            h.P_();
+            h.T("RESULT:").SP().T(status).SP().T(tip);
             if (headers != null)
             {
                 h.T("<pre>").T(headers).T("</pre>");
@@ -40,7 +36,7 @@ namespace Greatbone
             {
                 h.T("<pre style=\"overflow-x: scroll;\">").T(body).T("</pre>");
             }
-            h._SECTION();
+            h._P();
         }
     }
 }

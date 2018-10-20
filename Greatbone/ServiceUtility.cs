@@ -39,6 +39,7 @@ namespace Greatbone
             cfg.Level = 0;
             cfg.IsVar = false;
             cfg.Directory = cfg.Name;
+            cfg.Path = "/";
 
             if (!Directory.Exists(cfg.Directory))
             {

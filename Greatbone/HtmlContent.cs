@@ -163,6 +163,12 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent HR()
+        {
+            Add("<hr>");
+            return this;
+        }
+
         public HtmlContent SP()
         {
             Add("&nbsp;");
@@ -1429,7 +1435,7 @@ namespace Greatbone
                         Add('/');
                     }
                 }
-                Add(act.RealPath);
+                Add(act.Relative);
                 if (subscript >= 0)
                 {
                     Add('-');
