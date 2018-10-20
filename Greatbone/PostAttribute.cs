@@ -26,7 +26,7 @@ namespace Greatbone
 
         internal override void Print(HtmlContent h)
         {
-            h.SECTION_();
+            h.P_();
             h.T("POST").SP().T(tip);
             if (query != null)
             {
@@ -40,7 +40,7 @@ namespace Greatbone
             {
                 h.T("<pre style=\"overflow-x: scroll;\">").T(body).T("</pre>");
             }
-            h._SECTION();
+            h._P();
         }
     }
 }

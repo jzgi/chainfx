@@ -23,7 +23,7 @@ namespace Greatbone
 
         internal override void Print(HtmlContent h)
         {
-            h.SECTION_();
+            h.P_();
             h.T("GET").SP().T(tip);
             if (query != null)
             {
@@ -35,7 +35,7 @@ namespace Greatbone
                 h.T("<pre>").T(headers).T("</pre>");
                 h.BR();
             }
-            h._SECTION();
+            h._P();
         }
     }
 }
