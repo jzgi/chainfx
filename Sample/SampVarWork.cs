@@ -140,7 +140,7 @@ namespace Samp
 
                     h.FIELDUL_("填写用户信息");
                     h.LI_().TEXT("手　　机", nameof(o.tel), o.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
-                    h.LI_().TEXT("您的姓名", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
+                    h.LI_().TEXT("真实姓名", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                     var orgs = Obtain<Map<short, Team>>();
                     h.LI_().SELECT("参　　团", nameof(o.teamid), o.teamid, orgs, filter: x => x.hubid == hubid)._LI();
                     h.LI_().TEXT("收货地址", nameof(o.addr), o.addr, max: 30, required: true)._LI();

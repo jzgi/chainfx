@@ -190,7 +190,7 @@ namespace Samp
             short orgid = wc[-1];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE shopat = @1 AND shoply > 0 ORDER BY name");
+                dc.Sql("SELECT ").collst(User.Empty).T(" FROM users WHERE shopid = @1 AND shoply > 0 ORDER BY name");
                 var arr = dc.Query<User>(p => p.Set(orgid));
                 wc.GivePage(200, h =>
                 {
@@ -211,7 +211,7 @@ namespace Samp
             int[] key = f[nameof(key)];
             using (var dc = NewDbContext())
             {
-                dc.Sql("UPDATE users SET shop = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE shopat = @1 AND shop < 15 AND id")._IN_(key);
+                dc.Sql("UPDATE users SET shop = CASE WHEN 1 THEN NULL ELSE THEN 1 END WHERE shopid = @1 AND shop < 15 AND id")._IN_(key);
                 dc.Execute(p => p.Set(shopid));
             }
             wc.GiveRedirect();

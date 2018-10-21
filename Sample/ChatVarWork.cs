@@ -36,7 +36,7 @@ namespace Samp
                         {
                             h.BOARD(chat.posts, o =>
                             {
-                                h.HEADER_("uk-card-header uk-flex-between uk-text-muted").SPAN_().T("<span uk-icon=\"user\"></span>&nbsp;").T(o.uname).SP().T(o.teamat)._SPAN().T(o.time)._HEADER();
+                                h.HEADER_("uk-card-header uk-flex-between uk-text-muted").SPAN_().T("<span uk-icon=\"user\"></span>&nbsp;").T(o.uname).SP().T(o.teamid)._SPAN().T(o.time)._HEADER();
                                 h.MAIN_("uk-card-body");
                                 h.H5(o.text);
                                 if (o.img > 0)
@@ -71,7 +71,7 @@ namespace Samp
                     short ord = (short) (img.Count == 0 ? 0 : last.img + 1);
                     posts = posts.AddOf(new Post
                     {
-                        uid = prin.id, uname = prin.name, teamat = prin.teamid, text = text, img = ord, time = now
+                        uid = prin.id, uname = prin.name, teamid = prin.teamid, text = text, img = ord, time = now
                     });
                     if (img.Count > 0 && last.img < 10)
                     {

@@ -17,9 +17,9 @@ namespace Samp
             if (stack[0] is Order o)
             {
                 if (state == 'P') // payable
-                    return o.status < OrdPaid;
+                    return o.status < PAID;
                 if (state == 'E') // 
-                    return o.status >= OrdPaid;
+                    return o.status >= PAID;
             }
             return false;
         }

@@ -11,19 +11,19 @@
       "sub_button": [
         {
           "type": "view",
-          "name": "调度操作🔒",
+          "name": "调度🔒",
           "url": "http://144000.tv/nc/hub/",
           "sub_button": []
         },
         {
           "type": "view",
-          "name": "产供操作🔒",
+          "name": "工坊🔒",
           "url": "http://144000.tv/nc/shop//",
           "sub_button": []
         },
         {
           "type": "view",
-          "name": "团组操作🔒",
+          "name": "团组🔒",
           "url": "http://144000.tv/nc/team//",
           "sub_button": []
         },

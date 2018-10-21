@@ -12,7 +12,7 @@
  Target Server Version : 90606
  File Encoding         : 65001
 
- Date: 17/10/2018 17:37:36
+ Date: 21/10/2018 23:52:29
 */
 
 
@@ -124,8 +124,9 @@ CREATE TABLE "public"."hubs" (
   "noncestr" varchar(10) COLLATE "pg_catalog"."default",
   "spbillcreateip" varchar(15) COLLATE "pg_catalog"."default",
   "key" varchar(32) COLLATE "pg_catalog"."default",
-  "status" int2,
-  "watchurl" varchar(100) COLLATE "pg_catalog"."default"
+  "watchurl" varchar(100) COLLATE "pg_catalog"."default",
+  "p12" bytea,
+  "status" int2
 )
 ;
 
@@ -167,13 +168,14 @@ CREATE TABLE "public"."orders" (
   "teamid" int2,
   "uid" int4 NOT NULL,
   "uname" varchar(10) COLLATE "pg_catalog"."default",
-  "uwx" varchar(28) COLLATE "pg_catalog"."default",
+  "creatorwx" varchar(28) COLLATE "pg_catalog"."default",
   "utel" varchar(11) COLLATE "pg_catalog"."default",
   "uaddr" varchar(20) COLLATE "pg_catalog"."default",
   "itemid" int2,
   "itemname" varchar(10) COLLATE "pg_catalog"."default",
   "unit" varchar(4) COLLATE "pg_catalog"."default",
   "price" numeric(38),
+  "fee" money,
   "qty" int2,
   "total" money,
   "cash" money DEFAULT 0,
@@ -311,13 +313,13 @@ $BODY$
 -- ----------------------------
 ALTER SEQUENCE "public"."chats_id_seq"
 OWNED BY "public"."chats"."id";
-SELECT setval('"public"."chats_id_seq"', 3, true);
+SELECT setval('"public"."chats_id_seq"', 4, true);
 ALTER SEQUENCE "public"."items_id_seq"
 OWNED BY "public"."items"."id";
 SELECT setval('"public"."items_id_seq"', 11, false);
 ALTER SEQUENCE "public"."orders_id_seq"
 OWNED BY "public"."orders"."id";
-SELECT setval('"public"."orders_id_seq"', 230, false);
+SELECT setval('"public"."orders_id_seq"', 258, true);
 ALTER SEQUENCE "public"."repays_id_seq"
 OWNED BY "public"."repays"."id";
 SELECT setval('"public"."repays_id_seq"', 2, false);
@@ -329,7 +331,7 @@ OWNED BY "public"."teams"."id";
 SELECT setval('"public"."teams_id_seq"', 2, false);
 ALTER SEQUENCE "public"."users_id_seq"
 OWNED BY "public"."users"."id";
-SELECT setval('"public"."users_id_seq"', 14, true);
+SELECT setval('"public"."users_id_seq"', 18, true);
 
 -- ----------------------------
 -- Primary Key structure for table chats
@@ -339,7 +341,7 @@ ALTER TABLE "public"."chats" ADD CONSTRAINT "chats_pkey" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table hubs
 -- ----------------------------
-ALTER TABLE "public"."hubs" ADD CONSTRAINT "hubs_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."hubs" ADD CONSTRAINT "hubs_pkey1" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table items
@@ -357,7 +359,7 @@ CREATE INDEX "orders_statusuid" ON "public"."orders" USING btree (
 -- ----------------------------
 -- Primary Key structure for table orders
 -- ----------------------------
-ALTER TABLE "public"."orders" ADD CONSTRAINT "orders_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."orders" ADD CONSTRAINT "orders_pkey1" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table repays

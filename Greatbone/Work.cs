@@ -92,16 +92,16 @@ namespace Greatbone
                 if (actr.Tool?.MustPick == true) pick = true;
             }
             // gather tooled action methods
-            Roll<Actioner> roll = new Roll<Actioner>(16);
+            ValueList<Actioner> vlist = new ValueList<Actioner>(16);
             for (int i = 0; i < actioners.Count; i++)
             {
                 Actioner actr = actioners[i];
                 if (actr.HasTool)
                 {
-                    roll.Add(actr);
+                    vlist.Add(actr);
                 }
             }
-            tooled = roll.ToArray();
+            tooled = vlist.ToArray();
 
             if (tooled != null) // sort by group
             {
@@ -121,7 +121,7 @@ namespace Greatbone
 
         public string Path => cfg.Path;
 
-        public bool HasPrinci => cfg.Principalet != null;
+        public bool HasAccessor => cfg.Accessor != null;
 
         public Map<string, Actioner> Actioners => actioners;
 
@@ -145,13 +145,13 @@ namespace Greatbone
         /// <summary>
         /// Create and add a variable-key subwork.
         /// </summary>
-        /// <param name="principalet">to resolve key from the principal object</param>
+        /// <param name="accessor">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="auth">to override class-wise Authorize attribute</param>
         /// <typeparam name="W"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="ServiceException">Thrown if error</exception>
-        protected W MakeVar<W>(Func<IData, object> principalet = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
+        protected W MakeVar<W>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : Work
         {
             if (cfg.Level >= MaxNesting)
             {
@@ -175,8 +175,8 @@ namespace Greatbone
                 Level = Level + 1,
                 IsVar = true,
                 Directory = (Parent == null) ? _VAR_ : System.IO.Path.Combine(Parent.Directory, _VAR_),
-                Path = Path + (principalet == null ? _VAR_ : string.Empty) + "/",
-                Principalet = principalet,
+                Path = Path + (accessor == null ? _VAR_ : string.Empty) + "/",
+                Accessor = accessor,
             };
             W w = (W) ci.Invoke(new object[] {config});
             varwork = w;
@@ -229,9 +229,9 @@ namespace Greatbone
             return w;
         }
 
-        public object GetPrinlet(IData prin)
+        public object GetAccessor(IData prin)
         {
-            var keyer = cfg.Principalet;
+            var keyer = cfg.Accessor;
             return keyer?.Invoke(prin);
         }
 
@@ -405,16 +405,16 @@ namespace Greatbone
                     else if (varwork != null) // if variable-key sub
                     {
                         IData prin = wc.Principal;
-                        object let = null;
+                        object acc = null;
                         if (key.Length == 0) // resolve prinlet
                         {
                             if (prin == null) throw except;
-                            if ((let = varwork.GetPrinlet(prin)) == null)
+                            if ((acc = varwork.GetAccessor(prin)) == null)
                             {
                                 throw except;
                             }
                         }
-                        wc.Chain(varwork, key, let);
+                        wc.Chain(varwork, key, acc);
                         await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                     }
                 }

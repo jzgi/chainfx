@@ -1548,7 +1548,7 @@ select.uk-form-width-xsmall {
     -webkit-appearance: none;
     -moz-appearance: none;
     background: 0 0;
-    padding: 0 6px;
+    padding: 0 7px;
     margin: 0;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -2811,7 +2811,7 @@ ul.uk-card-body li:nth-child(n+2) {
 }
 
 label.uk-label {
-    margin-right: 7px;
+    margin-right: 0.875rem;
 }
 
 label > input[type="checkbox"] {

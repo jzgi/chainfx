@@ -7,12 +7,22 @@ namespace Greatbone
     /// </summary>
     public class AuthorizeException : Exception
     {
+        readonly Nodule target;
+
         readonly AuthorizeAttribute attribute;
 
-        internal AuthorizeException(AuthorizeAttribute attribute = null, string msg = "access exception") : base(msg)
+        internal AuthorizeException(Nodule target, AuthorizeAttribute attribute = null, string msg = "authorize exception") : base(msg)
         {
+            this.target = target;
             this.attribute = attribute;
         }
+
+        /// <summary>
+        /// The target work or action method.
+        /// </summary>
+        /// <seealso cref="Work"/>
+        /// <seealso cref="Actioner"/>
+        public Nodule Target => target;
 
         public AuthorizeAttribute Attribute => attribute;
     }

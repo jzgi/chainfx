@@ -14,18 +14,18 @@ namespace Samp
 
         // status
         public const short
-            OrdAborted = -1, OrdCreated = 0, OrdPaid = 1, OrdAccepted = 2, OrdStocked = 3, OrdSent = 4, OrdReceived = 5, OrdEnded = 6;
+            ABORTED = -1, CREATED = 0, PAID = 1, ACCEPTED = 2, STOCKED = 3, SENT = 4, RECEIVED = 5, ENDED = 6;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {OrdAborted, "撤销"},
-            {OrdCreated, null},
-            {OrdPaid, "排队"},
-            {OrdAccepted, "备货"},
-            {OrdStocked, "中转"},
-            {OrdSent, "派运"},
-            {OrdReceived, "运达"},
-            {OrdEnded, "完成"}
+            {ABORTED, "撤销"},
+            {CREATED, null},
+            {PAID, "排队"},
+            {ACCEPTED, "备货"},
+            {STOCKED, "中转"},
+            {SENT, "派运"},
+            {RECEIVED, "运达"},
+            {ENDED, "完成"}
         };
 
         internal int id;

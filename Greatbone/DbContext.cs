@@ -523,14 +523,14 @@ namespace Greatbone
 
         public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
         {
-            Roll<D> roll = new Roll<D>(32);
+            ValueList<D> vlist = new ValueList<D>(32);
             while (Next())
             {
                 D obj = new D();
                 obj.Read(this, proj);
-                roll.Add(obj);
+                vlist.Add(obj);
             }
-            return roll.ToArray();
+            return vlist.ToArray();
         }
 
         public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null) where D : IData, new()

@@ -1,43 +1,39 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace Greatbone
 {
-    /// <summary>
-    /// A lightweight alternative to List. The internal array is created on demand.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public struct Roll<T>
+    public class Roll<K, V> : IKeyable<K>
     {
         readonly int capacity;
 
-        T[] array;
+        readonly K key;
+
+        V[] array;
 
         int count;
 
-        public Roll(int capacity = 16)
+        public Roll(K key, int capacity = 16)
         {
             this.capacity = capacity;
+            this.key = key;
             array = null;
             count = 0;
         }
 
-        public int Count => count;
-
-        public T this[int idx] => array[idx];
-
-        public void Add(T v)
+        public void Add(V v)
         {
             // ensure capacity
             if (array == null)
             {
-                array = new T[capacity];
+                array = new V[capacity];
             }
             else
             {
                 int len = array.Length;
                 if (count >= len)
                 {
-                    T[] alloc = new T[len * 4];
+                    V[] alloc = new V[len * 4];
                     Array.Copy(array, 0, alloc, 0, len);
                     array = alloc;
                 }
@@ -45,15 +41,41 @@ namespace Greatbone
             array[count++] = v;
         }
 
-        public T[] ToArray()
+        public K Key => key;
+
+        public int Count => count;
+
+        public V this[int idx] => array[idx];
+    }
+
+    public static class RollUtility
+    {
+        public static Roll<K, V>[] RollUp<K, V>(this V[] array, Func<V, K> keyer)
         {
-            if (count > 0)
+            List<Roll<K, V>> list = new List<Roll<K, V>>();
+            Roll<K, V> roll = null;
+            for (int i = 0; i < array?.Length; i++)
             {
-                T[] alloc = new T[count];
-                Array.Copy(array, 0, alloc, 0, count);
-                return alloc;
+                var v = array[i];
+                K key = keyer(v);
+                if (roll == null)
+                {
+                    roll = new Roll<K, V>(key);
+                    list.Add(roll);
+                    roll.Add(v);
+                }
+                else if (key.Equals(roll.Key))
+                {
+                    roll.Add(v);
+                }
+                else // create a new sort
+                {
+                    roll = new Roll<K, V>(key);
+                    list.Add(roll);
+                    roll.Add(v);
+                }
             }
-            return null;
+            return list.ToArray();
         }
     }
 }

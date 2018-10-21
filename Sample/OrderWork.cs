@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Greatbone;
 using static Greatbone.Modal;
-using static Samp.Order;
 
 namespace Samp
 {
@@ -61,65 +60,94 @@ namespace Samp
             string hubid = wc[0];
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(group: 1);
+                h.TOOLBAR(group: 0b000011);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdPaid).T(" AND hubid = @1 ORDER BY id LIMIT ").T(PageSiz).T(" OFFSET @2");
-                    var arr = dc.Query<Order>(p => p.Set(hubid).Set(page * PageSiz));
-                    h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.PAID).T(" GROUP BY teamid, itemid");
+                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
+                    var rolls = arr.RollUp(x => x.no);
+                    h.BOARD(rolls, o =>
+                        {
+                            var team = Obtain<Map<short, Team>>()[o.Key];
+                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
+                            h.MAIN_("uk-card-body uk-flex");
+                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
+                            for (int i = 0; i < o.Count; i++)
+                            {
+                                var v = o[i];
+                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                            }
+                            h._UL();
+                            h._MAIN();
+                            h.VARTOOLS(group: 0b000011, css: "uk-card-footer uk-flex-between");
+                        }
                     );
                 }
             });
         }
 
         [Ui("备货", group: 1), Tool(Anchor)]
-        public void given(WebContext wc, int page)
+        public void accepted(WebContext wc, int page)
         {
             string hubid = wc[0];
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(group: 1);
+                h.TOOLBAR(group: 0b000101);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdAccepted).T(" AND hubid = @1 ORDER BY id LIMIT ").T(PageSiz).T(" OFFSET @2");
-                    var arr = dc.Query<Order>(p => p.Set(hubid).Set(page * PageSiz));
-                    h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    dc.Sql("SELECT shopid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" GROUP BY shopid, itemid");
+                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
+                    var a = arr.RollUp(x => x.no);
+                    h.BOARD(a, o =>
+                        {
+                            var shop = Obtain<Map<short, Shop>>()[o.Key];
+                            h.HEADER_("uk-card-header").T("<span uk-icon=\"cog\"></span>&nbsp;").T(shop.name)._HEADER();
+                            h.MAIN_("uk-card-body uk-flex");
+                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
+                            for (int i = 0; i < o.Count; i++)
+                            {
+                                var v = o[i];
+                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                            }
+                            h._UL();
+                            h._MAIN();
+                            h.VARTOOLS(group: 0b000101, css: "uk-card-footer uk-flex-between");
+                        }
                     );
                 }
             });
         }
 
         [Ui("中转", group: 1), Tool(Anchor)]
-        public void taken(WebContext wc)
+        public void stocked(WebContext wc)
         {
             string hubid = wc[0];
-            var orgs = Obtain<Map<short, Team>>();
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(group: 1);
+                h.TOOLBAR(group: 0b001001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid, itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(OrdStocked).T(" GROUP BY teamid, itemid");
-                    dc.Query(p => p.Set(hubid));
-                    while (dc.Next())
-                    {
-                        h.T("<form class=\"uk-card uk-card-default\">");
-                        h.MAIN_("uk-card-body");
-                        dc.Let(out short teamid).Let(out short itemid).Let(out string itemname).Let(out short qty).Let(out string unit);
-                        h.T(orgs[teamid]?.name).SP().T(itemname).T("：").T(qty).SP().T(unit);
-                        h._MAIN();
-                        h.TOOLS(group: 2, css: "uk-card-footer uk-flex-center");
-                        h.T("</form>");
-                    }
+                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" GROUP BY teamid, itemid");
+                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
+                    var a = arr.RollUp(x => x.no);
+                    h.BOARD(a, o =>
+                        {
+                            var team = Obtain<Map<short, Team>>()[o.Key];
+                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
+                            h.MAIN_("uk-card-body uk-flex");
+                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
+                            for (int i = 0; i < o.Count; i++)
+                            {
+                                var v = o[i];
+                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                            }
+                            h._UL();
+                            h._MAIN();
+                            h.VARTOOLS(group: 0b001001, css: "uk-card-footer uk-flex-between");
+                        }
+                    );
                 }
             });
-        }
-
-        [Ui("派运", group: 2), Tool(Anchor)]
-        public void send(WebContext wc, int page)
-        {
         }
 
         [Ui("派运", group: 1), Tool(Anchor)]
@@ -128,13 +156,27 @@ namespace Samp
             string hubid = wc[0];
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(group: 1);
+                h.TOOLBAR(group: 0b010001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdSent).T(" AND hubid = @1 ORDER BY id");
-                    var arr = dc.Query<Order>(p => p.Set(hubid));
-                    h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.SENT).T(" GROUP BY teamid, itemid");
+                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
+                    var a = arr.RollUp(x => x.no);
+                    h.BOARD(a, o =>
+                        {
+                            var team = Obtain<Map<short, Team>>()[o.Key];
+                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
+                            h.MAIN_("uk-card-body uk-flex");
+                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
+                            for (int i = 0; i < o.Count; i++)
+                            {
+                                var v = o[i];
+                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                            }
+                            h._UL();
+                            h._MAIN();
+                            h.VARTOOLS(group: 0b010001, css: "uk-card-footer uk-flex-between");
+                        }
                     );
                 }
             });
@@ -146,13 +188,27 @@ namespace Samp
             string hubid = wc[0];
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(group: 1);
+                h.TOOLBAR(group: 0b100001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdSent).T(" AND hubid = @1 ORDER BY id");
-                    var arr = dc.Query<Order>(p => p.Set(hubid));
-                    h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" GROUP BY teamid, itemid");
+                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
+                    var a = arr.RollUp(x => x.no);
+                    h.BOARD(a, o =>
+                        {
+                            var team = Obtain<Map<short, Team>>()[o.Key];
+                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
+                            h.MAIN_("uk-card-body uk-flex");
+                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
+                            for (int i = 0; i < o.Count; i++)
+                            {
+                                var v = o[i];
+                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                            }
+                            h._UL();
+                            h._MAIN();
+                            h.VARTOOLS(group: 0b100001, css: "uk-card-footer uk-flex-between");
+                        }
                     );
                 }
             });
@@ -178,11 +234,36 @@ namespace Samp
                     {
                         h.TOOLBAR(title: tel);
                         h.TABLE(arr, null,
-                            o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                            o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                         );
                     });
                 }
             }
+        }
+
+        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b000011), Tool(ButtonPickOpen)]
+        public void agg(WebContext wc)
+        {
+        }
+
+        [Ui(icon: "hashtag", tip: "汇总被选工坊订单", group: 0b000101), Tool(ButtonPickOpen)]
+        public void aggaccepted(WebContext wc)
+        {
+        }
+
+        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b001001), Tool(ButtonPickOpen)]
+        public void aggstocked(WebContext wc)
+        {
+        }
+
+        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b010001), Tool(ButtonPickOpen)]
+        public void aggsent(WebContext wc)
+        {
+        }
+
+        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b100001), Tool(ButtonPickOpen)]
+        public void aggreceived(WebContext wc)
+        {
         }
     }
 
@@ -207,7 +288,7 @@ namespace Samp
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(OrdPaid).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @2) GROUP BY itemid");
+                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(Order.PAID).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @2) GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                     while (dc.Next())
                     {
@@ -233,7 +314,7 @@ namespace Samp
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(OrdAccepted).T(" AND shopid = @2 GROUP BY itemid");
+                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status =").T(Order.ACCEPTED).T(" AND shopid = @2 GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                     while (dc.Next())
                     {
@@ -259,7 +340,7 @@ namespace Samp
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status BETWEEN ").T(OrdStocked).T(" AND ").T(OrdReceived).T(" AND shopid = @2 GROUP BY itemid");
+                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status BETWEEN ").T(Order.STOCKED).T(" AND ").T(Order.RECEIVED).T(" AND shopid = @2 GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                     while (dc.Next())
                     {
@@ -285,7 +366,7 @@ namespace Samp
                 h.TOOLBAR(group: 1);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status BETWEEN ").T(OrdStocked).T(" AND ").T(OrdReceived).T(" AND shopid = @2 GROUP BY itemid");
+                    dc.Sql("SELECT itemid, last(itemname), sum(qty), last(unit) FROM orders WHERE hubid = @1 AND status BETWEEN ").T(Order.STOCKED).T(" AND ").T(Order.RECEIVED).T(" AND shopid = @2 GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                     while (dc.Next())
                     {
@@ -311,7 +392,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, array_agg(id), array_agg(qty) FROM orders WHERE hubid = @1 AND status =").T(OrdPaid).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @2) GROUP BY itemid");
+                    dc.Sql("SELECT itemid, array_agg(id), array_agg(qty) FROM orders WHERE hubid = @1 AND status =").T(Order.PAID).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @2) GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                 }
                 wc.GivePage(200, h =>
@@ -327,7 +408,7 @@ namespace Samp
                 int maxid = f[nameof(maxid)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET giver = @1, given = localtimestamp(), status = ").T(OrdAccepted).T("@1 WHERE id <= @3 AND hubid = @1 AND status = ").T(OrdPaid);
+                    dc.Sql("UPDATE orders SET giver = @1, given = localtimestamp(), status = ").T(Order.ACCEPTED).T("@1 WHERE id <= @3 AND hubid = @1 AND status = ").T(Order.PAID);
                     dc.Execute(p => p.Set(maxid));
                 }
                 wc.GiveRedirect();
@@ -344,7 +425,7 @@ namespace Samp
             {
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT itemid, array_agg(id), array_agg(qty) FROM orders WHERE hubid = @1 AND status =").T(OrdPaid).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @2) GROUP BY itemid");
+                    dc.Sql("SELECT itemid, array_agg(id), array_agg(qty) FROM orders WHERE hubid = @1 AND status =").T(Order.PAID).T(" AND itemid IN (SELECT id FROM items WHERE shopid = @2) GROUP BY itemid");
                     dc.Query(p => p.Set(hubid).Set(orgid));
                 }
                 wc.GivePage(200, h =>
@@ -360,7 +441,7 @@ namespace Samp
                 int maxid = f[nameof(maxid)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET giver = @1, given = localtimestamp(), status = ").T(OrdAccepted).T("@1 WHERE id <= @3 AND hubid = @1 AND status = ").T(OrdPaid);
+                    dc.Sql("UPDATE orders SET giver = @1, given = localtimestamp(), status = ").T(Order.ACCEPTED).T("@1 WHERE id <= @3 AND hubid = @1 AND status = ").T(Order.PAID);
                     dc.Execute(p => p.Set(maxid));
                 }
                 wc.GiveRedirect();
@@ -385,7 +466,7 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status BETWEEN ").T(OrdPaid).T(" AND ").T(OrdAccepted).T(" AND teamid = @1 ORDER BY id");
+                    dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE status BETWEEN ").T(Order.PAID).T(" AND ").T(Order.ACCEPTED).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(teamid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
@@ -403,7 +484,7 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdStocked).T(" AND teamid = @1 ORDER BY id");
+                    dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE status = ").T(Order.STOCKED).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(orgid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
@@ -421,10 +502,10 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE status = ").T(OrdSent).T(" AND teamid = @1 ORDER BY id");
+                    dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE status = ").T(Order.SENT).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(orgid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                        o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                     );
                 }
             });
@@ -440,7 +521,7 @@ namespace Samp
                 h.TOOLBAR();
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT ").collst(Empty).T(" FROM orders WHERE hubid = @1 AND status = ").T(OrdReceived).T(" AND teamid = @2 ORDER BY id");
+                    dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" AND teamid = @2 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
                     h.TABLE(arr, null,
                         o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
@@ -469,7 +550,7 @@ namespace Samp
                     {
                         h.TOOLBAR(title: tel);
                         h.TABLE(arr, null,
-                            o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Statuses[o.status])
+                            o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                         );
                     });
                 }

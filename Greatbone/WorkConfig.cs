@@ -34,7 +34,7 @@ namespace Greatbone
         public string Path { get; internal set; }
 
         // to resolve from the principal object.
-        public Func<IData, object> Principalet { get; internal set; }
+        public Func<IData, object> Accessor { get; internal set; }
 
         public string GetFilePath(string file)
         {

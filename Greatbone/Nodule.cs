@@ -26,7 +26,7 @@ namespace Greatbone
 
         internal readonly AuthorizeException except;
 
-        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthorizeAttribute access = null)
+        internal Nodule(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthorizeAttribute authorize = null)
         {
             this.name = name ?? throw new ServiceException("null nodule name");
             this.lower = name.ToLower();
@@ -47,19 +47,19 @@ namespace Greatbone
             tip = ui?.Tip ?? label;
             group = ui?.Group ?? 0;
 
-            if (access == null)
+            if (authorize == null)
             {
                 var aas = (AuthorizeAttribute[]) attrp.GetCustomAttributes(typeof(AuthorizeAttribute), true);
                 if (aas.Length > 0)
                 {
-                    access = aas[0];
+                    authorize = aas[0];
                 }
             }
-            if (access != null)
+            if (authorize != null)
             {
-                this.authorize = access;
-                except = new AuthorizeException(access);
+                this.authorize = authorize;
             }
+            except = new AuthorizeException(this, authorize);
         }
 
         public virtual string Key => name;

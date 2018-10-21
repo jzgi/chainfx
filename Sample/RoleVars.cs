@@ -5,6 +5,7 @@ using static Samp.User;
 
 namespace Samp
 {
+    [UserAuthorize]
     public class MyVarWork : Work
     {
         public MyVarWork(WorkConfig cfg) : base(cfg)
@@ -23,7 +24,7 @@ namespace Samp
             {
                 h.DIV_(css: "uk-card- uk-card-primary");
                 h.UL_(css: "uk-card-body");
-                h.LI_().FI("用户名称", o.name)._LI();
+                h.LI_().FI("真实姓名", o.name)._LI();
                 h.LI_().FI("手　　机", o.tel)._LI();
                 h.LI_().FI("参　　团", orgs[o.teamid]?.name)._LI();
                 h.LI_().FI("送货地址", o.addr)._LI();
@@ -33,7 +34,7 @@ namespace Samp
 
                 h.DIV_(css: "uk-card- uk-card-primary uk-card-body");
                 h.QRCODE("http://144000.tv/nc/catch-3?teamid=" + o.teamid);
-                h.DIV_(css: "uk-card-footer uk-flex-center").T("推荐码")._DIV();
+                h.DIV_(css: "uk-card-footer uk-flex-center").T("团推荐码")._DIV();
                 h._DIV();
             }, title: "我的设置");
         }
@@ -65,7 +66,7 @@ namespace Samp
                     {
                         h.FORM_();
                         h.FIELDUL_("用户基本信息");
-                        h.LI_().TEXT("用户名称", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
+                        h.LI_().TEXT("真实姓名", nameof(o.name), o.name, max: 4, min: 2, required: true)._LI();
                         h.LI_().TEXT("手　　机", nameof(o.tel), prin.tel, pattern: "[0-9]+", max: 11, min: 11, required: true)._LI();
                         h.LI_().SELECT("参　　团", nameof(o.teamid), prin.teamid, orgs, filter: x => x.hubid == hubid)._LI();
                         h.LI_().TEXT("上门地址", nameof(o.addr), prin.addr, max: 20, min: 2, required: true)._LI();

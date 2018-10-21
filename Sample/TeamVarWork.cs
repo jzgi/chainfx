@@ -74,9 +74,9 @@ namespace Samp
                     {
                         using (var dc = NewDbContext())
                         {
-                            if (dc.Query1("SELECT tel, name, wx, teamat, teamly FROM users WHERE tel = @1", p => p.Set(forid)))
+                            if (dc.Query1("SELECT tel, name, wx, teamid, teamly FROM users WHERE tel = @1", p => p.Set(forid)))
                             {
-                                dc.Let(out string tel).Let(out string name).Let(out string wx).Let(out string teamat).Let(out string teamly);
+                                dc.Let(out string tel).Let(out string name).Let(out string wx).Let(out string teamid).Let(out string teamly);
                                 m.FIELDUL_("设置");
                                 m.RADIO(nameof(tel_name_wx), tel + " " + name + " " + wx, tel + " " + name);
                                 m._FIELDUL();
@@ -94,7 +94,7 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     dc.Execute(@"UPDATE orgs SET mgrtel = @1, mgrname = @2, mgrwx = @3 WHERE id = @4; 
-                        UPDATE users SET teamly = 7, teamat = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
+                        UPDATE users SET teamly = 7, teamid = @4 WHERE wx = @1;", p => p.Set(wx).Set(tel).Set(name).Set(orgid));
                 }
                 wc.GivePane(200);
             }
