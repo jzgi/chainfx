@@ -52,8 +52,6 @@ namespace Samp
             MakeVar<HubOrderVarWork>();
         }
 
-        const int PageSiz = 30;
-
         [Ui("排队", group: 1), Tool(Anchor)]
         public void @default(WebContext wc, int page)
         {
@@ -63,9 +61,9 @@ namespace Samp
                 h.TOOLBAR(group: 0b000011);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.PAID).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.PAID).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var rolls = arr.RollUp(x => x.no);
+                    var rolls = arr.RollUp(x => (x.no, x.cash));
                     h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
@@ -75,7 +73,7 @@ namespace Samp
                             for (int i = 0; i < o.Count; i++)
                             {
                                 var v = o[i];
-                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                                h.LI_().T(v.item).SP().T(v.qty)._LI();
                             }
                             h._UL();
                             h._MAIN();
@@ -95,10 +93,10 @@ namespace Samp
                 h.TOOLBAR(group: 0b000101);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT shopid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" GROUP BY shopid, itemid");
+                    dc.Sql("SELECT shopid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(accepter) AS oprs FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" GROUP BY shopid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var a = arr.RollUp(x => x.no);
-                    h.BOARD(a, o =>
+                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    h.BOARD(rolls, o =>
                         {
                             var shop = Obtain<Map<short, Shop>>()[o.Key];
                             h.HEADER_("uk-card-header").T("<span uk-icon=\"cog\"></span>&nbsp;").T(shop.name)._HEADER();
@@ -107,7 +105,7 @@ namespace Samp
                             for (int i = 0; i < o.Count; i++)
                             {
                                 var v = o[i];
-                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                                h.LI_().T(v.item).SP().T(v.qty)._LI();
                             }
                             h._UL();
                             h._MAIN();
@@ -127,10 +125,10 @@ namespace Samp
                 h.TOOLBAR(group: 0b001001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var a = arr.RollUp(x => x.no);
-                    h.BOARD(a, o =>
+                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
                             h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
@@ -139,7 +137,7 @@ namespace Samp
                             for (int i = 0; i < o.Count; i++)
                             {
                                 var v = o[i];
-                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                                h.LI_().T(v.item).SP().T(v.qty)._LI();
                             }
                             h._UL();
                             h._MAIN();
@@ -159,10 +157,10 @@ namespace Samp
                 h.TOOLBAR(group: 0b010001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.SENT).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.SENT).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var a = arr.RollUp(x => x.no);
-                    h.BOARD(a, o =>
+                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
                             h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
@@ -171,7 +169,7 @@ namespace Samp
                             for (int i = 0; i < o.Count; i++)
                             {
                                 var v = o[i];
-                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                                h.LI_().T(v.item).SP().T(v.qty)._LI();
                             }
                             h._UL();
                             h._MAIN();
@@ -191,10 +189,10 @@ namespace Samp
                 h.TOOLBAR(group: 0b100001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(itemname) AS itemname, sum(qty) AS qty FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var a = arr.RollUp(x => x.no);
-                    h.BOARD(a, o =>
+                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
                             h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
@@ -203,7 +201,7 @@ namespace Samp
                             for (int i = 0; i < o.Count; i++)
                             {
                                 var v = o[i];
-                                h.LI_().T(v.itemname).SP().T(v.qty)._LI();
+                                h.LI_().T(v.item).SP().T(v.qty)._LI();
                             }
                             h._UL();
                             h._MAIN();
@@ -232,7 +230,7 @@ namespace Samp
                     var arr = dc.Query<Order>("SELECT * FROM orders WHERE status BETWEEN 1 AND 4 AND utel = @1", p => p.Set(tel));
                     wc.GivePage(200, h =>
                     {
-                        h.TOOLBAR(title: tel);
+                        h.TOOLBAR(group: 1);
                         h.TABLE(arr, null,
                             o => h.TD(o.utel, o.uname).TD(o.itemname).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                         );

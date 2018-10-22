@@ -14,7 +14,7 @@ namespace Greatbone
 
         readonly string tip;
 
-        readonly byte @group;
+        readonly byte group;
 
         public UiAttribute(string label = null, string icon = null, string tip = null, byte group = 0)
         {
@@ -31,7 +31,7 @@ namespace Greatbone
         public string Tip => tip;
 
         /// <summary>
-        /// A sorting number that refers to a particular functionality.
+        /// A sorting number that indicates a particular set of functions.
         /// </summary>
         public byte Group => group;
     }

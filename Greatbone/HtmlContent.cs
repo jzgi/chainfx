@@ -1322,7 +1322,7 @@ namespace Greatbone
                 {
                     var act = acts[i];
                     int g = act.Group;
-                    if (g == 0 || (g & group) > 0)
+                    if (g == 0 || (g & group) == g)
                     {
                         if (g != curg)
                         {
