@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Microsoft.Extensions.Primitives;
 
 namespace Greatbone
 {
@@ -8,20 +9,51 @@ namespace Greatbone
     /// </summary>
     public abstract class TagAttribute : Attribute
     {
+        private const string CRLF = "\r\n";
+
         internal abstract void Print(HtmlContent h);
 
-        internal string Preprocess(string v)
+        internal static string Preprocess(string v)
         {
+            if (v == null) return null;
+
+            string[] arr = v.Split(CRLF);
+            int count = arr.Length;
+
             StringBuilder sb = new StringBuilder(v.Length);
-            int line = 0;
-            for (int i = 0; i < v.Length; i++)
+            if (count > 1)
             {
-                char c = v[i];
-                if (c == '\n')
+                // add first line
+                sb.Append(arr[0].TrimStart());
+            }
+
+            // calculate spaces to be removed for each next line
+            int spaces = 0;
+            if (count > 2)
+            {
+                string sec = arr[1];
+                int seclen = sec.Length;
+                int p = 0;
+                while (p < seclen && char.IsWhiteSpace(sec[p])) p++;
+                spaces = p - 4;
+            }
+
+            // add rest of the lines
+            for (int i = 1; i < count; i++)
+            {
+                var e = arr[i];
+                int elen = e.Length;
+                sb.Append(CRLF);
+                if (spaces > 0 && spaces < elen)
                 {
-                    line++;
+                    sb.Append(e, spaces, e.Length - spaces);
+                }
+                else
+                {
+                    sb.Append(e);
                 }
             }
+
             return sb.ToString();
         }
     }

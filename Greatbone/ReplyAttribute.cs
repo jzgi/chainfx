@@ -6,7 +6,7 @@ namespace Greatbone
     /// To document the response returned by the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class ResultAttribute : TagAttribute
+    public class ReplyAttribute : TagAttribute
     {
         readonly short status;
 
@@ -16,18 +16,18 @@ namespace Greatbone
 
         readonly string body;
 
-        public ResultAttribute(short status, string tip = null, string headers = null, string body = null)
+        public ReplyAttribute(short status, string tip = null, string headers = null, string body = null)
         {
             this.status = status;
             this.tip = tip;
-            this.headers = headers;
-            this.body = body;
+            this.headers = Preprocess(headers);
+            this.body = Preprocess(body);
         }
 
         internal override void Print(HtmlContent h)
         {
             h.P_();
-            h.T("RESULT:").SP().T(status).SP().T(tip);
+            h.T(status).SP().T(tip);
             if (headers != null)
             {
                 h.T("<pre>").T(headers).T("</pre>");

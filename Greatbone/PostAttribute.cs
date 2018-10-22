@@ -18,9 +18,9 @@ namespace Greatbone
 
         public PostAttribute(string tip = null, string query = null, string headers = null, string body = null)
         {
-            this.query = query;
-            this.headers = headers;
-            this.body = body;
+            this.query = Preprocess(query);
+            this.headers = Preprocess(headers);
+            this.body = Preprocess(body);
             this.tip = tip;
         }
 

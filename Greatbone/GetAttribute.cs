@@ -16,8 +16,8 @@ namespace Greatbone
 
         public GetAttribute(string tip = null, string query = null, string headers = null)
         {
-            this.query = query;
-            this.headers = headers;
+            this.query = Preprocess(query);
+            this.headers = Preprocess(headers);
             this.tip = tip;
         }
 
