@@ -206,16 +206,16 @@ namespace Greatbone
 
         public V[] All(Predicate<V> cond = null)
         {
-            ValueList<V> vlist = new ValueList<V>(16);
+            ValueList<V> list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
                 V v = entries[i].value;
                 if (cond == null || cond(v))
                 {
-                    vlist.Add(v);
+                    list.Add(v);
                 }
             }
-            return vlist.ToArray();
+            return list.ToArray();
         }
 
         public V Find(Predicate<V> cond = null)

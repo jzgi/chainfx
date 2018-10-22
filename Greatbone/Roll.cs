@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using static System.Linq.Expressions.Expression;
 
@@ -82,7 +81,7 @@ namespace Greatbone
         {
             if (array == null) return null;
 
-            List<Roll<K, V, N>> list = new List<Roll<K, V, N>>();
+            var list = new ValueList<Roll<K, V, N>>();
             Roll<K, V, N> roll = null;
             for (int i = 0; i < array.Length; i++)
             {

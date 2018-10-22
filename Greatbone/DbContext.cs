@@ -523,14 +523,14 @@ namespace Greatbone
 
         public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
         {
-            ValueList<D> vlist = new ValueList<D>(32);
+            ValueList<D> list = new ValueList<D>(32);
             while (Next())
             {
                 D obj = new D();
                 obj.Read(this, proj);
-                vlist.Add(obj);
+                list.Add(obj);
             }
-            return vlist.ToArray();
+            return list.ToArray();
         }
 
         public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null) where D : IData, new()
@@ -1548,6 +1548,12 @@ namespace Greatbone
         }
 
         public IParams Set(bool v)
+        {
+            Put(PARAMS[index++], v);
+            return this;
+        }
+
+        public IParams Set(char v)
         {
             Put(PARAMS[index++], v);
             return this;

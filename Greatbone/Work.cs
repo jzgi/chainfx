@@ -92,16 +92,16 @@ namespace Greatbone
                 if (actr.Tool?.MustPick == true) pick = true;
             }
             // gather tooled action methods
-            ValueList<Actioner> vlist = new ValueList<Actioner>(16);
+            var list = new ValueList<Actioner>(16);
             for (int i = 0; i < actioners.Count; i++)
             {
                 Actioner actr = actioners[i];
                 if (actr.HasTool)
                 {
-                    vlist.Add(actr);
+                    list.Add(actr);
                 }
             }
-            tooled = vlist.ToArray();
+            tooled = list.ToArray();
 
             if (tooled != null) // sort by group
             {

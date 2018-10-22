@@ -11,6 +11,8 @@ namespace Greatbone
 
         IParams Set(bool v);
 
+        IParams Set(char v);
+
         IParams Set(short v);
 
         IParams Set(int v);
