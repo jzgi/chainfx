@@ -1,35 +1,27 @@
 using System;
-using System.Linq.Expressions;
-using static System.Linq.Expressions.Expression;
 
 namespace Greatbone
 {
-    public class Roll<K, V, N> : IKeyable<K> where N : IEquatable<N>, IComparable<N>
+    public class Roll<K, V> : IKeyable<K>
     {
-        readonly int capacity;
-
-        readonly K key;
+        const int DefaultCap = 16;
 
         V[] array;
 
         int count;
 
-        N sum;
-
-        public Roll(K key, int capacity = 16)
+        public Roll()
         {
-            this.capacity = capacity;
-            this.key = key;
-            array = null;
-            count = 0;
         }
 
-        public void Add(V v, N num)
+        public K Key { get; internal set; }
+
+        protected internal virtual void Add(V v)
         {
             // ensure capacity
             if (array == null)
             {
-                array = new V[capacity];
+                array = new V[DefaultCap];
             }
             else
             {
@@ -42,66 +34,34 @@ namespace Greatbone
                 }
             }
             array[count++] = v;
-            // sum up the number
-            if (num.Equals(default))
-            {
-                sum = AddOp(sum, num);
-            }
         }
-
-        public K Key => key;
 
         public int Count => count;
 
         public V this[int idx] => array[idx];
-
-
-        // ReSharper disable once StaticMemberInGenericType
-        static Delegate addOp;
-
-        static T AddOp<T>(T a, T b)
-        {
-            // declare the parameters and the expression
-            var pa = Parameter(typeof(T), "a");
-            var pb = Parameter(typeof(T), "b");
-            var expr = Expression.Add(pa, pb);
-            // compile the expression
-            if (addOp == null)
-            {
-                addOp = Lambda<Func<T, T, T>>(expr, pa, pb).Compile();
-            }
-            return ((Func<T, T, T>) addOp)(a, b);
-        }
     }
 
     public static class RollUtility
     {
-        public static Roll<K, V, N>[] RollUp<K, V, N>(this V[] array, Func<V, (K, N)> keyer)
-            where N : IEquatable<N>, IComparable<N>
+        public static R[] RollUp<R, K, V>(this V[] array, Func<V, K> keyer) where R : Roll<K, V>, new()
         {
             if (array == null) return null;
 
-            var list = new ValueList<Roll<K, V, N>>();
-            Roll<K, V, N> roll = null;
+            var list = new ValueList<R>();
+            R cur = null; // current
             for (int i = 0; i < array.Length; i++)
             {
                 var v = array[i];
-                var ( key, num) = keyer(v);
-                if (roll == null)
+                var key = keyer(v);
+                if (cur != null && key.Equals(cur.Key))
                 {
-                    roll = new Roll<K, V, N>(key);
-                    list.Add(roll);
-                    roll.Add(v, num);
+                    cur.Add(v);
                 }
-                else if (key.Equals(roll.Key))
+                else // create a new roll
                 {
-                    roll.Add(v, num);
-                }
-                else // create a new sort
-                {
-                    roll = new Roll<K, V, N>(key);
-                    list.Add(roll);
-                    roll.Add(v, num);
+                    cur = new R {Key = key};
+                    cur.Add(v);
+                    list.Add(cur);
                 }
             }
             return list.ToArray();

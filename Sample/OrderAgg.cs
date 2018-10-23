@@ -2,6 +2,9 @@ using Greatbone;
 
 namespace Samp
 {
+    /// <summary>
+    /// A grouping by item.
+    /// </summary>
     public class OrderAgg : IData
     {
         // the meaning of no varies according to situations

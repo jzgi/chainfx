@@ -8,13 +8,15 @@ namespace Greatbone
     /// <typeparam name="T"></typeparam>
     public struct ValueList<T>
     {
+        const int DefaultCap = 16;
+
         readonly int capacity;
 
         T[] array;
 
         int count;
 
-        public ValueList(int capacity = 16)
+        public ValueList(int capacity = DefaultCap)
         {
             this.capacity = capacity;
             array = null;
@@ -30,7 +32,7 @@ namespace Greatbone
             // ensure capacity
             if (array == null)
             {
-                array = new T[capacity];
+                array = new T[capacity <= 0 ? DefaultCap : capacity];
             }
             else
             {

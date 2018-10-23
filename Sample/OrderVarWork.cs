@@ -60,7 +60,7 @@ namespace Samp
         {
         }
 
-        [Ui("明细", tip: "团组排队订单", group: 0b000011), Tool(ButtonOpen)]
+        [Ui(icon: "list", tip: "团组排队订单", group: 0b000011), Tool(ButtonOpen)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -73,7 +73,7 @@ namespace Samp
             }
         }
 
-        [Ui("明细", tip: "工坊备货订单", group: 0b000101), Tool(ButtonOpen)]
+        [Ui(icon: "list", tip: "工坊备货订单", group: 0b000101), Tool(ButtonOpen)]
         public void accepted(WebContext wc)
         {
             string hubid = wc[0];
@@ -86,20 +86,49 @@ namespace Samp
             }
         }
 
-        [Ui("中转", tip: "接收进入中转", group: 0b000100), Tool(ButtonOpen)]
-        public void stock(WebContext wc)
+        [Ui("接收", tip: "接收进入中转", group: 0b000100), Tool(ButtonShow)]
+        public async Task stock(WebContext wc)
         {
             string hubid = wc[0];
-            short teamid = wc[this];
-            using (var dc = NewDbContext())
+            short shopid = wc[this];
+            if (wc.IsGet)
             {
-                dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.PAID).T(" AND teamid = @2 ORDER BY id ASC");
-                var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
-                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.itemname); }); });
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("SELECT itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(DISTINCT accepter) AS oprs  FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @2 GROUP BY itemid");
+                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid).Set(shopid));
+                    wc.GivePane(200, h =>
+                    {
+                        h.FORM_();
+                        foreach (var o in arr)
+                        {
+                            h.T(o.item).SP();
+                        }
+                        h._FORM();
+                    });
+                }
+            }
+            else // POST
+            {
+                var f = await wc.ReadAsync<Form>();
+                int[] id = f[nameof(id)];
+                using (var dc = NewDbContext())
+                {
+                    dc.Sql("UPDATE orders SET stockerid = @1, stocker = @2, status = ").T(Order.STOCKED).T(" WHERE hubid = @3 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @4 AND ")._IN_(id);
+                    dc.Execute(prepare: false);
+                }
+                wc.GivePane(200);
             }
         }
 
-        [Ui("明细", tip: "团组订单", group: 0b001001), Tool(ButtonOpen)]
+        [Ui("回退", tip: "团组订单", group: 0b001000), Tool(ButtonOpen)]
+        public void unstock(WebContext wc)
+        {
+            string hubid = wc[0];
+            short teamid = wc[this];
+        }
+
+        [Ui(icon: "list", tip: "团组订单", group: 0b001001), Tool(ButtonOpen)]
         public void stocked(WebContext wc)
         {
             string hubid = wc[0];
@@ -112,13 +141,6 @@ namespace Samp
             }
         }
 
-        [Ui("倒回", tip: "团组订单", group: 0b001000), Tool(ButtonOpen)]
-        public void unstock(WebContext wc)
-        {
-            string hubid = wc[0];
-            short teamid = wc[this];
-        }
-
         [Ui("派运", tip: "团组订单", group: 0b001000), Tool(ButtonOpen)]
         public void send(WebContext wc)
         {
@@ -126,7 +148,7 @@ namespace Samp
             short teamid = wc[this];
         }
 
-        [Ui("明细", tip: "团组订单", group: 0b010001), Tool(ButtonOpen)]
+        [Ui(icon: "list", tip: "团组订单", group: 0b010001), Tool(ButtonOpen)]
         public void sent(WebContext wc)
         {
             string hubid = wc[0];
@@ -146,7 +168,7 @@ namespace Samp
             short teamid = wc[this];
         }
 
-        [Ui("详细", tip: "团组订单", group: 0b100001), Tool(ButtonOpen)]
+        [Ui(icon: "list", tip: "团组订单", group: 0b100001), Tool(ButtonOpen)]
         public void received(WebContext wc)
         {
             string hubid = wc[0];

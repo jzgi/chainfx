@@ -2,13 +2,6 @@
 
 namespace Samp
 {
-    /// <summary>
-    /// For easy sharing code between works.
-    /// </summary>
-    public interface IOrgVar
-    {
-    }
-
     public class ServerMain : ServiceUtility
     {
         /// <summary>

@@ -291,8 +291,9 @@ namespace Greatbone
                 var a = actioners[i];
                 if (a.Comments != null)
                 {
-                    hc.T("<article style=\"border: 1px solid silver; padding: 4px;\">");
+                    hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
                     hc.H3_().T(Path).T(a.Key)._H3();
+                    hc.HR();
                     for (int k = 0; k < a.Comments.Count; k++)
                     {
                         var c = a.Comments[k];

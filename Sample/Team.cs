@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// A customer team data object.
     /// </summary>
-    public class Team : IData, IKeyable<short>
+    public class Team : IData, IKeyable<short>, IOrg
     {
         public static readonly Team Empty = new Team();
 
@@ -69,6 +69,8 @@ namespace Samp
         }
 
         public short Key => id;
+
+        public string Name => name;
 
         public override string ToString() => name;
     }

@@ -52,6 +52,24 @@ namespace Samp
             MakeVar<HubOrderVarWork>();
         }
 
+        static void PutRoll(HtmlContent h, OrderRoll o, IOrg org, byte vargrp)
+        {
+            h.HEADER_("uk-card-header");
+            h.T("<span uk-icon=\"").T(org is Team ? "users" : "cog").T("\"></span>&nbsp;").T(org.Name);
+            h.DIV_(css: "uk-badge").T(o.Oprs)._DIV();
+            h._HEADER();
+            h.MAIN_("uk-card-body uk-flex");
+            h.UL_(css: "uk-child-width-1-2 uk-grid1");
+            for (int i = 0; i < o.Count; i++)
+            {
+                var v = o[i];
+                h.LI_().T(v.item).SP().T(v.qty)._LI();
+            }
+            h._UL();
+            h._MAIN();
+            h.VARTOOLS(group: vargrp, css: "uk-card-footer uk-flex-between");
+        }
+
         [Ui("排队", group: 1), Tool(Anchor)]
         public void @default(WebContext wc, int page)
         {
@@ -63,25 +81,15 @@ namespace Samp
                 {
                     dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.PAID).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    var rolls = arr.RollUp<OrderRoll, short, OrderAgg>(x => x.no);
                     h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
-                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
-                            h.MAIN_("uk-card-body uk-flex");
-                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
-                            for (int i = 0; i < o.Count; i++)
-                            {
-                                var v = o[i];
-                                h.LI_().T(v.item).SP().T(v.qty)._LI();
-                            }
-                            h._UL();
-                            h._MAIN();
-                            h.VARTOOLS(group: 0b000011, css: "uk-card-footer uk-flex-between");
+                            PutRoll(h, o, team, 0b000011);
                         }
                     );
                 }
-            });
+            }, false, 3, refresh: 300);
         }
 
         [Ui("备货", group: 1), Tool(Anchor)]
@@ -93,23 +101,13 @@ namespace Samp
                 h.TOOLBAR(group: 0b000101);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT shopid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(accepter) AS oprs FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" GROUP BY shopid, itemid");
+                    dc.Sql("SELECT shopid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(DISTINCT accepter) AS oprs FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" GROUP BY shopid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    var rolls = arr.RollUp<OrderRoll, short, OrderAgg>(x => x.no);
                     h.BOARD(rolls, o =>
                         {
                             var shop = Obtain<Map<short, Shop>>()[o.Key];
-                            h.HEADER_("uk-card-header").T("<span uk-icon=\"cog\"></span>&nbsp;").T(shop.name)._HEADER();
-                            h.MAIN_("uk-card-body uk-flex");
-                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
-                            for (int i = 0; i < o.Count; i++)
-                            {
-                                var v = o[i];
-                                h.LI_().T(v.item).SP().T(v.qty)._LI();
-                            }
-                            h._UL();
-                            h._MAIN();
-                            h.VARTOOLS(group: 0b000101, css: "uk-card-footer uk-flex-between");
+                            PutRoll(h, o, shop, 0b000101);
                         }
                     );
                 }
@@ -125,23 +123,13 @@ namespace Samp
                 h.TOOLBAR(group: 0b001001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(DISTINCT stocker) AS oprs FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    var rolls = arr.RollUp<OrderRoll, short, OrderAgg>(x => x.no);
                     h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
-                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
-                            h.MAIN_("uk-card-body uk-flex");
-                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
-                            for (int i = 0; i < o.Count; i++)
-                            {
-                                var v = o[i];
-                                h.LI_().T(v.item).SP().T(v.qty)._LI();
-                            }
-                            h._UL();
-                            h._MAIN();
-                            h.VARTOOLS(group: 0b001001, css: "uk-card-footer uk-flex-between");
+                            PutRoll(h, o, team, 0b001001);
                         }
                     );
                 }
@@ -157,23 +145,13 @@ namespace Samp
                 h.TOOLBAR(group: 0b010001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.SENT).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(DISTINCT sender) AS oprs FROM orders WHERE hubid = @1 AND status = ").T(Order.SENT).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    var rolls = arr.RollUp<OrderRoll, short, OrderAgg>(x => x.no);
                     h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
-                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
-                            h.MAIN_("uk-card-body uk-flex");
-                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
-                            for (int i = 0; i < o.Count; i++)
-                            {
-                                var v = o[i];
-                                h.LI_().T(v.item).SP().T(v.qty)._LI();
-                            }
-                            h._UL();
-                            h._MAIN();
-                            h.VARTOOLS(group: 0b010001, css: "uk-card-footer uk-flex-between");
+                            PutRoll(h, o, team, 0b010001);
                         }
                     );
                 }
@@ -189,23 +167,13 @@ namespace Samp
                 h.TOOLBAR(group: 0b100001);
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" GROUP BY teamid, itemid");
+                    dc.Sql("SELECT teamid AS no, itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(DISTINCT receiver) AS oprs FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" GROUP BY teamid, itemid");
                     var arr = dc.Query<OrderAgg>(p => p.Set(hubid));
-                    var rolls = arr.RollUp(x => (x.no, x.cash));
+                    var rolls = arr.RollUp<OrderRoll, short, OrderAgg>(x => x.no);
                     h.BOARD(rolls, o =>
                         {
                             var team = Obtain<Map<short, Team>>()[o.Key];
-                            h.HEADER_("uk-card-header").T("<span uk-icon=\"users\"></span>&nbsp;").T(team.name)._HEADER();
-                            h.MAIN_("uk-card-body uk-flex");
-                            h.UL_(css: "uk-width-4-5 uk-padding-small-left");
-                            for (int i = 0; i < o.Count; i++)
-                            {
-                                var v = o[i];
-                                h.LI_().T(v.item).SP().T(v.qty)._LI();
-                            }
-                            h._UL();
-                            h._MAIN();
-                            h.VARTOOLS(group: 0b100001, css: "uk-card-footer uk-flex-between");
+                            PutRoll(h, o, team, 0b100001);
                         }
                     );
                 }
@@ -239,27 +207,27 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b000011), Tool(ButtonPickOpen)]
+        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b000011), Tool(ButtonPickOpen)]
         public void agg(WebContext wc)
         {
         }
 
-        [Ui(icon: "hashtag", tip: "汇总被选工坊订单", group: 0b000101), Tool(ButtonPickOpen)]
+        [Ui(icon: "plus", tip: "汇总被选工坊订单", group: 0b000101), Tool(ButtonPickOpen)]
         public void aggaccepted(WebContext wc)
         {
         }
 
-        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b001001), Tool(ButtonPickOpen)]
+        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b001001), Tool(ButtonPickOpen)]
         public void aggstocked(WebContext wc)
         {
         }
 
-        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b010001), Tool(ButtonPickOpen)]
+        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b010001), Tool(ButtonPickOpen)]
         public void aggsent(WebContext wc)
         {
         }
 
-        [Ui(icon: "hashtag", tip: "汇总被选团组订单", group: 0b100001), Tool(ButtonPickOpen)]
+        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b100001), Tool(ButtonPickOpen)]
         public void aggreceived(WebContext wc)
         {
         }

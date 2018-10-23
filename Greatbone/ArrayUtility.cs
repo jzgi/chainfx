@@ -44,6 +44,54 @@ namespace Greatbone
             return alloc;
         }
 
+        public static E[] MergeOf<E>(this E[] arr, params E[] v) where E : IEquatable<E>
+        {
+            if (arr == null || arr.Length == 0)
+            {
+                return v;
+            }
+            int len = arr.Length;
+            int vlen = v.Length;
+
+            ValueList<E> lst = new ValueList<E>();
+            for (int i = 0; i < vlen; i++) // out loop
+            {
+                var t = v[i];
+                if (t == null) continue;
+
+                bool dup = false; // found duplicate
+                for (int k = 0; k < len; k++) // match among arr elements
+                {
+                    var a = arr[k];
+                    if (a == null) continue;
+
+                    if (a.Equals(t))
+                    {
+                        dup = true;
+                        break;
+                    }
+                }
+                if (!dup)
+                {
+                    lst.Add(t);
+                }
+            }
+
+            int count = lst.Count;
+            if (count > 0)
+            {
+                E[] alloc = new E[len + count];
+                Array.Copy(arr, alloc, len);
+                // copy new elements
+                for (int i = 0; i < count; i++)
+                {
+                    alloc[len + i] = lst[i];
+                }
+                return alloc;
+            }
+            return arr;
+        }
+
         public static E[] RemovedOf<E>(this E[] arr, int index)
         {
             if (arr == null) return null;

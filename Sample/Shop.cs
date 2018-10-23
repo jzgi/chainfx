@@ -5,7 +5,7 @@ namespace Samp
     /// <summary>
     /// An organizational unit such as a virtual shop / workshop, or a customer team.
     /// </summary>
-    public class Shop : IData, IKeyable<short>
+    public class Shop : IData, IKeyable<short>, IOrg
     {
         public static readonly Team Empty = new Team();
 
@@ -69,6 +69,8 @@ namespace Samp
         }
 
         public short Key => id;
+
+        public string Name => name;
 
         public override string ToString() => name;
     }
