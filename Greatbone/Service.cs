@@ -29,8 +29,7 @@ namespace Greatbone
         // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 
-        // the regular web pollers
-        List<Poller> pollers;
+        List<Client> polls;
 
         // the polling schesuler thread
         Thread scheduler;
@@ -116,8 +115,6 @@ namespace Greatbone
         public override string Key => key;
 
         public Map<string, Client> Clients => clients;
-
-        public List<Poller> Subscribes => pollers;
 
         public string Describe()
         {
@@ -226,7 +223,7 @@ namespace Greatbone
             }
 
             // create and start the scheduler thead
-            if (pollers != null)
+            if (polls != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -234,14 +231,14 @@ namespace Greatbone
                     while (!token.IsCancellationRequested)
                     {
                         // interval
-                        Thread.Sleep(5000);
+                        Thread.Sleep(1000);
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < pollers.Count; i++)
+                        for (int i = 0; i < polls.Count; i++)
                         {
-                            var poller = pollers[i];
-                            poller.TryPoll(tick);
+                            var cli = polls[i];
+                            cli.TryPoll(tick);
                         }
                     }
                 });
@@ -249,22 +246,29 @@ namespace Greatbone
             }
         }
 
-        public void Poll(string svc, Action<WebContext> consumer)
+        public void Subscribe(string svcname, Action<IEventContext> poller, short interval = 12)
         {
             if (clients == null)
             {
-                throw new ServiceException("no client configured");
+                throw new ServiceException("webconfig missing refs");
             }
-            if (pollers == null)
+            // setup context for each designated client
+            int match = 0;
+            for (int i = 0; i < clients.Count; i++)
             {
-                pollers = new List<Poller>(4);
+                var cli = clients[i];
+                if (cli.Key == svcname)
+                {
+                    cli.SetPoller(poller, interval);
+                    if (polls == null) polls = new List<Client>();
+                    polls.Add(cli);
+                    match++;
+                }
             }
-            var poller = new Poller(svc, consumer);
-            if (poller.Refs.Count == 0)
+            if (match == 0)
             {
-                throw new ServiceException("no client configured for keySpec: " + svc);
+                throw new ServiceException("webconfig refs missing " + svcname);
             }
-            pollers.Add(poller);
         }
 
         internal Client GetRef(string peerId)

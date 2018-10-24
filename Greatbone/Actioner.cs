@@ -85,9 +85,10 @@ namespace Greatbone
 
             // resolve the action pathing
             StringBuilder sb = new StringBuilder(work.Pathing);
+            sb.Append(Key);
             if (HasSubscript)
             {
-                sb.Append('-').Append('_').Append(subscript).Append('_');
+                sb.Append('-').Append('<').Append(subscript).Append('>');
             }
             pathing = sb.ToString();
         }

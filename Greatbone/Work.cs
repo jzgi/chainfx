@@ -17,7 +17,7 @@ namespace Greatbone
         // max nesting levels
         const int MaxNesting = 8;
 
-        const string _VAR_ = "_var_";
+        const string VarDir = "_var_", VarPathing = "<var>";
 
         protected readonly WorkConfig cfg;
 
@@ -139,7 +139,7 @@ namespace Greatbone
 
         public string GetFilePath(string file)
         {
-            return System.IO.Path.Combine(Directory, file);
+            return Path.Combine(Directory, file);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Greatbone
                 throw new ServiceException(typ + " need public and WorkConfig");
             }
 
-            WorkConfig config = new WorkConfig(_VAR_)
+            WorkConfig config = new WorkConfig(VarDir)
             {
                 Ui = ui,
                 Authorize = auth,
@@ -174,8 +174,8 @@ namespace Greatbone
                 Parent = this,
                 Level = Level + 1,
                 IsVar = true,
-                Directory = (Parent == null) ? _VAR_ : System.IO.Path.Combine(Parent.Directory, _VAR_),
-                Pathing = Pathing + (accessor == null ? _VAR_ : string.Empty) + "/",
+                Directory = (Parent == null) ? VarDir : Path.Combine(Parent.Directory, VarDir),
+                Pathing = Pathing + (accessor == null ? VarPathing : string.Empty) + "/",
                 Accessor = accessor,
             };
             W w = (W) ci.Invoke(new object[] {config});
@@ -220,7 +220,7 @@ namespace Greatbone
                 Parent = this,
                 Level = Level + 1,
                 IsVar = false,
-                Directory = (Parent == null) ? name : System.IO.Path.Combine(Parent.Directory, name),
+                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Pathing = Pathing + name + "/",
             };
             // init sub work
@@ -292,7 +292,7 @@ namespace Greatbone
                 if (a.Comments != null)
                 {
                     hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
-                    hc.H3_().T(a.Pathing)._H3();
+                    hc.T("<h3><code>").TT(a.Pathing).T("</code></h3>");
                     hc.HR();
                     for (int k = 0; k < a.Comments.Count; k++)
                     {
@@ -450,7 +450,7 @@ namespace Greatbone
                 return;
             }
 
-            string path = System.IO.Path.Combine(cfg.Directory, filename);
+            string path = Path.Combine(cfg.Directory, filename);
             if (!File.Exists(path))
             {
                 wc.Give(404); // not found

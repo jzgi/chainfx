@@ -52,6 +52,36 @@ namespace Greatbone
             }
         }
 
+        public void AddEsc(string v, int offset, int length)
+        {
+            if (v == null) return;
+            int len = Math.Min(length, v.Length);
+            for (int i = offset; i < len; i++)
+            {
+                char c = v[i];
+                if (c == '<')
+                {
+                    Add("&lt;");
+                }
+                else if (c == '>')
+                {
+                    Add("&gt;");
+                }
+                else if (c == '&')
+                {
+                    Add("&amp;");
+                }
+                else if (c == '"')
+                {
+                    Add("&quot;");
+                }
+                else
+                {
+                    Add(c);
+                }
+            }
+        }
+
 
         public HtmlContent T(char v, bool cond = true)
         {
@@ -134,11 +164,29 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent TT(string v, bool cond = true)
+        {
+            if (cond)
+            {
+                AddEsc(v);
+            }
+            return this;
+        }
+
         public HtmlContent T(string v, int offset, int len, bool cond = true)
         {
             if (cond)
             {
                 Add(v, offset, len);
+            }
+            return this;
+        }
+
+        public HtmlContent TT(string v, int offset, int len, bool cond = true)
+        {
+            if (cond)
+            {
+                AddEsc(v, offset, len);
             }
             return this;
         }
@@ -151,6 +199,19 @@ namespace Greatbone
                 {
                     if (i > 0) Add("&nbsp;");
                     Add(v[i]);
+                }
+            }
+            return this;
+        }
+
+        public HtmlContent TT(string[] v, bool cond = true)
+        {
+            if (cond && v != null)
+            {
+                for (int i = 0; i < v.Length; i++)
+                {
+                    if (i > 0) Add("&nbsp;");
+                    AddEsc(v[i]);
                 }
             }
             return this;
