@@ -7,6 +7,12 @@ namespace Greatbone
     /// </summary>
     public class ServiceConfig : WorkConfig, IData
     {
+        // the index of this service instance
+        public short idx;
+
+        // the descriptive information of this service instance
+        public string descr;
+
         // the bound addresses 
         public string[] addrs;
 
@@ -16,7 +22,7 @@ namespace Greatbone
         // db configuration
         public Db db;
 
-        // remote peer references in the form of peerId-url pairs
+        // references to remote services in form of svcname[-idx] and url pairs
         public JObj refs;
 
         // logging level
@@ -55,6 +61,8 @@ namespace Greatbone
 
         public virtual void Read(ISource s, byte proj = 0x0f)
         {
+            s.Get(nameof(idx), ref idx);
+            s.Get(nameof(descr), ref descr);
             s.Get(nameof(addrs), ref addrs);
             s.Get(nameof(db), ref db);
             s.Get(nameof(refs), ref refs);
@@ -64,6 +72,8 @@ namespace Greatbone
 
         public virtual void Write(ISink s, byte proj = 0x0f)
         {
+            s.Put(nameof(idx), idx);
+            s.Put(nameof(descr), descr);
             s.Put(nameof(addrs), addrs);
             s.Put(nameof(db), db);
             s.Put(nameof(refs), refs);

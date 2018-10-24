@@ -25,7 +25,7 @@ namespace Greatbone
 
         // the embedded server
         readonly KestrelServer server;
-        
+
         // configured clients that connect to peer services
         readonly Map<string, Client> clients;
 
@@ -97,6 +97,10 @@ namespace Greatbone
         public ServiceConfig Config => (ServiceConfig) cfg;
 
         public string[] Addrs => ((ServiceConfig) cfg).addrs;
+
+        public short Idx => ((ServiceConfig) cfg).idx;
+
+        public string Descr => ((ServiceConfig) cfg).descr;
 
         public Db Db => ((ServiceConfig) cfg).db;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Greatbone
@@ -18,7 +19,11 @@ namespace Greatbone
 
         readonly bool async;
 
-        readonly bool subscript;
+        // the name of subscript parameter, may be null
+        readonly string subscript;
+
+        // the action pathing 
+        readonly string pathing;
 
         // ui tool annotation
         internal readonly ToolAttribute tool;
@@ -34,7 +39,7 @@ namespace Greatbone
 
         readonly List<TagAttribute> comments;
 
-        internal Actioner(Work work, MethodInfo mi, bool async, bool subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
+        internal Actioner(Work work, MethodInfo mi, bool async, string subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
             this.work = work;
             this.relative = Key == string.Empty ? "./" : Key;
@@ -47,7 +52,7 @@ namespace Greatbone
             // create a doer delegate
             if (async)
             {
-                if (subscript)
+                if (HasSubscript)
                 {
                     do2Async = (Func<WebContext, int, Task>) mi.CreateDelegate(typeof(Func<WebContext, int, Task>), work);
                 }
@@ -58,7 +63,7 @@ namespace Greatbone
             }
             else
             {
-                if (subscript)
+                if (HasSubscript)
                 {
                     do2 = (Action<WebContext, int>) mi.CreateDelegate(typeof(Action<WebContext, int>), work);
                 }
@@ -77,6 +82,14 @@ namespace Greatbone
                     comments.Add(c);
                 }
             }
+
+            // resolve the action pathing
+            StringBuilder sb = new StringBuilder(work.Pathing);
+            if (HasSubscript)
+            {
+                sb.Append('-').Append('_').Append(subscript).Append('_');
+            }
+            pathing = sb.ToString();
         }
 
         public Work Work => work;
@@ -85,8 +98,9 @@ namespace Greatbone
 
         public bool IsAsync => async;
 
-        public bool HasSubscript => subscript;
+        public bool HasSubscript => subscript != null;
 
+        public string Pathing => pathing;
 
         public bool HasTool => tool != null;
 

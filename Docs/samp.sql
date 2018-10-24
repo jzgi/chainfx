@@ -12,7 +12,7 @@
  Target Server Version : 90606
  File Encoding         : 65001
 
- Date: 21/10/2018 23:52:29
+ Date: 23/10/2018 15:03:23
 */
 
 
@@ -172,7 +172,7 @@ CREATE TABLE "public"."orders" (
   "utel" varchar(11) COLLATE "pg_catalog"."default",
   "uaddr" varchar(20) COLLATE "pg_catalog"."default",
   "itemid" int2,
-  "itemname" varchar(10) COLLATE "pg_catalog"."default",
+  "item" varchar(8) COLLATE "pg_catalog"."default",
   "unit" varchar(4) COLLATE "pg_catalog"."default",
   "price" numeric(38),
   "fee" money,
@@ -180,7 +180,7 @@ CREATE TABLE "public"."orders" (
   "total" money,
   "cash" money DEFAULT 0,
   "creatorid" int2,
-  "creatorname" varchar(10) COLLATE "pg_catalog"."default",
+  "creator" varchar(8) COLLATE "pg_catalog"."default",
   "paid" timestamp(6),
   "shopid" int2,
   "accepterid" int4,
@@ -192,7 +192,11 @@ CREATE TABLE "public"."orders" (
   "receiverid" int4,
   "received" timestamp(6),
   "ended" timestamp(6),
-  "status" int2
+  "status" int2,
+  "accepter" varchar(8) COLLATE "pg_catalog"."default",
+  "stocker" varchar(8) COLLATE "pg_catalog"."default",
+  "sender" varchar(8) COLLATE "pg_catalog"."default",
+  "receiver" varchar(8) COLLATE "pg_catalog"."default"
 )
 ;
 

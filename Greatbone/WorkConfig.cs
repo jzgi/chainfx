@@ -31,7 +31,7 @@ namespace Greatbone
 
         public string Directory { get; internal set; }
 
-        public string Path { get; internal set; }
+        public string Pathing { get; internal set; }
 
         // to resolve from the principal object.
         public Func<IData, object> Accessor { get; internal set; }

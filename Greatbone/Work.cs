@@ -29,7 +29,7 @@ namespace Greatbone
         // the default action method, can be null
         readonly Actioner @default;
 
-        // the catch procedure, can be null
+        // the catch action method, can be null
         readonly Actioner @catch;
 
         // action method with the ToolAttribute
@@ -75,30 +75,30 @@ namespace Greatbone
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                Actioner actr;
+                Actioner act;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    actr = new Actioner(this, mi, async, false);
+                    act = new Actioner(this, mi, async, null);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
-                    actr = new Actioner(this, mi, async, true);
+                    act = new Actioner(this, mi, async, pis[1].Name);
                 }
                 else continue;
 
-                actioners.Add(actr);
-                if (actr.Key == string.Empty) @default = actr;
-                if (actr.Key == "catch") @catch = actr;
-                if (actr.Tool?.MustPick == true) pick = true;
+                actioners.Add(act);
+                if (act.Key == string.Empty) @default = act;
+                if (act.Key == "catch") @catch = act;
+                if (act.Tool?.MustPick == true) pick = true;
             }
             // gather tooled action methods
             var list = new ValueList<Actioner>(16);
             for (int i = 0; i < actioners.Count; i++)
             {
-                Actioner actr = actioners[i];
-                if (actr.HasTool)
+                Actioner act = actioners[i];
+                if (act.HasTool)
                 {
-                    list.Add(actr);
+                    list.Add(act);
                 }
             }
             tooled = list.ToArray();
@@ -119,7 +119,7 @@ namespace Greatbone
 
         public string Directory => cfg.Directory;
 
-        public string Path => cfg.Path;
+        public string Pathing => cfg.Pathing;
 
         public bool HasAccessor => cfg.Accessor != null;
 
@@ -175,7 +175,7 @@ namespace Greatbone
                 Level = Level + 1,
                 IsVar = true,
                 Directory = (Parent == null) ? _VAR_ : System.IO.Path.Combine(Parent.Directory, _VAR_),
-                Path = Path + (accessor == null ? _VAR_ : string.Empty) + "/",
+                Pathing = Pathing + (accessor == null ? _VAR_ : string.Empty) + "/",
                 Accessor = accessor,
             };
             W w = (W) ci.Invoke(new object[] {config});
@@ -221,7 +221,7 @@ namespace Greatbone
                 Level = Level + 1,
                 IsVar = false,
                 Directory = (Parent == null) ? name : System.IO.Path.Combine(Parent.Directory, name),
-                Path = Path + name + "/",
+                Pathing = Pathing + name + "/",
             };
             // init sub work
             W w = (W) ci.Invoke(new object[] {config});
@@ -266,8 +266,8 @@ namespace Greatbone
                 {
                     for (int i = 0; i < actioners.Count; i++)
                     {
-                        Actioner actr = actioners[i];
-                        xc.Put(actr.Key, "");
+                        Actioner act = actioners[i];
+                        xc.Put(act.Key, "");
                     }
                 },
                 delegate
@@ -292,7 +292,7 @@ namespace Greatbone
                 if (a.Comments != null)
                 {
                     hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
-                    hc.H3_().T(Path).T(a.Key)._H3();
+                    hc.H3_().T(a.Pathing)._H3();
                     hc.HR();
                     for (int k = 0; k < a.Comments.Count; k++)
                     {
@@ -354,7 +354,7 @@ namespace Greatbone
                             Service.TryCacheUp(wc);
                         }
                     }
-                    else // the resource is an action
+                    else // targeting an action
                     {
                         string name = rsc;
                         int subscpt = 0;
