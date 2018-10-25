@@ -8,6 +8,6 @@ namespace Greatbone
 
         void SetParam(string name, string v);
 
-        string RequestAndRespnse();
+        string GetAsync();
     }
 }

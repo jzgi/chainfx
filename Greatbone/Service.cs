@@ -34,6 +34,9 @@ namespace Greatbone
         // the polling schesuler thread
         Thread scheduler;
 
+        // a secret string for approval of inter-service cumminication
+        private readonly string sign;
+
         // the response cache
         readonly ConcurrentDictionary<string, Resp> cache;
 
@@ -81,9 +84,14 @@ namespace Greatbone
                     {
                         clients = new Map<string, Client>(refs.Count * 2);
                     }
-                    clients.Add(new Client(e.Key, e.Value));
+                    clients.Add(new Client(e.Key, e.Value)
+                    {
+                        Service = this
+                    });
                 }
             }
+
+            sign = Encrypt(cfg.cipher.ToString());
 
             // create the response cache
             if (cfg.cache)
@@ -97,7 +105,7 @@ namespace Greatbone
 
         public string[] Addrs => ((ServiceConfig) cfg).addrs;
 
-        public short Idx => ((ServiceConfig) cfg).idx;
+        public string Shard => ((ServiceConfig) cfg).shard;
 
         public string Descr => ((ServiceConfig) cfg).descr;
 
@@ -113,6 +121,8 @@ namespace Greatbone
         /// Uniquely identify a service instance.
         ///
         public override string Key => key;
+
+        public string Sign => sign;
 
         public Map<string, Client> Clients => clients;
 
@@ -238,7 +248,7 @@ namespace Greatbone
                         for (int i = 0; i < polls.Count; i++)
                         {
                             var cli = polls[i];
-                            cli.TryPoll(tick);
+                            cli.TryPollAsync(tick);
                         }
                     }
                 });
@@ -377,12 +387,34 @@ namespace Greatbone
             return false;
         }
 
+        public string Encrypt(string v)
+        {
+            byte[] bytebuf = Encoding.ASCII.GetBytes(v);
+            int count = bytebuf.Length;
+            int mask = (int) Cipher;
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            char[] charbuf = new char[count * 2]; // the target
+            int p = 0;
+            for (int i = 0; i < count; i++)
+            {
+                // masking
+                int b = bytebuf[i] ^ masks[i % 4];
+
+                //transform
+                charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                charbuf[p++] = HEX[(b) & 0x0f];
+
+                // reordering
+            }
+            return new string(charbuf, 0, charbuf.Length);
+        }
+
         public string Encrypt<P>(P prin, byte proj) where P : IData
         {
-            JsonContent cont = new JsonContent(true, 4096);
-            cont.Put(null, prin, proj);
-            byte[] bytebuf = cont.ByteBuffer;
-            int count = cont.Size;
+            JsonContent cnt = new JsonContent(true, 4096);
+            cnt.Put(null, prin, proj);
+            byte[] bytebuf = cnt.ByteBuffer;
+            int count = cnt.Size;
 
             int mask = (int) Cipher;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
@@ -434,6 +466,25 @@ namespace Greatbone
             {
                 return default;
             }
+        }
+
+        public string Decrypt(string v)
+        {
+            int mask = (int) Cipher;
+            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int len = v.Length / 2;
+            var str = new Text(1024);
+            int p = 0;
+            for (int i = 0; i < len; i++)
+            {
+                // TODO reordering
+
+                // transform to byte
+                int b = (byte) (Dv(v[p++]) << 4 | Dv(v[p++]));
+                // masking
+                str.Accept((byte) (b ^ masks[i % 4]));
+            }
+            return str.ToString();
         }
 
         // hexidecimal characters

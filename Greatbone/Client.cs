@@ -12,6 +12,7 @@ namespace Greatbone
     public class Client : HttpClient, IKeyable<string>, IEventContext
     {
         const int Ahead = 1000 * 12;
+        const string PollAction = "/event";
 
         // remote service name 
         readonly string svcname;
@@ -20,6 +21,8 @@ namespace Greatbone
 
         // the poller task currently running
         Task pollTask;
+
+        string pollQuery;
 
         Action<IEventContext> poller;
 
@@ -66,6 +69,8 @@ namespace Greatbone
             Timeout = TimeSpan.FromSeconds(12);
         }
 
+        public Service Service { get; internal set; }
+
         public string Key => svcname;
 
         internal void SetPoller(Action<IEventContext> poller, short interval)
@@ -82,12 +87,12 @@ namespace Greatbone
             throw new NotImplementedException();
         }
 
-        public string RequestAndRespnse()
+        public string GetAsync()
         {
             throw new NotImplementedException();
         }
 
-        internal void TryPoll(int ticks)
+        internal async void TryPollAsync(int ticks)
         {
             if (ticks < retryPt)
             {
@@ -97,31 +102,48 @@ namespace Greatbone
             {
                 return;
             }
-            pollTask = Task.Run(() =>
+            await (pollTask = new Task(() =>
             {
                 try
                 {
+                    // execute an event poll/process cycle
                     poller(this);
+                }
+                catch
+                {
                 }
                 finally
                 {
                     retryPt += interval * 1000;
                 }
-            });
+            }));
         }
 
         //
         // RPC
         //
 
-        public async Task<byte[]> GetAsync(WebContext wc, string uri)
+        void AddAccessHeaders(HttpRequestMessage req, WebContext wc)
+        {
+            if (Service != null)
+            {
+                req.Headers.TryAddWithoutValidation("X-Sign", Service.Sign);
+                req.Headers.TryAddWithoutValidation("X-Service", Service.Key);
+                req.Headers.TryAddWithoutValidation("X-Shard", Service.Shard);
+            }
+            var auth = wc?.Header("Authorization");
+            if (auth != null)
+            {
+                req.Headers.TryAddWithoutValidation("Authorization", auth);
+            }
+        }
+
+        public async Task<byte[]> PollAsync(string query)
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (svcname != null && wc != null)
-                {
-                }
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollAction + "?" + query);
+                AddAccessHeaders(req, null);
 
                 HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return await resp.Content.ReadAsByteArrayAsync();
@@ -133,21 +155,33 @@ namespace Greatbone
             return null;
         }
 
-        public async Task<M> GetAsync<M>(string uri, string token) where M : class, ISource
+        public async Task<byte[]> GetAsync(string uri, WebContext wc = null)
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (svcname != null && token != null)
-                {
-                    req.Headers.Add("Authorization", "Token " + token);
-                }
+                AddAccessHeaders(req, wc);
+                HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                return await resp.Content.ReadAsByteArrayAsync();
+            }
+            catch
+            {
+                retryPt = Environment.TickCount + Ahead;
+            }
+            return null;
+        }
+
+        public async Task<M> GetAsync<M>(string uri, WebContext wc) where M : class, ISource
+        {
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                AddAccessHeaders(req, wc);
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
                     return null;
                 }
-
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
@@ -159,15 +193,12 @@ namespace Greatbone
             return null;
         }
 
-        public async Task<D> GetObjectAsync<D>(string uri, string token, byte proj = 0x0f) where D : IData, new()
+        public async Task<D> GetObjectAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (svcname != null && token != null)
-                {
-                    req.Headers.Add("Authorization", "Token " + token);
-                }
+                AddAccessHeaders(req, wc);
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
@@ -188,21 +219,17 @@ namespace Greatbone
             return default;
         }
 
-        public async Task<D[]> GetArrayAsync<D>(string uri, string token, byte proj = 0x0f) where D : IData, new()
+        public async Task<D[]> GetArrayAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (svcname != null && token != null)
-                {
-                    req.Headers.Add("Authorization", "Token " + token);
-                }
+                AddAccessHeaders(req, wc);
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
                     return null;
                 }
-
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 ISource inp = ParseContent(ctyp, bytea, bytea.Length);
@@ -215,15 +242,12 @@ namespace Greatbone
             return null;
         }
 
-        public async Task<int> PostAsync(string uri, IContent content, string token)
+        public async Task<int> PostAsync(string uri, IContent content, WebContext wc = null)
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
-                if (svcname != null && token != null)
-                {
-                    req.Headers.Add("Authorization", "Token " + token);
-                }
+                AddAccessHeaders(req, wc);
                 req.Content = (HttpContent) content;
                 req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
                 req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());

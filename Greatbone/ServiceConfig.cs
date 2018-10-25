@@ -7,8 +7,8 @@ namespace Greatbone
     /// </summary>
     public class ServiceConfig : WorkConfig, IData
     {
-        // the index of this service instance
-        public short idx;
+        // the sharding notation for this service instance
+        public string shard;
 
         // the descriptive information of this service instance
         public string descr;
@@ -61,7 +61,7 @@ namespace Greatbone
 
         public virtual void Read(ISource s, byte proj = 0x0f)
         {
-            s.Get(nameof(idx), ref idx);
+            s.Get(nameof(shard), ref shard);
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(addrs), ref addrs);
             s.Get(nameof(db), ref db);
@@ -72,7 +72,7 @@ namespace Greatbone
 
         public virtual void Write(ISink s, byte proj = 0x0f)
         {
-            s.Put(nameof(idx), idx);
+            s.Put(nameof(shard), shard);
             s.Put(nameof(descr), descr);
             s.Put(nameof(addrs), addrs);
             s.Put(nameof(db), db);
