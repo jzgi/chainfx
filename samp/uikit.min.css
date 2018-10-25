@@ -1147,7 +1147,9 @@ button.uk-icon:not(:disabled) {
 
 .uk-input[type="number"]::-webkit-inner-spin-button,
 .uk-input[type="number"]::-webkit-outer-spin-button {
-    height: auto;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .uk-input::-moz-placeholder,
@@ -1230,6 +1232,10 @@ button.uk-icon:not(:disabled) {
 
 .uk-textarea:-ms-input-placeholder {
     color: #999 !important;
+}
+
+.uk-input[type="number"] {
+    text-align: right;
 }
 
 .uk-textarea::placeholder {

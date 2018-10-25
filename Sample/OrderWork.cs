@@ -89,7 +89,7 @@ namespace Samp
                         }
                     );
                 }
-            }, false, 3, refresh: 300);
+            }, false, 3, refresh: 720);
         }
 
         [Ui("备货", group: 1), Tool(Anchor)]
@@ -111,7 +111,7 @@ namespace Samp
                         }
                     );
                 }
-            });
+            }, false, 3, refresh: 720);
         }
 
         [Ui("中转", group: 1), Tool(Anchor)]
@@ -133,7 +133,7 @@ namespace Samp
                         }
                     );
                 }
-            });
+            }, false, 3, refresh: 720);
         }
 
         [Ui("派运", group: 1), Tool(Anchor)]
@@ -155,7 +155,7 @@ namespace Samp
                         }
                     );
                 }
-            });
+            }, false, 3, refresh: 720);
         }
 
         [Ui("运达", group: 1), Tool(Anchor)]
@@ -177,7 +177,7 @@ namespace Samp
                         }
                     );
                 }
-            });
+            }, false, 3, refresh: 720);
         }
 
         [Ui(icon: "search", tip: "查找", group: 1), Tool(AnchorPrompt)]

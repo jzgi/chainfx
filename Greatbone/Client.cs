@@ -54,16 +54,19 @@ namespace Greatbone
         /// <param name="addr">remote address</param>
         internal Client(string key, string addr)
         {
-            int dash = key.LastIndexOf('-');
-            if (dash == -1)
+            if (key != null)
             {
-                this.svcname = key;
-            }
-            else
-            {
-                this.svcname = key.Substring(0, dash);
-                string sub = key.Substring(dash + 1);
-                short.TryParse(sub, out idx);
+                int dash = key.LastIndexOf('-');
+                if (dash == -1)
+                {
+                    this.svcname = key;
+                }
+                else
+                {
+                    this.svcname = key.Substring(0, dash);
+                    string sub = key.Substring(dash + 1);
+                    short.TryParse(sub, out idx);
+                }
             }
             BaseAddress = new Uri(addr);
             Timeout = TimeSpan.FromSeconds(12);

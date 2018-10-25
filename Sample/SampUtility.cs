@@ -291,5 +291,42 @@ namespace Samp
             h.T("&referer=\">").T(addr).T("</a>");
             return h;
         }
+
+        public static HtmlContent ORDERSCALE(this HtmlContent h, DbContext dc)
+        {
+            short cur = 0;
+            while (dc.Next())
+            {
+                dc.Let(out int id).Let(out short itemid).Let(out string item).Let(out short qty);
+                if (cur == 0 || cur != itemid)
+                {
+                    if (cur != itemid)
+                    {
+                        h.T("</fieldset>");
+                    }
+                    h.T("<fieldset class=\"uk-fieldset\">");
+                    // number input control
+                    h.DIV_(css: "uk-row uk-width-1-1");
+                    h.T("<label class=\"uk-label uk-width-2-5\">").T(item).T("</label>");
+                    h.T("<div class=\"uk-row uk-width-3-5\">");
+                    h.T("<a class=\"uk-icon-button\" href=\"#\" uk-icon=\"chevron-left\" onclick=\"this.nextSibling.stepDown();this.nextSibling.onchange();\"></a>");
+                    h.T("<a class=\"uk-icon-button\" href=\"#\" uk-icon=\"chevron-down\" onclick=\"this.nextSibling.stepDown();this.nextSibling.onchange();\"></a>");
+                    h.T("<input class=\"uk-input uk-width-1-3\" type=\"number\">");
+                    h.T("<a class=\"uk-icon-button\" href=\"#\" uk-icon=\"chevron-up\" onclick=\"this.previousSibling.stepUp();this.previousSibling.onchange();\"></a>");
+                    h.T("<a class=\"uk-icon-button\" href=\"#\" uk-icon=\"chevron-right\" onclick=\"this.previousSibling.stepUp();this.previousSibling.onchange();\"></a>");
+                    h.T("</div>");
+                    h._DIV();
+
+                    h.T("<input type=\"hidden\" name=\"key\" value=\"").T(id).T("\" data-qty=\"").T(qty).T("\">");
+                    cur = itemid;
+                }
+                else
+                {
+                    h.T("<input type=\"hidden\" name=\"key\" value=\"").T(id).T("\" data-qty=\"").T(qty).T("\">");
+                }
+            }
+            h.T("</fieldset>");
+            return h;
+        }
     }
 }

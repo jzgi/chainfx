@@ -86,27 +86,25 @@ namespace Samp
             }
         }
 
-        [Ui("接收", tip: "接收进入中转", group: 0b000100), Tool(ButtonShow)]
+        [Ui("接货", tip: "中转接货", group: 0b000100), Tool(ButtonShow)]
         public async Task stock(WebContext wc)
         {
             string hubid = wc[0];
             short shopid = wc[this];
             if (wc.IsGet)
             {
-                using (var dc = NewDbContext())
+                wc.GivePane(200, h =>
                 {
-                    dc.Sql("SELECT itemid, first(item) AS item, sum(qty) AS qty, sum(cash) AS cash, array_agg(DISTINCT accepter) AS oprs  FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @2 GROUP BY itemid");
-                    var arr = dc.Query<OrderAgg>(p => p.Set(hubid).Set(shopid));
-                    wc.GivePane(200, h =>
+                    using (var dc = NewDbContext())
                     {
+                        dc.Sql("SELECT id,  itemid, item, qty FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @2 ORDER BY itemid");
+                        dc.Query(p => p.Set(hubid).Set(shopid));
                         h.FORM_();
-                        foreach (var o in arr)
-                        {
-                            h.T(o.item).SP();
-                        }
+                        h.ORDERSCALE(dc);
                         h._FORM();
-                    });
-                }
+                        h.T("<script>initform();</script>");
+                    }
+                });
             }
             else // POST
             {
@@ -121,7 +119,7 @@ namespace Samp
             }
         }
 
-        [Ui("回退", tip: "团组订单", group: 0b001000), Tool(ButtonOpen)]
+        [Ui("倒退", tip: "倒退给备货", group: 0b001000), Tool(ButtonOpen)]
         public void unstock(WebContext wc)
         {
             string hubid = wc[0];
@@ -146,6 +144,24 @@ namespace Samp
         {
             string hubid = wc[0];
             short teamid = wc[this];
+            if (wc.IsGet)
+            {
+                wc.GivePane(200, h =>
+                {
+                    using (var dc = NewDbContext())
+                    {
+                        dc.Sql("SELECT id,  itemid, item, qty FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" AND teamid = @2 ORDER BY itemid");
+                        dc.Query(p => p.Set(hubid).Set(teamid));
+                        h.FORM_();
+                        h.ORDERSCALE(dc);
+                        h._FORM();
+                        h.T("<script>initform();</script>");
+                    }
+                });
+            }
+            else
+            {
+            }
         }
 
         [Ui(icon: "list", tip: "团组订单", group: 0b010001), Tool(ButtonOpen)]
@@ -161,7 +177,7 @@ namespace Samp
             }
         }
 
-        [Ui("倒回", tip: "团组订单", group: 0b010000), Tool(ButtonOpen)]
+        [Ui("倒退", tip: "倒退给中转", group: 0b010000), Tool(ButtonOpen)]
         public void unsend(WebContext wc)
         {
             string hubid = wc[0];
