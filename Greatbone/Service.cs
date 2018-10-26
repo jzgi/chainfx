@@ -256,7 +256,7 @@ namespace Greatbone
             }
         }
 
-        public void Subscribe(string svcname, Action<IEventContext> poller, short interval = 12)
+        public void Schedule(string rname, Action<IEventContext> poller, short interval = 12)
         {
             if (clients == null)
             {
@@ -267,7 +267,7 @@ namespace Greatbone
             for (int i = 0; i < clients.Count; i++)
             {
                 var cli = clients[i];
-                if (cli.Key == svcname)
+                if (cli.Key == rname)
                 {
                     cli.SetPoller(poller, interval);
                     if (polls == null) polls = new List<Client>();
@@ -277,16 +277,16 @@ namespace Greatbone
             }
             if (match == 0)
             {
-                throw new ServiceException("webconfig refs missing " + svcname);
+                throw new ServiceException("webconfig refs missing " + rname);
             }
         }
 
-        internal Client GetRef(string peerId)
+        internal Client GetRef(string key)
         {
             for (int i = 0; i < clients.Count; i++)
             {
                 Client cli = clients[i];
-                if (cli.Key == peerId) return cli;
+                if (cli.Key == key) return cli;
             }
             return null;
         }

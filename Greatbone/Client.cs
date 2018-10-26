@@ -14,22 +14,24 @@ namespace Greatbone
         const int Ahead = 1000 * 12;
         const string PollAction = "/event";
 
-        // remote service name 
-        readonly string svcname;
+        //  key for the remote or referenced service 
+        readonly string rKey;
 
-        private short idx;
+        // remote or referenced service name 
+        readonly string rName;
+
+        // remote or referenced shard 
+        readonly string rShard;
 
         // the poller task currently running
         Task pollTask;
-
-        string pollQuery;
 
         Action<IEventContext> poller;
 
         short interval;
 
         // point of time to next poll, set because of exception or polling interval
-        volatile int retryPt;
+        volatile int retryAt;
 
         /// <summary>
         /// Used to construct a secure client by passing handler with certificate.
@@ -50,31 +52,32 @@ namespace Greatbone
         /// <summary>
         /// Used to construct a service client. 
         /// </summary>
-        /// <param name="key">remote service key</param>
-        /// <param name="addr">remote address</param>
-        internal Client(string key, string addr)
+        /// <param name="rkey">the identifying key for the remote service</param>
+        /// <param name="raddr">remote address</param>
+        internal Client(string rkey, string raddr)
         {
-            if (key != null)
+            this.rKey = Key;
+            // initialize name and sshard
+            if (rkey != null)
             {
-                int dash = key.LastIndexOf('-');
+                int dash = rkey.LastIndexOf('-');
                 if (dash == -1)
                 {
-                    this.svcname = key;
+                    this.rName = rkey;
                 }
                 else
                 {
-                    this.svcname = key.Substring(0, dash);
-                    string sub = key.Substring(dash + 1);
-                    short.TryParse(sub, out idx);
+                    this.rName = rkey.Substring(0, dash);
+                    rShard = rkey.Substring(dash + 1);
                 }
             }
-            BaseAddress = new Uri(addr);
+            BaseAddress = new Uri(raddr);
             Timeout = TimeSpan.FromSeconds(12);
         }
 
         public Service Service { get; internal set; }
 
-        public string Key => svcname;
+        public string Key => rKey;
 
         internal void SetPoller(Action<IEventContext> poller, short interval)
         {
@@ -82,22 +85,13 @@ namespace Greatbone
             this.interval = interval;
         }
 
-        public bool FirstTime { get; }
-        public string RemoteSvc { get; }
+        public string RefName => rName;
 
-        public void SetParam(string name, string v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public string RefShard => rShard;
 
         internal async void TryPollAsync(int ticks)
         {
-            if (ticks < retryPt)
+            if (ticks < retryAt)
             {
                 return;
             }
@@ -117,7 +111,7 @@ namespace Greatbone
                 }
                 finally
                 {
-                    retryPt += interval * 1000;
+                    retryAt += interval * 1000;
                 }
             }));
         }
@@ -141,22 +135,115 @@ namespace Greatbone
             }
         }
 
-        public async Task<byte[]> PollAsync(string query)
+        public string Query { get; set; }
+
+        public async Task<byte[]> PollAsync()
         {
+            if (Query == null)
+            {
+                throw new ServiceException("missing query before event poll");
+            }
+            string uri = PollAction + "?" + Query;
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, PollAction + "?" + query);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, null);
-
                 HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return await resp.Content.ReadAsByteArrayAsync();
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             return null;
         }
+
+        public async Task<M> PollAsync<M>() where M : class, ISource
+        {
+            if (Query == null)
+            {
+                throw new ServiceException("missing query before event poll");
+            }
+            string uri = PollAction + "?" + Query;
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                AddAccessHeaders(req, null);
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return null;
+                }
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + Ahead;
+            }
+            return null;
+        }
+
+        public async Task<D> PollObjectAsync<D>(byte proj = 0x0f) where D : IData, new()
+        {
+            if (Query == null)
+            {
+                throw new ServiceException("missing query before event poll");
+            }
+            string uri = PollAction + "?" + Query;
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                AddAccessHeaders(req, null);
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return default;
+                }
+
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
+                D obj = new D();
+                obj.Read(inp, proj);
+                return obj;
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + Ahead;
+            }
+            return default;
+        }
+
+        public async Task<D[]> PollArrayAsync<D>(byte proj = 0x0f) where D : IData, new()
+        {
+            if (Query == null)
+            {
+                throw new ServiceException("missing query before event poll");
+            }
+            string uri = PollAction + "?" + Query;
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                AddAccessHeaders(req, null);
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return null;
+                }
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
+                return inp.ToArray<D>(proj);
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + Ahead;
+            }
+            return null;
+        }
+
 
         public async Task<byte[]> GetAsync(string uri, WebContext wc = null)
         {
@@ -169,7 +256,7 @@ namespace Greatbone
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             return null;
         }
@@ -191,7 +278,7 @@ namespace Greatbone
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             return null;
         }
@@ -217,7 +304,7 @@ namespace Greatbone
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             return default;
         }
@@ -240,7 +327,7 @@ namespace Greatbone
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             return null;
         }
@@ -260,7 +347,7 @@ namespace Greatbone
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             finally
             {
@@ -300,7 +387,7 @@ namespace Greatbone
             }
             catch
             {
-                retryPt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + Ahead;
             }
             finally
             {
