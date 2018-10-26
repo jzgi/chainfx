@@ -124,7 +124,7 @@ namespace Greatbone
         {
             if (Service != null)
             {
-                req.Headers.TryAddWithoutValidation("X-Sign", Service.Sign);
+                req.Headers.TryAddWithoutValidation("X-Caller-Sign", Service.Sign);
                 req.Headers.TryAddWithoutValidation("X-Caller-Name", Service.Name);
                 req.Headers.TryAddWithoutValidation("X-Caller-Shard", Service.Shard);
             }

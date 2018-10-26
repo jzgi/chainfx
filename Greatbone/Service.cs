@@ -31,11 +31,11 @@ namespace Greatbone
 
         List<Client> polls;
 
-        // the polling schesuler thread
+        // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
 
-        // a secret string for approval of inter-service cumminication
-        private readonly string sign;
+        // a secret string for trust of inter-service cumminication
+        readonly string sign;
 
         // the response cache
         readonly ConcurrentDictionary<string, Resp> cache;
