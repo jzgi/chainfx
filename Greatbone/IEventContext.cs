@@ -8,7 +8,7 @@ namespace Greatbone
 
         string RefName { get; }
 
-        string Query { get; set; }
+        string QueryStr { get; set; }
 
         Task<byte[]> PollAsync();
 

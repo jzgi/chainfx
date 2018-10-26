@@ -7,7 +7,7 @@ namespace Greatbone
     /// </summary>
     public class WorkConfig
     {
-        // either the identifying name for a fixed work or the constant var for a variable work
+        // either an identifying name for a fixed work or the constant _var_ for a variable work
         readonly string name;
 
         public WorkConfig(string name)

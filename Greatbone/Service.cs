@@ -21,7 +21,7 @@ namespace Greatbone
     public abstract class Service : Work, IHttpApplication<HttpContext>, ILoggerProvider, ILogger
     {
         // the identifier of this service instance
-        readonly string key;
+        readonly string name;
 
         // the embedded server
         readonly KestrelServer server;
@@ -47,7 +47,7 @@ namespace Greatbone
         {
             cfg.Service = this;
 
-            key = cfg.Name;
+            name = cfg.Name;
 
             // init the file-based logger
             string file = cfg.GetFilePath('$' + DateTime.Now.ToString("yyyyMM") + ".log");
@@ -101,6 +101,11 @@ namespace Greatbone
             }
         }
 
+        ///
+        /// Uniquely identify a service instance.
+        ///
+        public string Name => name;
+
         public ServiceConfig Config => (ServiceConfig) cfg;
 
         public string[] Addrs => ((ServiceConfig) cfg).addrs;
@@ -116,11 +121,6 @@ namespace Greatbone
         public int Logging => ((ServiceConfig) cfg).logging;
 
         public long Cipher => ((ServiceConfig) cfg).cipher;
-
-        ///
-        /// Uniquely identify a service instance.
-        ///
-        public override string Key => key;
 
         public string Sign => sign;
 

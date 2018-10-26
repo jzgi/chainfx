@@ -3,7 +3,7 @@ using System.Reflection;
 namespace Greatbone
 {
     /// <summary>
-    /// A certain node of resources along URI path.
+    /// A certain node of resources that is a constetive URI path.
     /// </summary>
     public abstract class Nodule : IKeyable<string>
     {
@@ -76,7 +76,16 @@ namespace Greatbone
 
         public bool DoAuthorize(WebContext wc)
         {
-            return authorize == null || authorize.Do(wc);
+            if (authorize != null)
+            {
+                // check if trusted peer
+                if (wc.CallerSign != null && wc.CallerSign == wc.Service.Sign)
+                {
+                    return true; // trusted without further check
+                }
+                return authorize.Do(wc);
+            }
+            return true;
         }
 
         public override string ToString()

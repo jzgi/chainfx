@@ -56,18 +56,18 @@ namespace Greatbone
         /// <param name="raddr">remote address</param>
         internal Client(string rkey, string raddr)
         {
-            this.rKey = Key;
+            rKey = Key;
             // initialize name and sshard
             if (rkey != null)
             {
                 int dash = rkey.LastIndexOf('-');
                 if (dash == -1)
                 {
-                    this.rName = rkey;
+                    rName = rkey;
                 }
                 else
                 {
-                    this.rName = rkey.Substring(0, dash);
+                    rName = rkey.Substring(0, dash);
                     rShard = rkey.Substring(dash + 1);
                 }
             }
@@ -125,8 +125,8 @@ namespace Greatbone
             if (Service != null)
             {
                 req.Headers.TryAddWithoutValidation("X-Sign", Service.Sign);
-                req.Headers.TryAddWithoutValidation("X-Service", Service.Key);
-                req.Headers.TryAddWithoutValidation("X-Shard", Service.Shard);
+                req.Headers.TryAddWithoutValidation("X-Caller-Name", Service.Name);
+                req.Headers.TryAddWithoutValidation("X-Caller-Shard", Service.Shard);
             }
             var auth = wc?.Header("Authorization");
             if (auth != null)
@@ -135,15 +135,15 @@ namespace Greatbone
             }
         }
 
-        public string Query { get; set; }
+        public string QueryStr { get; set; }
 
         public async Task<byte[]> PollAsync()
         {
-            if (Query == null)
+            if (QueryStr == null)
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + Query;
+            string uri = PollAction + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -160,11 +160,11 @@ namespace Greatbone
 
         public async Task<M> PollAsync<M>() where M : class, ISource
         {
-            if (Query == null)
+            if (QueryStr == null)
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + Query;
+            string uri = PollAction + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -187,11 +187,11 @@ namespace Greatbone
 
         public async Task<D> PollObjectAsync<D>(byte proj = 0x0f) where D : IData, new()
         {
-            if (Query == null)
+            if (QueryStr == null)
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + Query;
+            string uri = PollAction + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -218,11 +218,11 @@ namespace Greatbone
 
         public async Task<D[]> PollArrayAsync<D>(byte proj = 0x0f) where D : IData, new()
         {
-            if (Query == null)
+            if (QueryStr == null)
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + Query;
+            string uri = PollAction + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);

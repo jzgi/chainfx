@@ -1054,7 +1054,7 @@ namespace Greatbone
                         Add(actr.Key);
                         Add('-');
                         Add(i);
-                        Add(webCtx.QueryString);
+                        Add(webCtx.QueryStr);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
@@ -1066,7 +1066,7 @@ namespace Greatbone
                     Add(actr.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(webCtx.QueryString);
+                    Add(webCtx.QueryStr);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");

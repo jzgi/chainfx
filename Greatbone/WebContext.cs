@@ -117,9 +117,10 @@ namespace Greatbone
 
         public Task<WebSocket> AcceptWebSocketAsync() => fWebSocket.AcceptAsync(null);
 
-        [Obsolete("This is obsolete and will be removed in a future version. The recommended alternative is to use Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions. See https://go.microsoft.com/fwlink/?linkid=845470.")]
+        [Obsolete]
         public override AuthenticationManager Authentication => null;
 
+        [Obsolete]
         public override ClaimsPrincipal User { get; set; } = null;
 
         public override IDictionary<object, object> Items { get; set; } = null;
@@ -161,18 +162,18 @@ namespace Greatbone
 
         string uri;
 
-        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryString) ? Path : Path + QueryString);
+        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryStr) ? Path : Path + QueryStr);
 
         string url;
 
         public string Url => url ?? (url = fRequest.Scheme + "://" + Header("Host") + fRequest.RawTarget);
 
-        public string QueryString => fRequest.QueryString;
+        public string QueryStr => fRequest.QueryString;
 
         // URL query 
         Form query;
 
-        public Form Query => query ?? (query = new FormParser(QueryString).Parse());
+        public Form Query => query ?? (query = new FormParser(QueryStr).Parse());
 
         public void AddParam(string name, string value)
         {
@@ -188,6 +189,18 @@ namespace Greatbone
                 Query.Add(name, value);
             }
         }
+
+        string csign;
+
+        public string CallerSign => csign ?? (csign = Header("X-Caller-Sign"));
+
+        string cname;
+
+        public string CallerName => cname ?? (cname = Header("X-Caller-Name"));
+
+        string cshard;
+
+        public string CallerShard => cshard ?? (cshard = Header("X-Caller-Shard"));
 
         //
         // HEADER

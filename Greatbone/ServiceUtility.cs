@@ -74,9 +74,9 @@ namespace Greatbone
 
         static readonly CancellationTokenSource Cts = new CancellationTokenSource();
 
-        public static Service GetService(string svcId = null)
+        public static Service GetService(string name = null)
         {
-            if (svcId == null)
+            if (name == null)
             {
                 return services[0];
             }
@@ -85,7 +85,7 @@ namespace Greatbone
                 for (int i = 0; i < services.Count; i++)
                 {
                     var svc = services[i];
-                    if (svc.Key == svcId) return svc;
+                    if (svc.Name == name) return svc;
                 }
             }
             return null;
