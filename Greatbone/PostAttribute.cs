@@ -30,15 +30,15 @@ namespace Greatbone
             h.T("POST").SP().T(tip);
             if (query != null)
             {
-                h.T("<pre>").T(query).T("</pre>");
+                h.T("<pre>").TT(query).T("</pre>");
             }
             if (headers != null)
             {
-                h.T("<pre>").T(headers).T("</pre>");
+                h.T("<pre>").TT(headers).T("</pre>");
             }
             if (body != null)
             {
-                h.T("<pre style=\"overflow-x: scroll;\">").T(body).T("</pre>");
+                h.T("<pre style=\"overflow-x: scroll;\">").TT(body).T("</pre>");
             }
             h._P();
         }

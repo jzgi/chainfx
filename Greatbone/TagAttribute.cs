@@ -21,7 +21,7 @@ namespace Greatbone
             int count = arr.Length;
 
             StringBuilder sb = new StringBuilder(v.Length);
-            if (count > 1)
+            if (count > 0)
             {
                 // add first line
                 sb.Append(arr[0].TrimStart());

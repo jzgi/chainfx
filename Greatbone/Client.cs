@@ -56,7 +56,7 @@ namespace Greatbone
         /// <param name="raddr">remote address</param>
         internal Client(string rkey, string raddr)
         {
-            rKey = Key;
+            rKey = rkey;
             // initialize name and sshard
             if (rkey != null)
             {
@@ -99,15 +99,17 @@ namespace Greatbone
             {
                 return;
             }
-            await (pollTask = new Task(() =>
+            await (pollTask = Task.Run(() =>
             {
                 try
                 {
                     // execute an event poll/process cycle
                     poller(this);
                 }
-                catch
+                catch (Exception e)
                 {
+                    Service.WAR("Error in event poller");
+                    Service.WAR(e.Message);
                 }
                 finally
                 {

@@ -27,13 +27,11 @@ namespace Greatbone
             h.T("GET").SP().T(tip);
             if (query != null)
             {
-                h.T("<pre>").T(query).T("</pre>");
-                h.BR();
+                h.T("<pre>").TT(query).T("</pre>");
             }
             if (headers != null)
             {
-                h.T("<pre>").T(headers).T("</pre>");
-                h.BR();
+                h.T("<pre>").TT(headers).T("</pre>");
             }
             h._P();
         }

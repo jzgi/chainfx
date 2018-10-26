@@ -30,11 +30,11 @@ namespace Greatbone
             h.T(status).SP().T(tip);
             if (headers != null)
             {
-                h.T("<pre>").T(headers).T("</pre>");
+                h.T("<pre>").TT(headers).T("</pre>");
             }
             if (body != null)
             {
-                h.T("<pre style=\"overflow-x: scroll;\">").T(body).T("</pre>");
+                h.T("<pre style=\"overflow-x: scroll;\">").TT(body).T("</pre>");
             }
             h._P();
         }

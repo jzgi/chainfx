@@ -82,7 +82,7 @@ namespace Greatbone
                     var e = refs.At(i);
                     if (clients == null)
                     {
-                        clients = new Map<string, Client>(refs.Count * 2);
+                        clients = new Map<string, Client>(16);
                     }
                     clients.Add(new Client(e.Key, e.Value)
                     {
