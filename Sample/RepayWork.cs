@@ -6,60 +6,132 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    public abstract class RepayWork<V> : Work where V : RepayVarWork
+    public abstract class RepayWork : Work
     {
         protected RepayWork(WorkConfig cfg) : base(cfg)
         {
-            MakeVar<V>();
         }
     }
 
     [Ui("结款")]
-    public class OrgRepayWork : RepayWork<OrgRepayVarWork>
+    public class TeamlyRepayWork : RepayWork
     {
-        public OrgRepayWork(WorkConfig cfg) : base(cfg)
+        public TeamlyRepayWork(WorkConfig cfg) : base(cfg)
         {
+            MakeVar<TeamlyRepayVarWork>();
         }
 
+        [Ui("已结"), Tool(Anchor)]
         public void @default(WebContext wc)
         {
-            var prin = (User) wc.Principal;
+            string hubid = wc[0];
+            short teamid = wc[Parent];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE status = 2 AND uid = @1 ORDER BY id DESC", p => p.Set(prin.id));
+                dc.Sql("SELECT * FROM repays WHERE hubid = @1 AND status >= ").T(Repay.CREATED).T(" AND teamid = @2 ORDER BY status");
+                var arr = dc.Query<Repay>(p => p.Set(hubid).Set(teamid));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
-                    h.TABLE(arr,
-                        () => h.TH("人员").TH("期间").TH("订单").TH("金额").TH("转款"),
-                        o => h.TD(Repay.Jobs[o.typ], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                    h.TABLE(arr, null,
+                        o => h.TD(o.user).TD_().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
                     );
                 });
+            }
+        }
+
+        [Ui("未结"), Tool(Anchor)]
+        public void not(WebContext wc)
+        {
+            string hubid = wc[0];
+            short teamid = wc[Parent];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT count(*) AS orders, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" AND teamid = @2 GROUP BY teamid");
+                dc.Query(p => p.Set(hubid).Set(teamid));
+                wc.GivePage(200, h => { h.TOOLBAR(); });
+            }
+        }
+    }
+
+    [Ui("结款")]
+    public class ShoplyRepayWork : RepayWork
+    {
+        public ShoplyRepayWork(WorkConfig cfg) : base(cfg)
+        {
+            MakeVar<ShoplyRepayVarWork>();
+        }
+
+        [Ui("已结"), Tool(Anchor)]
+        public void @default(WebContext wc)
+        {
+            string hubid = wc[0];
+            short shopid = wc[Parent];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT * FROM repays WHERE hubid = @1 AND status >= ").T(Repay.CREATED).T(" AND shopid = @2 ORDER BY status");
+                var arr = dc.Query<Repay>(p => p.Set(hubid).Set(shopid));
+                wc.GivePage(200, h =>
+                {
+                    h.TOOLBAR();
+                    h.TABLE(arr, null,
+                        o => h.TD(o.user).TD_().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                    );
+                });
+            }
+        }
+
+        [Ui("未结"), Tool(Anchor)]
+        public void not(WebContext wc)
+        {
+            string hubid = wc[0];
+            short shopid = wc[Parent];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT count(*) AS orders, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" AND shopid = @2 GROUP BY shopid");
+                dc.Query(p => p.Set(hubid).Set(shopid));
+                wc.GivePage(200, h => { h.TOOLBAR(); });
             }
         }
     }
 
     [UserAuthorize(hubly: 7)]
     [Ui("结款")]
-    public class HublyRepayWork : RepayWork<HublyRepayVarWork>
+    public class HublyRepayWork : RepayWork
     {
         public HublyRepayWork(WorkConfig cfg) : base(cfg)
         {
+            MakeVar<HublyRepayVarWork>();
         }
 
+        [Ui("已结"), Tool(Anchor)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Repay>("SELECT * FROM repays WHERE hubid = @1 AND status < 2 ORDER BY typ DESC", p => p.Set(hubid));
+                dc.Sql("SELECT * FROM repays WHERE hubid = @1 AND status >= ").T(Repay.CREATED).T(" ORDER BY status");
+                var arr = dc.Query<Repay>(p => p.Set(hubid));
                 wc.GivePage(200, h =>
                 {
                     h.TOOLBAR();
                     h.TABLE(arr, null,
-                        o => h.TD(Repay.Jobs[o.typ], o.uname).TD_().T(o.fro).BR().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
+                        o => h.TD(o.user).TD_().T(o.till)._TD().TD(o.orders).TD(o.cash).TD(o.payer)
                     );
                 });
+            }
+        }
+
+        [Ui("未结"), Tool(Anchor)]
+        public void not(WebContext wc)
+        {
+            string hubid = wc[0];
+            short shopid = wc[Parent];
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT count(*) AS orders, sum(cash) AS cash FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" AND shopid = @2 GROUP BY shopid");
+                dc.Query(p => p.Set(hubid).Set(shopid));
+                wc.GivePage(200, h => { h.TOOLBAR(); });
             }
         }
 

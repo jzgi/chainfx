@@ -27,12 +27,12 @@ namespace Samp
                 using (var dc = NewDbContext())
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
-                    var item = Obtain<Map<string, Item>>()[o.itemname];
+                    var item = Obtain<Map<string, Item>>()[o.item];
                     wc.GivePane(200, h =>
                     {
                         h.FORM_();
                         h.FIELDUL_("购买数量");
-                        h.LI_().LABEL("货品").PIC("/" + o.itemname + "/icon", css: "uk-width-1-6").SP().T(o.itemname)._LI();
+                        h.LI_().LABEL("货品").PIC("/" + o.item + "/icon", css: "uk-width-1-6").SP().T(o.item)._LI();
                         //                        h.NUMBER(nameof(oi.qty), oi.qty, "购量", max: item.max, min: (short) 0, step: item.step);
                         h._FIELDUL();
                         h._FORM();
@@ -47,7 +47,7 @@ namespace Samp
                 {
                     var o = dc.Query1<Order>("SELECT * FROM orders WHERE id = @1 AND custid = @2", p => p.Set(orderid).Set(myid));
                     //                    o.UpdItem(idx, qty);
-                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.itemname).Set(o.total).Set(o.id));
+                    dc.Execute("UPDATE orders SET rev = rev + 1, items = @1, total = @2, net = @3 WHERE id = @4", p => p.Set(o.item).Set(o.total).Set(o.id));
                 }
                 wc.GivePane(200);
             }
@@ -69,7 +69,7 @@ namespace Samp
             {
                 dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.PAID).T(" AND teamid = @2 ORDER BY id ASC");
                 var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
-                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.itemname); }); });
+                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.item); }); });
             }
         }
 
@@ -80,9 +80,9 @@ namespace Samp
             short shopid = wc[this];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @2 ORDER BY id ASC");
+                dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.CONFIRMED).T(" AND shopid = @2 ORDER BY id ASC");
                 var arr = dc.Query<Order>(p => p.Set(hubid).Set(shopid));
-                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.itemname); }); });
+                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.item); }); });
             }
         }
 
@@ -97,7 +97,7 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT id,  itemid, item, qty FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @2 ORDER BY itemid");
+                        dc.Sql("SELECT id,  itemid, item, qty FROM orders WHERE hubid = @1 AND status = ").T(Order.CONFIRMED).T(" AND shopid = @2 ORDER BY itemid");
                         dc.Query(p => p.Set(hubid).Set(shopid));
                         h.FORM_();
                         h.ORDERSCALE(dc);
@@ -112,7 +112,7 @@ namespace Samp
                 int[] id = f[nameof(id)];
                 using (var dc = NewDbContext())
                 {
-                    dc.Sql("UPDATE orders SET stockerid = @1, stocker = @2, status = ").T(Order.STOCKED).T(" WHERE hubid = @3 AND status = ").T(Order.ACCEPTED).T(" AND shopid = @4 AND ")._IN_(id);
+                    dc.Sql("UPDATE orders SET stockerid = @1, stocker = @2, status = ").T(Order.ACCEPTED).T(" WHERE hubid = @3 AND status = ").T(Order.CONFIRMED).T(" AND shopid = @4 AND ")._IN_(id);
                     dc.Execute(prepare: false);
                 }
                 wc.GivePane(200);
@@ -133,9 +133,9 @@ namespace Samp
             short teamid = wc[this];
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" AND teamid = @2 ORDER BY id ASC");
+                dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND teamid = @2 ORDER BY id ASC");
                 var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
-                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.itemname); }); });
+                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.item); }); });
             }
         }
 
@@ -150,7 +150,7 @@ namespace Samp
                 {
                     using (var dc = NewDbContext())
                     {
-                        dc.Sql("SELECT id,  itemid, item, qty FROM orders WHERE hubid = @1 AND status = ").T(Order.STOCKED).T(" AND teamid = @2 ORDER BY itemid");
+                        dc.Sql("SELECT id,  itemid, item, qty FROM orders WHERE hubid = @1 AND status = ").T(Order.ACCEPTED).T(" AND teamid = @2 ORDER BY itemid");
                         dc.Query(p => p.Set(hubid).Set(teamid));
                         h.FORM_();
                         h.ORDERSCALE(dc);
@@ -173,7 +173,7 @@ namespace Samp
             {
                 dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.SENT).T(" AND teamid = @2 ORDER BY id ASC");
                 var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
-                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.itemname); }); });
+                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.item); }); });
             }
         }
 
@@ -193,7 +193,7 @@ namespace Samp
             {
                 dc.Sql("SELECT * FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" AND teamid = @2 ORDER BY id ASC");
                 var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
-                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.itemname); }); });
+                wc.GivePane(200, h => { h.BOARD(arr, o => { h.T(o.item); }); });
             }
         }
 

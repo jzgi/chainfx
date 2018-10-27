@@ -35,7 +35,7 @@ namespace Samp
                             h._HEADER();
                             h.MAIN_("uk-card-body uk-row");
                             h.PIC_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._PIC();
-                            h.DIV_("uk-width-2-3").SP().T(o.itemname).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
+                            h.DIV_("uk-width-2-3").SP().T(o.item).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
                             h.VARTOOLS(css: "uk-width-1-6");
                             h._MAIN();
                         }

@@ -118,14 +118,14 @@ namespace Samp
                     uaddr = u.addr,
                     teamid = u.teamid,
                     itemid = itemid,
-                    itemname = m.name,
+                    item = m.name,
                     price = m.price,
                     fee = m.fee,
                     qty = qty,
                     unit = m.unit,
                     total = m.price * qty + (door ? decimal.Ceiling(m.fee * qty) : 0),
                     creatorid = prin.id,
-                    creatorname = prin.name,
+                    creator = prin.name,
                     creatorwx = prin.wx,
                 };
                 dc.Sql("INSERT INTO orders ")._(Order.Empty, 0)._VALUES_(Order.Empty, 0).T(" RETURNING id");

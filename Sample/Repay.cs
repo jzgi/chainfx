@@ -10,13 +10,6 @@ namespace Samp
     {
         public static readonly Repay Empty = new Repay();
 
-        public static readonly Map<short, string> Jobs = new Map<short, string>
-        {
-            {1, "供货"},
-            {2, "派送"},
-            {3, "团组"}
-        };
-
         // status
         public const short CREATED = 0, FAILED = 1, PAID = 2;
 
@@ -29,12 +22,11 @@ namespace Samp
 
         internal int id;
         internal string hubid;
-        internal short typ;
-        internal short orgid;
-        internal int uid;
-        internal string uname;
-        internal string uwx;
-        internal DateTime fro;
+        internal short shopid;
+        internal short teamid;
+        internal int userid;
+        internal string user;
+        internal string userwx; // openid for money transfer
         internal DateTime till;
         internal int orders;
         internal decimal cash;
@@ -47,12 +39,11 @@ namespace Samp
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(hubid), ref hubid);
-            s.Get(nameof(typ), ref typ);
-            s.Get(nameof(orgid), ref orgid);
-            s.Get(nameof(uid), ref uid);
-            s.Get(nameof(uname), ref uname);
-            s.Get(nameof(uwx), ref uwx);
-            s.Get(nameof(fro), ref fro);
+            s.Get(nameof(shopid), ref shopid);
+            s.Get(nameof(teamid), ref teamid);
+            s.Get(nameof(userid), ref userid);
+            s.Get(nameof(user), ref user);
+            s.Get(nameof(userwx), ref userwx);
             s.Get(nameof(till), ref till);
             s.Get(nameof(orders), ref orders);
             s.Get(nameof(cash), ref cash);
@@ -66,12 +57,11 @@ namespace Samp
         {
             s.Put(nameof(id), id);
             s.Put(nameof(hubid), hubid);
-            s.Put(nameof(typ), typ);
-            s.Put(nameof(orgid), orgid);
-            s.Put(nameof(uid), uid);
-            s.Put(nameof(uname), uname);
-            s.Put(nameof(uwx), uwx);
-            s.Put(nameof(fro), fro);
+            s.Put(nameof(shopid), shopid);
+            s.Put(nameof(teamid), teamid);
+            s.Put(nameof(userid), userid);
+            s.Put(nameof(user), user);
+            s.Put(nameof(userwx), userwx);
             s.Put(nameof(till), till);
             s.Put(nameof(orders), orders);
             s.Put(nameof(cash), cash);

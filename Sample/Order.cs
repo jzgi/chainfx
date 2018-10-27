@@ -14,15 +14,15 @@ namespace Samp
 
         // status
         public const short
-            ABORTED = -1, CREATED = 0, PAID = 1, ACCEPTED = 2, STOCKED = 3, SENT = 4, RECEIVED = 5, ENDED = 6;
+            ABORTED = -1, CREATED = 0, PAID = 1, CONFIRMED = 2, ACCEPTED = 3, SENT = 4, RECEIVED = 5, ENDED = 6;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {ABORTED, "撤销"},
             {CREATED, null},
             {PAID, "排队"},
-            {ACCEPTED, "备货"},
-            {STOCKED, "中转"},
+            {CONFIRMED, "备货"},
+            {ACCEPTED, "中转"},
             {SENT, "派运"},
             {RECEIVED, "运达"},
             {ENDED, "完成"}
@@ -36,7 +36,7 @@ namespace Samp
         internal string uaddr; // may include area and site
         internal short teamid;
         internal short itemid;
-        internal string itemname;
+        internal string item;
         internal string unit;
         internal decimal price;
         internal decimal fee;
@@ -44,15 +44,15 @@ namespace Samp
         internal decimal total; // total
         internal decimal cash; // cash = total paid
         internal int creatorid;
-        internal string creatorname;
+        internal string creator;
         internal string creatorwx; // weixin openid
 
         internal DateTime paid;
         internal short shopid; // workshop's orgid
-        internal int accepterid; // giving forth goods
+        internal int confirmerid; // confirm the order and start preparation
+        internal DateTime confirmed;
+        internal int accepterid; // check and accpet goods from the provider 
         internal DateTime accepted;
-        internal int stockerid; // taking goods from the giver to the storage 
-        internal DateTime stocked;
         internal int senderid; // sending goods to the team 
         internal DateTime sent;
         internal int receiverid; // receiving goods for the team 
@@ -73,7 +73,7 @@ namespace Samp
             s.Get(nameof(uaddr), ref uaddr);
             s.Get(nameof(teamid), ref teamid);
             s.Get(nameof(itemid), ref itemid);
-            s.Get(nameof(itemname), ref itemname);
+            s.Get(nameof(item), ref item);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
             s.Get(nameof(fee), ref fee);
@@ -81,16 +81,16 @@ namespace Samp
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
             s.Get(nameof(creatorid), ref creatorid);
-            s.Get(nameof(creatorname), ref creatorname);
+            s.Get(nameof(creator), ref creator);
             s.Get(nameof(creatorwx), ref creatorwx);
             s.Get(nameof(paid), ref paid);
             if ((proj & LATER) > 0)
             {
                 s.Get(nameof(shopid), ref shopid);
+                s.Get(nameof(confirmerid), ref confirmerid);
+                s.Get(nameof(confirmed), ref confirmed);
                 s.Get(nameof(accepterid), ref accepterid);
                 s.Get(nameof(accepted), ref accepted);
-                s.Get(nameof(stockerid), ref stockerid);
-                s.Get(nameof(stocked), ref stocked);
                 s.Get(nameof(senderid), ref senderid);
                 s.Get(nameof(sent), ref sent);
                 s.Get(nameof(receiverid), ref receiverid);
@@ -113,7 +113,7 @@ namespace Samp
             s.Put(nameof(uaddr), uaddr);
             s.Put(nameof(teamid), teamid);
             s.Put(nameof(itemid), itemid);
-            s.Put(nameof(itemname), itemname);
+            s.Put(nameof(item), item);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
             s.Put(nameof(fee), fee);
@@ -121,16 +121,16 @@ namespace Samp
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
             s.Put(nameof(creatorid), creatorid);
-            s.Put(nameof(creatorname), creatorname);
+            s.Put(nameof(creator), creator);
             s.Put(nameof(creatorwx), creatorwx);
             s.Put(nameof(paid), paid);
             if ((proj & LATER) > 0)
             {
                 s.Put(nameof(shopid), shopid);
+                s.Put(nameof(confirmerid), confirmerid);
+                s.Put(nameof(confirmed), confirmed);
                 s.Put(nameof(accepterid), accepterid);
                 s.Put(nameof(accepted), accepted);
-                s.Put(nameof(stockerid), stockerid);
-                s.Put(nameof(stocked), stocked);
                 s.Put(nameof(senderid), senderid);
                 s.Put(nameof(sent), sent);
                 s.Put(nameof(receiverid), receiverid);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Greatbone
 {
@@ -38,7 +39,7 @@ namespace Greatbone
 
         public string GetFilePath(string file)
         {
-            return System.IO.Path.Combine(Directory, file);
+            return Path.Combine(Directory, file);
         }
     }
 }

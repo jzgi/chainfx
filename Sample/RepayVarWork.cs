@@ -1,5 +1,4 @@
 using Greatbone;
-using static Greatbone.Modal;
 
 namespace Samp
 {
@@ -10,9 +9,16 @@ namespace Samp
         }
     }
 
-    public class OrgRepayVarWork : RepayVarWork
+    public class TeamlyRepayVarWork : RepayVarWork
     {
-        public OrgRepayVarWork(WorkConfig cfg) : base(cfg)
+        public TeamlyRepayVarWork(WorkConfig cfg) : base(cfg)
+        {
+        }
+    }
+
+    public class ShoplyRepayVarWork : RepayVarWork
+    {
+        public ShoplyRepayVarWork(WorkConfig cfg) : base(cfg)
         {
         }
     }

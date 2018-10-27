@@ -123,7 +123,7 @@ namespace Samp
 
             Make<ShoplyOprWork>("user");
 
-            Make<OrgRepayWork>("repay");
+            Make<ShoplyRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
@@ -168,7 +168,7 @@ namespace Samp
 
             Make<TeamlyOprWork>("opr");
 
-            Make<OrgRepayWork>("repay");
+            Make<TeamlyRepayWork>("repay");
         }
 
         public void @default(WebContext wc)
