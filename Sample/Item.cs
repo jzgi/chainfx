@@ -25,10 +25,8 @@ namespace Samp
         internal string name;
         internal string descr;
         internal string remark;
-        internal string mov; // movie url
         internal string unit;
         internal decimal price;
-        internal decimal fee; // delivery fee
         internal decimal shopp; // provision portion 
         internal decimal senderp; // shipping portion
         internal decimal teamp; // teaming portion
@@ -55,9 +53,7 @@ namespace Samp
             s.Get(nameof(min), ref min);
             s.Get(nameof(step), ref step);
             s.Get(nameof(refrig), ref refrig);
-            s.Get(nameof(mov), ref mov);
             s.Get(nameof(price), ref price);
-            s.Get(nameof(fee), ref fee);
             s.Get(nameof(shopp), ref shopp);
             s.Get(nameof(senderp), ref senderp);
             s.Get(nameof(teamp), ref teamp);
@@ -83,9 +79,7 @@ namespace Samp
             s.Put(nameof(min), min);
             s.Put(nameof(step), step);
             s.Put(nameof(refrig), refrig);
-            s.Put(nameof(mov), mov);
             s.Put(nameof(price), price);
-            s.Put(nameof(fee), fee);
             s.Put(nameof(shopp), shopp);
             s.Put(nameof(senderp), senderp);
             s.Put(nameof(teamp), teamp);

@@ -256,7 +256,7 @@ namespace Greatbone
             }
         }
 
-        public void Schedule(string rname, Action<IEventContext> poller, short interval = 12)
+        public void Schedule(string rname, Action<IPollContext> poller, short interval = 12)
         {
             if (clients == null)
             {

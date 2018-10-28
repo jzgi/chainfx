@@ -9,7 +9,7 @@ namespace Greatbone
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class Client : HttpClient, IKeyable<string>, IEventContext
+    public class Client : HttpClient, IKeyable<string>, IPollContext
     {
         const int Ahead = 1000 * 12;
         const string PollAction = "/event";
@@ -26,7 +26,7 @@ namespace Greatbone
         // the poller task currently running
         Task pollTask;
 
-        Action<IEventContext> poller;
+        Action<IPollContext> poller;
 
         short interval;
 
@@ -79,7 +79,7 @@ namespace Greatbone
 
         public string Key => rKey;
 
-        internal void SetPoller(Action<IEventContext> poller, short interval)
+        internal void SetPoller(Action<IPollContext> poller, short interval)
         {
             this.poller = poller;
             this.interval = interval;

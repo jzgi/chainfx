@@ -3,7 +3,7 @@
 namespace Samp
 {
     /// <summary>
-    /// The sample service that hosts all official accounts.
+    /// The sample service that hosts multiple wechat official accounts.
     /// </summary>
     public class SampService : Service
     {

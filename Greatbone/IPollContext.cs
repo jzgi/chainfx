@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Greatbone
 {
-    public interface IEventContext
+    public interface IPollContext
     {
         string RefShard { get; }
 

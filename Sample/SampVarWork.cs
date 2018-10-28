@@ -3,6 +3,9 @@ using Greatbone;
 
 namespace Samp
 {
+    /// <summary>
+    /// A web directory pertaining to a single hub. 
+    /// </summary>
     [UserAuthenticate]
     public class SampVarWork : Work
     {

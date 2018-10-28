@@ -24,9 +24,9 @@ namespace Samp
 
             Make<HublyTeamWork>("team");
 
-            Make<HublyOprWork>("opr");
-
             Make<HublyRepayWork>("repay");
+
+            Make<HublyOprWork>("opr");
         }
 
         public void @default(WebContext wc)

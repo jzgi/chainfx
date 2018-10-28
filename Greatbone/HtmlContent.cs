@@ -777,6 +777,18 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent FI(string label, bool v)
+        {
+            LABEL(label);
+            Add("<p>");
+            if (v)
+            {
+                Add("&checkmark;");
+            }
+            Add("</p>");
+            return this;
+        }
+
         public HtmlContent CNY(decimal v)
         {
             Add("￥");

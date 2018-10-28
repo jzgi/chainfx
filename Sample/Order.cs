@@ -39,7 +39,6 @@ namespace Samp
         internal string item;
         internal string unit;
         internal decimal price;
-        internal decimal fee;
         internal short qty;
         internal decimal total; // total
         internal decimal cash; // cash = total paid
@@ -76,7 +75,6 @@ namespace Samp
             s.Get(nameof(item), ref item);
             s.Get(nameof(unit), ref unit);
             s.Get(nameof(price), ref price);
-            s.Get(nameof(fee), ref fee);
             s.Get(nameof(qty), ref qty);
             s.Get(nameof(total), ref total);
             s.Get(nameof(cash), ref cash);
@@ -116,7 +114,6 @@ namespace Samp
             s.Put(nameof(item), item);
             s.Put(nameof(unit), unit);
             s.Put(nameof(price), price);
-            s.Put(nameof(fee), fee);
             s.Put(nameof(qty), qty);
             s.Put(nameof(total), total);
             s.Put(nameof(cash), cash);
