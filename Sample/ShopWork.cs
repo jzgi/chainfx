@@ -37,7 +37,7 @@ namespace Samp
         }
 
         [UserAuthorize(hubly: 7)]
-        [Ui("新建", "创建新网点"), Tool(ButtonShow)]
+        [Ui("新建"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             if (wc.IsGet)
@@ -69,7 +69,7 @@ namespace Samp
         }
 
         [UserAuthorize(hubly: 7)]
-        [Ui("删除", "确定删除选中的网点吗？"), Tool(ButtonPickConfirm)]
+        [Ui("删除"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
             string hubid = wc[0];

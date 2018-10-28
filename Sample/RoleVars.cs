@@ -41,7 +41,7 @@ namespace Samp
 
         const string PASSMASK = "t#0^0z4R4pX7";
 
-        [Ui("修改设置", "修改用户设置"), Tool(ButtonOpen, css: "uk-button-primary")]
+        [Ui("修改设置"), Tool(ButtonOpen, css: "uk-button-primary")]
         public async Task upd(WebContext wc)
         {
             string hubid = wc[0];

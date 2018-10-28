@@ -38,7 +38,7 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "search"), Tool(AnchorPrompt, size: 1)]
+        [Ui(), Tool(AnchorPrompt, size: 1)]
         public void search(WebContext wc)
         {
             bool inner = wc.Query[nameof(inner)];
@@ -163,7 +163,7 @@ namespace Samp
         }
 
         [UserAuthorize(hubly: 7)]
-        [Ui("删除", "确定删除选中操作人员吗？"), Tool(ButtonPickConfirm)]
+        [Ui("删除"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
             string hubid = wc[0];
@@ -203,7 +203,7 @@ namespace Samp
         }
 
         [UserAuthorize(shoply: 7)]
-        [Ui("添加", icon: "plus"), Tool(ButtonPickConfirm)]
+        [Ui("添加"), Tool(ButtonPickConfirm)]
         public async Task add(WebContext wc, int cmd)
         {
             string shopid = wc[-1];
@@ -277,7 +277,7 @@ namespace Samp
         }
 
         [UserAuthorize(hubly: 7)]
-        [Ui("删除", "确定删除选中操作人员吗？"), Tool(ButtonPickConfirm)]
+        [Ui("删除"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
             string hubid = wc[0];

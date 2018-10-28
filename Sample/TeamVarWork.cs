@@ -17,7 +17,7 @@ namespace Samp
         {
         }
 
-        [Ui(icon: "file-edit"), Tool(ButtonShow)]
+        [Ui(), Tool(ButtonShow)]
         public async Task edit(WebContext wc)
         {
             string hubid = wc[0];
@@ -56,7 +56,7 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "user", tip: "设置负责人"), Tool(ButtonShow)]
+        [Ui(tip: "设置负责人"), Tool(ButtonShow)]
         public async Task mgr(WebContext wc)
         {
             string orgid = wc[this];

@@ -1587,13 +1587,6 @@ namespace Greatbone
             }
             Add(">");
 
-            string ico = icon ?? act.Icon;
-            if (ico != null && ico.Length != 0)
-            {
-                Add("<span uk-icon=\"icon: ");
-                Add(ico);
-                Add("\"></span>");
-            }
             string cap = caption ?? act.Label;
             if (cap != null && cap.Length != 0)
             {

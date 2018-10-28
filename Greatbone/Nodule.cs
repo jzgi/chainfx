@@ -15,8 +15,6 @@ namespace Greatbone
 
         readonly string label;
 
-        readonly string icon;
-
         readonly string tip;
 
         readonly byte group;
@@ -43,7 +41,6 @@ namespace Greatbone
                 if (uis.Length > 0) ui = uis[0];
             }
             label = ui?.Label;
-            icon = ui?.Icon;
             tip = ui?.Tip ?? label;
             group = ui?.Group ?? 0;
 
@@ -67,8 +64,6 @@ namespace Greatbone
         public string Lower => lower;
 
         public string Label => label;
-
-        public string Icon => icon;
 
         public string Tip => tip;
 

@@ -60,7 +60,9 @@ namespace Samp
         {
         }
 
-        [Ui(icon: "list", tip: "团组排队订单", group: 0b000011), Tool(ButtonOpen)]
+        private const string ORDERLIST = "订单列表";
+
+        [Ui("&ggg;", ORDERLIST, 0b000011), Tool(ButtonOpen)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -73,8 +75,8 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "list", tip: "工坊备货订单", group: 0b000101), Tool(ButtonOpen)]
-        public void accepted(WebContext wc)
+        [Ui("&ggg;", ORDERLIST, 0b000101), Tool(ButtonOpen)]
+        public void confirmed(WebContext wc)
         {
             string hubid = wc[0];
             short shopid = wc[this];
@@ -86,8 +88,8 @@ namespace Samp
             }
         }
 
-        [Ui("接货", tip: "中转接货", group: 0b000100), Tool(ButtonShow)]
-        public async Task stock(WebContext wc)
+        [Ui("中转", tip: "中转验货", 0b000100), Tool(ButtonShow)]
+        public async Task accept(WebContext wc)
         {
             string hubid = wc[0];
             short shopid = wc[this];
@@ -119,15 +121,8 @@ namespace Samp
             }
         }
 
-        [Ui("倒退", tip: "倒退给备货", group: 0b001000), Tool(ButtonOpen)]
-        public void unstock(WebContext wc)
-        {
-            string hubid = wc[0];
-            short teamid = wc[this];
-        }
-
-        [Ui(icon: "list", tip: "团组订单", group: 0b001001), Tool(ButtonOpen)]
-        public void stocked(WebContext wc)
+        [Ui("&ggg;", ORDERLIST, 0b001001), Tool(ButtonOpen)]
+        public void accepted(WebContext wc)
         {
             string hubid = wc[0];
             short teamid = wc[this];
@@ -139,7 +134,14 @@ namespace Samp
             }
         }
 
-        [Ui("派运", tip: "团组订单", group: 0b001000), Tool(ButtonOpen)]
+        [Ui("回退", "回退给备货", @group: 0b001000), Tool(ButtonOpen)]
+        public void unaccept(WebContext wc)
+        {
+            string hubid = wc[0];
+            short teamid = wc[this];
+        }
+
+        [Ui("派运", "团组订单", 0b001000), Tool(ButtonOpen)]
         public void send(WebContext wc)
         {
             string hubid = wc[0];
@@ -164,7 +166,7 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "list", tip: "团组订单", group: 0b010001), Tool(ButtonOpen)]
+        [Ui("&ggg;", ORDERLIST, 0b010001), Tool(ButtonOpen)]
         public void sent(WebContext wc)
         {
             string hubid = wc[0];
@@ -177,14 +179,14 @@ namespace Samp
             }
         }
 
-        [Ui("倒退", tip: "倒退给中转", group: 0b010000), Tool(ButtonOpen)]
+        [Ui("回退", "回退给中转", @group: 0b010000), Tool(ButtonOpen)]
         public void unsend(WebContext wc)
         {
             string hubid = wc[0];
             short teamid = wc[this];
         }
 
-        [Ui(icon: "list", tip: "团组订单", group: 0b100001), Tool(ButtonOpen)]
+        [Ui("@ggg;", ORDERLIST, 0b100001), Tool(ButtonOpen)]
         public void received(WebContext wc)
         {
             string hubid = wc[0];
@@ -197,8 +199,15 @@ namespace Samp
             }
         }
 
+        [Ui("回退", "回退给派运", 0b100001), Tool(ButtonOpen)]
+        public void unreceive(WebContext wc)
+        {
+            string hubid = wc[0];
+            short teamid = wc[this];
+        }
 
-        [Ui("撤消", tip: "确认要撤销此单吗？实收款项将退回给买家", group: 0b10000000), Tool(ButtonPickConfirm)]
+
+        [Ui("撤消", tip: "确认要撤销此单吗？实收款项将退回给买家", @group: 0b10000000), Tool(ButtonPickConfirm)]
         public async Task abort(WebContext wc)
         {
             string orgid = wc[-2];

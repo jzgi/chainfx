@@ -30,10 +30,10 @@ namespace Samp
 
         internal int id;
         internal string hubid;
-        internal int uid;
-        internal string uname; // customer name
-        internal string utel;
-        internal string uaddr; // may include area and site
+        internal int custid;
+        internal string cust; // customer name
+        internal string custtel;
+        internal string custaddr; // may include area and site
         internal short teamid;
         internal short itemid;
         internal string item;
@@ -66,10 +66,10 @@ namespace Samp
                 s.Get(nameof(id), ref id);
             }
             s.Get(nameof(hubid), ref hubid);
-            s.Get(nameof(uid), ref uid);
-            s.Get(nameof(uname), ref uname);
-            s.Get(nameof(utel), ref utel);
-            s.Get(nameof(uaddr), ref uaddr);
+            s.Get(nameof(custid), ref custid);
+            s.Get(nameof(cust), ref cust);
+            s.Get(nameof(custtel), ref custtel);
+            s.Get(nameof(custaddr), ref custaddr);
             s.Get(nameof(teamid), ref teamid);
             s.Get(nameof(itemid), ref itemid);
             s.Get(nameof(item), ref item);
@@ -105,10 +105,10 @@ namespace Samp
                 s.Put(nameof(id), id);
             }
             s.Put(nameof(hubid), hubid);
-            s.Put(nameof(uid), uid);
-            s.Put(nameof(uname), uname);
-            s.Put(nameof(utel), utel);
-            s.Put(nameof(uaddr), uaddr);
+            s.Put(nameof(custid), custid);
+            s.Put(nameof(cust), cust);
+            s.Put(nameof(custtel), custtel);
+            s.Put(nameof(custaddr), custaddr);
             s.Put(nameof(teamid), teamid);
             s.Put(nameof(itemid), itemid);
             s.Put(nameof(item), item);

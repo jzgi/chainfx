@@ -112,10 +112,10 @@ namespace Samp
                 o = new Order()
                 {
                     hubid = hubid,
-                    uid = uid,
-                    uname = u.name,
-                    utel = u.tel,
-                    uaddr = u.addr,
+                    custid = uid,
+                    cust = u.name,
+                    custtel = u.tel,
+                    custaddr = u.addr,
                     teamid = u.teamid,
                     itemid = itemid,
                     item = m.name,
@@ -177,8 +177,8 @@ namespace Samp
                         h.LI_().TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true)._LI();
                         h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
                         h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true).LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
-                        h.LI_().NUMBER("价　格", nameof(o.price), o.price, required: true).NUMBER("工坊用", nameof(o.shopp), o.shopp, required: true)._LI();
-                        h.LI_().NUMBER("派运用", nameof(o.senderp), o.senderp, required: true).NUMBER("团组用", nameof(o.teamp), o.teamp, required: true)._LI();
+                        h.LI_().NUMBER("价　格", nameof(o.price), o.price, required: true).NUMBER("工坊占", nameof(o.shopp), o.shopp, required: true)._LI();
+                        h.LI_().NUMBER("派运占", nameof(o.senderp), o.senderp, required: true).NUMBER("团组占", nameof(o.teamp), o.teamp, required: true)._LI();
                         h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).NUMBER("递　增", nameof(o.step), o.step, min: (short) 1)._LI();
                         h._FIELDUL()._FORM();
                     });

@@ -18,7 +18,7 @@ namespace Samp
         }
 
         
-        [Ui(icon: "list", tip: "个人订单"), Tool(AnchorOpen)]
+        [Ui(tip: "个人订单"), Tool(AnchorOpen)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -31,7 +31,7 @@ namespace Samp
                     h.BOARD(arr, o =>
                         {
                             h.HEADER_("uk-card-header");
-                            h.T("收货：").T(o.uaddr).SP().T(o.uname).SP().T(o.utel);
+                            h.T("收货：").T(o.custaddr).SP().T(o.cust).SP().T(o.custtel);
                             h._HEADER();
                             h.MAIN_("uk-card-body uk-row");
                             h.PIC_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._PIC();
@@ -44,7 +44,7 @@ namespace Samp
             }
         }
 
-        [Ui(icon: "file-edit", tip: "修改该记录"), Tool(ButtonShow)]
+        [Ui(tip: "修改该记录"), Tool(ButtonShow)]
         public async Task upd(WebContext wc)
         {
             string hubid = wc[0];

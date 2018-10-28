@@ -30,7 +30,7 @@ namespace Samp
                     h.BOARD(arr, o =>
                         {
                             h.HEADER_("uk-card-header");
-                            h.T("收货：").T(o.uaddr).SP().T(o.uname).SP().T(o.utel);
+                            h.T("收货：").T(o.custaddr).SP().T(o.cust).SP().T(o.custtel);
                             h._HEADER();
                             h.MAIN_("uk-card-body uk-row");
                             h.PIC_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._PIC();
@@ -55,7 +55,7 @@ namespace Samp
         static void PutRoll(HtmlContent h, OrderRoll o, IOrg org, byte vargrp)
         {
             h.HEADER_("uk-card-header");
-            h.T("<span uk-icon=\"").T(org is Team ? "users" : "cog").T("\"></span>&nbsp;").T(org.Name);
+            h.T(org is Team ? "&#11093;" : "&#9995;").T(org.Name);
             h.DIV_(css: "uk-badge").T(o.Oprs)._DIV();
             h._HEADER();
             h.MAIN_("uk-card-body uk-flex");
@@ -180,7 +180,7 @@ namespace Samp
             }, false, 3, refresh: 720);
         }
 
-        [Ui(icon: "search", tip: "查找", group: 1), Tool(AnchorPrompt)]
+        [Ui("&#9052;", "查找", 1), Tool(AnchorPrompt)]
         public void find(WebContext wc)
         {
             bool inner = wc.Query[nameof(inner)];
@@ -200,35 +200,40 @@ namespace Samp
                     {
                         h.TOOLBAR(group: 1);
                         h.TABLE(arr, null,
-                            o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
+                            o => h.TD(o.custtel, o.cust).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                         );
                     });
                 }
             }
         }
 
-        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b000011), Tool(ButtonPickOpen)]
-        public void agg(WebContext wc)
+        const string Sigma = "&#931;";
+
+        const string Agg = "汇总订单;";
+
+
+        [Ui(Sigma, Agg, group: 0b000011), Tool(ButtonPickOpen)]
+        public void _(WebContext wc)
         {
         }
 
-        [Ui(icon: "plus", tip: "汇总被选工坊订单", group: 0b000101), Tool(ButtonPickOpen)]
-        public void aggaccepted(WebContext wc)
+        [Ui(Sigma, Agg, group: 0b000101), Tool(ButtonPickOpen)]
+        public void confirmed_(WebContext wc)
         {
         }
 
-        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b001001), Tool(ButtonPickOpen)]
-        public void aggstocked(WebContext wc)
+        [Ui(Sigma, Agg, group: 0b001001), Tool(ButtonPickOpen)]
+        public void accepted_(WebContext wc)
         {
         }
 
-        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b010001), Tool(ButtonPickOpen)]
-        public void aggsent(WebContext wc)
+        [Ui(Sigma, Agg, group: 0b010001), Tool(ButtonPickOpen)]
+        public void sent_(WebContext wc)
         {
         }
 
-        [Ui(icon: "plus", tip: "汇总被选团组订单", group: 0b100001), Tool(ButtonPickOpen)]
-        public void aggreceived(WebContext wc)
+        [Ui(Sigma, Agg, group: 0b100001), Tool(ButtonPickOpen)]
+        public void received_(WebContext wc)
         {
         }
     }
@@ -244,7 +249,7 @@ namespace Samp
             MakeVar<ShopOrderVarWork>();
         }
 
-        [Ui("排队", group: 1), Tool(Anchor)]
+        [Ui("排队", @group: 1), Tool(Anchor)]
         public void not(WebContext wc)
         {
             string hubid = wc[0];
@@ -270,7 +275,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("备货", group: 1), Tool(Anchor)]
+        [Ui("备货", @group: 1), Tool(Anchor)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -296,7 +301,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("中转", group: 1), Tool(Anchor)]
+        [Ui("中转", @group: 1), Tool(Anchor)]
         public void stocked(WebContext wc)
         {
             string hubid = wc[0];
@@ -322,7 +327,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("后段", group: 1), Tool(Anchor)]
+        [Ui("后段", @group: 1), Tool(Anchor)]
         public void later(WebContext wc)
         {
             string hubid = wc[0];
@@ -348,7 +353,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("备货", tip: "为订单池中的订单供货", group: 2), Tool(ButtonShow)]
+        [Ui("备货", tip: "为订单池中的订单供货", @group: 2), Tool(ButtonShow)]
         public async Task give(WebContext wc)
         {
             string hubid = wc[0];
@@ -381,7 +386,7 @@ namespace Samp
             }
         }
 
-        [Ui("取消备货", tip: "为订单池中的订单供货", group: 4), Tool(ButtonShow)]
+        [Ui("取消备货", tip: "为订单池中的订单供货", @group: 4), Tool(ButtonShow)]
         public async Task ungive(WebContext wc)
         {
             string hubid = wc[0];
@@ -435,7 +440,7 @@ namespace Samp
                     dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE status BETWEEN ").T(Order.PAID).T(" AND ").T(Order.CONFIRMED).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(teamid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
+                        o => h.TD(o.custtel, o.cust).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
                     );
                 }
             });
@@ -453,7 +458,7 @@ namespace Samp
                     dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE status = ").T(Order.ACCEPTED).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(orgid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
+                        o => h.TD(o.custtel, o.cust).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
                     );
                 }
             });
@@ -471,7 +476,7 @@ namespace Samp
                     dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE status = ").T(Order.SENT).T(" AND teamid = @1 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(orgid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
+                        o => h.TD(o.custtel, o.cust).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                     );
                 }
             });
@@ -490,13 +495,13 @@ namespace Samp
                     dc.Sql("SELECT ").collst(Order.Empty).T(" FROM orders WHERE hubid = @1 AND status = ").T(Order.RECEIVED).T(" AND teamid = @2 ORDER BY id");
                     var arr = dc.Query<Order>(p => p.Set(hubid).Set(teamid));
                     h.TABLE(arr, null,
-                        o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
+                        o => h.TD(o.custtel, o.cust).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD()
                     );
                 }
             });
         }
 
-        [Ui(icon: "search", tip: "查找"), Tool(AnchorPrompt)]
+        [Ui(tip: "查找"), Tool(AnchorPrompt)]
         public void find(WebContext wc)
         {
             bool inner = wc.Query[nameof(inner)];
@@ -516,7 +521,7 @@ namespace Samp
                     {
                         h.TOOLBAR(title: tel);
                         h.TABLE(arr, null,
-                            o => h.TD(o.utel, o.uname).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
+                            o => h.TD(o.custtel, o.cust).TD(o.item).TD_(css: "uk-text-right").T(o.qty).SP().T(o.unit)._TD().TD(Order.Statuses[o.status])
                         );
                     });
                 }

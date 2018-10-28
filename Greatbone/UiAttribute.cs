@@ -10,23 +10,18 @@ namespace Greatbone
     {
         readonly string label;
 
-        readonly string icon;
-
         readonly string tip;
 
         readonly byte group;
 
-        public UiAttribute(string label = null, string icon = null, string tip = null, byte group = 0)
+        public UiAttribute(string label = null, string tip = null, byte @group = 0)
         {
             this.label = label;
-            this.icon = icon;
             this.tip = tip ?? label;
             this.group = group;
         }
 
         public string Label => label;
-
-        public string Icon => icon;
 
         public string Tip => tip;
 

@@ -39,8 +39,8 @@ namespace Samp
                         h.UL_(css: "uk-width-4-5 uk-padding-small-left");
                         h.LI_().FI("简　介", o.descr)._LI();
                         h.LI_().FI("单　位", o.unit).FI("冷　藏", o.refrig)._LI();
-                        h.LI_().FI("价　格", o.price).FI("工坊用", o.shopp)._LI();
-                        h.LI_().FI("派运用", o.senderp).FI("团组用", o.teamp)._LI();
+                        h.LI_().FI("价　格", o.price).FI("工坊占", o.shopp)._LI();
+                        h.LI_().FI("派运占", o.senderp).FI("团组占", o.teamp)._LI();
                         h.LI_().FI("起　订", o.min).FI("递　增", o.step)._LI();
                         h.LI_().FI("周产能", o.cap7).FI("工　坊", shops[o.shopid]?.name)._LI();
                         h._UL();
@@ -65,8 +65,8 @@ namespace Samp
                     h.LI_().TEXTAREA("简　介", nameof(o.descr), o.descr, max: 100, min: 20, required: true)._LI();
                     h.LI_().TEXTAREA("说　明", nameof(o.remark), o.descr, max: 500, min: 100, required: true)._LI();
                     h.LI_().TEXT("单　位", nameof(o.unit), o.unit, required: true).LABEL("冷　藏").CHECKBOX(nameof(o.refrig), o.refrig)._LI();
-                    h.LI_().NUMBER("价　格", nameof(o.price), o.price, required: true).NUMBER("工坊用", nameof(o.shopp), o.shopp, required: true)._LI();
-                    h.LI_().NUMBER("派运用", nameof(o.senderp), o.senderp, required: true).NUMBER("团组用", nameof(o.teamp), o.teamp, required: true)._LI();
+                    h.LI_().NUMBER("价　格", nameof(o.price), o.price, required: true).NUMBER("工坊占", nameof(o.shopp), o.shopp, required: true)._LI();
+                    h.LI_().NUMBER("派运占", nameof(o.senderp), o.senderp, required: true).NUMBER("团组占", nameof(o.teamp), o.teamp, required: true)._LI();
                     h.LI_().NUMBER("起　订", nameof(o.min), o.min, min: (short) 1).NUMBER("递　增", nameof(o.step), o.step, min: (short) 1)._LI();
                     h._FIELDUL()._FORM();
                 });
@@ -85,7 +85,7 @@ namespace Samp
         }
 
         [UserAuthorize(hubly: 7)]
-        [Ui("删除", "删除所选货品吗？"), Tool(ButtonPickConfirm)]
+        [Ui("删除"), Tool(ButtonPickConfirm)]
         public async Task del(WebContext wc)
         {
             string orgid = wc[-1];
