@@ -15,7 +15,7 @@ namespace Greatbone
 
         int current;
 
-        internal JArr(int capacity = 16)
+        public JArr(int capacity = 16)
         {
             elements = new JMbr[capacity];
             count = 0;

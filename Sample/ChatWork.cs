@@ -5,20 +5,20 @@ using static Greatbone.Modal;
 
 namespace Samp
 {
-    public abstract class ChatWork<V> : Work where V : ChatVarWork
+    public abstract class ChatWork : Work
     {
         public const short PicWidth = 360, PicHeight = 270;
 
         protected ChatWork(WorkConfig cfg) : base(cfg)
         {
-            MakeVar<V>();
         }
     }
 
-    public class SampChatWork : ChatWork<SampChatVarWork>
+    public class SampChatWork : ChatWork
     {
         public SampChatWork(WorkConfig cfg) : base(cfg)
         {
+            MakeVar<SampChatVarWork>();
         }
 
         public void @default(WebContext wc, int page)

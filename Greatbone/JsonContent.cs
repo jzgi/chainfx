@@ -16,7 +16,7 @@ namespace Greatbone
 
         public JsonContent(bool bin, int capacity = 8 * 1024) : base(bin, capacity)
         {
-            counts = new int[8];
+            counts = new int[16];
             level = 0;
         }
 

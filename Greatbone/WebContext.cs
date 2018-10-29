@@ -120,7 +120,6 @@ namespace Greatbone
         [Obsolete]
         public override AuthenticationManager Authentication => null;
 
-        [Obsolete]
         public override ClaimsPrincipal User { get; set; } = null;
 
         public override IDictionary<object, object> Items { get; set; } = null;
@@ -450,10 +449,10 @@ namespace Greatbone
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public short MaxAge { get; internal set; }
 
-        public void Give(int status, IContent cont = null, bool? @public = null, short maxage = 12)
+        public void Give(int status, IContent cnt = null, bool? @public = null, short maxage = 12)
         {
             Status = status;
-            Content = cont;
+            Content = cnt;
             Public = @public;
             MaxAge = maxage;
         }
@@ -471,20 +470,20 @@ namespace Greatbone
 
         public void Give(int status, IData obj, byte proj = 0x0f, bool? pub = null, short maxage = 12)
         {
-            JsonContent cont = new JsonContent(true);
-            cont.Put(null, obj, proj);
+            JsonContent cnt = new JsonContent(true);
+            cnt.Put(null, obj, proj);
             Status = status;
-            Content = cont;
+            Content = cnt;
             Public = pub;
             MaxAge = maxage;
         }
 
         public void Give<D>(int status, D[] arr, byte proj = 0x0f, bool? pub = null, short maxage = 12) where D : IData
         {
-            JsonContent cont = new JsonContent(true);
-            cont.Put(null, arr, proj);
+            JsonContent cnt = new JsonContent(true);
+            cnt.Put(null, arr, proj);
             Status = status;
-            Content = cont;
+            Content = cnt;
             Public = pub;
             MaxAge = maxage;
         }

@@ -25,7 +25,7 @@ namespace Samp
             {ACCEPTED, "中转"},
             {SENT, "派运"},
             {RECEIVED, "运达"},
-            {ENDED, "完成"}
+            {ENDED, "结束"}
         };
 
         internal int id;

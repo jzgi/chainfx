@@ -178,7 +178,7 @@ namespace Samp
             wc.GiveRedirect();
         }
 
-        [Ui(tip: "强制设为已转款"), Tool(ButtonPickConfirm)]
+        [Ui("手动", "强制设为已转款"), Tool(ButtonPickConfirm)]
         public void over(WebContext wc)
         {
         }

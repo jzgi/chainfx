@@ -14,6 +14,12 @@ namespace Greatbone
 
         readonly byte group;
 
+        /// <summary>
+        ///  To specify user interface-related attributes.
+        /// </summary>
+        /// <param name="label">The label text for the target work or action. It can be Unicode symbols or HTML entities</param>
+        /// <param name="tip">A short description of the functionality</param>
+        /// <param name="group"></param>
         public UiAttribute(string label = null, string tip = null, byte @group = 0)
         {
             this.label = label;

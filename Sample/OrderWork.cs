@@ -55,7 +55,7 @@ namespace Samp
         static void PutRoll(HtmlContent h, OrderRoll o, IOrg org, byte vargrp)
         {
             h.HEADER_("uk-card-header");
-            h.T(org is Team ? "&#11093;" : "&#9995;").T(org.Name);
+            h.T(org is Team ? "&#128516;" : "&#127862;").T(org.Name);
             h.DIV_(css: "uk-badge").T(o.Oprs)._DIV();
             h._HEADER();
             h.MAIN_("uk-card-body uk-flex");
@@ -207,32 +207,32 @@ namespace Samp
             }
         }
 
-        const string Sigma = "&#931;";
+        const string SIGMA = "&#931;";
 
-        const string Agg = "汇总订单;";
+        const string ORDERSUM = "汇总订单;";
 
 
-        [Ui(Sigma, Agg, group: 0b000011), Tool(ButtonPickOpen)]
+        [Ui(SIGMA, ORDERSUM, group: 0b000011), Tool(ButtonPickOpen)]
         public void _(WebContext wc)
         {
         }
 
-        [Ui(Sigma, Agg, group: 0b000101), Tool(ButtonPickOpen)]
+        [Ui(SIGMA, ORDERSUM, group: 0b000101), Tool(ButtonPickOpen)]
         public void confirmed_(WebContext wc)
         {
         }
 
-        [Ui(Sigma, Agg, group: 0b001001), Tool(ButtonPickOpen)]
+        [Ui(SIGMA, ORDERSUM, group: 0b001001), Tool(ButtonPickOpen)]
         public void accepted_(WebContext wc)
         {
         }
 
-        [Ui(Sigma, Agg, group: 0b010001), Tool(ButtonPickOpen)]
+        [Ui(SIGMA, ORDERSUM, group: 0b010001), Tool(ButtonPickOpen)]
         public void sent_(WebContext wc)
         {
         }
 
-        [Ui(Sigma, Agg, group: 0b100001), Tool(ButtonPickOpen)]
+        [Ui(SIGMA, ORDERSUM, group: 0b100001), Tool(ButtonPickOpen)]
         public void received_(WebContext wc)
         {
         }
@@ -249,7 +249,7 @@ namespace Samp
             MakeVar<ShopOrderVarWork>();
         }
 
-        [Ui("排队", @group: 1), Tool(Anchor)]
+        [Ui("排队", group: 1), Tool(Anchor)]
         public void not(WebContext wc)
         {
             string hubid = wc[0];
@@ -275,7 +275,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("备货", @group: 1), Tool(Anchor)]
+        [Ui("备货", group: 1), Tool(Anchor)]
         public void @default(WebContext wc)
         {
             string hubid = wc[0];
@@ -301,7 +301,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("中转", @group: 1), Tool(Anchor)]
+        [Ui("中转", group: 1), Tool(Anchor)]
         public void stocked(WebContext wc)
         {
             string hubid = wc[0];
@@ -327,7 +327,7 @@ namespace Samp
             }, false, 2);
         }
 
-        [Ui("后段", @group: 1), Tool(Anchor)]
+        [Ui("后段", group: 1), Tool(Anchor)]
         public void later(WebContext wc)
         {
             string hubid = wc[0];
