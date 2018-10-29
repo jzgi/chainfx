@@ -13,6 +13,10 @@ We're aiming similar goals to create a framework for building microservices, tha
 * much less coding -- a couple of guys may cope with large projects 
 * versatile -- good for from small management systems to large-scale e-commerce platforms.
 
+<pre>
+dotnet add package Greatbone --version 3.2.0
+</pre>
+
 # Dependencies
 
 The framework specifically uses the following open-source libraries. Many thanks to the great teams respectively!

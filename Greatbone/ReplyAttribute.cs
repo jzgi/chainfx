@@ -34,7 +34,7 @@ namespace Greatbone
             }
             if (body != null)
             {
-                h.T("<pre style=\"overflow-x: scroll;\">").TT(body).T("</pre>");
+                h.T("<pre>").TT(body).T("</pre>");
             }
             h._P();
         }
