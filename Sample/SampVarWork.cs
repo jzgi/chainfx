@@ -191,8 +191,8 @@ namespace Samp
                             h.H3(o.name);
                             h.FI(null, o.descr);
                             h.ROW_();
-                            h.P_("").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
-                            h.PROGRESS(o.ongoing, o.cap7);
+                            h.P_(css: "uk-width-2-3").T("￥<em>").T(o.price).T("</em>／").T(o.unit)._P();
+                            h.PROGRESS(o.ongoing, o.cap7, css: "uk-width-1-3");
                             h._ROW();
                             h._COL();
                             h.T("</a>");

@@ -789,10 +789,18 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent CNY(decimal v)
+        public HtmlContent CNY(decimal v, bool em = false)
         {
-            Add("￥");
+            Add("¥");
+            if (em)
+            {
+                Add("<em>");
+            }
             Add(v);
+            if (em)
+            {
+                Add("</em>");
+            }
             return this;
         }
 
@@ -1875,10 +1883,10 @@ namespace Greatbone
             else if (v is DateTime dtv) Add(dtv);
         }
 
-        public HtmlContent NUMBER<V>(string label, string name, V v, string tip = null, V max = default, V min = default, V step = default, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string label, string name, int v, string tip = null, int max = default, int min = default, int step = default, bool @readonly = false, bool required = false, string onchange = null)
         {
             LABEL(label);
-            bool grp = (step is short || step is int) && !step.Equals(default(V)); // input group with up and down
+            bool grp = step > 0; // input group with up and down
             if (grp)
             {
                 Add("<div class=\"uk-inline uk-width-1-2\">");
@@ -1887,11 +1895,7 @@ namespace Greatbone
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            if (v is short shortv && shortv != 0) Add(shortv);
-            else if (v is int intv && intv != 0) Add(intv);
-            else if (v is long longv && longv != 0) Add(longv);
-            else if (v is decimal decv) Add(decv);
-            else if (v is double doublev) Add(doublev);
+            Add(v);
             Add("\"");
             if (tip != null)
             {
@@ -1900,18 +1904,24 @@ namespace Greatbone
                 Add("\"");
             }
             Add(" min=\"");
-            AddPrimitive(min);
+            Add(min);
             Add("\"");
-            if (!max.Equals(default(V)))
+            if (max > 0)
             {
                 Add(" max=\"");
-                AddPrimitive(max);
+                Add(max);
                 Add("\"");
             }
-            if (!step.Equals(default(V)))
+            if (step > 0)
             {
                 Add(" step=\"");
-                AddPrimitive(step);
+                Add(step);
+                Add("\"");
+            }
+            if (onchange != null)
+            {
+                Add(" onchange=\"");
+                Add(onchange);
                 Add("\"");
             }
             if (@readonly) Add(" readonly");
@@ -1949,6 +1959,51 @@ namespace Greatbone
                 Add("\"");
             }
             if (max != decimal.MaxValue)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+            Add(" step=\"");
+            if (step > 0)
+            {
+                Add(step);
+            }
+            else
+            {
+                Add("any");
+            }
+            Add("\"");
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent NUMBER(string label, string name, double v, string tip = null, double max = double.MaxValue, double min = double.MinValue, double step = 0, bool @readonly = false, bool required = false)
+        {
+            LABEL(label);
+            Add("<input type=\"number\" class=\"uk-input\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            if (v != 0 || tip == null)
+            {
+                Add(v);
+            }
+            Add("\"");
+            if (tip != null)
+            {
+                Add(" placeholder=\"");
+                Add(tip);
+                Add("\"");
+            }
+            if (min > double.MinValue)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+            if (max < double.MaxValue)
             {
                 Add(" max=\"");
                 Add(max);

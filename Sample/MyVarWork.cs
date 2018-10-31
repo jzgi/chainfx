@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 using Greatbone;
-using static Greatbone.Modal;
-using static Samp.User;
 
 namespace Samp
 {
@@ -41,7 +39,7 @@ namespace Samp
 
         const string PASSMASK = "t#0^0z4R4pX7";
 
-        [Ui("修改设置"), Tool(ButtonOpen, css: "uk-button-primary")]
+        [Ui("修改设置"), Tool(Modal.ButtonOpen, css: "uk-button-primary")]
         public async Task upd(WebContext wc)
         {
             string hubid = wc[0];
@@ -89,15 +87,15 @@ namespace Samp
                     if (password != PASSMASK) // password being changed
                     {
                         prin.credential = TextUtility.MD5(prin.tel + ":" + password);
-                        dc.Sql("INSERT INTO users ")._(prin, PRIVACY)._VALUES_(prin, PRIVACY).T(" ON CONFLICT (wx) DO UPDATE ")._SET_(prin, PRIVACY).T(" WHERE users.id = @1");
-                        dc.Execute(p => prin.Write(p, PRIVACY | ID));
+                        dc.Sql("INSERT INTO users ")._(prin, User.PRIVACY)._VALUES_(prin, User.PRIVACY).T(" ON CONFLICT (wx) DO UPDATE ")._SET_(prin, User.PRIVACY).T(" WHERE users.id = @1");
+                        dc.Execute(p => prin.Write(p, User.PRIVACY | User.ID));
                     }
                     else // password no change
                     {
                         dc.Sql("INSERT INTO users ")._(prin, 0)._VALUES_(prin, 0).T(" ON CONFLICT (wx) DO UPDATE ")._SET_(prin, 0).T(" WHERE users.id = @id");
-                        dc.Execute(p => prin.Write(p, ID));
+                        dc.Execute(p => prin.Write(p, User.ID));
                     }
-                    wc.SetTokenCookie(prin, 0xff ^ PRIVACY);
+                    wc.SetTokenCookie(prin, 0xff ^ User.PRIVACY);
                     if (refid > 0) // if was opened by referring qrcode
                     {
                         var hub = Obtain<Map<string, Hub>>()[hubid];
@@ -108,95 +106,6 @@ namespace Samp
                         wc.GivePane(200); // close dialog
                     }
                 }
-            }
-        }
-    }
-
-
-    [UserAuthorize(shoply: 1)]
-    [Ui("动态")]
-    public class ShoplyVarWork : Work, IOrgVar
-    {
-        public ShoplyVarWork(WorkConfig cfg) : base(cfg)
-        {
-            Make<ShoplyOrderWork>("order");
-
-            Make<ShoplyOprWork>("user");
-
-            Make<ShoplyRepayWork>("repay");
-        }
-
-        public void @default(WebContext wc)
-        {
-            string hubid = wc[0];
-            short id = wc[this];
-            var shop = Obtain<Map<short, Team>>()[id];
-            bool inner = wc.Query[nameof(inner)];
-            if (!inner)
-            {
-                wc.GiveFrame(200, false, 900, title: shop?.name);
-            }
-            else
-            {
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-
-                    h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("订单")._HEADER();
-                    h.MAIN_("uk-card-body")._MAIN();
-                    h._SECTION();
-
-                    h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("人员")._HEADER();
-                    h.MAIN_("uk-card-body")._MAIN();
-                    h._SECTION();
-                });
-            }
-        }
-    }
-
-    [UserAuthorize(teamly: 1)]
-    [Ui("动态")]
-    public class TeamlyVarWork : Work, IOrgVar
-    {
-        public TeamlyVarWork(WorkConfig cfg) : base(cfg)
-        {
-            Make<TeamlyOrderWork>("order");
-
-            Make<TeamlyUserWork>("user");
-
-            Make<TeamlyOprWork>("opr");
-
-            Make<TeamlyRepayWork>("repay");
-        }
-
-        public void @default(WebContext wc)
-        {
-            string hubid = wc[0];
-            short id = wc[this];
-            var org = Obtain<Map<short, Team>>()[id];
-            bool inner = wc.Query[nameof(inner)];
-            if (!inner)
-            {
-                wc.GiveFrame(200, false, 900, org?.name);
-            }
-            else
-            {
-                wc.GivePage(200, h =>
-                {
-                    h.TOOLBAR();
-
-                    h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("订单")._HEADER();
-                    h.MAIN_("uk-card-body")._MAIN();
-                    h._SECTION();
-
-                    h.SECTION_("uk-card uk-card-default");
-                    h.HEADER_("uk-card-header").H4("成员")._HEADER();
-                    h.MAIN_("uk-card-body")._MAIN();
-                    h._SECTION();
-                });
             }
         }
     }

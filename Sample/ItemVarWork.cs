@@ -78,11 +78,14 @@ namespace Samp
 
                     h.T(o.remark);
 
-                    h.FORM_(post: true);
-                    h.NUMBER(null, nameof(qty), o.min, max: o.Avail, min: o.min, step: o.step == 0 ? (short) 1 : o.step).T(o.unit);
+                    h.FORM_(post: true, css: "uk-bottom-bar uk-flex-between");
+                    h.T('¥').T(o.price).T("/").T(o.unit);
+                    h.NUMBER(null, nameof(qty), o.min, max: o.Avail, min: o.min, step: o.step == 0 ? (short) 1 : o.step, onchange: "this.form.total.value=this.value;");
+
+                    h.T("<output name=\"total\">").T(o.min * o.price).T("</output>");
+
                     h.HIDDEN(nameof(uid), uid);
                     h.HIDDEN(nameof(itemid), itemid);
-                    h.CHECKBOX(nameof(door), door, label: "小区到户");
                     h.TOOL(nameof(prepay));
 
                     h._FORM();
@@ -91,7 +94,7 @@ namespace Samp
         }
 
 
-        [Ui("付款"), Tool(ButtonScript, "uk-button-primary")]
+        [Ui("付款"), Tool(ButtonScript, "uk-button-danger")]
         public async Task prepay(WebContext wc)
         {
             var prin = (User) wc.Principal;
@@ -125,7 +128,7 @@ namespace Samp
                     total = m.price * qty,
                     creatorid = prin.id,
                     creator = prin.name,
-                    creatorwx = prin.wx,
+                    custwx = prin.wx,
                 };
                 dc.Sql("INSERT INTO orders ")._(Order.Empty, 0)._VALUES_(Order.Empty, 0).T(" RETURNING id");
                 dc.Query1(p => o.Write(p, 0));
@@ -136,7 +139,7 @@ namespace Samp
             var (prepay_id, _) = await hub.PostUnifiedOrderAsync(
                 o.id.ToString(),
                 o.total,
-                o.creatorwx, // the payer is always the current user
+                o.custwx, // the payer is always the current user
                 wc.RemoteAddr.ToString(),
                 SampUtility.NetAddr + "/" + hub.id + "/" + nameof(SampVarWork.onpay),
                 hub.name

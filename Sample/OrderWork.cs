@@ -24,22 +24,22 @@ namespace Samp
             int uid = wc[Parent];
             using (var dc = NewDbContext())
             {
-                var arr = dc.Query<Order>("SELECT * FROM orders WHERE uid = @1 ORDER BY id DESC", p => p.Set(uid));
+                var arr = dc.Query<Order>("SELECT * FROM orders WHERE custid = @1 ORDER BY id DESC", p => p.Set(uid));
                 wc.GivePage(200, h =>
                 {
                     h.BOARD(arr, o =>
                         {
-                            h.HEADER_("uk-card-header");
-                            h.T("收货：").T(o.custaddr).SP().T(o.cust).SP().T(o.custtel);
-                            h._HEADER();
-                            h.MAIN_("uk-card-body uk-row");
                             h.PIC_(css: "uk-width-1-6").T("/").T(hubid).T("/").T(o.itemid).T("/icon")._PIC();
-                            h.DIV_("uk-width-2-3").SP().T(o.item).SP().CNY(o.price).T(o.qty).T("/").T(o.unit)._DIV();
-                            h.VARTOOLS(css: "uk-width-1-6");
-                            h._MAIN();
-                        }
+
+                            h.DIV_("uk-width-1-2 uk-col uk-flex-around uk-padding-small-left");
+                            h.DIV_().T(o.item).SP().T(o.qty).T(o.unit).T("&nbsp;¥").T(o.total).T('元')._DIV();
+                            h.DIV_().T(o.cust).SP().T(o.custtel)._DIV();
+                            h._DIV();
+                            h.VARTOOLS(css: "uk-width-1-3");
+                        },
+                        css: "uk-card-default uk-card-body uk-grid"
                     );
-                }, false, 3, title: "我的订单", refresh: 120);
+                }, false, 3, title: "我的订单");
             }
         }
     }
@@ -55,7 +55,7 @@ namespace Samp
         static void PutRoll(HtmlContent h, OrderRoll o, IOrg org, byte vargrp)
         {
             h.HEADER_("uk-card-header");
-            h.T(org is Team ? "&#128516;" : "&#127862;").T(org.Name);
+            h.T(org is Team ? "❀" : "✿").T(org.Name);
             h.DIV_(css: "uk-badge").T(o.Oprs)._DIV();
             h._HEADER();
             h.MAIN_("uk-card-body uk-flex");

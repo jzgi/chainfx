@@ -2,14 +2,6 @@ using Greatbone;
 
 namespace Samp
 {
-    public class MyWork : Work
-    {
-        public MyWork(WorkConfig cfg) : base(cfg)
-        {
-            MakeVar<MyVarWork>((obj) => ((User) obj).id);
-        }
-    }
-
     [UserAuthorize(hubly: 1)]
     [Ui("动态")]
     public class HublyWork : Work
@@ -68,23 +60,6 @@ namespace Samp
                 var hub = Obtain<Map<string, Hub>>()[hubid];
                 wc.GiveFrame(200, false, 900, hub.name);
             }
-        }
-    }
-
-    public class ShoplyWork : Work
-    {
-        public ShoplyWork(WorkConfig cfg) : base(cfg)
-        {
-            MakeVar<ShoplyVarWork>(prin => ((User) prin).shopid);
-        }
-    }
-
-
-    public class TeamlyWork : Work
-    {
-        public TeamlyWork(WorkConfig cfg) : base(cfg)
-        {
-            MakeVar<TeamlyVarWork>(prin => ((User) prin).teamid);
         }
     }
 }

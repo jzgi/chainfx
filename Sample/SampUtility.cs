@@ -275,7 +275,7 @@ namespace Samp
             }
             h.T("</ul>");
             string hubid = h.WebCtx[0];
-            h.T("<a class=\"uk-button uk-button-link\" href=\"/").T(hubid).T("/my/").T(uid, uid > 0).T("/order/\"><span uk-icon=\"album\"></span>订单</a>");
+            h.T("<a class=\"uk-button uk-button-link\" href=\"/").T(hubid).T("/my/").T(uid, uid > 0).T("/order/\"><span uk-icon=\"album\"></span>&nbsp;订单</a>");
             h.T("</nav>");
             h.T("<div class=\"uk-top-placeholder\"></div>");
             return h;

@@ -44,7 +44,7 @@ namespace Samp
         internal decimal cash; // cash = total paid
         internal int creatorid;
         internal string creator;
-        internal string creatorwx; // weixin openid
+        internal string custwx; // weixin openid
 
         internal DateTime paid;
         internal short shopid; // workshop's orgid
@@ -68,6 +68,7 @@ namespace Samp
             s.Get(nameof(hubid), ref hubid);
             s.Get(nameof(custid), ref custid);
             s.Get(nameof(cust), ref cust);
+            s.Get(nameof(custwx), ref custwx);
             s.Get(nameof(custtel), ref custtel);
             s.Get(nameof(custaddr), ref custaddr);
             s.Get(nameof(teamid), ref teamid);
@@ -80,7 +81,6 @@ namespace Samp
             s.Get(nameof(cash), ref cash);
             s.Get(nameof(creatorid), ref creatorid);
             s.Get(nameof(creator), ref creator);
-            s.Get(nameof(creatorwx), ref creatorwx);
             s.Get(nameof(paid), ref paid);
             if ((proj & LATER) > 0)
             {
@@ -107,6 +107,7 @@ namespace Samp
             s.Put(nameof(hubid), hubid);
             s.Put(nameof(custid), custid);
             s.Put(nameof(cust), cust);
+            s.Put(nameof(custwx), custwx);
             s.Put(nameof(custtel), custtel);
             s.Put(nameof(custaddr), custaddr);
             s.Put(nameof(teamid), teamid);
@@ -119,7 +120,6 @@ namespace Samp
             s.Put(nameof(cash), cash);
             s.Put(nameof(creatorid), creatorid);
             s.Put(nameof(creator), creator);
-            s.Put(nameof(creatorwx), creatorwx);
             s.Put(nameof(paid), paid);
             if ((proj & LATER) > 0)
             {
