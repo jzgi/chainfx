@@ -5,7 +5,6 @@
     <Authors>hismichael</Authors>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>Greatbone</AssemblyName>
-    <OutputType>Exe</OutputType>
     <DebugType>portable</DebugType>
     <PackageId>Greatbone</PackageId>
     <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
