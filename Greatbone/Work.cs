@@ -323,7 +323,7 @@ namespace Greatbone
             {
                 if (authenticate != null)
                 {
-                    if (authenticate.IsAsync && !await authenticate.DoAsync(wc) || !authenticate.IsAsync && authenticate.Do(wc))
+                    if (authenticate.IsAsync && !await authenticate.DoAsync(wc) || !authenticate.IsAsync && !authenticate.Do(wc))
                     {
                         wc.Give(401, "authentication failed"); // unauthenticated
                         return;

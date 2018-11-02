@@ -1476,12 +1476,12 @@ namespace Greatbone
             var act = w[action];
             if (act != null)
             {
-                PutTool(act, subscript, caption, icon, css);
+                PutTool(act, subscript, caption, css);
             }
             return this;
         }
 
-        void PutTool(Actioner act, int subscript = -1, string caption = null, string icon = null, string css = null)
+        void PutTool(Actioner act, int subscript = -1, string caption = null, string css = null)
         {
             var tool = act.Tool;
 
