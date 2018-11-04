@@ -8,7 +8,7 @@
     <DebugType>portable</DebugType>
     <PackageId>Greatbone</PackageId>
     <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
-    <Version>3.2</Version>
+    <Version>3.2.1</Version>
     <LangVersion>7.3</LangVersion>
     <Company>Greatbone</Company>
     <RootNamespace>Creatbone</RootNamespace>
