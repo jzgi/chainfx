@@ -8,6 +8,8 @@ namespace Greatbone
     [AttributeUsage(AttributeTargets.Method)]
     public class ToolAttribute : Attribute
     {
+        readonly Modal modal;
+
         readonly int element; // ui element
 
         readonly int mode; // ui mode
@@ -22,6 +24,7 @@ namespace Greatbone
 
         public ToolAttribute(Modal modal, string css = null, byte size = 0, bool access = true)
         {
+            this.modal = modal;
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0f00;
@@ -41,6 +44,10 @@ namespace Greatbone
         public bool IsAnchorTag => element == 0x1000;
 
         public bool IsButtonTag => element == 0x2000;
+
+        public bool IsAnchor => modal == Modal.Anchor;
+
+        public bool IsButton => modal == Modal.Button;
 
         public bool MustPick => pick == 0x0100;
 

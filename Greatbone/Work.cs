@@ -65,6 +65,7 @@ namespace Greatbone
 
             // gather procedures
             actioners = new Map<string, Actioner>(32);
+            int idx = 0;
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
@@ -78,15 +79,17 @@ namespace Greatbone
                 Actioner act;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    act = new Actioner(this, mi, async, null);
+                    act = new Actioner(this, idx, mi, async, null);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
-                    act = new Actioner(this, mi, async, pis[1].Name);
+                    act = new Actioner(this, idx, mi, async, pis[1].Name);
                 }
                 else continue;
 
                 actioners.Add(act);
+                idx++;
+
                 if (act.Key == string.Empty) @default = act;
                 if (act.Key == "catch") @catch = act;
                 if (act.Tool?.MustPick == true) pick = true;
@@ -136,6 +139,12 @@ namespace Greatbone
         public Map<string, Work> Works => works;
 
         public Work VarWork => varwork;
+
+        public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
+
+        public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];
+
+        public Actioner this[int index] => actioners[index];
 
         public string GetFilePath(string file)
         {
@@ -311,10 +320,6 @@ namespace Greatbone
                 w.Describe(hc);
             }
         }
-
-        public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
-
-        public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];
 
         internal async Task HandleAsync(string rsc, WebContext wc)
         {

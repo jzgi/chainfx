@@ -14,6 +14,8 @@ namespace Greatbone
     {
         readonly Work work;
 
+        readonly int index;
+
         // relative path
         readonly string relative;
 
@@ -39,9 +41,10 @@ namespace Greatbone
 
         readonly List<TagAttribute> comments;
 
-        internal Actioner(Work work, MethodInfo mi, bool async, string subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
+        internal Actioner(Work work, int index, MethodInfo mi, bool async, string subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
             this.work = work;
+            this.index = index;
             this.relative = Key == string.Empty ? "./" : Key;
             this.async = async;
             this.subscript = subscript;
@@ -95,6 +98,8 @@ namespace Greatbone
 
         public Work Work => work;
 
+        public int Index => index;
+
         public string Relative => relative;
 
         public bool IsAsync => async;
@@ -106,7 +111,7 @@ namespace Greatbone
         public bool HasTool => tool != null;
 
         public ToolAttribute Tool => tool;
-
+        
         public List<TagAttribute> Comments => comments;
 
         public bool CheckState(WebContext wc, object[] stack, int level)

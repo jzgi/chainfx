@@ -1243,7 +1243,7 @@ namespace Greatbone
                             var act = acts[j];
                             if (act.Group == 0 || group == act.Group)
                             {
-                                PutTool(act, css: "uk-button-secondary");
+                                PutTool(act, act.Tool, css: "uk-button-secondary");
                             }
                         }
                         Add("</form>");
@@ -1329,9 +1329,17 @@ namespace Greatbone
 
         public HtmlContent TOOLBAR(byte group = 0x0f, string title = null, bool refresh = true)
         {
+            // index of the current anchor action
+            int anchor = -1;
+            var curact = webCtx.Actioner;
+            if (curact.Tool?.IsAnchor == true)
+            {
+                anchor = curact.Index;
+            }
+
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
-            Add("<section class=\"uk-top-bar-left\">");
-            int gogrp = -1;
+            Add("<section class=\"uk-top-bar-left\">"); // ui tools
+            int grp = -1;
             var acts = webCtx.Work.Tooled;
             if (acts != null)
             {
@@ -1341,14 +1349,16 @@ namespace Greatbone
                     int g = act.Group;
                     if (g == 0 || (g & group) == g)
                     {
-                        if (g != gogrp)
+                        if (g != grp)
                         {
-                            if (gogrp != -1) Add("</div>");
+                            if (grp != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act);
+                        var tool = act.Tool;
+                        // provide the state about current anchor as subscript 
+                        PutTool(act, tool, tool.IsAnchor ? -1 : anchor); // except anchor actions
                     }
-                    gogrp = g;
+                    grp = g;
                 }
                 Add("</div>");
             }
@@ -1385,6 +1395,14 @@ namespace Greatbone
 
         public HtmlContent TOOLS(byte group = 0, string css = null)
         {
+            // index of the current anchor action
+            int anchor = -1;
+            var curact = webCtx.Actioner;
+            if (curact.Tool?.IsAnchor == true)
+            {
+                anchor = curact.Index;
+            }
+
             Add("<nav class=\"uk-flex");
             if (css != null)
             {
@@ -1410,7 +1428,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, css: "uk-button-secondary");
+                        PutTool(act, act.Tool, anchor, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1423,6 +1441,14 @@ namespace Greatbone
 
         public HtmlContent VARTOOLS(byte group = 0, string css = null)
         {
+            // index of the current anchor action
+            int anchor = -1;
+            var curact = webCtx.Actioner;
+            if (curact.Tool?.IsAnchor == true)
+            {
+                anchor = curact.Index;
+            }
+
             Add("<nav class=\"uk-flex");
             if (css != null)
             {
@@ -1459,7 +1485,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, css: "uk-button-secondary");
+                        PutTool(act, act.Tool, anchor, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1474,17 +1500,16 @@ namespace Greatbone
             // locate the proper work
             Work w = webCtx.Work;
             var act = w[action];
-            if (act != null)
+            var tool = act?.Tool;
+            if (tool != null)
             {
-                PutTool(act, subscript, caption, css);
+                PutTool(act, tool, subscript, caption, css);
             }
             return this;
         }
 
-        void PutTool(Actioner act, int subscript = -1, string caption = null, string css = null)
+        void PutTool(Actioner act, ToolAttribute tool, int subscript = -1, string caption = null, string css = null)
         {
-            var tool = act.Tool;
-
             // check action's availability
             bool ok = !tool.Access || act.DoAuthorize(webCtx);
             if (ok && level >= 0)
@@ -1517,7 +1542,7 @@ namespace Greatbone
                     }
                 }
                 Add(act.Relative);
-                if (subscript >= 0)
+                if (subscript >= 0 && act.HasSubscript)
                 {
                     Add('-');
                     Add(subscript);
@@ -1542,7 +1567,7 @@ namespace Greatbone
                     }
                 }
                 Add(act.Key);
-                if (subscript >= 0)
+                if (subscript >= 0 && act.HasSubscript)
                 {
                     Add('-');
                     Add(subscript);
