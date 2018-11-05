@@ -26,7 +26,7 @@ namespace Greatbone
                 for (int i = 0; i < array.Length; i++)
                 {
                     var v = array[i];
-                    while (ir < up.Length && keyer(v).Equals(up[ir]))
+                    while (ir < up.Length && !keyer(v).Equals(up[ir].Key))
                     {
                         ir++;
                     }

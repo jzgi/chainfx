@@ -748,8 +748,9 @@ namespace Greatbone
             Add("<li");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
+                Add("\"");
             }
             Add(">");
             return this;
