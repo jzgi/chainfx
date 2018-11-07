@@ -571,6 +571,21 @@ namespace Greatbone
         }
 
 
+        public HtmlContent P<V>(V v, string css = null)
+        {
+            Add("<p");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            AddPrimitive(v);
+            Add("</p>");
+            return this;
+        }
+
         public HtmlContent P_(string css = null)
         {
             Add("<p");
@@ -762,6 +777,25 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent DL_(string css = null)
+        {
+            Add("<dl");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _DL()
+        {
+            Add("</dl>");
+            return this;
+        }
+
         /// <summary>
         /// A field item
         /// </summary>
@@ -865,29 +899,29 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent PROGRESS<V>(V v, V max = default, string css = null)
+        public HtmlContent PROGRESS(int v, int max, string css = null)
         {
-            Add("<progress class=\"uk-progress");
+            Add("<div class=\"uk-progress");
             if (css != null)
             {
                 Add(' ');
                 Add(css);
             }
-            Add("\" value=\"");
-            AddPrimitive(v);
-            if (!max.Equals(default))
-            {
-                Add("\" max=\"");
-                AddPrimitive(max);
-            }
-            Add("\"></progress>");
+            Add("\"><span style=\"width: ");
+            Add(v * 100 / max);
+            Add("%\"></div>");
             return this;
         }
 
-        public HtmlContent QRCODE(string v)
+        public HtmlContent QRCODE(string v, string css = null)
         {
-            Add("<div class=\"uk-qrcode\">");
-            Add("<script type=\"text/javascript\">");
+            Add("<div class=\"uk-qrcode");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\"><script type=\"text/javascript\">");
             Add("var scripte = document.scripts[document.scripts.length - 1];");
             Add("new QRCode(scripte.parentNode, \"");
             Add(v);
@@ -1231,7 +1265,7 @@ namespace Greatbone
                         Add("<td style=\"width: 1%\">");
                         Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
                         Work.PutVariableKey(obj, this);
-                        Add("\" onchange=\"checkit(this);\">");
+                        Add("\" onchange=\"checkToggle(this);\">");
                         Add("</td>");
                     }
                     row(obj);
@@ -1467,7 +1501,7 @@ namespace Greatbone
                 object obj = stack[level];
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
                 Work.PutVariableKey(obj, this);
-                Add("\" onchange=\"checkit(this);\">");
+                Add("\" onchange=\"checkToggle(this);\">");
             }
 
             // output button group(s)
@@ -1909,15 +1943,45 @@ namespace Greatbone
             else if (v is DateTime dtv) Add(dtv);
         }
 
-        public HtmlContent NUMBER(string label, string name, int v, string tip = null, int max = default, int min = default, int step = default, bool @readonly = false, bool required = false, string onchange = null)
+        public HtmlContent NUMBERPICK(string label, string name, short v, short max = default, short min = default, short step = 1, bool @readonly = false, bool required = false, string onchange = null, string css = null)
         {
             LABEL(label);
-            bool grp = step > 0; // input group with up and down
-            if (grp)
+            Add("<div class=\"uk-inline");
+            if (css != null)
             {
-                Add("<div class=\"uk-inline uk-width-1-2\">");
-                Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown();this.nextSibling.onchange();\"></a>");
+                Add(' ');
+                Add(css);
             }
+            Add("\">");
+            Add("<a class=\"uk-form-icon\" href=\"#\" uk-icon=\"icon: minus-circle; ratio: 1.5\" onclick=\"this.nextSibling.stepDown();this.nextSibling.onchange();\"></a>");
+            Add("<input type=\"number\" class=\"uk-input\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v);
+            Add("\" min=\"");
+            Add(min);
+            Add("\" max=\"");
+            Add(max);
+            Add("\" step=\"");
+            Add(step);
+            Add("\"");
+            if (onchange != null)
+            {
+                Add(" onchange=\"");
+                Add(onchange);
+                Add("\"");
+            }
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            Add(">");
+            Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp();this.previousSibling.onchange();\"></a>");
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent NUMBER(string label, string name, int v, string tip = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
+        {
+            LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -1944,40 +2008,20 @@ namespace Greatbone
                 Add(step);
                 Add("\"");
             }
-            if (onchange != null)
-            {
-                Add(" onchange=\"");
-                Add(onchange);
-                Add("\"");
-            }
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
-            if (grp)
-            {
-                Add("<a class=\"uk-form-icon uk-form-icon-flip\" href=\"#\" uk-icon=\"icon: plus-circle; ratio: 1.5\" onclick=\"this.previousSibling.stepUp();this.previousSibling.onchange();\"></a>");
-                Add("</div>");
-            }
             return this;
         }
 
-        public HtmlContent NUMBER(string label, string name, decimal v, string tip = null, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            if (v != 0 || tip == null)
-            {
-                Add(v);
-            }
+            Add(v);
             Add("\"");
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
-            }
             if (min != decimal.MinValue)
             {
                 Add(" min=\"");
@@ -2006,23 +2050,14 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent NUMBER(string label, string name, double v, string tip = null, double max = double.MaxValue, double min = double.MinValue, double step = 0, bool @readonly = false, bool required = false)
+        public HtmlContent NUMBER(string label, string name, double v, double max = double.MaxValue, double min = double.MinValue, double step = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            if (v != 0 || tip == null)
-            {
-                Add(v);
-            }
+            Add(v);
             Add("\"");
-            if (tip != null)
-            {
-                Add(" placeholder=\"");
-                Add(tip);
-                Add("\"");
-            }
             if (min > double.MinValue)
             {
                 Add(" min=\"");
@@ -2061,22 +2096,31 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent CHECKBOX(string name, bool val, string label = null, bool required = false)
+        public HtmlContent CHECKBOX(string label, string name, bool v, string tip = null, bool required = false)
         {
-            if (label != null)
+            LABEL(label);
+            if (tip != null) 
             {
                 Add("<label>");
+            }
+            else
+            {
+                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
             }
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
-            if (val) Add(" checked");
+            if (v) Add(" checked");
             if (required) Add(" required");
             Add(">");
-            if (label != null)
+            if (tip != null)
             {
-                Add(label);
+                Add(tip); // caption following the checkbox
                 Add("</label>");
+            }
+            else
+            {
+                Add("</div>");
             }
             return this;
         }
