@@ -1509,7 +1509,7 @@ namespace Greatbone
             var acts = varw?.Tooled;
             if (acts != null)
             {
-                for (int i = acts.Length - 1; i >= 0; i--) // in group value reversed order
+                for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
                     int g = act.Group;
@@ -1518,7 +1518,7 @@ namespace Greatbone
                         if (g != curg)
                         {
                             if (curg != -1) Add("</div>");
-                            Add("<div class=\"uk-button-group uk-margin-auto-left\">");
+                            Add("<div class=\"uk-button-group\">");
                         }
                         PutTool(act, act.Tool, anchor, css: "uk-button-secondary");
                         curg = g;
@@ -2099,7 +2099,7 @@ namespace Greatbone
         public HtmlContent CHECKBOX(string label, string name, bool v, string tip = null, bool required = false)
         {
             LABEL(label);
-            if (tip != null) 
+            if (tip != null)
             {
                 Add("<label>");
             }
