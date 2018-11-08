@@ -48,6 +48,14 @@ namespace Greatbone
             return this;
         }
 
+        public DbSql TT(string v)
+        {
+            Add('\'');
+            Add(v);
+            Add('\'');
+            return this;
+        }
+
         public DbSql setlst(IData obj, byte proj = 0x0f)
         {
             ctx = CTX_SETLIST;

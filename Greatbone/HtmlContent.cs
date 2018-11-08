@@ -1224,7 +1224,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte group = 0)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte group = 0, bool pick = true)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
@@ -1260,7 +1260,7 @@ namespace Greatbone
                     stack[level] = obj;
 
                     Add("<tr>");
-                    if (w.HasPick)
+                    if (pick && w.HasPick)
                     {
                         Add("<td style=\"width: 1%\">");
                         Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
