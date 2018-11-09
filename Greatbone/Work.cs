@@ -65,7 +65,6 @@ namespace Greatbone
 
             // gather procedures
             actioners = new Map<string, Actioner>(32);
-            int idx = 0;
             foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
@@ -79,17 +78,15 @@ namespace Greatbone
                 Actioner act;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    act = new Actioner(this, idx, mi, async, null);
+                    act = new Actioner(this, mi, async, null);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
-                    act = new Actioner(this, idx, mi, async, pis[1].Name);
+                    act = new Actioner(this, mi, async, pis[1].Name);
                 }
                 else continue;
 
                 actioners.Add(act);
-                idx++;
-
                 if (act.Key == string.Empty) @default = act;
                 if (act.Key == "catch") @catch = act;
                 if (act.Tool?.MustPick == true) pick = true;

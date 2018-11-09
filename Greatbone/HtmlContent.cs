@@ -1362,16 +1362,8 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte group = 0x0f, string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR(byte group = 0x0f, short state = -1, string title = null, bool refresh = true)
         {
-            // index of the current anchor action
-            int anchor = -1;
-            var curact = webCtx.Actioner;
-            if (curact.Tool?.IsAnchor == true)
-            {
-                anchor = curact.Index;
-            }
-
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
             int grp = -1;
@@ -1391,7 +1383,7 @@ namespace Greatbone
                         }
                         var tool = act.Tool;
                         // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchor ? -1 : anchor); // except anchor actions
+                        PutTool(act, tool, state);
                     }
                     grp = g;
                 }
@@ -1428,16 +1420,8 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLS(byte group = 0, string css = null)
+        public HtmlContent TOOLS(byte group = 0, short state = -1, string css = null)
         {
-            // index of the current anchor action
-            int anchor = -1;
-            var curact = webCtx.Actioner;
-            if (curact.Tool?.IsAnchor == true)
-            {
-                anchor = curact.Index;
-            }
-
             Add("<nav class=\"uk-flex");
             if (css != null)
             {
@@ -1463,7 +1447,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, act.Tool, anchor, css: "uk-button-secondary");
+                        PutTool(act, act.Tool, state, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1474,16 +1458,8 @@ namespace Greatbone
         }
 
 
-        public HtmlContent VARTOOLS(byte group = 0, string css = null)
+        public HtmlContent VARTOOLS(byte group = 0, short scope = -1, string css = null)
         {
-            // index of the current anchor action
-            int anchor = -1;
-            var curact = webCtx.Actioner;
-            if (curact.Tool?.IsAnchor == true)
-            {
-                anchor = curact.Index;
-            }
-
             Add("<nav class=\"uk-flex");
             if (css != null)
             {
@@ -1520,7 +1496,7 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, act.Tool, anchor, css: "uk-button-secondary");
+                        PutTool(act, act.Tool, scope, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
