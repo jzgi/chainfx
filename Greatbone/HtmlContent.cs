@@ -1224,7 +1224,7 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte group = 0, bool pick = true)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte group = 0, int subscript = -1, bool pick = true)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
@@ -1260,7 +1260,7 @@ namespace Greatbone
                     stack[level] = obj;
 
                     Add("<tr>");
-                    if (pick && w.HasPick)
+                    if (pick)
                     {
                         Add("<td style=\"width: 1%\">");
                         Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
@@ -1278,7 +1278,8 @@ namespace Greatbone
                             var act = acts[j];
                             if (act.Group == 0 || group == act.Group)
                             {
-                                PutTool(act, act.Tool, css: "uk-button-secondary");
+                                var tool = act.Tool;
+                                PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
                             }
                         }
                         Add("</form>");
@@ -1322,6 +1323,26 @@ namespace Greatbone
             Add("</main>");
         }
 
+        public void CARD<D>(D obj, Action<D> card, string css = "uk-card-default")
+        {
+            if (stack == null) stack = new object[4]; // init contexts
+            level++; // enter a new level
+
+            stack[level] = obj;
+            Add("<form class=\"uk-card");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
+            card(obj);
+            Add("</form>");
+            stack[level] = null;
+
+            level--; // exit the level
+        }
+
         public void GRID<D>(D[] arr, Action<D> card, string css = null)
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
@@ -1362,7 +1383,7 @@ namespace Greatbone
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte group = 0x0f, short state = -1, string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR(byte group = 0x0f, int subscript = -1, string title = null, bool refresh = true)
         {
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
@@ -1383,7 +1404,7 @@ namespace Greatbone
                         }
                         var tool = act.Tool;
                         // provide the state about current anchor as subscript 
-                        PutTool(act, tool, state);
+                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript);
                     }
                     grp = g;
                 }
@@ -1420,7 +1441,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOLS(byte group = 0, short state = -1, string css = null)
+        public HtmlContent TOOLS(byte group = 0, int subscript = -1, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1447,7 +1468,8 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, act.Tool, state, css: "uk-button-secondary");
+                        var tool = act.Tool;
+                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1458,7 +1480,7 @@ namespace Greatbone
         }
 
 
-        public HtmlContent VARTOOLS(byte group = 0, short scope = -1, string css = null)
+        public HtmlContent VARTOOLS(byte group = 0, int subscript = -1, bool pick = true, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1472,10 +1494,10 @@ namespace Greatbone
             Work varw = w.varwork;
 
             // output a pick check
-            if (varw != null && w.HasPick)
+            if (varw != null && pick)
             {
-                object obj = stack[level];
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+                object obj = stack[level];
                 Work.PutVariableKey(obj, this);
                 Add("\" onchange=\"checkToggle(this);\">");
             }
@@ -1496,7 +1518,8 @@ namespace Greatbone
                             if (curg != -1) Add("</div>");
                             Add("<div class=\"uk-button-group\">");
                         }
-                        PutTool(act, act.Tool, scope, css: "uk-button-secondary");
+                        var tool = act.Tool;
+                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1506,7 +1529,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string icon = null, string css = null)
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string css = null)
         {
             // locate the proper work
             Work w = webCtx.Work;
