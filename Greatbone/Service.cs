@@ -365,9 +365,9 @@ namespace Greatbone
         {
             if (wc.IsGet)
             {
-                if (!wc.InCache && wc.Public == true && Resp.IsCacheable(wc.Status))
+                if (!wc.InCache && wc.Public == true && Resp.IsCacheable(wc.Code))
                 {
-                    var re = new Resp(wc.Status, wc.Content, wc.MaxAge, Environment.TickCount);
+                    var re = new Resp(wc.Code, wc.Content, wc.MaxAge, Environment.TickCount);
                     cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
                     wc.InCache = true;
                 }

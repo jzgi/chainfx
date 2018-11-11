@@ -1542,6 +1542,22 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent VARTOOL(string action, int subscript = -1, string caption = null, string css = null)
+        {
+            // locate the proper work
+            Work w = webCtx.Work.VarWork;
+            if (w != null)
+            {
+                var act = w[action];
+                var tool = act?.Tool;
+                if (tool != null)
+                {
+                    PutTool(act, tool, subscript, caption, css);
+                }
+            }
+            return this;
+        }
+
         void PutTool(Actioner act, ToolAttribute tool, int subscript = -1, string caption = null, string css = null)
         {
             // check action's availability
