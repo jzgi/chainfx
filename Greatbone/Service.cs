@@ -510,7 +510,7 @@ namespace Greatbone
         public class Resp
         {
             // response status, 0 means cleared, otherwise one of the cacheable status
-            int status;
+            short code;
 
             // can be set to null
             IContent content;
@@ -523,9 +523,9 @@ namespace Greatbone
 
             int hits;
 
-            internal Resp(int status, IContent content, int maxage, int stamp)
+            internal Resp(short code, IContent content, int maxage, int stamp)
             {
-                this.status = status;
+                this.code = code;
                 this.content = content;
                 this.maxage = maxage;
                 this.stamp = stamp;
@@ -541,7 +541,7 @@ namespace Greatbone
 
             public int Hits => hits;
 
-            public bool IsCleared => status == 0;
+            public bool IsCleared => code == 0;
 
             /// <summary>
             /// 
@@ -554,11 +554,11 @@ namespace Greatbone
                 {
                     int pass = now - (stamp + maxage * 1000);
 
-                    if (status == 0) return pass < 900 * 1000; // 15 minutes
+                    if (code == 0) return pass < 900 * 1000; // 15 minutes
 
                     if (pass >= 0) // to clear this reply
                     {
-                        status = 0; // set to cleared
+                        code = 0; // set to cleared
                         content = null; // NOTE: the buffer won't return to the pool
                         maxage = 0;
                         stamp = now; // time being cleared
@@ -571,7 +571,7 @@ namespace Greatbone
             {
                 lock (this)
                 {
-                    if (status == 0)
+                    if (code == 0)
                     {
                         return false;
                     }
@@ -579,7 +579,7 @@ namespace Greatbone
                     if (remain > 0)
                     {
                         wc.InCache = true;
-                        wc.Give(status, content, true, remain);
+                        wc.Give(code, content, true, remain);
                         Interlocked.Increment(ref hits);
                         return true;
                     }

@@ -995,7 +995,7 @@ namespace Greatbone
 
         public HtmlContent FORM_(string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null, string css = null)
         {
-            Add("<form class=\"uk-grid uk-flex-center");
+            Add("<form class=\"");
             if (css != null)
             {
                 Add(' ');

@@ -435,9 +435,9 @@ namespace Greatbone
 
         public bool InCache { get; internal set; }
 
-        public int Code
+        public short Code
         {
-            get => fResponse.StatusCode;
+            get => (short) fResponse.StatusCode;
             set => fResponse.StatusCode = value;
         }
 
@@ -449,7 +449,7 @@ namespace Greatbone
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public short MaxAge { get; internal set; }
 
-        public void Give(int code, IContent cnt = null, bool? @public = null, short maxage = 12)
+        public void Give(short code, IContent cnt = null, bool? @public = null, short maxage = 12)
         {
             Code = code;
             Content = cnt;
@@ -457,7 +457,7 @@ namespace Greatbone
             MaxAge = maxage;
         }
 
-        public void Give(int code, string text, bool? @public = null, short maxage = 12)
+        public void Give(short code, string text, bool? @public = null, short maxage = 12)
         {
             TextContent cont = new TextContent(true);
             cont.Add(text);
@@ -468,7 +468,7 @@ namespace Greatbone
             MaxAge = maxage;
         }
 
-        public void Give(int code, IData obj, byte proj = 0x0f, bool? pub = null, short maxage = 12)
+        public void Give(short code, IData obj, byte proj = 0x0f, bool? pub = null, short maxage = 12)
         {
             JsonContent cnt = new JsonContent(true);
             cnt.Put(null, obj, proj);
@@ -478,7 +478,7 @@ namespace Greatbone
             MaxAge = maxage;
         }
 
-        public void Give<D>(int code, D[] arr, byte proj = 0x0f, bool? pub = null, short maxage = 12) where D : IData
+        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? pub = null, short maxage = 12) where D : IData
         {
             JsonContent cnt = new JsonContent(true);
             cnt.Put(null, arr, proj);
