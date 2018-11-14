@@ -1323,7 +1323,7 @@ namespace Greatbone
             Add("</main>");
         }
 
-        public void CARD<D>(D obj, Action<D> card, string css = "uk-card-default")
+        public void CARD_<D>(D obj, string css = "uk-card-default")
         {
             if (stack == null) stack = new object[4]; // init contexts
             level++; // enter a new level
@@ -1336,7 +1336,10 @@ namespace Greatbone
                 Add(css);
             }
             Add("\">");
-            card(obj);
+        }
+
+        public void _CARD()
+        {
             Add("</form>");
             stack[level] = null;
 
