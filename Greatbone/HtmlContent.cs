@@ -236,17 +236,13 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent ROW_(byte w = 0x11)
+        public HtmlContent ROW_(string css = null)
         {
             Add("<div class=\"uk-row");
-            if (w > 0)
+            if (css != null)
             {
-                int lo = w & 0x0f;
-                int hi = w >> 4;
-                Add(" uk-width-");
-                Add(hi);
-                Add('-');
-                Add(lo);
+                Add(' ');
+                Add(css);
             }
             Add("\">");
             return this;
@@ -2130,6 +2126,36 @@ namespace Greatbone
             Add("\"");
             if (v) Add(" checked");
             if (required) Add(" required");
+            Add(">");
+            if (tip != null)
+            {
+                Add(tip); // caption following the checkbox
+                Add("</label>");
+            }
+            else
+            {
+                Add("</div>");
+            }
+            return this;
+        }
+
+        public HtmlContent CHECKBOX<V>(string label, string name, V v, string tip = null, bool required = false)
+        {
+            LABEL(label);
+            if (tip != null)
+            {
+                Add("<label>");
+            }
+            else
+            {
+                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
+            }
+            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddPrimitive(v);
+            Add("\"");
+            if (required) Add("\" required");
             Add(">");
             if (tip != null)
             {

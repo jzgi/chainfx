@@ -1,4 +1,4 @@
-namespace Creatbone
+namespace Greatbone
 {
     public class ServerMain
     {

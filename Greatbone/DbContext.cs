@@ -17,6 +17,12 @@ namespace Greatbone
             "17", "18", "19", "20", "21", "22", "23", "24", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"
         };
 
+        static readonly string[] INPARAMS =
+        {
+            "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
+            "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31", "v32"
+        };
+
         readonly Service service;
 
         readonly NpgsqlConnection connection;
@@ -192,7 +198,7 @@ namespace Greatbone
                 p(this);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.Read();
         }
 
@@ -211,7 +217,7 @@ namespace Greatbone
                 p(this);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.Read();
         }
 
@@ -290,7 +296,7 @@ namespace Greatbone
                 p(this);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -309,7 +315,7 @@ namespace Greatbone
                 p(this);
                 if (prepare) command.Prepare();
             }
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = (NpgsqlDataReader)await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -722,7 +728,7 @@ namespace Greatbone
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         v = new byte[len];
                         reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
@@ -744,7 +750,7 @@ namespace Greatbone
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -773,7 +779,7 @@ namespace Greatbone
                 {
                     string str = reader.GetString(ord);
                     JsonParser p = new JsonParser(str);
-                    JObj jo = (JObj) p.Parse();
+                    JObj jo = (JObj)p.Parse();
                     v = new D();
                     v.Read(jo, proj);
                     return true;
@@ -794,7 +800,7 @@ namespace Greatbone
                 {
                     string str = reader.GetString(ord);
                     JsonParser p = new JsonParser(str);
-                    v = (JObj) p.Parse();
+                    v = (JObj)p.Parse();
                     return true;
                 }
             }
@@ -813,7 +819,7 @@ namespace Greatbone
                 {
                     string str = reader.GetString(ord);
                     JsonParser parser = new JsonParser(str);
-                    v = (JArr) parser.Parse();
+                    v = (JArr)parser.Parse();
                     return true;
                 }
             }
@@ -905,7 +911,7 @@ namespace Greatbone
                 {
                     string str = reader.GetString(ord);
                     JsonParser parser = new JsonParser(str);
-                    JArr ja = (JArr) parser.Parse();
+                    JArr ja = (JArr)parser.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
@@ -1100,7 +1106,7 @@ namespace Greatbone
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -1124,7 +1130,7 @@ namespace Greatbone
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         byte[] buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -1231,7 +1237,7 @@ namespace Greatbone
                 {
                     string str = reader.GetString(ord);
                     JsonParser p = new JsonParser(str);
-                    JObj jo = (JObj) p.Parse();
+                    JObj jo = (JObj)p.Parse();
                     v = new D();
                     v.Read(jo, proj);
                     return this;
@@ -1253,7 +1259,7 @@ namespace Greatbone
                 {
                     string str = reader.GetString(ord);
                     JsonParser parser = new JsonParser(str);
-                    JArr ja = (JArr) parser.Parse();
+                    JArr ja = (JArr)parser.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
@@ -1412,7 +1418,7 @@ namespace Greatbone
             int len = v?.Length ?? 0;
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, len)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1420,7 +1426,7 @@ namespace Greatbone
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
             {
-                Value = (v.Array != null) ? (object) v : DBNull.Value
+                Value = (v.Array != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1428,7 +1434,7 @@ namespace Greatbone
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v?.Length ?? 0)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1436,7 +1442,7 @@ namespace Greatbone
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1444,7 +1450,7 @@ namespace Greatbone
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1452,7 +1458,7 @@ namespace Greatbone
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1460,7 +1466,7 @@ namespace Greatbone
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -1504,7 +1510,7 @@ namespace Greatbone
         {
             if (v == null)
             {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) { Value = DBNull.Value });
             }
             else
             {
@@ -1666,6 +1672,42 @@ namespace Greatbone
         public IParams Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
             Put(PARAMS[index++], v, proj);
+            return this;
+        }
+
+        public IParams SetIn(string[] v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                Put(INPARAMS[i], v[i]);
+            }
+            return this;
+        }
+
+        public IParams SetIn(short[] v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                Put(INPARAMS[i], v[i]);
+            }
+            return this;
+        }
+
+        public IParams SetIn(int[] v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                Put(INPARAMS[i], v[i]);
+            }
+            return this;
+        }
+
+        public IParams SetIn(long[] v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                Put(INPARAMS[i], v[i]);
+            }
             return this;
         }
     }

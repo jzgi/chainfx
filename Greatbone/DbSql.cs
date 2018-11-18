@@ -56,6 +56,51 @@ namespace Greatbone
             return this;
         }
 
+        public DbSql T(short[] vals)
+        {
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(vals[i]);
+            }
+            return this;
+        }
+
+        public DbSql T(int[] vals)
+        {
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(vals[i]);
+            }
+            return this;
+        }
+
+        public DbSql T(long[] vals)
+        {
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add(vals[i]);
+            }
+            return this;
+        }
+
+        public DbSql T(string[] vals)
+        {
+            Add(" IN (");
+            for (int i = 0; i < vals.Length; i++)
+            {
+                if (i > 0) Add(',');
+                Add('\'');
+                Add(vals[i]);
+                Add('\'');
+            }
+            Add(')');
+            return this;
+        }
+
+
         public DbSql setlst(IData obj, byte proj = 0x0f)
         {
             ctx = CTX_SETLIST;
@@ -138,10 +183,12 @@ namespace Greatbone
         public DbSql _IN_(short[] vals)
         {
             Add(" IN (");
-            for (int i = 0; i < vals.Length; i++)
+            for (int i = 1; i <= vals.Length; i++)
             {
-                if (i > 0) Add(',');
-                Add(vals[i]);
+                if (i > 1) Add(',');
+                Add('@');
+                Add('v');
+                Add(i);
             }
             Add(')');
             return this;
@@ -150,11 +197,7 @@ namespace Greatbone
         public DbSql _IN_(int[] vals)
         {
             Add(" IN (");
-            for (int i = 0; i < vals.Length; i++)
-            {
-                if (i > 0) Add(',');
-                Add(vals[i]);
-            }
+            T(vals);
             Add(')');
             return this;
         }
@@ -162,10 +205,12 @@ namespace Greatbone
         public DbSql _IN_(long[] vals)
         {
             Add(" IN (");
-            for (int i = 0; i < vals.Length; i++)
+            for (int i = 1; i <= vals.Length; i++)
             {
-                if (i > 0) Add(',');
-                Add(vals[i]);
+                if (i > 1) Add(',');
+                Add('@');
+                Add('v');
+                Add(i);
             }
             Add(')');
             return this;
@@ -174,17 +219,16 @@ namespace Greatbone
         public DbSql _IN_(string[] vals)
         {
             Add(" IN (");
-            for (int i = 0; i < vals.Length; i++)
+            for (int i = 1; i <= vals.Length; i++)
             {
-                if (i > 0) Add(',');
-                Add('\'');
-                Add(vals[i]);
-                Add('\'');
+                if (i > 1) Add(',');
+                Add('@');
+                Add('v');
+                Add(i);
             }
             Add(')');
             return this;
         }
-
 
         void Build(string name)
         {
