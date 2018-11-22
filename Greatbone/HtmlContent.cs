@@ -820,6 +820,24 @@ namespace Greatbone
             return this;
         }
 
+        public HtmlContent FI<K, V>(string label, K[] keys, Map<K, V> map)
+        {
+            LABEL(label);
+            Add("<p>");
+            if (keys != null)
+            {
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    var key = keys[i];
+                    var val = map[key];
+                    if (i > 0) Add("&nbsp;");
+                    Add(val.ToString());
+                }
+            }
+            Add("</p>");
+            return this;
+        }
+
         public HtmlContent CNY(decimal v, bool em = false)
         {
             Add("¥");

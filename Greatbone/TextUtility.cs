@@ -201,7 +201,7 @@ namespace Greatbone
             {
                 byte[] hash = sha1.ComputeHash(raw);
                 StringBuilder str = new StringBuilder(32);
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     byte b = hash[i];
                     str.Append(HEX[b >> 4]);
