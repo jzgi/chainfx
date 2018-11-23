@@ -247,94 +247,99 @@ namespace Greatbone
         }
 
 
-        public async Task<byte[]> GetAsync(string uri, WebContext wc = null)
-        {
-            try
-            {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, wc);
-                HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return await resp.Content.ReadAsByteArrayAsync();
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + Ahead;
-            }
-            return null;
-        }
-
-        public async Task<M> GetAsync<M>(string uri, WebContext wc) where M : class, ISource
+        public async Task<(short, byte[])> GetAsync(string uri, WebContext wc = null)
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
+                if (rsp.IsSuccessStatusCode)
                 {
-                    return null;
+                    return ((short) rsp.StatusCode, await rsp.Content.ReadAsByteArrayAsync());
                 }
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+                return ((short) rsp.StatusCode, null);
             }
             catch
             {
                 retryAt = Environment.TickCount + Ahead;
             }
-            return null;
+            return (500, null);
         }
 
-        public async Task<D> GetObjectAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
+        public async Task<(short, M)> GetAsync<M>(string uri, WebContext wc) where M : class, ISource
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
+                if (rsp.IsSuccessStatusCode)
                 {
-                    return default;
+                    byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                    string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                    var model = (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+                    return ((short) rsp.StatusCode, model);
                 }
-
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
-                D obj = new D();
-                obj.Read(inp, proj);
-                return obj;
+                return ((short) rsp.StatusCode, null);
             }
             catch
             {
                 retryAt = Environment.TickCount + Ahead;
             }
-            return default;
+            return (500, null);
         }
 
-        public async Task<D[]> GetArrayAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
+        public async Task<(short, D)> GetObjectAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
         {
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
+                if (rsp.IsSuccessStatusCode)
                 {
-                    return null;
+                    byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                    string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                    ISource inp = ParseContent(ctyp, bytea, bytea.Length);
+                    D obj = new D();
+                    obj.Read(inp, proj);
+                    return ((short) rsp.StatusCode, obj);
                 }
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
-                return inp.ToArray<D>(proj);
+                return ((short) rsp.StatusCode, default);
             }
             catch
             {
                 retryAt = Environment.TickCount + Ahead;
             }
-            return null;
+            return (500, default);
         }
 
-        public async Task<int> PostAsync(string uri, IContent content, WebContext wc = null)
+        public async Task<(short, D[])> GetArrayAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
+        {
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                AddAccessHeaders(req, wc);
+                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.IsSuccessStatusCode)
+                {
+                    byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                    string ctyp = rsp.Content.Headers.GetValue("Content-Type");
+                    ISource inp = ParseContent(ctyp, bytea, bytea.Length);
+                    var arr = inp.ToArray<D>(proj);
+                    return ((short) rsp.StatusCode, arr);
+                }
+                return ((short) rsp.StatusCode, null);
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + Ahead;
+            }
+            return (500, null);
+        }
+
+        public async Task<short> PostAsync(string uri, IContent content, WebContext wc = null)
         {
             try
             {
@@ -345,7 +350,7 @@ namespace Greatbone
                 req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
 
                 HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return (int) rsp.StatusCode;
+                return (short) rsp.StatusCode;
             }
             catch
             {
@@ -353,15 +358,15 @@ namespace Greatbone
             }
             finally
             {
-                if (content is DynamicContent cont)
+                if (content is DynamicContent cnt)
                 {
-                    BufferUtility.Return(cont);
+                    BufferUtility.Return(cnt);
                 }
             }
             return 0;
         }
 
-        public async Task<(int, M)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
+        public async Task<(short, M)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
         {
             try
             {
@@ -378,13 +383,13 @@ namespace Greatbone
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 if (ctyp == null)
                 {
-                    return ((int) rsp.StatusCode, null);
+                    return ((short) rsp.StatusCode, null);
                 }
                 else
                 {
                     byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
                     M src = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
-                    return ((int) rsp.StatusCode, src);
+                    return ((short) rsp.StatusCode, src);
                 }
             }
             catch
@@ -393,9 +398,9 @@ namespace Greatbone
             }
             finally
             {
-                if (content is DynamicContent cont)
+                if (content is DynamicContent cnt)
                 {
-                    BufferUtility.Return(cont);
+                    BufferUtility.Return(cnt);
                 }
             }
             return default;

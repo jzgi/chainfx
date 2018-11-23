@@ -8,7 +8,7 @@ namespace Greatbone
     public class DbSql : DynamicContent, ISink
     {
         // contexts
-        const sbyte CTX_COLUMNLIST = 1, CTX_PARAMLIST = 2, CTX_SETLIST = 3;
+        const sbyte CtxColumnList = 1, CtxParamList = 2, CtxSetList = 3;
 
         // the putting context
         internal sbyte ctx;
@@ -103,7 +103,7 @@ namespace Greatbone
 
         public DbSql setlst(IData obj, byte proj = 0x0f)
         {
-            ctx = CTX_SETLIST;
+            ctx = CtxSetList;
             ordinal = 1;
             obj.Write(this, proj);
             return this;
@@ -111,7 +111,7 @@ namespace Greatbone
 
         public DbSql collst(IData obj, byte proj = 0x0f)
         {
-            ctx = CTX_COLUMNLIST;
+            ctx = CtxColumnList;
             ordinal = 1;
             obj.Write(this, proj);
             return this;
@@ -119,7 +119,7 @@ namespace Greatbone
 
         public DbSql paramlst(IData obj, byte proj = 0x0f)
         {
-            ctx = CTX_PARAMLIST;
+            ctx = CtxParamList;
             ordinal = 1;
             obj.Write(this, proj);
             return this;
@@ -236,16 +236,16 @@ namespace Greatbone
 
             switch (ctx)
             {
-                case CTX_COLUMNLIST:
+                case CtxColumnList:
                     Add('"');
                     Add(name);
                     Add('"');
                     break;
-                case CTX_PARAMLIST:
+                case CtxParamList:
                     Add("@");
                     Add(name);
                     break;
-                case CTX_SETLIST:
+                case CtxSetList:
                     Add('"');
                     Add(name);
                     Add('"');
