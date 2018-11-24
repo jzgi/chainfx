@@ -79,7 +79,7 @@ namespace Greatbone
             {
                 for (int i = 0; i < refs.Count; i++)
                 {
-                    var e = refs.At(i);
+                    var e = refs.EntryAt(i);
                     if (clients == null)
                     {
                         clients = new Map<string, Client>(16);
@@ -266,7 +266,7 @@ namespace Greatbone
             int match = 0;
             for (int i = 0; i < clients.Count; i++)
             {
-                var cli = clients[i];
+                var cli = clients.At(i);
                 if (cli.Key == rname)
                 {
                     cli.SetPoller(poller, interval);
@@ -285,7 +285,7 @@ namespace Greatbone
         {
             for (int i = 0; i < clients.Count; i++)
             {
-                Client cli = clients[i];
+                Client cli = clients.At(i);
                 if (cli.Key == key) return cli;
             }
             return null;

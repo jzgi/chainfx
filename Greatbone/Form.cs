@@ -221,7 +221,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = false;
@@ -233,7 +233,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = '\0';
@@ -245,7 +245,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = 0;
@@ -257,7 +257,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = 0;
@@ -269,7 +269,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = 0;
@@ -281,7 +281,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = 0;
@@ -293,7 +293,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = 0;
@@ -305,7 +305,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = default;
@@ -317,7 +317,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = null;
@@ -339,7 +339,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = null;
@@ -351,7 +351,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = null;
@@ -363,7 +363,7 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = this[ord];
+                v = At(ord);
                 return this;
             }
             v = null;

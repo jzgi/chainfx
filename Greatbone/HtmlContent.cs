@@ -2274,7 +2274,7 @@ namespace Greatbone
                 {
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         if (filter != null && !filter(e.value)) continue;
                         if (e.IsHead)
                         {
@@ -2319,7 +2319,7 @@ namespace Greatbone
                     bool odd = true;
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         if (filter != null && !filter(e.value)) continue;
                         if (e.IsHead)
                         {
@@ -2497,7 +2497,7 @@ namespace Greatbone
                     bool grpopen = false;
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         if (filter != null && !filter(e.value)) continue;
                         if (e.IsHead)
                         {
@@ -2554,7 +2554,7 @@ namespace Greatbone
                 {
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         var key = e.key;
                         Add("<option value=\"");
                         if (key is short shortv)

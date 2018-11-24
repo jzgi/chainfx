@@ -386,7 +386,7 @@ namespace Greatbone
         {
             for (int i = 0; i < Count; i++)
             {
-                JMbr mbr = this[i];
+                JMbr mbr = At(i);
                 JType t = mbr.type;
                 if (t == JType.Array)
                 {

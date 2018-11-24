@@ -45,9 +45,9 @@ namespace Greatbone
 
         public int Count => count;
 
-        public Entry At(int idx) => entries[idx];
+        public Entry EntryAt(int idx) => entries[idx];
 
-        public V this[int idx] => entries[idx].value;
+        public V At(int idx) => entries[idx].value;
 
         public V[] GroupOf(K key)
         {
