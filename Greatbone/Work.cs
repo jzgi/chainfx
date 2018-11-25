@@ -103,9 +103,9 @@ namespace Greatbone
             }
             tooled = list.ToArray();
 
-            if (tooled != null) // sort by group
+            if (tooled != null) // sorting
             {
-                Array.Sort(tooled, (a, b) => a.Group - b.Group);
+                Array.Sort(tooled, (a, b) => a.Sort - b.Sort);
             }
         }
 

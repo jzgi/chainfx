@@ -17,7 +17,7 @@ namespace Greatbone
 
         readonly string tip;
 
-        readonly byte group;
+        readonly byte sort;
 
         // permission check
         internal readonly AuthorizeAttribute authorize;
@@ -42,7 +42,7 @@ namespace Greatbone
             }
             label = ui?.Label;
             tip = ui?.Tip ?? label;
-            group = ui?.Group ?? 0;
+            sort = ui?.Sort ?? 0;
 
             if (authorize == null)
             {
@@ -67,7 +67,7 @@ namespace Greatbone
 
         public string Tip => tip;
 
-        public byte Group => group;
+        public byte Sort => sort;
 
         public bool DoAuthorize(WebContext wc)
         {

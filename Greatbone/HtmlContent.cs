@@ -1290,7 +1290,7 @@ namespace Greatbone
                         for (int j = 0; j < acts.Length; j++)
                         {
                             var act = acts[j];
-                            if (act.Group == 0 || group == act.Group)
+                            if (act.Sort == 0 || group == act.Sort)
                             {
                                 var tool = act.Tool;
                                 PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
@@ -1411,7 +1411,7 @@ namespace Greatbone
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
-                    int g = act.Group;
+                    int g = act.Sort;
                     if (g == 0 || (g & group) == g)
                     {
                         if (g != grp)
@@ -1477,7 +1477,7 @@ namespace Greatbone
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
-                    int g = act.Group;
+                    int g = act.Sort;
                     if (g == 0 || (g & group) == g)
                     {
                         if (g != curg)
@@ -1527,7 +1527,7 @@ namespace Greatbone
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
-                    int g = act.Group;
+                    int g = act.Sort;
                     if (g == 0 || (g & group) == g)
                     {
                         if (g != curg)
