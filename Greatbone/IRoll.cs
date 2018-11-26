@@ -56,39 +56,5 @@ namespace Greatbone
                 up = list.ToArray();
             }
         }
-
-        public static void RollUp<V, K, R>(this V[] array, Func<V, K> keyer, ref R up) where K : IEquatable<K> where R : IRoll<K, V>, new()
-        {
-            if (array == null) return;
-
-            if (up != null) // roll on the given top
-            {
-                for (int i = 0; i < array.Length; i++)
-                {
-                    var v = array[i];
-                    if (keyer(v).Equals(up.Key))
-                    {
-                        up.Add(v);
-                    }
-                }
-            }
-            else // roll up and create top as needed
-            {
-                up = new R();
-                for (int i = 0; i < array.Length; i++)
-                {
-                    var v = array[i];
-                    var key = keyer(v);
-                    if (i == 0)
-                    {
-                        up.Key = key;
-                    }
-                    if (key.Equals(up.Key))
-                    {
-                        up.Add(v);
-                    }
-                }
-            }
-        }
     }
 }

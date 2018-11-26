@@ -1337,29 +1337,6 @@ namespace Greatbone
             Add("</main>");
         }
 
-        public void CARD_<D>(D obj, string css = "uk-card-default")
-        {
-            if (stack == null) stack = new object[4]; // init contexts
-            level++; // enter a new level
-
-            stack[level] = obj;
-            Add("<form class=\"uk-card");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-            Add("\">");
-        }
-
-        public void _CARD()
-        {
-            Add("</form>");
-            stack[level] = null;
-
-            level--; // exit the level
-        }
-
         public void GRID<D>(D[] arr, Action<D> card, string css = null)
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");

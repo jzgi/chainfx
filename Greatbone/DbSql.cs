@@ -30,29 +30,41 @@ namespace Greatbone
             ordinal = 0;
         }
 
-        public DbSql T(short v)
+        public DbSql T(short v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public DbSql T(int v)
+        public DbSql T(int v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public DbSql T(string v)
+        public DbSql T(string v, bool cond = true)
         {
-            Add(v);
+            if (cond)
+            {
+                Add(v);
+            }
             return this;
         }
 
-        public DbSql TT(string v)
+        public DbSql TT(string v, bool cond = true)
         {
-            Add('\'');
-            Add(v);
-            Add('\'');
+            if (cond)
+            {
+                Add('\'');
+                Add(v);
+                Add('\'');
+            }
             return this;
         }
 
