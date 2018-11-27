@@ -9,7 +9,7 @@ namespace Greatbone
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class Client : HttpClient, IKeyable<string>, IPollContext
+    public class Connector : HttpClient, IKeyable<string>, IPollContext
     {
         const int Ahead = 1000 * 12;
         const string PollAction = "/event";
@@ -37,7 +37,7 @@ namespace Greatbone
         /// Used to construct a secure client by passing handler with certificate.
         /// </summary>
         /// <param name="handler"></param>
-        public Client(HttpClientHandler handler) : base(handler)
+        public Connector(HttpClientHandler handler) : base(handler)
         {
         }
 
@@ -45,7 +45,7 @@ namespace Greatbone
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
         /// <param name="raddr"></param>
-        public Client(string raddr) : this(null, raddr)
+        public Connector(string raddr) : this(null, raddr)
         {
         }
 
@@ -54,7 +54,7 @@ namespace Greatbone
         /// </summary>
         /// <param name="rkey">the identifying key for the remote service</param>
         /// <param name="raddr">remote address</param>
-        internal Client(string rkey, string raddr)
+        internal Connector(string rkey, string raddr)
         {
             rKey = rkey;
             // initialize name and sshard

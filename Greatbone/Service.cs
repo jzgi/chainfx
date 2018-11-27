@@ -26,10 +26,10 @@ namespace Greatbone
         // the embedded server
         readonly KestrelServer server;
 
-        // configured clients that connect to peer services
-        readonly Map<string, Client> clients;
+        // configured connectors that connect to peer services
+        readonly Map<string, Connector> connectors;
 
-        List<Client> polls;
+        List<Connector> polls;
 
         // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
@@ -80,11 +80,11 @@ namespace Greatbone
                 for (int i = 0; i < refs.Count; i++)
                 {
                     var e = refs.EntryAt(i);
-                    if (clients == null)
+                    if (connectors == null)
                     {
-                        clients = new Map<string, Client>(16);
+                        connectors = new Map<string, Connector>(16);
                     }
-                    clients.Add(new Client(e.Key, e.Value)
+                    connectors.Add(new Connector(e.Key, e.Value)
                     {
                         Service = this
                     });
@@ -124,7 +124,7 @@ namespace Greatbone
 
         public string Sign => sign;
 
-        public Map<string, Client> Clients => clients;
+        public Map<string, Connector> Connectors => connectors;
 
         public string Describe()
         {
@@ -258,20 +258,20 @@ namespace Greatbone
 
         public void Schedule(string rname, Action<IPollContext> poller, short interval = 12)
         {
-            if (clients == null)
+            if (connectors == null)
             {
                 throw new ServiceException("webconfig missing refs");
             }
             // setup context for each designated client
             int match = 0;
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < connectors.Count; i++)
             {
-                var cli = clients.At(i);
-                if (cli.Key == rname)
+                var @ref = connectors.At(i);
+                if (@ref.Key == rname)
                 {
-                    cli.SetPoller(poller, interval);
-                    if (polls == null) polls = new List<Client>();
-                    polls.Add(cli);
+                    @ref.SetPoller(poller, interval);
+                    if (polls == null) polls = new List<Connector>();
+                    polls.Add(@ref);
                     match++;
                 }
             }
@@ -281,12 +281,12 @@ namespace Greatbone
             }
         }
 
-        internal Client GetRef(string key)
+        internal Connector GetRef(string key)
         {
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < connectors.Count; i++)
             {
-                Client cli = clients.At(i);
-                if (cli.Key == key) return cli;
+                Connector con = connectors.At(i);
+                if (con.Key == key) return con;
             }
             return null;
         }

@@ -1058,7 +1058,7 @@ namespace Greatbone
         /// <param name="legend"></param>
         /// <param name="css"></param>
         /// <returns></returns>
-        public HtmlContent FIELDUL_(string legend = null, string css = null)
+        public HtmlContent FIELDSETUL_(string legend = null, string css = null)
         {
             Add("<fieldset class=\"uk-fieldset uk-width-1-1");
             if (css != null)
@@ -2166,7 +2166,7 @@ namespace Greatbone
 
         public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
-            FIELDUL_(legend, css);
+            FIELDSETUL_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var e = opt[i];
@@ -2244,7 +2244,7 @@ namespace Greatbone
 
         public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDUL_(legend, css);
+            FIELDSETUL_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2288,7 +2288,7 @@ namespace Greatbone
 
         public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDUL_(legend, css);
+            FIELDSETUL_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2341,7 +2341,7 @@ namespace Greatbone
 
         public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
         {
-            FIELDUL_(legend, css);
+            FIELDSETUL_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var o = opt[i];
