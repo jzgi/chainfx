@@ -1077,7 +1077,7 @@ namespace Greatbone
             return this;
         }
 
-        public HtmlContent _FIELDUL()
+        public HtmlContent _ULFIELDSET()
         {
             Add("</ul>");
             Add("</fieldset>");
@@ -2182,7 +2182,7 @@ namespace Greatbone
                 Add(e);
                 Add(" </label>");
             }
-            _FIELDUL();
+            _ULFIELDSET();
             return this;
         }
 
@@ -2282,7 +2282,7 @@ namespace Greatbone
                     }
                 }
             }
-            _FIELDUL();
+            _ULFIELDSET();
             return this;
         }
 
@@ -2335,7 +2335,7 @@ namespace Greatbone
                     }
                 }
             }
-            _FIELDUL();
+            _ULFIELDSET();
             return this;
         }
 
@@ -2347,7 +2347,7 @@ namespace Greatbone
                 var o = opt[i];
                 RADIO(name, o, o, o.Equals(v));
             }
-            _FIELDUL();
+            _ULFIELDSET();
             return this;
         }
 
