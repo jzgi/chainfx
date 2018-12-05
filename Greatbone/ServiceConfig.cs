@@ -19,6 +19,9 @@ namespace Greatbone
         // two ints for enc/dec authentication token
         public long cipher;
 
+        // certificate password if any
+        public string certpass;
+
         // db configuration
         public Db db;
 
@@ -64,6 +67,8 @@ namespace Greatbone
             s.Get(nameof(shard), ref shard);
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(addrs), ref addrs);
+            s.Get(nameof(cipher), ref cipher);
+            s.Get(nameof(certpass), ref certpass);
             s.Get(nameof(db), ref db);
             s.Get(nameof(refs), ref refs);
             s.Get(nameof(logging), ref logging);
@@ -75,6 +80,8 @@ namespace Greatbone
             s.Put(nameof(shard), shard);
             s.Put(nameof(descr), descr);
             s.Put(nameof(addrs), addrs);
+            s.Put(nameof(cipher), cipher);
+            s.Put(nameof(certpass), certpass);
             s.Put(nameof(db), db);
             s.Put(nameof(refs), refs);
             s.Put(nameof(logging), logging);

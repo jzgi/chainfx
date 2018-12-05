@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
@@ -16,11 +16,13 @@ namespace Greatbone
     /// </summary>
     public class ServiceUtility
     {
-        const string CONFIG = "$service.json";
+        public const string CONFIG_FILE = "$service.json";
+
+        public const string CERT_FILE = "$cert.p12";
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
-        internal static readonly ITransportFactory TransportFactory = new LibuvTransportFactory(Options.Create(new LibuvTransportOptions()), Lifetime, NullLoggerFactory.Instance);
+        internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
         static readonly List<Service> services = new List<Service>(8);
 
@@ -49,10 +51,10 @@ namespace Greatbone
             // may load from the configuration file
             if (loadCfg)
             {
-                string file = cfg.GetFilePath(CONFIG);
-                if (!File.Exists(file)) return null;
+                string cfgfile = cfg.GetFilePath(CONFIG_FILE);
+                if (!File.Exists(cfgfile)) return null;
 
-                byte[] bytes = File.ReadAllBytes(file);
+                byte[] bytes = File.ReadAllBytes(cfgfile);
                 JsonParser p = new JsonParser(bytes, bytes.Length);
                 JObj jo = (JObj) p.Parse();
                 // this will override values

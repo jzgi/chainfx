@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,10 +59,19 @@ namespace Greatbone
             };
 
             // init the embedded server
-            var options = Options.Create(new KestrelServerOptions());
+            var options = new KestrelServerOptions();
+            // configure https with server certificate
+            string certfile = cfg.GetFilePath(ServiceUtility.CERT_FILE);
+            if (File.Exists(certfile) && cfg.certpass != null)
+            {
+                X509Certificate2 cert = new X509Certificate2(certfile, cfg.certpass, X509KeyStorageFlags.MachineKeySet);
+                options.ConfigureHttpsDefaults(x => x.ServerCertificate = cert);
+            }
+
             var loggerf = new LoggerFactory();
             loggerf.AddProvider(this);
-            server = new KestrelServer(options, ServiceUtility.TransportFactory, loggerf);
+
+            server = new KestrelServer(Options.Create(options), ServiceUtility.TransportFactory, loggerf);
 
             ICollection<string> addrs = server.Features.Get<IServerAddressesFeature>().Addresses;
             if (Addrs == null)
@@ -198,6 +208,10 @@ namespace Greatbone
             OnStop();
 
             await server.StopAsync(token);
+
+            // close logger
+            logWriter.Flush();
+            logWriter.Dispose();
         }
 
         internal async Task StartAsync(CancellationToken token)
@@ -348,14 +362,9 @@ namespace Greatbone
             }
         }
 
+        // end of a logger scope
         public void Dispose()
         {
-            // close server
-            server.Dispose();
-
-            // close logger
-            logWriter.Flush();
-            logWriter.Dispose();
         }
 
         //

@@ -498,27 +498,42 @@ namespace Greatbone
 
         public void TRC(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Trace, 0, msg, ex, null);
+            if (msg != null)
+            {
+                Service.Log(LogLevel.Trace, 0, msg, ex, null);
+            }
         }
 
         public void DBG(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Debug, 0, msg, ex, null);
+            if (msg != null)
+            {
+                Service.Log(LogLevel.Debug, 0, msg, ex, null);
+            }
         }
 
         public void INF(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Information, 0, msg, ex, null);
+            if (msg != null)
+            {
+                Service.Log(LogLevel.Information, 0, msg, ex, null);
+            }
         }
 
         public void WAR(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Warning, 0, msg, ex, null);
+            if (msg != null)
+            {
+                Service.Log(LogLevel.Warning, 0, msg, ex, null);
+            }
         }
 
         public void ERR(string msg, Exception ex = null)
         {
-            Service.Log(LogLevel.Error, 0, msg, ex, null);
+            if (msg != null)
+            {
+                Service.Log(LogLevel.Error, 0, msg, ex, null);
+            }
         }
 
         //
