@@ -64,8 +64,18 @@ namespace Greatbone
             string certfile = cfg.GetFilePath(ServiceUtility.CERT_FILE);
             if (File.Exists(certfile) && cfg.certpass != null)
             {
-                X509Certificate2 cert = new X509Certificate2(certfile, cfg.certpass, X509KeyStorageFlags.MachineKeySet);
-                options.ConfigureHttpsDefaults(x => x.ServerCertificate = cert);
+                try
+                {
+                    X509Certificate2 cert = new X509Certificate2(certfile, cfg.certpass, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+                    if (cert != null) {
+                        options.ConfigureHttpsDefaults(x => x.ServerCertificate = cert);
+                        INF("$cert.pfx loaded and configured");
+                    }
+                }
+                catch (Exception e)
+                {
+                    WAR(e.Message);
+                }
             }
 
             var loggerf = new LoggerFactory();

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
@@ -18,7 +21,7 @@ namespace Greatbone
     {
         public const string CONFIG_FILE = "$service.json";
 
-        public const string CERT_FILE = "$cert.p12";
+        public const string CERT_FILE = "$cert.pfx";
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
@@ -134,6 +137,33 @@ namespace Greatbone
             }
 
             Lifetime.NotifyStopped();
+        }
+
+        public static X509Certificate2 BuildSelfSignedCertificate(string dns, string ipaddr, string issuer, string password)
+        {
+            SubjectAlternativeNameBuilder sanb = new SubjectAlternativeNameBuilder();
+            sanb.AddIpAddress(IPAddress.Parse(ipaddr));
+            sanb.AddDnsName(dns);
+
+            X500DistinguishedName subject = new X500DistinguishedName($"CN={issuer}");
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                var request = new CertificateRequest(subject, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+
+                request.CertificateExtensions.Add(
+                    new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
+
+                request.CertificateExtensions.Add(
+                    new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, false));
+
+                request.CertificateExtensions.Add(sanb.Build());
+
+                var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
+                certificate.FriendlyName = issuer;
+
+                return new X509Certificate2(certificate.Export(X509ContentType.Pfx, password), password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+            }
         }
     }
 
