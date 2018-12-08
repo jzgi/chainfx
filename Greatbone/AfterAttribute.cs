@@ -11,7 +11,7 @@ namespace Greatbone
     {
         readonly bool async;
 
-        protected AfterAttribute(bool @async)
+        protected AfterAttribute(bool async)
         {
             this.async = async;
         }

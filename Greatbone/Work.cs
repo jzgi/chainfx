@@ -21,19 +21,19 @@ namespace Greatbone
 
         protected readonly WorkConfig cfg;
 
-        readonly Type type;
+        readonly Type typ;
 
         // declared action methods 
-        readonly Map<string, Actioner> actioners;
+        readonly Map<string, Action> actions;
 
         // the default action method, can be null
-        readonly Actioner @default;
+        readonly Action @default;
 
         // the catch action method, can be null
-        readonly Actioner @catch;
+        readonly Action @catch;
 
         // action method with the ToolAttribute
-        readonly Actioner[] tooled;
+        readonly Action[] tooled;
 
         // subworks, if any
         internal Map<string, Work> works;
@@ -57,15 +57,15 @@ namespace Greatbone
         {
             this.cfg = cfg;
 
-            this.type = GetType();
+            this.typ = GetType();
 
-            this.authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
-            this.before = (BeforeAttribute) type.GetCustomAttribute(typeof(BeforeAttribute), false);
-            this.after = (AfterAttribute) type.GetCustomAttribute(typeof(AfterAttribute), false);
+            this.authenticate = (AuthenticateAttribute) typ.GetCustomAttribute(typeof(AuthenticateAttribute), false);
+            this.before = (BeforeAttribute) typ.GetCustomAttribute(typeof(BeforeAttribute), false);
+            this.after = (AfterAttribute) typ.GetCustomAttribute(typeof(AfterAttribute), false);
 
             // gather procedures
-            actioners = new Map<string, Actioner>(32);
-            foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            actions = new Map<string, Action>(32);
+            foreach (MethodInfo mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
                 Type ret = mi.ReturnType;
@@ -75,27 +75,27 @@ namespace Greatbone
                 else continue;
 
                 ParameterInfo[] pis = mi.GetParameters();
-                Actioner act;
+                Action act;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
-                    act = new Actioner(this, mi, async, null);
+                    act = new Action(this, mi, async, null);
                 }
                 else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
-                    act = new Actioner(this, mi, async, pis[1].Name);
+                    act = new Action(this, mi, async, pis[1].Name);
                 }
                 else continue;
 
-                actioners.Add(act);
+                actions.Add(act);
                 if (act.Key == string.Empty) @default = act;
                 if (act.Key == "catch") @catch = act;
                 if (act.Tool?.MustPick == true) pick = true;
             }
             // gather tooled action methods
-            var list = new ValueList<Actioner>(16);
-            for (int i = 0; i < actioners.Count; i++)
+            var list = new ValueList<Action>(16);
+            for (int i = 0; i < actions.Count; i++)
             {
-                Actioner act = actioners.At(i);
+                Action act = actions.At(i);
                 if (act.HasTool)
                 {
                     list.Add(act);
@@ -123,25 +123,25 @@ namespace Greatbone
 
         public bool HasAccessor => cfg.Accessor != null;
 
-        public Map<string, Actioner> Actioners => actioners;
+        public Map<string, Action> Actions => actions;
 
-        public Actioner[] Tooled => tooled;
+        public Action[] Tooled => tooled;
 
         public bool HasPick => pick;
 
-        public Actioner Default => @default;
+        public Action Default => @default;
 
-        public Actioner Catch => @catch;
+        public Action Catch => @catch;
 
         public Map<string, Work> Works => works;
 
         public Work VarWork => varwork;
 
-        public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
+        public bool IsOf(Type typ) => this.typ == typ || typ.IsAssignableFrom(this.typ);
 
-        public Actioner this[string method] => string.IsNullOrEmpty(method) ? @default : actioners[method];
+        public Action this[string method] => string.IsNullOrEmpty(method) ? @default : actions[method];
 
-        public Actioner this[int index] => actioners.At(index);
+        public Action this[int index] => actions.At(index);
 
         public string GetFilePath(string file)
         {
@@ -270,9 +270,9 @@ namespace Greatbone
             xc.ELEM(Key,
                 delegate
                 {
-                    for (int i = 0; i < actioners.Count; i++)
+                    for (int i = 0; i < actions.Count; i++)
                     {
-                        Actioner act = actioners.At(i);
+                        Action act = actions.At(i);
                         xc.Put(act.Key, "");
                     }
                 },
@@ -292,9 +292,9 @@ namespace Greatbone
 
         protected void Describe(HtmlContent hc)
         {
-            for (int i = 0; i < actioners?.Count; i++)
+            for (int i = 0; i < actions?.Count; i++)
             {
-                var a = actioners.At(i);
+                var a = actions.At(i);
                 if (a.Comments != null)
                 {
                     hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
@@ -366,14 +366,14 @@ namespace Greatbone
                             name = rsc.Substring(0, dash);
                             wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                         }
-                        Actioner act = this[name];
+                        Action act = this[name];
                         if (act == null)
                         {
                             wc.Give(404, "action not found", true, 12);
                             return;
                         }
 
-                        wc.Actioner = act;
+                        wc.Action = act;
 
                         if (!act.DoAuthorize(wc)) throw act.except;
 
@@ -386,7 +386,7 @@ namespace Greatbone
 
                             Service.TryCacheUp(wc);
                         }
-                        wc.Actioner = null;
+                        wc.Action = null;
                     }
 
                     if (after != null)
@@ -426,7 +426,7 @@ namespace Greatbone
             {
                 if (@catch != null) // an exception catch defined by this work
                 {
-                    wc.Except = e;
+                    wc.Exception = e;
                     if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
                     else @catch.Do(wc, 0);
                 }

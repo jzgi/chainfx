@@ -48,53 +48,53 @@ namespace Greatbone
 
         public Work Work { get; internal set; }
 
-        public Actioner Actioner { get; internal set; }
+        public Action Action { get; internal set; }
 
         public int Subscript { get; internal set; }
 
-        public Exception Except { get; set; }
+        public Exception Exception { get; set; }
 
         /// The decrypted/decoded principal object.
         ///
         public IData Principal { get; set; }
 
         // levels of keys along the URI path
-        Seg[] chain;
+        Segment[] chain;
 
         int level; // actual number of segments
 
-        internal void Chain(Work work, string key, object prinkey = null)
+        internal void Chain(Work work, string key, object accessor = null)
         {
             if (chain == null)
             {
-                chain = new Seg[8];
+                chain = new Segment[8];
             }
 
-            chain[level++] = new Seg(work, key, prinkey);
+            chain[level++] = new Segment(work, key, accessor);
         }
 
-        public Seg this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
+        public Segment this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
 
-        public Seg this[Type typ]
+        public Segment this[Type typ]
         {
             get
             {
                 for (int i = 0; i < level; i++)
                 {
-                    Seg seg = chain[i];
+                    Segment seg = chain[i];
                     if (seg.Work.IsOf(typ)) return seg;
                 }
                 return default;
             }
         }
 
-        public Seg this[Work work]
+        public Segment this[Work work]
         {
             get
             {
                 for (int i = level - 1; i >= 0; i--)
                 {
-                    Seg seg = chain[i];
+                    Segment seg = chain[i];
                     if (seg.Work == work) return seg;
                 }
                 return default;
@@ -433,7 +433,7 @@ namespace Greatbone
             SetHeader("Set-Cookie", sb.ToString());
         }
 
-        public bool InCache { get; internal set; }
+        public bool IsInCache { get; internal set; }
 
         public short Code
         {
@@ -459,32 +459,32 @@ namespace Greatbone
 
         public void Give(short code, string text, bool? @public = null, short maxage = 12)
         {
-            TextContent cont = new TextContent(true);
-            cont.Add(text);
+            TextContent cnt = new TextContent(true, 1024);
+            cnt.Add(text);
             // set response states
             Code = code;
-            Content = cont;
+            Content = cnt;
             Public = @public;
             MaxAge = maxage;
         }
 
-        public void Give(short code, IData obj, byte proj = 0x0f, bool? pub = null, short maxage = 12)
+        public void Give(short code, IData obj, byte proj = 0x0f, bool? @public = null, short maxage = 12)
         {
-            JsonContent cnt = new JsonContent(true);
+            JsonContent cnt = new JsonContent(true, 8192);
             cnt.Put(null, obj, proj);
             Code = code;
             Content = cnt;
-            Public = pub;
+            Public = @public;
             MaxAge = maxage;
         }
 
-        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? pub = null, short maxage = 12) where D : IData
+        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? @public = null, short maxage = 12) where D : IData
         {
-            JsonContent cnt = new JsonContent(true);
+            JsonContent cnt = new JsonContent(true, 8192);
             cnt.Put(null, arr, proj);
             Code = code;
             Content = cnt;
-            Public = pub;
+            Public = @public;
             MaxAge = maxage;
         }
 
@@ -550,11 +550,11 @@ namespace Greatbone
                 BufferUtility.Return(buffer);
             }
             // pool returning
-            if (!InCache)
+            if (!IsInCache)
             {
-                if (Content is DynamicContent dcont)
+                if (Content is DynamicContent dcnt)
                 {
-                    BufferUtility.Return(dcont.ByteBuffer);
+                    BufferUtility.Return(dcnt.ByteBuffer);
                 }
             }
         }

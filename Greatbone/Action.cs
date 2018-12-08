@@ -10,7 +10,7 @@ namespace Greatbone
     /// The descriptor for an action method. A procedure public method should have one or two parameters, the first parameter must be of WebContext type.
     /// The second parameter, if presented, must be an int value.
     /// </summary>
-    public sealed class Actioner : Nodule
+    public sealed class Action : Nodule
     {
         readonly Work work;
 
@@ -39,7 +39,7 @@ namespace Greatbone
 
         readonly List<TagAttribute> comments;
 
-        internal Actioner(Work work, MethodInfo mi, bool async, string subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
+        internal Action(Work work, MethodInfo mi, bool async, string subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
         {
             this.work = work;
             this.relative = Key == string.Empty ? "./" : Key;

@@ -305,7 +305,7 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new TextContent(true, true);
+            var cnt = new TextContent(true, 4096);
             cnt.Add(charbuf, 0, count);
             return cnt;
         }

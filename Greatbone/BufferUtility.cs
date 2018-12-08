@@ -109,7 +109,7 @@ namespace Greatbone
 
         public static bool Return(DynamicContent dcont)
         {
-            if (dcont.IsBin) // is a byte buffer
+            if (dcont.IsBinary) // is a byte buffer
             {
                 Return(dcont.ByteBuffer);
             }

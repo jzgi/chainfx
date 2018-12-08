@@ -85,7 +85,7 @@ namespace Greatbone
         // PUT
         //
 
-        public XmlContent ELEM(string name, Action attrs, Action children)
+        public XmlContent ELEM(string name, System.Action attrs, System.Action children)
         {
             Add('<');
             Add(name);

@@ -421,18 +421,23 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new JsonContent(true);
+            var cnt = new JsonContent(true, 4096);
             cnt.PutFrom(this);
             return cnt;
         }
 
         public override string ToString()
         {
-            JsonContent cnt = new JsonContent(false, 4 * 1024);
-            cnt.PutFrom(this);
-            string str = cnt.ToString();
-            BufferUtility.Return(cnt);
-            return str;
+            JsonContent cnt = new JsonContent(false, 4096);
+            try
+            {
+                cnt.PutFrom(this);
+                return cnt.ToString();
+            }
+            finally
+            {
+                BufferUtility.Return(cnt);
+            }
         }
     }
 }

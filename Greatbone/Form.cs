@@ -416,7 +416,7 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new FormContent(true);
+            var cnt = new FormContent(true, 4096);
             cnt.Put(null, this);
             return cnt;
         }

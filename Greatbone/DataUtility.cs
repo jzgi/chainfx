@@ -85,29 +85,44 @@ namespace Greatbone
 
         public static string ToString<D>(D v, byte proj = 0x0f) where D : IData
         {
-            JsonContent cont = new JsonContent(false, 4 * 1024);
-            cont.Put(null, v, proj);
-            string str = cont.ToString();
-            BufferUtility.Return(cont); // return buffer to pool
-            return str;
+            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            try
+            {
+                cnt.Put(null, v, proj);
+                return cnt.ToString();
+            }
+            finally
+            {
+                BufferUtility.Return(cnt); // return buffer to pool
+            }
         }
 
         public static string ToString<D>(D[] v, byte proj = 0x0f) where D : IData
         {
-            JsonContent cont = new JsonContent(false, 4 * 1024);
-            cont.Put(null, v, proj);
-            string str = cont.ToString();
-            BufferUtility.Return(cont); // return buffer to pool
-            return str;
+            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            try
+            {
+                cnt.Put(null, v, proj);
+                return cnt.ToString();
+            }
+            finally
+            {
+                BufferUtility.Return(cnt); // return buffer to pool
+            }
         }
 
         public static string ToString<D>(List<D> v, byte proj = 0x0f) where D : IData
         {
-            JsonContent cont = new JsonContent(false, 4 * 1024);
-            cont.Put(null, v, proj);
-            string str = cont.ToString();
-            BufferUtility.Return(cont); // return buffer to pool
-            return str;
+            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            try
+            {
+                cnt.Put(null, v, proj);
+                return cnt.ToString();
+            }
+            finally
+            {
+                BufferUtility.Return(cnt); // return buffer to pool
+            }
         }
 
         public static T FileTo<T>(string file) where T : class, ISource

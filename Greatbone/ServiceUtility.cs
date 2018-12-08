@@ -19,9 +19,9 @@ namespace Greatbone
     /// </summary>
     public class ServiceUtility
     {
-        public const string CONFIG_FILE = "$service.json";
+        public const string SERVICE_JSON = "$service.json";
 
-        public const string CERT_FILE = "$cert.pfx";
+        public const string CERT_PFX = "$cert.pfx";
 
         internal static readonly Lifetime Lifetime = new Lifetime();
 
@@ -54,10 +54,10 @@ namespace Greatbone
             // may load from the configuration file
             if (loadCfg)
             {
-                string cfgfile = cfg.GetFilePath(CONFIG_FILE);
-                if (!File.Exists(cfgfile)) return null;
+                string webfile = cfg.GetFilePath(SERVICE_JSON);
+                if (!File.Exists(webfile)) return null;
 
-                byte[] bytes = File.ReadAllBytes(cfgfile);
+                byte[] bytes = File.ReadAllBytes(webfile);
                 JsonParser p = new JsonParser(bytes, bytes.Length);
                 JObj jo = (JObj) p.Parse();
                 // this will override values

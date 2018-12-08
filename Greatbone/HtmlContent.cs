@@ -1104,7 +1104,7 @@ namespace Greatbone
         public void PAGENATION(int count, int limit = 20)
         {
             // pagination
-            var actr = webCtx.Actioner;
+            var actr = webCtx.Action;
             if (actr.HasSubscript)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
@@ -1238,13 +1238,13 @@ namespace Greatbone
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte group = 0, int subscript = -1, bool pick = true)
+        public void TABLE<D>(D[] arr, System.Action head, Action<D> row, byte group = 0, int subscript = -1, bool pick = true)
         {
             Work w = webCtx.Work;
             Work vw = w.varwork;
             Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
-            Actioner[] acts = vw?.Tooled;
+            Action[] acts = vw?.Tooled;
             if (head != null)
             {
                 Add("<thead>");
@@ -1552,7 +1552,7 @@ namespace Greatbone
             return this;
         }
 
-        void PutTool(Actioner act, ToolAttribute tool, int subscript = -1, string caption = null, string css = null)
+        void PutTool(Action act, ToolAttribute tool, int subscript = -1, string caption = null, string css = null)
         {
             // check action's availability
             bool ok = !tool.Access || act.DoAuthorize(webCtx);
@@ -1566,7 +1566,7 @@ namespace Greatbone
             {
                 Add("<a class=\"uk-button ");
                 Add(anycss ?? "uk-button-link");
-                if (act == webCtx.Actioner) // if current action
+                if (act == webCtx.Action) // if current action
                 {
                     Add(" uk-active");
                 }

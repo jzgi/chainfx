@@ -86,9 +86,9 @@ namespace Greatbone
         // byte-wise etag checksum, for char-based output only
         protected ulong checksum;
 
-        protected DynamicContent(bool bin, int capacity)
+        protected DynamicContent(bool binary, int capacity)
         {
-            if (bin)
+            if (binary)
             {
                 bytebuf = BufferUtility.GetByteBuffer(capacity);
             }
@@ -101,7 +101,7 @@ namespace Greatbone
 
         public abstract string Type { get; set; }
 
-        public bool IsBin => bytebuf != null;
+        public bool IsBinary => bytebuf != null;
 
         public byte[] ByteBuffer => bytebuf;
 
@@ -135,7 +135,7 @@ namespace Greatbone
 
         public void Add(char c)
         {
-            if (IsBin) // byte-oriented
+            if (IsBinary) // byte-oriented
             {
                 // UTF-8 encoding but without surrogate support
                 if (c < 0x80)

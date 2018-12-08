@@ -61,16 +61,14 @@ namespace Greatbone
             // init the embedded server
             var options = new KestrelServerOptions();
             // configure https with server certificate
-            string certfile = cfg.GetFilePath(ServiceUtility.CERT_FILE);
+            string certfile = cfg.GetFilePath(ServiceUtility.CERT_PFX);
             if (File.Exists(certfile) && cfg.certpass != null)
             {
                 try
                 {
                     X509Certificate2 cert = new X509Certificate2(certfile, cfg.certpass, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
-                    if (cert != null) {
-                        options.ConfigureHttpsDefaults(x => x.ServerCertificate = cert);
-                        INF("$cert.pfx loaded and configured");
-                    }
+                    options.ConfigureHttpsDefaults(x => x.ServerCertificate = cert);
+                    INF("$cert.pfx loaded and configured");
                 }
                 catch (Exception e)
                 {
@@ -176,7 +174,7 @@ namespace Greatbone
             {
                 if (Catch != null)
                 {
-                    wc.Except = ex; // attatch exception to current context
+                    wc.Exception = ex; // attatch exception to current context
                     if (Catch.IsAsync) await Catch.DoAsync(wc, 0);
                     else Catch.Do(wc, 0);
                 }
@@ -384,11 +382,11 @@ namespace Greatbone
         {
             if (wc.IsGet)
             {
-                if (!wc.InCache && wc.Public == true && Resp.IsCacheable(wc.Code))
+                if (!wc.IsInCache && wc.Public == true && Resp.IsCacheable(wc.Code))
                 {
                     var re = new Resp(wc.Code, wc.Content, wc.MaxAge, Environment.TickCount);
                     cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
-                    wc.InCache = true;
+                    wc.IsInCache = true;
                 }
             }
         }
@@ -431,29 +429,34 @@ namespace Greatbone
         public string Encrypt<P>(P prin, byte proj) where P : IData
         {
             JsonContent cnt = new JsonContent(true, 4096);
-            cnt.Put(null, prin, proj);
-            byte[] bytebuf = cnt.ByteBuffer;
-            int count = cnt.Size;
-
-            int mask = (int) Cipher;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            char[] charbuf = new char[count * 2]; // the target
-            int p = 0;
-            for (int i = 0; i < count; i++)
+            try
             {
-                // masking
-                int b = bytebuf[i] ^ masks[i % 4];
+                cnt.Put(null, prin, proj);
+                byte[] bytebuf = cnt.ByteBuffer;
+                int count = cnt.Size;
 
-                //transform
-                charbuf[p++] = HEX[(b >> 4) & 0x0f];
-                charbuf[p++] = HEX[(b) & 0x0f];
+                int mask = (int) Cipher;
+                int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+                char[] charbuf = new char[count * 2]; // the target
+                int p = 0;
+                for (int i = 0; i < count; i++)
+                {
+                    // masking
+                    int b = bytebuf[i] ^ masks[i % 4];
 
-                // reordering
+                    //transform
+                    charbuf[p++] = HEX[(b >> 4) & 0x0f];
+                    charbuf[p++] = HEX[(b) & 0x0f];
+
+                    // reordering
+                }
+                return new string(charbuf, 0, charbuf.Length);
             }
-
-            // return pool
-            BufferUtility.Return(bytebuf);
-            return new string(charbuf, 0, charbuf.Length);
+            finally
+            {
+                // return pool
+                BufferUtility.Return(cnt);
+            }
         }
 
         public P Decrypt<P>(string token) where P : IData, new()
@@ -597,7 +600,7 @@ namespace Greatbone
                     short remain = (short) (((stamp + maxage * 1000) - now) / 1000); // remaining in seconds
                     if (remain > 0)
                     {
-                        wc.InCache = true;
+                        wc.IsInCache = true;
                         wc.Give(code, content, true, remain);
                         Interlocked.Increment(ref hits);
                         return true;

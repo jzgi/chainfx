@@ -21,7 +21,7 @@ namespace Greatbone
         /// The target work or action method.
         /// </summary>
         /// <seealso cref="Work"/>
-        /// <seealso cref="Actioner"/>
+        /// <seealso cref="Action"/>
         public Nodule Target => target;
 
         public AuthorizeAttribute Attribute => attribute;
