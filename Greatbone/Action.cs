@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Greatbone
 {
     /// <summary>
-    /// The descriptor for an action method. A procedure public method should have one or two parameters, the first parameter must be of WebContext type.
+    /// The descriptor for an action method. An action method should have one or two parameters, the first parameter must be of WebContext type.
     /// The second parameter, if presented, must be an int value.
     /// </summary>
     public sealed class Action : Nodule
@@ -19,13 +19,13 @@ namespace Greatbone
 
         readonly bool async;
 
-        // the name of subscript parameter, may be null
+        // the name of subscript parameter (the second parameter), may be null
         readonly string subscript;
 
         // the action pathing 
         readonly string pathing;
 
-        // ui tool annotation
+        // tool annotation for ui
         internal readonly ToolAttribute tool;
 
         // state check annotation
@@ -114,11 +114,11 @@ namespace Greatbone
             return state == null || stack == null || state.Check(wc, stack, level);
         }
 
-        internal void Do(WebContext wc, int subscpt)
+        internal void Do(WebContext wc, int subscript)
         {
             if (HasSubscript)
             {
-                do2(wc, subscpt);
+                do2(wc, subscript);
             }
             else
             {
@@ -126,12 +126,12 @@ namespace Greatbone
             }
         }
 
-        internal async Task DoAsync(WebContext wc, int subscpt)
+        // invoke the right method
+        internal async Task DoAsync(WebContext wc, int subscript)
         {
-            // invoke the right procedure method
             if (HasSubscript)
             {
-                await do2Async(wc, subscpt);
+                await do2Async(wc, subscript);
             }
             else
             {

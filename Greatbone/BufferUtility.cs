@@ -15,18 +15,19 @@ namespace Greatbone
         // for byte buffers, stuffed only when being used
         static readonly Queue<byte[]>[] bpool =
         {
-            new Queue<byte[]>(512, factor * 16),
-            new Queue<byte[]>(1024 * 2, factor * 16),
-            new Queue<byte[]>(1024 * 8, factor * 8),
-            new Queue<byte[]>(1024 * 32, factor * 8),
+            new Queue<byte[]>(1024, factor * 16),
+            new Queue<byte[]>(1024 * 4, factor * 16),
+            new Queue<byte[]>(1024 * 16, factor * 8),
+            new Queue<byte[]>(1024 * 64, factor * 8),
             new Queue<byte[]>(1024 * 128, factor * 4),
+            new Queue<byte[]>(1024 * 256, factor * 4),
             new Queue<byte[]>(1024 * 512, factor * 2)
         };
 
         // for char buffers
         static readonly Queue<char[]>[] cpool =
         {
-            new Queue<char[]>(256, factor * 16),
+            new Queue<char[]>(512, factor * 16),
             new Queue<char[]>(1024 * 1, factor * 16),
             new Queue<char[]>(1024 * 4, factor * 8),
             new Queue<char[]>(1024 * 16, factor * 8),

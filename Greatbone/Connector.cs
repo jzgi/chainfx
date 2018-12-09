@@ -11,8 +11,9 @@ namespace Greatbone
     /// </summary>
     public class Connector : HttpClient, IKeyable<string>, IPollContext
     {
-        const int Ahead = 1000 * 12;
-        const string PollAction = "/event";
+        const int AHEAD = 1000 * 12;
+
+        const string POLL_ACTION = "/event";
 
         //  key for the remote or referenced service 
         readonly string rKey;
@@ -145,7 +146,7 @@ namespace Greatbone
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + QueryStr;
+            string uri = POLL_ACTION + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -155,7 +156,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return null;
         }
@@ -166,7 +167,7 @@ namespace Greatbone
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + QueryStr;
+            string uri = POLL_ACTION + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -182,7 +183,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return null;
         }
@@ -193,7 +194,7 @@ namespace Greatbone
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + QueryStr;
+            string uri = POLL_ACTION + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -213,7 +214,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return default;
         }
@@ -224,7 +225,7 @@ namespace Greatbone
             {
                 throw new ServiceException("missing query before event poll");
             }
-            string uri = PollAction + "?" + QueryStr;
+            string uri = POLL_ACTION + "?" + QueryStr;
             try
             {
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -241,7 +242,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return null;
         }
@@ -262,7 +263,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return (500, null);
         }
@@ -285,7 +286,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return (500, null);
         }
@@ -310,7 +311,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return (500, default);
         }
@@ -334,7 +335,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             return (500, null);
         }
@@ -354,7 +355,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             finally
             {
@@ -394,7 +395,7 @@ namespace Greatbone
             }
             catch
             {
-                retryAt = Environment.TickCount + Ahead;
+                retryAt = Environment.TickCount + AHEAD;
             }
             finally
             {

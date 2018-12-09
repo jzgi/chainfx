@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 namespace Greatbone
 {
     /// <summary>
-    /// To do filtering before executing an action method.
+    /// To do filtering right before executing an action method.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
     public abstract class BeforeAttribute : Attribute
     {
         readonly bool async;
 
-        protected BeforeAttribute(bool @async)
+        protected BeforeAttribute(bool async)
         {
             this.async = async;
         }

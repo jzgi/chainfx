@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Greatbone
 {
     /// <summary>
-    /// To do filtering after executing an action method.
+    /// To do filtering right after executing an action method.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
     public abstract class AfterAttribute : Attribute

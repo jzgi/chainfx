@@ -3,7 +3,7 @@ using System;
 namespace Greatbone
 {
     /// <summary>
-    /// A set of frequently-used array operations.
+    /// A set of commonly-used array operations.
     /// </summary>
     public static class ArrayUtility
     {
@@ -190,7 +190,7 @@ namespace Greatbone
         }
 
 
-        public static bool SameAs<E>(this E[] arr, E[] another)
+        public static bool IsSameAs<E>(this E[] arr, E[] another)
         {
             if (arr == null && another == null)
             {
