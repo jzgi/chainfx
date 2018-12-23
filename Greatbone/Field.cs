@@ -3,7 +3,7 @@ using System;
 namespace Greatbone
 {
     /// <summary>
-    /// A field in the form model.
+    /// A field in a form model.
     /// </summary>
     public struct Field : IKeyable<string>
     {

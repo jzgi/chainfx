@@ -70,15 +70,15 @@ namespace Greatbone
             }
         }
 
-        internal double Double => (double) Decimal;
+        public double Double => (double) Decimal;
 
-        internal long Long => negative ? -bigint : bigint;
+        public long Long => negative ? -bigint : bigint;
 
-        internal int Int => negative ? (int) -bigint : (int) bigint;
+        public int Int => negative ? (int) -bigint : (int) bigint;
 
-        internal short Short => negative ? (short) -bigint : (short) bigint;
+        public short Short => negative ? (short) -bigint : (short) bigint;
 
-        internal decimal Decimal
+        public decimal Decimal
         {
             get
             {
