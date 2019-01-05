@@ -1,0 +1,17 @@
+{
+  "logging": 2,
+  "web": {
+    "addrs": [
+      "http://144000.tv"
+    ]
+  },
+  "ref": {
+    "dir": "http://dir.144000.tv"
+  },
+  "db": {
+    "host": "/tmp",
+    "port": 5432,
+    "username": "",
+    "password": ""
+  }
+}
