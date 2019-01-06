@@ -16,7 +16,7 @@ namespace Greatbone.Service
     /// <summary>
     /// The application scope that aggregates global states.
     /// </summary>
-    public class Application
+    public class Host
     {
         public const string CONFIG_JSON = "config.json";
 
@@ -24,7 +24,7 @@ namespace Greatbone.Service
 
         internal static readonly WebLifetime Lifetime = new WebLifetime();
 
-        internal static readonly ApplicationConfig Config;
+        internal static readonly HostConfig Config;
 
         internal static readonly string Sign;
 
@@ -39,23 +39,30 @@ namespace Greatbone.Service
         static Thread scheduler;
 
 
-        static readonly WebServer WebServer;
+        internal static readonly WebServer WebServer;
 
-        static Application()
+        static Host()
         {
+            // setup logger
+            string logfile = DateTime.Now.ToString("yyyyMM") + ".log";
+            Logger = new Logger(logfile);
             if (!File.Exists(CONFIG_JSON))
             {
+                Logger.Log(LogLevel.Error, CONFIG_JSON + " not found");
+                return;
             }
 
+            // load the configuration file
             byte[] bytes = File.ReadAllBytes(CONFIG_JSON);
             JsonParser parser = new JsonParser(bytes, bytes.Length);
             JObj jo = (JObj) parser.Parse();
-            Config = new ApplicationConfig();
+            Config = new HostConfig();
             Config.Read(jo, 0xff);
 
-            // logging
-            string logfile = DateTime.Now.ToString("yyyyMM") + ".log";
-            Logger = new Logger(logfile, Config.logging);
+            if (Config.logging > 0)
+            {
+                Logger.Level = Config.logging;
+            }
 
             // references
             var r = Config.@ref;
@@ -149,18 +156,18 @@ namespace Greatbone.Service
         }
 
 
-        public static void Schedule(string rname, Action<IPollContext> poller, short interval = 12)
+        public static void Schedule(string refName, Action<IPollContext> poller, short interval = 12)
         {
             if (Ref == null)
             {
-                throw new WebException("config.json missing ref");
+                throw new WebException("missing ref in config.json");
             }
             // setup context for each designated client
             int match = 0;
             for (int i = 0; i < Ref.Count; i++)
             {
                 var @ref = Ref.At(i);
-                if (@ref.Key == rname)
+                if (@ref.Key == refName)
                 {
                     @ref.SetPoller(poller, interval);
                     if (polls == null) polls = new List<WebClient>();
@@ -170,18 +177,18 @@ namespace Greatbone.Service
             }
             if (match == 0)
             {
-                throw new WebException("webconfig refs missing " + rname);
+                throw new WebException("webconfig refs missing " + refName);
             }
         }
 
 
         /// <summary>
-        /// To create and attech a work instance of given class as the root handler
+        /// To create and attech a work instance of given class as the root work
         /// </summary>
         /// <typeparam name="S"></typeparam>
         /// <returns></returns>
         /// <exception cref="WebException"></exception>
-        public static S MakeRootWork<S>() where S : WebWork
+        public static S SetRootWork<S>() where S : WebWork
         {
             // create service instance by reflection
             Type typ = typeof(S);

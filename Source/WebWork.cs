@@ -33,7 +33,7 @@ namespace Greatbone.Service
         readonly WebAction[] tooled;
 
         // subworks, if any
-        internal Map<string, WebWork> works;
+        internal Map<string, WebWork> subworks;
 
         // variable-key subwork, if any
         internal WebWork varwork;
@@ -77,7 +77,7 @@ namespace Greatbone.Service
                 {
                     act = new WebAction(this, mi, async, null);
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
                 {
                     act = new WebAction(this, mi, async, pis[1].Name);
                 }
@@ -106,8 +106,6 @@ namespace Greatbone.Service
             }
         }
 
-        public WebServer Service => info.Service;
-
         public WebWork Parent => info.Parent;
 
         public bool IsVar => info.IsVar;
@@ -130,7 +128,7 @@ namespace Greatbone.Service
 
         public WebAction Catch => @catch;
 
-        public Map<string, WebWork> Works => works;
+        public Map<string, WebWork> SubWorks => subworks;
 
         public WebWork VarWork => varwork;
 
@@ -173,7 +171,6 @@ namespace Greatbone.Service
             {
                 Ui = ui,
                 Authorize = auth,
-                Service = Service,
                 Parent = this,
                 Level = Level + 1,
                 IsVar = true,
@@ -191,20 +188,20 @@ namespace Greatbone.Service
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="access">to override class-wise Authorize attribute</param>
+        /// <param name="authorize">to override class-wise Authorize attribute</param>
         /// <typeparam name="W">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected W MakeWork<W>(string name, UiAttribute ui = null, AuthorizeAttribute access = null) where W : WebWork
+        protected W MakeWork<W>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : WebWork
         {
             if (info.Level >= MaxNesting)
             {
                 throw new WebException("allowed work nesting " + MaxNesting);
             }
 
-            if (works == null)
+            if (subworks == null)
             {
-                works = new Map<string, WebWork>();
+                subworks = new Map<string, WebWork>();
             }
 
             // create instance by reflection
@@ -215,11 +212,10 @@ namespace Greatbone.Service
                 throw new WebException(typ + " need public and WorkConfig");
             }
 
-            WebWorkInfo config = new WebWorkInfo(name)
+            WebWorkInfo wwi = new WebWorkInfo(name)
             {
                 Ui = ui,
-                Authorize = access,
-                Service = Service,
+                Authorize = authorize,
                 Parent = this,
                 Level = Level + 1,
                 IsVar = false,
@@ -227,8 +223,8 @@ namespace Greatbone.Service
                 Pathing = Pathing + name + "/",
             };
             // init sub work
-            W w = (W) ci.Invoke(new object[] {config});
-            works.Add(w.Key, w);
+            W w = (W) ci.Invoke(new object[] {wwi});
+            subworks.Add(w.Key, w);
             return w;
         }
 
@@ -275,11 +271,11 @@ namespace Greatbone.Service
                 },
                 delegate
                 {
-                    if (works != null)
+                    if (subworks != null)
                     {
-                        for (int i = 0; i < works.Count; i++)
+                        for (int i = 0; i < subworks.Count; i++)
                         {
-                            WebWork wrk = works.At(i);
+                            WebWork wrk = subworks.At(i);
                             wrk.Describe(xc);
                         }
                     }
@@ -308,9 +304,9 @@ namespace Greatbone.Service
 
             varwork?.Describe(hc);
 
-            for (int i = 0; i < works?.Count; i++)
+            for (int i = 0; i < subworks?.Count; i++)
             {
-                var w = works.At(i);
+                var w = subworks.At(i);
                 w.Describe(hc);
             }
         }
@@ -343,14 +339,13 @@ namespace Greatbone.Service
                     }
                     //
                     // resolve the resource
-
                     string name = rsc;
-                    int subscpt = 0;
+                    string subscpt = null;
                     int dash = rsc.LastIndexOf('-');
                     if (dash != -1)
                     {
                         name = rsc.Substring(0, dash);
-                        wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
+                        wc.Subscript = subscpt = rsc.Substring(dash + 1);
                     }
                     WebAction act = this[name];
                     if (act == null)
@@ -364,13 +359,13 @@ namespace Greatbone.Service
                     if (!act.DoAuthorize(wc)) throw act.exception;
 
                     // try in the cache first
-                    if (!Service.TryGiveFromCache(wc))
+                    if (!Host.WebServer.TryGiveFromCache(wc))
                     {
                         // invoke action method 
                         if (act.IsAsync) await act.DoAsync(wc, subscpt);
                         else act.Do(wc, subscpt);
 
-                        Service.TryAddToCache(wc);
+                        Host.WebServer.TryAddToCache(wc);
                     }
                     wc.Action = null;
 
@@ -386,7 +381,7 @@ namespace Greatbone.Service
                 else // sub works
                 {
                     string key = rsc.Substring(0, slash);
-                    if (works != null && works.TryGet(key, out var wrk)) // if child
+                    if (subworks != null && subworks.TryGet(key, out var wrk)) // if child
                     {
                         wc.Chain(wrk, key);
                         await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
@@ -413,8 +408,8 @@ namespace Greatbone.Service
                 if (@catch != null) // an exception catch defined by this work
                 {
                     wc.Exception = e;
-                    if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
-                    else @catch.Do(wc, 0);
+                    if (@catch.IsAsync) await @catch.DoAsync(wc, null);
+                    else @catch.Do(wc, null);
                 }
                 else throw;
             }
@@ -505,9 +500,6 @@ namespace Greatbone.Service
             return await Parent.ObtainAsync<T>(flag);
         }
 
-        public void Invalidate<T>(byte flag = 0) where T : class
-        {
-        }
 
         /// <summary>
         /// A object holder in registry.

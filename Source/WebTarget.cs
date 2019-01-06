@@ -74,7 +74,7 @@ namespace Greatbone.Service
             if (authorize != null)
             {
                 // check if trusted peer
-                if (wc.CallerSign != null && wc.CallerSign == Application.Sign)
+                if (wc.CallerSign != null && wc.CallerSign == Host.Sign)
                 {
                     return true; // trusted without further check
                 }

@@ -1109,7 +1109,7 @@ namespace Greatbone.Service
             if (actr.HasSubscript)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
-                int subscpt = webCtx.Subscript;
+                int subscpt = webCtx.Subscript.ToInt();
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)

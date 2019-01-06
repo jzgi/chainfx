@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Greatbone;
 
 namespace Greatbone.Service
 {
     /// <summary>
-    /// The descriptor for an action method. An action method should have one or two parameters, the first parameter must be of WebContext type.
-    /// The second parameter, if presented, must be an int value.
+    /// The descriptor for an action method. 
     /// </summary>
     public sealed class WebAction : WebTarget
     {
@@ -35,8 +33,8 @@ namespace Greatbone.Service
         // 4 possible forms of the action method
         readonly Action<WebContext> @do;
         readonly Func<WebContext, Task> doAsync;
-        readonly Action<WebContext, int> do2;
-        readonly Func<WebContext, int, Task> do2Async;
+        readonly Action<WebContext, string> do2;
+        readonly Func<WebContext, string, Task> do2Async;
 
         readonly List<TagAttribute> comments;
 
@@ -55,7 +53,7 @@ namespace Greatbone.Service
             {
                 if (HasSubscript)
                 {
-                    do2Async = (Func<WebContext, int, Task>) mi.CreateDelegate(typeof(Func<WebContext, int, Task>), work);
+                    do2Async = (Func<WebContext, string, Task>) mi.CreateDelegate(typeof(Func<WebContext, string, Task>), work);
                 }
                 else
                 {
@@ -66,7 +64,7 @@ namespace Greatbone.Service
             {
                 if (HasSubscript)
                 {
-                    do2 = (Action<WebContext, int>) mi.CreateDelegate(typeof(Action<WebContext, int>), work);
+                    do2 = (Action<WebContext, string>) mi.CreateDelegate(typeof(Action<WebContext, string>), work);
                 }
                 else
                 {
@@ -115,7 +113,7 @@ namespace Greatbone.Service
             return state == null || stack == null || state.Check(wc, stack, level);
         }
 
-        internal void Do(WebContext wc, int subscript)
+        internal void Do(WebContext wc, string subscript)
         {
             if (HasSubscript)
             {
@@ -128,7 +126,7 @@ namespace Greatbone.Service
         }
 
         // invoke the right method
-        internal async Task DoAsync(WebContext wc, int subscript)
+        internal async Task DoAsync(WebContext wc, string subscript)
         {
             if (HasSubscript)
             {

@@ -50,7 +50,7 @@ namespace Greatbone.Service
 
         public WebAction Action { get; internal set; }
 
-        public int Subscript { get; internal set; }
+        public string Subscript { get; internal set; }
 
         public Exception Exception { get; set; }
 
@@ -407,7 +407,7 @@ namespace Greatbone.Service
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
             StringBuilder sb = new StringBuilder("Token=");
-            string token = Application.Encrypt(prin, proj);
+            string token = Host.Encrypt(prin, proj);
             sb.Append(token);
             if (maxage > 0)
             {

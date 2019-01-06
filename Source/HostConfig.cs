@@ -6,7 +6,7 @@ namespace Greatbone.Service
     /// <summary>
     /// The configuration for an applicaion.
     /// </summary>
-    public class ApplicationConfig : IData
+    public class HostConfig : IData
     {
         // the sharding notation for this service instance
         public string shard;

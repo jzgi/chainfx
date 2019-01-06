@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -24,9 +23,6 @@ namespace Greatbone.Service
     /// </summary>
     public sealed class WebServer : IHttpApplication<HttpContext>
     {
-        // the identifier of this service instance
-        readonly string name;
-
         readonly string[] addrs;
 
         // the embedded server
@@ -41,11 +37,11 @@ namespace Greatbone.Service
         // dbset operation areas keyed by service id
         readonly ConcurrentDictionary<string, DbArea> areas;
 
-        internal WebServer(ApplicationConfig.Web cfg, ILoggerProvider logprov)
+        internal WebServer(HostConfig.Web cfg, ILoggerProvider logprov)
         {
             // init the embedded server
             var options = new KestrelServerOptions();
-            ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Application.Lifetime, NullLoggerFactory.Instance);
+            ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Host.Lifetime, NullLoggerFactory.Instance);
 
             var logfac = new LoggerFactory();
             logfac.AddProvider(logprov);
@@ -68,11 +64,6 @@ namespace Greatbone.Service
 
         public WebWork RootWork { get; internal set; }
 
-        ///
-        /// Uniquely identify a service instance.
-        ///
-        public string Name => name;
-
 
         /// <summary>
         /// To asynchronously process the request.
@@ -82,19 +73,17 @@ namespace Greatbone.Service
             WebContext wc = (WebContext) context;
 
             string path = wc.Path;
-
             int dot = path.LastIndexOf('.');
             if (dot != -1) // the resource is a static file
             {
-                DoFile(path, path.Substring(dot), wc);
-                TryAddToCache(wc);
-            }
-            else // targeting an action
-            {
-                if (RootWork == null)
+                if (!TryGiveFromCache(wc))
                 {
-                    return;
+                    GiveFile(path, path.Substring(dot), wc);
+                    TryAddToCache(wc);
                 }
+            }
+            else if (RootWork != null)
+            {
                 try
                 {
                     await RootWork.HandleAsync(path.Substring(1), wc);
@@ -103,20 +92,25 @@ namespace Greatbone.Service
                 {
                     wc.Give(500, e.Message);
                 }
+            }
+            else
+            {
+                wc.Give(404, "not found");
+                return;
+            }
 
-                // sending
-                try
-                {
-                    await wc.SendAsync();
-                }
-                catch (Exception e)
-                {
-                    wc.Give(500, e.Message);
-                }
+            // sending
+            try
+            {
+                await wc.SendAsync();
+            }
+            catch (Exception e)
+            {
+                wc.Give(500, e.Message);
             }
         }
 
-        public void DoFile(string filename, string ext, WebContext wc)
+        public void GiveFile(string filename, string ext, WebContext wc)
         {
             if (!StaticContent.TryGetType(ext, out var ctyp))
             {
@@ -131,8 +125,8 @@ namespace Greatbone.Service
                 return;
             }
 
-            DateTime modified = File.GetLastWriteTime(path);
             // load file content
+            DateTime modified = File.GetLastWriteTime(path);
             byte[] bytes;
             bool gzip = false;
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -145,7 +139,6 @@ namespace Greatbone.Service
                     {
                         fs.CopyTo(gzs);
                     }
-
                     bytes = ms.ToArray();
                     gzip = true;
                 }
@@ -221,7 +214,6 @@ namespace Greatbone.Service
                 });
                 cleaner.Start();
             }
-
         }
 
         //

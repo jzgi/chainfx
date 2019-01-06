@@ -10,12 +10,8 @@ namespace Creatbone.Service
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        readonly int level;
-
-        internal Logger(string file, int level)
+        internal Logger(string file)
         {
-            this.level = level;
-
             // init the file-based logger
             FileStream stream = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(stream, Encoding.UTF8, 4096, false)
@@ -23,6 +19,8 @@ namespace Creatbone.Service
                 AutoFlush = true
             };
         }
+
+        public int Level { get; internal set; } = 3;
 
         //
         // LOGGING
@@ -40,7 +38,7 @@ namespace Creatbone.Service
 
         public bool IsEnabled(LogLevel level)
         {
-            return (int) level >= this.level;
+            return (int) level >= this.Level;
         }
 
         static readonly string[] LVL =

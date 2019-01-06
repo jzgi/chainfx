@@ -22,8 +22,6 @@ namespace Greatbone.Service
 
         public string Name => name;
 
-        public WebServer Service { get; internal set; }
-
         public WebWork Parent { get; internal set; }
 
         public int Level { get; internal set; }

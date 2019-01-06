@@ -41,7 +41,7 @@ namespace Greatbone.Service
         // current parameter index
         int index;
 
-        internal DbContext(ApplicationConfig cfg)
+        internal DbContext(HostConfig cfg)
         {
             connection = new NpgsqlConnection(cfg.ConnectionString);
             command = new NpgsqlCommand
