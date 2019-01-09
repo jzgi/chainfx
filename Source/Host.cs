@@ -18,7 +18,7 @@ namespace Greatbone.Service
     /// </summary>
     public class Host
     {
-        public const string CONFIG_JSON = "config.json";
+        public const string HOST_JSON = "host.json";
 
         public const string CERT_PFX = "cert.pfx";
 
@@ -38,7 +38,6 @@ namespace Greatbone.Service
         // the thread schedules and drives periodic jobs, such as event polling 
         static Thread scheduler;
 
-
         internal static readonly WebServer WebServer;
 
         static Host()
@@ -46,16 +45,16 @@ namespace Greatbone.Service
             // setup logger
             string logfile = DateTime.Now.ToString("yyyyMM") + ".log";
             Logger = new Logger(logfile);
-            if (!File.Exists(CONFIG_JSON))
+            if (!File.Exists(HOST_JSON))
             {
-                Logger.Log(LogLevel.Error, CONFIG_JSON + " not found");
+                Logger.Log(LogLevel.Error, HOST_JSON + " not found");
                 return;
             }
 
             // load the configuration file
-            byte[] bytes = File.ReadAllBytes(CONFIG_JSON);
+            byte[] bytes = File.ReadAllBytes(HOST_JSON);
             JsonParser parser = new JsonParser(bytes, bytes.Length);
-            JObj jo = (JObj) parser.Parse();
+            JObj jo = (JObj)parser.Parse();
             Config = new HostConfig();
             Config.Read(jo, 0xff);
 
@@ -188,19 +187,19 @@ namespace Greatbone.Service
         /// <typeparam name="S"></typeparam>
         /// <returns></returns>
         /// <exception cref="WebException"></exception>
-        public static S SetRootWork<S>() where S : WebWork
+        public static S MakeRootWork<S>(UiAttribute ui = null, AuthorizeAttribute authorize = null) where S : WebWork
         {
-            // create service instance by reflection
+            // create work instance through reflection
             Type typ = typeof(S);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkInfo)});
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkInfo) });
             if (ci == null)
             {
-                throw new WebException(typ + " missing ServiceConfig");
+                throw new WebException(typ + " missing WebWorkInfo");
             }
             WebWorkInfo wwi = new WebWorkInfo(string.Empty)
             {
-//                Ui = ui,
-//                Authorize = auth,
+                Ui = ui,
+                Authorize = authorize,
                 Parent = null,
                 Level = 0,
                 IsVar = false,
@@ -208,7 +207,7 @@ namespace Greatbone.Service
                 Pathing = "/",
                 Accessor = null,
             };
-            S w = (S) ci.Invoke(new object[] {wwi});
+            S w = (S)ci.Invoke(new object[] { wwi });
             WebServer.RootWork = w;
             return w;
         }
@@ -279,7 +278,7 @@ namespace Greatbone.Service
                     new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
 
                 request.CertificateExtensions.Add(
-                    new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, false));
+                    new X509EnhancedKeyUsageExtension(new OidCollection { new Oid("1.3.6.1.5.5.7.3.1") }, false));
 
                 request.CertificateExtensions.Add(sanb.Build());
 
@@ -299,7 +298,7 @@ namespace Greatbone.Service
             byte[] bytebuf = Encoding.ASCII.GetBytes(v);
             int count = bytebuf.Length;
             int mask = Config.cipher;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             char[] charbuf = new char[count * 2]; // the target
             int p = 0;
             for (int i = 0; i < count; i++)
@@ -326,7 +325,7 @@ namespace Greatbone.Service
                 int count = cnt.Size;
 
                 int mask = Config.cipher;
-                int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+                int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
                 char[] charbuf = new char[count * 2]; // the target
                 int p = 0;
                 for (int i = 0; i < count; i++)
@@ -352,7 +351,7 @@ namespace Greatbone.Service
         public static P Decrypt<P>(string token) where P : IData, new()
         {
             int mask = Config.cipher;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = token.Length / 2;
             var str = new Text(1024);
             int p = 0;
@@ -361,15 +360,15 @@ namespace Greatbone.Service
                 // TODO reordering
 
                 // transform to byte
-                int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
+                int b = (byte)(Dv(token[p++]) << 4 | Dv(token[p++]));
                 // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
+                str.Accept((byte)(b ^ masks[i % 4]));
             }
 
             // deserialize
             try
             {
-                JObj jo = (JObj) new JsonParser(str.ToString()).Parse();
+                JObj jo = (JObj)new JsonParser(str.ToString()).Parse();
                 P prin = new P();
                 prin.Read(jo, 0xff);
                 return prin;
@@ -383,7 +382,7 @@ namespace Greatbone.Service
         public static string Decrypt(string v)
         {
             int mask = Config.cipher;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
+            int[] masks = { (mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff };
             int len = v.Length / 2;
             var str = new Text(1024);
             int p = 0;
@@ -392,15 +391,15 @@ namespace Greatbone.Service
                 // TODO reordering
 
                 // transform to byte
-                int b = (byte) (Dv(v[p++]) << 4 | Dv(v[p++]));
+                int b = (byte)(Dv(v[p++]) << 4 | Dv(v[p++]));
                 // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
+                str.Accept((byte)(b ^ masks[i % 4]));
             }
             return str.ToString();
         }
 
         // hexidecimal characters
-        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         // return digit value
         static int Dv(char hex)

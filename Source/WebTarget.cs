@@ -26,7 +26,7 @@ namespace Greatbone.Service
 
         internal WebTarget(string name, ICustomAttributeProvider attrp, UiAttribute ui = null, AuthorizeAttribute authorize = null)
         {
-            this.name = name ?? throw new WebException("null nodule name");
+            this.name = name ?? throw new WebException("null target name");
             this.lower = name.ToLower();
 
             // either methodinfo or typeinfo

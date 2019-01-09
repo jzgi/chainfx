@@ -33,7 +33,7 @@ namespace Greatbone.Service
         readonly WebAction[] tooled;
 
         // subworks, if any
-        internal Map<string, WebWork> subworks;
+        internal Map<string, WebWork> works;
 
         // variable-key subwork, if any
         internal WebWork varwork;
@@ -128,7 +128,7 @@ namespace Greatbone.Service
 
         public WebAction Catch => @catch;
 
-        public Map<string, WebWork> SubWorks => subworks;
+        public Map<string, WebWork> Works => works;
 
         public WebWork VarWork => varwork;
 
@@ -199,9 +199,9 @@ namespace Greatbone.Service
                 throw new WebException("allowed work nesting " + MaxNesting);
             }
 
-            if (subworks == null)
+            if (works == null)
             {
-                subworks = new Map<string, WebWork>();
+                works = new Map<string, WebWork>();
             }
 
             // create instance by reflection
@@ -224,7 +224,7 @@ namespace Greatbone.Service
             };
             // init sub work
             W w = (W) ci.Invoke(new object[] {wwi});
-            subworks.Add(w.Key, w);
+            works.Add(w.Key, w);
             return w;
         }
 
@@ -271,11 +271,11 @@ namespace Greatbone.Service
                 },
                 delegate
                 {
-                    if (subworks != null)
+                    if (works != null)
                     {
-                        for (int i = 0; i < subworks.Count; i++)
+                        for (int i = 0; i < works.Count; i++)
                         {
-                            WebWork wrk = subworks.At(i);
+                            WebWork wrk = works.At(i);
                             wrk.Describe(xc);
                         }
                     }
@@ -304,9 +304,9 @@ namespace Greatbone.Service
 
             varwork?.Describe(hc);
 
-            for (int i = 0; i < subworks?.Count; i++)
+            for (int i = 0; i < works?.Count; i++)
             {
-                var w = subworks.At(i);
+                var w = works.At(i);
                 w.Describe(hc);
             }
         }
@@ -381,7 +381,7 @@ namespace Greatbone.Service
                 else // sub works
                 {
                     string key = rsc.Substring(0, slash);
-                    if (subworks != null && subworks.TryGet(key, out var wrk)) // if child
+                    if (works != null && works.TryGet(key, out var wrk)) // if child
                     {
                         wc.Chain(wrk, key);
                         await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
@@ -426,7 +426,7 @@ namespace Greatbone.Service
 
         int size;
 
-        public void Register(object value, byte flag = 0)
+        public void Attach(object value, byte flag = 0)
         {
             if (holds == null)
             {
@@ -435,22 +435,22 @@ namespace Greatbone.Service
             holds[size++] = new Hold(value, flag);
         }
 
-        public void Register<V>(Func<V> fetch, int maxage = 60, byte flag = 0) where V : class
+        public void Attach<V>(Func<V> fetch, int maxAge = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
                 holds = new Hold[8];
             }
-            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetch, maxAge, flag);
         }
 
-        public void Register<V>(Func<Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        public void Attach<V>(Func<Task<V>> fetchAsync, int maxAge = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
                 holds = new Hold[8];
             }
-            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetchAsync, maxAge, flag);
         }
 
         /// <summary>

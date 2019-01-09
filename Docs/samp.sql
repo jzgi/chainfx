@@ -350,7 +350,7 @@ ALTER TABLE "public"."hubs" ADD CONSTRAINT "hubs_pkey1" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table items
 -- ----------------------------
-ALTER TABLE "public"."items" ADD CONSTRAINT "items_pkey1" PRIMARY KEY ("id");
+ALTER TABLE "public".items ADD CONSTRAINT "items_pkey1" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table orders
