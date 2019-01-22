@@ -1059,7 +1059,7 @@ namespace Greatbone.Service
         /// <param name="legend"></param>
         /// <param name="css"></param>
         /// <returns></returns>
-        public HtmlContent FIELDSETUL_(string legend = null, string css = null)
+        public HtmlContent FIELDUL_(string legend = null, string css = null)
         {
             Add("<fieldset class=\"uk-fieldset uk-width-1-1");
             if (css != null)
@@ -1078,7 +1078,7 @@ namespace Greatbone.Service
             return this;
         }
 
-        public HtmlContent _ULFIELDSET()
+        public HtmlContent _FIELDUL()
         {
             Add("</ul>");
             Add("</fieldset>");
@@ -2167,7 +2167,7 @@ namespace Greatbone.Service
 
         public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
-            FIELDSETUL_(legend, css);
+            FIELDUL_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var e = opt[i];
@@ -2183,7 +2183,7 @@ namespace Greatbone.Service
                 Add(e);
                 Add(" </label>");
             }
-            _ULFIELDSET();
+            _FIELDUL();
             return this;
         }
 
@@ -2245,7 +2245,7 @@ namespace Greatbone.Service
 
         public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDSETUL_(legend, css);
+            FIELDUL_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2283,13 +2283,13 @@ namespace Greatbone.Service
                     }
                 }
             }
-            _ULFIELDSET();
+            _FIELDUL();
             return this;
         }
 
         public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDSETUL_(legend, css);
+            FIELDUL_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2336,19 +2336,19 @@ namespace Greatbone.Service
                     }
                 }
             }
-            _ULFIELDSET();
+            _FIELDUL();
             return this;
         }
 
         public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
         {
-            FIELDSETUL_(legend, css);
+            FIELDUL_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var o = opt[i];
                 RADIO(name, o, o, o.Equals(v));
             }
-            _ULFIELDSET();
+            _FIELDUL();
             return this;
         }
 
