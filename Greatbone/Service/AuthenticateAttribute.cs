@@ -24,7 +24,7 @@ namespace Greatbone.Service
         /// </summary>
         /// <remarks>The method only tries to establish principal identity within current web context, not responsible for any related user interaction.</remarks>
         /// <param name="wc">current web request/response context</param>
-        /// <returns>true to indicate the prcoessing context can continue; false to indicate that a failure has occured that the current processing context shoud quit</returns>
+        /// <returns>true to indicate the web context should continue with processing; false otherwise</returns>
         public abstract bool Do(WebContext wc);
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Greatbone.Service
         /// </summary>
         /// <remarks>The method only tries to establish principal identity within current web context, not responsible for any related user interaction.</remarks>
         /// <param name="wc">current web request/response context</param>
-        /// <returns>true to indicate the prcoessing context can continue; false to indicate that a failure has occured that the current processing context shoud quit</returns>
+        /// <returns>true to indicate the web context should continue with processing; false otherwise</returns>
         public abstract Task<bool> DoAsync(WebContext wc);
     }
 }

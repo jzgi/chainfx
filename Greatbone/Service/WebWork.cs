@@ -16,7 +16,7 @@ namespace Greatbone.Service
 
         const string VarDir = "_var_", VarPathing = "<var>";
 
-        protected readonly WebWorkInfo info;
+        protected readonly WebWorkInf info;
 
         readonly Type type;
 
@@ -50,7 +50,7 @@ namespace Greatbone.Service
         internal readonly AfterAttribute after;
 
         // to obtain a string key from a data object.
-        protected WebWork(WebWorkInfo wwi) : base(wwi.Name, null, wwi.Ui, wwi.Authorize)
+        protected WebWork(WebWorkInf wwi) : base(wwi.Name, null, wwi.Ui, wwi.Authorize)
         {
             this.info = wwi;
 
@@ -161,13 +161,13 @@ namespace Greatbone.Service
 
             // create instance
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkInfo)});
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkInf)});
             if (ci == null)
             {
                 throw new WebException(typ + " need public and WorkConfig");
             }
 
-            WebWorkInfo wwi = new WebWorkInfo(VarDir)
+            WebWorkInf wwi = new WebWorkInf(VarDir)
             {
                 Ui = ui,
                 Authorize = auth,
@@ -206,13 +206,13 @@ namespace Greatbone.Service
 
             // create instance by reflection
             Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkInfo)});
+            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkInf)});
             if (ci == null)
             {
                 throw new WebException(typ + " need public and WorkConfig");
             }
 
-            WebWorkInfo wwi = new WebWorkInfo(name)
+            WebWorkInf wwi = new WebWorkInf(name)
             {
                 Ui = ui,
                 Authorize = authorize,
@@ -320,7 +320,6 @@ namespace Greatbone.Service
                 {
                     if (authenticate.IsAsync && !await authenticate.DoAsync(wc) || !authenticate.IsAsync && !authenticate.Do(wc))
                     {
-                        wc.Give(401, "authentication failed"); // unauthenticated
                         return;
                     }
                 }

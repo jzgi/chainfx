@@ -6,12 +6,12 @@ namespace Greatbone.Service
     /// <summary>
     /// The creation environment for a particular work instance.
     /// </summary>
-    public sealed class WebWorkInfo
+    public sealed class WebWorkInf
     {
         // either an identifying name for a fixed work or the constant _var_ for a variable work
         readonly string name;
 
-        public WebWorkInfo(string name)
+        public WebWorkInf(string name)
         {
             this.name = name;
         }

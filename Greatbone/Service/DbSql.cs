@@ -532,12 +532,26 @@ namespace Greatbone.Service
 
         public void Put(string name, JObj v)
         {
-            throw new NotImplementedException();
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void Put(string name, JArr v)
         {
-            throw new NotImplementedException();
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void Put(string name, IData v, byte proj = 0x0f)

@@ -191,12 +191,12 @@ namespace Greatbone.Service
         {
             // create work instance through reflection
             Type typ = typeof(S);
-            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkInfo) });
+            ConstructorInfo ci = typ.GetConstructor(new[] { typeof(WebWorkInf) });
             if (ci == null)
             {
                 throw new WebException(typ + " missing WebWorkInfo");
             }
-            WebWorkInfo wwi = new WebWorkInfo(string.Empty)
+            WebWorkInf wwi = new WebWorkInf(string.Empty)
             {
                 Ui = ui,
                 Authorize = authorize,
