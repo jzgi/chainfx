@@ -3,14 +3,14 @@ using System.IO;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
-namespace Creatbone.Service
+namespace Greatbone
 {
-    public sealed class Logger : ILoggerProvider, ILogger
+    public class AppLogger : ILoggerProvider, ILogger
     {
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        internal Logger(string file)
+        internal AppLogger(string file)
         {
             // init the file-based logger
             FileStream stream = new FileStream(file, FileMode.Append, FileAccess.Write);

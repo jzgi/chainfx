@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using Greatbone.Web;
 using Microsoft.Extensions.Logging;
-using WebClient = System.Net.WebClient;
+using WebClient = Greatbone.Web.WebClient;
 using WebException = System.Net.WebException;
 
 namespace Greatbone
@@ -32,7 +32,7 @@ namespace Greatbone
 
         internal static readonly string Sign;
 
-        static readonly Logger Logger;
+        static readonly AppLogger Logger;
 
         // configured connectors that connect to peer services
         static readonly Map<string, WebClient> Ref;
@@ -48,7 +48,7 @@ namespace Greatbone
         {
             // setup logger
             string logfile = DateTime.Now.ToString("yyyyMM") + ".log";
-            Logger = new Logger(logfile);
+            Logger = new AppLogger(logfile);
             if (!File.Exists(HOST_JSON))
             {
                 Logger.Log(LogLevel.Error, HOST_JSON + " not found");

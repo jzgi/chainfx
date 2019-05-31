@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using static Greatbone.DataUtility;
-using static Greatbone.Web.Host;
+using static Greatbone.App;
 
 namespace Greatbone.Web
 {
@@ -75,6 +75,7 @@ namespace Greatbone.Web
                     rShard = rkey.Substring(dash + 1);
                 }
             }
+
             BaseAddress = new Uri(raddr);
             Timeout = TimeSpan.FromSeconds(12);
         }
@@ -97,10 +98,12 @@ namespace Greatbone.Web
             {
                 return;
             }
+
             if (pollTask != null && !pollTask.IsCompleted)
             {
                 return;
             }
+
             await (pollTask = Task.Run(() =>
             {
                 try
@@ -128,11 +131,12 @@ namespace Greatbone.Web
         {
             if (Clustered)
             {
-                var cfg = App.Config;
+                var cfg = Config;
                 req.Headers.TryAddWithoutValidation("X-Caller-Sign", Sign);
 //                req.Headers.TryAddWithoutValidation("X-Caller-Name", cfg.name);
                 req.Headers.TryAddWithoutValidation("X-Caller-Shard", cfg.shard);
             }
+
             var auth = wc?.Header("Authorization");
             if (auth != null)
             {
@@ -148,6 +152,7 @@ namespace Greatbone.Web
             {
                 throw new WebException("missing query before event poll");
             }
+
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
@@ -160,6 +165,7 @@ namespace Greatbone.Web
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return null;
         }
 
@@ -169,6 +175,7 @@ namespace Greatbone.Web
             {
                 throw new WebException("missing query before event poll");
             }
+
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
@@ -179,6 +186,7 @@ namespace Greatbone.Web
                 {
                     return null;
                 }
+
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
@@ -187,6 +195,7 @@ namespace Greatbone.Web
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return null;
         }
 
@@ -196,6 +205,7 @@ namespace Greatbone.Web
             {
                 throw new WebException("missing query before event poll");
             }
+
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
@@ -218,6 +228,7 @@ namespace Greatbone.Web
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return default;
         }
 
@@ -227,6 +238,7 @@ namespace Greatbone.Web
             {
                 throw new WebException("missing query before event poll");
             }
+
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
@@ -237,6 +249,7 @@ namespace Greatbone.Web
                 {
                     return null;
                 }
+
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 ISource inp = ParseContent(ctyp, bytea, bytea.Length);
@@ -246,6 +259,7 @@ namespace Greatbone.Web
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return null;
         }
 
@@ -261,12 +275,14 @@ namespace Greatbone.Web
                 {
                     return ((short) rsp.StatusCode, await rsp.Content.ReadAsByteArrayAsync());
                 }
+
                 return ((short) rsp.StatusCode, null);
             }
             catch
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return (500, null);
         }
 
@@ -284,12 +300,14 @@ namespace Greatbone.Web
                     var model = (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
                     return ((short) rsp.StatusCode, model);
                 }
+
                 return ((short) rsp.StatusCode, null);
             }
             catch
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return (500, null);
         }
 
@@ -309,12 +327,14 @@ namespace Greatbone.Web
                     obj.Read(inp, proj);
                     return ((short) rsp.StatusCode, obj);
                 }
+
                 return ((short) rsp.StatusCode, default);
             }
             catch
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return (500, default);
         }
 
@@ -333,12 +353,14 @@ namespace Greatbone.Web
                     var arr = inp.ToArray<D>(proj);
                     return ((short) rsp.StatusCode, arr);
                 }
+
                 return ((short) rsp.StatusCode, null);
             }
             catch
             {
                 retryAt = Environment.TickCount + AHEAD;
             }
+
             return (500, null);
         }
 
@@ -366,6 +388,7 @@ namespace Greatbone.Web
                     BufferUtility.Return(cnt);
                 }
             }
+
             return 0;
         }
 
@@ -378,6 +401,7 @@ namespace Greatbone.Web
                 {
                     req.Headers.Add("Authorization", "Token " + token);
                 }
+
                 req.Content = (HttpContent) content;
                 req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
                 req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
@@ -406,6 +430,7 @@ namespace Greatbone.Web
                     BufferUtility.Return(cnt);
                 }
             }
+
             return default;
         }
     }
