@@ -350,7 +350,7 @@ ALTER TABLE "public"."hubs" ADD CONSTRAINT "hubs_pkey1" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table items
 -- ----------------------------
-ALTER TABLE "public".items ADD CONSTRAINT "items_pkey1" PRIMARY KEY ("id");
+ALTER TABLE "public".products ADD CONSTRAINT "items_pkey1" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table orders
@@ -368,7 +368,7 @@ ALTER TABLE "public"."orders" ADD CONSTRAINT "orders_pkey1" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table repays
 -- ----------------------------
-ALTER TABLE "public"."repays" ADD CONSTRAINT "repays_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public".repays ADD CONSTRAINT "repays_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table shops
@@ -378,7 +378,7 @@ ALTER TABLE "public"."shops" ADD CONSTRAINT "shops_pk" PRIMARY KEY ("id");
 -- ----------------------------
 -- Primary Key structure for table teams
 -- ----------------------------
-ALTER TABLE "public"."teams" ADD CONSTRAINT "teams_pk" PRIMARY KEY ("id");
+ALTER TABLE "public".teams ADD CONSTRAINT "teams_pk" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table users

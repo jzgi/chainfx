@@ -1,5 +1,6 @@
 using System;
 
+// ReSharper disable once CheckNamespace
 namespace Greatbone
 {
     /// <summary>
@@ -53,6 +54,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -63,6 +65,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -73,6 +76,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -83,6 +87,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -93,6 +98,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -103,6 +109,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -113,6 +120,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -123,6 +131,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -133,6 +142,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -143,6 +153,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -158,6 +169,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -168,6 +180,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -178,6 +191,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -188,6 +202,7 @@ namespace Greatbone
                 v = fld;
                 return true;
             }
+
             return false;
         }
 
@@ -221,9 +236,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = false;
             return this;
         }
@@ -233,9 +249,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = '\0';
             return this;
         }
@@ -245,9 +262,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = 0;
             return this;
         }
@@ -257,9 +275,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = 0;
             return this;
         }
@@ -269,9 +288,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = 0;
             return this;
         }
@@ -281,9 +301,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = 0;
             return this;
         }
@@ -293,9 +314,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = 0;
             return this;
         }
@@ -305,9 +327,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = default;
             return this;
         }
@@ -317,9 +340,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = null;
             return this;
         }
@@ -339,9 +363,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = null;
             return this;
         }
@@ -351,9 +376,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = null;
             return this;
         }
@@ -363,9 +389,10 @@ namespace Greatbone
             int ord = ordinal++;
             if (ord < Count)
             {
-                v = At(ord);
+                v = ValueAt(ord);
                 return this;
             }
+
             v = null;
             return this;
         }

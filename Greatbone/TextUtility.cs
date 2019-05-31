@@ -343,6 +343,7 @@ namespace Greatbone
 
         public static short ToShort(this string str)
         {
+            if (str == null) return 0;
             return (short) str.ToInt(0, str.Length);
         }
 
@@ -368,6 +369,7 @@ namespace Greatbone
 
         public static int ToInt(this string str)
         {
+            if (str == null) return 0;
             return str.ToInt(0, str.Length);
         }
 
@@ -388,6 +390,7 @@ namespace Greatbone
 
         public static long ToLong(this string str)
         {
+            if (str == null) return 0;
             return str.ToLong(0, str.Length);
         }
 
@@ -418,6 +421,17 @@ namespace Greatbone
             }
             int a = str.ToInt(0, p);
             string b = str.Substring(p + 1, len - (p + 1));
+            return (a, b);
+        }
+
+        public static (int, short) ToIntShort(this string str, char sep = '-')
+        {
+            int len = str.Length;
+            int p = 0;
+            while (p < len && str[p] != sep) p++;
+
+            int a = str.ToInt(0, p);
+            short b = (short) str.ToInt(p + 1, len);
             return (a, b);
         }
 

@@ -45,8 +45,10 @@ namespace Greatbone
                 {
                     buf = new byte[queue.Spec];
                 }
+
                 return buf;
             }
+
             // out of queues scope
             return new byte[demand];
         }
@@ -82,8 +84,10 @@ namespace Greatbone
                 {
                     buf = new char[queue.Spec];
                 }
+
                 return buf;
             }
+
             // out of queues scope
             return new char[demand];
         }
@@ -118,6 +122,7 @@ namespace Greatbone
             {
                 Return(dcont.CharBuffer);
             }
+
             return true;
         }
 

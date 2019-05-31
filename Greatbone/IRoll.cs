@@ -30,6 +30,7 @@ namespace Greatbone
                     {
                         ir++;
                     }
+
                     if (ir == up.Length) return;
                     up[ir].Add(v);
                 }
@@ -53,6 +54,7 @@ namespace Greatbone
                         list.Add(cur);
                     }
                 }
+
                 up = list.ToArray();
             }
         }
