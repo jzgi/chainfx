@@ -18,18 +18,22 @@ namespace Greatbone
             {
                 return new FormParser(buffer, length).Parse();
             }
+
             if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
                 return new FormMpParser(buffer, length, ctyp.Substring(30)).Parse();
             }
+
             if (ctyp.StartsWith("application/json"))
             {
                 return new JsonParser(buffer, length).Parse();
             }
+
             if (ctyp.StartsWith("application/xml"))
             {
                 return new XmlParser(buffer, length).Parse();
             }
+
             if (ctyp.StartsWith("text/"))
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))
@@ -47,9 +51,11 @@ namespace Greatbone
                     {
                         text.Accept(buffer[i]);
                     }
+
                     return text;
                 }
             }
+
             return null;
         }
 
@@ -68,6 +74,7 @@ namespace Greatbone
             {
                 return new FormParser(v).Parse() as M;
             }
+
             return null;
         }
 
@@ -149,6 +156,7 @@ namespace Greatbone
             {
                 Debug.WriteLine(ex.Message);
             }
+
             return null;
         }
 
@@ -167,6 +175,7 @@ namespace Greatbone
             {
                 Debug.WriteLine(ex.Message);
             }
+
             return default;
         }
 
@@ -174,8 +183,8 @@ namespace Greatbone
         {
             try
             {
-                byte[] bytes = File.ReadAllBytes(file);
-                JArr ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
+                var bytes = File.ReadAllBytes(file);
+                var ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
                     return ja.ToArray<D>(proj);
@@ -185,6 +194,7 @@ namespace Greatbone
             {
                 Debug.WriteLine(ex.Message);
             }
+
             return null;
         }
 
@@ -192,8 +202,8 @@ namespace Greatbone
         {
             try
             {
-                byte[] bytes = File.ReadAllBytes(file);
-                JArr ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
+                var bytes = File.ReadAllBytes(file);
+                var ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
                     return ja.ToMap(proj, keyer, toper);
@@ -203,6 +213,7 @@ namespace Greatbone
             {
                 Debug.WriteLine(ex.Message);
             }
+
             return null;
         }
     }

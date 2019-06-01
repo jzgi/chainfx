@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Greatbone
+namespace Greatbone.Db
 {
     public class DbSet : IEnumerable<DbRow>
     {

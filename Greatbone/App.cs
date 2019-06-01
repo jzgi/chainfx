@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using Greatbone.Db;
 using Greatbone.Web;
 using Microsoft.Extensions.Logging;
 using WebClient = Greatbone.Web.WebClient;
@@ -20,7 +21,7 @@ namespace Greatbone
     /// </summary>
     public class App
     {
-        public const string HOST_JSON = "host.json";
+        public const string APP_JSON = "app.json";
 
         public const string CERT_PFX = "cert.pfx";
 
@@ -49,14 +50,14 @@ namespace Greatbone
             // setup logger
             string logfile = DateTime.Now.ToString("yyyyMM") + ".log";
             Logger = new AppLogger(logfile);
-            if (!File.Exists(HOST_JSON))
+            if (!File.Exists(APP_JSON))
             {
-                Logger.Log(LogLevel.Error, HOST_JSON + " not found");
+                Logger.Log(LogLevel.Error, APP_JSON + " not found");
                 return;
             }
 
             // load the configuration file
-            byte[] bytes = File.ReadAllBytes(HOST_JSON);
+            byte[] bytes = File.ReadAllBytes(APP_JSON);
             JsonParser parser = new JsonParser(bytes, bytes.Length);
             Json = (JObj) parser.Parse();
             Config = new AppConfig();

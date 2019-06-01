@@ -35,7 +35,7 @@ namespace Greatbone.Web
         Thread cleaner;
 
         // dbset operation areas keyed by service id
-        readonly ConcurrentDictionary<string, DbArea> areas;
+//        readonly ConcurrentDictionary<string, DbArea> areas;
 
         internal WebServer(AppConfig.Web cfg, ILoggerProvider logprov)
         {

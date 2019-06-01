@@ -1,6 +1,6 @@
 using System;
 
-namespace Greatbone
+namespace Greatbone.Db
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

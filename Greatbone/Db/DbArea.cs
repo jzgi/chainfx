@@ -1,4 +1,4 @@
-namespace Greatbone
+namespace Greatbone.Db
 {
     public class DbArea
     {

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Greatbone.Web
+namespace Greatbone
 {
     public interface IPollContext
     {

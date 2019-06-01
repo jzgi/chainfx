@@ -9,25 +9,22 @@ namespace Greatbone
     /// </summary>
     public static class BufferUtility
     {
-        // we use number ocores as a factor
+        // we use number of processor cores as a factor
         static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
 
-        // for byte buffers, stuffed only when being used
-        static readonly Queue<byte[]>[] bpool =
+        // pool of byte buffers
+        static readonly Queue<byte[]>[] bPool =
         {
-            new Queue<byte[]>(1024, factor * 16),
-            new Queue<byte[]>(1024 * 4, factor * 16),
-            new Queue<byte[]>(1024 * 16, factor * 8),
-            new Queue<byte[]>(1024 * 64, factor * 8),
-            new Queue<byte[]>(1024 * 128, factor * 4),
-            new Queue<byte[]>(1024 * 256, factor * 4),
-            new Queue<byte[]>(1024 * 512, factor * 2)
+            new Queue<byte[]>(1024 * 4, factor * 32),
+            new Queue<byte[]>(1024 * 16, factor * 16),
+            new Queue<byte[]>(1024 * 64, factor * 16),
+            new Queue<byte[]>(1024 * 256, factor * 8),
+            new Queue<byte[]>(1024 * 1024, factor * 8)
         };
 
-        // for char buffers
-        static readonly Queue<char[]>[] cpool =
+        // pool of char buffers
+        static readonly Queue<char[]>[] cPool =
         {
-            new Queue<char[]>(512, factor * 16),
             new Queue<char[]>(1024 * 1, factor * 16),
             new Queue<char[]>(1024 * 4, factor * 8),
             new Queue<char[]>(1024 * 16, factor * 8),
@@ -37,9 +34,9 @@ namespace Greatbone
         public static byte[] GetByteBuffer(int demand)
         {
             // locate the queue
-            for (int i = 0; i < bpool.Length; i++)
+            for (int i = 0; i < bPool.Length; i++)
             {
-                Queue<byte[]> queue = bpool[i];
+                var queue = bPool[i];
                 if (queue.Spec < demand) continue;
                 if (!queue.TryDequeue(out var buf))
                 {
@@ -56,9 +53,9 @@ namespace Greatbone
         public static void Return(byte[] buf)
         {
             int len = buf.Length;
-            for (int i = 0; i < bpool.Length; i++)
+            for (int i = 0; i < bPool.Length; i++)
             {
-                Queue<byte[]> queue = bpool[i];
+                var queue = bPool[i];
                 if (queue.Spec == len) // the right queue to add
                 {
                     if (queue.Count < queue.Limit)
@@ -76,9 +73,9 @@ namespace Greatbone
         public static char[] GetCharBuffer(int demand)
         {
             // locate the queue
-            for (int i = 0; i < cpool.Length; i++)
+            for (int i = 0; i < cPool.Length; i++)
             {
-                Queue<char[]> queue = cpool[i];
+                var queue = cPool[i];
                 if (queue.Spec < demand) continue;
                 if (!queue.TryDequeue(out var buf))
                 {
@@ -95,9 +92,9 @@ namespace Greatbone
         public static void Return(char[] buf)
         {
             int len = buf.Length;
-            for (int i = 0; i < cpool.Length; i++)
+            for (int i = 0; i < cPool.Length; i++)
             {
-                Queue<char[]> queue = cpool[i];
+                var queue = cPool[i];
                 if (queue.Spec == len) // the right queue to add
                 {
                     if (queue.Count < queue.Limit)
