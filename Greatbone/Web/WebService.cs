@@ -36,7 +36,11 @@ namespace Greatbone.Web
         // the response cache cleaner thread
         Thread cleaner;
 
-        protected WebService() => Pathing = "/";
+        protected WebService()
+        {
+            Service = this;
+            Pathing = "/";
+        }
 
         internal JObj Config
         {

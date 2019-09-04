@@ -396,7 +396,6 @@ namespace Greatbone.Web
 
                     wc.Action = null;
 
-
                     if (After != null)
                     {
                         if (After.IsAsync && !await After.DoAsync(wc) || !After.IsAsync && After.Do(wc))

@@ -52,7 +52,7 @@ namespace Greatbone.Web
         internal WebAction(WebWork work, MethodInfo mi, bool async, string subscript)
         {
             this.work = work;
-            this.name = mi.Name;
+            this.name = mi.Name == "default" ? string.Empty : mi.Name;
             this.relative = name == string.Empty ? "./?inner=true" : name;
             this.async = async;
             this.subscript = subscript;
@@ -162,7 +162,7 @@ namespace Greatbone.Web
 
         internal void Do(WebContext wc, string subscript)
         {
-            if (subscript == null)
+            if (subscript != null)
             {
                 do2(wc, subscript);
             }
@@ -175,7 +175,7 @@ namespace Greatbone.Web
         // invoke the right method
         internal async Task DoAsync(WebContext wc, string subscript)
         {
-            if (subscript == null)
+            if (subscript != null)
             {
                 await do2Async(wc, subscript);
             }

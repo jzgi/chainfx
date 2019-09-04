@@ -94,29 +94,27 @@ namespace Greatbone
             Net = Config["NET"];
             Ext = Config["EXT"];
 
+            if (Db != null)
+            {
+                for (var i = 0; i < Db.Count; i++)
+                {
+                    var e = Db.EntryAt(i);
+                    sources.Add(new DbSource(e.Value)
+                    {
+                        Name = e.Key
+                    });
+                }
+            }
+
             // references
             if (Net != null)
             {
                 for (var i = 0; i < Net.Count; i++)
                 {
-                    var k = Db.KeyAt(i);
-                    var v = Db.ValueAt(i);
-                    peers.Add(new NetClient(k, v)
+                    var e = Net.EntryAt(i);
+                    peers.Add(new NetClient(e.Key, e.value)
                     {
                         Clustered = true
-                    });
-                }
-            }
-
-            if (Db != null)
-            {
-                for (var i = 0; i < Db.Count; i++)
-                {
-                    var k = Db.KeyAt(i);
-                    var v = Db.ValueAt(i);
-                    sources.Add(new DbSource(v)
-                    {
-                        Name = k
                     });
                 }
             }
