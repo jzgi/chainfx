@@ -112,7 +112,8 @@ namespace Greatbone.Web
             }
             catch (Exception e)
             {
-                wc.Give(500, e.Message);
+                wc.Give(500, e.Message); // internal server error
+                Console.Write(e.StackTrace);
             }
             finally
             {

@@ -345,7 +345,7 @@ namespace Greatbone.Web
 
                 if (!DoAuthorize(wc))
                 {
-                    throw new WebException("Authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
+                    throw new WebException("Do authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
                 }
 
                 int slash = rsc.IndexOf('/');
@@ -370,7 +370,7 @@ namespace Greatbone.Web
                         wc.Subscript = subscpt = rsc.Substring(dash + 1);
                     }
 
-                    WebAction act = this[name];
+                    var act = this[name];
                     if (act == null)
                     {
                         wc.Give(404, "action not found", true, 12);
@@ -379,7 +379,10 @@ namespace Greatbone.Web
 
                     wc.Action = act;
 
-                    if (!act.DoAuthorize(wc)) throw new WebException();
+                    if (!act.DoAuthorize(wc))
+                    {
+                        throw new WebException("Do authorize failure: " + act.Name) {Code = wc.Principal == null ? 401 : 403};
+                    }
 
                     // try in the cache first
                     if (!Service.TryGiveFromCache(wc))
@@ -429,7 +432,7 @@ namespace Greatbone.Web
             }
             catch (Exception e)
             {
-                if (@catch != null) // an exception catch defined by this work
+                if (@catch != null) // If existing catch defined by this work
                 {
                     wc.Exception = e;
                     if (@catch.IsAsync) await @catch.DoAsync(wc, null);

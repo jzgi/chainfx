@@ -175,7 +175,7 @@ namespace Greatbone.Web
         // invoke the right method
         internal async Task DoAsync(WebContext wc, string subscript)
         {
-            if (subscript != null)
+            if (do2Async != null)
             {
                 await do2Async(wc, subscript);
             }
