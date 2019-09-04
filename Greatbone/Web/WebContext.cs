@@ -44,7 +44,7 @@ namespace Greatbone.Web
             fWebSocket = features.Get<IHttpWebSocketFeature>();
         }
 
-        public WebServer Service { get; internal set; }
+        public WebService Service { get; internal set; }
 
         public WebWork Work { get; internal set; }
 
@@ -445,7 +445,7 @@ namespace Greatbone.Web
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
             StringBuilder sb = new StringBuilder("Token=");
-            string token = App.Encrypt(prin, proj);
+            string token = Framework.Encrypt(prin, proj);
             sb.Append(token);
             if (maxage > 0)
             {
@@ -475,9 +475,9 @@ namespace Greatbone.Web
 
         public bool IsInCache { get; internal set; }
 
-        public short StatusCode
+        public int StatusCode
         {
-            get => (short) fResponse.StatusCode;
+            get => fResponse.StatusCode;
             set => fResponse.StatusCode = value;
         }
 
@@ -489,40 +489,40 @@ namespace Greatbone.Web
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public short MaxAge { get; internal set; }
 
-        public void Give(short statusCode, IContent cnt = null, bool? shared = null, short maxage = 12)
+        public void Give(int code, IContent cnt = null, bool? shared = null, short maxage = 12)
         {
-            StatusCode = statusCode;
+            StatusCode = code;
             Content = cnt;
             Shared = shared;
             MaxAge = maxage;
         }
 
-        public void Give(short statusCode, string text, bool? shared = null, short maxage = 12)
+        public void Give(int code, string text, bool? shared = null, short maxage = 12)
         {
             TextContent cnt = new TextContent(true, 1024);
             cnt.Add(text);
-            StatusCode = statusCode;
+            StatusCode = code;
             Content = cnt;
             Shared = shared;
             MaxAge = maxage;
         }
 
-        public void Give(short statusCode, IData obj, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
+        public void Give(int code, IData obj, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
         {
             JsonContent cnt = new JsonContent(true, 8192);
             cnt.Put(null, obj, proj);
-            StatusCode = statusCode;
+            StatusCode = code;
             Content = cnt;
             Shared = shared;
             MaxAge = maxAge;
         }
 
-        public void Give<D>(short statusCode, D[] arr, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
+        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
             where D : IData
         {
             JsonContent cnt = new JsonContent(true, 8192);
             cnt.Put(null, arr, proj);
-            StatusCode = statusCode;
+            StatusCode = code;
             Content = cnt;
             Shared = shared;
             MaxAge = maxAge;

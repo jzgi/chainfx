@@ -44,6 +44,7 @@ namespace Greatbone
                     array = alloc;
                 }
             }
+
             array[count++] = v;
         }
 
@@ -55,6 +56,7 @@ namespace Greatbone
                 Array.Copy(array, 0, alloc, 0, count);
                 return alloc;
             }
+
             return null;
         }
     }

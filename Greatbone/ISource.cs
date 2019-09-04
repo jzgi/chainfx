@@ -25,8 +25,6 @@ namespace Greatbone
 
         bool Get(string name, ref string v);
 
-        bool Get(string name, ref ArraySegment<byte> v);
-
         bool Get(string name, ref byte[] v);
 
         bool Get(string name, ref short[] v);
@@ -44,42 +42,6 @@ namespace Greatbone
         bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new();
 
         bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new();
-
-        ISource Let(out bool v);
-
-        ISource Let(out char v);
-
-        ISource Let(out short v);
-
-        ISource Let(out int v);
-
-        ISource Let(out long v);
-
-        ISource Let(out double v);
-
-        ISource Let(out decimal v);
-
-        ISource Let(out DateTime v);
-
-        ISource Let(out string v);
-
-        ISource Let(out ArraySegment<byte> v);
-
-        ISource Let(out short[] v);
-
-        ISource Let(out int[] v);
-
-        ISource Let(out long[] v);
-
-        ISource Let(out string[] v);
-
-        ISource Let(out JObj v);
-
-        ISource Let(out JArr v);
-
-        ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new();
-
-        ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new();
 
         D ToObject<D>(byte proj = 0x0f) where D : IData, new();
 

@@ -8,28 +8,20 @@ namespace Greatbone.Web
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
     /// </summary>
-    /// <remarks>A work can contain child/sub works.</remarks>
-    public abstract class WebWork : WebTarget
+    public abstract class WebWork : IKeyable<string>
     {
-        // max nesting levels
-        const int MaxNesting = 8;
+        const string VARDIR = "_var_", VARPATHING = "<var>";
 
-        const string VarDir = "_var_", VarPathing = "<var>";
+        // declared actions 
+        readonly Map<string, WebAction> actions = new Map<string, WebAction>(32);
 
-        protected readonly WebWorkContext info;
-
-        readonly Type type;
-
-        // declared action methods 
-        readonly Map<string, WebAction> actions;
-
-        // the default action method, can be null
+        // the default action, can be null
         readonly WebAction @default;
 
-        // the catch action method, can be null
+        // the catch action, can be null
         readonly WebAction @catch;
 
-        // action method with the ToolAttribute
+        // actions with ToolAttribute
         readonly WebAction[] tooled;
 
         // subworks, if any
@@ -38,31 +30,34 @@ namespace Greatbone.Web
         // variable-key subwork, if any
         internal WebWork varwork;
 
-        // if there is any procedure that must pick form value
-        readonly bool pick;
 
-        internal readonly AuthenticateAttribute authenticate;
+        public string Name { get; internal set; }
+
+        public UiAttribute Ui { get; internal set; }
+
+        public AuthenticateAttribute Authenticate { get; internal set; }
+
+        public AuthorizeAttribute Authorize { get; internal set; }
 
         // pre-action operation
-        internal readonly BeforeAttribute before;
+        public BeforeAttribute Before { get; internal set; }
 
         // post-action operation
-        internal readonly AfterAttribute after;
+        public AfterAttribute After { get; internal set; }
 
         // to obtain a string key from a data object.
-        protected WebWork(WebWorkContext wwc) : base(wwc.Name, null, wwc.Ui, wwc.Authorize)
+        protected WebWork()
         {
-            this.info = wwc;
+            type = GetType();
 
-            this.type = GetType();
+            Ui = (UiAttribute) type.GetCustomAttribute(typeof(UiAttribute), false);
+            Authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
+            Authorize = (AuthorizeAttribute) type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
+            Before = (BeforeAttribute) type.GetCustomAttribute(typeof(BeforeAttribute), false);
+            After = (AfterAttribute) type.GetCustomAttribute(typeof(AfterAttribute), false);
 
-            this.authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
-            this.before = (BeforeAttribute) type.GetCustomAttribute(typeof(BeforeAttribute), false);
-            this.after = (AfterAttribute) type.GetCustomAttribute(typeof(AfterAttribute), false);
-
-            // gather procedures
-            actions = new Map<string, WebAction>(32);
-            foreach (MethodInfo mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            // gather actions
+            foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
                 Type ret = mi.ReturnType;
@@ -71,7 +66,7 @@ namespace Greatbone.Web
                 else if (ret == typeof(void)) async = false;
                 else continue;
 
-                ParameterInfo[] pis = mi.GetParameters();
+                var pis = mi.GetParameters();
                 WebAction act;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(WebContext))
                 {
@@ -86,18 +81,19 @@ namespace Greatbone.Web
                 actions.Add(act);
                 if (act.Key == string.Empty) @default = act;
                 if (act.Key == "catch") @catch = act;
-                if (act.Tool?.MustPick == true) pick = true;
             }
+
             // gather tooled action methods
             var list = new ValueList<WebAction>(16);
             for (int i = 0; i < actions.Count; i++)
             {
-                WebAction act = actions.ValueAt(i);
-                if (act.HasTool)
+                var a = actions.EntryAt(i).Value;
+                if (a.Tool != null)
                 {
-                    list.Add(act);
+                    list.Add(a);
                 }
             }
+
             tooled = list.ToArray();
 
             if (tooled != null) // sorting
@@ -106,23 +102,35 @@ namespace Greatbone.Web
             }
         }
 
-        public WebWork Parent => info.Parent;
+        public virtual string Key => Name;
 
-        public bool IsVar => info.IsVar;
+        public string Label => Ui?.Label;
 
-        public int Level => info.Level;
+        public string Tip => Ui?.Tip;
 
-        public string Directory => info.Directory;
+        public byte Sort => Ui?.Sort ?? 0;
 
-        public string Pathing => info.Pathing;
+        readonly Type type;
 
-        public bool HasAccessor => info.Accessor != null;
+        public WebService Service { get; internal set; }
+
+        public WebWork Parent { get; internal set; }
+
+        public int Level { get; internal set; }
+
+        public bool IsVar { get; internal set; }
+
+        public string Directory { get; internal set; }
+
+        public string Pathing { get; internal set; }
+
+        // to resolve from the principal object.
+        public Func<IData, object> Accessor { get; internal set; }
 
         public Map<string, WebAction> Actions => actions;
 
         public WebAction[] Tooled => tooled;
 
-        public bool HasPick => pick;
 
         public WebAction Default => @default;
 
@@ -136,11 +144,31 @@ namespace Greatbone.Web
 
         public WebAction this[string method] => string.IsNullOrEmpty(method) ? @default : actions[method];
 
-        public WebAction this[int index] => actions.ValueAt(index);
+        public WebAction this[int index] => actions.EntryAt(index).Value;
 
         public string GetFilePath(string file)
         {
             return Path.Combine(Directory, file);
+        }
+
+        protected internal virtual void OnInitialize()
+        {
+        }
+
+        public bool DoAuthorize(WebContext wc)
+        {
+            if (Authorize != null)
+            {
+                // check if trusted peer
+                if (wc.CallerSign != null && wc.CallerSign == Framework.Signature)
+                {
+                    return true; // trusted without further check
+                }
+
+                return Authorize.Do(wc);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -148,39 +176,30 @@ namespace Greatbone.Web
         /// </summary>
         /// <param name="accessor">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param name="auth">to override class-wise Authorize attribute</param>
-        /// <typeparam name="W"></typeparam>
+        /// <param name="authorize">to override class-wise Authorize attribute</param>
+        /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected W MakeVarWork<W>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthorizeAttribute auth = null) where W : WebWork
+        protected T CreateVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
-            if (Level >= MaxNesting)
+            var wrk = new T
             {
-                throw new WebException("allowed work nesting " + MaxNesting);
-            }
-
-            // create instance
-            Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
-            if (ci == null)
-            {
-                throw new WebException(typ + " need public and WebWorkInf");
-            }
-
-            WebWorkContext wwi = new WebWorkContext(VarDir)
-            {
-                Ui = ui,
-                Authorize = auth,
+                Service = Service,
                 Parent = this,
                 Level = Level + 1,
                 IsVar = true,
-                Directory = (Parent == null) ? VarDir : Path.Combine(Parent.Directory, VarDir),
-                Pathing = Pathing + (accessor == null ? VarPathing : string.Empty) + "/",
+                Directory = (Parent == null) ? VARDIR : Path.Combine(Parent.Directory, VARDIR),
+                Pathing = Pathing + (accessor == null ? VARPATHING : string.Empty) + "/",
                 Accessor = accessor,
             };
-            W w = (W) ci.Invoke(new object[] {wwi});
-            varwork = w;
-            return w;
+            if (ui != null) wrk.Ui = ui;
+            if (authenticate != null) wrk.Authenticate = authenticate;
+            if (authorize != null) wrk.Authorize = authorize;
+            if (before != null) wrk.Before = before;
+            if (after != null) wrk.After = after;
+
+            varwork = wrk;
+            return wrk;
         }
 
         /// <summary>
@@ -189,49 +208,39 @@ namespace Greatbone.Web
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
-        /// <typeparam name="W">the type of work to create</typeparam>
+        /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected W MakeWork<W>(string name, UiAttribute ui = null, AuthorizeAttribute authorize = null) where W : WebWork
+        protected T CreateWork<T>(string name, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
-            if (info.Level >= MaxNesting)
-            {
-                throw new WebException("allowed work nesting " + MaxNesting);
-            }
-
             if (works == null)
             {
                 works = new Map<string, WebWork>();
             }
 
-            // create instance by reflection
-            Type typ = typeof(W);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
-            if (ci == null)
+            var wrk = new T
             {
-                throw new WebException(typ + " need public and WebWorkInf");
-            }
-
-            WebWorkContext wwi = new WebWorkContext(name)
-            {
-                Ui = ui,
-                Authorize = authorize,
+                Name = name,
+                Service = Service,
                 Parent = this,
                 Level = Level + 1,
                 IsVar = false,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Pathing = Pathing + name + "/",
             };
-            // init sub work
-            W w = (W) ci.Invoke(new object[] {wwi});
-            works.Add(w.Key, w);
-            return w;
+            if (ui != null) wrk.Ui = ui;
+            if (authenticate != null) wrk.Authenticate = authenticate;
+            if (authorize != null) wrk.Authorize = authorize;
+            if (before != null) wrk.Before = before;
+            if (after != null) wrk.After = after;
+
+            works.Add(wrk);
+            return wrk;
         }
 
         public object GetAccessor(IData prin)
         {
-            var keyer = info.Accessor;
-            return keyer?.Invoke(prin);
+            return Accessor?.Invoke(prin);
         }
 
         public static void PutVariableKey(object obj, DynamicContent cnt)
@@ -272,7 +281,7 @@ namespace Greatbone.Web
                 {
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        WebAction act = actions.ValueAt(i);
+                        var act = actions.EntryAt(i).Value;
                         xc.Put(act.Key, "");
                     }
                 },
@@ -282,10 +291,11 @@ namespace Greatbone.Web
                     {
                         for (int i = 0; i < works.Count; i++)
                         {
-                            WebWork wrk = works.ValueAt(i);
+                            var wrk = works.EntryAt(i).Value;
                             wrk.Describe(xc);
                         }
                     }
+
                     varwork?.Describe(xc);
                 }
             );
@@ -295,17 +305,18 @@ namespace Greatbone.Web
         {
             for (int i = 0; i < actions?.Count; i++)
             {
-                var a = actions.ValueAt(i);
-                if (a.Comments != null)
+                var a = actions.EntryAt(i).Value;
+                if (a.Tags != null)
                 {
                     hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
                     hc.T("<h3><code>").TT(a.Pathing).T("</code></h3>");
                     hc.HR();
-                    for (int k = 0; k < a.Comments.Count; k++)
+                    for (int k = 0; k < a.Tags.Length; k++)
                     {
-                        var c = a.Comments[k];
+                        var c = a.Tags[k];
                         c.Print(hc);
                     }
+
                     hc.T("</article>");
                 }
             }
@@ -314,7 +325,7 @@ namespace Greatbone.Web
 
             for (int i = 0; i < works?.Count; i++)
             {
-                var w = works.ValueAt(i);
+                var w = works.EntryAt(i).Value;
                 w.Describe(hc);
             }
         }
@@ -324,26 +335,33 @@ namespace Greatbone.Web
             wc.Work = this;
             try
             {
-                if (authenticate != null)
+                if (Authenticate != null)
                 {
-                    if (authenticate.IsAsync && !await authenticate.DoAsync(wc) || !authenticate.IsAsync && !authenticate.Do(wc))
+                    if (Authenticate.IsAsync && !await Authenticate.DoAsync(wc) || !Authenticate.IsAsync && !Authenticate.Do(wc))
                     {
                         return;
                     }
                 }
 
-                if (!DoAuthorize(wc)) throw exception;
+                if (!DoAuthorize(wc))
+                {
+                    throw new WebException("Access denied: " + Name)
+                    {
+                        Code = 403
+                    };
+                }
 
                 int slash = rsc.IndexOf('/');
                 if (slash == -1) // this work is the target work
                 {
-                    if (before != null)
+                    if (Before != null)
                     {
-                        if (before.IsAsync && !await before.DoAsync(wc) || !before.IsAsync && before.Do(wc))
+                        if (Before.IsAsync && !await Before.DoAsync(wc) || !Before.IsAsync && Before.Do(wc))
                         {
                             return;
                         }
                     }
+
                     //
                     // resolve the resource
                     string name = rsc;
@@ -354,6 +372,7 @@ namespace Greatbone.Web
                         name = rsc.Substring(0, dash);
                         wc.Subscript = subscpt = rsc.Substring(dash + 1);
                     }
+
                     WebAction act = this[name];
                     if (act == null)
                     {
@@ -363,23 +382,24 @@ namespace Greatbone.Web
 
                     wc.Action = act;
 
-                    if (!act.DoAuthorize(wc)) throw act.exception;
+                    if (!act.DoAuthorize(wc)) throw new WebException();
 
                     // try in the cache first
-                    if (!App.WebServer.TryGiveFromCache(wc))
+                    if (!Service.TryGiveFromCache(wc))
                     {
                         // invoke action method 
                         if (act.IsAsync) await act.DoAsync(wc, subscpt);
                         else act.Do(wc, subscpt);
 
-                        App.WebServer.TryAddToCache(wc);
+                        Service.TryToCache(wc);
                     }
+
                     wc.Action = null;
 
 
-                    if (after != null)
+                    if (After != null)
                     {
-                        if (after.IsAsync && !await after.DoAsync(wc) || !after.IsAsync && after.Do(wc))
+                        if (After.IsAsync && !await After.DoAsync(wc) || !After.IsAsync && After.Do(wc))
                         {
                             return;
                         }
@@ -388,7 +408,7 @@ namespace Greatbone.Web
                 else // sub works
                 {
                     string key = rsc.Substring(0, slash);
-                    if (works != null && works.TryGet(key, out var wrk)) // if child
+                    if (works != null && works.TryGetValue(key, out var wrk)) // if child
                     {
                         wc.Chain(wrk, key);
                         await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
@@ -399,12 +419,13 @@ namespace Greatbone.Web
                         object acc = null;
                         if (key.Length == 0) // resolve prinlet
                         {
-                            if (prin == null) throw exception;
+//                            if (prin == null) throw exception;
                             if ((acc = varwork.GetAccessor(prin)) == null)
                             {
-                                throw exception;
+//                                throw exception;
                             }
                         }
+
                         wc.Chain(varwork, key, acc);
                         await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                     }
@@ -426,38 +447,47 @@ namespace Greatbone.Web
             }
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
+
         //
         // object provider
 
-        Hold[] holds;
+        Cell[] cells;
 
         int size;
 
         public void Attach(object value, byte flag = 0)
         {
-            if (holds == null)
+            if (cells == null)
             {
-                holds = new Hold[16];
+                cells = new Cell[16];
             }
-            holds[size++] = new Hold(value, flag);
+
+            cells[size++] = new Cell(value, flag);
         }
 
         public void Attach<V>(Func<V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holds == null)
+            if (cells == null)
             {
-                holds = new Hold[8];
+                cells = new Cell[8];
             }
-            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
+
+            cells[size++] = new Cell(typeof(V), fetch, maxage, flag);
         }
 
         public void Attach<V>(Func<Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holds == null)
+            if (cells == null)
             {
-                holds = new Hold[8];
+                cells = new Cell[8];
             }
-            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
+
+            cells[size++] = new Cell(typeof(V), fetchAsync, maxage, flag);
         }
 
         /// <summary>
@@ -467,11 +497,11 @@ namespace Greatbone.Web
         /// <returns>the result object or null</returns>
         public T Obtain<T>(byte flag = 0) where T : class
         {
-            if (holds != null)
+            if (cells != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var h = holds[i];
+                    var h = cells[i];
                     if (h.Flag == 0 || (h.Flag & flag) > 0)
                     {
                         if (!h.IsAsync && typeof(T).IsAssignableFrom(h.Typ))
@@ -481,16 +511,17 @@ namespace Greatbone.Web
                     }
                 }
             }
+
             return Parent?.Obtain<T>(flag);
         }
 
         public async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (holds != null)
+            if (cells != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = holds[i];
+                    var cell = cells[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -500,10 +531,12 @@ namespace Greatbone.Web
                     }
                 }
             }
+
             if (Parent == null)
             {
                 return null;
             }
+
             return await Parent.ObtainAsync<T>(flag);
         }
 
@@ -511,7 +544,7 @@ namespace Greatbone.Web
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Hold
+        class Cell
         {
             readonly Type typ;
 
@@ -528,14 +561,14 @@ namespace Greatbone.Web
 
             readonly byte flag;
 
-            internal Hold(object value, byte flag)
+            internal Cell(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
                 this.flag = flag;
             }
 
-            internal Hold(Type typ, Func<object> fetch, int maxage, byte flag)
+            internal Cell(Type typ, Func<object> fetch, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;
@@ -547,6 +580,7 @@ namespace Greatbone.Web
                 {
                     this.fetch = fetch;
                 }
+
                 this.maxage = maxage;
             }
 
@@ -562,6 +596,7 @@ namespace Greatbone.Web
                 {
                     return value;
                 }
+
                 lock (fetch) // cache object
                 {
                     if (Environment.TickCount >= expiry)
@@ -569,6 +604,7 @@ namespace Greatbone.Web
                         value = fetch();
                         expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                     }
+
                     return value;
                 }
             }
@@ -579,6 +615,7 @@ namespace Greatbone.Web
                 {
                     return value;
                 }
+
                 int lexpiry = this.expiry;
                 int ticks = Environment.TickCount;
                 if (ticks >= lexpiry)
@@ -586,6 +623,7 @@ namespace Greatbone.Web
                     value = await fetchAsync();
                     expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                 }
+
                 return value;
             }
         }

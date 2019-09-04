@@ -1165,8 +1165,8 @@ namespace Greatbone.Web
         public void PAGENATION(int count, int limit = 20)
         {
             // pagination
-            var actr = webCtx.Action;
-            if (actr.HasSubscript)
+            var act = webCtx.Action;
+            if (act.Subscript != null)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
                 int subscpt = webCtx.Subscript.ToInt();
@@ -1181,7 +1181,7 @@ namespace Greatbone.Web
                     else
                     {
                         Add("<li><a href=\"");
-                        Add(actr.Key);
+                        Add(act.Key);
                         Add('-');
                         Add(i);
                         Add(webCtx.QueryStr);
@@ -1194,7 +1194,7 @@ namespace Greatbone.Web
                 if (count == limit)
                 {
                     Add("<li class=\"pagination-next\"><a href=\"");
-                    Add(actr.Key);
+                    Add(act.Key);
                     Add('-');
                     Add(subscpt + 1);
                     Add(webCtx.QueryStr);
@@ -1746,7 +1746,7 @@ namespace Greatbone.Web
                 }
 
                 Add(act == webCtx.Action ? act.Key : act.Relative);
-                if (subscript >= 0 && act.HasSubscript)
+                if (subscript >= 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -1773,7 +1773,7 @@ namespace Greatbone.Web
                 }
 
                 Add(act.Key);
-                if (subscript >= 0 && act.HasSubscript)
+                if (subscript >= 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -1813,7 +1813,7 @@ namespace Greatbone.Web
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return by"); // prefix to avoid js naming conflict
-                Add(act.Lower);
+                Add(act.Name);
                 Add("(this);\"");
             }
             else if (tool.HasCrop)

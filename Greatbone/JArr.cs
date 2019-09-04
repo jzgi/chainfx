@@ -39,6 +39,7 @@ namespace Greatbone
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
+
             elements[count++] = elem;
         }
 
@@ -175,109 +176,6 @@ namespace Greatbone
         }
 
         //
-        // LET
-        //
-
-        public ISource Let(out bool v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out char v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out short v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out int v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out long v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out double v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out decimal v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out DateTime v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out string v)
-        {
-            v = elements[current];
-            return this;
-        }
-
-        public ISource Let(out ArraySegment<byte> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out short[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out int[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out long[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out string[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JObj v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JArr v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        //
         // ENTIRITY
         //
 
@@ -297,6 +195,7 @@ namespace Greatbone
                 obj.Read((JObj) elements[i], proj);
                 arr[i] = obj;
             }
+
             return arr;
         }
 
@@ -316,8 +215,10 @@ namespace Greatbone
                 {
                     key = mappable.Key;
                 }
+
                 map.Add(key, obj);
             }
+
             return map;
         }
 
@@ -368,7 +269,7 @@ namespace Greatbone
         public IContent Dump()
         {
             var cnt = new JsonContent(true, 4096);
-            cnt.PutFrom(this);
+            cnt.PutFromSource(this);
             return cnt;
         }
 
@@ -377,7 +278,7 @@ namespace Greatbone
             JsonContent cnt = new JsonContent(false, 4096);
             try
             {
-                cnt.PutFrom(this);
+                cnt.PutFromSource(this);
                 return cnt.ToString();
             }
             finally
@@ -398,6 +299,7 @@ namespace Greatbone
             {
                 arr[i] = v[i];
             }
+
             return arr;
         }
     }

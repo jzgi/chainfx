@@ -544,7 +544,7 @@ namespace Greatbone
             }
         }
 
-        public void PutFrom(ISource v)
+        public void PutFromSource(ISource v)
         {
             if (counts[level]++ > 0) Add(',');
             if (v == null)

@@ -48,91 +48,100 @@ namespace Greatbone
 
         public bool Get(string name, ref bool v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref char v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref short v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref int v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref long v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref double v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref decimal v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref string v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
@@ -148,7 +157,7 @@ namespace Greatbone
 
         public bool Get(string name, ref short[] v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 JArr ja = mbr;
                 if (ja != null)
@@ -159,14 +168,16 @@ namespace Greatbone
                         v[i] = ja[i];
                     }
                 }
+
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref int[] v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 JArr ja = mbr;
                 if (ja != null)
@@ -177,14 +188,16 @@ namespace Greatbone
                         v[i] = ja[i];
                     }
                 }
+
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref long[] v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 JArr ja = mbr;
                 if (ja != null)
@@ -195,14 +208,16 @@ namespace Greatbone
                         v[i] = ja[i];
                     }
                 }
+
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref string[] v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 JArr ja = mbr;
                 if (ja != null)
@@ -213,34 +228,38 @@ namespace Greatbone
                         v[i] = ja[i];
                     }
                 }
+
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref JObj v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref JArr v)
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 v = mbr;
                 return true;
             }
+
             return false;
         }
 
         public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 JObj jobj = mbr;
                 if (jobj != null)
@@ -248,14 +267,16 @@ namespace Greatbone
                     v = new D();
                     v.Read(jobj);
                 }
+
                 return true;
             }
+
             return false;
         }
 
         public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
         {
-            if (TryGet(name, out var mbr))
+            if (TryGetValue(name, out var mbr))
             {
                 JArr ja = mbr;
                 if (ja != null)
@@ -269,102 +290,12 @@ namespace Greatbone
                         v[i] = dat;
                     }
                 }
+
                 return true;
             }
+
             return false;
         }
-
-
-        public ISource Let(out bool v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out char v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out short v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out int v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out long v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out double v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out decimal v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out DateTime v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out string v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out ArraySegment<byte> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out short[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out int[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out long[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out string[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JObj v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JArr v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
 
         public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
         {
@@ -386,8 +317,8 @@ namespace Greatbone
         {
             for (int i = 0; i < Count; i++)
             {
-                JMbr mbr = ValueAt(i);
-                JType t = mbr.type;
+                var mbr = ValueAt(i);
+                var t = mbr.type;
                 if (t == JType.Array)
                 {
                     cnt.Put(mbr.Key, (JArr) mbr);
@@ -422,7 +353,7 @@ namespace Greatbone
         public IContent Dump()
         {
             var cnt = new JsonContent(true, 4096);
-            cnt.PutFrom(this);
+            cnt.PutFromSource(this);
             return cnt;
         }
 
@@ -431,7 +362,7 @@ namespace Greatbone
             JsonContent cnt = new JsonContent(false, 4096);
             try
             {
-                cnt.PutFrom(this);
+                cnt.PutFromSource(this);
                 return cnt.ToString();
             }
             finally

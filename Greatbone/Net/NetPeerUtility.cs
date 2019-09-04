@@ -2,11 +2,10 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Greatbone;
 
 namespace Greatbone.Web
 {
-    public static class WebClientUtility
+    public static class NetPeerUtility
     {
         public static string GetValue(this HttpHeaders headers, string name)
         {
@@ -15,14 +14,15 @@ namespace Greatbone.Web
                 string[] strs = values as string[];
                 return strs?[0];
             }
+
             return null;
         }
 
-        public static void CallAny(this WebClient[] df)
+        public static void CallAny(this NetClient[] df)
         {
         }
 
-        public static void CallAll(this WebClient[] df)
+        public static void CallAll(this NetClient[] df)
         {
         }
 

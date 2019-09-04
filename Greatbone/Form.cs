@@ -11,8 +11,6 @@ namespace Greatbone
         // if multipart
         readonly bool mp;
 
-        int ordinal;
-
         public Form(bool mp, int capacity = 16) : base(capacity)
         {
             this.mp = mp;
@@ -49,7 +47,7 @@ namespace Greatbone
 
         public bool Get(string name, ref bool v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -60,7 +58,7 @@ namespace Greatbone
 
         public bool Get(string name, ref char v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -71,7 +69,7 @@ namespace Greatbone
 
         public bool Get(string name, ref short v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -82,7 +80,7 @@ namespace Greatbone
 
         public bool Get(string name, ref int v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -93,7 +91,7 @@ namespace Greatbone
 
         public bool Get(string name, ref long v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -104,7 +102,7 @@ namespace Greatbone
 
         public bool Get(string name, ref double v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -115,7 +113,7 @@ namespace Greatbone
 
         public bool Get(string name, ref decimal v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -126,7 +124,7 @@ namespace Greatbone
 
         public bool Get(string name, ref DateTime v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -137,7 +135,7 @@ namespace Greatbone
 
         public bool Get(string name, ref string v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -148,7 +146,7 @@ namespace Greatbone
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -164,7 +162,7 @@ namespace Greatbone
 
         public bool Get(string name, ref short[] v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -175,7 +173,7 @@ namespace Greatbone
 
         public bool Get(string name, ref int[] v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -186,7 +184,7 @@ namespace Greatbone
 
         public bool Get(string name, ref long[] v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -197,7 +195,7 @@ namespace Greatbone
 
         public bool Get(string name, ref string[] v)
         {
-            if (TryGet(name, out var fld))
+            if (TryGetValue(name, out var fld))
             {
                 v = fld;
                 return true;
@@ -225,196 +223,6 @@ namespace Greatbone
         public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
         {
             return false;
-        }
-
-        //
-        // LET
-        //
-
-        public ISource Let(out bool v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = false;
-            return this;
-        }
-
-        public ISource Let(out char v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = '\0';
-            return this;
-        }
-
-        public ISource Let(out short v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = 0;
-            return this;
-        }
-
-        public ISource Let(out int v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = 0;
-            return this;
-        }
-
-        public ISource Let(out long v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = 0;
-            return this;
-        }
-
-        public ISource Let(out double v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = 0;
-            return this;
-        }
-
-        public ISource Let(out decimal v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = 0;
-            return this;
-        }
-
-        public ISource Let(out DateTime v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = default;
-            return this;
-        }
-
-        public ISource Let(out string v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = null;
-            return this;
-        }
-
-        public ISource Let(out ArraySegment<byte> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out short[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out int[] v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = null;
-            return this;
-        }
-
-        public ISource Let(out long[] v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = null;
-            return this;
-        }
-
-        public ISource Let(out string[] v)
-        {
-            int ord = ordinal++;
-            if (ord < Count)
-            {
-                v = ValueAt(ord);
-                return this;
-            }
-
-            v = null;
-            return this;
-        }
-
-        public ISource Let(out JObj v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JArr v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
         }
 
         public D ToObject<D>(byte proj = 0x0f) where D : IData, new()

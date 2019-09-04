@@ -26,6 +26,7 @@ namespace Greatbone
             {
                 size <<= 1;
             }
+
             ReInit(size);
         }
 
@@ -36,10 +37,12 @@ namespace Greatbone
                 buckets = new int[size];
                 entries = new Entry[size];
             }
+
             for (int i = 0; i < buckets.Length; i++) // initialize all buckets to -1
             {
                 buckets[i] = -1;
             }
+
             count = 0;
         }
 
@@ -47,7 +50,7 @@ namespace Greatbone
 
         public Entry EntryAt(int idx) => entries[idx];
 
-        public K KeyAt(int idx) => entries[idx].key;
+        public K KeyAt(int idx) => entries[idx].Key;
 
         public V ValueAt(int idx) => entries[idx].value;
 
@@ -63,8 +66,10 @@ namespace Greatbone
                 {
                     arr[i] = entries[idx + 1 + i].value;
                 }
+
                 return arr;
             }
+
             return null;
         }
 
@@ -80,8 +85,10 @@ namespace Greatbone
                 {
                     return idx;
                 }
+
                 idx = entries[idx].next; // adjust for next index
             }
+
             return -1;
         }
 
@@ -129,6 +136,7 @@ namespace Greatbone
                     e.value = value;
                     return; // replace the old value
                 }
+
                 idx = entries[idx].next; // adjust for next index
             }
 
@@ -146,34 +154,41 @@ namespace Greatbone
                 {
                     head = idx;
                 }
+
                 entries[head].tail = idx;
             }
         }
 
         public bool Contains(K key)
         {
-            if (TryGet(key, out _))
+            if (TryGetValue(key, out _))
             {
                 return true;
             }
+
             return false;
         }
 
-        public bool TryGet(K key, out V value)
+        public V this[K key] => TryGetValue(key, out V v) ? v : default;
+
+
+        public bool TryGetValue(K key, out V value)
         {
             int code = key.GetHashCode() & 0x7fffffff;
             int buck = code % buckets.Length; // target bucket
             int idx = buckets[buck];
             while (idx != -1)
             {
-                Entry e = entries[idx];
+                var e = entries[idx];
                 if (e.Match(code, key))
                 {
                     value = e.value;
                     return true;
                 }
+
                 idx = entries[idx].next; // adjust for next index
             }
+
             value = default;
             return false;
         }
@@ -188,35 +203,19 @@ namespace Greatbone
             return new Enumerator(this);
         }
 
-        //
-        // advanced search operations that can be overridden with concurrency constructs
-
-        public V this[K key]
-        {
-            get
-            {
-                if (key == null) return default;
-
-                if (TryGet(key, out var val))
-                {
-                    return val;
-                }
-                return default;
-            }
-            set => Add(key, value);
-        }
 
         public V[] All(Predicate<V> cond = null)
         {
-            ValueList<V> list = new ValueList<V>(16);
+            var list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
-                V v = entries[i].value;
+                var v = entries[i].value;
                 if (cond == null || cond(v))
                 {
                     list.Add(v);
                 }
             }
+
             return list.ToArray();
         }
 
@@ -224,12 +223,13 @@ namespace Greatbone
         {
             for (int i = 0; i < count; i++)
             {
-                V v = entries[i].value;
+                var v = entries[i].value;
                 if (cond == null || cond(v))
                 {
                     return v;
                 }
             }
+
             return default;
         }
 
@@ -274,7 +274,7 @@ namespace Greatbone
 
             public override string ToString()
             {
-                return value.ToString();
+                return key.ToString();
             }
 
             public K Key => key;

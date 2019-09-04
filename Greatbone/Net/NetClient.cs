@@ -3,14 +3,13 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using static Greatbone.DataUtility;
-using static Greatbone.App;
 
 namespace Greatbone.Web
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class WebClient : HttpClient, IKeyable<string>, IPollContext
+    public class NetClient : HttpClient, IKeyable<string>, IPollContext
     {
         const int AHEAD = 1000 * 12;
 
@@ -39,7 +38,7 @@ namespace Greatbone.Web
         /// Used to construct a secure client by passing handler with certificate.
         /// </summary>
         /// <param name="handler"></param>
-        public WebClient(HttpClientHandler handler) : base(handler)
+        public NetClient(HttpClientHandler handler) : base(handler)
         {
         }
 
@@ -49,7 +48,7 @@ namespace Greatbone.Web
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
         /// <param name="raddr"></param>
-        public WebClient(string raddr) : this(null, raddr)
+        public NetClient(string raddr) : this(null, raddr)
         {
         }
 
@@ -58,7 +57,7 @@ namespace Greatbone.Web
         /// </summary>
         /// <param name="rkey">the identifying key for the remote service</param>
         /// <param name="raddr">remote address</param>
-        internal WebClient(string rkey, string raddr)
+        internal NetClient(string rkey, string raddr)
         {
             rKey = rkey;
             // initialize name and sshard
@@ -113,8 +112,8 @@ namespace Greatbone.Web
                 }
                 catch (Exception e)
                 {
-                    WAR("Error in event poller");
-                    WAR(e.Message);
+                    Framework.WAR("Error in event poller");
+                    Framework.WAR(e.Message);
                 }
                 finally
                 {
@@ -131,10 +130,10 @@ namespace Greatbone.Web
         {
             if (Clustered)
             {
-                var cfg = Config;
-                req.Headers.TryAddWithoutValidation("X-Caller-Sign", Sign);
+                var cfg = Framework.Config;
+//                req.Headers.TryAddWithoutValidation("X-Caller-Sign", Framework.sign);
 //                req.Headers.TryAddWithoutValidation("X-Caller-Name", cfg.name);
-                req.Headers.TryAddWithoutValidation("X-Caller-Shard", cfg.shard);
+//                req.Headers.TryAddWithoutValidation("X-Caller-Shard", cfg.shard);
             }
 
             var auth = wc?.Header("Authorization");
@@ -150,7 +149,7 @@ namespace Greatbone.Web
         {
             if (QueryString == null)
             {
-                throw new WebException("missing query before event poll");
+                throw new FrameworkException("missing query before event poll");
             }
 
             string uri = POLL_ACTION + "?" + QueryString;
@@ -173,7 +172,7 @@ namespace Greatbone.Web
         {
             if (QueryString == null)
             {
-                throw new WebException("missing query before event poll");
+                throw new FrameworkException("missing query before event poll");
             }
 
             string uri = POLL_ACTION + "?" + QueryString;
@@ -203,7 +202,7 @@ namespace Greatbone.Web
         {
             if (QueryString == null)
             {
-                throw new WebException("missing query before event poll");
+                throw new FrameworkException("missing query before event poll");
             }
 
             string uri = POLL_ACTION + "?" + QueryString;
@@ -236,7 +235,7 @@ namespace Greatbone.Web
         {
             if (QueryString == null)
             {
-                throw new WebException("missing query before event poll");
+                throw new FrameworkException("missing query before event poll");
             }
 
             string uri = POLL_ACTION + "?" + QueryString;

@@ -319,7 +319,7 @@ namespace Greatbone
         {
         }
 
-        public void PutFrom(ISource s)
+        public void PutFromSource(ISource s)
         {
             throw new NotImplementedException();
         }

@@ -7,6 +7,11 @@ namespace Greatbone.Web
     ///
     public class WebException : Exception
     {
+        /// <summary>
+        /// The status code.
+        /// </summary>
+        public int Code { get; internal set; }
+
         public WebException()
         {
         }

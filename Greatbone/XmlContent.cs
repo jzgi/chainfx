@@ -61,12 +61,14 @@ namespace Greatbone
                     Add('"');
                 }
             }
+
             Add('>');
 
             if (elem.Text != null)
             {
                 AddEsc(elem.Text);
             }
+
             if (elem.Count > 0)
             {
                 for (int i = 0; i < elem.Count; i++)
@@ -74,6 +76,7 @@ namespace Greatbone
                     ELEM(elem[i]);
                 }
             }
+
             Add("</");
             Add(elem.Tag);
             Add('>');
@@ -85,7 +88,7 @@ namespace Greatbone
         // PUT
         //
 
-        public XmlContent ELEM(string name, System.Action attrs, System.Action children)
+        public XmlContent ELEM(string name, Action attrs, Action children)
         {
             Add('<');
             Add(name);
@@ -377,7 +380,7 @@ namespace Greatbone
         {
         }
 
-        public void PutFrom(ISource s)
+        public void PutFromSource(ISource s)
         {
             throw new NotImplementedException();
         }

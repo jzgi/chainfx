@@ -43,6 +43,7 @@ namespace Greatbone
             {
                 attrs = new Map<string, string>(8);
             }
+
             attrs.Add(name, value);
         }
 
@@ -62,6 +63,7 @@ namespace Greatbone
                     Array.Copy(temp, 0, children, 0, len);
                 }
             }
+
             children[count++] = elem;
         }
 
@@ -87,6 +89,7 @@ namespace Greatbone
                         return elem;
                     }
                 }
+
                 for (int i = 0; i < current; i++)
                 {
                     XElem elem = children[i];
@@ -97,6 +100,7 @@ namespace Greatbone
                     }
                 }
             }
+
             return null;
         }
 
@@ -112,91 +116,100 @@ namespace Greatbone
         public bool Get(string name, ref bool v)
         {
             // try attribute
-            if (attrs != null && attrs.TryGet(name, out var attr))
+            if (attrs != null && attrs.TryGetValue(name, out var attr))
             {
                 v = attr.ToBool();
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref char v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = attr.ToChar();
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref short v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = attr.ToShort();
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref int v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = attr.ToInt();
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref long v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = attr.ToLong();
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref double v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = double.Parse(attr);
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref decimal v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = decimal.Parse(attr);
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = attr.ToDateTime();
                 return true;
             }
+
             return false;
         }
 
         public bool Get(string name, ref string v)
         {
-            if (attrs.TryGet(name, out var attr))
+            if (attrs.TryGetValue(name, out var attr))
             {
                 v = attr;
                 return true;
             }
+
             return false;
         }
 
@@ -246,101 +259,6 @@ namespace Greatbone
         }
 
         public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        //
-        // LET
-        //
-
-        public ISource Let(out bool v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out char v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out short v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out int v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out long v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out double v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out decimal v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out DateTime v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out string v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out ArraySegment<byte> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out short[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out int[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out long[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out string[] v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JObj v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let(out JArr v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISource Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
         {
             throw new NotImplementedException();
         }

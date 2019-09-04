@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +8,12 @@ namespace Greatbone.Web
     /// <summary>
     /// The descriptor for an action method. 
     /// </summary>
-    public sealed class WebAction : WebTarget
+    public sealed class WebAction : IKeyable<string>
     {
+        // the governing work
         readonly WebWork work;
+
+        readonly string name;
 
         // relative path
         readonly string relative;
@@ -24,24 +26,34 @@ namespace Greatbone.Web
         // the action pathing 
         readonly string pathing;
 
+        readonly UiAttribute ui;
+
+        readonly AuthenticateAttribute authenticate;
+
+        readonly AuthorizeAttribute authorize;
+
         // tool annotation for ui
-        internal readonly ToolAttribute tool;
+        readonly ToolAttribute tool;
 
         // state check annotation
-        internal readonly StateAttribute state;
+        readonly StateAttribute state;
+
 
         // 4 possible forms of the action method
+        //
         readonly Action<WebContext> @do;
         readonly Func<WebContext, Task> doAsync;
         readonly Action<WebContext, string> do2;
         readonly Func<WebContext, string, Task> do2Async;
 
-        readonly List<TagAttribute> comments;
+        // commenting tags
+        readonly TagAttribute[] tags;
 
-        internal WebAction(WebWork work, MethodInfo mi, bool async, string subscript) : base(mi.Name == "default" ? string.Empty : mi.Name, mi)
+        internal WebAction(WebWork work, MethodInfo mi, bool async, string subscript)
         {
             this.work = work;
-            this.relative = Key == string.Empty ? "./?inner=true" : Key;
+            this.name = mi.Name;
+            this.relative = name == string.Empty ? "./?inner=true" : name;
             this.async = async;
             this.subscript = subscript;
 
@@ -51,7 +63,7 @@ namespace Greatbone.Web
             // create a doer delegate
             if (async)
             {
-                if (HasSubscript)
+                if (subscript != null)
                 {
                     do2Async = (Func<WebContext, string, Task>) mi.CreateDelegate(typeof(Func<WebContext, string, Task>), work);
                 }
@@ -62,7 +74,7 @@ namespace Greatbone.Web
             }
             else
             {
-                if (HasSubscript)
+                if (subscript != null)
                 {
                     do2 = (Action<WebContext, string>) mi.CreateDelegate(typeof(Action<WebContext, string>), work);
                 }
@@ -73,40 +85,75 @@ namespace Greatbone.Web
             }
 
             // comments
+            var vlst = new ValueList<TagAttribute>(8);
             foreach (var m in mi.GetCustomAttributes())
             {
                 if (m is TagAttribute c)
                 {
-                    if (comments == null) comments = new List<TagAttribute>(4);
-                    comments.Add(c);
+                    vlst.Add(c);
                 }
             }
 
+            tags = vlst.ToArray();
+
             // resolve the action pathing
-            StringBuilder sb = new StringBuilder(work.Pathing);
-            sb.Append(Key);
-            if (HasSubscript)
+            var sb = new StringBuilder(work.Pathing);
+            sb.Append(name);
+            if (subscript != null)
             {
                 sb.Append('-').Append('<').Append(subscript).Append('>');
             }
+
             pathing = sb.ToString();
         }
 
         public WebWork Work => work;
 
+        public string Name => name;
+
+        public string Key => name;
+
         public string Relative => relative;
 
         public bool IsAsync => async;
 
-        public bool HasSubscript => subscript != null;
+        public string Subscript => subscript;
 
         public string Pathing => pathing;
 
-        public bool HasTool => tool != null;
+        public UiAttribute Ui => ui;
+
+        public string Label => ui?.Label;
+
+        public string Tip => ui?.Tip;
+
+        public byte Sort => ui?.Sort ?? 0;
+
+        public AuthenticateAttribute Authenticate => authenticate;
+
+        public AuthorizeAttribute Authorize => authorize;
 
         public ToolAttribute Tool => tool;
 
-        public List<TagAttribute> Comments => comments;
+        public StateAttribute State => state;
+
+        public TagAttribute[] Tags => tags;
+
+        public bool DoAuthorize(WebContext wc)
+        {
+            if (Authorize != null)
+            {
+                // check if trusted peer
+                if (wc.CallerSign != null && wc.CallerSign == Framework.Signature)
+                {
+                    return true; // trusted without further check
+                }
+
+                return Authorize.Do(wc);
+            }
+
+            return true;
+        }
 
         public bool CheckState(WebContext wc, object[] stack, int level)
         {
@@ -115,7 +162,7 @@ namespace Greatbone.Web
 
         internal void Do(WebContext wc, string subscript)
         {
-            if (HasSubscript)
+            if (subscript == null)
             {
                 do2(wc, subscript);
             }
@@ -128,7 +175,7 @@ namespace Greatbone.Web
         // invoke the right method
         internal async Task DoAsync(WebContext wc, string subscript)
         {
-            if (HasSubscript)
+            if (subscript == null)
             {
                 await do2Async(wc, subscript);
             }

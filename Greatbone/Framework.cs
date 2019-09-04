@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Greatbone.Db;
 using Greatbone.Web;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
-using WebClient = Greatbone.Web.WebClient;
-using WebException = System.Net.WebException;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace Greatbone
 {
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class App
+    public class Framework
     {
         public const string APP_JSON = "app.json";
 
@@ -27,67 +29,97 @@ namespace Greatbone
 
         internal static readonly WebLifetime Lifetime = new WebLifetime();
 
-        public static readonly AppConfig Config;
+        internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
-        public static readonly JObj Json;
+        //
+        // configuration processing
+        //
 
-        internal static readonly string Sign;
+        public static readonly JObj Config;
 
-        static readonly AppLogger Logger;
+        public static readonly JObj Web, Db, Net, Ext;
 
-        // configured connectors that connect to peer services
-        static readonly Map<string, WebClient> Ref;
+        // logging level
+        internal static int logging = 3;
 
-        static List<WebClient> polls;
+        internal static int sign;
+
+        internal static string Signature;
+
+        internal static string certpasswd;
+
+
+        static readonly Map<string, WebService> services = new Map<string, WebService>(4);
+
+        static readonly Map<string, NetClient> peers = new Map<string, NetClient>(32);
+
+        static readonly Map<string, DbSource> sources = new Map<string, DbSource>(4);
+
+
+        internal static readonly FrameworkLogger Logger;
+
+
+        static List<NetClient> polls;
 
         // the thread schedules and drives periodic jobs, such as event polling 
         static Thread scheduler;
 
-        public static readonly WebServer WebServer;
-
-        static App()
+        static Framework()
         {
-            // setup logger
-            string logfile = DateTime.Now.ToString("yyyyMM") + ".log";
-            Logger = new AppLogger(logfile);
+            // load configuration
+            //
+            byte[] bytes = File.ReadAllBytes(APP_JSON);
+            JsonParser parser = new JsonParser(bytes, bytes.Length);
+            Config = (JObj) parser.Parse();
+
+            logging = Config[nameof(logging)];
+            sign = Config[nameof(sign)];
+            Signature = sign.ToString();
+
+            // setup logger first
+            //
+            string file = DateTime.Now.ToString("yyyyMM") + ".log";
+            Logger = new FrameworkLogger(file)
+            {
+                Level = logging
+            };
             if (!File.Exists(APP_JSON))
             {
                 Logger.Log(LogLevel.Error, APP_JSON + " not found");
                 return;
             }
 
-            // load the configuration file
-            byte[] bytes = File.ReadAllBytes(APP_JSON);
-            JsonParser parser = new JsonParser(bytes, bytes.Length);
-            Json = (JObj) parser.Parse();
-            Config = new AppConfig();
-            Config.Read(Json, 0xff);
-
-            if (Config.logging > 0)
-            {
-                Logger.Level = Config.logging;
-            }
+            Web = Config["WEB"];
+            Db = Config["DB"];
+            Net = Config["NET"];
+            Ext = Config["EXT"];
 
             // references
-            var r = Config.@ref;
-            if (r != null)
+            if (Net != null)
             {
-                for (int i = 0; i < r.Count; i++)
+                for (var i = 0; i < Net.Count; i++)
                 {
-                    var e = r.EntryAt(i);
-                    if (Ref == null)
-                    {
-                        Ref = new Map<string, WebClient>(16);
-                    }
-
-                    Ref.Add(new WebClient(e.Key, e.Value)
+                    var k = Db.KeyAt(i);
+                    var v = Db.ValueAt(i);
+                    peers.Add(new NetClient(k, v)
                     {
                         Clustered = true
                     });
                 }
             }
 
-            Sign = Encrypt(Config.cipher.ToString());
+            if (Db != null)
+            {
+                for (var i = 0; i < Db.Count; i++)
+                {
+                    var k = Db.KeyAt(i);
+                    var v = Db.ValueAt(i);
+                    sources.Add(new DbSource(v)
+                    {
+                        Name = k
+                    });
+                }
+            }
 
 
             // create and start the scheduler thead
@@ -112,13 +144,50 @@ namespace Greatbone
                 });
                 scheduler.Start();
             }
-
-
-            // setup web server
-            WebServer = new WebServer(Config.web, Logger);
         }
 
-        // LOGGING
+        public static T CreateService<T>(string name) where T : WebService, new()
+        {
+            JObj web = Config["WEB"];
+            if (web == null)
+            {
+                throw new FrameworkException("Missing 'WEB' in " + APP_JSON);
+            }
+
+            JObj cfg = web[name];
+            if (cfg == null)
+            {
+                throw new FrameworkException("missing '" + name + "' service in " + APP_JSON);
+            }
+
+            var svc = new T
+            {
+                Name = name, Config = cfg
+            };
+            services.Add(name, svc);
+
+            svc.OnInitialize();
+
+            return svc;
+        }
+
+        public static DbSource GetDbSource(string name = null) => name != null ? sources[name] : sources.ValueAt(0);
+
+        public static DbContext NewDbContext(string source = null, IsolationLevel? level = null)
+        {
+            var src = sources[source];
+            if (src == null)
+            {
+                throw new FrameworkException("missing DB '" + source + "' in " + APP_JSON);
+            }
+
+            return src.NewDbContext(level);
+        }
+
+
+        //
+        // logging methods
+        //
 
         public static void TRC(string msg, Exception ex = null)
         {
@@ -161,100 +230,34 @@ namespace Greatbone
         }
 
 
-        public static void Schedule(string refName, Action<IPollContext> poller, short interval = 12)
-        {
-            if (Ref == null)
-            {
-                throw new WebException("missing ref in config.json");
-            }
+        static readonly CancellationTokenSource Canceller = new CancellationTokenSource();
 
-            // setup context for each designated client
-            int match = 0;
-            for (int i = 0; i < Ref.Count; i++)
-            {
-                var @ref = Ref.ValueAt(i);
-                if (@ref.Key == refName)
-                {
-                    @ref.SetPoller(poller, interval);
-                    if (polls == null) polls = new List<WebClient>();
-                    polls.Add(@ref);
-                    match++;
-                }
-            }
-
-            if (match == 0)
-            {
-                throw new WebException("webconfig refs missing " + refName);
-            }
-        }
-
-
-        /// <summary>
-        /// To create and attech a work instance of given class as the root work
-        /// </summary>
-        /// <typeparam name="S"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="System.Net.WebException"></exception>
-        public static S MakeRootWork<S>(UiAttribute ui = null, AuthorizeAttribute authorize = null) where S : WebWork
-        {
-            // create work instance through reflection
-            Type typ = typeof(S);
-            ConstructorInfo ci = typ.GetConstructor(new[] {typeof(WebWorkContext)});
-            if (ci == null)
-            {
-                throw new WebException(typ + " missing WebWorkInfo");
-            }
-
-            WebWorkContext wwi = new WebWorkContext(string.Empty)
-            {
-                Ui = ui,
-                Authorize = authorize,
-                Parent = null,
-                Level = 0,
-                IsVar = false,
-                Directory = "/",
-                Pathing = "/",
-                Accessor = null,
-            };
-            S w = (S) ci.Invoke(new object[] {wwi});
-            WebServer.RootWork = w;
-            return w;
-        }
-
-        public static DbContext NewDbContext(IsolationLevel? level = null)
-        {
-            DbContext dc = new DbContext(Config);
-            if (level != null)
-            {
-                dc.Begin(level.Value);
-            }
-
-            return dc;
-        }
-
-        static readonly CancellationTokenSource Cts = new CancellationTokenSource();
 
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
-        public static void StartWebServer()
+        public static async Task StartAsync()
         {
-            var exit = new ManualResetEventSlim(false);
+            var exitevt = new ManualResetEventSlim(false);
 
-
-            // start service instances
-            WebServer.StartAsync(Cts.Token).GetAwaiter().GetResult();
+            // start all services
+            //
+            for (int i = 0; i < services.Count; i++)
+            {
+                var svc = services.ValueAt(i);
+                await svc.StartAsync(Canceller.Token);
+            }
 
             // handle SIGTERM and CTRL_C 
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
-                Cts.Cancel(false);
-                exit.Set(); // release the Main thread
+                Canceller.Cancel(false);
+                exitevt.Set(); // release the Main thread
             };
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                Cts.Cancel(false);
-                exit.Set(); // release the Main thread
+                Canceller.Cancel(false);
+                exitevt.Set(); // release the Main thread
                 // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
                 eventArgs.Cancel = true;
             };
@@ -263,11 +266,15 @@ namespace Greatbone
             Lifetime.NotifyStarted();
 
             // wait on the reset event
-            exit.Wait(Cts.Token);
+            exitevt.Wait(Canceller.Token);
 
             Lifetime.StopApplication();
 
-            WebServer.StopAsync(Cts.Token).GetAwaiter().GetResult();
+            for (int i = 0; i < services.Count; i++)
+            {
+                var svc = services.ValueAt(i);
+                await svc.StopAsync(Canceller.Token);
+            }
 
             Lifetime.NotifyStopped();
         }
@@ -305,9 +312,9 @@ namespace Greatbone
 
         public static string Encrypt(string v)
         {
-            byte[] bytebuf = Encoding.ASCII.GetBytes(v);
+            var bytebuf = Encoding.ASCII.GetBytes(v);
             int count = bytebuf.Length;
-            int mask = Config.cipher;
+            int mask = sign;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             char[] charbuf = new char[count * 2]; // the target
             int p = 0;
@@ -328,14 +335,14 @@ namespace Greatbone
 
         public static string Encrypt<P>(P prin, byte proj) where P : IData
         {
-            JsonContent cnt = new JsonContent(true, 4096);
+            var cnt = new JsonContent(true, 4096);
             try
             {
                 cnt.Put(null, prin, proj);
                 byte[] bytebuf = cnt.ByteBuffer;
                 int count = cnt.Size;
 
-                int mask = Config.cipher;
+                int mask = sign;
                 int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
                 char[] charbuf = new char[count * 2]; // the target
                 int p = 0;
@@ -362,7 +369,7 @@ namespace Greatbone
 
         public static P Decrypt<P>(string token) where P : IData, new()
         {
-            int mask = Config.cipher;
+            int mask = sign;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             var str = new Text(1024);
@@ -393,7 +400,7 @@ namespace Greatbone
 
         public static string Decrypt(string v)
         {
-            int mask = Config.cipher;
+            int mask = sign;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = v.Length / 2;
             var str = new Text(1024);

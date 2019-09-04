@@ -5,15 +5,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Greatbone
 {
-    public class AppLogger : ILoggerProvider, ILogger
+    public class FrameworkLogger : ILoggerProvider, ILogger
     {
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        internal AppLogger(string file)
+        internal FrameworkLogger(string file)
         {
             // init the file-based logger
-            FileStream stream = new FileStream(file, FileMode.Append, FileAccess.Write);
+            var stream = new FileStream(file, FileMode.Append, FileAccess.Write);
             logWriter = new StreamWriter(stream, Encoding.UTF8, 4096, false)
             {
                 AutoFlush = true

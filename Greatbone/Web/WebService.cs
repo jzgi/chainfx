@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -10,59 +9,70 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Greatbone.Web
 {
     /// <summary>
-    /// An embedded web server that wraps around the kestrel HTTP engine.
+    /// An embedded web service that wraps around the kestrel HTTP engine.
     /// </summary>
-    public sealed class WebServer : IHttpApplication<HttpContext>
+    public abstract class WebService : WebWork, IHttpApplication<HttpContext>
     {
-        readonly string[] addrs;
+        //
+        // http implementation
 
-        // the embedded server
-        readonly KestrelServer server;
+        string[] addrs;
+
+        // shared cache or not
+        bool cache = true;
 
         // cache of responses
-        readonly ConcurrentDictionary<string, Response> cache;
+        ConcurrentDictionary<string, Response> _cache;
+
+        // the embedded HTTP server
+        KestrelServer server;
 
         // the response cache cleaner thread
         Thread cleaner;
 
-        // dbset operation areas keyed by service id
-//        readonly ConcurrentDictionary<string, DbArea> areas;
+        protected WebService() => Pathing = "/";
 
-        internal WebServer(AppConfig.Web cfg, ILoggerProvider logprov)
+        internal JObj Config
         {
-            // init the embedded server
-            var options = new KestrelServerOptions();
-            ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), App.Lifetime, NullLoggerFactory.Instance);
-
-            var logfac = new LoggerFactory();
-            logfac.AddProvider(logprov);
-            server = new KestrelServer(Options.Create(options), TransportFactory, logfac);
-
-            ICollection<string> addrcoll = server.Features.Get<IServerAddressesFeature>().Addresses;
-            this.addrs = cfg.addrs ?? throw new WebException("missing 'addrs'");
-            foreach (string a in addrs)
+            set
             {
-                addrcoll.Add(a.Trim());
-            }
+                var cfg = value;
 
-            int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            // create the response cache
-            if (cfg.cache)
-            {
-                cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
+                // retrieve config settings
+                cfg.Get(nameof(addrs), ref addrs);
+                if (addrs == null)
+                {
+                    throw new FrameworkException("Missing 'addrs' configuration");
+                }
+
+                cfg.Get(nameof(cache), ref cache);
+                if (cache)
+                {
+                    int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
+                    // create the response cache
+                    _cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
+                }
+
+                // create the HTTP embedded server
+                //
+                var opts = new KestrelServerOptions();
+                var logf = new LoggerFactory();
+                logf.AddProvider(Framework.Logger);
+                server = new KestrelServer(Options.Create(opts), Framework.TransportFactory, logf);
+
+                var coll = server.Features.Get<IServerAddressesFeature>().Addresses;
+                foreach (string a in addrs)
+                {
+                    coll.Add(a.Trim());
+                }
             }
         }
-
-        public WebWork RootWork { get; internal set; }
 
 
         /// <summary>
@@ -70,47 +80,43 @@ namespace Greatbone.Web
         /// </summary>
         public async Task ProcessRequestAsync(HttpContext context)
         {
-            WebContext wc = (WebContext) context;
+            var wc = (WebContext) context;
 
             string path = wc.Path;
-            int dot = path.LastIndexOf('.');
-            if (dot != -1) // the resource is a static file
-            {
-                if (!TryGiveFromCache(wc))
-                {
-                    GiveFile(path, path.Substring(dot), wc);
-                    TryAddToCache(wc);
-                }
-            }
-            else if (RootWork != null)
-            {
-                try
-                {
-                    await RootWork.HandleAsync(path.Substring(1), wc);
-                }
-                catch (Exception e)
-                {
-                    wc.Give(500, e.Message);
-                }
-            }
-            else
-            {
-                wc.Give(404, "not found");
-                return;
-            }
 
-            // sending
+            // determine it is static file
             try
             {
-                await wc.SendAsync();
+                int dot = path.LastIndexOf('.');
+                if (dot != -1)
+                {
+                    // try to give file content from cache or file system
+                    if (!TryGiveFromCache(wc))
+                    {
+                        GiveStaticFile(path, path.Substring(dot), wc);
+                        TryToCache(wc);
+                    }
+                }
+                else
+                {
+                    await HandleAsync(path.Substring(1), wc);
+                }
+            }
+            catch (WebException e)
+            {
+                wc.Give(e.Code, e.Message);
             }
             catch (Exception e)
             {
                 wc.Give(500, e.Message);
             }
+            finally
+            {
+                await wc.SendAsync();
+            }
         }
 
-        public void GiveFile(string filename, string ext, WebContext wc)
+        public void GiveStaticFile(string filename, string ext, WebContext wc)
         {
             if (!StaticContent.TryGetType(ext, out var ctyp))
             {
@@ -118,7 +124,7 @@ namespace Greatbone.Web
                 return;
             }
 
-            string path = "web" + filename;
+            string path = Path.Join(Name, filename);
             if (!File.Exists(path))
             {
                 wc.Give(404); // not found
@@ -126,19 +132,20 @@ namespace Greatbone.Web
             }
 
             // load file content
-            DateTime modified = File.GetLastWriteTime(path);
+            var modified = File.GetLastWriteTime(path);
             byte[] bytes;
             bool gzip = false;
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 int len = (int) fs.Length;
                 if (len > 2048)
                 {
                     var ms = new MemoryStream(len);
-                    using (GZipStream gzs = new GZipStream(ms, CompressionMode.Compress))
+                    using (var gzs = new GZipStream(ms, CompressionMode.Compress))
                     {
                         fs.CopyTo(gzs);
                     }
+
                     bytes = ms.ToArray();
                     gzip = true;
                 }
@@ -149,7 +156,7 @@ namespace Greatbone.Web
                 }
             }
 
-            StaticContent cnt = new StaticContent(bytes, bytes.Length)
+            var cnt = new StaticContent(bytes, bytes.Length)
             {
                 Key = filename,
                 Type = ctyp,
@@ -177,23 +184,14 @@ namespace Greatbone.Web
             ((WebContext) context).Dispose();
         }
 
-        internal async Task StopAsync(CancellationToken token)
-        {
-            await server.StopAsync(token);
-
-            // close logger
-//            logWriter.Flush();
-//            logWriter.Dispose();
-        }
-
         internal async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);
 
-            Console.WriteLine(" started at " + addrs[0]);
+            Console.WriteLine(Name + " started at " + addrs[0]);
 
             // create and start the cleaner thread
-            if (cache != null)
+            if (_cache != null)
             {
                 cleaner = new Thread(() =>
                 {
@@ -203,11 +201,11 @@ namespace Greatbone.Web
                         Thread.Sleep(30000); // every 30 seconds 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
-                        foreach (var re in cache)
+                        foreach (var re in _cache)
                         {
                             if (!re.Value.TryClean(now))
                             {
-                                cache.TryRemove(re.Key, out _);
+                                _cache.TryRemove(re.Key, out _);
                             }
                         }
                     }
@@ -216,17 +214,31 @@ namespace Greatbone.Web
             }
         }
 
+        internal async Task StopAsync(CancellationToken token)
+        {
+            await server.StopAsync(token);
+
+            // close logger
+            //            logWriter.Flush();
+            //            logWriter.Dispose();
+        }
+
+        public void Dispose()
+        {
+            server.Dispose();
+        }
+
         //
         // RESPONSE CACHE
 
-        internal void TryAddToCache(WebContext wc)
+        internal void TryToCache(WebContext wc)
         {
             if (wc.IsGet)
             {
                 if (!wc.IsInCache && wc.Shared == true && Response.IsCacheable(wc.StatusCode))
                 {
                     var re = new Response(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
+                    _cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
                     wc.IsInCache = true;
                 }
             }
@@ -236,11 +248,12 @@ namespace Greatbone.Web
         {
             if (wc.IsGet)
             {
-                if (cache.TryGetValue(wc.Uri, out var resp))
+                if (_cache.TryGetValue(wc.Uri, out var resp))
                 {
                     return resp.TryGive(wc, Environment.TickCount);
                 }
             }
+
             return false;
         }
 
@@ -251,7 +264,7 @@ namespace Greatbone.Web
         public class Response
         {
             // response status, 0 means cleared, otherwise one of the cacheable status
-            short code;
+            int code;
 
             // can be set to null
             IContent content;
@@ -264,7 +277,7 @@ namespace Greatbone.Web
 
             int hits;
 
-            internal Response(short code, IContent content, int maxage, int stamp)
+            internal Response(int code, IContent content, int maxage, int stamp)
             {
                 this.code = code;
                 this.content = content;
@@ -304,6 +317,7 @@ namespace Greatbone.Web
                         maxage = 0;
                         stamp = now; // time being cleared
                     }
+
                     return true;
                 }
             }
@@ -316,6 +330,7 @@ namespace Greatbone.Web
                     {
                         return false;
                     }
+
                     short remain = (short) (((stamp + maxage * 1000) - now) / 1000); // remaining in seconds
                     if (remain > 0)
                     {
@@ -324,6 +339,7 @@ namespace Greatbone.Web
                         Interlocked.Increment(ref hits);
                         return true;
                     }
+
                     return false;
                 }
             }
