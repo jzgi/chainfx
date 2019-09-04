@@ -98,7 +98,7 @@ namespace Greatbone.Web
                     if (!TryGiveFromCache(wc))
                     {
                         GiveStaticFile(path, path.Substring(dot), wc);
-                        TryToCache(wc);
+                        TryAddForCache(wc);
                     }
                 }
                 else
@@ -235,7 +235,7 @@ namespace Greatbone.Web
         //
         // RESPONSE CACHE
 
-        internal void TryToCache(WebContext wc)
+        internal void TryAddForCache(WebContext wc)
         {
             if (wc.IsGet)
             {

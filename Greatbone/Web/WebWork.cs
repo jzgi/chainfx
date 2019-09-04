@@ -345,10 +345,7 @@ namespace Greatbone.Web
 
                 if (!DoAuthorize(wc))
                 {
-                    throw new WebException("Access denied: " + Name)
-                    {
-                        Code = 403
-                    };
+                    throw new WebException("Authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
                 }
 
                 int slash = rsc.IndexOf('/');
@@ -391,7 +388,7 @@ namespace Greatbone.Web
                         if (act.IsAsync) await act.DoAsync(wc, subscpt);
                         else act.Do(wc, subscpt);
 
-                        Service.TryToCache(wc);
+                        Service.TryAddForCache(wc);
                     }
 
                     wc.Action = null;

@@ -11,8 +11,9 @@
         <LangVersion>7.3</LangVersion>
         <Company>Greatbone</Company>
         <RootNamespace>Creatbone</RootNamespace>
-        <PackageProjectUrl>https://github.com/greatbone/greatbone</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/greatbone/greatbone</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/jxtek/greatbone</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/jxtek/greatbone</RepositoryUrl>
+        <PackageVersion>3.5.0</PackageVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
