@@ -164,8 +164,7 @@ namespace Greatbone
             };
             services.Add(name, svc);
 
-            svc.OnInitialize();
-
+            svc.OnInit();
             return svc;
         }
 
@@ -173,7 +172,7 @@ namespace Greatbone
 
         public static DbContext NewDbContext(string source = null, IsolationLevel? level = null)
         {
-            var src = sources[source];
+            var src = GetDbSource(source);
             if (src == null)
             {
                 throw new FrameworkException("missing DB '" + source + "' in " + APP_JSON);
@@ -331,7 +330,7 @@ namespace Greatbone
             return new string(charbuf, 0, charbuf.Length);
         }
 
-        public static string Encrypt<P>(P prin, byte proj) where P : IData
+        public static string EncryptToken<P>(P prin, byte proj) where P : IData
         {
             var cnt = new JsonContent(true, 4096);
             try
@@ -365,7 +364,7 @@ namespace Greatbone
             }
         }
 
-        public static P Decrypt<P>(string token) where P : IData, new()
+        public static P DecryptToken<P>(string token) where P : IData, new()
         {
             int mask = sign;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
@@ -385,7 +384,7 @@ namespace Greatbone
             // deserialize
             try
             {
-                JObj jo = (JObj) new JsonParser(str.ToString()).Parse();
+                var jo = (JObj) new JsonParser(str.ToString()).Parse();
                 P prin = new P();
                 prin.Read(jo, 0xff);
                 return prin;

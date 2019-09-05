@@ -39,6 +39,7 @@ namespace Greatbone.Web
         protected WebService()
         {
             Service = this;
+            Directory = "/";
             Pathing = "/";
         }
 

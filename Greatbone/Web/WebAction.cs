@@ -57,8 +57,11 @@ namespace Greatbone.Web
             this.async = async;
             this.subscript = subscript;
 
-            this.tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
-            this.state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), true);
+            ui = (UiAttribute) mi.GetCustomAttribute(typeof(UiAttribute), true);
+            authenticate = (AuthenticateAttribute) mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
+            authorize = (AuthorizeAttribute) mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
+            tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
+            state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), true);
 
             // create a doer delegate
             if (async)
@@ -123,7 +126,7 @@ namespace Greatbone.Web
 
         public UiAttribute Ui => ui;
 
-        public string Label => ui?.Label;
+        public string Label => ui?.Label ?? Name;
 
         public string Tip => ui?.Tip;
 

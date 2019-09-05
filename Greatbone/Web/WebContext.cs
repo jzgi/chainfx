@@ -154,7 +154,7 @@ namespace Greatbone.Web
 
         public IPAddress RemoteAddr => connection.RemoteIpAddress;
 
-        public bool ByWeiXinClient => UserAgent?.Contains("MicroMessenger/") ?? false;
+        public bool ByWeChat => UserAgent?.Contains("MicroMessenger/") ?? false;
 
         public bool ByCall => Header("X-Requested-With") != null;
 
@@ -445,7 +445,7 @@ namespace Greatbone.Web
         public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
         {
             StringBuilder sb = new StringBuilder("Token=");
-            string token = Framework.Encrypt(prin, proj);
+            string token = Framework.EncryptToken(prin, proj);
             sb.Append(token);
             if (maxage > 0)
             {

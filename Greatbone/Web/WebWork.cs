@@ -25,10 +25,10 @@ namespace Greatbone.Web
         readonly WebAction[] tooled;
 
         // subworks, if any
-        internal Map<string, WebWork> works;
+        Map<string, WebWork> works;
 
         // variable-key subwork, if any
-        internal WebWork varwork;
+        WebWork varwork;
 
 
         public string Name { get; internal set; }
@@ -131,7 +131,6 @@ namespace Greatbone.Web
 
         public WebAction[] Tooled => tooled;
 
-
         public WebAction Default => @default;
 
         public WebAction Catch => @catch;
@@ -151,7 +150,7 @@ namespace Greatbone.Web
             return Path.Combine(Directory, file);
         }
 
-        protected internal virtual void OnInitialize()
+        protected internal virtual void OnInit()
         {
         }
 
@@ -199,6 +198,8 @@ namespace Greatbone.Web
             if (after != null) wrk.After = after;
 
             varwork = wrk;
+
+            wrk.OnInit();
             return wrk;
         }
 
@@ -235,6 +236,8 @@ namespace Greatbone.Web
             if (after != null) wrk.After = after;
 
             works.Add(wrk);
+
+            wrk.OnInit();
             return wrk;
         }
 
@@ -330,6 +333,10 @@ namespace Greatbone.Web
             }
         }
 
+        readonly WebException AuthReq = new WebException("Authentication required") {Code = 401};
+
+        readonly WebException AccessorReq = new WebException("Accessor required") {Code = 500};
+
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
@@ -418,10 +425,10 @@ namespace Greatbone.Web
                         object acc = null;
                         if (key.Length == 0) // resolve prinlet
                         {
-//                            if (prin == null) throw exception;
+                            if (prin == null) throw AuthReq;
                             if ((acc = varwork.GetAccessor(prin)) == null)
                             {
-//                                throw exception;
+                                throw AccessorReq;
                             }
                         }
 

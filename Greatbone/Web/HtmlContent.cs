@@ -7,20 +7,21 @@ namespace Greatbone.Web
     /// </summary>
     public class HtmlContent : DynamicContent
     {
-        readonly WebContext webCtx;
+        readonly WebContext webctx;
 
         // data output context in levels, if any
         object[] stack;
+        
         int level = -1;
 
-        public HtmlContent(WebContext webCtx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
+        public HtmlContent(WebContext webctx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
         {
-            this.webCtx = webCtx;
+            this.webctx = webctx;
         }
 
         public override string Type { get; set; } = "text/html; charset=utf-8";
 
-        public WebContext WebCtx => webCtx;
+        public WebContext WebCtx => webctx;
 
         public void AddEsc(string v)
         {
@@ -1165,11 +1166,11 @@ namespace Greatbone.Web
         public void PAGENATION(int count, int limit = 20)
         {
             // pagination
-            var act = webCtx.Action;
+            var act = webctx.Action;
             if (act.Subscript != null)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
-                int subscpt = webCtx.Subscript.ToInt();
+                int subscpt = webctx.Subscript.ToInt();
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)
@@ -1184,7 +1185,7 @@ namespace Greatbone.Web
                         Add(act.Key);
                         Add('-');
                         Add(i);
-                        Add(webCtx.QueryStr);
+                        Add(webctx.QueryStr);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
@@ -1197,7 +1198,7 @@ namespace Greatbone.Web
                     Add(act.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(webCtx.QueryStr);
+                    Add(webctx.QueryStr);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");
@@ -1308,8 +1309,8 @@ namespace Greatbone.Web
 
         public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0, int subscript = -1, bool? toolbar = true)
         {
-            WebWork w = webCtx.Work;
-            WebWork vw = w.varwork;
+            WebWork w = webctx.Work;
+            WebWork vw = w.VarWork;
             Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-hover\">");
             WebAction[] acts = vw?.Tooled;
@@ -1465,7 +1466,7 @@ namespace Greatbone.Web
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
             int grp = -1;
-            var acts = webCtx.Work.Tooled;
+            var acts = webctx.Work.Tooled;
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
@@ -1537,7 +1538,7 @@ namespace Greatbone.Web
 
             // output button group(s)
             int curg = -1;
-            WebWork wrk = webCtx.Work;
+            WebWork wrk = webctx.Work;
             var acts = wrk.Tooled;
             if (acts != null)
             {
@@ -1578,8 +1579,8 @@ namespace Greatbone.Web
 
             Add("\">");
 
-            WebWork w = webCtx.Work;
-            WebWork varw = w.varwork;
+            var w = webctx.Work;
+            var varw = w.VarWork;
 
             // output a pick check
             if (varw != null && pick)
@@ -1641,7 +1642,7 @@ namespace Greatbone.Web
         public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string css = null)
         {
             // locate the proper work
-            WebWork w = webCtx.Work;
+            WebWork w = webctx.Work;
             var act = w[action];
             var tool = act?.Tool;
             if (tool != null)
@@ -1655,7 +1656,7 @@ namespace Greatbone.Web
         public HtmlContent VARTOOL(string action, int subscript = -1, string caption = null, string css = null)
         {
             // locate the proper work
-            WebWork w = webCtx.Work.VarWork;
+            WebWork w = webctx.Work.VarWork;
             if (w != null)
             {
                 var act = w[action];
@@ -1674,7 +1675,7 @@ namespace Greatbone.Web
             // check action's availability
             if (wrk.Default == null) return;
 
-            bool ok = wrk.DoAuthorize(webCtx);
+            bool ok = wrk.DoAuthorize(webctx);
 
             var anycss = css;
             Add("<a class=\"uk-button ");
@@ -1682,10 +1683,10 @@ namespace Greatbone.Web
             Add("\" href=\"");
             if (level >= 0)
             {
-                WebWork w = webCtx.Work;
+                var w = webctx.Work;
                 for (int i = 0; i <= level; i++)
                 {
-                    w = w.varwork;
+                    w = w.VarWork;
                     WebWork.PutVariableKey(stack[i], this);
                     Add('/');
                 }
@@ -1712,10 +1713,10 @@ namespace Greatbone.Web
         void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string css = null)
         {
             // check action's availability
-            bool ok = !tool.Access || act.DoAuthorize(webCtx);
+            bool ok = !tool.Access || act.DoAuthorize(webctx);
             if (ok && level >= 0)
             {
-                ok = act.CheckState(webCtx, stack, level);
+                ok = act.CheckState(webctx, stack, level);
             }
 
             var anycss = tool.Css ?? css;
@@ -1723,7 +1724,7 @@ namespace Greatbone.Web
             {
                 Add("<a class=\"uk-button ");
                 Add(anycss ?? "uk-button-link");
-                if (act == webCtx.Action) // if current action
+                if (act == webctx.Action) // if current action
                 {
                     Add(" uk-active");
                 }
@@ -1736,16 +1737,16 @@ namespace Greatbone.Web
                 Add("\" href=\"");
                 if (level >= 0)
                 {
-                    WebWork w = webCtx.Work;
+                    var w = webctx.Work;
                     for (int i = 0; i <= level; i++)
                     {
-                        w = w.varwork;
+                        w = w.VarWork;
                         WebWork.PutVariableKey(stack[i], this);
                         Add('/');
                     }
                 }
 
-                Add(act == webCtx.Action ? act.Key : act.Relative);
+                Add(act == webctx.Action ? act.Key : act.Relative);
                 if (subscript >= 0 && act.Subscript != null)
                 {
                     Add('-');
@@ -1763,10 +1764,10 @@ namespace Greatbone.Web
                 Add("\" formaction=\"");
                 if (level >= 0)
                 {
-                    WebWork w = webCtx.Work;
+                    var w = webctx.Work;
                     for (int i = 0; i <= level; i++)
                     {
-                        w = w.varwork;
+                        w = w.VarWork;
                         WebWork.PutVariableKey(stack[i], this);
                         Add('/');
                     }
