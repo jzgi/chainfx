@@ -150,7 +150,7 @@ namespace Greatbone.Web
             return Path.Combine(Directory, file);
         }
 
-        protected internal virtual void OnInit()
+        protected internal virtual void OnInitialize()
         {
         }
 
@@ -199,7 +199,7 @@ namespace Greatbone.Web
 
             varwork = wrk;
 
-            wrk.OnInit();
+            wrk.OnInitialize();
             return wrk;
         }
 
@@ -237,7 +237,7 @@ namespace Greatbone.Web
 
             works.Add(wrk);
 
-            wrk.OnInit();
+            wrk.OnInitialize();
             return wrk;
         }
 

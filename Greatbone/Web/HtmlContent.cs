@@ -11,7 +11,7 @@ namespace Greatbone.Web
 
         // data output context in levels, if any
         object[] stack;
-        
+
         int level = -1;
 
         public HtmlContent(WebContext webctx, bool bin, int capacity = 32 * 1024) : base(bin, capacity)
@@ -1309,11 +1309,11 @@ namespace Greatbone.Web
 
         public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0, int subscript = -1, bool? toolbar = true)
         {
-            WebWork w = webctx.Work;
-            WebWork vw = w.VarWork;
+            var w = webctx.Work;
+            var vw = w.VarWork;
             Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-hover\">");
-            WebAction[] acts = vw?.Tooled;
+            var acts = vw?.Tooled;
             if (head != null)
             {
                 Add("<thead>");
@@ -1413,6 +1413,30 @@ namespace Greatbone.Web
                 }
 
                 level--; // exit the level
+            }
+
+            Add("</main>");
+        }
+
+        public void BOARD(ISource src, Action<ISource> card, string css = "uk-card-default")
+        {
+            Add("<main class=\"uk-board\">");
+            if (src != null && src.DataSet)
+            {
+                while (src.Next())
+                {
+                    Add("<form class=\"uk-card");
+                    if (css != null)
+                    {
+                        Add(' ');
+                        Add(css);
+                    }
+
+                    Add("\">");
+                    card(src);
+                    Add("</form>");
+                    stack[level] = null;
+                }
             }
 
             Add("</main>");

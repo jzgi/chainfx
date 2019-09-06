@@ -164,7 +164,7 @@ namespace Greatbone
             };
             services.Add(name, svc);
 
-            svc.OnInit();
+            svc.OnInitialize();
             return svc;
         }
 
