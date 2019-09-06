@@ -2009,7 +2009,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetIn(string[] v)
+        public IParameterSet SetForIn(string[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
@@ -2019,7 +2019,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetIn(short[] v)
+        public IParameterSet SetForIn(short[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
@@ -2029,7 +2029,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetIn(int[] v)
+        public IParameterSet SetForIn(int[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
@@ -2039,7 +2039,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetIn(long[] v)
+        public IParameterSet SetForIn(long[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {

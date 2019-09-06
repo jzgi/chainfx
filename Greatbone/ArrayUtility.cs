@@ -13,6 +13,7 @@ namespace Greatbone
             {
                 return new[] {v};
             }
+
             int len = arr.Length;
             E[] alloc;
             if (limit > 0 && limit <= len)
@@ -27,6 +28,7 @@ namespace Greatbone
                 Array.Copy(arr, alloc, len);
                 alloc[len] = v;
             }
+
             return alloc;
         }
 
@@ -36,6 +38,7 @@ namespace Greatbone
             {
                 return v;
             }
+
             int len = arr.Length;
             int vlen = v.Length;
             E[] alloc = new E[len + vlen];
@@ -50,6 +53,7 @@ namespace Greatbone
             {
                 return v;
             }
+
             int len = arr.Length;
             int vlen = v.Length;
 
@@ -71,6 +75,7 @@ namespace Greatbone
                         break;
                     }
                 }
+
                 if (!dup)
                 {
                     lst.Add(t);
@@ -87,8 +92,10 @@ namespace Greatbone
                 {
                     alloc[len + i] = lst[i];
                 }
+
                 return alloc;
             }
+
             return arr;
         }
 
@@ -127,6 +134,7 @@ namespace Greatbone
                     return alloc;
                 }
             }
+
             return arr;
         }
 
@@ -141,6 +149,7 @@ namespace Greatbone
                     if (cond(e)) return e;
                 }
             }
+
             return default;
         }
 
@@ -155,6 +164,7 @@ namespace Greatbone
                     if (cond(e)) return e;
                 }
             }
+
             return default;
         }
 
@@ -169,6 +179,7 @@ namespace Greatbone
                     if (cond(e)) return i;
                 }
             }
+
             return -1;
         }
 
@@ -186,6 +197,7 @@ namespace Greatbone
                     if (arr[i].Equals(v)) return true;
                 }
             }
+
             return false;
         }
 
@@ -196,6 +208,7 @@ namespace Greatbone
             {
                 return true;
             }
+
             if (arr != null && another != null && arr.Length == another.Length)
             {
                 int len = arr.Length;
@@ -203,9 +216,66 @@ namespace Greatbone
                 {
                     if (!arr[i].Equals(another[i])) return false;
                 }
+
                 return true;
             }
+
             return false;
         }
+
+        public static void RollUp<V, K, R>(this V[] array, Func<V, K> keyer, ref R[] up) where K : IEquatable<K> where R : IRoll<K, V>, new()
+        {
+            if (array == null) return;
+
+            if (up != null) // roll on the given top
+            {
+                int ir = 0; // current idx of top rolls
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var v = array[i];
+                    while (ir < up.Length && !keyer(v).Equals(up[ir].Key))
+                    {
+                        ir++;
+                    }
+
+                    if (ir == up.Length) return;
+                    up[ir].Add(v);
+                }
+            }
+            else // roll up and create top as needed
+            {
+                var vlst = new ValueList<R>();
+                R cur = default; // current
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var v = array[i];
+                    var key = keyer(v);
+                    if (cur != null && key.Equals(cur.Key))
+                    {
+                        cur.Add(v);
+                    }
+                    else // create a new roll
+                    {
+                        cur = new R {Key = key};
+                        cur.Add(v);
+                        vlst.Add(cur);
+                    }
+                }
+
+                up = vlst.ToArray();
+            }
+        }
+    }
+
+    public interface IRoll<K, V> where K : IEquatable<K>
+    {
+        K Key { get; set; }
+
+        int Count { get; }
+
+        V this[int index] { get; }
+
+        void Add(V v);
     }
 }

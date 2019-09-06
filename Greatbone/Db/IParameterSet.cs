@@ -71,12 +71,12 @@ namespace Greatbone.Db
 
         IParameterSet Set<D>(D[] v, byte proj = 0x0f) where D : IData;
 
-        IParameterSet SetIn(string[] v);
+        IParameterSet SetForIn(string[] v);
 
-        IParameterSet SetIn(short[] v);
+        IParameterSet SetForIn(short[] v);
 
-        IParameterSet SetIn(int[] v);
+        IParameterSet SetForIn(int[] v);
 
-        IParameterSet SetIn(long[] v);
+        IParameterSet SetForIn(long[] v);
     }
 }

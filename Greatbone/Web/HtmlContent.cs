@@ -1250,7 +1250,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent LIST(ISource src, Action<ISource> item, string ul = null, string li = null)
+        public HtmlContent LIST<S>(S src, Action<S> item, string ul = null, string li = null) where S : ISource
         {
             Add("<ul class=\"uk-list uk-list-divider");
             if (ul != null)
