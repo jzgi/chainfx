@@ -50,7 +50,7 @@ namespace Greatbone
         /// <summary>
         /// If this input source contains multiple data records.
         /// </summary>
-        bool DataSet { get; }
+        bool IsDataSet { get; }
 
         /// <summary>
         /// Move to next data records.

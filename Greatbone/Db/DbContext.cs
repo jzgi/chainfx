@@ -130,7 +130,7 @@ namespace Greatbone.Db
             }
         }
 
-        public bool DataSet => multiple;
+        public bool IsDataSet => multiple;
 
         public bool NextResult()
         {
@@ -1094,7 +1094,7 @@ namespace Greatbone.Db
         // LET
         //
 
-        public void Let(out bool v)
+        public bool Let(out bool v)
         {
             v = false;
             try
@@ -1108,9 +1108,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out char v)
+        public char Let(out char v)
         {
             v = '\0';
             try
@@ -1124,9 +1126,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out short v)
+        public short Let(out short v)
         {
             v = 0;
             try
@@ -1140,9 +1144,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out uint v)
+        public uint Let(out uint v)
         {
             v = 0;
             try
@@ -1156,9 +1162,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out int v)
+        public int Let(out int v)
         {
             v = 0;
             try
@@ -1172,9 +1180,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out long v)
+        public long Let(out long v)
         {
             v = 0;
             try
@@ -1188,9 +1198,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out double v)
+        public double Let(out double v)
         {
             v = 0;
             try
@@ -1204,9 +1216,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out decimal v)
+        public decimal Let(out decimal v)
         {
             v = 0;
             try
@@ -1220,9 +1234,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out DateTime v)
+        public DateTime Let(out DateTime v)
         {
             v = default;
             try
@@ -1236,9 +1252,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out string v)
+        public string Let(out string v)
         {
             v = null;
             try
@@ -1252,10 +1270,12 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
 
-        public void Let(out Guid v)
+        public Guid Let(out Guid v)
         {
             v = default;
             try
@@ -1269,9 +1289,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out ArraySegment<byte> v)
+        public byte[] Let(out byte[] v)
         {
             v = default;
             try
@@ -1282,29 +1304,7 @@ namespace Greatbone.Db
                     int len;
                     if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
-                        byte[] buf = new byte[len];
-                        reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
-                        v = new ArraySegment<byte>(buf, 0, len);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        public void Let(out byte[] v)
-        {
-            v = default;
-            try
-            {
-                int ord = ordinal++;
-                if (!reader.IsDBNull(ord))
-                {
-                    int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
-                    {
-                        byte[] buf = new byte[len];
+                        var buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
                         v = buf;
                     }
@@ -1313,9 +1313,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out char[] v)
+        public char[] Let(out char[] v)
         {
             v = null;
             try
@@ -1329,9 +1331,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out short[] v)
+        public short[] Let(out short[] v)
         {
             v = null;
             try
@@ -1345,9 +1349,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let(out int[] v)
+        public int[] Let(out int[] v)
         {
             v = null;
             try
@@ -1361,6 +1367,8 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
         public void Let(out long[] v)
@@ -1379,7 +1387,7 @@ namespace Greatbone.Db
             }
         }
 
-        public void Let(out string[] v)
+        public string[] Let(out string[] v)
         {
             v = null;
             try
@@ -1393,6 +1401,8 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
         public void Let(out JObj v)
@@ -1405,7 +1415,7 @@ namespace Greatbone.Db
             throw new NotImplementedException();
         }
 
-        public void Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
+        public D Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
         {
             v = default;
             try
@@ -1423,9 +1433,11 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
-        public void Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
+        public D[] Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
         {
             v = null;
             try
@@ -1450,6 +1462,8 @@ namespace Greatbone.Db
             catch
             {
             }
+
+            return v;
         }
 
         public void Write<C>(C cnt) where C : IContent, ISink

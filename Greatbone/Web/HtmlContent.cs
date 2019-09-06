@@ -1250,6 +1250,38 @@ namespace Greatbone.Web
             return this;
         }
 
+        public HtmlContent LIST(ISource src, Action<ISource> item, string ul = null, string li = null)
+        {
+            Add("<ul class=\"uk-list uk-list-divider");
+            if (ul != null)
+            {
+                Add(' ');
+                Add(ul);
+            }
+
+            Add("\">");
+
+            if (src != null && src.IsDataSet)
+            {
+                while (src.Next())
+                {
+                    Add("<li class=\"uk-flex");
+                    if (li != null)
+                    {
+                        Add(' ');
+                        Add(li);
+                    }
+
+                    Add("\">");
+                    item(src);
+                    Add("</li>");
+                }
+            }
+
+            Add("</ul>");
+            return this;
+        }
+
         public HtmlContent ACCORDION<D>(D[] arr, Action<D> item, string ul = null, string li = null)
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
@@ -1418,10 +1450,10 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void BOARD(ISource src, Action<ISource> card, string css = "uk-card-default")
+        public void BOARD<S>(S src, Action<S> card, string css = "uk-card-default") where S : ISource
         {
             Add("<main class=\"uk-board\">");
-            if (src != null && src.DataSet)
+            if (src != null && src.IsDataSet)
             {
                 while (src.Next())
                 {
@@ -1435,7 +1467,6 @@ namespace Greatbone.Web
                     Add("\">");
                     card(src);
                     Add("</form>");
-                    stack[level] = null;
                 }
             }
 
@@ -1467,6 +1498,29 @@ namespace Greatbone.Web
                 }
 
                 level--; // exit the level
+            }
+
+            Add("</main>");
+        }
+
+        public void GRID<S>(S src, Action<S> card, string css = null) where S : ISource
+        {
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            if (src != null && src.IsDataSet)
+            {
+                while (src.Next())
+                {
+                    Add("<article class=\"uk-card uk-card-default");
+                    if (css != null)
+                    {
+                        Add(' ');
+                        Add(css);
+                    }
+
+                    Add("\">");
+                    card(src);
+                    Add("</article>");
+                }
             }
 
             Add("</main>");
@@ -1562,7 +1616,7 @@ namespace Greatbone.Web
 
             // output button group(s)
             int curg = -1;
-            WebWork wrk = webctx.Work;
+            var wrk = webctx.Work;
             var acts = wrk.Tooled;
             if (acts != null)
             {

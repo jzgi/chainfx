@@ -554,7 +554,7 @@ namespace Greatbone
             else
             {
                 counts[++level] = 0; // enter
-                if (v.DataSet)
+                if (v.IsDataSet)
                 {
                     Add('[');
                     bool bgn = false;

@@ -237,7 +237,7 @@ namespace Greatbone
             throw new NotImplementedException();
         }
 
-        public bool DataSet => false;
+        public bool IsDataSet => false;
 
         public bool Next()
         {

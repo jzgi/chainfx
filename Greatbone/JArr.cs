@@ -222,7 +222,7 @@ namespace Greatbone
             return map;
         }
 
-        public bool DataSet => true;
+        public bool IsDataSet => true;
 
         public bool Next()
         {
