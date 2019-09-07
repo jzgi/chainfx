@@ -59,7 +59,7 @@ namespace Greatbone.Web
         public IData Principal { get; set; }
 
         // levels of keys along the URI path
-        Segment[] chain;
+        ChainSeg[] chain;
 
         int level; // actual number of segments
 
@@ -67,21 +67,21 @@ namespace Greatbone.Web
         {
             if (chain == null)
             {
-                chain = new Segment[8];
+                chain = new ChainSeg[8];
             }
 
-            chain[level++] = new Segment(work, key, accessor);
+            chain[level++] = new ChainSeg(work, key, accessor);
         }
 
-        public Segment this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
+        public ChainSeg this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
 
-        public Segment this[Type typ]
+        public ChainSeg this[Type typ]
         {
             get
             {
                 for (int i = 0; i < level; i++)
                 {
-                    Segment seg = chain[i];
+                    var seg = chain[i];
                     if (seg.Work.IsOf(typ)) return seg;
                 }
 
@@ -89,13 +89,13 @@ namespace Greatbone.Web
             }
         }
 
-        public Segment this[WebWork work]
+        public ChainSeg this[WebWork work]
         {
             get
             {
                 for (int i = level - 1; i >= 0; i--)
                 {
-                    Segment seg = chain[i];
+                    var seg = chain[i];
                     if (seg.Work == work) return seg;
                 }
 

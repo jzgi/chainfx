@@ -419,11 +419,11 @@ namespace Greatbone.Web
                         wc.Chain(wrk, key);
                         await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
                     }
-                    else if (varwork != null) // if variable-key sub
+                    else if (varwork != null) // if variable-key subwork
                     {
-                        IData prin = wc.Principal;
+                        var prin = wc.Principal;
                         object acc = null;
-                        if (key.Length == 0) // resolve prinlet
+                        if (key.Length == 0) // resolve accessor
                         {
                             if (prin == null) throw AuthReq;
                             if ((acc = varwork.GetAccessor(prin)) == null)
@@ -431,7 +431,6 @@ namespace Greatbone.Web
                                 throw AccessorReq;
                             }
                         }
-
                         wc.Chain(varwork, key, acc);
                         await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                     }

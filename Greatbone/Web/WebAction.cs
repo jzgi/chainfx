@@ -165,7 +165,7 @@ namespace Greatbone.Web
 
         internal void Do(WebContext wc, string subscript)
         {
-            if (subscript != null)
+            if (do2 != null)
             {
                 do2(wc, subscript);
             }

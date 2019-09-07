@@ -16,6 +16,7 @@ namespace Greatbone
             {
                 buf[i] = HEX[(v >> (i * 4)) & 0x0fL];
             }
+
             return new string(buf);
         }
 
@@ -106,6 +107,7 @@ namespace Greatbone
                 minute = ParseInt(str, 14, 2, 10);
                 second = ParseInt(str, 17, 2, 10);
             }
+
             try
             {
                 v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Unspecified);
@@ -148,6 +150,7 @@ namespace Greatbone
                 if (digit < 0 || digit > 9) digit = 0;
                 num += digit * @base;
             }
+
             return num;
         }
 
@@ -162,6 +165,7 @@ namespace Greatbone
                     return i + 1;
                 }
             }
+
             return 0;
         }
 
@@ -186,6 +190,7 @@ namespace Greatbone
                     str.Append(HEX[b >> 4]);
                     str.Append(HEX[b & 0x0f]);
                 }
+
                 return str.ToString();
             }
         }
@@ -207,6 +212,7 @@ namespace Greatbone
                     str.Append(HEX[b >> 4]);
                     str.Append(HEX[b & 0x0f]);
                 }
+
                 return str.ToString();
             }
         }
@@ -228,6 +234,7 @@ namespace Greatbone
             {
                 raw[p++] = (byte) id[i];
             }
+
             raw[p++] = (byte) ':';
             for (int i = 0; i < passlen; i++)
             {
@@ -247,6 +254,7 @@ namespace Greatbone
                     }
                 }
             }
+
             return true;
         }
 
@@ -262,6 +270,7 @@ namespace Greatbone
                 buf[i * 4 + 2] = HEX[(c & 0x00f0) >> 4];
                 buf[i * 4 + 3] = HEX[c & 0x000f];
             }
+
             return new string(buf);
         }
 
@@ -276,6 +285,7 @@ namespace Greatbone
                 char c = (char) ((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
                 buf[m] = c;
             }
+
             return new string(buf);
         }
 
@@ -286,11 +296,13 @@ namespace Greatbone
             {
                 return num + 10;
             }
+
             num = hex - '0';
             if (num >= 0 && num <= 9)
             {
                 return num;
             }
+
             return -1;
         }
 
@@ -323,6 +335,7 @@ namespace Greatbone
                     buf[p++] = (byte) (0x80 | (c & 0x3f));
                 }
             }
+
             return new ArraySegment<byte>(buf, 0, p);
         }
 
@@ -354,6 +367,7 @@ namespace Greatbone
             {
                 end = str.Length;
             }
+
             int sum = 0;
             for (int i = start; i < end; i++)
             {
@@ -364,6 +378,7 @@ namespace Greatbone
                     sum = sum * 10 + n;
                 }
             }
+
             return sum;
         }
 
@@ -385,6 +400,7 @@ namespace Greatbone
                     sum = sum * 10 + n;
                 }
             }
+
             return sum;
         }
 
@@ -400,64 +416,156 @@ namespace Greatbone
             return v;
         }
 
-        public static (int, int) To2Ints(this string str, char sep = '-')
+        public static (string, string) ToStringString(this string str, char sep = '-')
         {
-            int len = str.Length;
-            int p = 0;
-            while (p < len && str[p] != sep) p++;
+            int pos = 0;
+            var a = str.ParseString(ref pos, sep);
+            var b = str.ParseString(ref pos, sep);
+            return (a, b);
+        }
 
-            int a = str.ToInt(0, p);
-            int b = str.ToInt(p + 1, len);
+        public static (string, short) ToStringShort(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseString(ref pos, sep);
+            var b = str.ParseShort(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (string, int) ToStringInt(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseString(ref pos, sep);
+            var b = str.ParseInt(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (string, long) ToStringLong(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseString(ref pos, sep);
+            var b = str.ParseLong(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (short, string) ToShortString(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseShort(ref pos, sep);
+            var b = str.ParseString(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (short, short) ToShortShort(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseShort(ref pos, sep);
+            var b = str.ParseShort(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (short, int) ToShortInt(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseShort(ref pos, sep);
+            var b = str.ParseInt(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (short, long) ToShortLong(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseShort(ref pos, sep);
+            var b = str.ParseLong(ref pos, sep);
             return (a, b);
         }
 
         public static (int, string) ToIntString(this string str, char sep = '-')
         {
-            int p = 0;
-            int len = str.Length;
-            while (p < len && str[p] != sep)
-            {
-                p++;
-            }
-            int a = str.ToInt(0, p);
-            string b = str.Substring(p + 1, len - (p + 1));
+            int pos = 0;
+            var a = str.ParseInt(ref pos, sep);
+            var b = str.ParseString(ref pos, sep);
             return (a, b);
         }
 
         public static (int, short) ToIntShort(this string str, char sep = '-')
         {
-            int len = str.Length;
-            int p = 0;
-            while (p < len && str[p] != sep) p++;
-
-            int a = str.ToInt(0, p);
-            short b = (short) str.ToInt(p + 1, len);
+            int pos = 0;
+            var a = str.ParseInt(ref pos, sep);
+            var b = str.ParseShort(ref pos, sep);
             return (a, b);
         }
 
-        static bool TryParseTill(this string str, ref int pos, out string v, char sep)
+        public static (int, int) ToIntInt(this string str, char sep = '-')
         {
-            int len = str.Length;
-            if (pos >= len)
-            {
-                v = null;
-                return false;
-            }
-            int p = pos;
-            while (p < len && str[p] != sep) p++;
-            v = p == len ? str : str.Substring(pos, p);
-            pos = p;
-            return true;
+            int pos = 0;
+            var a = str.ParseInt(ref pos, sep);
+            var b = str.ParseInt(ref pos, sep);
+            return (a, b);
         }
 
-        public static bool TryParseTill(this string str, ref int pos, out int v, char sep)
+        public static (int, long) ToIntLong(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseInt(ref pos, sep);
+            var b = str.ParseLong(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (long, string) ToLongString(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseLong(ref pos, sep);
+            var b = str.ParseString(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (long, short) ToLongShort(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseLong(ref pos, sep);
+            var b = str.ParseShort(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (long, int) ToLongInt(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseLong(ref pos, sep);
+            var b = str.ParseInt(ref pos, sep);
+            return (a, b);
+        }
+
+        public static (long, long) ToLongLong(this string str, char sep = '-')
+        {
+            int pos = 0;
+            var a = str.ParseLong(ref pos, sep);
+            var b = str.ParseLong(ref pos, sep);
+            return (a, b);
+        }
+
+        public static string ParseString(this string str, ref int pos, char sep = '-')
         {
             int len = str.Length;
             if (pos >= len)
             {
-                v = 0;
-                return false;
+                return null;
             }
+
+            int p = pos;
+            while (p < len && str[p] != sep) p++;
+            pos = p;
+            return p == len ? str : str.Substring(pos, p);
+        }
+
+        public static short ParseShort(this string str, ref int pos, char sep = '-')
+        {
+            int len = str.Length;
+            if (pos >= len)
+            {
+                return 0;
+            }
+
             int sum = 0;
             int p = pos;
             while (p < len && str[p] != sep)
@@ -468,56 +576,66 @@ namespace Greatbone
                 {
                     sum = sum * 10 + n;
                 }
+
                 p++;
             }
-            v = sum;
+
             pos = p;
-            return true;
+            return (short) sum;
         }
 
-
-        public static (string, string) ToDual(this string str, char sep = '-')
-        {
-            if (str == null)
-            {
-                return (null, null);
-            }
-            int len = str.Length;
-            int p = 0;
-            while (p < len && str[p] != sep) p++;
-            if (p == len)
-            {
-                return (str, null);
-            }
-            string a = str.Substring(0, p);
-            string b = str.Substring(p + 1, len - (p + 1));
-            return (a, b);
-        }
-
-        public static (string, string, string) ToTriple(this string str, char sep = ' ')
+        public static int ParseInt(this string str, ref int pos, char sep = '-')
         {
             int len = str.Length;
-
-            int p0 = 0, p = 0;
-            while (p < len && str[p] != sep) p++;
-            if (p == len)
+            if (pos >= len)
             {
-                return (str, null, null);
-            }
-            string a = str.Substring(p0, p - p0);
-
-            p0 = ++p;
-            while (p < len && str[p] != sep) p++;
-            string b = str.Substring(p0, p - p0);
-            if (p == len)
-            {
-                return (a, b, null);
+                return 0;
             }
 
-            p0 = ++p;
-            string c = str.Substring(p0, len - p0);
-            return (a, b, c);
+            int sum = 0;
+            int p = pos;
+            while (p < len && str[p] != sep)
+            {
+                char c = str[p];
+                int n = c - '0';
+                if (n >= 0 && n <= 9)
+                {
+                    sum = sum * 10 + n;
+                }
+
+                p++;
+            }
+
+            pos = p;
+            return sum;
         }
+
+        public static long ParseLong(this string str, ref int pos, char sep = '-')
+        {
+            int len = str.Length;
+            if (pos >= len)
+            {
+                return 0;
+            }
+
+            long sum = 0;
+            int p = pos;
+            while (p < len && str[p] != sep)
+            {
+                char c = str[p];
+                int n = c - '0';
+                if (n >= 0 && n <= 9)
+                {
+                    sum = sum * 10 + n;
+                }
+
+                p++;
+            }
+
+            pos = p;
+            return sum;
+        }
+
 
         public static bool Compare(string a, string b, int num)
         {
@@ -529,6 +647,7 @@ namespace Greatbone
                     return false;
                 }
             }
+
             return true;
         }
     }
