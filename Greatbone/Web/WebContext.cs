@@ -73,7 +73,7 @@ namespace Greatbone.Web
             chain[level++] = new ChainSeg(work, key, accessor);
         }
 
-        public ChainSeg this[int position] => position < 0 ? chain[level + position - 1] : chain[position];
+        public ChainSeg this[int position] => position <= 0 ? chain[level + position - 1] : default;
 
         public ChainSeg this[Type typ]
         {

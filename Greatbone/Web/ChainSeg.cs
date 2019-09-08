@@ -28,6 +28,8 @@ namespace Greatbone.Web
 
         public object Accessor => accessor;
 
+        public bool IsImplicit => key.Length == 0;
+
         //
         // CONVERSION
         //

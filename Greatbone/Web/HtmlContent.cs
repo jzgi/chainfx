@@ -2968,7 +2968,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent DATALIST(short id, string[] opt)
+        public HtmlContent DATALIST(string id, string[] opt)
         {
             Add("<datalist");
             Add(" id=\"datalist-");
