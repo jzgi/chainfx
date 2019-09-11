@@ -43,8 +43,8 @@ namespace Greatbone.Web
         //
         readonly Action<WebContext> @do;
         readonly Func<WebContext, Task> doAsync;
-        readonly Action<WebContext, string> do2;
-        readonly Func<WebContext, string, Task> do2Async;
+        readonly Action<WebContext, int> do2;
+        readonly Func<WebContext, int, Task> do2Async;
 
         // commenting tags
         readonly TagAttribute[] tags;
@@ -68,7 +68,7 @@ namespace Greatbone.Web
             {
                 if (subscript != null)
                 {
-                    do2Async = (Func<WebContext, string, Task>) mi.CreateDelegate(typeof(Func<WebContext, string, Task>), work);
+                    do2Async = (Func<WebContext, int, Task>) mi.CreateDelegate(typeof(Func<WebContext, int, Task>), work);
                 }
                 else
                 {
@@ -79,7 +79,7 @@ namespace Greatbone.Web
             {
                 if (subscript != null)
                 {
-                    do2 = (Action<WebContext, string>) mi.CreateDelegate(typeof(Action<WebContext, string>), work);
+                    do2 = (Action<WebContext, int>) mi.CreateDelegate(typeof(Action<WebContext, int>), work);
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace Greatbone.Web
             return state == null || stack == null || state.Check(wc, stack, level);
         }
 
-        internal void Do(WebContext wc, string subscript)
+        internal void Do(WebContext wc, int subscript)
         {
             if (do2 != null)
             {
@@ -176,7 +176,7 @@ namespace Greatbone.Web
         }
 
         // invoke the right method
-        internal async Task DoAsync(WebContext wc, string subscript)
+        internal async Task DoAsync(WebContext wc, int subscript)
         {
             if (do2Async != null)
             {

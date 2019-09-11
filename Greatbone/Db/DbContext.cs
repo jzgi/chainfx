@@ -654,11 +654,6 @@ namespace Greatbone.Db
             return false;
         }
 
-        public bool Get(string name, ref byte v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get(string name, ref short v)
         {
             try

@@ -72,7 +72,7 @@ namespace Greatbone.Web
                 {
                     act = new WebAction(this, mi, async, null);
                 }
-                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(string))
+                else if (pis.Length == 2 && pis[0].ParameterType == typeof(WebContext) && pis[1].ParameterType == typeof(int))
                 {
                     act = new WebAction(this, mi, async, pis[1].Name);
                 }
@@ -252,21 +252,42 @@ namespace Greatbone.Web
             {
                 cnt.Add(kstr.Key);
             }
-            else if (obj is IKeyable<short> kshort)
+            else if (obj is IKeyable<short> ksht)
             {
-                cnt.Add(kshort.Key);
+                cnt.Add(ksht.Key);
             }
             else if (obj is IKeyable<int> kint)
             {
                 cnt.Add(kint.Key);
             }
-            else if (obj is IKeyable<long> klong)
+            else if (obj is IKeyable<long> klng)
             {
-                cnt.Add(klong.Key);
+                cnt.Add(klng.Key);
             }
-            else if (obj is IKeyable<(int, short)> kintshort)
+            else if (obj is IKeyable<(string, string)> kstrstr)
             {
-                var (k1, k2) = kintshort.Key;
+                var (k1, k2) = kstrstr.Key;
+                cnt.Add(k1);
+                cnt.Add('-');
+                cnt.Add(k2);
+            }
+            else if (obj is IKeyable<(string, short)> kstrsht)
+            {
+                var (k1, k2) = kstrsht.Key;
+                cnt.Add(k1);
+                cnt.Add('-');
+                cnt.Add(k2);
+            }
+            else if (obj is IKeyable<(string, int)> kstrint)
+            {
+                var (k1, k2) = kstrint.Key;
+                cnt.Add(k1);
+                cnt.Add('-');
+                cnt.Add(k2);
+            }
+            else if (obj is IKeyable<(string, long)> kstrlng)
+            {
+                var (k1, k2) = kstrlng.Key;
                 cnt.Add(k1);
                 cnt.Add('-');
                 cnt.Add(k2);
@@ -369,12 +390,12 @@ namespace Greatbone.Web
                     //
                     // resolve the resource
                     string name = rsc;
-                    string subscpt = null;
+                    int subscpt = 0;
                     int dash = rsc.LastIndexOf('-');
                     if (dash != -1)
                     {
                         name = rsc.Substring(0, dash);
-                        wc.Subscript = subscpt = rsc.Substring(dash + 1);
+                        wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                     }
 
                     var act = this[name];
@@ -431,6 +452,7 @@ namespace Greatbone.Web
                                 throw AccessorReq;
                             }
                         }
+
                         wc.Chain(varwork, key, acc);
                         await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                     }
@@ -441,8 +463,8 @@ namespace Greatbone.Web
                 if (@catch != null) // If existing catch defined by this work
                 {
                     wc.Exception = e;
-                    if (@catch.IsAsync) await @catch.DoAsync(wc, null);
-                    else @catch.Do(wc, null);
+                    if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
+                    else @catch.Do(wc, 0);
                 }
                 else throw;
             }

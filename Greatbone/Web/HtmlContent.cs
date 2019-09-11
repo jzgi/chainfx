@@ -1170,7 +1170,7 @@ namespace Greatbone.Web
             if (act.Subscript != null)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
-                int subscpt = webctx.Subscript.ToInt();
+                int subscpt = webctx.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)
@@ -1658,20 +1658,20 @@ namespace Greatbone.Web
             Add("\">");
 
             var w = webctx.Work;
-            var varw = w.VarWork;
+            var vw = w.VarWork;
 
             // output a pick check
-            if (varw != null && pick)
+            if (vw != null && pick)
             {
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                object obj = stack[level];
+                var obj = stack[level];
                 WebWork.PutVariableKey(obj, this);
                 Add("\" onchange=\"checkToggle(this);\">");
             }
 
             // output button group(s)
             int curg = -1;
-            var acts = varw?.Tooled;
+            var acts = vw?.Tooled;
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
@@ -1696,7 +1696,7 @@ namespace Greatbone.Web
             }
 
             // subworks
-            var subs = varw?.Works;
+            var subs = vw?.Works;
             if (subs != null)
             {
                 Add("<div class=\"uk-button-group\">");
@@ -1720,7 +1720,7 @@ namespace Greatbone.Web
         public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string css = null)
         {
             // locate the proper work
-            WebWork w = webctx.Work;
+            var w = webctx.Work;
             var act = w[action];
             var tool = act?.Tool;
             if (tool != null)
@@ -1734,10 +1734,10 @@ namespace Greatbone.Web
         public HtmlContent VARTOOL(string action, int subscript = -1, string caption = null, string css = null)
         {
             // locate the proper work
-            WebWork w = webctx.Work.VarWork;
-            if (w != null)
+            var vw = webctx.Work.VarWork;
+            if (vw != null)
             {
-                var act = w[action];
+                var act = vw[action];
                 var tool = act?.Tool;
                 if (tool != null)
                 {
@@ -1825,7 +1825,7 @@ namespace Greatbone.Web
                 }
 
                 Add(act == webctx.Action ? act.Key : act.Relative);
-                if (subscript >= 0 && act.Subscript != null)
+                if (subscript != -1 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -1852,7 +1852,7 @@ namespace Greatbone.Web
                 }
 
                 Add(act.Key);
-                if (subscript >= 0 && act.Subscript != null)
+                if (subscript != -1 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);

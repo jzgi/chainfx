@@ -50,7 +50,7 @@ namespace Greatbone.Web
 
         public WebAction Action { get; internal set; }
 
-        public string Subscript { get; internal set; }
+        public int Subscript { get; internal set; }
 
         public Exception Exception { get; set; }
 
