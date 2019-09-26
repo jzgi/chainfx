@@ -7,7 +7,7 @@ namespace Greatbone
     /// </summary>
     public class XmlContent : DynamicContent, ISink
     {
-        public XmlContent(bool bin, int capacity = 4096) : base(bin, capacity)
+        public XmlContent(int capacity) : base(capacity)
         {
         }
 

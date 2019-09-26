@@ -288,7 +288,7 @@ namespace Greatbone.Web
                 {
                     // reading
                     int len = (int) clen;
-                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -308,7 +308,7 @@ namespace Greatbone.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -332,7 +332,7 @@ namespace Greatbone.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -367,7 +367,7 @@ namespace Greatbone.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.GetByteBuffer(len); // borrow from the pool
+                    buffer = BufferUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -499,7 +499,7 @@ namespace Greatbone.Web
 
         public void Give(int code, string text, bool? shared = null, short maxage = 12)
         {
-            TextContent cnt = new TextContent(true, 1024);
+            var cnt = new TextContent(1024);
             cnt.Add(text);
             StatusCode = code;
             Content = cnt;
@@ -509,7 +509,7 @@ namespace Greatbone.Web
 
         public void Give(int code, IData obj, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
         {
-            JsonContent cnt = new JsonContent(true, 8192);
+            var cnt = new JsonContent(8192);
             cnt.Put(null, obj, proj);
             StatusCode = code;
             Content = cnt;
@@ -517,10 +517,9 @@ namespace Greatbone.Web
             MaxAge = maxAge;
         }
 
-        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
-            where D : IData
+        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, short maxAge = 12) where D : IData
         {
-            JsonContent cnt = new JsonContent(true, 8192);
+            var cnt = new JsonContent(8192);
             cnt.Put(null, arr, proj);
             StatusCode = code;
             Content = cnt;
@@ -581,9 +580,9 @@ namespace Greatbone.Web
             }
 
             // send out the content async
-            fResponse.Headers["Content-Length"] = Content.Size.ToString();
+            fResponse.Headers["Content-Length"] = Content.Count.ToString();
             fResponse.Headers["Content-Type"] = Content.Type;
-            await fResponse.Body.WriteAsync(Content.ByteBuffer, 0, Content.Size);
+            await fResponse.Body.WriteAsync(Content.Buffer, 0, Content.Count);
         }
 
         public void Dispose()
@@ -599,7 +598,7 @@ namespace Greatbone.Web
             {
                 if (Content is DynamicContent dcnt)
                 {
-                    BufferUtility.Return(dcnt.ByteBuffer);
+                    dcnt.Dispose();
                 }
             }
         }

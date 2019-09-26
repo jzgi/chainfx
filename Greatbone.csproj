@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.7">
     <PropertyGroup>
         <Description>Greatbone Library</Description>
-        <VersionPrefix>3</VersionPrefix>
+        <VersionPrefix>3.5</VersionPrefix>
         <Authors>hismichael</Authors>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <DebugType>portable</DebugType>
-        <PackageId>Greatbone.Service</PackageId>
-        <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
-        <Version>3.2.3</Version>
+        <PackageId>Greatbone</PackageId>
+        <RuntimeFrameworkVersion>2.2.7</RuntimeFrameworkVersion>
+        <Version>3.5.1</Version>
         <LangVersion>7.3</LangVersion>
         <Company>Greatbone</Company>
         <RootNamespace>Creatbone</RootNamespace>

@@ -1,7 +1,7 @@
 ﻿namespace Greatbone
 {
     /// <summary>
-    /// Represents a content that is in format of either bytes or chars. Note that only bytes can be sent directly. 
+    /// Represents a binary content ready to send through web context. 
     /// </summary>
     public interface IContent
     {
@@ -13,17 +13,12 @@
         ///
         /// The byte buffer that contains binary content. It can be null.
         ///
-        byte[] ByteBuffer { get; }
-
-        ///
-        /// The char buffer that contains text content. It can be null.
-        ///
-        char[] CharBuffer { get; }
+        byte[] Buffer { get; }
 
         /// 
         /// This is either the count or length of the content.
         ///
-        int Size { get; }
+        int Count { get; }
 
         /// 
         /// The ETag value for purpose of cache optimization. It can be null.

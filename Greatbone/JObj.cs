@@ -352,23 +352,14 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new JsonContent(true, 4096);
+            var cnt = new JsonContent(4096);
             cnt.PutFromSource(this);
             return cnt;
         }
 
         public override string ToString()
         {
-            JsonContent cnt = new JsonContent(false, 4096);
-            try
-            {
-                cnt.PutFromSource(this);
-                return cnt.ToString();
-            }
-            finally
-            {
-                BufferUtility.Return(cnt);
-            }
+            return "JObj";
         }
     }
 }

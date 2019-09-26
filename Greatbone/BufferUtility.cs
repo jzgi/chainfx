@@ -13,124 +13,61 @@ namespace Greatbone
         static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
 
         // pool of byte buffers
-        static readonly Queue<byte[]>[] bPool =
+        static readonly Bucket[] buckets =
         {
-            new Queue<byte[]>(1024 * 4, factor * 32),
-            new Queue<byte[]>(1024 * 16, factor * 16),
-            new Queue<byte[]>(1024 * 64, factor * 16),
-            new Queue<byte[]>(1024 * 256, factor * 8),
-            new Queue<byte[]>(1024 * 1024, factor * 8)
+            new Bucket(1024 * 4, factor * 32),
+            new Bucket(1024 * 16, factor * 16),
+            new Bucket(1024 * 64, factor * 16),
+            new Bucket(1024 * 256, factor * 8),
+            new Bucket(1024 * 1024, factor * 8)
         };
 
-        // pool of char buffers
-        static readonly Queue<char[]>[] cPool =
-        {
-            new Queue<char[]>(1024 * 1, factor * 16),
-            new Queue<char[]>(1024 * 4, factor * 8),
-            new Queue<char[]>(1024 * 16, factor * 8),
-            new Queue<char[]>(1024 * 64, factor * 4)
-        };
-
-        public static byte[] GetByteBuffer(int demand)
+        public static byte[] Rent(int demand)
         {
             // locate the queue
-            for (int i = 0; i < bPool.Length; i++)
+            for (int i = 0; i < buckets.Length; i++)
             {
-                var queue = bPool[i];
-                if (queue.Spec < demand) continue;
-                if (!queue.TryDequeue(out var buf))
+                var buck = buckets[i];
+                if (buck.Spec < demand) continue;
+                if (!buck.TryPop(out var buf))
                 {
-                    buf = new byte[queue.Spec];
+                    buf = new byte[buck.Spec];
                 }
-
                 return buf;
             }
 
-            // out of queues scope
+            // out of pool scope
             return new byte[demand];
         }
 
         public static void Return(byte[] buf)
         {
             int len = buf.Length;
-            for (int i = 0; i < bPool.Length; i++)
+            for (int i = 0; i < buckets.Length; i++)
             {
-                var queue = bPool[i];
-                if (queue.Spec == len) // the right queue to add
+                var buck = buckets[i];
+                if (buck.Spec == len) // the right queue to add
                 {
-                    if (queue.Count < queue.Limit)
+                    if (buck.Count < buck.Limit)
                     {
-                        queue.Enqueue(buf);
+                        buck.Push(buf);
                     }
                 }
-                else if (queue.Spec > len)
+                else if (buck.Spec > len)
                 {
                     break;
                 }
             }
         }
 
-        public static char[] GetCharBuffer(int demand)
+        class Bucket : ConcurrentStack<byte[]>
         {
-            // locate the queue
-            for (int i = 0; i < cPool.Length; i++)
-            {
-                var queue = cPool[i];
-                if (queue.Spec < demand) continue;
-                if (!queue.TryDequeue(out var buf))
-                {
-                    buf = new char[queue.Spec];
-                }
-
-                return buf;
-            }
-
-            // out of queues scope
-            return new char[demand];
-        }
-
-        public static void Return(char[] buf)
-        {
-            int len = buf.Length;
-            for (int i = 0; i < cPool.Length; i++)
-            {
-                var queue = cPool[i];
-                if (queue.Spec == len) // the right queue to add
-                {
-                    if (queue.Count < queue.Limit)
-                    {
-                        queue.Enqueue(buf);
-                    }
-                }
-                else if (queue.Spec > len)
-                {
-                    break;
-                }
-            }
-        }
-
-        public static bool Return(DynamicContent dcont)
-        {
-            if (dcont.IsBinary) // is a byte buffer
-            {
-                Return(dcont.ByteBuffer);
-            }
-            else
-            {
-                Return(dcont.CharBuffer);
-            }
-
-            return true;
-        }
-
-        class Queue<B> : ConcurrentQueue<B>
-        {
-            readonly int limit;
-
             // buffer size in bytes
             readonly int spec;
 
-            internal Queue(int spec, int limit)
+            readonly int limit;
+
+            internal Bucket(int spec, int limit)
             {
                 this.spec = spec;
                 this.limit = limit;

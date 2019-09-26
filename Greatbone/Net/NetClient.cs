@@ -367,13 +367,13 @@ namespace Greatbone.Web
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+                var req = new HttpRequestMessage(HttpMethod.Post, uri);
                 AddAccessHeaders(req, wc);
                 req.Content = (HttpContent) content;
                 req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
-                req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
+                req.Headers.TryAddWithoutValidation("Content-Length", content.Count.ToString());
 
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return (short) rsp.StatusCode;
             }
             catch
@@ -384,7 +384,7 @@ namespace Greatbone.Web
             {
                 if (content is DynamicContent cnt)
                 {
-                    BufferUtility.Return(cnt);
+                    BufferUtility.Return(cnt.Buffer);
                 }
             }
 
@@ -395,7 +395,7 @@ namespace Greatbone.Web
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, uri);
+                var req = new HttpRequestMessage(HttpMethod.Post, uri);
                 if (token != null)
                 {
                     req.Headers.Add("Authorization", "Token " + token);
@@ -403,9 +403,9 @@ namespace Greatbone.Web
 
                 req.Content = (HttpContent) content;
                 req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
-                req.Headers.TryAddWithoutValidation("Content-Length", content.Size.ToString());
+                req.Headers.TryAddWithoutValidation("Content-Length", content.Count.ToString());
 
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 string ctyp = rsp.Content.Headers.GetValue("Content-Type");
                 if (ctyp == null)
                 {
@@ -426,7 +426,7 @@ namespace Greatbone.Web
             {
                 if (content is DynamicContent cnt)
                 {
-                    BufferUtility.Return(cnt);
+                    BufferUtility.Return(cnt.Buffer);
                 }
             }
 

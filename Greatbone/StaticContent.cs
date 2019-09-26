@@ -1525,34 +1525,25 @@ namespace Greatbone
         };
 
         // the byte buffer
-        readonly byte[] buffer;
+        readonly byte[] bytes;
 
         // fixed length
         readonly int length;
 
-        public StaticContent(ArraySegment<byte> bytea) : this(bytea.Array, bytea.Count)
-        {
-        }
 
-        public StaticContent(byte[] bytes) : this(bytes, bytes.Length)
+        public StaticContent(byte[] bytes)
         {
-        }
-
-        public StaticContent(byte[] buffer, int length)
-        {
-            this.buffer = buffer;
-            this.length = length;
+            this.bytes = bytes;
+            length = bytes.Length;
         }
 
         public string Key { get; set; }
 
         public string Type { get; set; }
 
-        public byte[] ByteBuffer => buffer;
+        public byte[] Buffer => bytes;
 
-        public char[] CharBuffer => null;
-
-        public int Size => length;
+        public int Count => length;
 
         public DateTime? Modified { get; set; }
 
@@ -1562,7 +1553,7 @@ namespace Greatbone
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return stream.WriteAsync(buffer, 0, length);
+            return stream.WriteAsync(bytes, 0, length);
         }
 
         protected override bool TryComputeLength(out long length)

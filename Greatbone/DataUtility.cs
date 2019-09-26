@@ -92,7 +92,7 @@ namespace Greatbone
 
         public static string ToString<D>(D v, byte proj = 0x0f) where D : IData
         {
-            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            JsonContent cnt = new JsonContent(4 * 1024);
             try
             {
                 cnt.Put(null, v, proj);
@@ -100,13 +100,13 @@ namespace Greatbone
             }
             finally
             {
-                BufferUtility.Return(cnt); // return buffer to pool
+                BufferUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
 
         public static string ToString<D>(D[] v, byte proj = 0x0f) where D : IData
         {
-            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            JsonContent cnt = new JsonContent(4 * 1024);
             try
             {
                 cnt.Put(null, v, proj);
@@ -114,13 +114,13 @@ namespace Greatbone
             }
             finally
             {
-                BufferUtility.Return(cnt); // return buffer to pool
+                BufferUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
 
         public static string ToString<D>(List<D> v, byte proj = 0x0f) where D : IData
         {
-            JsonContent cnt = new JsonContent(false, 4 * 1024);
+            JsonContent cnt = new JsonContent(4 * 1024);
             try
             {
                 cnt.Put(null, v, proj);
@@ -128,7 +128,7 @@ namespace Greatbone
             }
             finally
             {
-                BufferUtility.Return(cnt); // return buffer to pool
+                BufferUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
 

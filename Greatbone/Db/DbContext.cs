@@ -79,8 +79,6 @@ namespace Greatbone.Db
             {
                 // indicate disposing the instance 
                 disposing = true;
-                // return to chars pool
-                if (_sql != null) BufferUtility.Return(_sql);
                 // commit ongoing transaction
                 if (transact != null && !transact.IsCompleted)
                 {
@@ -1511,7 +1509,7 @@ namespace Greatbone.Db
 
         public IContent Dump()
         {
-            JsonContent cnt = new JsonContent(false, 8192);
+            var cnt = new JsonContent(8192);
             int fc = reader.FieldCount;
             while (reader.Read())
             {
@@ -1538,7 +1536,6 @@ namespace Greatbone.Db
 
                 cnt._ARR();
             }
-
             return cnt;
         }
 

@@ -288,7 +288,7 @@ namespace Greatbone
 
         public IContent Dump()
         {
-            var cnt = new XmlContent(true);
+            var cnt = new XmlContent(4096);
             cnt.ELEM(this);
             return cnt;
         }

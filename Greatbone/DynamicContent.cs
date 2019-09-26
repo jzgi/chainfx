@@ -19,7 +19,7 @@ namespace Greatbone
         };
 
         // sexagesimal numbers
-        protected static readonly string[] SEX =
+        static readonly string[] SEX =
         {
             "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
             "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
@@ -76,38 +76,24 @@ namespace Greatbone
         };
 
         // NOTE: HttpResponseStream doesn't have internal buffer
-        protected byte[] bytebuf;
+        byte[] buffer;
 
-        protected char[] charbuf;
-
-        // number of bytes or chars
-        protected int count;
+        // number of bytes
+        int count;
 
         // byte-wise etag checksum, for char-based output only
-        protected ulong checksum;
+        ulong checksum;
 
-        protected DynamicContent(bool binary, int capacity)
+        protected DynamicContent(int capacity)
         {
-            if (binary)
-            {
-                bytebuf = BufferUtility.GetByteBuffer(capacity);
-            }
-            else
-            {
-                charbuf = BufferUtility.GetCharBuffer(capacity);
-            }
-            count = 0;
+            buffer = BufferUtility.Rent(capacity);
         }
 
         public abstract string Type { get; set; }
 
-        public bool IsBinary => bytebuf != null;
+        public byte[] Buffer => buffer;
 
-        public byte[] ByteBuffer => bytebuf;
-
-        public char[] CharBuffer => charbuf;
-
-        public int Size => count;
+        public int Count => count;
 
         string etag;
 
@@ -116,16 +102,16 @@ namespace Greatbone
         void AddByte(byte b)
         {
             // ensure capacity
-            int olen = bytebuf.Length; // old length
+            int olen = buffer.Length; // old length
             if (count >= olen)
             {
                 int nlen = olen * 4; // new length
-                byte[] obuf = bytebuf;
-                bytebuf = BufferUtility.GetByteBuffer(nlen);
-                Array.Copy(obuf, 0, bytebuf, 0, olen);
+                byte[] obuf = buffer;
+                buffer = BufferUtility.Rent(nlen);
+                Array.Copy(obuf, 0, buffer, 0, olen);
                 BufferUtility.Return(obuf);
             }
-            bytebuf[count++] = b;
+            buffer[count++] = b;
 
             // calculate checksum
             ulong cs = checksum;
@@ -135,41 +121,24 @@ namespace Greatbone
 
         public void Add(char c)
         {
-            if (IsBinary) // byte-oriented
+            // UTF-8 encoding but without surrogate support
+            if (c < 0x80)
             {
-                // UTF-8 encoding but without surrogate support
-                if (c < 0x80)
-                {
-                    // have at most seven bits
-                    AddByte((byte) c);
-                }
-                else if (c < 0x800)
-                {
-                    // 2 char, 11 bits
-                    AddByte((byte) (0xc0 | (c >> 6)));
-                    AddByte((byte) (0x80 | (c & 0x3f)));
-                }
-                else
-                {
-                    // 3 char, 16 bits
-                    AddByte((byte) (0xe0 | ((c >> 12))));
-                    AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                    AddByte((byte) (0x80 | (c & 0x3f)));
-                }
+                // have at most seven bits
+                AddByte((byte) c);
             }
-            else // char-oriented
+            else if (c < 0x800)
             {
-                // ensure capacity
-                int olen = charbuf.Length; // old length
-                if (count >= olen)
-                {
-                    int nlen = olen * 4; // new length
-                    char[] obuf = charbuf;
-                    charbuf = BufferUtility.GetCharBuffer(nlen);
-                    Array.Copy(obuf, 0, charbuf, 0, olen);
-                    BufferUtility.Return(obuf);
-                }
-                charbuf[count++] = c;
+                // 2 char, 11 bits
+                AddByte((byte) (0xc0 | (c >> 6)));
+                AddByte((byte) (0x80 | (c & 0x3f)));
+            }
+            else
+            {
+                // 3 char, 16 bits
+                AddByte((byte) (0xe0 | ((c >> 12))));
+                AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+                AddByte((byte) (0x80 | (c & 0x3f)));
             }
         }
 
@@ -451,7 +420,7 @@ namespace Greatbone
         //
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return stream.WriteAsync(bytebuf, 0, count);
+            return stream.WriteAsync(buffer, 0, count);
         }
 
         protected override bool TryComputeLength(out long length)
@@ -460,14 +429,16 @@ namespace Greatbone
             return true;
         }
 
-        public ArraySegment<byte> ToBytea()
+        protected override void Dispose(bool disposing)
         {
-            return new ArraySegment<byte>(bytebuf, 0, count);
+            base.Dispose(disposing);
+
+            BufferUtility.Return(buffer);
         }
 
         public override string ToString()
         {
-            return charbuf == null ? null : new string(charbuf, 0, count);
+            return Type;
         }
     }
 }

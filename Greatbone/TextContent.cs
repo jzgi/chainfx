@@ -5,7 +5,7 @@ namespace Greatbone
     /// </summary>
     public class TextContent : DynamicContent
     {
-        public TextContent(bool binary, int capacity) : base(binary, capacity)
+        public TextContent(int capacity) : base(capacity)
         {
         }
 

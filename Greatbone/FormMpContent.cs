@@ -14,7 +14,7 @@ namespace Greatbone
 
         readonly string boundary;
 
-        public FormMpContent(int capacity, string boundary = "~7^E!3#A&W") : base(true, capacity)
+        public FormMpContent(int capacity, string boundary = "~7^E!3#A&W") : base(capacity)
         {
             this.boundary = boundary;
         }

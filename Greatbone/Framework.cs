@@ -332,16 +332,15 @@ namespace Greatbone
 
         public static string EncryptToken<P>(P prin, byte proj) where P : IData
         {
-            var cnt = new JsonContent(true, 4096);
-            try
+            using (var cnt = new JsonContent(4096))
             {
                 cnt.Put(null, prin, proj);
-                byte[] bytebuf = cnt.ByteBuffer;
-                int count = cnt.Size;
+                var bytebuf = cnt.Buffer;
+                int count = cnt.Count;
 
                 int mask = sign;
                 int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-                char[] charbuf = new char[count * 2]; // the target
+                var charbuf = new char[count * 2]; // the target
                 int p = 0;
                 for (int i = 0; i < count; i++)
                 {
@@ -356,11 +355,6 @@ namespace Greatbone
                 }
 
                 return new string(charbuf, 0, charbuf.Length);
-            }
-            finally
-            {
-                // return pool
-                BufferUtility.Return(cnt);
             }
         }
 

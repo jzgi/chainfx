@@ -162,7 +162,7 @@ namespace Greatbone.Web
                 }
             }
 
-            var cnt = new StaticContent(bytes, bytes.Length)
+            var cnt = new StaticContent(bytes)
             {
                 Key = filename,
                 Type = ctyp,

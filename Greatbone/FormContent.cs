@@ -15,7 +15,7 @@ namespace Greatbone
 
         int ordinal = -1;
 
-        public FormContent(bool binary, int capacity) : base(binary, capacity)
+        public FormContent(int capacity) : base(capacity)
         {
         }
 
