@@ -52,7 +52,7 @@ namespace Greatbone
             {
                 for (int i = 0; i < attrs.Count; i++)
                 {
-                    var ety = attrs.EntryAt(i);
+                    var ety = attrs.At(i);
                     Add(' ');
                     Add(ety.Key);
                     Add('=');

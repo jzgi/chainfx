@@ -87,7 +87,7 @@ namespace Greatbone.Web
             var list = new ValueList<WebAction>(16);
             for (int i = 0; i < actions.Count; i++)
             {
-                var a = actions.EntryAt(i).Value;
+                var a = actions.At(i).Value;
                 if (a.Tool != null)
                 {
                     list.Add(a);
@@ -143,7 +143,7 @@ namespace Greatbone.Web
 
         public WebAction this[string method] => string.IsNullOrEmpty(method) ? @default : actions[method];
 
-        public WebAction this[int index] => actions.EntryAt(index).Value;
+        public WebAction this[int index] => actions.At(index).Value;
 
         public string GetFilePath(string file)
         {
@@ -305,7 +305,7 @@ namespace Greatbone.Web
                 {
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        var act = actions.EntryAt(i).Value;
+                        var act = actions.At(i).Value;
                         xc.Put(act.Key, "");
                     }
                 },
@@ -315,7 +315,7 @@ namespace Greatbone.Web
                     {
                         for (int i = 0; i < works.Count; i++)
                         {
-                            var wrk = works.EntryAt(i).Value;
+                            var wrk = works.At(i).Value;
                             wrk.Describe(xc);
                         }
                     }
@@ -329,7 +329,7 @@ namespace Greatbone.Web
         {
             for (int i = 0; i < actions?.Count; i++)
             {
-                var a = actions.EntryAt(i).Value;
+                var a = actions.At(i).Value;
                 if (a.Tags != null)
                 {
                     hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
@@ -349,7 +349,7 @@ namespace Greatbone.Web
 
             for (int i = 0; i < works?.Count; i++)
             {
-                var w = works.EntryAt(i).Value;
+                var w = works.At(i).Value;
                 w.Describe(hc);
             }
         }

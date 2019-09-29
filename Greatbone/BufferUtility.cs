@@ -5,7 +5,7 @@ using static System.Environment;
 namespace Greatbone
 {
     /// <summary>
-    /// A global byte/char buffer pool.
+    /// A global byte buffer pool.
     /// </summary>
     public static class BufferUtility
     {
@@ -15,11 +15,15 @@ namespace Greatbone
         // pool of byte buffers
         static readonly Bucket[] buckets =
         {
-            new Bucket(1024 * 4, factor * 32),
+            new Bucket(1024 * 4, factor * 16),
+            new Bucket(1024 * 8, factor * 16),
             new Bucket(1024 * 16, factor * 16),
-            new Bucket(1024 * 64, factor * 16),
+            new Bucket(1024 * 32, factor * 16),
+            new Bucket(1024 * 64, factor * 8),
+            new Bucket(1024 * 128, factor * 8),
             new Bucket(1024 * 256, factor * 8),
-            new Bucket(1024 * 1024, factor * 8)
+            new Bucket(1024 * 512, factor * 8),
+            new Bucket(1024 * 1024, factor * 4)
         };
 
         public static byte[] Rent(int demand)

@@ -98,7 +98,7 @@ namespace Greatbone
             {
                 for (var i = 0; i < Db.Count; i++)
                 {
-                    var e = Db.EntryAt(i);
+                    var e = Db.At(i);
                     sources.Add(new DbSource(e.Value)
                     {
                         Name = e.Key
@@ -111,7 +111,7 @@ namespace Greatbone
             {
                 for (var i = 0; i < Net.Count; i++)
                 {
-                    var e = Net.EntryAt(i);
+                    var e = Net.At(i);
                     peers.Add(new NetClient(e.Key, e.value)
                     {
                         Clustered = true

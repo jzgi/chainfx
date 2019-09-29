@@ -48,7 +48,7 @@ namespace Greatbone
 
         public int Count => count;
 
-        public Entry EntryAt(int idx) => entries[idx];
+        public Entry At(int idx) => entries[idx];
 
         public K KeyAt(int idx) => entries[idx].Key;
 
@@ -130,10 +130,9 @@ namespace Greatbone
             int idx = buckets[buck];
             while (idx != -1)
             {
-                Entry e = entries[idx];
-                if (e.Match(code, key))
+                if (entries[idx].Match(code, key))
                 {
-                    e.value = value;
+                    entries[idx].Add(value);
                     return; // replace the old value
                 }
 
@@ -229,7 +228,6 @@ namespace Greatbone
                     return v;
                 }
             }
-
             return default;
         }
 
@@ -246,13 +244,21 @@ namespace Greatbone
             }
         }
 
+
+        /// <summary>
+        /// A single entry can hold one ore multiple values, as indicated by size.
+        /// </summary>
         public struct Entry
         {
             readonly int code; // lower 31 bits of hash code
 
             internal readonly K key; // entry key
 
+            int size; // number of values
+
             internal V value; // entry value
+
+            V[] array; // extra values
 
             internal readonly int next; // index of next entry, -1 if last
 
@@ -263,13 +269,43 @@ namespace Greatbone
                 this.code = code;
                 this.next = next;
                 this.key = key;
+                size = 1;
                 this.value = value;
-                this.tail = -1;
+                array = null;
+                tail = -1;
             }
 
             internal bool Match(int code, K key)
             {
                 return this.code == code && this.key.Equals(key);
+            }
+
+            internal void Add(V v)
+            {
+                if (size == 0)
+                {
+                    value = v;
+                }
+                else // add to list
+                {
+                    // ensure capacity
+                    if (array == null)
+                    {
+                        array = new V[16];
+                    }
+                    else
+                    {
+                        int len = array.Length;
+                        if (size > len)
+                        {
+                            var alloc = new V[len * 4];
+                            Array.Copy(array, 0, alloc, 0, len);
+                            array = alloc;
+                        }
+                    }
+                    array[size - 1] = v;
+                }
+                size++;
             }
 
             public override string ToString()
@@ -280,6 +316,10 @@ namespace Greatbone
             public K Key => key;
 
             public V Value => value;
+
+            public int Size => size;
+
+            public V this[int idx] => idx == 0 ? value : array[idx - 1];
 
             public bool IsHead => tail > -1;
         }
@@ -317,7 +357,7 @@ namespace Greatbone
 
         static void Test()
         {
-            Map<string, string> m = new Map<string, string>
+            Map<string, string> map = new Map<string, string>
             {
                 {"010101", "mike"},
                 {"010102", "jobs"},
@@ -328,7 +368,7 @@ namespace Greatbone
                 {"010303", "cox"},
             };
 
-            var r = m.GroupOf("010101");
+            var r = map.GroupOf("010101");
         }
     }
 }
