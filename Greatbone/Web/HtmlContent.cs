@@ -5,7 +5,7 @@ namespace Greatbone.Web
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
     /// </summary>
-    public class HtmlContent : DynamicContent
+    public class HtmlContent : FormContent
     {
         public WebContext Context { get; set; }
 
@@ -1336,7 +1336,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0, int subscript = -1, bool? toolbar = true)
+        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0, int subscript = -1, Action<object> query = null, bool? toolbar = true) where D : class
         {
             var w = Context.Work;
             var vw = w.VarWork;
@@ -1396,7 +1396,7 @@ namespace Greatbone.Web
                             if (act.Sort == 0 || sort == act.Sort)
                             {
                                 var tool = act.Tool;
-                                PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
+                                PutTool(act, tool, tool.IsAnchor ? -1 : subscript, query: query, css: "uk-button-secondary");
                             }
                         }
 
@@ -1643,7 +1643,7 @@ namespace Greatbone.Web
         }
 
 
-        public HtmlContent VARTOOLS(byte sort = 0, int subscript = -1, bool pick = true, string css = null)
+        public HtmlContent VARTOOLS(byte sort = 0, int subscript = -1, Action<object> query = null, bool pick = true, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1684,7 +1684,7 @@ namespace Greatbone.Web
                         }
 
                         var tool = act.Tool;
-                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
+                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, query, css: "uk-button-secondary");
                         curg = g;
                     }
                 }
@@ -1714,7 +1714,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string css = null)
+        public HtmlContent TOOL(string action, int subscript = -1, Action<object> query = null, string caption = null, string css = null)
         {
             // locate the proper work
             var w = Context.Work;
@@ -1722,13 +1722,13 @@ namespace Greatbone.Web
             var tool = act?.Tool;
             if (tool != null)
             {
-                PutTool(act, tool, subscript, caption, css);
+                PutTool(act, tool, subscript, query, caption, css);
             }
 
             return this;
         }
 
-        public HtmlContent VARTOOL(string action, int subscript = -1, string caption = null, string css = null)
+        public HtmlContent VARTOOL(string action, int subscript = -1, Action<object> query = null, string caption = null, string css = null)
         {
             // locate the proper work
             var vw = Context.Work.VarWork;
@@ -1738,7 +1738,7 @@ namespace Greatbone.Web
                 var tool = act?.Tool;
                 if (tool != null)
                 {
-                    PutTool(act, tool, subscript, caption, css);
+                    PutTool(act, tool, subscript, query, caption, css);
                 }
             }
 
@@ -1785,7 +1785,7 @@ namespace Greatbone.Web
             Add("</a>");
         }
 
-        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string css = null)
+        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, Action<object> query = null, string caption = null, string css = null)
         {
             // check action's availability
             bool ok = !tool.Access || act.DoAuthorize(Context);
@@ -1828,6 +1828,12 @@ namespace Greatbone.Web
                     Add(subscript);
                 }
 
+                if (query != null)
+                {
+                    Add('?'); // start query string
+                    query(level >= 0 ? stack[level] : null);
+                }
+
                 Add("\"");
             }
             else
@@ -1853,6 +1859,11 @@ namespace Greatbone.Web
                 {
                     Add('-');
                     Add(subscript);
+                }
+                if (query != null)
+                {
+                    Add('?'); // start query string
+                    query(level >= 0 ? stack[level] : null);
                 }
 
                 Add("\" formmethod=\"post\"");

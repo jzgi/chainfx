@@ -28,7 +28,7 @@ namespace Greatbone.Web
         Map<string, WebWork> works;
 
         // variable-key subwork, if any
-        WebWork varwork;
+        WebVarWork varwork;
 
 
         public string Name { get; internal set; }
@@ -124,9 +124,6 @@ namespace Greatbone.Web
 
         public string Pathing { get; internal set; }
 
-        // to resolve from the principal object.
-        public Func<IData, object> Accessor { get; internal set; }
-
         public Map<string, WebAction> Actions => actions;
 
         public WebAction[] Tooled => tooled;
@@ -137,7 +134,7 @@ namespace Greatbone.Web
 
         public Map<string, WebWork> Works => works;
 
-        public WebWork VarWork => varwork;
+        public WebVarWork VarWork => varwork;
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
@@ -175,11 +172,20 @@ namespace Greatbone.Web
         /// </summary>
         /// <param name="accessor">to resolve key from the principal object</param>
         /// <param name="ui">to override class-wise UI attribute</param>
+        /// <param
+        ///     name="authenticate">
+        /// </param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
+        /// <param
+        ///     name="before">
+        /// </param>
+        /// <param
+        ///     name="after">
+        /// </param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T CreateVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T CreateVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebVarWork, new()
         {
             var wrk = new T
             {
@@ -208,7 +214,16 @@ namespace Greatbone.Web
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="ui">to override class-wise UI attribute</param>
+        /// <param
+        ///     name="authenticate">
+        /// </param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
+        /// <param
+        ///     name="before">
+        /// </param>
+        /// <param
+        ///     name="after">
+        /// </param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
@@ -239,11 +254,6 @@ namespace Greatbone.Web
 
             wrk.OnInitialize();
             return wrk;
-        }
-
-        public object GetAccessor(IData prin)
-        {
-            return Accessor?.Invoke(prin);
         }
 
         public static void PutVariableKey(object obj, DynamicContent cnt)
@@ -653,6 +663,17 @@ namespace Greatbone.Web
 
                 return value;
             }
+        }
+    }
+
+    public class WebVarWork : WebWork
+    {
+        // to resolve from the principal object.
+        public Func<IData, object> Accessor { get; internal set; }
+
+        public object GetAccessor(IData prin)
+        {
+            return Accessor?.Invoke(prin);
         }
     }
 }
