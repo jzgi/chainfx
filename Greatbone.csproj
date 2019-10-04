@@ -6,14 +6,14 @@
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <DebugType>portable</DebugType>
         <PackageId>Greatbone</PackageId>
-        <RuntimeFrameworkVersion>2.2.7</RuntimeFrameworkVersion>
+        <RuntimeFrameworkVersion>2.2</RuntimeFrameworkVersion>
         <Version>3.5.1</Version>
         <LangVersion>7.3</LangVersion>
         <Company>Greatbone</Company>
         <RootNamespace>Creatbone</RootNamespace>
         <PackageProjectUrl>https://github.com/jxtek/greatbone</PackageProjectUrl>
         <RepositoryUrl>https://github.com/jxtek/greatbone</RepositoryUrl>
-        <PackageVersion>3.5.0</PackageVersion>
+        <PackageVersion>3.5.1</PackageVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
