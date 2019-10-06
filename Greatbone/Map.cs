@@ -244,11 +244,42 @@ namespace Greatbone
             }
         }
 
+        public struct Enumerator : IEnumerator<Entry>
+        {
+            readonly Map<K, V> map;
+
+            int current;
+
+            internal Enumerator(Map<K, V> map)
+            {
+                this.map = map;
+                current = -1;
+            }
+
+            public bool MoveNext()
+            {
+                return ++current < map.Count;
+            }
+
+            public void Reset()
+            {
+                current = -1;
+            }
+
+            public Entry Current => map.entries[current];
+
+            object IEnumerator.Current => map.entries[current];
+
+            public void Dispose()
+            {
+            }
+        }
+
 
         /// <summary>
         /// A single entry can hold one ore multiple values, as indicated by size.
         /// </summary>
-        public struct Entry
+        public struct Entry : IEnumerable<V>
         {
             readonly int code; // lower 31 bits of hash code
 
@@ -308,6 +339,16 @@ namespace Greatbone
                 size++;
             }
 
+            public IEnumerator<V> GetEnumerator()
+            {
+                return new Enumerator(this);
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return new Enumerator(this);
+            }
+
             public override string ToString()
             {
                 return key.ToString();
@@ -322,53 +363,38 @@ namespace Greatbone
             public V this[int idx] => idx == 0 ? value : array[idx - 1];
 
             public bool IsHead => tail > -1;
-        }
 
-        public struct Enumerator : IEnumerator<Entry>
-        {
-            readonly Map<K, V> map;
-
-            int current;
-
-            internal Enumerator(Map<K, V> map)
+            // ReSharper disable once MemberHidesStaticFromOuterClass
+            public struct Enumerator : IEnumerator<V>
             {
-                this.map = map;
-                current = -1;
+                readonly Entry entry;
+
+                int current;
+
+                internal Enumerator(Entry entry)
+                {
+                    this.entry = entry;
+                    current = -1;
+                }
+
+                public bool MoveNext()
+                {
+                    return ++current < entry.size;
+                }
+
+                public void Reset()
+                {
+                    current = -1;
+                }
+
+                public V Current => entry[current];
+
+                object IEnumerator.Current => entry[current];
+
+                public void Dispose()
+                {
+                }
             }
-
-            public bool MoveNext()
-            {
-                return ++current < map.Count;
-            }
-
-            public void Reset()
-            {
-                current = -1;
-            }
-
-            public Entry Current => map.entries[current];
-
-            object IEnumerator.Current => map.entries[current];
-
-            public void Dispose()
-            {
-            }
-        }
-
-        static void Test()
-        {
-            Map<string, string> map = new Map<string, string>
-            {
-                {"010101", "mike"},
-                {"010102", "jobs"},
-                {"010103", "tim"},
-                {"010104", "john"},
-                {"010301", "abigae"},
-                {"010302", "stephen"},
-                {"010303", "cox"},
-            };
-
-            var r = map.GroupOf("010101");
         }
     }
 }

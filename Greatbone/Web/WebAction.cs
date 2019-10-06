@@ -158,9 +158,9 @@ namespace Greatbone.Web
             return true;
         }
 
-        public bool CheckState(WebContext wc, object[] stack, int level)
+        public bool CheckState(WebContext wc, object model)
         {
-            return state == null || stack == null || state.Check(wc, stack, level);
+            return state == null || model == null || state.Check(wc, model);
         }
 
         internal void Do(WebContext wc, int subscript)

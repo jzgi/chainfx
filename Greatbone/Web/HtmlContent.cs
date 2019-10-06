@@ -10,9 +10,7 @@ namespace Greatbone.Web
         public WebContext Context { get; set; }
 
         // data output context in levels, if any
-        object[] stack;
-
-        int level = -1;
+        object model;
 
         public HtmlContent(int capacity = 32 * 1024) : base(capacity)
         {
@@ -1205,7 +1203,7 @@ namespace Greatbone.Web
             }
         }
 
-        public HtmlContent LIST<D>(D[] arr, Action<D> item, string ul = null, string li = null)
+        public HtmlContent LIST<M>(M[] arr, Action<M> item, string ul = null, string li = null)
         {
             Add("<ul class=\"uk-list uk-list-divider");
             if (ul != null)
@@ -1218,13 +1216,10 @@ namespace Greatbone.Web
 
             if (arr != null)
             {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
-
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    D obj = arr[i];
-                    stack[level] = obj;
+                    M obj = arr[i];
+                    model = obj;
 
                     Add("<li class=\"uk-flex");
                     if (li != null)
@@ -1237,12 +1232,9 @@ namespace Greatbone.Web
                     item(obj);
                     Add("</li>");
 
-                    stack[level] = null;
+                    model = null;
                 }
-
-                level--; // exit the level
             }
-
             Add("</ul>");
             return this;
         }
@@ -1279,7 +1271,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent ACCORDION<D>(D[] arr, Action<D> item, string ul = null, string li = null)
+        public HtmlContent ACCORDION<M>(M[] arr, Action<M> item, string ul = null, string li = null)
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
             if (ul != null)
@@ -1292,13 +1284,10 @@ namespace Greatbone.Web
 
             if (arr != null)
             {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
-
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    D obj = arr[i];
-                    stack[level] = obj;
+                    M obj = arr[i];
+                    model = obj;
 
                     Add("<li class=\"uk-flex uk-card uk-card-default");
                     if (li != null)
@@ -1311,10 +1300,8 @@ namespace Greatbone.Web
                     item(obj);
                     Add("</li>");
 
-                    stack[level] = null;
+                    model = null;
                 }
-
-                level--; // exit the level
             }
 
             // pagination if any
@@ -1336,7 +1323,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public void TABLE<D>(D[] arr, Action head, Action<D> row, byte sort = 0, int subscript = -1, Action<object> query = null, bool? toolbar = true) where D : class
+        public void TABLE<M>(M[] arr, Action head, Action<M> row, byte sort = 0, int subscript = -1, Action<object> query = null, bool? toolbar = true) where M : class
         {
             var w = Context.Work;
             var vw = w.VarWork;
@@ -1360,14 +1347,11 @@ namespace Greatbone.Web
 
             if (arr != null && row != null) // tbody if having data objects
             {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
-
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    D obj = arr[i];
-                    stack[level] = obj;
+                    M obj = arr[i];
+                    model = obj;
 
                     Add("<tr>");
                     if (toolbar != null)
@@ -1406,28 +1390,25 @@ namespace Greatbone.Web
 
                     Add("</tr>");
 
-                    stack[level] = null;
+                    model = null;
                 }
 
                 Add("</tbody>");
-                level--; // exit the level
             }
 
             Add("</table>");
             Add("</div>");
         }
 
-        public void BOARD<D>(D[] arr, Action<D> card, string css = "uk-card-default")
+        public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
             Add("<main class=\"uk-board\">");
             if (arr != null)
             {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    D obj = arr[i];
-                    stack[level] = obj;
+                    M obj = arr[i];
+                    model = obj;
                     Add("<form class=\"uk-card");
                     if (css != null)
                     {
@@ -1438,10 +1419,8 @@ namespace Greatbone.Web
                     Add("\">");
                     card(obj);
                     Add("</form>");
-                    stack[level] = null;
+                    model = null;
                 }
-
-                level--; // exit the level
             }
 
             Add("</main>");
@@ -1470,17 +1449,15 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void GRID<D>(D[] arr, Action<D> card, string css = null)
+        public void GRID<M>(M[] arr, Action<M> card, string css = null)
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
             if (arr != null)
             {
-                if (stack == null) stack = new object[4]; // init contexts
-                level++; // enter a new level
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    D obj = arr[i];
-                    stack[level] = obj;
+                    M obj = arr[i];
+                    model = obj;
                     Add("<article class=\"uk-card uk-card-default");
                     if (css != null)
                     {
@@ -1491,10 +1468,8 @@ namespace Greatbone.Web
                     Add("\">");
                     card(obj);
                     Add("</article>");
-                    stack[level] = null;
+                    model = null;
                 }
-
-                level--; // exit the level
             }
 
             Add("</main>");
@@ -1661,7 +1636,7 @@ namespace Greatbone.Web
             if (vw != null && pick)
             {
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                var obj = stack[level];
+                var obj = model;
                 WebWork.PutVariableKey(obj, this);
                 Add("\" onchange=\"checkToggle(this);\">");
             }
@@ -1756,15 +1731,10 @@ namespace Greatbone.Web
             Add("<a class=\"uk-button ");
             Add(anycss ?? "uk-button-link");
             Add("\" href=\"");
-            if (level >= 0)
+            if (model != null)
             {
-                var w = Context.Work;
-                for (int i = 0; i <= level; i++)
-                {
-                    w = w.VarWork;
-                    WebWork.PutVariableKey(stack[i], this);
-                    Add('/');
-                }
+                WebWork.PutVariableKey(model, this);
+                Add('/');
             }
 
             Add(wrk.Key);
@@ -1789,9 +1759,9 @@ namespace Greatbone.Web
         {
             // check action's availability
             bool ok = !tool.Access || act.DoAuthorize(Context);
-            if (ok && level >= 0)
+            if (ok && model != null)
             {
-                ok = act.CheckState(Context, stack, level);
+                ok = act.CheckState(Context, model);
             }
 
             var anycss = tool.Css ?? css;
@@ -1810,15 +1780,10 @@ namespace Greatbone.Web
                 }
 
                 Add("\" href=\"");
-                if (level >= 0)
+                if (model != null)
                 {
-                    var w = Context.Work;
-                    for (int i = 0; i <= level; i++)
-                    {
-                        w = w.VarWork;
-                        WebWork.PutVariableKey(stack[i], this);
-                        Add('/');
-                    }
+                    WebWork.PutVariableKey(model, this);
+                    Add('/');
                 }
 
                 Add(act == Context.Action ? act.Key : act.Relative);
@@ -1831,7 +1796,7 @@ namespace Greatbone.Web
                 if (query != null)
                 {
                     Add('?'); // start query string
-                    query(level >= 0 ? stack[level] : null);
+                    query(model);
                 }
 
                 Add("\"");
@@ -1843,15 +1808,10 @@ namespace Greatbone.Web
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");
-                if (level >= 0)
+                if (model != null)
                 {
-                    var w = Context.Work;
-                    for (int i = 0; i <= level; i++)
-                    {
-                        w = w.VarWork;
-                        WebWork.PutVariableKey(stack[i], this);
-                        Add('/');
-                    }
+                    WebWork.PutVariableKey(model, this);
+                    Add('/');
                 }
 
                 Add(act.Key);
@@ -1860,11 +1820,7 @@ namespace Greatbone.Web
                     Add('-');
                     Add(subscript);
                 }
-                if (query != null)
-                {
-                    Add('?'); // start query string
-                    query(level >= 0 ? stack[level] : null);
-                }
+                query?.Invoke(model);
 
                 Add("\" formmethod=\"post\"");
             }
