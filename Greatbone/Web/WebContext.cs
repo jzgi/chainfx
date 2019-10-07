@@ -154,7 +154,7 @@ namespace Greatbone.Web
 
         public IPAddress RemoteAddr => connection.RemoteIpAddress;
 
-        public bool ByWeChat => UserAgent?.Contains("MicroMessenger/") ?? false;
+        public bool IsWeChat => UserAgent?.Contains("MicroMessenger/") ?? false;
 
         public bool ByCall => Header("X-Requested-With") != null;
 
