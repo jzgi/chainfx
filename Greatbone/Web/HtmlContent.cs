@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Greatbone.Web
 {
@@ -7,10 +8,8 @@ namespace Greatbone.Web
     /// </summary>
     public class HtmlContent : FormContent
     {
-        public WebContext Context { get; set; }
+        public WebContext Web { get; set; }
 
-        // data output context in levels, if any
-        object model;
 
         public HtmlContent(int capacity = 32 * 1024) : base(capacity)
         {
@@ -601,9 +600,25 @@ namespace Greatbone.Web
                 Add(css);
                 Add("\"");
             }
-
             Add(">");
             AddPrimitive(v);
+            Add("</p>");
+            return this;
+        }
+
+        public HtmlContent P2<A, B>(A a, B b, string css = null)
+        {
+            Add("<p");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            AddPrimitive(a);
+            Add("&nbsp;");
+            AddPrimitive(b);
             Add("</p>");
             return this;
         }
@@ -853,7 +868,6 @@ namespace Greatbone.Web
             {
                 Add("&checkmark;");
             }
-
             Add("</p>");
             return this;
         }
@@ -1160,11 +1174,11 @@ namespace Greatbone.Web
         public void PAGENATION(int count, int limit = 20)
         {
             // pagination
-            var act = Context.Action;
+            var act = Web.Action;
             if (act.Subscript != null)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
-                int subscpt = Context.Subscript;
+                int subscpt = Web.Subscript;
                 for (int i = 0; i <= subscpt; i++)
                 {
                     if (subscpt == i)
@@ -1179,7 +1193,7 @@ namespace Greatbone.Web
                         Add(act.Key);
                         Add('-');
                         Add(i);
-                        Add(Context.QueryStr);
+                        Add(Web.QueryStr);
                         Add("\">");
                         Add(i + 1);
                         Add("</a></li>");
@@ -1192,7 +1206,7 @@ namespace Greatbone.Web
                     Add(act.Key);
                     Add('-');
                     Add(subscpt + 1);
-                    Add(Context.QueryStr);
+                    Add(Web.QueryStr);
                     Add("\">");
                     Add(subscpt + 2);
                     Add("</a></li>");
@@ -1218,20 +1232,15 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    model = obj;
-
                     Add("<li class=\"uk-flex");
                     if (li != null)
                     {
                         Add(' ');
                         Add(li);
                     }
-
                     Add("\">");
                     item(obj);
                     Add("</li>");
-
-                    model = null;
                 }
             }
             Add("</ul>");
@@ -1246,7 +1255,6 @@ namespace Greatbone.Web
                 Add(' ');
                 Add(ul);
             }
-
             Add("\">");
 
             if (src != null && src.IsDataSet)
@@ -1259,13 +1267,11 @@ namespace Greatbone.Web
                         Add(' ');
                         Add(li);
                     }
-
                     Add("\">");
                     item(src);
                     Add("</li>");
                 }
             }
-
             Add("</ul>");
             return this;
         }
@@ -1278,7 +1284,6 @@ namespace Greatbone.Web
                 Add(' ');
                 Add(ul);
             }
-
             Add("\">");
 
             if (arr != null)
@@ -1286,20 +1291,15 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    model = obj;
-
                     Add("<li class=\"uk-flex uk-card uk-card-default");
                     if (li != null)
                     {
                         Add(' ');
                         Add(li);
                     }
-
                     Add("\">");
                     item(obj);
                     Add("</li>");
-
-                    model = null;
                 }
             }
 
@@ -1322,9 +1322,9 @@ namespace Greatbone.Web
             return this;
         }
 
-        public void TABLE<M>(M[] arr, Action head, Action<M> row, byte sort = 0, int subscript = -1, Action<object> query = null, bool? toolbar = true) where M : class
+        public void TABLE<M, K>(M[] arr, Action head, Action<M> row, byte sort = 0, int subscript = -1, bool? toolbar = true) where M : IKeyable<K>
         {
-            var w = Context.Work;
+            var w = Web.Work;
             var vw = w.VarWork;
             Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-hover\">");
@@ -1350,8 +1350,6 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    model = obj;
-
                     Add("<tr>");
                     if (toolbar != null)
                     {
@@ -1363,7 +1361,7 @@ namespace Greatbone.Web
                         }
 
                         Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                        WebWork.PutVariableKey(obj, this);
+                        PutKey(obj.Key);
                         Add("\" onchange=\"checkToggle(this);\">");
                         Add("</td>");
                     }
@@ -1379,7 +1377,8 @@ namespace Greatbone.Web
                             if (act.Sort == 0 || sort == act.Sort)
                             {
                                 var tool = act.Tool;
-                                PutTool(act, tool, tool.IsAnchor ? -1 : subscript, query: query, css: "uk-button-secondary");
+                                K varkey = obj.Key;
+                                PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
                             }
                         }
 
@@ -1388,8 +1387,6 @@ namespace Greatbone.Web
                     }
 
                     Add("</tr>");
-
-                    model = null;
                 }
 
                 Add("</tbody>");
@@ -1407,21 +1404,39 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    model = obj;
                     Add("<form class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
                     card(obj);
                     Add("</form>");
-                    model = null;
                 }
             }
+            Add("</main>");
+        }
 
+        public void BOARD<M, K>(Map<K, M> map, Action<M> card, string cardcss = "uk-card-default") where M : IKeyable<K>
+        {
+            Add("<main class=\"uk-board\">");
+            if (map != null)
+            {
+                for (int i = 0; i < map.Count; i++)
+                {
+                    var entry = map.At(i);
+                    Add("<form class=\"uk-card");
+                    if (cardcss != null)
+                    {
+                        Add(' ');
+                        Add(cardcss);
+                    }
+                    Add("\">");
+                    card(entry.Value);
+                    Add("</form>");
+                }
+            }
             Add("</main>");
         }
 
@@ -1438,13 +1453,11 @@ namespace Greatbone.Web
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
                     card(src);
                     Add("</form>");
                 }
             }
-
             Add("</main>");
         }
 
@@ -1456,18 +1469,15 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    model = obj;
                     Add("<article class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
                     card(obj);
                     Add("</article>");
-                    model = null;
                 }
             }
 
@@ -1515,7 +1525,7 @@ namespace Greatbone.Web
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
             int grp = -1;
-            var acts = Context.Work.Tooled;
+            var acts = Web.Work.Tooled;
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
@@ -1574,7 +1584,8 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TOOLS(byte sort = 0, int subscript = -1, string css = null)
+
+        public HtmlContent VARTOOLSET<M, K>(M model, byte sort = 0, int subscript = -1, bool pick = true, Func<M, bool> stater = null, string css = null) where M : IKeyable<K>
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1582,61 +1593,16 @@ namespace Greatbone.Web
                 Add(' ');
                 Add(css);
             }
-
             Add("\">");
 
-            // output button group(s)
-            int curg = -1;
-            var wrk = Context.Work;
-            var acts = wrk.Tooled;
-            if (acts != null)
-            {
-                for (int i = 0; i < acts.Length; i++)
-                {
-                    var act = acts[i];
-                    int g = act.Sort;
-                    if (g == 0 || (g & sort) == g)
-                    {
-                        if (g != curg)
-                        {
-                            if (curg != -1) Add("</div>");
-                            Add("<div class=\"uk-button-group\">");
-                        }
-
-                        var tool = act.Tool;
-                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
-                        curg = g;
-                    }
-                }
-
-                Add("</div>");
-            }
-
-            Add("</nav>");
-            return this;
-        }
-
-
-        public HtmlContent VARTOOLS(byte sort = 0, int subscript = -1, Action<object> query = null, bool pick = true, string css = null)
-        {
-            Add("<nav class=\"uk-flex");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-
-            Add("\">");
-
-            var w = Context.Work;
+            var w = Web.Work;
             var vw = w.VarWork;
 
-            // output a pick check
+            // output a pick checkbox
             if (vw != null && pick)
             {
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                var obj = model;
-                WebWork.PutVariableKey(obj, this);
+                PutKey(model.Key);
                 Add("\" onchange=\"checkToggle(this);\">");
             }
 
@@ -1658,117 +1624,111 @@ namespace Greatbone.Web
                         }
 
                         var tool = act.Tool;
-                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, query, css: "uk-button-secondary");
+                        K varkey = model.Key;
+                        bool avail = stater?.Invoke(model) ?? true;
+                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, avail, "uk-button-secondary");
                         curg = g;
                     }
                 }
-
                 Add("</div>");
             }
-
-            // subworks
-            var subs = vw?.Works;
-            if (subs != null)
-            {
-                Add("<div class=\"uk-button-group\">");
-                for (int i = 0; i < subs.Count; i++)
-                {
-                    var sub = subs.ValueAt(i);
-                    var act = sub.Default;
-                    if (act != null)
-                    {
-                        PutLink(sub, css: "uk-button-secondary");
-                    }
-                }
-
-                Add("</div>");
-            }
-
-            Add("</nav>");
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, Action<object> query = null, string caption = null, string css = null)
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, bool avail = true, string css = null)
         {
             // locate the proper work
-            var w = Context.Work;
+            var w = Web.Work;
             var act = w[action];
             var tool = act?.Tool;
             if (tool != null)
             {
-                PutTool(act, tool, subscript, query, caption, css);
+                PutTool(act, tool, subscript, caption, avail, css);
             }
 
             return this;
         }
 
-        public HtmlContent VARTOOL(string action, int subscript = -1, Action<object> query = null, string caption = null, string css = null)
+        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, bool avail = true, string css = null)
         {
-            // locate the proper work
-            var vw = Context.Work.VarWork;
+            // get the var work
+            var vw = Web.Work.VarWork;
             if (vw != null)
             {
                 var act = vw[action];
                 var tool = act?.Tool;
                 if (tool != null)
                 {
-                    PutTool(act, tool, subscript, query, caption, css);
+                    PutVarTool(act, tool, varkey, subscript, caption, avail, css);
                 }
             }
 
             return this;
         }
 
-        void PutLink(WebWork wrk, string caption = null, string css = null)
+        void PutKey<K>(K obj)
         {
-            // check action's availability
-            if (wrk.Default == null) return;
-
-            bool ok = wrk.DoAuthorize(Context);
-
-            var anycss = css;
-            Add("<a class=\"uk-button ");
-            Add(anycss ?? "uk-button-link");
-            Add("\" href=\"");
-            if (model != null)
+            if (obj is IKeyable<string> kstr)
             {
-                WebWork.PutVariableKey(model, this);
-                Add('/');
+                Add(kstr.Key);
             }
-
-            Add(wrk.Key);
-            Add("/\"");
-            if (!ok)
+            else if (obj is IKeyable<short> ksht)
             {
-                Add(" disabled=\"disabled\" onclick=\"return false;\"");
+                Add(ksht.Key);
             }
-
-            OnClickDialog(8, false, 5, wrk.Tip);
-            Add(">");
-            string cap = caption ?? wrk.Label;
-            if (!string.IsNullOrEmpty(cap))
+            else if (obj is IKeyable<int> kint)
             {
-                Add(cap);
+                Add(kint.Key);
             }
-
-            Add("</a>");
+            else if (obj is IKeyable<long> klng)
+            {
+                Add(klng.Key);
+            }
+            else if (obj is IKeyable<(string, string)> kstrstr)
+            {
+                var (k1, k2) = kstrstr.Key;
+                Add(k1);
+                Add('-');
+                Add(k2);
+            }
+            else if (obj is IKeyable<(string, short)> kstrsht)
+            {
+                var (k1, k2) = kstrsht.Key;
+                Add(k1);
+                Add('-');
+                Add(k2);
+            }
+            else if (obj is IKeyable<(string, int)> kstrint)
+            {
+                var (k1, k2) = kstrint.Key;
+                Add(k1);
+                Add('-');
+                Add(k2);
+            }
+            else if (obj is IKeyable<(string, long)> kstrlng)
+            {
+                var (k1, k2) = kstrlng.Key;
+                Add(k1);
+                Add('-');
+                Add(k2);
+            }
+            else
+            {
+                Add(obj.ToString());
+            }
         }
 
-        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, Action<object> query = null, string caption = null, string css = null)
+        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, bool avail = true, string css = null)
         {
             // check action's availability
-            bool ok = !tool.Access || act.DoAuthorize(Context);
-            if (ok && model != null)
-            {
-                ok = act.CheckState(Context, model);
-            }
+            //
+            bool ok = avail && act.DoAuthorize(Web);
 
-            var anycss = tool.Css ?? css;
             if (tool.IsAnchorTag)
             {
                 Add("<a class=\"uk-button ");
-                Add(anycss ?? "uk-button-link");
-                if (act == Context.Action) // if current action
+                Add(css ?? "uk-button-link");
+                if (act == Web.Action) // if current action
                 {
                     Add(" uk-active");
                 }
@@ -1779,48 +1739,133 @@ namespace Greatbone.Web
                 }
 
                 Add("\" href=\"");
-                if (model != null)
-                {
-                    WebWork.PutVariableKey(model, this);
-                    Add('/');
-                }
-
-                Add(act == Context.Action ? act.Key : act.Relative);
+                Add(act == Web.Action ? act.Key : act.Relative);
                 if (subscript != -1 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
                 }
-
-                if (query != null)
-                {
-                    Add('?'); // start query string
-                    query(model);
-                }
-
                 Add("\"");
             }
             else
             {
                 Add("<button  class=\"uk-button ");
-                Add(anycss ?? "uk-button-default");
+                Add(css ?? "uk-button-default");
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");
-                if (model != null)
-                {
-                    WebWork.PutVariableKey(model, this);
-                    Add('/');
-                }
-
                 Add(act.Key);
                 if (subscript != -1 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
                 }
-                query?.Invoke(model);
+                Add("\" formmethod=\"post\"");
+            }
 
+            if (!ok)
+            {
+                Add(" disabled=\"disabled\" onclick=\"return false;\"");
+            }
+            else if (tool.HasConfirm)
+            {
+                Add(" onclick=\"return ");
+                if (tool.MustPick)
+                {
+                    Add("!serialize(this.form) ? false : ");
+                }
+
+                Add("confirm('");
+                Add(act.Tip ?? act.Label);
+                Add("');\"");
+            }
+            else if (tool.HasPrompt)
+            {
+                OnClickDialog(2, tool.MustPick, tool.Size, act.Tip);
+            }
+            else if (tool.HasShow)
+            {
+                OnClickDialog(4, tool.MustPick, tool.Size, act.Tip);
+            }
+            else if (tool.HasOpen)
+            {
+                OnClickDialog(8, tool.MustPick, tool.Size, act.Tip);
+            }
+            else if (tool.HasScript)
+            {
+                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
+                Add(act.Name);
+                Add("(this);\"");
+            }
+            else if (tool.HasCrop)
+            {
+                Add(" onclick=\"return crop(this,");
+                Add(tool.Ordinals);
+                Add(',');
+                Add(tool.Size);
+                Add(",'");
+                Add(act.Tip);
+                Add("');\"");
+            }
+
+            Add(">");
+
+            string cap = caption ?? act.Label;
+            if (!string.IsNullOrEmpty(cap))
+            {
+                Add(cap);
+            }
+
+            // put the closing tag
+            Add(tool.IsAnchorTag ? "</a>" : "</button>");
+        }
+
+        void PutVarTool<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, bool avail = true, string css = null)
+        {
+            // check action's availability
+            //
+            bool ok = avail && act.DoAuthorize(Web);
+
+            if (tool.IsAnchorTag)
+            {
+                Add("<a class=\"uk-button ");
+                Add(css ?? "uk-button-link");
+                if (act == Web.Action) // if current action
+                {
+                    Add(" uk-active");
+                }
+
+                if (!ok)
+                {
+                    Add(" disabled");
+                }
+
+                Add("\" href=\"");
+                PutKey(varkey);
+                Add('/');
+                Add(act == Web.Action ? act.Key : act.Relative);
+                if (subscript != -1 && act.Subscript != null)
+                {
+                    Add('-');
+                    Add(subscript);
+                }
+                Add("\"");
+            }
+            else
+            {
+                Add("<button  class=\"uk-button ");
+                Add(css ?? "uk-button-default");
+                Add("\" name=\"");
+                Add(act.Key);
+                Add("\" formaction=\"");
+                PutKey(varkey);
+                Add('/');
+                Add(act.Key);
+                if (subscript != -1 && act.Subscript != null)
+                {
+                    Add('-');
+                    Add(subscript);
+                }
                 Add("\" formmethod=\"post\"");
             }
 

@@ -256,58 +256,6 @@ namespace Greatbone.Web
             return wrk;
         }
 
-        public static void PutVariableKey(object obj, DynamicContent cnt)
-        {
-            if (obj is IKeyable<string> kstr)
-            {
-                cnt.Add(kstr.Key);
-            }
-            else if (obj is IKeyable<short> ksht)
-            {
-                cnt.Add(ksht.Key);
-            }
-            else if (obj is IKeyable<int> kint)
-            {
-                cnt.Add(kint.Key);
-            }
-            else if (obj is IKeyable<long> klng)
-            {
-                cnt.Add(klng.Key);
-            }
-            else if (obj is IKeyable<(string, string)> kstrstr)
-            {
-                var (k1, k2) = kstrstr.Key;
-                cnt.Add(k1);
-                cnt.Add('-');
-                cnt.Add(k2);
-            }
-            else if (obj is IKeyable<(string, short)> kstrsht)
-            {
-                var (k1, k2) = kstrsht.Key;
-                cnt.Add(k1);
-                cnt.Add('-');
-                cnt.Add(k2);
-            }
-            else if (obj is IKeyable<(string, int)> kstrint)
-            {
-                var (k1, k2) = kstrint.Key;
-                cnt.Add(k1);
-                cnt.Add('-');
-                cnt.Add(k2);
-            }
-            else if (obj is IKeyable<(string, long)> kstrlng)
-            {
-                var (k1, k2) = kstrlng.Key;
-                cnt.Add(k1);
-                cnt.Add('-');
-                cnt.Add(k2);
-            }
-            else
-            {
-                cnt.Add(obj.ToString());
-            }
-        }
-
         protected void Describe(XmlContent xc)
         {
             xc.ELEM(Key,

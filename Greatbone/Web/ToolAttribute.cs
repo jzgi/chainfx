@@ -35,10 +35,6 @@ namespace Greatbone.Web
 
         public byte Size => size;
 
-        public string Css => css;
-
-        public bool Access => access;
-
         public int Ordinals { get; set; }
 
         public bool IsAnchorTag => element == 0x1000;
