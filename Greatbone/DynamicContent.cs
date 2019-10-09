@@ -429,13 +429,6 @@ namespace Greatbone
             return true;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            BufferUtility.Return(buffer);
-        }
-
         public override string ToString()
         {
             return Type;

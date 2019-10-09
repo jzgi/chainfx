@@ -275,10 +275,15 @@ namespace Greatbone
 
         public override string ToString()
         {
-            using (var cnt = new JsonContent(4096))
+            var cnt = new JsonContent(4096);
+            try
             {
                 cnt.PutFromSource(this);
                 return cnt.ToString();
+            }
+            finally
+            {
+                BufferUtility.Return(cnt.Buffer);
             }
         }
 

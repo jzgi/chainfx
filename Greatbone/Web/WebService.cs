@@ -107,10 +107,6 @@ namespace Greatbone.Web
                     await HandleAsync(path.Substring(1), wc);
                 }
             }
-            catch (WebException e)
-            {
-                wc.Give(e.Code, e.Message);
-            }
             catch (Exception e)
             {
                 wc.Give(500, e.Message); // internal server error
@@ -187,7 +183,7 @@ namespace Greatbone.Web
         public void DisposeContext(HttpContext context, Exception excep)
         {
             // dispose the context
-            ((WebContext) context).Dispose();
+            ((WebContext) context).Close();
         }
 
         internal async Task StartAsync(CancellationToken token)
@@ -229,7 +225,7 @@ namespace Greatbone.Web
             //            logWriter.Dispose();
         }
 
-        public void Dispose()
+        public void Close()
         {
             server.Dispose();
         }

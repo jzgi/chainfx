@@ -20,7 +20,7 @@ namespace Greatbone.Web
     ///
     /// The encapsulation of a web request/response exchange context. It supports multiplexity occuring in SSE and WebSocket.
     ///
-    public sealed class WebContext : HttpContext, IDisposable
+    public sealed class WebContext : HttpContext
     {
         readonly IFeatureCollection features;
 
@@ -585,7 +585,7 @@ namespace Greatbone.Web
             await fResponse.Body.WriteAsync(Content.Buffer, 0, Content.Count);
         }
 
-        public void Dispose()
+        public void Close()
         {
             // request content buffer
             if (buffer != null)
@@ -596,9 +596,10 @@ namespace Greatbone.Web
             // pool returning
             if (!IsInCache)
             {
-                if (Content is DynamicContent dcnt)
+                if (Content is DynamicContent dyn)
                 {
-                    dcnt.Dispose();
+                    dyn.Dispose();
+                    BufferUtility.Return(dyn.Buffer);
                 }
             }
         }

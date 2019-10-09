@@ -13,29 +13,29 @@ namespace Greatbone
         static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
 
         // pool of byte buffers
-        static readonly Bucket[] buckets =
+        static readonly Pool[] pools =
         {
-            new Bucket(1024 * 4, factor * 16),
-            new Bucket(1024 * 8, factor * 16),
-            new Bucket(1024 * 16, factor * 16),
-            new Bucket(1024 * 32, factor * 16),
-            new Bucket(1024 * 64, factor * 8),
-            new Bucket(1024 * 128, factor * 8),
-            new Bucket(1024 * 256, factor * 8),
-            new Bucket(1024 * 512, factor * 8),
-            new Bucket(1024 * 1024, factor * 4)
+            new Pool(1024 * 4, factor * 16),
+            new Pool(1024 * 8, factor * 16),
+            new Pool(1024 * 16, factor * 16),
+            new Pool(1024 * 32, factor * 16),
+            new Pool(1024 * 64, factor * 8),
+            new Pool(1024 * 128, factor * 8),
+            new Pool(1024 * 256, factor * 8),
+            new Pool(1024 * 512, factor * 8),
+            new Pool(1024 * 1024, factor * 4)
         };
 
         public static byte[] Rent(int demand)
         {
             // locate the queue
-            for (int i = 0; i < buckets.Length; i++)
+            for (int i = 0; i < pools.Length; i++)
             {
-                var buck = buckets[i];
-                if (buck.Spec < demand) continue;
-                if (!buck.TryPop(out var buf))
+                var pool = pools[i];
+                if (pool.Spec < demand) continue;
+                if (!pool.TryPop(out var buf))
                 {
-                    buf = new byte[buck.Spec];
+                    buf = new byte[pool.Spec];
                 }
                 return buf;
             }
@@ -47,31 +47,31 @@ namespace Greatbone
         public static void Return(byte[] buf)
         {
             int len = buf.Length;
-            for (int i = 0; i < buckets.Length; i++)
+            for (int i = 0; i < pools.Length; i++)
             {
-                var buck = buckets[i];
-                if (buck.Spec == len) // the right queue to add
+                var pool = pools[i];
+                if (pool.Spec == len) // the right queue to add
                 {
-                    if (buck.Count < buck.Limit)
+                    if (pool.Count < pool.Limit)
                     {
-                        buck.Push(buf);
+                        pool.Push(buf);
                     }
                 }
-                else if (buck.Spec > len)
+                else if (pool.Spec > len)
                 {
                     break;
                 }
             }
         }
 
-        class Bucket : ConcurrentStack<byte[]>
+        class Pool : ConcurrentStack<byte[]>
         {
             // buffer size in bytes
             readonly int spec;
 
             readonly int limit;
 
-            internal Bucket(int spec, int limit)
+            internal Pool(int spec, int limit)
             {
                 this.spec = spec;
                 this.limit = limit;
