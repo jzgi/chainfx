@@ -35,9 +35,6 @@ namespace Greatbone.Web
         // tool annotation for ui
         readonly ToolAttribute tool;
 
-        // state check annotation
-        readonly StateAttribute state;
-
 
         // 4 possible forms of the action method
         //
@@ -61,7 +58,6 @@ namespace Greatbone.Web
             authenticate = (AuthenticateAttribute) mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute) mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
             tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
-            state = (StateAttribute) mi.GetCustomAttribute(typeof(StateAttribute), true);
 
             // create a doer delegate
             if (async)
@@ -138,8 +134,6 @@ namespace Greatbone.Web
 
         public ToolAttribute Tool => tool;
 
-        public StateAttribute State => state;
-
         public TagAttribute[] Tags => tags;
 
         public bool DoAuthorize(WebContext wc)
@@ -156,11 +150,6 @@ namespace Greatbone.Web
             }
 
             return true;
-        }
-
-        public bool CheckState(WebContext wc, object model)
-        {
-            return state == null || model == null || state.Check(wc, model);
         }
 
         internal void Do(WebContext wc, int subscript)

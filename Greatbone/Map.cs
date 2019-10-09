@@ -279,7 +279,7 @@ namespace Greatbone
         /// <summary>
         /// A single entry can hold one ore multiple values, as indicated by size.
         /// </summary>
-        public struct Entry : IEnumerable<V>
+        public struct Entry : IEnumerable<V>, IKeyable<K>
         {
             readonly int code; // lower 31 bits of hash code
 

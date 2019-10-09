@@ -1339,7 +1339,6 @@ namespace Greatbone.Web
                 {
                     Add("<th></th>"); // for triggers
                 }
-
                 Add("</tr>");
                 Add("</thead>");
             }
@@ -1418,14 +1417,14 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void BOARD<M, K>(Map<K, M> map, Action<M> card, string cardcss = "uk-card-default") where M : IKeyable<K>
+        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string cardcss = "uk-card-default") where M : IKeyable<K>
         {
             Add("<main class=\"uk-board\">");
             if (map != null)
             {
                 for (int i = 0; i < map.Count; i++)
                 {
-                    var entry = map.At(i);
+                    var ety = map.At(i);
                     Add("<form class=\"uk-card");
                     if (cardcss != null)
                     {
@@ -1433,7 +1432,7 @@ namespace Greatbone.Web
                         Add(cardcss);
                     }
                     Add("\">");
-                    card(entry.Value);
+                    card(ety);
                     Add("</form>");
                 }
             }
@@ -1585,7 +1584,7 @@ namespace Greatbone.Web
         }
 
 
-        public HtmlContent VARTOOLSET<M, K>(M model, byte sort = 0, int subscript = -1, bool pick = true, Func<M, bool> stater = null, string css = null) where M : IKeyable<K>
+        public HtmlContent VARTOOLSET<K>(K varkey, byte sort = 0, int subscript = -1, bool pick = true, string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1602,7 +1601,7 @@ namespace Greatbone.Web
             if (vw != null && pick)
             {
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                PutKey(model.Key);
+                PutKey(varkey);
                 Add("\" onchange=\"checkToggle(this);\">");
             }
 
@@ -1624,14 +1623,13 @@ namespace Greatbone.Web
                         }
 
                         var tool = act.Tool;
-                        K varkey = model.Key;
-                        bool avail = stater?.Invoke(model) ?? true;
-                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, avail, "uk-button-secondary");
+                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, true, "uk-button-secondary");
                         curg = g;
                     }
                 }
                 Add("</div>");
             }
+            Add("</nav>");
             return this;
         }
 
@@ -1666,55 +1664,32 @@ namespace Greatbone.Web
             return this;
         }
 
-        void PutKey<K>(K obj)
+        void PutKey<K>(K k)
         {
-            if (obj is IKeyable<string> kstr)
+            if (k is short shortv) Add(shortv);
+            else if (k is int intv) Add(intv);
+            else if (k is long longv) Add(longv);
+            else if (k is string strv) Add(strv);
+            else if (k is ValueTuple<string, string> kstrstr)
             {
-                Add(kstr.Key);
-            }
-            else if (obj is IKeyable<short> ksht)
-            {
-                Add(ksht.Key);
-            }
-            else if (obj is IKeyable<int> kint)
-            {
-                Add(kint.Key);
-            }
-            else if (obj is IKeyable<long> klng)
-            {
-                Add(klng.Key);
-            }
-            else if (obj is IKeyable<(string, string)> kstrstr)
-            {
-                var (k1, k2) = kstrstr.Key;
+                var (k1, k2) = kstrstr;
                 Add(k1);
                 Add('-');
                 Add(k2);
             }
-            else if (obj is IKeyable<(string, short)> kstrsht)
+            else if (k is ValueTuple<string, int> kstrint)
             {
-                var (k1, k2) = kstrsht.Key;
+                var (k1, k2) = kstrint;
                 Add(k1);
                 Add('-');
                 Add(k2);
             }
-            else if (obj is IKeyable<(string, int)> kstrint)
+            else if (k is ValueTuple<int, string> kintstr)
             {
-                var (k1, k2) = kstrint.Key;
+                var (k1, k2) = kintstr;
                 Add(k1);
                 Add('-');
                 Add(k2);
-            }
-            else if (obj is IKeyable<(string, long)> kstrlng)
-            {
-                var (k1, k2) = kstrlng.Key;
-                Add(k1);
-                Add('-');
-                Add(k2);
-            }
-            else
-            {
-                Add(obj.ToString());
             }
         }
 
