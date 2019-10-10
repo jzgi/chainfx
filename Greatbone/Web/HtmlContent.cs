@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Greatbone.Web
 {
@@ -1322,26 +1321,22 @@ namespace Greatbone.Web
             return this;
         }
 
-        public void TABLE<M, K>(M[] arr, Action head, Action<M> row, byte sort = 0, int subscript = -1, bool? toolbar = true) where M : IKeyable<K>
+        public HtmlContent TD_CHECK<K>(K key)
+        {
+            Add("<td style=\"width: 1%\">");
+            Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+            PutKey(key);
+            Add("\" onchange=\"checkToggle(this);\">");
+            Add("</td>");
+            return this;
+        }
+
+
+        public void TABLE<M>(M[] arr, Action<M> row, Action<M> toolgrp)
         {
             var w = Web.Work;
-            var vw = w.VarWork;
             Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-hover\">");
-            var acts = vw?.Tooled;
-            if (head != null)
-            {
-                Add("<thead>");
-                Add("<tr>");
-                Add("<th></th>"); // 
-                head();
-                if (acts != null)
-                {
-                    Add("<th></th>"); // for triggers
-                }
-                Add("</tr>");
-                Add("</thead>");
-            }
 
             if (arr != null && row != null) // tbody if having data objects
             {
@@ -1350,36 +1345,15 @@ namespace Greatbone.Web
                 {
                     M obj = arr[i];
                     Add("<tr>");
-                    if (toolbar != null)
-                    {
-                        Add("<td style=\"width: 1%\">");
-                        Add("<input");
-                        if (toolbar.Value)
-                        {
-                            Add(" form=\"tool-bar-form\"");
-                        }
-
-                        Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                        PutKey(obj.Key);
-                        Add("\" onchange=\"checkToggle(this);\">");
-                        Add("</td>");
-                    }
 
                     row(obj);
-                    if (acts != null) // output trigger buttons
+
+                    if (toolgrp != null)
                     {
                         Add("<td style=\"text-align: right\">");
                         Add("<form class=\"uk-button-group\">");
-                        for (int j = 0; j < acts.Length; j++)
-                        {
-                            var act = acts[j];
-                            if (act.Sort == 0 || sort == act.Sort)
-                            {
-                                var tool = act.Tool;
-                                K varkey = obj.Key;
-                                PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, css: "uk-button-secondary");
-                            }
-                        }
+
+                        toolgrp(obj);
 
                         Add("</form>");
                         Add("</td>");
@@ -1387,10 +1361,8 @@ namespace Greatbone.Web
 
                     Add("</tr>");
                 }
-
                 Add("</tbody>");
             }
-
             Add("</table>");
             Add("</div>");
         }
