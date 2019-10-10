@@ -442,37 +442,6 @@ namespace Greatbone.Web
             SetHeader("Set-Cookie", sb.ToString());
         }
 
-        public void SetTokenCookie<P>(P prin, byte proj, int maxage = 0) where P : class, IData, new()
-        {
-            StringBuilder sb = new StringBuilder("Token=");
-            string token = Framework.EncryptToken(prin, proj);
-            sb.Append(token);
-            if (maxage > 0)
-            {
-                sb.Append("; Max-Age=").Append(maxage);
-            }
-
-            // obtain and add the domain attribute
-            string host = Header("Host");
-            if (host != null)
-            {
-                int dot = host.LastIndexOf('.');
-                if (dot > 0)
-                {
-                    dot = host.LastIndexOf('.', dot - 1);
-                }
-
-                if (dot > 0)
-                {
-                    string domain = host.Substring(dot);
-                    sb.Append("; Domain=").Append(domain);
-                }
-            }
-
-            sb.Append("; Path=/; HttpOnly");
-            SetHeader("Set-Cookie", sb.ToString());
-        }
-
         public bool IsInCache { get; internal set; }
 
         public int StatusCode
