@@ -1125,7 +1125,7 @@ namespace Greatbone.Web
         /// <param name="legend"></param>
         /// <param name="css"></param>
         /// <returns></returns>
-        public HtmlContent FIELDUL_(string legend = null, string css = null)
+        public HtmlContent FIELDSUL_(string legend = null, string css = null)
         {
             Add("<fieldset class=\"uk-fieldset uk-width-1-1");
             if (css != null)
@@ -1146,7 +1146,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent _FIELDUL()
+        public HtmlContent _FIELDSUL()
         {
             Add("</ul>");
             Add("</fieldset>");
@@ -1336,7 +1336,7 @@ namespace Greatbone.Web
         {
             var w = Web.Work;
             Add("<div class=\"uk-overflow-auto\">");
-            Add("<table class=\"uk-table uk-table-hover\">");
+            Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
 
             if (arr != null && row != null) // tbody if having data objects
             {
@@ -1389,7 +1389,7 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string cardcss = "uk-card-default") where M : IKeyable<K>
+        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-primary") where M : IKeyable<K>
         {
             Add("<main class=\"uk-board\">");
             if (map != null)
@@ -1398,10 +1398,10 @@ namespace Greatbone.Web
                 {
                     var ety = map.At(i);
                     Add("<form class=\"uk-card");
-                    if (cardcss != null)
+                    if (css != null)
                     {
                         Add(' ');
-                        Add(cardcss);
+                        Add(css);
                     }
                     Add("\">");
                     card(ety);
@@ -2404,7 +2404,7 @@ namespace Greatbone.Web
 
         public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
-            FIELDUL_(legend, css);
+            FIELDSUL_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var e = opt[i];
@@ -2422,7 +2422,7 @@ namespace Greatbone.Web
                 Add(" </label>");
             }
 
-            _FIELDUL();
+            _FIELDSUL();
             return this;
         }
 
@@ -2491,7 +2491,7 @@ namespace Greatbone.Web
 
         public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDUL_(legend, css);
+            FIELDSUL_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2530,13 +2530,13 @@ namespace Greatbone.Web
                 }
             }
 
-            _FIELDUL();
+            _FIELDSUL();
             return this;
         }
 
         public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDUL_(legend, css);
+            FIELDSUL_(legend, css);
             if (opt != null)
             {
                 lock (opt)
@@ -2586,20 +2586,20 @@ namespace Greatbone.Web
                 }
             }
 
-            _FIELDUL();
+            _FIELDSUL();
             return this;
         }
 
         public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
         {
-            FIELDUL_(legend, css);
+            FIELDSUL_(legend, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var o = opt[i];
                 RADIO(name, o, o, o.Equals(v));
             }
 
-            _FIELDUL();
+            _FIELDSUL();
             return this;
         }
 

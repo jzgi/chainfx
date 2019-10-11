@@ -15,15 +15,13 @@ namespace Greatbone
         // pool of byte buffers
         static readonly Pool[] pools =
         {
-            new Pool(1024 * 4, factor * 16),
             new Pool(1024 * 8, factor * 16),
             new Pool(1024 * 16, factor * 16),
             new Pool(1024 * 32, factor * 16),
             new Pool(1024 * 64, factor * 8),
             new Pool(1024 * 128, factor * 8),
             new Pool(1024 * 256, factor * 8),
-            new Pool(1024 * 512, factor * 8),
-            new Pool(1024 * 1024, factor * 4)
+            new Pool(1024 * 512, factor * 4)
         };
 
         public static byte[] Rent(int demand)

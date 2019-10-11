@@ -105,7 +105,7 @@ namespace Greatbone
             int olen = buffer.Length; // old length
             if (count >= olen)
             {
-                int nlen = olen * 4; // new length
+                int nlen = olen * 2; // new doubled length
                 byte[] obuf = buffer;
                 buffer = BufferUtility.Rent(nlen);
                 Array.Copy(obuf, 0, buffer, 0, olen);

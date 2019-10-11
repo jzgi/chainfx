@@ -42,9 +42,9 @@ namespace Greatbone
         // logging level
         internal static int logging = 3;
 
-        internal static int sign;
+        internal static int cipher;
 
-        internal static string Signature;
+        internal static string sign;
 
         internal static string certpasswd;
 
@@ -73,8 +73,8 @@ namespace Greatbone
             Config = (JObj) parser.Parse();
 
             logging = Config[nameof(logging)];
-            sign = Config[nameof(sign)];
-            Signature = sign.ToString();
+            cipher = Config[nameof(cipher)];
+            sign = cipher.ToString();
 
             // setup logger first
             //
@@ -301,134 +301,6 @@ namespace Greatbone
 
                 return new X509Certificate2(certificate.Export(X509ContentType.Pfx, password), password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
             }
-        }
-
-        //
-        // encrypt / decrypt
-        //
-
-        public static string Encrypt(string v)
-        {
-            var bytebuf = Encoding.ASCII.GetBytes(v);
-            int count = bytebuf.Length;
-            int mask = sign;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            char[] charbuf = new char[count * 2]; // the target
-            int p = 0;
-            for (int i = 0; i < count; i++)
-            {
-                // masking
-                int b = bytebuf[i] ^ masks[i % 4];
-
-                //transform
-                charbuf[p++] = HEX[(b >> 4) & 0x0f];
-                charbuf[p++] = HEX[(b) & 0x0f];
-
-                // reordering
-            }
-
-            return new string(charbuf, 0, charbuf.Length);
-        }
-
-        public static string EncryptToken<P>(P prin, byte proj) where P : IData
-        {
-            var cnt = new JsonContent(4096);
-            try
-            {
-                cnt.Put(null, prin, proj);
-                var bytebuf = cnt.Buffer;
-                int count = cnt.Count;
-
-                int mask = sign;
-                int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-                var charbuf = new char[count * 2]; // the target
-                int p = 0;
-                for (int i = 0; i < count; i++)
-                {
-                    // masking
-                    int b = bytebuf[i] ^ masks[i % 4];
-
-                    //transform
-                    charbuf[p++] = HEX[(b >> 4) & 0x0f];
-                    charbuf[p++] = HEX[(b) & 0x0f];
-
-                    // reordering
-                }
-
-                return new string(charbuf, 0, charbuf.Length);
-            }
-            finally
-            {
-                BufferUtility.Return(cnt.Buffer);
-            }
-        }
-
-        public static P DecryptToken<P>(string token) where P : IData, new()
-        {
-            int mask = sign;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            int len = token.Length / 2;
-            var str = new Text(1024);
-            int p = 0;
-            for (int i = 0; i < len; i++)
-            {
-                // TODO reordering
-
-                // transform to byte
-                int b = (byte) (Dv(token[p++]) << 4 | Dv(token[p++]));
-                // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
-            }
-
-            // deserialize
-            try
-            {
-                var jo = (JObj) new JsonParser(str.ToString()).Parse();
-                P prin = new P();
-                prin.Read(jo, 0xff);
-                return prin;
-            }
-            catch
-            {
-                return default;
-            }
-        }
-
-        public static string Decrypt(string v)
-        {
-            int mask = sign;
-            int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
-            int len = v.Length / 2;
-            var str = new Text(1024);
-            int p = 0;
-            for (int i = 0; i < len; i++)
-            {
-                // TODO reordering
-
-                // transform to byte
-                int b = (byte) (Dv(v[p++]) << 4 | Dv(v[p++]));
-                // masking
-                str.Accept((byte) (b ^ masks[i % 4]));
-            }
-
-            return str.ToString();
-        }
-
-        // hexidecimal characters
-        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
-        // return digit value
-        static int Dv(char hex)
-        {
-            int v = hex - '0';
-            if (v >= 0 && v <= 9)
-            {
-                return v;
-            }
-
-            v = hex - 'A';
-            if (v >= 0 && v <= 5) return 10 + v;
-            return 0;
         }
     }
 }

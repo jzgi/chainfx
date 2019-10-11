@@ -141,7 +141,7 @@ namespace Greatbone.Web
             if (Authorize != null)
             {
                 // check if trusted peer
-                if (wc.CallerSign != null && wc.CallerSign == Framework.Signature)
+                if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
                 {
                     return true; // trusted without further check
                 }

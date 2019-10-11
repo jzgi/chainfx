@@ -39,7 +39,7 @@ namespace Greatbone
                 int len = array.Length;
                 if (count >= len)
                 {
-                    T[] alloc = new T[len * 4];
+                    T[] alloc = new T[len * 2];
                     Array.Copy(array, 0, alloc, 0, len);
                     array = alloc;
                 }
