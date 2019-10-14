@@ -832,7 +832,6 @@ namespace Greatbone.Web
                 Add(css);
                 Add("\"");
             }
-
             Add(">");
             return this;
         }
@@ -1058,9 +1057,12 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent ALERT(string p, string css = null, bool close = false)
+        public HtmlContent ALERT(string p, string head = null, string css = null, bool close = false)
         {
             ALERT_(css, close);
+            Add("<h4>");
+            Add(head);
+            Add("</h4>");
             Add("<p>");
             Add(p);
             Add("</p>");
@@ -1332,9 +1334,8 @@ namespace Greatbone.Web
         }
 
 
-        public void TABLE<M>(M[] arr, Action<M> row, Action<M> toolgrp)
+        public void TABLE<M>(M[] arr, Action<M> row, Action<M> rowform = null)
         {
-            var w = Web.Work;
             Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
 
@@ -1343,22 +1344,21 @@ namespace Greatbone.Web
                 Add("<tbody>");
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    M obj = arr[i];
+                    var obj = arr[i];
                     Add("<tr>");
 
                     row(obj);
 
-                    if (toolgrp != null)
+                    if (rowform != null)
                     {
                         Add("<td style=\"text-align: right\">");
                         Add("<form class=\"uk-button-group\">");
 
-                        toolgrp(obj);
+                        rowform(obj);
 
                         Add("</form>");
                         Add("</td>");
                     }
-
                     Add("</tr>");
                 }
                 Add("</tbody>");
@@ -1367,7 +1367,7 @@ namespace Greatbone.Web
             Add("</div>");
         }
 
-        public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-default")
+        public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-primary")
         {
             Add("<main class=\"uk-board\">");
             if (arr != null)

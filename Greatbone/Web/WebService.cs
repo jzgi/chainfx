@@ -104,13 +104,25 @@ namespace Greatbone.Web
                 }
                 else
                 {
-                    await HandleAsync(path.Substring(1), wc);
+                    if (await CheckAccess(wc))
+                    {
+                        await HandleAsync(path.Substring(1), wc);
+                    }
                 }
             }
             catch (Exception e)
             {
-                wc.Give(500, e.Message); // internal server error
-                Console.Write(e.StackTrace);
+                if (@catch != null) // If existing custom catch
+                {
+                    wc.Exception = e;
+                    if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
+                    else @catch.Do(wc, 0);
+                }
+                else
+                {
+                    wc.Give(500, e.Message); // internal server error
+                    Console.Write(e.StackTrace);
+                }
             }
             finally
             {

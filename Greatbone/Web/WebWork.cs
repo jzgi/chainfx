@@ -19,7 +19,7 @@ namespace Greatbone.Web
         readonly WebAction @default;
 
         // the catch action, can be null
-        readonly WebAction @catch;
+        protected readonly WebAction @catch;
 
         // actions with ToolAttribute
         readonly WebAction[] tooled;
@@ -316,119 +316,110 @@ namespace Greatbone.Web
 
         readonly WebException AccessorReq = new WebException("Accessor required") {Code = 500};
 
+        internal async Task<bool> CheckAccess(WebContext wc)
+        {
+            if (Authenticate != null)
+            {
+                if (Authenticate.IsAsync && !await Authenticate.DoAsync(wc) || !Authenticate.IsAsync && !Authenticate.Do(wc))
+                {
+                    return false;
+                }
+            }
+            if (!DoAuthorize(wc))
+            {
+                throw new WebException("Do authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
+            }
+            return true;
+        }
+
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
-            try
+
+            int slash = rsc.IndexOf('/');
+            if (slash == -1) // this work is the target work
             {
-                if (Authenticate != null)
+                if (Before != null)
                 {
-                    if (Authenticate.IsAsync && !await Authenticate.DoAsync(wc) || !Authenticate.IsAsync && !Authenticate.Do(wc))
+                    if (Before.IsAsync && !await Before.DoAsync(wc) || !Before.IsAsync && Before.Do(wc))
                     {
                         return;
                     }
                 }
 
-                if (!DoAuthorize(wc))
+                //
+                // resolve the resource
+                string name = rsc;
+                int subscpt = 0;
+                int dash = rsc.LastIndexOf('-');
+                if (dash != -1)
                 {
-                    throw new WebException("Do authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
+                    name = rsc.Substring(0, dash);
+                    wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
                 }
 
-                int slash = rsc.IndexOf('/');
-                if (slash == -1) // this work is the target work
+                var act = this[name];
+                if (act == null)
                 {
-                    if (Before != null)
-                    {
-                        if (Before.IsAsync && !await Before.DoAsync(wc) || !Before.IsAsync && Before.Do(wc))
-                        {
-                            return;
-                        }
-                    }
+                    wc.Give(404, "action not found", true, 12);
+                    return;
+                }
 
-                    //
-                    // resolve the resource
-                    string name = rsc;
-                    int subscpt = 0;
-                    int dash = rsc.LastIndexOf('-');
-                    if (dash != -1)
-                    {
-                        name = rsc.Substring(0, dash);
-                        wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
-                    }
+                wc.Action = act;
 
-                    var act = this[name];
-                    if (act == null)
+                if (!act.DoAuthorize(wc))
+                {
+                    throw new WebException("Do authorize failure: " + act.Name) {Code = wc.Principal == null ? 401 : 403};
+                }
+
+                // try in the cache first
+                if (!Service.TryGiveFromCache(wc))
+                {
+                    // invoke action method 
+                    if (act.IsAsync) await act.DoAsync(wc, subscpt);
+                    else act.Do(wc, subscpt);
+
+                    Service.TryAddForCache(wc);
+                }
+
+                wc.Action = null;
+
+                if (After != null)
+                {
+                    if (After.IsAsync && !await After.DoAsync(wc) || !After.IsAsync && After.Do(wc))
                     {
-                        wc.Give(404, "action not found", true, 12);
                         return;
                     }
-
-                    wc.Action = act;
-
-                    if (!act.DoAuthorize(wc))
-                    {
-                        throw new WebException("Do authorize failure: " + act.Name) {Code = wc.Principal == null ? 401 : 403};
-                    }
-
-                    // try in the cache first
-                    if (!Service.TryGiveFromCache(wc))
-                    {
-                        // invoke action method 
-                        if (act.IsAsync) await act.DoAsync(wc, subscpt);
-                        else act.Do(wc, subscpt);
-
-                        Service.TryAddForCache(wc);
-                    }
-
-                    wc.Action = null;
-
-                    if (After != null)
-                    {
-                        if (After.IsAsync && !await After.DoAsync(wc) || !After.IsAsync && After.Do(wc))
-                        {
-                            return;
-                        }
-                    }
-                }
-                else // sub works
-                {
-                    string key = rsc.Substring(0, slash);
-                    if (works != null && works.TryGetValue(key, out var wrk)) // if child
-                    {
-                        wc.Chain(wrk, key);
-                        await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
-                    }
-                    else if (varwork != null) // if variable-key subwork
-                    {
-                        var prin = wc.Principal;
-                        object acc = null;
-                        if (key.Length == 0) // resolve accessor
-                        {
-                            if (prin == null) throw AuthReq;
-                            if ((acc = varwork.GetAccessor(prin)) == null)
-                            {
-                                throw AccessorReq;
-                            }
-                        }
-
-                        wc.Chain(varwork, key, acc);
-                        await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
-                    }
                 }
             }
-            catch (Exception e)
+            else // sub works
             {
-                if (@catch != null) // If existing catch defined by this work
+                string key = rsc.Substring(0, slash);
+                if (works != null && works.TryGetValue(key, out var wrk)) // if child
                 {
-                    wc.Exception = e;
-                    if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
-                    else @catch.Do(wc, 0);
+                    if (!await wrk.CheckAccess(wc)) return;
+
+                    wc.Chain(wrk, key);
+                    await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
                 }
-                else throw;
-            }
-            finally
-            {
-                wc.Work = null;
+                else if (varwork != null) // if variable-key subwork
+                {
+                    if (!await varwork.CheckAccess(wc)) return;
+
+                    var prin = wc.Principal;
+                    object acc = null;
+                    if (key.Length == 0) // resolve accessor
+                    {
+                        if (prin == null) throw AuthReq;
+                        if ((acc = varwork.GetAccessor(prin)) == null)
+                        {
+                            throw AccessorReq;
+                        }
+                    }
+
+                    wc.Chain(varwork, key, acc);
+                    await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
+                }
             }
         }
 

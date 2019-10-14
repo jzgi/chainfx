@@ -586,9 +586,12 @@ namespace Greatbone.Db
             return lst.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
         {
-            var map = new Map<K, D>(64);
+            if (map == null)
+            {
+                map = new Map<K, D>(64);
+            }
             while (Next())
             {
                 D obj = new D();
@@ -604,11 +607,10 @@ namespace Greatbone.Db
                 }
                 else
                 {
-                    throw new FrameworkException("neither keyer nor IKeyable<D>");
+                    throw new DbException("neither keyer nor IKeyable<D>");
                 }
                 map.Add(key, obj);
             }
-
             return map;
         }
 

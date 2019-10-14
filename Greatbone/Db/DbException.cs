@@ -1,6 +1,6 @@
 using System;
 
-namespace WebReady.Db
+namespace Greatbone.Db
 {
     ///
     /// Thrown to indicate an error during a database operation.
