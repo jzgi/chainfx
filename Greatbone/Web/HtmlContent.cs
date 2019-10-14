@@ -986,7 +986,7 @@ namespace Greatbone.Web
 
         public HtmlContent QRCODE(string v, string css = null)
         {
-            Add("<div class=\"uk-qrcode");
+            Add("<div class=\"uk-qrcode uk-flex-center");
             if (css != null)
             {
                 Add(' ');
@@ -1060,9 +1060,12 @@ namespace Greatbone.Web
         public HtmlContent ALERT(string p, string head = null, string css = null, bool close = false)
         {
             ALERT_(css, close);
-            Add("<h4>");
-            Add(head);
-            Add("</h4>");
+            if (head != null)
+            {
+                Add("<h4>");
+                Add(head);
+                Add("</h4>");
+            }
             Add("<p>");
             Add(p);
             Add("</p>");

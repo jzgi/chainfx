@@ -9,7 +9,7 @@ namespace Greatbone.Db
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
     /// </summary>
-    public sealed class DbContext : ISource, IParameterSet, IDisposable
+    public sealed class DbContext : ISource, IParameters, IDisposable
     {
         static readonly string[] PARAMS =
         {
@@ -168,12 +168,120 @@ namespace Greatbone.Db
             return _sql;
         }
 
-        public bool Query(Action<IParameterSet> p = null, bool prepare = true)
+        public bool QueryAn(Action<IParameters> p = null, bool prepare = true)
+        {
+            return QueryAn(_sql.ToString(), p, prepare);
+        }
+
+        public bool QueryAn(string sql, Action<IParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            Clear();
+            multiple = false;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+
+            reader = command.ExecuteReader();
+            return reader.Read();
+        }
+
+        public async Task<bool> QueryAnAsync(Action<IParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            Clear();
+            multiple = false;
+            command.CommandText = _sql.ToString();
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            return reader.Read();
+        }
+
+        public async Task<bool> QueryAnAsync(string sql, Action<IParameters> p = null, bool prepare = true)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            Clear();
+            multiple = false;
+            command.CommandText = sql;
+            command.CommandType = CommandType.Text;
+            if (p != null)
+            {
+                p(this);
+                if (prepare) command.Prepare();
+            }
+
+            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            return reader.Read();
+        }
+
+        public D QueryAn<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (QueryAn(p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+
+            return default;
+        }
+
+        public D QueryAn<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (QueryAn(sql, p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+
+            return default;
+        }
+
+        public async Task<D> QueryAnAsync<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (await QueryAnAsync(p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+
+            return default;
+        }
+
+        public async Task<D> QueryAnAsync<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        {
+            if (await QueryAnAsync(sql, p, prepare))
+            {
+                return ToObject<D>(proj);
+            }
+
+            return default;
+        }
+
+        public bool Query(Action<IParameters> p = null, bool prepare = true)
         {
             return Query(_sql.ToString(), p, prepare);
         }
 
-        public bool Query(string sql, Action<IParameterSet> p = null, bool prepare = true)
+        public bool Query(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -181,7 +289,7 @@ namespace Greatbone.Db
             }
 
             Clear();
-            multiple = false;
+            multiple = true;
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -191,10 +299,10 @@ namespace Greatbone.Db
             }
 
             reader = command.ExecuteReader();
-            return reader.Read();
+            return reader.HasRows;
         }
 
-        public async Task<bool> QueryAsync(Action<IParameterSet> p = null, bool prepare = true)
+        public async Task<bool> QueryAsync(Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -202,7 +310,7 @@ namespace Greatbone.Db
             }
 
             Clear();
-            multiple = false;
+            multiple = true;
             command.CommandText = _sql.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -212,10 +320,10 @@ namespace Greatbone.Db
             }
 
             reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
-            return reader.Read();
+            return reader.HasRows;
         }
 
-        public async Task<bool> QueryAsync(string sql, Action<IParameterSet> p = null, bool prepare = true)
+        public async Task<bool> QueryAsync(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -223,7 +331,7 @@ namespace Greatbone.Db
             }
 
             Clear();
-            multiple = false;
+            multiple = true;
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
             if (p != null)
@@ -233,160 +341,52 @@ namespace Greatbone.Db
             }
 
             reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
-            return reader.Read();
+            return reader.HasRows;
         }
 
-        public D Query<D>(Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToArray<D>(proj);
             }
 
-            return default;
+            return null;
         }
 
-        public D Query<D>(string sql, Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToArray<D>(proj);
             }
 
-            return default;
+            return null;
         }
 
-        public async Task<D> QueryAsync<D>(Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToArray<D>(proj);
             }
 
-            return default;
+            return null;
         }
 
-        public async Task<D> QueryAsync<D>(string sql, Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
-                return ToObject<D>(proj);
-            }
-
-            return default;
-        }
-
-        public bool QueryAll(Action<IParameterSet> p = null, bool prepare = true)
-        {
-            return QueryAll(_sql.ToString(), p, prepare);
-        }
-
-        public bool QueryAll(string sql, Action<IParameterSet> p = null, bool prepare = true)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-
-            Clear();
-            multiple = true;
-            command.CommandText = sql;
-            command.CommandType = CommandType.Text;
-            if (p != null)
-            {
-                p(this);
-                if (prepare) command.Prepare();
-            }
-
-            reader = command.ExecuteReader();
-            return reader.HasRows;
-        }
-
-        public async Task<bool> QueryAllAsync(Action<IParameterSet> p = null, bool prepare = true)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-
-            Clear();
-            multiple = true;
-            command.CommandText = _sql.ToString();
-            command.CommandType = CommandType.Text;
-            if (p != null)
-            {
-                p(this);
-                if (prepare) command.Prepare();
-            }
-
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
-            return reader.HasRows;
-        }
-
-        public async Task<bool> QueryAllAsync(string sql, Action<IParameterSet> p = null, bool prepare = true)
-        {
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-
-            Clear();
-            multiple = true;
-            command.CommandText = sql;
-            command.CommandType = CommandType.Text;
-            if (p != null)
-            {
-                p(this);
-                if (prepare) command.Prepare();
-            }
-
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
-            return reader.HasRows;
-        }
-
-        public D[] QueryAll<D>(Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            if (QueryAll(p, prepare))
-            {
                 return ToArray<D>(proj);
             }
 
             return null;
         }
 
-        public D[] QueryAll<D>(string sql, Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
-            if (QueryAll(sql, p, prepare))
-            {
-                return ToArray<D>(proj);
-            }
-
-            return null;
-        }
-
-        public async Task<D[]> QueryAllAsync<D>(Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            if (await QueryAllAsync(p, prepare))
-            {
-                return ToArray<D>(proj);
-            }
-
-            return null;
-        }
-
-        public async Task<D[]> QueryAllAsync<D>(string sql, Action<IParameterSet> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            if (await QueryAllAsync(sql, p, prepare))
-            {
-                return ToArray<D>(proj);
-            }
-
-            return null;
-        }
-
-        public Map<K, D> QueryAll<K, D>(Action<IParameterSet> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
-        {
-            if (QueryAll(p, prepare))
+            if (Query(p, prepare))
             {
                 return ToMap(proj, keyer);
             }
@@ -394,9 +394,9 @@ namespace Greatbone.Db
             return null;
         }
 
-        public Map<K, D> QueryAll<K, D>(string sql, Action<IParameterSet> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
-            if (QueryAll(sql, p, prepare))
+            if (Query(sql, p, prepare))
             {
                 return ToMap(proj, keyer);
             }
@@ -404,9 +404,9 @@ namespace Greatbone.Db
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAllAsync<K, D>(Action<IParameterSet> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
-            if (await QueryAllAsync(p, prepare))
+            if (await QueryAsync(p, prepare))
             {
                 return ToMap(proj, keyer);
             }
@@ -414,9 +414,9 @@ namespace Greatbone.Db
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAllAsync<K, D>(string sql, Action<IParameterSet> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
-            if (await QueryAllAsync(sql, p, prepare))
+            if (await QueryAsync(sql, p, prepare))
             {
                 return ToMap(proj, keyer);
             }
@@ -437,12 +437,12 @@ namespace Greatbone.Db
             }
         }
 
-        public int Execute(Action<IParameterSet> p = null, bool prepare = true)
+        public int Execute(Action<IParameters> p = null, bool prepare = true)
         {
             return Execute(_sql.ToString(), p, prepare);
         }
 
-        public int Execute(string sql, Action<IParameterSet> p = null, bool prepare = true)
+        public int Execute(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -461,7 +461,7 @@ namespace Greatbone.Db
             return command.ExecuteNonQuery();
         }
 
-        public async Task<int> ExecuteAsync(Action<IParameterSet> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -480,7 +480,7 @@ namespace Greatbone.Db
             return await command.ExecuteNonQueryAsync();
         }
 
-        public async Task<int> ExecuteAsync(string sql, Action<IParameterSet> p = null, bool prepare = true)
+        public async Task<int> ExecuteAsync(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -499,12 +499,12 @@ namespace Greatbone.Db
             return await command.ExecuteNonQueryAsync();
         }
 
-        public object Scalar(Action<IParameterSet> p = null, bool prepare = true)
+        public object Scalar(Action<IParameters> p = null, bool prepare = true)
         {
             return Scalar(_sql.ToString(), p, prepare);
         }
 
-        public object Scalar(string sql, Action<IParameterSet> p = null, bool prepare = true)
+        public object Scalar(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -524,7 +524,7 @@ namespace Greatbone.Db
             return res == DBNull.Value ? null : res;
         }
 
-        public async Task<object> ScalarAsync(Action<IParameterSet> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -543,7 +543,7 @@ namespace Greatbone.Db
             return await command.ExecuteScalarAsync();
         }
 
-        public async Task<object> ScalarAsync(string sql, Action<IParameterSet> p = null, bool prepare = true)
+        public async Task<object> ScalarAsync(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -1817,88 +1817,88 @@ namespace Greatbone.Db
         // positional
         //
 
-        public IParameterSet SetNull()
+        public IParameters SetNull()
         {
             PutNull(PARAMS[paramidx++]);
             return this;
         }
 
-        public IParameterSet Set(bool v)
+        public IParameters Set(bool v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(char v)
+        public IParameters Set(char v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(byte v)
+        public IParameters Set(byte v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(short v)
+        public IParameters Set(short v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(int v)
+        public IParameters Set(int v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(long v)
+        public IParameters Set(long v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(uint v)
+        public IParameters Set(uint v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(float v)
+        public IParameters Set(float v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(double v)
+        public IParameters Set(double v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(decimal v)
+        public IParameters Set(decimal v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(JNumber v)
+        public IParameters Set(JNumber v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(DateTime v)
+        public IParameters Set(DateTime v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(Guid v)
+        public IParameters Set(Guid v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(string v)
+        public IParameters Set(string v)
         {
             if (v == string.Empty)
             {
@@ -1909,100 +1909,100 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet Set(bool[] v)
+        public IParameters Set(bool[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(char[] v)
+        public IParameters Set(char[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(byte[] v)
+        public IParameters Set(byte[] v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(ArraySegment<byte> v)
+        public IParameters Set(ArraySegment<byte> v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(short[] v)
+        public IParameters Set(short[] v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(int[] v)
+        public IParameters Set(int[] v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(long[] v)
+        public IParameters Set(long[] v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(uint[] v)
+        public IParameters Set(uint[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(float[] v)
+        public IParameters Set(float[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(double[] v)
+        public IParameters Set(double[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(DateTime[] v)
+        public IParameters Set(DateTime[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(Guid[] v)
+        public IParameters Set(Guid[] v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(string[] v)
+        public IParameters Set(string[] v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
-        public IParameterSet Set(JObj v)
+        public IParameters Set(JObj v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(JArr v)
+        public IParameters Set(JArr v)
         {
             throw new NotImplementedException();
         }
 
-        public IParameterSet Set(IData v, byte proj = 0x0f)
+        public IParameters Set(IData v, byte proj = 0x0f)
         {
             Put(PARAMS[paramidx++], v, proj);
             return this;
         }
 
-        public IParameterSet Set<D>(D[] v, byte proj = 0x0f) where D : IData
+        public IParameters Set<D>(D[] v, byte proj = 0x0f) where D : IData
         {
             Put(PARAMS[paramidx++], v, proj);
             return this;
         }
 
-        public IParameterSet SetForIn(string[] v)
+        public IParameters SetForIn(string[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
@@ -2012,7 +2012,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetForIn(short[] v)
+        public IParameters SetForIn(short[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
@@ -2022,7 +2022,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetForIn(int[] v)
+        public IParameters SetForIn(int[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
@@ -2032,7 +2032,7 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameterSet SetForIn(long[] v)
+        public IParameters SetForIn(long[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
