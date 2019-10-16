@@ -151,22 +151,6 @@ namespace Greatbone.Web
         {
         }
 
-        public bool DoAuthorize(WebContext wc)
-        {
-            if (Authorize != null)
-            {
-                // check if trusted peer
-                if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
-                {
-                    return true; // trusted without further check
-                }
-
-                return Authorize.Do(wc);
-            }
-
-            return true;
-        }
-
         /// <summary>
         /// Create and add a variable-key subwork.
         /// </summary>
@@ -316,7 +300,7 @@ namespace Greatbone.Web
 
         readonly WebException AccessorReq = new WebException("Accessor required") {Code = 500};
 
-        internal async Task<bool> CheckAccess(WebContext wc)
+        internal async Task<bool> DoAuthenticate(WebContext wc)
         {
             if (Authenticate != null)
             {
@@ -325,16 +309,33 @@ namespace Greatbone.Web
                     return false;
                 }
             }
-            if (!DoAuthorize(wc))
+            return true;
+        }
+
+        public bool DoAuthorize(WebContext wc)
+        {
+            if (Authorize != null)
             {
-                throw new WebException("Do authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
+                // check if trusted peer
+                if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
+                {
+                    return true; // trusted without further check
+                }
+
+                return Authorize.Do(wc);
             }
+
             return true;
         }
 
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
+
+            if (!DoAuthorize(wc))
+            {
+                throw new WebException("Do authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
+            }
 
             int slash = rsc.IndexOf('/');
             if (slash == -1) // this work is the target work
@@ -397,14 +398,14 @@ namespace Greatbone.Web
                 string key = rsc.Substring(0, slash);
                 if (works != null && works.TryGetValue(key, out var wrk)) // if child
                 {
-                    if (!await wrk.CheckAccess(wc)) return;
+                    if (!await wrk.DoAuthenticate(wc)) return;
 
                     wc.Chain(wrk, key);
                     await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
                 }
                 else if (varwork != null) // if variable-key subwork
                 {
-                    if (!await varwork.CheckAccess(wc)) return;
+                    if (!await varwork.DoAuthenticate(wc)) return;
 
                     var prin = wc.Principal;
                     object acc = null;

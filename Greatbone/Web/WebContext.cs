@@ -79,7 +79,7 @@ namespace Greatbone.Web
         {
             get
             {
-                for (int i = 0; i < level; i++)
+                for (int i = level - 1; i >= 0; i--)
                 {
                     var seg = chain[i];
                     if (seg.Work.IsOf(typ)) return seg;

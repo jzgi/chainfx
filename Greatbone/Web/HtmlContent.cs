@@ -896,7 +896,6 @@ namespace Greatbone.Web
             {
                 Add("<em>");
             }
-
             Add(v);
             if (em)
             {

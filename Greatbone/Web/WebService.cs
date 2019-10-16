@@ -104,7 +104,7 @@ namespace Greatbone.Web
                 }
                 else
                 {
-                    if (await CheckAccess(wc))
+                    if (await DoAuthenticate(wc))
                     {
                         await HandleAsync(path.Substring(1), wc);
                     }
