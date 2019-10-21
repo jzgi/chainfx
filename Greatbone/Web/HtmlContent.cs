@@ -1391,7 +1391,7 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-primary") where M : IKeyable<K>
+        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-primary")
         {
             Add("<main class=\"uk-board\">");
             if (map != null)
@@ -1434,7 +1434,7 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void GRID<M>(M[] arr, Action<M> card, string css = null)
+        public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
             if (arr != null)
@@ -1442,7 +1442,7 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    Add("<article class=\"uk-card uk-card-default");
+                    Add("<article class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
@@ -1607,7 +1607,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, bool avail = true, string css = null)
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, bool avail = true, string css = "uk-button-primary")
         {
             // locate the proper work
             var w = Web.Work;
@@ -1621,7 +1621,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, bool avail = true, string css = null)
+        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, bool avail = true, string css = "uk-button-secondary")
         {
             // get the var work
             var vw = Web.Work.VarWork;

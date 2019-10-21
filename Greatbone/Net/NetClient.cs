@@ -155,9 +155,9 @@ namespace Greatbone.Web
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, null);
-                HttpResponseMessage resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return await resp.Content.ReadAsByteArrayAsync();
             }
             catch
@@ -178,9 +178,9 @@ namespace Greatbone.Web
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, null);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
                     return null;
@@ -208,9 +208,9 @@ namespace Greatbone.Web
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, null);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
                     return default;
@@ -241,9 +241,9 @@ namespace Greatbone.Web
             string uri = POLL_ACTION + "?" + QueryString;
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, null);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
                     return null;
@@ -267,9 +267,9 @@ namespace Greatbone.Web
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
                 {
                     return ((short) rsp.StatusCode, await rsp.Content.ReadAsByteArrayAsync());
@@ -289,9 +289,9 @@ namespace Greatbone.Web
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
                 {
                     byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
@@ -314,9 +314,9 @@ namespace Greatbone.Web
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
                 {
                     byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
@@ -341,9 +341,9 @@ namespace Greatbone.Web
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, uri);
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 AddAccessHeaders(req, wc);
-                HttpResponseMessage rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
                 {
                     byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();

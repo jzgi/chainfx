@@ -40,13 +40,13 @@ namespace Greatbone
         public static readonly JObj Web, Db, Net, Ext;
 
         // logging level
-        internal static int logging = 3;
+        internal static readonly int logging = 3;
 
-        internal static int cipher;
+        internal static readonly int cipher;
 
-        internal static string sign;
+        internal static readonly string sign;
 
-        internal static string certpasswd;
+        internal static readonly string certpasswd;
 
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
@@ -69,12 +69,13 @@ namespace Greatbone
             // load configuration
             //
             byte[] bytes = File.ReadAllBytes(APP_JSON);
-            JsonParser parser = new JsonParser(bytes, bytes.Length);
+            var parser = new JsonParser(bytes, bytes.Length);
             Config = (JObj) parser.Parse();
 
             logging = Config[nameof(logging)];
             cipher = Config[nameof(cipher)];
             sign = cipher.ToString();
+            certpasswd = Config[nameof(certpasswd)];
 
             // setup logger first
             //
@@ -278,21 +279,19 @@ namespace Greatbone
 
         public static X509Certificate2 BuildSelfSignedCertificate(string dns, string ipaddr, string issuer, string password)
         {
-            SubjectAlternativeNameBuilder sanb = new SubjectAlternativeNameBuilder();
+            var sanb = new SubjectAlternativeNameBuilder();
             sanb.AddIpAddress(IPAddress.Parse(ipaddr));
             sanb.AddDnsName(dns);
 
-            X500DistinguishedName subject = new X500DistinguishedName($"CN={issuer}");
+            var subject = new X500DistinguishedName($"CN={issuer}");
 
             using (RSA rsa = RSA.Create(2048))
             {
                 var request = new CertificateRequest(subject, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-                request.CertificateExtensions.Add(
-                    new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
+                request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
 
-                request.CertificateExtensions.Add(
-                    new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, false));
+                request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, false));
 
                 request.CertificateExtensions.Add(sanb.Build());
 
