@@ -203,27 +203,44 @@ namespace Greatbone
         }
 
 
-        public V[] All(Predicate<V> cond = null)
+        public V[] All(Predicate<V> filter)
         {
             var list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
                 var v = entries[i].value;
-                if (cond == null || cond(v))
+                if (filter == null || filter(v))
                 {
                     list.Add(v);
                 }
             }
-
             return list.ToArray();
         }
 
-        public V Find(Predicate<V> cond = null)
+        public Map<R, V> All<R>(Func<K, V, bool> filter, Func<V, R> keyer)
+        {
+            var map = new Map<R, V>(16);
+            for (int i = 0; i < count; i++)
+            {
+                var ety = entries[i];
+                for (int k = 0; k < ety.Size; k++)
+                {
+                    var v = ety[k];
+                    if (filter(ety.Key, v))
+                    {
+                        map.Add(keyer(v), v);
+                    }
+                }
+            }
+            return map;
+        }
+
+        public V First(Predicate<V> filter)
         {
             for (int i = 0; i < count; i++)
             {
                 var v = entries[i].value;
-                if (cond == null || cond(v))
+                if (filter == null || filter(v))
                 {
                     return v;
                 }

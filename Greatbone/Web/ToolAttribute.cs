@@ -22,7 +22,7 @@ namespace Greatbone.Web
 
         readonly bool access;
 
-        public ToolAttribute(Modal modal, string css = null, byte size = 0, bool access = true)
+        public ToolAttribute(Modal modal, byte size = 0, bool access = true)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;

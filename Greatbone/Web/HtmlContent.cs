@@ -1080,7 +1080,6 @@ namespace Greatbone.Web
                 Add(' ');
                 Add(css);
             }
-
             Add('"');
             if (action != null)
             {
@@ -1088,31 +1087,26 @@ namespace Greatbone.Web
                 Add(action);
                 Add('"');
             }
-
             if (post)
             {
                 Add(" method=\"post\"");
             }
-
             if (mp)
             {
                 Add(" enctype=\"multipart/form-data\"");
             }
-
             if (oninput != null)
             {
                 Add(" oninput=\"");
                 Add(oninput);
                 Add('"');
             }
-
             if (onsubmit != null)
             {
                 Add(" onsubmit=\"");
                 Add(onsubmit);
                 Add('"');
             }
-
             Add(">");
             return this;
         }
@@ -1248,6 +1242,35 @@ namespace Greatbone.Web
             }
             Add("</ul>");
             return this;
+        }
+
+        public void LIST<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> item, string ul = null, string li = null)
+        {
+            Add("<ul class=\"uk-list");
+            if (ul != null)
+            {
+                Add(' ');
+                Add(ul);
+            }
+            Add("\">");
+
+            if (map != null)
+            {
+                for (int i = 0; i < map.Count; i++)
+                {
+                    var ety = map.At(i);
+                    Add("<li class=\"");
+                    if (li != null)
+                    {
+                        Add(' ');
+                        Add(li);
+                    }
+                    Add("\">");
+                    item(ety);
+                    Add("</li>");
+                }
+            }
+            Add("</ul>");
         }
 
         public HtmlContent LIST<S>(S src, Action<S> item, string ul = null, string li = null) where S : ISource
@@ -2673,13 +2696,10 @@ namespace Greatbone.Web
                 Add(size);
                 Add("\"");
             }
-
             if (refresh)
             {
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
-
-            Add(">");
             return this;
         }
 
@@ -2689,26 +2709,22 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent OPTION<T>(T v, string caption, bool selected = false)
+        public HtmlContent OPTION<T>(T v, string caption = null, bool selected = false)
         {
             Add("<option value=\"");
-            if (v is short shortv)
-            {
-                Add(shortv);
-            }
-            else if (v is int intv)
-            {
-                Add(intv);
-            }
-            else if (v is string strv)
-            {
-                Add(strv);
-            }
+            AddPrimitive(v);
 
             Add("\"");
             if (selected) Add(" selected");
             Add(">");
-            Add(caption);
+            if (caption != null)
+            {
+                Add(caption);
+            }
+            else
+            {
+                AddPrimitive(v);
+            }
             Add("</option>");
             return this;
         }
