@@ -934,7 +934,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent PIC_(string css = null, bool circle = true)
+        public HtmlContent PIC_(string css = null, bool circle = false)
         {
             Add("<div class=\"uk-margin-auto-vertical");
             if (css != null)
@@ -2682,7 +2682,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent SELECT_(string label, string name, bool multiple = false, bool required = false, int size = 0, bool refresh = false)
+        public HtmlContent SELECT_(string label, string name, bool multiple = false, bool required = false, int size = 0, bool rtl = false, bool refresh = false)
         {
             LABEL(label);
             Add("<select class=\"uk-select\" name=\"");
@@ -2696,10 +2696,15 @@ namespace Greatbone.Web
                 Add(size);
                 Add("\"");
             }
+            if (rtl)
+            {
+                Add(" dir=\"rtl\"");
+            }
             if (refresh)
             {
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
+            Add(">");
             return this;
         }
 
@@ -2729,9 +2734,9 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool refresh = false, Predicate<V> filter = null)
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Predicate<V> filter = null)
         {
-            SELECT_(label, name, false, required, size, refresh);
+            SELECT_(label, name, false, required, size, rtl, refresh);
             if (tip != null)
             {
                 Add("<option value=\"\"");
@@ -2763,7 +2768,7 @@ namespace Greatbone.Web
                             }
 
                             Add("<optgroup label=\"");
-                            Add(e.Value?.ToString());
+                            AddPrimitive(e.Value);
                             Add("\">");
                             grpopen = true;
                         }
@@ -2787,7 +2792,7 @@ namespace Greatbone.Web
                             Add("\"");
                             if (key.Equals(v)) Add(" selected");
                             Add(">");
-                            Add(e.Value?.ToString());
+                            AddPrimitive(e.Value);
                             Add("</option>");
                         }
                     }
