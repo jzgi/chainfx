@@ -1,14 +1,13 @@
 # The Greatbone Framework  
 
-Initially developed in Sowmob Ltd (江西雄猫), the Greatbone framework has been addressed enterprise complexicity and powered many Web applications in a concise approach.
+Initially developed in Sowmob Ltd (江西雄猫), the Greatbone framework has been addressing enterprise complexity and powering many Web applications in a compact approach.
 
-The framwork introduces a new architectural model called contextual Web programming.
+The framwork introduces a new server-side architectural model called contextual Web programming.
 
-* Reliable -- based on [.NET Core](https://github.com/dotnet/core) and [PostgresSQL](https://www.postgresql.org/)
-* lightweight -- 
-* High performance -- Exploit async I/O, optimized caching. 
-* Unified data API -- Same or similiar APIs for operating difference data formats
-* Concise workflow implementation -- a couple of guys may cope with large projects 
+* Lightweight -- About 250K in size 
+* High performance -- Exploit async I/O, built-in optimized caching. 
+* Concise data API -- Same or similiar APIs for operating difference data formats
+* Rapid workflow implementation -- The code structure already implies workflow logics, UI can be derived accordingly 
 
 <pre>
 dotnet add package Greatbone --version 3.5.0
@@ -20,5 +19,5 @@ The framework specifically uses the following open-source libraries. Many thanks
 
 | ![kestrel](https://dotnet.github.io/images/Logo_DotNet.png) | ![npgsql](http://www.npgsql.org/img/logo.svg) |
 | ---- | ----- |
-| [kestrel](https://github.com/aspnet/KestrelHttpServer) | [npgsql](http://www.npgsql.org) |
-| ASP.NET Core's built-in web server | .NET Access to PostgreSQL |
+| [kestrel](https://github.com/aspnet/AspNetCore) | [npgsql](http://www.npgsql.org) |
+| ASP.NET Core's built-in Web server | .NET Access to PostgreSQL |
