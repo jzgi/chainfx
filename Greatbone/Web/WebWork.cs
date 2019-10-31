@@ -19,7 +19,7 @@ namespace Greatbone.Web
         readonly WebAction @default;
 
         // the catch action, can be null
-        protected readonly WebAction @catch;
+        internal readonly WebAction @catch;
 
         // actions with ToolAttribute
         readonly WebAction[] tooled;

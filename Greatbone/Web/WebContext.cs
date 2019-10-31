@@ -420,7 +420,7 @@ namespace Greatbone.Web
             fResponse.Headers.Add(name, new StringValues(values));
         }
 
-        public void SetCookie(string name, string value, int maxage = 0, string domain = null, string path = null)
+        public void SetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/")
         {
             StringBuilder sb = new StringBuilder(name).Append('=').Append(value);
             if (maxage > 0)

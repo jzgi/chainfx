@@ -891,7 +891,7 @@ namespace Greatbone.Web
 
         public HtmlContent CNY(decimal v, bool em = false)
         {
-            Add("¥");
+            Add('¥');
             if (em)
             {
                 Add("<em>");
