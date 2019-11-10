@@ -244,6 +244,29 @@ namespace Greatbone.Web
             return this;
         }
 
+        public HtmlContent MARK<V>(V v)
+        {
+            Add("<mark>");
+            AddPrimitive(v);
+            Add("</mark>");
+            return this;
+        }
+
+        public HtmlContent ABBR<V>(string title, V v, string color = null)
+        {
+            Add("<abbr title=\"");
+            Add(title);
+            if (color != null)
+            {
+                Add("\" style=\"background-color: ");
+                Add(color);
+            }
+            Add("\">");
+            AddPrimitive(v);
+            Add("</abbr>");
+            return this;
+        }
+
         public HtmlContent ROW_(string css = null)
         {
             Add("<div class=\"uk-row");
@@ -849,11 +872,28 @@ namespace Greatbone.Web
         /// <param name="p"></param>
         /// <typeparam name="V"></typeparam>
         /// <returns></returns>
-        public HtmlContent FIELD<V>(string label, V p)
+        public HtmlContent FIELD<V>(string label, V p, bool currency = false)
         {
             LABEL(label);
             Add("<p>");
+            if (currency)
+            {
+                Add('¥');
+            }
             AddPrimitive(p);
+            Add("</p>");
+            return this;
+        }
+
+        public HtmlContent FIELD(string label, decimal p, bool currency = false)
+        {
+            LABEL(label);
+            Add("<p>");
+            if (currency)
+            {
+                Add('¥');
+            }
+            Add(p);
             Add("</p>");
             return this;
         }
@@ -1302,7 +1342,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent ACCORDION<M>(M[] arr, Action<M> item, string ul = null, string li = null)
+        public HtmlContent ACCORDION<M>(M[] arr, Action<M> item, string ul = null, string li = "uk-card-default")
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
             if (ul != null)
@@ -1317,7 +1357,7 @@ namespace Greatbone.Web
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
-                    Add("<li class=\"uk-flex uk-card uk-card-default");
+                    Add("<li class=\"uk-flex uk-card");
                     if (li != null)
                     {
                         Add(' ');
@@ -1325,6 +1365,38 @@ namespace Greatbone.Web
                     }
                     Add("\">");
                     item(obj);
+                    Add("</li>");
+                }
+            }
+
+            // pagination if any
+            Add("</ul>");
+            return this;
+        }
+
+        public HtmlContent ACCORDION<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string ul = null, string li = "uk-card-default")
+        {
+            Add("<ul uk-accordion=\"multiple: true\" class=\"");
+            if (ul != null)
+            {
+                Add(' ');
+                Add(ul);
+            }
+            Add("\">");
+
+            if (map != null)
+            {
+                for (int i = 0; i < map.Count; i++)
+                {
+                    var ety = map.At(i);
+                    Add("<li class=\"uk-card");
+                    if (li != null)
+                    {
+                        Add(' ');
+                        Add(li);
+                    }
+                    Add("\">");
+                    card(ety);
                     Add("</li>");
                 }
             }
@@ -1480,6 +1552,29 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
+        public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-primary")
+        {
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            if (map != null)
+            {
+                for (int i = 0; i < map.Count; i++)
+                {
+                    var ety = map.At(i);
+                    Add("<article class=\"uk-card");
+                    if (css != null)
+                    {
+                        Add(' ');
+                        Add(css);
+                    }
+                    Add("\">");
+                    card(ety);
+                    Add("</article>");
+                }
+            }
+
+            Add("</main>");
+        }
+
         public void GRID<S>(S src, Action<S> card, string css = null) where S : ISource
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
@@ -1516,37 +1611,31 @@ namespace Greatbone.Web
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte sort = 0x0f, int subscript = -1, string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR(int subscript = -1, string title = null, bool refresh = true)
         {
+            byte actgrp = Web.Action.Group; // the contextual action group
+
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
-            int grp = -1;
+            Add("<div class=\"uk-button-group\">");
+
             var acts = Web.Work.Tooled;
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
-                    int g = act.Sort;
-                    if (g == 0 || (g & sort) == g)
+                    int g = act.Group;
+                    var tool = act.Tool;
+                    if (tool.IsAnchor || g == 0 || (g & actgrp) > 0)
                     {
-                        if (g != grp)
-                        {
-                            if (grp != -1) Add("</div>");
-                            Add("<div class=\"uk-button-group\">");
-                        }
-
-                        var tool = act.Tool;
                         // provide the state about current anchor as subscript 
                         PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
                     }
-
-                    grp = g;
                 }
-
-                Add("</div>");
             }
 
+            Add("</div>");
             Add("</section>");
 
             Add("<section class=\"uk-flex uk-flex-middle\">");
@@ -1581,7 +1670,7 @@ namespace Greatbone.Web
         }
 
 
-        public HtmlContent VARTOOLSET<K>(K varkey, byte sort = 0, int subscript = -1, bool pick = true, string css = null)
+        public HtmlContent VARTOOLSET<K>(K varkey, int subscript = -1, string pick = "", string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1594,38 +1683,36 @@ namespace Greatbone.Web
             var w = Web.Work;
             var vw = w.VarWork;
 
+            byte actgrp = Web.Action.Group;
+
             // output a pick checkbox
-            if (vw != null && pick)
+            if (vw != null && pick != null)
             {
+                Add("<label>");
                 Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
                 PutKey(varkey);
                 Add("\" onchange=\"checkToggle(this);\">");
+                Add(pick);
+                Add("</label>");
             }
 
-            // output button group(s)
-            int curg = -1;
+            // output button group
+            Add("<div class=\"uk-button-group\">");
             var acts = vw?.Tooled;
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
-                    int g = act.Sort;
-                    if (g == 0 || (g & sort) == g)
+                    int g = act.Group;
+                    if (g == 0 || (g & actgrp) > 0)
                     {
-                        if (g != curg)
-                        {
-                            if (curg != -1) Add("</div>");
-                            Add("<div class=\"uk-button-group\">");
-                        }
-
                         var tool = act.Tool;
                         PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, true, "uk-button-secondary");
-                        curg = g;
                     }
                 }
-                Add("</div>");
             }
+            Add("</div>");
             Add("</nav>");
             return this;
         }
@@ -1667,26 +1754,35 @@ namespace Greatbone.Web
             else if (k is int intv) Add(intv);
             else if (k is long longv) Add(longv);
             else if (k is string strv) Add(strv);
-            else if (k is ValueTuple<string, string> kstrstr)
+            else if (k is ValueTuple<short, short> k11)
             {
-                var (k1, k2) = kstrstr;
-                Add(k1);
+                Add(k11.Item1);
                 Add('-');
-                Add(k2);
+                Add(k11.Item2);
             }
-            else if (k is ValueTuple<string, int> kstrint)
+            else if (k is ValueTuple<int, int> k22)
             {
-                var (k1, k2) = kstrint;
-                Add(k1);
+                Add(k22.Item1);
                 Add('-');
-                Add(k2);
+                Add(k22.Item2);
             }
-            else if (k is ValueTuple<int, string> kintstr)
+            else if (k is ValueTuple<string, string> k33)
             {
-                var (k1, k2) = kintstr;
-                Add(k1);
+                Add(k33.Item1);
                 Add('-');
-                Add(k2);
+                Add(k33.Item2);
+            }
+            else if (k is ValueTuple<string, int> k32)
+            {
+                Add(k32.Item1);
+                Add('-');
+                Add(k32.Item2);
+            }
+            else if (k is ValueTuple<int, string> k23)
+            {
+                Add(k23.Item1);
+                Add('-');
+                Add(k23.Item2);
             }
         }
 
@@ -2198,6 +2294,10 @@ namespace Greatbone.Web
             else if (v is decimal decv) Add(decv);
             else if (v is double doublev) Add(doublev);
             else if (v is DateTime dtv) Add(dtv);
+            else
+            {
+                Add(v?.ToString());
+            }
         }
 
         public HtmlContent NUMBERPICK(string label, string name, short v, short max = default, short min = default, short step = 1, bool @readonly = false, bool required = false, string onchange = null, string css = null)
@@ -2359,27 +2459,36 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent COLOR()
+        public HtmlContent COLOR(string label, string name, string v, bool @readonly = false, bool required = false)
         {
+            LABEL(label);
+            Add("<input type=\"color\" class=\"uk-input\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(v);
+            Add("\"");
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            Add(">");
             return this;
         }
 
-        public HtmlContent CHECKBOX(string label, string name, bool v, string tip = null, bool required = false)
+        public HtmlContent CHECKBOX(string label, string name, bool check, string tip = null, bool required = false)
         {
             LABEL(label);
             if (tip != null)
             {
                 Add("<label>");
             }
-            else
-            {
-                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
-            }
+//            else
+//            {
+//                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
+//            }
 
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
-            if (v) Add(" checked");
+            if (check) Add(" checked");
             if (required) Add(" required");
             Add(">");
             if (tip != null)
@@ -2387,31 +2496,32 @@ namespace Greatbone.Web
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }
-            else
-            {
-                Add("</div>");
-            }
+//            else
+//            {
+//                Add("</div>");
+//            }
 
             return this;
         }
 
-        public HtmlContent CHECKBOX<V>(string label, string name, V v, string tip = null, bool required = false)
+        public HtmlContent CHECKBOX<V>(string label, string name, V v, bool check, string tip = null, bool required = false)
         {
             LABEL(label);
             if (tip != null)
             {
                 Add("<label>");
             }
-            else
-            {
-                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
-            }
+//            else
+//            {
+//                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
+//            }
 
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(v);
             Add("\"");
+            if (check) Add(" checked");
             if (required) Add("\" required");
             Add(">");
             if (tip != null)
@@ -2419,13 +2529,14 @@ namespace Greatbone.Web
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }
-            else
-            {
-                Add("</div>");
-            }
+//            else
+//            {
+//                Add("</div>");
+//            }
 
             return this;
         }
+
 
         public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
@@ -2682,11 +2793,11 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent SELECT_(string label, string name, bool multiple = false, bool required = false, int size = 0, bool rtl = false, bool refresh = false)
+        public HtmlContent SELECT_<V>(string label, V name, bool multiple = false, bool required = false, int size = 0, bool rtl = false, bool refresh = false)
         {
             LABEL(label);
             Add("<select class=\"uk-select\" name=\"");
-            Add(name);
+            AddPrimitive(name);
             Add("\"");
             if (multiple) Add(" multiple");
             if (required) Add(" required");
@@ -2734,6 +2845,22 @@ namespace Greatbone.Web
             return this;
         }
 
+        public HtmlContent OPTION_<T>(T v, bool selected = false)
+        {
+            Add("<option value=\"");
+            AddPrimitive(v);
+            Add("\"");
+            if (selected) Add(" selected");
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _OPTION()
+        {
+            Add("</option>");
+            return this;
+        }
+
         public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Predicate<V> filter = null)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
@@ -2776,19 +2903,7 @@ namespace Greatbone.Web
                         {
                             var key = e.Key;
                             Add("<option value=\"");
-                            if (key is short shortv)
-                            {
-                                Add(shortv);
-                            }
-                            else if (key is int intv)
-                            {
-                                Add(intv);
-                            }
-                            else if (key is string strv)
-                            {
-                                Add(strv);
-                            }
-
+                            AddPrimitive(key);
                             Add("\"");
                             if (key.Equals(v)) Add(" selected");
                             Add(">");
@@ -2837,7 +2952,7 @@ namespace Greatbone.Web
                         Add("\"");
                         if (v.Contains(key)) Add(" selected");
                         Add(">");
-                        Add(e.Value.ToString());
+                        AddPrimitive(e.Value);
                         Add("</option>");
                     }
                 }

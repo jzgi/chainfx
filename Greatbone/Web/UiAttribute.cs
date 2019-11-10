@@ -12,19 +12,19 @@ namespace Greatbone.Web
 
         readonly string tip;
 
-        readonly byte sort;
+        readonly byte group;
 
         /// <summary>
         ///  To specify user interface-related attributes.
         /// </summary>
         /// <param name="label">The label text for the target work or action. It can be Unicode symbols or HTML entities</param>
         /// <param name="tip">A short description of the functionality</param>
-        /// <param name="sort"></param>
-        public UiAttribute(string label = null, string tip = null, byte sort = 0)
+        /// <param name="group"></param>
+        public UiAttribute(string label = null, string tip = null, byte group = 0)
         {
             this.label = label;
             this.tip = tip ?? label;
-            this.sort = sort;
+            this.@group = @group;
         }
 
         public string Label => label;
@@ -32,8 +32,8 @@ namespace Greatbone.Web
         public string Tip => tip;
 
         /// <summary>
-        /// A sorting number that indicates a particular set of functions.
+        /// A number that determines grouping of functions.
         /// </summary>
-        public byte Sort => sort;
+        public byte Group => group;
     }
 }

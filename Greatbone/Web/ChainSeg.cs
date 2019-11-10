@@ -139,7 +139,6 @@ namespace Greatbone.Web
             {
                 return (0, 0);
             }
-
             return str.ToShortShort();
         }
 

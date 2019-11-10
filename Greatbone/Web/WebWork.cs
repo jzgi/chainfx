@@ -95,11 +95,6 @@ namespace Greatbone.Web
             }
 
             tooled = list.ToArray();
-
-            if (tooled != null) // sorting
-            {
-                Array.Sort(tooled, (a, b) => a.Sort - b.Sort);
-            }
         }
 
         public virtual string Key => Name;
@@ -108,7 +103,7 @@ namespace Greatbone.Web
 
         public string Tip => Ui?.Tip;
 
-        public byte Sort => Ui?.Sort ?? 0;
+        public byte Sort => Ui?.Group ?? 0;
 
         readonly Type type;
 

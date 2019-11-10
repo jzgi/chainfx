@@ -126,7 +126,7 @@ namespace Greatbone.Web
 
         public string Tip => ui?.Tip;
 
-        public byte Sort => ui?.Sort ?? 0;
+        public byte Group => ui?.Group ?? 0;
 
         public AuthenticateAttribute Authenticate => authenticate;
 

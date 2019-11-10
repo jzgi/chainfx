@@ -552,6 +552,8 @@ namespace Greatbone
                 return null;
             }
 
+            if (str[pos] == sep) pos++; // skip sep
+
             int p = pos;
             while (p < len && str[p] != sep) p++;
             pos = p;
@@ -566,6 +568,8 @@ namespace Greatbone
                 return 0;
             }
 
+            if (str[pos] == sep) pos++; // skip sep
+
             int sum = 0;
             int p = pos;
             while (p < len && str[p] != sep)
@@ -579,7 +583,6 @@ namespace Greatbone
 
                 p++;
             }
-
             pos = p;
             return (short) sum;
         }
@@ -591,6 +594,8 @@ namespace Greatbone
             {
                 return 0;
             }
+
+            if (str[pos] == sep) pos++; // skip sep
 
             int sum = 0;
             int p = pos;
@@ -617,6 +622,8 @@ namespace Greatbone
             {
                 return 0;
             }
+
+            if (str[pos] == sep) pos++; // skip sep
 
             long sum = 0;
             int p = pos;

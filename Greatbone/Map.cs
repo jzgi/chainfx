@@ -219,7 +219,7 @@ namespace Greatbone
 
         public Map<R, V> All<R>(Func<K, V, bool> filter, Func<V, R> keyer)
         {
-            var map = new Map<R, V>(16);
+            var map = new Map<R, V>(32);
             for (int i = 0; i < count; i++)
             {
                 var ety = entries[i];
