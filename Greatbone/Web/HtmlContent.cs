@@ -83,7 +83,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -93,7 +92,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -103,7 +101,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -113,7 +110,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -123,7 +119,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -133,7 +128,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -143,7 +137,6 @@ namespace Greatbone.Web
             {
                 Add(v);
             }
-
             return this;
         }
 
@@ -1611,13 +1604,17 @@ namespace Greatbone.Web
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(int subscript = -1, string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR(int subscript = -1, bool toggle = false, string title = null, bool refresh = true)
         {
-            byte actgrp = Web.Action.Group; // the contextual action group
+            byte curgrp = Web.Action.Group; // the contextual action group
 
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
             Add("<div class=\"uk-button-group\">");
+            if (toggle)
+            {
+                Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return allToggle(this);\">");
+            }
 
             var acts = Web.Work.Tooled;
             if (acts != null)
@@ -1627,7 +1624,7 @@ namespace Greatbone.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
-                    if (tool.IsAnchor || g == 0 || (g & actgrp) > 0)
+                    if (tool.IsAnchor || g == 0 || (g & curgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
                         PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
@@ -1697,7 +1694,7 @@ namespace Greatbone.Web
             }
 
             // output button group
-            Add("<div class=\"uk-button-group\">");
+            Add("<div class=\"uk-button-group uk-margin-auto-left\">");
             var acts = vw?.Tooled;
             if (acts != null)
             {
@@ -1717,15 +1714,41 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, bool avail = true, string css = "uk-button-primary")
+        public HtmlContent VARTOOLS<K>(K varkey, int subscript = -1, string css = null)
+        {
+            var w = Web.Work;
+            var vw = w.VarWork;
+            byte actgrp = Web.Action.Group;
+
+            // output button group
+            Add("<div class=\"uk-button-group\">");
+            var acts = vw?.Tooled;
+            if (acts != null)
+            {
+                for (int i = 0; i < acts.Length; i++)
+                {
+                    var act = acts[i];
+                    int g = act.Group;
+                    if (g == 0 || (g & actgrp) > 0)
+                    {
+                        var tool = act.Tool;
+                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, true, "uk-button-secondary");
+                    }
+                }
+            }
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, ToolAttribute tool = null, bool avail = true, string css = "uk-button-primary")
         {
             // locate the proper work
             var w = Web.Work;
             var act = w[action];
-            var tool = act?.Tool;
-            if (tool != null)
+            var toola = tool ?? act?.Tool;
+            if (toola != null)
             {
-                PutTool(act, tool, subscript, caption, avail, css);
+                PutTool(act, toola, subscript, caption, avail, css);
             }
 
             return this;
@@ -1754,6 +1777,7 @@ namespace Greatbone.Web
             else if (k is int intv) Add(intv);
             else if (k is long longv) Add(longv);
             else if (k is string strv) Add(strv);
+            else if (k is DateTime dtv) Add(dtv);
             else if (k is ValueTuple<short, short> k11)
             {
                 Add(k11.Item1);
@@ -1828,7 +1852,7 @@ namespace Greatbone.Web
                     Add('-');
                     Add(subscript);
                 }
-                Add("\" formmethod=\"post\"");
+                Add("\"");
             }
 
             if (!ok)
@@ -2533,6 +2557,34 @@ namespace Greatbone.Web
 //            {
 //                Add("</div>");
 //            }
+
+            return this;
+        }
+
+
+        public HtmlContent KEYCHECKBOX<V>(string label, V v, bool check = false, bool toolbar = true, bool required = false)
+        {
+            if (label != null)
+            {
+                Add("<label>");
+            }
+
+            Add("<input");
+            if (toolbar)
+            {
+                Add(" form=\"tool-bar-form\"");
+            }
+            Add(" type=\"checkbox\" class=\"uk-checkbox\" name=\"key\" value=\"");
+            AddPrimitive(v);
+            Add("\"");
+            if (check) Add(" checked");
+            if (required) Add("\" required");
+            Add("\" onchange=\"checkToggle(this);\">");
+            if (label != null)
+            {
+                Add(label); // caption following the checkbox
+                Add("</label>");
+            }
 
             return this;
         }

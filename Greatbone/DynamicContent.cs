@@ -390,7 +390,7 @@ namespace Greatbone
             }
         }
 
-        public void Add(DateTime v, bool time = false)
+        public void Add(DateTime v, bool time = true)
         {
             short yr = (short) v.Year;
 
@@ -404,7 +404,7 @@ namespace Greatbone
             Add('-');
             Add(SEX[v.Day]);
 
-            if (time)
+            if (time && (v.Hour != 0 || v.Minute != 0 || v.Second != 0 || v.Millisecond != 0))
             {
                 Add(' '); // a space for separation
                 Add(SEX[v.Hour]);

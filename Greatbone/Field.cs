@@ -207,8 +207,8 @@ namespace Greatbone
                 return new[] {short.TryParse(str, out var n) ? n : (short) 0};
             }
 
-            string[] strs = (string[]) v.value;
-            short[] arr = new short[len];
+            var strs = (string[]) v.value;
+            var arr = new short[len];
             for (int i = 0; i < len; i++)
             {
                 arr[i] = short.TryParse(strs[i], out var n) ? n : (short) 0;
@@ -226,8 +226,8 @@ namespace Greatbone
                 return new[] {int.TryParse(str, out var n) ? n : 0};
             }
 
-            string[] strs = (string[]) v.value;
-            int[] arr = new int[len];
+            var strs = (string[]) v.value;
+            var arr = new int[len];
             for (int i = 0; i < len; i++)
             {
                 arr[i] = int.TryParse(strs[i], out var n) ? n : 0;
@@ -244,11 +244,31 @@ namespace Greatbone
                 string str = (string) v.value;
                 return new[] {long.TryParse(str, out var n) ? n : 0};
             }
-            string[] strs = (string[]) v.value;
-            long[] arr = new long[len];
+            var strs = (string[]) v.value;
+            var arr = new long[len];
             for (int i = 0; i < len; i++)
             {
                 arr[i] = long.TryParse(strs[i], out var n) ? n : 0;
+            }
+            return arr;
+        }
+
+        public static implicit operator DateTime[](Field v)
+        {
+            int len = v.items;
+            if (len == 0) return null;
+            if (len == 1)
+            {
+                string str = (string) v.value;
+                DateTime.TryParse(str, out var dt);
+                return new[] {dt};
+            }
+            var strs = (string[]) v.value;
+            var arr = new DateTime[len];
+            for (int i = 0; i < len; i++)
+            {
+                DateTime.TryParse(strs[i], out var dt);
+                arr[i] = dt;
             }
             return arr;
         }
@@ -260,17 +280,10 @@ namespace Greatbone
             if (len == 1)
             {
                 string str = (string) v.value;
-                // it might have a line-break separated items
-                return str.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries);
+                return new[] {str};
             }
 
-            string[] strs = (string[]) v.value;
-            string[] arr = new string[len];
-            for (int i = 0; i < len; i++)
-            {
-                arr[i] = strs[i];
-            }
-            return arr;
+            return (string[]) v.value;
         }
     }
 }

@@ -537,6 +537,20 @@ namespace Greatbone.Db
             return this;
         }
 
+        public DbSql _IN_(DateTime[] vals)
+        {
+            Add(" IN (");
+            for (int i = 1; i <= vals.Length; i++)
+            {
+                if (i > 1) Add(',');
+                Add('@');
+                Add('v');
+                Add(i);
+            }
+            Add(')');
+            return this;
+        }
+
         public DbSql _IN_(string[] vals)
         {
             Add(" IN (");

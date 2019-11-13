@@ -2002,15 +2002,6 @@ namespace Greatbone.Db
             return this;
         }
 
-        public IParameters SetForIn(string[] v)
-        {
-            for (int i = 0; i < v.Length; i++)
-            {
-                Put(INPARAMS[i], v[i]);
-            }
-
-            return this;
-        }
 
         public IParameters SetForIn(short[] v)
         {
@@ -2033,6 +2024,26 @@ namespace Greatbone.Db
         }
 
         public IParameters SetForIn(long[] v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                Put(INPARAMS[i], v[i]);
+            }
+
+            return this;
+        }
+
+        public IParameters SetForIn(DateTime[] v)
+        {
+            for (int i = 0; i < v.Length; i++)
+            {
+                Put(INPARAMS[i], v[i]);
+            }
+
+            return this;
+        }
+
+        public IParameters SetForIn(string[] v)
         {
             for (int i = 0; i < v.Length; i++)
             {
