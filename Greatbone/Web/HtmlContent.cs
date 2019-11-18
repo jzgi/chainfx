@@ -336,11 +336,15 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TD(decimal v, bool cond = true)
+        public HtmlContent TD(decimal v, bool currency = false, bool cond = true)
         {
             Add("<td style=\"text-align: right\">");
             if (cond)
             {
+                if (currency)
+                {
+                    Add('¥');
+                }
                 Add(v);
             }
 
@@ -356,10 +360,13 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TD(string v)
+        public HtmlContent TD(string v, bool cond = true)
         {
             Add("<td>");
-            AddEsc(v);
+            if (cond)
+            {
+                AddEsc(v);
+            }
             Add("</td>");
             return this;
         }
@@ -1184,7 +1191,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent BUTTON(string caption, string action = null, bool post = true, string css = "uk-button-default")
+        public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string css = "uk-button-default")
         {
             Add("<button class=\"uk-button ");
             Add(css);
@@ -1194,6 +1201,11 @@ namespace Greatbone.Web
             {
                 Add("\" formaction=\"");
                 Add(action);
+            }
+            if (subscript > -1)
+            {
+                Add('-');
+                Add(subscript);
             }
             Add("\">");
             AddEsc(caption);
@@ -1524,12 +1536,13 @@ namespace Greatbone.Web
 
         public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
-            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            Add("<main uk-grid class=\"uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
                     M obj = arr[i];
+                    Add("<div>");
                     Add("<article class=\"uk-card");
                     if (css != null)
                     {
@@ -1539,6 +1552,7 @@ namespace Greatbone.Web
                     Add("\">");
                     card(obj);
                     Add("</article>");
+                    Add("</div>");
                 }
             }
 
@@ -1553,6 +1567,7 @@ namespace Greatbone.Web
                 for (int i = 0; i < map.Count; i++)
                 {
                     var ety = map.At(i);
+                    Add("<div>");
                     Add("<article class=\"uk-card");
                     if (css != null)
                     {
@@ -1562,6 +1577,7 @@ namespace Greatbone.Web
                     Add("\">");
                     card(ety);
                     Add("</article>");
+                    Add("</div>");
                 }
             }
 
@@ -1575,16 +1591,17 @@ namespace Greatbone.Web
             {
                 while (src.Next())
                 {
+                    Add("<div>");
                     Add("<article class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
                     card(src);
                     Add("</article>");
+                    Add("</div>");
                 }
             }
 
@@ -1602,6 +1619,36 @@ namespace Greatbone.Web
             Add(",'");
             Add(tip);
             Add("');\"");
+        }
+
+        public HtmlContent TOOLBAR_(string title = null, bool refresh = true)
+        {
+            Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
+            Add("<section class=\"uk-top-bar-left\">"); // ui tools
+            Add("<div class=\"uk-button-group\">");
+            return this;
+        }
+
+        public HtmlContent _TOOLBAR(string title = null, bool refresh = true)
+        {
+            Add("</div>");
+            Add("</section>");
+            Add("<section class=\"uk-flex uk-flex-middle\">");
+            if (title != null)
+            {
+                Add(title);
+            }
+
+            if (refresh)
+            {
+                Add("<a class=\"uk-icon-button uk-light\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
+            }
+
+            Add("</section>");
+
+            Add("</form>");
+            Add("<div class=\"uk-top-placeholder\"></div>");
+            return this;
         }
 
         public HtmlContent TOOLBAR(int subscript = -1, bool toggle = false, string title = null, bool refresh = true)
@@ -1740,7 +1787,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, ToolAttribute tool = null, bool avail = true, string css = "uk-button-primary")
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, ToolAttribute tool = null, bool enabled = true, string css = "uk-button-primary")
         {
             // locate the proper work
             var w = Web.Work;
@@ -1748,13 +1795,13 @@ namespace Greatbone.Web
             var toola = tool ?? act?.Tool;
             if (toola != null)
             {
-                PutTool(act, toola, subscript, caption, avail, css);
+                PutTool(act, toola, subscript, caption, enabled, css);
             }
 
             return this;
         }
 
-        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, bool avail = true, string css = "uk-button-secondary")
+        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, bool enable = true, string css = "uk-button-secondary")
         {
             // get the var work
             var vw = Web.Work.VarWork;
@@ -1764,7 +1811,7 @@ namespace Greatbone.Web
                 var tool = act?.Tool;
                 if (tool != null)
                 {
-                    PutVarTool(act, tool, varkey, subscript, caption, avail, css);
+                    PutVarTool(act, tool, varkey, subscript, caption, enable, css);
                 }
             }
 
@@ -2478,8 +2525,22 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent RANGE()
+        public HtmlContent RANGE<V>(string label, string name, V v, V max, V min, V step, bool @readonly = false)
         {
+            LABEL(label);
+            Add("<input type=\"range\" class=\"uk-input\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddPrimitive(v);
+            Add("\" max=\"");
+            AddPrimitive(max);
+            Add("\" min=\"");
+            AddPrimitive(min);
+            Add("\" step=\"");
+            AddPrimitive(step);
+            Add("\"");
+            if (@readonly) Add(" readonly");
+            Add(">");
             return this;
         }
 
