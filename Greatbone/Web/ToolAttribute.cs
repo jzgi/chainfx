@@ -45,6 +45,8 @@ namespace Greatbone.Web
 
         public bool IsButton => modal == Modal.Button;
 
+        public bool IsPost => HasConfirm || HasPrompt || HasShow;
+
         public bool MustPick => pick == 0x0100;
 
         public bool HasConfirm => mode == 0x01;

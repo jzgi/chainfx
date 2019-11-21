@@ -1857,11 +1857,11 @@ namespace Greatbone.Web
             }
         }
 
-        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, bool avail = true, string css = null)
+        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, bool enabled = true, string css = null)
         {
             // check action's availability
             //
-            bool ok = avail && act.DoAuthorize(Web);
+            bool ok = enabled && act.DoAuthorize(Web);
 
             if (tool.IsAnchorTag)
             {
@@ -1888,7 +1888,7 @@ namespace Greatbone.Web
             }
             else
             {
-                Add("<button  class=\"uk-button ");
+                Add("<button class=\"uk-button ");
                 Add(css ?? "uk-button-default");
                 Add("\" name=\"");
                 Add(act.Key);
@@ -1900,6 +1900,10 @@ namespace Greatbone.Web
                     Add(subscript);
                 }
                 Add("\"");
+                if (tool.IsPost)
+                {
+                    Add(" formmethod=\"post\"");
+                }
             }
 
             if (!ok)
@@ -1959,11 +1963,11 @@ namespace Greatbone.Web
             Add(tool.IsAnchorTag ? "</a>" : "</button>");
         }
 
-        void PutVarTool<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, bool avail = true, string css = null)
+        void PutVarTool<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, bool enabled = true, string css = null)
         {
             // check action's availability
             //
-            bool ok = avail && act.DoAuthorize(Web);
+            bool ok = enabled && act.DoAuthorize(Web);
 
             if (tool.IsAnchorTag)
             {
@@ -2005,7 +2009,11 @@ namespace Greatbone.Web
                     Add('-');
                     Add(subscript);
                 }
-                Add("\" formmethod=\"post\"");
+                Add("\"");
+                if (tool.IsPost)
+                {
+                    Add(" formmethod=\"post\"");
+                }
             }
 
             if (!ok)
