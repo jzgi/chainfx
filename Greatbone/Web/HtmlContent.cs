@@ -1752,7 +1752,7 @@ namespace Greatbone.Web
                     if (g == 0 || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
-                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, true, "uk-button-secondary");
+                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, null, true, "uk-button-secondary");
                     }
                 }
             }
@@ -1779,7 +1779,7 @@ namespace Greatbone.Web
                     if (g == 0 || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
-                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, true, "uk-button-secondary");
+                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, null, true, "uk-button-secondary");
                     }
                 }
             }
@@ -1787,7 +1787,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, ToolAttribute tool = null, bool enabled = true, string css = "uk-button-primary")
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = "uk-button-primary")
         {
             // locate the proper work
             var w = Web.Work;
@@ -1795,26 +1795,24 @@ namespace Greatbone.Web
             var toola = tool ?? act?.Tool;
             if (toola != null)
             {
-                PutTool(act, toola, subscript, caption, enabled, css);
+                PutTool(act, toola, subscript, caption, tip, enabled, css);
             }
-
             return this;
         }
 
-        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, bool enable = true, string css = "uk-button-secondary")
+        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enable = true, string css = "uk-button-secondary")
         {
             // get the var work
             var vw = Web.Work.VarWork;
             if (vw != null)
             {
                 var act = vw[action];
-                var tool = act?.Tool;
-                if (tool != null)
+                var toola = tool ?? act?.Tool;
+                if (toola != null)
                 {
-                    PutVarTool(act, tool, varkey, subscript, caption, enable, css);
+                    PutVarTool(act, toola, varkey, subscript, caption, tip, enable, css);
                 }
             }
-
             return this;
         }
 
@@ -1857,11 +1855,12 @@ namespace Greatbone.Web
             }
         }
 
-        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, bool enabled = true, string css = null)
+        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, string css = null)
         {
             // check action's availability
             //
             bool ok = enabled && act.DoAuthorize(Web);
+            tip = tip ?? act.Tip;
 
             if (tool.IsAnchorTag)
             {
@@ -1919,20 +1918,20 @@ namespace Greatbone.Web
                 }
 
                 Add("confirm('");
-                Add(act.Tip ?? act.Label);
+                Add(tip ?? act.Label);
                 Add("');\"");
             }
             else if (tool.HasPrompt)
             {
-                OnClickDialog(2, tool.MustPick, tool.Size, act.Tip);
+                OnClickDialog(2, tool.MustPick, tool.Size, tip);
             }
             else if (tool.HasShow)
             {
-                OnClickDialog(4, tool.MustPick, tool.Size, act.Tip);
+                OnClickDialog(4, tool.MustPick, tool.Size, tip);
             }
             else if (tool.HasOpen)
             {
-                OnClickDialog(8, tool.MustPick, tool.Size, act.Tip);
+                OnClickDialog(8, tool.MustPick, tool.Size, tip);
             }
             else if (tool.HasScript)
             {
@@ -1947,7 +1946,7 @@ namespace Greatbone.Web
                 Add(',');
                 Add(tool.Size);
                 Add(",'");
-                Add(act.Tip);
+                Add(tip);
                 Add("');\"");
             }
 
@@ -1963,11 +1962,12 @@ namespace Greatbone.Web
             Add(tool.IsAnchorTag ? "</a>" : "</button>");
         }
 
-        void PutVarTool<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, bool enabled = true, string css = null)
+        void PutVarTool<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, string tip = null, bool enabled = true, string css = null)
         {
             // check action's availability
             //
             bool ok = enabled && act.DoAuthorize(Web);
+            tip = tip ?? act.Tip;
 
             if (tool.IsAnchorTag)
             {
@@ -2029,20 +2029,20 @@ namespace Greatbone.Web
                 }
 
                 Add("confirm('");
-                Add(act.Tip ?? act.Label);
+                Add(tip ?? act.Label);
                 Add("');\"");
             }
             else if (tool.HasPrompt)
             {
-                OnClickDialog(2, tool.MustPick, tool.Size, act.Tip);
+                OnClickDialog(2, tool.MustPick, tool.Size, tip);
             }
             else if (tool.HasShow)
             {
-                OnClickDialog(4, tool.MustPick, tool.Size, act.Tip);
+                OnClickDialog(4, tool.MustPick, tool.Size, tip);
             }
             else if (tool.HasOpen)
             {
-                OnClickDialog(8, tool.MustPick, tool.Size, act.Tip);
+                OnClickDialog(8, tool.MustPick, tool.Size, tip);
             }
             else if (tool.HasScript)
             {
@@ -2057,7 +2057,7 @@ namespace Greatbone.Web
                 Add(',');
                 Add(tool.Size);
                 Add(",'");
-                Add(act.Tip);
+                Add(tip);
                 Add("');\"");
             }
 

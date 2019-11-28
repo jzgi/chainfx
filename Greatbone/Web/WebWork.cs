@@ -393,14 +393,16 @@ namespace Greatbone.Web
                 string key = rsc.Substring(0, slash);
                 if (works != null && works.TryGetValue(key, out var wrk)) // if child
                 {
-                    if (!await wrk.DoAuthenticate(wc)) return;
+                    // do necessary authentication before entering
+                    if (wc.Principal == null && !await wrk.DoAuthenticate(wc)) return;
 
                     wc.Chain(wrk, key);
                     await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
                 }
                 else if (varwork != null) // if variable-key subwork
                 {
-                    if (!await varwork.DoAuthenticate(wc)) return;
+                    // do necessary authentication before entering
+                    if (wc.Principal == null && !await varwork.DoAuthenticate(wc)) return;
 
                     var prin = wc.Principal;
                     object acc = null;

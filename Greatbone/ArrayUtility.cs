@@ -201,6 +201,18 @@ namespace Greatbone
             return false;
         }
 
+        public static int IndexOf<V>(this V[] arr, V v)
+        {
+            if (v != null && arr != null)
+            {
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (arr[i].Equals(v)) return i;
+                }
+            }
+            return -1;
+        }
+
 
         public static bool IsSameAs<E>(this E[] arr, E[] another)
         {

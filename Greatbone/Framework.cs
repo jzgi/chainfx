@@ -5,7 +5,6 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Greatbone.Db;
@@ -59,7 +58,7 @@ namespace Greatbone
         internal static readonly FrameworkLogger Logger;
 
 
-        static List<NetClient> polls;
+        static List<NetClient> polls = null;
 
         // the thread schedules and drives periodic jobs, such as event polling 
         static Thread scheduler;
@@ -168,6 +167,7 @@ namespace Greatbone
             svc.OnCreate();
             return svc;
         }
+
 
         public static DbSource GetDbSource(string name = null) => name != null ? sources[name] : sources.ValueAt(0);
 

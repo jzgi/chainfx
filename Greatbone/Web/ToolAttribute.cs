@@ -16,8 +16,6 @@ namespace Greatbone.Web
 
         readonly int pick; // form value pick
 
-        readonly string css; // trigger style
-
         readonly byte size;
 
         readonly bool access;
@@ -29,7 +27,6 @@ namespace Greatbone.Web
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0f00;
             this.size = size;
-            this.css = css;
             this.access = access;
         }
 

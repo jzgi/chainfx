@@ -137,19 +137,16 @@ namespace Greatbone.Db
             {
                 return false;
             }
-
             return reader.NextResult();
         }
 
         public bool Next()
         {
             ordinal = 0; // reset column ordinal
-
             if (reader == null)
             {
                 return false;
             }
-
             return reader.Read();
         }
 
@@ -164,7 +161,6 @@ namespace Greatbone.Db
                 _sql.Clear(); // reset
                 _sql.Add(str);
             }
-
             return _sql;
         }
 
@@ -211,7 +207,7 @@ namespace Greatbone.Db
                 if (prepare) command.Prepare();
             }
 
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = await command.ExecuteReaderAsync();
             return reader.Read();
         }
 
@@ -232,7 +228,7 @@ namespace Greatbone.Db
                 if (prepare) command.Prepare();
             }
 
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = await command.ExecuteReaderAsync();
             return reader.Read();
         }
 
@@ -242,7 +238,6 @@ namespace Greatbone.Db
             {
                 return ToObject<D>(proj);
             }
-
             return default;
         }
 
@@ -252,7 +247,6 @@ namespace Greatbone.Db
             {
                 return ToObject<D>(proj);
             }
-
             return default;
         }
 
@@ -262,7 +256,6 @@ namespace Greatbone.Db
             {
                 return ToObject<D>(proj);
             }
-
             return default;
         }
 
@@ -272,7 +265,6 @@ namespace Greatbone.Db
             {
                 return ToObject<D>(proj);
             }
-
             return default;
         }
 
@@ -319,7 +311,7 @@ namespace Greatbone.Db
                 if (prepare) command.Prepare();
             }
 
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -340,7 +332,7 @@ namespace Greatbone.Db
                 if (prepare) command.Prepare();
             }
 
-            reader = (NpgsqlDataReader) await command.ExecuteReaderAsync();
+            reader = await command.ExecuteReaderAsync();
             return reader.HasRows;
         }
 
@@ -360,7 +352,6 @@ namespace Greatbone.Db
             {
                 return ToArray<D>(proj);
             }
-
             return null;
         }
 
@@ -370,7 +361,6 @@ namespace Greatbone.Db
             {
                 return ToArray<D>(proj);
             }
-
             return null;
         }
 
@@ -390,7 +380,6 @@ namespace Greatbone.Db
             {
                 return ToMap(proj, keyer);
             }
-
             return null;
         }
 
@@ -400,7 +389,6 @@ namespace Greatbone.Db
             {
                 return ToMap(proj, keyer);
             }
-
             return null;
         }
 
@@ -410,7 +398,6 @@ namespace Greatbone.Db
             {
                 return ToMap(proj, keyer);
             }
-
             return null;
         }
 
@@ -420,7 +407,6 @@ namespace Greatbone.Db
             {
                 return ToMap(proj, keyer);
             }
-
             return null;
         }
 
@@ -457,7 +443,6 @@ namespace Greatbone.Db
                 p(this);
                 if (prepare) command.Prepare();
             }
-
             return command.ExecuteNonQuery();
         }
 
@@ -476,7 +461,6 @@ namespace Greatbone.Db
                 p(this);
                 if (prepare) command.Prepare();
             }
-
             return await command.ExecuteNonQueryAsync();
         }
 
@@ -495,7 +479,6 @@ namespace Greatbone.Db
                 p(this);
                 if (prepare) command.Prepare();
             }
-
             return await command.ExecuteNonQueryAsync();
         }
 
@@ -539,7 +522,6 @@ namespace Greatbone.Db
                 p(this);
                 if (prepare) command.Prepare();
             }
-
             return await command.ExecuteScalarAsync();
         }
 
@@ -558,7 +540,6 @@ namespace Greatbone.Db
                 p(this);
                 if (prepare) command.Prepare();
             }
-
             return await command.ExecuteScalarAsync();
         }
 
@@ -575,14 +556,13 @@ namespace Greatbone.Db
 
         public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
         {
-            ValueList<D> lst = new ValueList<D>(32);
+            var lst = new ValueList<D>(32);
             while (Next())
             {
                 D obj = new D();
                 obj.Read(this, proj);
                 lst.Add(obj);
             }
-
             return lst.ToArray();
         }
 
@@ -631,7 +611,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -649,7 +628,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -667,7 +645,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -685,7 +662,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -703,7 +679,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -721,13 +696,24 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
         public bool Get(string name, ref float v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFloat(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref double v)
@@ -744,7 +730,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -762,7 +747,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -780,7 +764,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -798,7 +781,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -816,18 +798,41 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
         public bool Get(string name, ref bool[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<bool[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref float[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<float[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref byte[] v)
@@ -849,7 +854,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -866,8 +870,8 @@ namespace Greatbone.Db
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser p = new JsonParser(str);
-                    JObj jo = (JObj) p.Parse();
+                    var p = new JsonParser(str);
+                    var jo = (JObj) p.Parse();
                     v = new D();
                     v.Read(jo, proj);
                     return true;
@@ -876,7 +880,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -888,7 +891,7 @@ namespace Greatbone.Db
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser p = new JsonParser(str);
+                    var p = new JsonParser(str);
                     v = (JObj) p.Parse();
                     return true;
                 }
@@ -896,7 +899,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -908,7 +910,7 @@ namespace Greatbone.Db
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser parser = new JsonParser(str);
+                    var parser = new JsonParser(str);
                     v = (JArr) parser.Parse();
                     return true;
                 }
@@ -916,13 +918,7 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
-        }
-
-        public bool Get(string name, ref ISource v)
-        {
-            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref char[] v)
@@ -939,7 +935,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -957,7 +952,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -975,7 +969,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -993,7 +986,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -1011,28 +1003,75 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
         public bool Get(string name, ref double[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<double[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref decimal[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<decimal[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref DateTime[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<DateTime[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref Guid[] v)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<Guid[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         public bool Get(string name, ref string[] v)
@@ -1049,7 +1088,6 @@ namespace Greatbone.Db
             catch
             {
             }
-
             return false;
         }
 
@@ -1061,8 +1099,8 @@ namespace Greatbone.Db
                 if (!reader.IsDBNull(ord))
                 {
                     string str = reader.GetString(ord);
-                    JsonParser parser = new JsonParser(str);
-                    JArr ja = (JArr) parser.Parse();
+                    var parser = new JsonParser(str);
+                    var ja = (JArr) parser.Parse();
                     int len = ja.Count;
                     v = new D[len];
                     for (int i = 0; i < len; i++)
@@ -1072,14 +1110,12 @@ namespace Greatbone.Db
                         obj.Read(jo, proj);
                         v[i] = obj;
                     }
-
                     return true;
                 }
             }
             catch
             {
             }
-
             return false;
         }
 
@@ -1612,7 +1648,10 @@ namespace Greatbone.Db
 
         public void Put(string name, float v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter<float>(name, NpgsqlDbType.Real)
+            {
+                TypedValue = v
+            });
         }
 
         public void Put(string name, double v)
@@ -1633,8 +1672,8 @@ namespace Greatbone.Db
 
         public void Put(string name, DateTime v)
         {
-            bool date = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
-            command.Parameters.Add(new NpgsqlParameter<DateTime>(name, date ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
+            bool isdate = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
+            command.Parameters.Add(new NpgsqlParameter<DateTime>(name, isdate ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
             {
                 TypedValue = v
             });
@@ -1709,22 +1748,34 @@ namespace Greatbone.Db
 
         public void Put(string name, float[] v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Real)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void Put(string name, double[] v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Double)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void Put(string name, decimal[] v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Numeric)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void Put(string name, DateTime[] v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Date)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void Put(string name, Guid[] v)
@@ -1780,7 +1831,10 @@ namespace Greatbone.Db
         {
             if (v == null)
             {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb) {Value = DBNull.Value});
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = DBNull.Value
+                });
             }
             else
             {
@@ -1866,7 +1920,8 @@ namespace Greatbone.Db
 
         public IParameters Set(float v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(double v)
@@ -1895,7 +1950,8 @@ namespace Greatbone.Db
 
         public IParameters Set(Guid v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(string v)
@@ -1904,19 +1960,20 @@ namespace Greatbone.Db
             {
                 v = null;
             }
-
             Put(PARAMS[paramidx++], v);
             return this;
         }
 
         public IParameters Set(bool[] v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(char[] v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(byte[] v)
@@ -1956,22 +2013,26 @@ namespace Greatbone.Db
 
         public IParameters Set(float[] v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(double[] v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(DateTime[] v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(Guid[] v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(string[] v)
@@ -1982,12 +2043,14 @@ namespace Greatbone.Db
 
         public IParameters Set(JObj v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(JArr v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], v);
+            return this;
         }
 
         public IParameters Set(IData v, byte proj = 0x0f)
@@ -2009,7 +2072,6 @@ namespace Greatbone.Db
             {
                 Put(INPARAMS[i], v[i]);
             }
-
             return this;
         }
 
@@ -2019,7 +2081,6 @@ namespace Greatbone.Db
             {
                 Put(INPARAMS[i], v[i]);
             }
-
             return this;
         }
 
@@ -2029,7 +2090,6 @@ namespace Greatbone.Db
             {
                 Put(INPARAMS[i], v[i]);
             }
-
             return this;
         }
 
@@ -2039,7 +2099,6 @@ namespace Greatbone.Db
             {
                 Put(INPARAMS[i], v[i]);
             }
-
             return this;
         }
 
@@ -2049,7 +2108,6 @@ namespace Greatbone.Db
             {
                 Put(INPARAMS[i], v[i]);
             }
-
             return this;
         }
     }

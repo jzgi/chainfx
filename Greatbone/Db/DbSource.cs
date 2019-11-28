@@ -43,7 +43,6 @@ namespace Greatbone.Db
             sb.Append(";No Reset On Close=").Append(true);
 
             connstr = sb.ToString();
-
         }
 
         public string Name { get; internal set; }
