@@ -10,46 +10,46 @@ namespace Greatbone
         /// <summary>
         /// Used in both client and server to parse received content into model.
         /// </summary>
-        public static ISource ParseContent(string ctyp, byte[] buffer, int length, Type typ = null)
+        public static ISource ParseContent(string ctyp, byte[] buf, int len, Type typ = null)
         {
             if (string.IsNullOrEmpty(ctyp)) return null;
 
             if (ctyp.StartsWith("application/x-www-form-urlencoded"))
             {
-                return new FormParser(buffer, length).Parse();
+                return new FormParser(buf, len).Parse();
             }
 
             if (ctyp.StartsWith("multipart/form-data; boundary="))
             {
-                return new FormMpParser(buffer, length, ctyp.Substring(30)).Parse();
+                return new FormMpParser(buf, len, ctyp.Substring(30)).Parse();
             }
 
             if (ctyp.StartsWith("application/json"))
             {
-                return new JsonParser(buffer, length).Parse();
+                return new JsonParser(buf, len).Parse();
             }
 
             if (ctyp.StartsWith("application/xml"))
             {
-                return new XmlParser(buffer, length).Parse();
+                return new XmlParser(buf, len).Parse();
             }
 
             if (ctyp.StartsWith("text/"))
             {
                 if (typ == typeof(JObj) || typ == typeof(JArr))
                 {
-                    return new JsonParser(buffer, length).Parse();
+                    return new JsonParser(buf, len).Parse();
                 }
                 else if (typ == typeof(XElem))
                 {
-                    return new XmlParser(buffer, length).Parse();
+                    return new XmlParser(buf, len).Parse();
                 }
                 else
                 {
                     Text text = new Text();
-                    for (int i = 0; i < length; i++)
+                    for (int i = 0; i < len; i++)
                     {
-                        text.Accept(buffer[i]);
+                        text.Accept(buf[i]);
                     }
 
                     return text;
@@ -92,7 +92,7 @@ namespace Greatbone
 
         public static string ToString<D>(D v, byte proj = 0x0f) where D : IData
         {
-            var cnt = new JsonContent(4 * 1024);
+            var cnt = new JsonContent(4 * 1024, binary: false);
             try
             {
                 cnt.Put(null, v, proj);
@@ -106,7 +106,7 @@ namespace Greatbone
 
         public static string ToString<D>(D[] v, byte proj = 0x0f) where D : IData
         {
-            var cnt = new JsonContent(4 * 1024);
+            var cnt = new JsonContent(4 * 1024, binary: false);
             try
             {
                 cnt.Put(null, v, proj);
@@ -120,7 +120,7 @@ namespace Greatbone
 
         public static string ToString<D>(List<D> v, byte proj = 0x0f) where D : IData
         {
-            var cnt = new JsonContent(4 * 1024);
+            var cnt = new JsonContent(4 * 1024, binary: false);
             try
             {
                 cnt.Put(null, v, proj);

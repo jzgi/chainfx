@@ -14,7 +14,7 @@ namespace Greatbone
         // current level
         int level;
 
-        public JsonContent(int capacity) : base(capacity)
+        public JsonContent(int capacity, bool binary = true) : base(capacity, binary)
         {
             counts = new int[16];
             level = 0;

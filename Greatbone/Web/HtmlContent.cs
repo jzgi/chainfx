@@ -865,6 +865,23 @@ namespace Greatbone.Web
             return this;
         }
 
+        public HtmlContent DT(string v)
+        {
+            Add("<dt>");
+            AddEsc(v);
+            Add("</dt>");
+            return this;
+        }
+
+
+        public HtmlContent DD(string v)
+        {
+            Add("<dd>");
+            AddEsc(v);
+            Add("</dd>");
+            return this;
+        }
+
         /// <summary>
         /// A field item
         /// </summary>
@@ -1117,7 +1134,6 @@ namespace Greatbone.Web
             Add("<form class=\"");
             if (css != null)
             {
-                Add(' ');
                 Add(css);
             }
             Add('"');
@@ -1425,7 +1441,7 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TD_CHECK<K>(K key)
+        public HtmlContent TDCHECK<K>(K key)
         {
             Add("<td style=\"width: 1%\">");
             Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
@@ -1559,7 +1575,7 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-primary")
+        public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-default")
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
             if (map != null)
@@ -1568,7 +1584,7 @@ namespace Greatbone.Web
                 {
                     var ety = map.At(i);
                     Add("<div>");
-                    Add("<article class=\"uk-card");
+                    Add("<form class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
@@ -1576,11 +1592,10 @@ namespace Greatbone.Web
                     }
                     Add("\">");
                     card(ety);
-                    Add("</article>");
+                    Add("</form>");
                     Add("</div>");
                 }
             }
-
             Add("</main>");
         }
 
@@ -1621,7 +1636,7 @@ namespace Greatbone.Web
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR_(string title = null, bool refresh = true)
+        public HtmlContent TOOLBAR_()
         {
             Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
             Add("<section class=\"uk-top-bar-left\">"); // ui tools
@@ -1629,8 +1644,24 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent _TOOLBAR(string title = null, bool refresh = true)
+        public HtmlContent _TOOLBAR(int subscript = -1, string title = null, bool refresh = true)
         {
+            byte curgrp = Web.Action.Group; // the contextual action group
+            var acts = Web.Work.Tooled;
+            if (acts != null)
+            {
+                for (int i = 0; i < acts.Length; i++)
+                {
+                    var act = acts[i];
+                    int g = act.Group;
+                    var tool = act.Tool;
+                    if (tool.IsAnchor || g == 0 || (g & curgrp) > 0)
+                    {
+                        // provide the state about current anchor as subscript 
+                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
+                    }
+                }
+            }
             Add("</div>");
             Add("</section>");
             Add("<section class=\"uk-flex uk-flex-middle\">");

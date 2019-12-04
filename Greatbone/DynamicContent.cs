@@ -76,7 +76,10 @@ namespace Greatbone
         };
 
         // NOTE: HttpResponseStream doesn't have internal buffer
-        byte[] buffer;
+        byte[] bytebuf;
+
+        // additional char buffer
+        char[] charbuf;
 
         // number of bytes
         int count;
@@ -84,14 +87,21 @@ namespace Greatbone
         // byte-wise etag checksum, for char-based output only
         ulong checksum;
 
-        protected DynamicContent(int capacity)
+        protected DynamicContent(int capacity, bool binary = true)
         {
-            buffer = BufferUtility.Rent(capacity);
+            if (binary)
+            {
+                bytebuf = BufferUtility.Rent(capacity);
+            }
+            else
+            {
+                charbuf = new char[capacity];
+            }
         }
 
         public abstract string Type { get; set; }
 
-        public byte[] Buffer => buffer;
+        public byte[] Buffer => bytebuf;
 
         public int Count => count;
 
@@ -102,16 +112,16 @@ namespace Greatbone
         void AddByte(byte b)
         {
             // ensure capacity
-            int olen = buffer.Length; // old length
+            int olen = bytebuf.Length; // old length
             if (count >= olen)
             {
                 int nlen = olen * 2; // new doubled length
-                byte[] obuf = buffer;
-                buffer = BufferUtility.Rent(nlen);
-                Array.Copy(obuf, 0, buffer, 0, olen);
+                byte[] obuf = bytebuf;
+                bytebuf = BufferUtility.Rent(nlen);
+                Array.Copy(obuf, 0, bytebuf, 0, olen);
                 BufferUtility.Return(obuf);
             }
-            buffer[count++] = b;
+            bytebuf[count++] = b;
 
             // calculate checksum
             ulong cs = checksum;
@@ -121,24 +131,40 @@ namespace Greatbone
 
         public void Add(char c)
         {
-            // UTF-8 encoding but without surrogate support
-            if (c < 0x80)
+            if (bytebuf != null) // byte-oriented
             {
-                // have at most seven bits
-                AddByte((byte) c);
+                // UTF-8 encoding but without surrogate support
+                if (c < 0x80)
+                {
+                    // have at most seven bits
+                    AddByte((byte) c);
+                }
+                else if (c < 0x800)
+                {
+                    // 2 char, 11 bits
+                    AddByte((byte) (0xc0 | (c >> 6)));
+                    AddByte((byte) (0x80 | (c & 0x3f)));
+                }
+                else
+                {
+                    // 3 char, 16 bits
+                    AddByte((byte) (0xe0 | ((c >> 12))));
+                    AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+                    AddByte((byte) (0x80 | (c & 0x3f)));
+                }
             }
-            else if (c < 0x800)
+            else // char-oriented
             {
-                // 2 char, 11 bits
-                AddByte((byte) (0xc0 | (c >> 6)));
-                AddByte((byte) (0x80 | (c & 0x3f)));
-            }
-            else
-            {
-                // 3 char, 16 bits
-                AddByte((byte) (0xe0 | ((c >> 12))));
-                AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                AddByte((byte) (0x80 | (c & 0x3f)));
+                // ensure capacity
+                int olen = charbuf.Length; // old length
+                if (count >= olen)
+                {
+                    int nlen = olen * 2; // new length
+                    char[] obuf = charbuf;
+                    charbuf = new char[nlen];
+                    Array.Copy(obuf, 0, charbuf, 0, olen);
+                }
+                charbuf[count++] = c;
             }
         }
 
@@ -420,7 +446,7 @@ namespace Greatbone
         //
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return stream.WriteAsync(buffer, 0, count);
+            return stream.WriteAsync(bytebuf, 0, count);
         }
 
         protected override bool TryComputeLength(out long length)
@@ -431,7 +457,7 @@ namespace Greatbone
 
         public override string ToString()
         {
-            return Type;
+            return charbuf == null ? Type : new string(charbuf, 0, count);
         }
     }
 }

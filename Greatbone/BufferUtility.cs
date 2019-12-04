@@ -44,6 +44,8 @@ namespace Greatbone
 
         public static void Return(byte[] buf)
         {
+            if (buf == null) return;
+
             int len = buf.Length;
             for (int i = 0; i < pools.Length; i++)
             {
