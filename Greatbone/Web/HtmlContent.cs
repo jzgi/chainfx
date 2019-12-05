@@ -1712,9 +1712,9 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent VARTOOLBAR<K>(K varkey, int subscript = -1, string pick = "", string css = null)
+        public HtmlContent VARTOOLBAR<K>(K varkey, int subscript = -1, string pick = null, string css = null)
         {
-            Add("<nav class=\"uk-flex");
+            Add("<nav class=\"uk-flex uk-flex-middle");
             if (css != null)
             {
                 Add(' ');
@@ -1733,7 +1733,6 @@ namespace Greatbone.Web
 
             // output button group
             byte actgrp = Web.Action.Group;
-            Add("<div class=\"uk-button-group uk-margin-auto-left\">");
             var acts = vw?.Tooled;
             if (acts != null)
             {
@@ -1748,7 +1747,6 @@ namespace Greatbone.Web
                     }
                 }
             }
-            Add("</div>");
             Add("</nav>");
             return this;
         }
