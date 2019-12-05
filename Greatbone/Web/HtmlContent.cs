@@ -1636,62 +1636,17 @@ namespace Greatbone.Web
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR_()
+        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string title = null, bool refresh = true, bool top = true)
         {
-            Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
-            Add("<section class=\"uk-top-bar-left\">"); // ui tools
-            Add("<div class=\"uk-button-group\">");
-            return this;
-        }
+            byte ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
-        public HtmlContent _TOOLBAR(int subscript = -1, string title = null, bool refresh = true)
-        {
-            byte curgrp = Web.Action.Group; // the contextual action group
-            var acts = Web.Work.Tooled;
-            if (acts != null)
-            {
-                for (int i = 0; i < acts.Length; i++)
-                {
-                    var act = acts[i];
-                    int g = act.Group;
-                    var tool = act.Tool;
-                    if (tool.IsAnchor || g == 0 || (g & curgrp) > 0)
-                    {
-                        // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
-                    }
-                }
-            }
-            Add("</div>");
-            Add("</section>");
-            Add("<section class=\"uk-flex uk-flex-middle\">");
-            if (title != null)
-            {
-                Add(title);
-            }
-
-            if (refresh)
-            {
-                Add("<a class=\"uk-icon-button uk-light\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
-            }
-
-            Add("</section>");
-
-            Add("</form>");
-            Add("<div class=\"uk-top-placeholder\"></div>");
-            return this;
-        }
-
-        public HtmlContent TOOLBAR(int subscript = -1, bool toggle = false, string title = null, bool refresh = true)
-        {
-            byte curgrp = Web.Action.Group; // the contextual action group
-
-            Add("<form id=\"tool-bar-form\" class=\"uk-top-bar\">");
-            Add("<section class=\"uk-top-bar-left\">"); // ui tools
+            Add("<form id=\"tool-bar-form\" class=\"");
+            Add(top ? "uk-top-bar" : "uk-bottom-bar");
+            Add("\">");
             Add("<div class=\"uk-button-group\">");
             if (toggle)
             {
-                Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return allToggle(this);\">");
+                Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return allToggle(this);\">&nbsp;");
             }
 
             var acts = Web.Work.Tooled;
@@ -1702,7 +1657,7 @@ namespace Greatbone.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
-                    if (tool.IsAnchor || g == 0 || (g & curgrp) > 0)
+                    if (tool.IsAnchor || g == 0 || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
                         PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
@@ -1711,7 +1666,6 @@ namespace Greatbone.Web
             }
 
             Add("</div>");
-            Add("</section>");
 
             Add("<section class=\"uk-flex uk-flex-middle\">");
             if (title != null)
@@ -1727,7 +1681,9 @@ namespace Greatbone.Web
             Add("</section>");
 
             Add("</form>");
-            Add("<div class=\"uk-top-placeholder\"></div>");
+            Add("<div class=\"");
+            Add(top ? "uk-top-placeholder" : "uk-bottom-placeholder");
+            Add("\"></div>");
             return this;
         }
 
@@ -1745,7 +1701,18 @@ namespace Greatbone.Web
         }
 
 
-        public HtmlContent VARTOOLSET<K>(K varkey, int subscript = -1, string pick = "", string css = null)
+        public HtmlContent PICK<K>(K varkey, string label = null)
+        {
+            Add("<label>");
+            Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+            PutKey(varkey);
+            Add("\" onchange=\"checkToggle(this);\">");
+            Add(label);
+            Add("</label>");
+            return this;
+        }
+
+        public HtmlContent VARTOOLBAR<K>(K varkey, int subscript = -1, string pick = "", string css = null)
         {
             Add("<nav class=\"uk-flex");
             if (css != null)
@@ -1758,20 +1725,14 @@ namespace Greatbone.Web
             var w = Web.Work;
             var vw = w.VarWork;
 
-            byte actgrp = Web.Action.Group;
-
             // output a pick checkbox
             if (vw != null && pick != null)
             {
-                Add("<label>");
-                Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
-                PutKey(varkey);
-                Add("\" onchange=\"checkToggle(this);\">");
-                Add(pick);
-                Add("</label>");
+                PICK(varkey, pick);
             }
 
             // output button group
+            byte actgrp = Web.Action.Group;
             Add("<div class=\"uk-button-group uk-margin-auto-left\">");
             var acts = vw?.Tooled;
             if (acts != null)
@@ -1789,32 +1750,6 @@ namespace Greatbone.Web
             }
             Add("</div>");
             Add("</nav>");
-            return this;
-        }
-
-        public HtmlContent VARTOOLS<K>(K varkey, int subscript = -1, string css = null)
-        {
-            var w = Web.Work;
-            var vw = w.VarWork;
-            byte actgrp = Web.Action.Group;
-
-            // output button group
-            Add("<div class=\"uk-button-group\">");
-            var acts = vw?.Tooled;
-            if (acts != null)
-            {
-                for (int i = 0; i < acts.Length; i++)
-                {
-                    var act = acts[i];
-                    int g = act.Group;
-                    if (g == 0 || (g & actgrp) > 0)
-                    {
-                        var tool = act.Tool;
-                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, null, true, "uk-button-secondary");
-                    }
-                }
-            }
-            Add("</div>");
             return this;
         }
 
