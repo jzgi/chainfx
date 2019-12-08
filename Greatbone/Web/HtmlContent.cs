@@ -1657,7 +1657,7 @@ namespace Greatbone.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
-                    if (tool.IsAnchor || g == 0 || (g & ctxgrp) > 0)
+                    if (tool.IsAnchor || ctxgrp == 0 || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
                         PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
@@ -2334,6 +2334,7 @@ namespace Greatbone.Web
             else if (v is int intv) Add(intv);
             else if (v is long longv) Add(longv);
             else if (v is string strv) Add(strv);
+            else if (v is bool boolv) Add(boolv);
             else if (v is decimal decv) Add(decv);
             else if (v is double doublev) Add(doublev);
             else if (v is DateTime dtv) Add(dtv);
@@ -2943,6 +2944,20 @@ namespace Greatbone.Web
         public HtmlContent _OPTION()
         {
             Add("</option>");
+            return this;
+        }
+
+        public HtmlContent OPTGROUP_<T>(T v)
+        {
+            Add("<optgroup label=\"");
+            AddPrimitive(v);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _OPTGROUP()
+        {
+            Add("</optgroup>");
             return this;
         }
 

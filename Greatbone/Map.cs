@@ -248,7 +248,7 @@ namespace Greatbone
             return default;
         }
 
-        public void ForEach(Func<K, V, bool> cond, Action<K, V> hand)
+        public void ForEach(Func<K, V, bool> cond, Action<K, V> handler)
         {
             for (int i = 0; i < count; i++)
             {
@@ -256,7 +256,7 @@ namespace Greatbone
                 V value = entries[i].value;
                 if (cond == null || cond(key, value))
                 {
-                    hand(entries[i].key, entries[i].value);
+                    handler(entries[i].key, entries[i].value);
                 }
             }
         }

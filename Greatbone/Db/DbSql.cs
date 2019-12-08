@@ -84,6 +84,8 @@ namespace Greatbone.Db
         // used when generating a list
         internal int ordinal;
 
+        string alias;
+
         internal DbSql(string str)
         {
             charbuf = new char[1024];
@@ -423,11 +425,16 @@ namespace Greatbone.Db
             return this;
         }
 
-        public DbSql collst(IData obj, byte proj = 0x0f)
+        public DbSql collst(IData obj, byte proj = 0x0f, string alias = null)
         {
             ctx = CtxColumnList;
             ordinal = 1;
+
+            this.alias = alias;
+
             obj.Write(this, proj);
+            // restore non-alias
+            this.alias = null;
             return this;
         }
 
@@ -573,6 +580,11 @@ namespace Greatbone.Db
             switch (ctx)
             {
                 case CtxColumnList:
+                    if (alias != null)
+                    {
+                        Add(alias);
+                        Add('.');
+                    }
                     Add('"');
                     Add(name);
                     Add('"');
