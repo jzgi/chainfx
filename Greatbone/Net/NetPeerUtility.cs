@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace Greatbone.Web
+namespace Greatbone.Net
 {
     public static class NetPeerUtility
     {

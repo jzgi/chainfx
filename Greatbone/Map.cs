@@ -50,6 +50,34 @@ namespace Greatbone
 
         public Entry At(int idx) => entries[idx];
 
+        public Entry EntryOf(K key)
+        {
+            var idx = IndexOf(key);
+            if (idx > -1)
+            {
+                return entries[idx];
+            }
+            return default;
+        }
+
+        public V Find(K key, Predicate<V> cond)
+        {
+            var idx = IndexOf(key);
+            if (idx > -1)
+            {
+                var ety = entries[idx];
+                for (int i = 0; i < ety.Size; i++)
+                {
+                    var v = ety[i];
+                    if (cond(v))
+                    {
+                        return v;
+                    }
+                }
+            }
+            return default;
+        }
+
         public K KeyAt(int idx) => entries[idx].Key;
 
         public V ValueAt(int idx) => entries[idx].value;

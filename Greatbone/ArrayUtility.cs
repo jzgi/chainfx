@@ -103,14 +103,21 @@ namespace Greatbone
         {
             if (arr == null) return null;
 
-            int len = arr.Length;
+            int nlen = arr.Length - 1;
 
-            if (index >= len || index < 0) return arr;
+            if (nlen == 0) return null;
 
-            E[] alloc = new E[len - 1];
-            Array.Copy(arr, 0, alloc, 0, index);
-            int next = index + 1;
-            Array.Copy(arr, next, alloc, index, len - next);
+            if (index > nlen || index < 0) return arr;
+
+            E[] alloc = new E[nlen];
+            if (index > 0)
+            {
+                Array.Copy(arr, 0, alloc, 0, index);
+            }
+            if (index < nlen)
+            {
+                Array.Copy(arr, index + 1, alloc, index, nlen - index);
+            }
             return alloc;
         }
 
@@ -167,6 +174,22 @@ namespace Greatbone
 
             return default;
         }
+
+        public static V[] Exract<E, V>(this E[] arr, Func<E, V> expr)
+        {
+            var lst = new ValueList<V>();
+            if (arr != null)
+            {
+                int len = arr.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    E e = arr[i];
+                    lst.Add(expr(e));
+                }
+            }
+            return lst.ToArray();
+        }
+
 
         public static int IndexOf<E>(this E[] arr, Predicate<E> cond)
         {

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.7">
     <PropertyGroup>
-        <Description>Greatbone Library</Description>
+        <Description>Greatbone Library for enterprise Web apps </Description>
         <VersionPrefix>3.5</VersionPrefix>
         <Authors>hismichael</Authors>
         <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -14,6 +14,8 @@
         <PackageProjectUrl>https://github.com/jxtek/greatbone</PackageProjectUrl>
         <RepositoryUrl>https://github.com/jxtek/greatbone</RepositoryUrl>
         <PackageVersion>3.5.1</PackageVersion>
+        <Title>Greatbone Library</Title>
+        <PackageLicenseUrl>https://github.com/jxtek/greatbone/blob/master/LICENSE</PackageLicenseUrl>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>

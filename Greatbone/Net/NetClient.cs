@@ -2,9 +2,10 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Greatbone.Web;
 using static Greatbone.DataUtility;
 
-namespace Greatbone.Web
+namespace Greatbone.Net
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.

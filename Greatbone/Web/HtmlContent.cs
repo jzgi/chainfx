@@ -1231,43 +1231,42 @@ namespace Greatbone.Web
 
         public void PAGENATION(int count, int limit = 20)
         {
-            // pagination
             var act = Web.Action;
             if (act.Subscript != null)
             {
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
-                int subscpt = Web.Subscript;
-                for (int i = 0; i <= subscpt; i++)
-                {
-                    if (subscpt == i)
-                    {
-                        Add("<li class=\"uk-active\">");
-                        Add(i + 1);
-                        Add("</li>");
-                    }
-                    else
-                    {
-                        Add("<li><a href=\"");
-                        Add(act.Key);
-                        Add('-');
-                        Add(i);
-                        Add(Web.QueryStr);
-                        Add("\">");
-                        Add(i + 1);
-                        Add("</a></li>");
-                    }
-                }
 
-                if (count == limit)
+                int page = Web.Subscript;
+                if (page > 0)
                 {
-                    Add("<li class=\"pagination-next\"><a href=\"");
+                    Add("<li class=\"pagination-previous uk-active\">");
+                    Add("<a href=\"");
                     Add(act.Key);
                     Add('-');
-                    Add(subscpt + 1);
+                    Add(page - 1);
                     Add(Web.QueryStr);
-                    Add("\">");
-                    Add(subscpt + 2);
-                    Add("</a></li>");
+                    Add("\">◁</a>");
+                    Add("</li>");
+                }
+                else
+                {
+                    Add("<li class=\"pagination-previous uk-disabled\">◁</li>");
+                }
+
+                if (count >= limit)
+                {
+                    Add("<li class=\"pagination-next uk-active\">");
+                    Add("<a href=\"");
+                    Add(act.Key);
+                    Add('-');
+                    Add(page - 1);
+                    Add(Web.QueryStr);
+                    Add("\">▷</a>");
+                    Add("</li>");
+                }
+                else
+                {
+                    Add("<li class=\"pagination-next uk-disabled\">▷</li>");
                 }
 
                 Add("</ul>");
@@ -1559,7 +1558,7 @@ namespace Greatbone.Web
                 {
                     M obj = arr[i];
                     Add("<div>");
-                    Add("<article class=\"uk-card");
+                    Add("<form class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
@@ -1567,7 +1566,7 @@ namespace Greatbone.Web
                     }
                     Add("\">");
                     card(obj);
-                    Add("</article>");
+                    Add("</form>");
                     Add("</div>");
                 }
             }
@@ -1675,7 +1674,7 @@ namespace Greatbone.Web
 
             if (refresh)
             {
-                Add("<a class=\"uk-icon-button uk-light\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
+                Add("<a class=\"uk-icon-button\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             }
 
             Add("</section>");
@@ -1687,10 +1686,16 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent BOTTOMBAR_()
+        public HtmlContent BOTTOMBAR_(string css = null)
         {
             Add("<div class=\"uk-bottom-placeholder\"></div>");
-            Add("<footer class=\"uk-bottom-bar\">");
+            Add("<footer class=\"uk-bottom-bar");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
             return this;
         }
 
