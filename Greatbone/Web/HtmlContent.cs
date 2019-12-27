@@ -1656,7 +1656,7 @@ namespace Greatbone.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
-                    if (tool.IsAnchor || ctxgrp == 0 || (g & ctxgrp) > 0)
+                    if (tool.IsAnchor || g == 0 || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
                         PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
