@@ -103,7 +103,7 @@ namespace Greatbone.Web
 
         public string Tip => Ui?.Tip;
 
-        public byte Sort => Ui?.Group ?? 0;
+        public byte Group => Ui?.Group ?? 0;
 
         readonly Type type;
 

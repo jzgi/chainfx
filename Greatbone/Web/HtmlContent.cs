@@ -882,22 +882,22 @@ namespace Greatbone.Web
             return this;
         }
 
-        /// <summary>
-        /// A field item
-        /// </summary>
-        /// <param name="label"></param>
-        /// <param name="p"></param>
-        /// <typeparam name="V"></typeparam>
-        /// <returns></returns>
-        public HtmlContent FIELD<V>(string label, V p, bool currency = false)
+        public HtmlContent FIELD<V>(string label, V p)
         {
             LABEL(label);
             Add("<p>");
-            if (currency)
-            {
-                Add('¥');
-            }
             AddPrimitive(p);
+            Add("</p>");
+            return this;
+        }
+
+        public HtmlContent FIELD2<V, X>(string label, V p, X x)
+        {
+            LABEL(label);
+            Add("<p>");
+            AddPrimitive(p);
+            Add("&nbsp;");
+            AddPrimitive(x);
             Add("</p>");
             return this;
         }
@@ -1223,7 +1223,7 @@ namespace Greatbone.Web
                 Add('-');
                 Add(subscript);
             }
-            Add("\">");
+            Add("\" onclick=\"if (this.form) { if (!this.form.reportValidity()) return; this.disabled = true; this.form.submit(); }\">");
             AddEsc(caption);
             Add("</button>");
             return this;
@@ -1645,7 +1645,7 @@ namespace Greatbone.Web
             Add("<div class=\"uk-button-group\">");
             if (toggle)
             {
-                Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return allToggle(this);\">&nbsp;");
+                Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
             }
 
             var acts = Web.Work.Tooled;
@@ -1656,7 +1656,7 @@ namespace Greatbone.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
-                    if (tool.IsAnchor || g == 0 || (g & ctxgrp) > 0)
+                    if (tool.IsAnchor || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
                         PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
@@ -1745,7 +1745,7 @@ namespace Greatbone.Web
                 {
                     var act = acts[i];
                     int g = act.Group;
-                    if (g == 0 || (g & actgrp) > 0)
+                    if (g == actgrp || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
                         PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, null, true, "uk-button-secondary");
@@ -2884,10 +2884,16 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent SELECT_<V>(string label, V name, bool multiple = false, bool required = false, int size = 0, bool rtl = false, bool refresh = false)
+        public HtmlContent SELECT_<V>(string label, V name, bool multiple = false, bool required = false, int size = 0, bool rtl = false, bool refresh = false, string css = null)
         {
             LABEL(label);
-            Add("<select class=\"uk-select\" name=\"");
+            Add("<select class=\"uk-select");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\" name=\"");
             AddPrimitive(name);
             Add("\"");
             if (multiple) Add(" multiple");
@@ -3028,6 +3034,7 @@ namespace Greatbone.Web
             _SELECT();
             return this;
         }
+
 
         public HtmlContent SELECT<K, V>(string label, string name, K[] v, Map<K, V> opt, bool required = false, sbyte size = 0, bool refresh = false)
         {
