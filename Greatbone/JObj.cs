@@ -359,7 +359,16 @@ namespace Greatbone
 
         public override string ToString()
         {
-            return "JObj";
+            var cnt = new JsonContent(4 * 1024, binary: false);
+            try
+            {
+                cnt.Put(null, this);
+                return cnt.ToString();
+            }
+            finally
+            {
+                BufferUtility.Return(cnt.Buffer); // return buffer to pool
+            }
         }
     }
 }

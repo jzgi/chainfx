@@ -371,12 +371,12 @@ namespace Greatbone.Web
             return this;
         }
 
-        public HtmlContent TD(string v, string v2)
+        public HtmlContent TD2<V, X>(V v, X x)
         {
             Add("<td>");
-            AddEsc(v);
+            AddPrimitive(v);
             Add("&nbsp;");
-            AddEsc(v2);
+            AddPrimitive(x);
             Add("</td>");
             return this;
         }
@@ -1622,14 +1622,14 @@ namespace Greatbone.Web
             Add("</main>");
         }
 
-        void OnClickDialog(byte mode, bool pick, byte size, string tip)
+        void OnClickDialog(byte mode, bool pick, Size size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
             Add(",");
             Add(pick);
             Add(",");
-            Add(size);
+            Add((byte) size);
             Add(",'");
             Add(tip);
             Add("');\"");
@@ -1911,9 +1911,7 @@ namespace Greatbone.Web
             else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add(tool.Ordinals);
-                Add(',');
-                Add(tool.Size);
+                Add((byte) tool.Size);
                 Add(",'");
                 Add(tip);
                 Add("');\"");
@@ -2022,9 +2020,7 @@ namespace Greatbone.Web
             else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add(tool.Ordinals);
-                Add(',');
-                Add(tool.Size);
+                Add((byte) tool.Size);
                 Add(",'");
                 Add(tip);
                 Add("');\"");
@@ -3244,7 +3240,7 @@ namespace Greatbone.Web
             Add("px\">");
             Add("<input type=\"file\" id=\"imginp\" style=\"display: none;\" name=\"");
             Add(name);
-            Add("\" onchange=\"bind(this.parentNode, window.URL.createObjectURL(this.files[0]), 0, ");
+            Add("\" onchange=\"bind(this.parentNode, window.URL.createObjectURL(this.files[0]),");
             Add(width);
             Add(',');
             Add(height);

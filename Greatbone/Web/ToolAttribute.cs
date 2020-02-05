@@ -16,11 +16,11 @@ namespace Greatbone.Web
 
         readonly int pick; // form value pick
 
-        readonly byte size;
+        readonly Size size;
 
         readonly bool access;
 
-        public ToolAttribute(Modal modal, byte size = 0, bool access = true)
+        public ToolAttribute(Modal modal, Size size = Size.Half, bool access = true)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
@@ -30,9 +30,7 @@ namespace Greatbone.Web
             this.access = access;
         }
 
-        public byte Size => size;
-
-        public int Ordinals { get; set; }
+        public Size Size => size;
 
         public bool IsAnchorTag => element == 0x1000;
 
