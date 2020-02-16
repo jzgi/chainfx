@@ -1,6 +1,6 @@
-# The Greatbone Framework  
+# The ChainBase Enterprise Library  
 
-Initially developed in Sowmob Ltd (江西雄猫), the Greatbone framework has been addressing enterprise complexity and powering many Web applications in a compact approach.
+The ChainBase framework has been addressing enterprise complexity and powering many Web applications in a compact approach.
 
 The framwork introduces a new server-side architectural model called contextual Web programming.
 
