@@ -280,10 +280,13 @@ namespace ChainBase.Web
         }
 
 
-        public HtmlContent TH(string caption)
+        public HtmlContent TH(string caption = null)
         {
             Add("<th>");
-            Add(caption);
+            if (caption != null)
+            {
+                Add(caption);
+            }
             Add("</th>");
             return this;
         }
@@ -423,6 +426,21 @@ namespace ChainBase.Web
         public HtmlContent _TD()
         {
             Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TDFORM(Action rowform)
+        {
+            if (rowform != null)
+            {
+                Add("<td style=\"text-align: right\">");
+                Add("<form class=\"uk-button-group\">");
+
+                rowform();
+
+                Add("</form>");
+                Add("</td>");
+            }
             return this;
         }
 
@@ -1460,7 +1478,7 @@ namespace ChainBase.Web
         }
 
 
-        public void TABLE<M>(M[] arr, Action<M> row, Action<M> rowform = null, Action thead = null, short height = 0)
+        public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, short height = 0)
         {
             Add("<div ");
             if (height > 0)
@@ -1475,7 +1493,7 @@ namespace ChainBase.Web
             }
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
 
-            if (arr != null && row != null) // tbody if having data objects
+            if (arr != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
                 if (thead != null)
@@ -1486,19 +1504,7 @@ namespace ChainBase.Web
                 {
                     var obj = arr[i];
                     Add("<tr>");
-
-                    row(obj);
-
-                    if (rowform != null)
-                    {
-                        Add("<td style=\"text-align: right\">");
-                        Add("<form class=\"uk-button-group\">");
-
-                        rowform(obj);
-
-                        Add("</form>");
-                        Add("</td>");
-                    }
+                    tr(obj);
                     Add("</tr>");
                 }
                 Add("</tbody>");
