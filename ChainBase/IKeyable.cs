@@ -15,6 +15,6 @@ namespace ChainBase
         /// </summary>
         /// <param name="akey"></param>
         /// <returns></returns>
-        bool GroupAs(K akey);
+        bool GroupWith(K akey);
     }
 }

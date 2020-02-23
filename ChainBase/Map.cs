@@ -177,7 +177,7 @@ namespace ChainBase
             if (value is IGroupKeyable<K> gkeyable)
             {
                 // compare to current head
-                if (head == -1 || !gkeyable.GroupAs(entries[head].key))
+                if (head == -1 || !gkeyable.GroupWith(entries[head].key))
                 {
                     head = idx;
                 }

@@ -3015,44 +3015,40 @@ namespace ChainBase.Web
 
             if (opt != null)
             {
-                lock (opt)
+                bool grpopen = false;
+                for (int i = 0; i < opt.Count; i++)
                 {
-                    bool grpopen = false;
-                    for (int i = 0; i < opt.Count; i++)
+                    var e = opt.At(i);
+                    if (filter != null && !filter(e.Value)) continue;
+                    if (e.IsHead)
                     {
-                        var e = opt.At(i);
-                        if (filter != null && !filter(e.Value)) continue;
-                        if (e.IsHead)
+                        if (grpopen)
                         {
-                            if (grpopen)
-                            {
-                                Add("</optgroup>");
-                                grpopen = false;
-                            }
-
-                            Add("<optgroup label=\"");
-                            AddPrimitive(e.Value);
-                            Add("\">");
-                            grpopen = true;
+                            Add("</optgroup>");
+                            grpopen = false;
                         }
-                        else
-                        {
-                            var key = e.Key;
-                            Add("<option value=\"");
-                            AddPrimitive(key);
-                            Add("\"");
-                            if (key.Equals(v)) Add(" selected");
-                            Add(">");
-                            AddPrimitive(e.Value);
-                            Add("</option>");
-                        }
+                        Add("<optgroup label=\"");
+                        AddPrimitive(e.Value);
+                        Add("\">");
+                        grpopen = true;
                     }
-
-                    if (grpopen)
+                    else
                     {
-                        Add("</optgroup>");
-                        grpopen = false;
+                        var key = e.Key;
+                        Add("<option value=\"");
+                        AddPrimitive(key);
+                        Add("\"");
+                        if (key.Equals(v)) Add(" selected");
+                        Add(">");
+                        AddPrimitive(e.Value);
+                        Add("</option>");
                     }
+                }
+
+                if (grpopen)
+                {
+                    Add("</optgroup>");
+                    grpopen = false;
                 }
             }
 
