@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ChainBase
 {
@@ -53,29 +54,24 @@ namespace ChainBase
             {
                 return v;
             }
-
             int len = arr.Length;
             int vlen = v.Length;
-
-            ValueList<E> lst = new ValueList<E>();
+            var lst = new ValueList<E>();
             for (int i = 0; i < vlen; i++) // out loop
             {
                 var t = v[i];
                 if (t == null) continue;
-
                 bool dup = false; // found duplicate
                 for (int k = 0; k < len; k++) // match among arr elements
                 {
                     var a = arr[k];
                     if (a == null) continue;
-
                     if (a.Equals(t))
                     {
                         dup = true;
                         break;
                     }
                 }
-
                 if (!dup)
                 {
                     lst.Add(t);
@@ -92,10 +88,8 @@ namespace ChainBase
                 {
                     alloc[len + i] = lst[i];
                 }
-
                 return alloc;
             }
-
             return arr;
         }
 
@@ -144,6 +138,16 @@ namespace ChainBase
 
             return arr;
         }
+
+        public static E[] RemovedOf<E>(this E[] arr, E[] cond)
+        {
+            var lst = new List<E>(arr);
+            lst.RemoveAll(e =>
+                cond.IndexOf(e) != -1
+            );
+            return lst.ToArray();
+        }
+
 
         public static E First<E>(this E[] arr, Predicate<E> cond)
         {

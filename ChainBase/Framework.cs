@@ -35,10 +35,6 @@ namespace ChainBase
         // configuration processing
         //
 
-        public static readonly JObj Config;
-
-        public static readonly JObj Web, Db, Net, Ext;
-
         // logging level
         internal static readonly int logging = 3;
 
@@ -48,13 +44,14 @@ namespace ChainBase
 
         internal static readonly string certpasswd;
 
+        public static readonly JObj WEB, DB, NET, EXT; // various config parts
+
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
         static readonly Map<string, NetClient> peers = new Map<string, NetClient>(32);
 
-        static readonly Map<string, DbSource> sources = new Map<string, DbSource>(4);
-
+        static readonly DbSource dbsource;
 
         internal static readonly FrameworkLogger Logger;
 
@@ -70,12 +67,12 @@ namespace ChainBase
             //
             byte[] bytes = File.ReadAllBytes(APP_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
-            Config = (JObj) parser.Parse();
+            var cfg = (JObj) parser.Parse();
 
-            logging = Config[nameof(logging)];
-            cipher = Config[nameof(cipher)];
+            logging = cfg[nameof(logging)];
+            cipher = cfg[nameof(cipher)];
             sign = cipher.ToString();
-            certpasswd = Config[nameof(certpasswd)];
+            certpasswd = cfg[nameof(certpasswd)];
 
             // setup logger first
             //
@@ -86,33 +83,20 @@ namespace ChainBase
             };
             if (!File.Exists(APP_JSON))
             {
-                Logger.Log(LogLevel.Error, APP_JSON + " not found");
+                Logger.Log(LogLevel.Error, APP_JSON + " file not found");
                 return;
             }
 
-            Web = Config["WEB"];
-            Db = Config["DB"];
-            Net = Config["NET"];
-            Ext = Config["EXT"];
+            WEB = cfg["WEB"];
+            EXT = cfg["EXT"];
 
-            if (Db != null)
+            // setup chain net peer references
+            NET = cfg["NET"];
+            if (NET != null)
             {
-                for (var i = 0; i < Db.Count; i++)
+                for (var i = 0; i < NET.Count; i++)
                 {
-                    var e = Db.At(i);
-                    sources.Add(new DbSource(e.Value)
-                    {
-                        Name = e.Key
-                    });
-                }
-            }
-
-            // references
-            if (Net != null)
-            {
-                for (var i = 0; i < Net.Count; i++)
-                {
-                    var e = Net.At(i);
+                    var e = NET.At(i);
                     peers.Add(new NetClient(e.Key, e.value)
                     {
                         Clustered = true
@@ -120,6 +104,12 @@ namespace ChainBase
                 }
             }
 
+            // setup the only db source
+            DB = cfg["DB"];
+            if (DB != null)
+            {
+                dbsource = new DbSource(DB);
+            }
 
             // create and start the scheduler thead
             if (polls != null)
@@ -147,40 +137,25 @@ namespace ChainBase
 
         public static T CreateService<T>(string name) where T : WebService, new()
         {
-            JObj web = Config["WEB"];
-            if (web == null)
+            if (WEB == null)
             {
                 throw new FrameworkException("Missing 'WEB' in " + APP_JSON);
             }
-
-            JObj cfg = web[name];
-            if (cfg == null)
+            string addr = WEB[name];
+            if (addr == null)
             {
-                throw new FrameworkException("missing '" + name + "' service in " + APP_JSON);
+                throw new FrameworkException("missing WEB '" + name + "' in " + APP_JSON);
             }
-
+            // create service
             var svc = new T
             {
-                Name = name, Config = cfg
+                Name = name,
+                Address = addr
             };
             services.Add(name, svc);
 
             svc.OnCreate();
             return svc;
-        }
-
-
-        public static DbSource GetDbSource(string name) => name != null ? sources[name] : sources.ValueAt(0);
-
-        public static DbContext NewDbContext(string source, IsolationLevel? level = null)
-        {
-            var src = GetDbSource(source);
-            if (src == null)
-            {
-                throw new FrameworkException("missing DB '" + source + "' in " + APP_JSON);
-            }
-
-            return src.NewDbContext(level);
         }
 
 
@@ -300,6 +275,190 @@ namespace ChainBase
                 certificate.FriendlyName = issuer;
 
                 return new X509Certificate2(certificate.Export(X509ContentType.Pfx, password), password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+            }
+        }
+
+        //
+        // db-object cache
+        //
+
+        public static DbSource DbSource() => dbsource;
+
+        public static DbContext NewDbContext(IsolationLevel? level = null)
+        {
+            if (dbsource == null)
+            {
+                throw new FrameworkException("missing DB in " + APP_JSON);
+            }
+            return dbsource.NewDbContext(level);
+        }
+
+        static Cell[] cells;
+
+        static int size;
+
+        public static void Attach(object value, byte flag = 0)
+        {
+            if (cells == null)
+            {
+                cells = new Cell[32];
+            }
+
+            cells[size++] = new Cell(value, flag);
+        }
+
+        public static void Attach<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+        {
+            if (cells == null)
+            {
+                cells = new Cell[8];
+            }
+
+            cells[size++] = new Cell(typeof(V), fetch, maxage, flag);
+        }
+
+        public static void Attach<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        {
+            if (cells == null)
+            {
+                cells = new Cell[8];
+            }
+
+            cells[size++] = new Cell(typeof(V), fetchAsync, maxage, flag);
+        }
+
+        /// <summary>
+        /// Search for typed object in this scope and the scopes of ancestors; 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>the result object or null</returns>
+        public static T Obtain<T>(byte flag = 0) where T : class
+        {
+            if (cells != null)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    var c = cells[i];
+                    if (c.Flag == 0 || (c.Flag & flag) > 0)
+                    {
+                        if (!c.IsAsync && typeof(T).IsAssignableFrom(c.Typ))
+                        {
+                            using var dc = NewDbContext();
+                            return c.GetValue(dc) as T;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
+        {
+            if (cells != null)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    var cell = cells[i];
+                    if (cell.Flag == 0 || (cell.Flag & flag) > 0)
+                    {
+                        if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
+                        {
+                            using var dc = NewDbContext();
+                            return await cell.GetValueAsync(dc) as T;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// A object holder in registry.
+        /// </summary>
+        class Cell
+        {
+            readonly Type typ;
+
+            readonly Func<DbContext, object> fetch;
+
+            readonly Func<DbContext, Task<object>> fetchAsync;
+
+            readonly int maxage; //in seconds
+
+            // tick count,   
+            int expiry;
+
+            object value;
+
+            readonly byte flag;
+
+            internal Cell(object value, byte flag)
+            {
+                this.typ = value.GetType();
+                this.value = value;
+                this.flag = flag;
+            }
+
+            internal Cell(Type typ, Func<DbContext, object> fetch, int maxage, byte flag)
+            {
+                this.typ = typ;
+                this.flag = flag;
+                if (fetch is Func<DbContext, Task<object>> fetch2)
+                {
+                    this.fetchAsync = fetch2;
+                }
+                else
+                {
+                    this.fetch = fetch;
+                }
+
+                this.maxage = maxage;
+            }
+
+            public Type Typ => typ;
+
+            public byte Flag => flag;
+
+            public bool IsAsync => fetchAsync != null;
+
+            public object GetValue(DbContext dc)
+            {
+                if (fetch == null) // simple object
+                {
+                    return value;
+                }
+
+                lock (fetch) // cache object
+                {
+                    if (Environment.TickCount >= expiry)
+                    {
+                        value = fetch(dc);
+                        expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                    }
+
+                    return value;
+                }
+            }
+
+            public async Task<object> GetValueAsync(DbContext dc)
+            {
+                if (fetchAsync == null) // simple object
+                {
+                    return value;
+                }
+
+                int lexpiry = this.expiry;
+                int ticks = Environment.TickCount;
+                if (ticks >= lexpiry)
+                {
+                    value = await fetchAsync(dc);
+                    expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                }
+
+                return value;
             }
         }
     }

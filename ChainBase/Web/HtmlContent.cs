@@ -218,6 +218,37 @@ namespace ChainBase.Web
             return this;
         }
 
+        public HtmlContent S2<V>(V v, bool cond = true)
+        {
+            if (cond)
+            {
+                Add("<s>");
+            }
+            AddPrimitive(v);
+            if (cond)
+            {
+                Add("</s>");
+            }
+
+            return this;
+        }
+
+        public HtmlContent S2<V, X>(V v, X x, bool cond = true)
+        {
+            if (cond)
+            {
+                Add("<s>");
+            }
+            AddPrimitive(v);
+            Add("&nbsp;");
+            AddPrimitive(x);
+            if (cond)
+            {
+                Add("</s>");
+            }
+            return this;
+        }
+
 
         public HtmlContent BR()
         {
@@ -241,6 +272,25 @@ namespace ChainBase.Web
         {
             Add("<mark>");
             AddPrimitive(v);
+            Add("</mark>");
+            return this;
+        }
+
+        public HtmlContent MARK_(string css = null)
+        {
+            Add("<mark");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _MARK()
+        {
             Add("</mark>");
             return this;
         }
@@ -973,17 +1023,25 @@ namespace ChainBase.Web
             return this;
         }
 
-        public HtmlContent CNY(decimal v, bool em = false)
+        public HtmlContent CNY(decimal v, bool? em = null)
         {
             Add('¥');
-            if (em)
+            if (em == true)
             {
                 Add("<em>");
             }
+            else if (em == false)
+            {
+                Add("<s>");
+            }
             Add(v);
-            if (em)
+            if (em == true)
             {
                 Add("</em>");
+            }
+            if (em == false)
+            {
+                Add("</s>");
             }
 
             return this;
@@ -1236,7 +1294,7 @@ namespace ChainBase.Web
 
         public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string css = "uk-button-default")
         {
-            Add("<button class=\"uk-button ");
+            Add("<button type=\"submit\" class=\"uk-button ");
             Add(css);
             Add("\" formmethod=\"");
             Add(post ? "post" : "get");
@@ -1250,7 +1308,7 @@ namespace ChainBase.Web
                 Add('-');
                 Add(subscript);
             }
-            Add("\" onclick=\"if (this.form) { if (!this.form.reportValidity()) return; this.disabled = true; this.form.submit(); }\">");
+            Add("\" onclick=\"if (this.form) { if (!this.form.reportValidity()) return; this.disabled = true; this.form.action = this.formAction; this.form.submit(); }\">");
             AddEsc(caption);
             Add("</button>");
             return this;
@@ -1467,10 +1525,14 @@ namespace ChainBase.Web
             return this;
         }
 
-        public HtmlContent TDCHECK<K>(K key)
+        public HtmlContent TDCHECK<K>(K key, bool toolbar = true)
         {
-            Add("<td style=\"width: 1%\">");
-            Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+            Add("<td style=\"width: 1%\"><input");
+            if (toolbar)
+            {
+                Add(" form=\"tool-bar-form\"");
+            }
+            Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(key);
             Add("\" onchange=\"checkToggle(this);\">");
             Add("</td>");
@@ -2592,18 +2654,13 @@ namespace ChainBase.Web
             return this;
         }
 
-        public HtmlContent CHECKBOX<V>(string label, string name, V v, bool check, string tip = null, bool required = false)
+        public HtmlContent CHECKBOX<V>(string label, string name, V v, bool check, string tip = null, bool required = false, bool disabled = false)
         {
             LABEL(label);
             if (tip != null)
             {
                 Add("<label>");
             }
-//            else
-//            {
-//                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
-//            }
-
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -2611,45 +2668,13 @@ namespace ChainBase.Web
             Add("\"");
             if (check) Add(" checked");
             if (required) Add("\" required");
+            if (disabled) Add("\" disabled");
             Add(">");
             if (tip != null)
             {
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }
-//            else
-//            {
-//                Add("</div>");
-//            }
-
-            return this;
-        }
-
-
-        public HtmlContent KEYCHECKBOX<V>(string label, V v, bool check = false, bool toolbar = true, bool required = false)
-        {
-            if (label != null)
-            {
-                Add("<label>");
-            }
-
-            Add("<input");
-            if (toolbar)
-            {
-                Add(" form=\"tool-bar-form\"");
-            }
-            Add(" type=\"checkbox\" class=\"uk-checkbox\" name=\"key\" value=\"");
-            AddPrimitive(v);
-            Add("\"");
-            if (check) Add(" checked");
-            if (required) Add("\" required");
-            Add("\" onchange=\"checkToggle(this);\">");
-            if (label != null)
-            {
-                Add(label); // caption following the checkbox
-                Add("</label>");
-            }
-
             return this;
         }
 
@@ -2781,7 +2806,6 @@ namespace ChainBase.Web
                     }
                 }
             }
-
             _FIELDSUL();
             return this;
         }
@@ -2844,14 +2868,20 @@ namespace ChainBase.Web
 
         public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
         {
-            FIELDSUL_(legend, css);
+            if (legend != null)
+            {
+                FIELDSUL_(legend, css);
+            }
             for (int i = 0; i < opt.Length; i++)
             {
                 var o = opt[i];
+                if (i > 0) Add("&nbsp;&nbsp;");
                 RADIO(name, o, o, o.Equals(v));
             }
-
-            _FIELDSUL();
+            if (legend != null)
+            {
+                _FIELDSUL();
+            }
             return this;
         }
 

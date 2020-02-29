@@ -20,8 +20,6 @@ namespace ChainBase.Db
 
         readonly string connstr;
 
-        readonly Map<uint, DbType> composites = new Map<uint, DbType>(64);
-
         internal DbSource(JObj s)
         {
             s.Get(nameof(host), ref host);

@@ -131,7 +131,7 @@ namespace ChainBase.Net
         {
             if (Clustered)
             {
-                var cfg = Framework.Config;
+                // var cfg = Framework.Config;
 //                req.Headers.TryAddWithoutValidation("X-Caller-Sign", Framework.sign);
 //                req.Headers.TryAddWithoutValidation("X-Caller-Name", cfg.name);
 //                req.Headers.TryAddWithoutValidation("X-Caller-Shard", cfg.shard);

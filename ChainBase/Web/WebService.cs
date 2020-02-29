@@ -22,16 +22,13 @@ namespace ChainBase.Web
         //
         // http implementation
 
-        string[] addrs;
-
-        // shared cache or not
-        bool cache = true;
+        string address;
 
         // cache of responses
-        ConcurrentDictionary<string, Response> _cache;
+        readonly ConcurrentDictionary<string, Response> _cache;
 
         // the embedded HTTP server
-        KestrelServer server;
+        readonly KestrelServer server;
 
         // the response cache cleaner thread
         Thread cleaner;
@@ -41,41 +38,26 @@ namespace ChainBase.Web
             Service = this;
             Directory = "/";
             Pathing = "/";
+
+            // create the response cache
+            int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
+            _cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
+
+            // create the embedded server instance
+            var opts = new KestrelServerOptions();
+            var factory = new LoggerFactory();
+            factory.AddProvider(Framework.Logger);
+            server = new KestrelServer(Options.Create(opts), Framework.TransportFactory, factory);
         }
 
-        internal JObj Config
+        internal string Address
         {
+            get => address;
+            // set server addr
             set
             {
-                var cfg = value;
-
-                // retrieve config settings
-                cfg.Get(nameof(addrs), ref addrs);
-                if (addrs == null)
-                {
-                    throw new FrameworkException("Missing 'addrs' configuration");
-                }
-
-                cfg.Get(nameof(cache), ref cache);
-                if (cache)
-                {
-                    int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-                    // create the response cache
-                    _cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
-                }
-
-                // create the HTTP embedded server
-                //
-                var opts = new KestrelServerOptions();
-                var logf = new LoggerFactory();
-                logf.AddProvider(Framework.Logger);
-                server = new KestrelServer(Options.Create(opts), Framework.TransportFactory, logf);
-
-                var coll = server.Features.Get<IServerAddressesFeature>().Addresses;
-                foreach (string a in addrs)
-                {
-                    coll.Add(a.Trim());
-                }
+                address = value;
+                server.Features.Get<IServerAddressesFeature>().Addresses.Add(address);
             }
         }
 
@@ -202,7 +184,7 @@ namespace ChainBase.Web
         {
             await server.StartAsync(this, token);
 
-            Console.WriteLine(Name + " started at " + addrs[0]);
+            Console.WriteLine(Name + " started at " + address[0]);
 
             // create and start the cleaner thread
             if (_cache != null)
