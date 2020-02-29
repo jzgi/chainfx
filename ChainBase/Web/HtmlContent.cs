@@ -1344,7 +1344,7 @@ namespace ChainBase.Web
                     Add("<a href=\"");
                     Add(act.Key);
                     Add('-');
-                    Add(page - 1);
+                    Add(page + 1);
                     Add(Web.QueryStr);
                     Add("\">▷</a>");
                     Add("</li>");

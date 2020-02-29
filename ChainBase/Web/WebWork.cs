@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using ChainBase.Db;
 
 namespace ChainBase.Web
 {
@@ -424,6 +426,120 @@ namespace ChainBase.Web
         public override string ToString()
         {
             return Name;
+        }
+
+        //
+        // logging methods
+        //
+
+        public static void TRC(string msg, Exception ex = null)
+        {
+            Framework.TRC(msg, ex);
+        }
+
+        public static void DBG(string msg, Exception ex = null)
+        {
+            Framework.DBG(msg, ex);
+        }
+
+        public static void INF(string msg, Exception ex = null)
+        {
+            Framework.INF(msg, ex);
+        }
+
+        public static void WAR(string msg, Exception ex = null)
+        {
+            Framework.WAR(msg, ex);
+        }
+
+        public static void ERR(string msg, Exception ex = null)
+        {
+            Framework.ERR(msg, ex);
+        }
+
+        public static DbContext NewDbContext(IsolationLevel? level = null)
+        {
+            return Framework.NewDbContext(level);
+        }
+
+        public static T Retrieve<T>(byte flag = 0) where T : class
+        {
+            return Framework.Retrieve<T>(flag);
+        }
+
+        public static async Task<T> RetrieveAsync<T>(byte flag = 0) where T : class
+        {
+            return await Framework.RetrieveAsync<T>(flag);
+        }
+
+
+        //
+        // object locator
+
+        Cell[] cells;
+
+        int size;
+
+        public void Attach(object value, byte flag = 0)
+        {
+            if (cells == null)
+            {
+                cells = new Cell[16];
+            }
+            cells[size++] = new Cell(value, flag);
+        }
+
+
+        public T Lookup<T>(byte flag = 0) where T : class
+        {
+            if (cells != null)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    var c = cells[i];
+                    if (c.Flag == 0 || (c.Flag & flag) > 0)
+                    {
+                        if (typeof(T).IsAssignableFrom(c.Typ))
+                        {
+                            return c.Value as T;
+                        }
+                    }
+                }
+            }
+            return Parent?.Lookup<T>(flag);
+        }
+
+
+        /// <summary>
+        /// A object holder in registry.
+        /// </summary>
+        class Cell
+        {
+            readonly Type typ;
+
+            readonly object value;
+
+            readonly byte flag;
+
+            internal Cell(object value, byte flag)
+            {
+                this.typ = value.GetType();
+                this.value = value;
+                this.flag = flag;
+            }
+
+            internal Cell(Type typ, object value, byte flag)
+            {
+                this.typ = typ;
+                this.flag = flag;
+                this.value = value;
+            }
+
+            public Type Typ => typ;
+
+            public byte Flag => flag;
+
+            public object Value => value;
         }
     }
 }
