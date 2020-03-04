@@ -433,9 +433,16 @@ namespace ChainBase.Web
             return this;
         }
 
-        public HtmlContent TD2<V, X>(V v, X x)
+        public HtmlContent TD2<V, X>(V v, X x, string css = null)
         {
-            Add("<td>");
+            Add("<td");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add('>');
             AddPrimitive(v);
             Add("&nbsp;");
             AddPrimitive(x);
@@ -485,9 +492,7 @@ namespace ChainBase.Web
             {
                 Add("<td style=\"text-align: right\">");
                 Add("<form class=\"uk-button-group\">");
-
                 rowform();
-
                 Add("</form>");
                 Add("</td>");
             }
@@ -1308,7 +1313,7 @@ namespace ChainBase.Web
                 Add('-');
                 Add(subscript);
             }
-            Add("\" onclick=\"if (this.form) { if (!this.form.reportValidity()) return; this.disabled = true; this.form.action = this.formAction; this.form.submit(); }\">");
+            Add("\" onclick=\"if (this.form) { if (!this.form.reportValidity()) return; this.disabled = true; this.form.method = this.formMethod; this.form.action = this.formAction; this.form.submit(); }\">");
             AddEsc(caption);
             Add("</button>");
             return this;
@@ -1810,7 +1815,7 @@ namespace ChainBase.Web
 
         public HtmlContent VARTOOLBAR<K>(K varkey, int subscript = -1, string pick = null, string css = null)
         {
-            Add("<nav class=\"uk-flex uk-flex-middle");
+            Add("<nav class=\"uk-flex uk-button-group");
             if (css != null)
             {
                 Add(' ');
@@ -1920,7 +1925,7 @@ namespace ChainBase.Web
             // check action's availability
             //
             bool ok = enabled && act.DoAuthorize(Web);
-            tip = tip ?? act.Tip;
+            tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
             {

@@ -462,14 +462,14 @@ namespace ChainBase.Web
             return Framework.NewDbContext(level);
         }
 
-        public static T Retrieve<T>(byte flag = 0) where T : class
+        public static T Obtain<T>(byte flag = 0) where T : class
         {
-            return Framework.Retrieve<T>(flag);
+            return Framework.Obtain<T>(flag);
         }
 
-        public static async Task<T> RetrieveAsync<T>(byte flag = 0) where T : class
+        public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            return await Framework.RetrieveAsync<T>(flag);
+            return await Framework.ObtainAsync<T>(flag);
         }
 
 

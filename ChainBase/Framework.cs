@@ -332,7 +332,7 @@ namespace ChainBase
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>the result object or null</returns>
-        public static T Retrieve<T>(byte flag = 0) where T : class
+        public static T Obtain<T>(byte flag = 0) where T : class
         {
             if (cells != null)
             {
@@ -353,7 +353,7 @@ namespace ChainBase
             return null;
         }
 
-        public static async Task<T> RetrieveAsync<T>(byte flag = 0) where T : class
+        public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
             if (cells != null)
             {
