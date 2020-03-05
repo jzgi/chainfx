@@ -30,7 +30,7 @@ namespace ChainBase.Web
         Map<string, WebWork> works;
 
         // variable-key subwork, if any
-        WebVarWork varwork;
+        WebWork varwork;
 
 
         public string Name { get; internal set; }
@@ -131,7 +131,7 @@ namespace ChainBase.Web
 
         public Map<string, WebWork> Works => works;
 
-        public WebVarWork VarWork => varwork;
+        public WebWork VarWork => varwork;
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
@@ -143,6 +143,15 @@ namespace ChainBase.Web
         {
             return Path.Combine(Directory, file);
         }
+
+        // to resolve from the principal object.
+        public Func<IData, object> Accessor { get; internal set; }
+
+        public object GetAccessor(IData prin)
+        {
+            return Accessor?.Invoke(prin);
+        }
+
 
         protected internal virtual void OnCreate()
         {
@@ -166,7 +175,7 @@ namespace ChainBase.Web
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T CreateVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebVarWork, new()
+        protected T CreateVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             var wrk = new T
             {
