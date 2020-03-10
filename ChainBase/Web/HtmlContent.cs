@@ -1081,6 +1081,98 @@ namespace ChainBase.Web
             return this;
         }
 
+        public HtmlContent A_HREF_(string a, string css = null)
+        {
+            Add("<a");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(" href=\"");
+
+            AddEsc(a);
+
+            Add("\"");
+
+            return this;
+        }
+
+        public HtmlContent A_HREF_<A, B>(A a, B b, string css = null)
+        {
+            Add("<a");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(" href=\"");
+
+            AddPrimitive(a);
+            AddPrimitive(b);
+
+            Add("\"");
+
+            return this;
+        }
+
+        public HtmlContent A_HREF_<A, B, C>(A a, B b, C c, string css = null)
+        {
+            Add("<a");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(" href=\"");
+
+            AddPrimitive(a);
+            AddPrimitive(b);
+            AddPrimitive(c);
+
+            Add("\"");
+
+            return this;
+        }
+
+        public HtmlContent _ONCLICK_(string a)
+        {
+            Add(" onclick=\"");
+            AddEsc(a);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _ONCLICK_<A, B>(A a, B b)
+        {
+            Add(" onclick=\"");
+            AddPrimitive(a);
+            AddPrimitive(b);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _ONCLICK_<A, B, C>(A a, B b, C c)
+        {
+            Add(" onclick=\"");
+            AddPrimitive(a);
+            AddPrimitive(b);
+            AddPrimitive(c);
+
+            Add("\">");
+            return this;
+        }
+
+
+        public HtmlContent _A()
+        {
+            Add("</a>");
+            return this;
+        }
+
         public HtmlContent PIC_(string css = null, bool circle = false)
         {
             Add("<div class=\"uk-margin-auto-vertical");
@@ -1089,25 +1181,22 @@ namespace ChainBase.Web
                 Add(' ');
                 Add(css);
             }
-
-            Add("\"><img");
+            Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
                 Add(" class=\"uk-border-circle\"");
             }
-
             Add(" src=\"");
             return this;
         }
 
         public HtmlContent _PIC()
         {
-            Add("\">");
-            Add("</div>");
+            Add("\"></div>");
             return this;
         }
 
-        public HtmlContent PIC(string src, string css = null, bool circle = true)
+        public HtmlContent PIC(string src, string css = null, bool circle = false)
         {
             PIC_(css, circle);
             Add(src);
