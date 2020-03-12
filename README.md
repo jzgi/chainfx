@@ -1,16 +1,16 @@
-# The ChainBase Enterprise Library  
+# The CloudUn Enterprise Library  
 
-The ChainBase framework has been addressing enterprise complexity and powering many Web applications in a compact approach.
+The CloudUn framework has been addressing enterprise complexity and powering many Web applications in a compact approach.
 
-The framwork introduces a new server-side architectural model called contextual Web programming.
+The framework introduces a new server-side architectural model called contextual Web programming.
 
 * Lightweight -- About 250K in size 
 * High performance -- Exploit async I/O, built-in optimized caching. 
-* Concise data API -- Same or similiar APIs for operating difference data formats
-* Rapid workflow implementation -- The code structure already implies workflow logics, UI can be derived accordingly 
+* Concise data API -- Unified APIs for dealing with difference data formats
+* Rapid workflow implementation -- The code structure already implies workflow logic, UI can be derived accordingly 
 
 <pre>
-dotnet add package Greatbone --version 3.5.0
+dotnet add package CloudUn --version 1.0.0
 </pre>
 
 # Dependencies
