@@ -297,7 +297,9 @@ namespace CloudUn
 
         static int size;
 
-        public static void Attach(object value, byte flag = 0)
+        static ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
+
+        public static void Cache(object value, byte flag = 0)
         {
             if (cells == null)
             {
@@ -307,7 +309,7 @@ namespace CloudUn
             cells[size++] = new Cell(value, flag);
         }
 
-        public static void Attach<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+        public static void Cache<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
             if (cells == null)
             {
@@ -317,7 +319,7 @@ namespace CloudUn
             cells[size++] = new Cell(typeof(V), fetch, maxage, flag);
         }
 
-        public static void Attach<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void Cache<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
             if (cells == null)
             {
@@ -343,8 +345,7 @@ namespace CloudUn
                     {
                         if (!c.IsAsync && typeof(T).IsAssignableFrom(c.Typ))
                         {
-                            using var dc = NewDbContext();
-                            return c.GetValue(dc) as T;
+                            return c.GetValue() as T;
                         }
                     }
                 }
@@ -364,8 +365,7 @@ namespace CloudUn
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
                         {
-                            using var dc = NewDbContext();
-                            return await cell.GetValueAsync(dc) as T;
+                            return await cell.GetValueAsync() as T;
                         }
                     }
                 }
@@ -424,26 +424,39 @@ namespace CloudUn
 
             public bool IsAsync => fetchAsync != null;
 
-            public object GetValue(DbContext dc)
+            public object GetValue()
             {
                 if (fetch == null) // simple object
                 {
                     return value;
                 }
 
-                lock (fetch) // cache object
+                @lock.EnterUpgradeableReadLock();
+                try
                 {
                     if (Environment.TickCount >= expiry)
                     {
-                        value = fetch(dc);
-                        expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                        @lock.EnterWriteLock();
+                        try
+                        {
+                            using var dc = NewDbContext();
+                            value = fetch(dc);
+                            expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                        }
+                        finally
+                        {
+                            @lock.ExitWriteLock();
+                        }
                     }
-
                     return value;
+                }
+                finally
+                {
+                    @lock.ExitUpgradeableReadLock();
                 }
             }
 
-            public async Task<object> GetValueAsync(DbContext dc)
+            public async Task<object> GetValueAsync()
             {
                 if (fetchAsync == null) // simple object
                 {
@@ -454,6 +467,7 @@ namespace CloudUn
                 int ticks = Environment.TickCount;
                 if (ticks >= lexpiry)
                 {
+                    using var dc = NewDbContext();
                     value = await fetchAsync(dc);
                     expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
                 }

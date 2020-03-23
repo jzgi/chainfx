@@ -341,6 +341,27 @@ namespace CloudUn.Web
             return this;
         }
 
+        public HtmlContent TH_(string css = null)
+        {
+            Add("<th");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _TH()
+        {
+            Add("</th>");
+            return this;
+        }
+
+
         public HtmlContent TD(bool v)
         {
             Add("<td style=\"text-align: center\">");
@@ -576,6 +597,16 @@ namespace CloudUn.Web
         {
             SPAN_(css);
             AddPrimitive(v);
+            _SPAN();
+            return this;
+        }
+
+        public HtmlContent SPAN2<A, B>(A a, B b, string css = null)
+        {
+            SPAN_(css);
+            AddPrimitive(a);
+            Add("&nbsp;");
+            AddPrimitive(b);
             _SPAN();
             return this;
         }
@@ -1028,25 +1059,25 @@ namespace CloudUn.Web
             return this;
         }
 
-        public HtmlContent CNY(decimal v, bool? em = null)
+        public HtmlContent CNY(decimal v, bool em = false, bool s = false)
         {
             Add('¥');
-            if (em == true)
+            if (em)
             {
                 Add("<em>");
             }
-            else if (em == false)
+            if (s)
             {
                 Add("<s>");
             }
             Add(v);
-            if (em == true)
-            {
-                Add("</em>");
-            }
-            if (em == false)
+            if (s)
             {
                 Add("</s>");
+            }
+            if (em)
+            {
+                Add("</em>");
             }
 
             return this;
@@ -1305,6 +1336,28 @@ namespace CloudUn.Web
             Add(p);
             Add("</p>");
             _ALERT();
+            return this;
+        }
+
+        public HtmlContent SUBNAV(string[] items, string uri, int subscript)
+        {
+            Add("<ul class=\"uk-subnav uk-subnav-pill\" uk-sticky>");
+            for (int i = 0; i < items.Length; i++)
+            {
+                Add("<li");
+                if (i == subscript)
+                {
+                    Add(" class=\"uk-active\"");
+                }
+                Add("><a href=\"");
+                Add(uri);
+                Add('-');
+                Add(i);
+                Add("\">");
+                Add(items[i]);
+                Add("</a></li>");
+            }
+            Add("</ul>");
             return this;
         }
 
@@ -1736,7 +1789,7 @@ namespace CloudUn.Web
 
         public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
-            Add("<main uk-grid class=\"uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            Add("<main uk-grid class=\"uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
@@ -1841,10 +1894,10 @@ namespace CloudUn.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
-                    if (tool.IsAnchor || ctxgrp == g || (g & ctxgrp) > 0)
+                    if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchor ? -1 : subscript, css: "uk-button-primary");
+                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, css: "uk-button-primary");
                     }
                 }
             }
@@ -1902,15 +1955,18 @@ namespace CloudUn.Web
             return this;
         }
 
-        public HtmlContent VARTOOLBAR<K>(K varkey, int subscript = -1, string pick = null, string css = null)
+        public HtmlContent VARTOOLS<K>(K varkey, int subscript = -1, string pick = null, string css = null, bool nav = true)
         {
-            Add("<nav class=\"uk-flex uk-button-group");
-            if (css != null)
+            if (nav)
             {
-                Add(' ');
-                Add(css);
+                Add("<nav class=\"uk-flex uk-button-group");
+                if (css != null)
+                {
+                    Add(' ');
+                    Add(css);
+                }
+                Add("\">");
             }
-            Add("\">");
 
             var w = Web.Work;
             var vw = w.VarWork;
@@ -1933,11 +1989,14 @@ namespace CloudUn.Web
                     if (g == actgrp || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
-                        PutVarTool(act, tool, varkey, tool.IsAnchor ? -1 : subscript, null, null, true, "uk-button-secondary");
+                        PutVarTool(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, "uk-button-secondary");
                     }
                 }
             }
-            Add("</nav>");
+            if (nav)
+            {
+                Add("</nav>");
+            }
             return this;
         }
 
@@ -2724,11 +2783,6 @@ namespace CloudUn.Web
             {
                 Add("<label>");
             }
-//            else
-//            {
-//                Add("<div class=\"uk-input uk-flex uk-flex-middle uk-margin-left-remove\">");
-//            }
-
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
@@ -2740,11 +2794,6 @@ namespace CloudUn.Web
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }
-//            else
-//            {
-//                Add("</div>");
-//            }
-
             return this;
         }
 

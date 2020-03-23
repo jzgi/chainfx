@@ -164,12 +164,12 @@ namespace CloudUn.Db
             return _sql;
         }
 
-        public bool QueryAn(Action<IParameters> p = null, bool prepare = true)
+        public bool QueryTop(Action<IParameters> p = null, bool prepare = true)
         {
-            return QueryAn(_sql.ToString(), p, prepare);
+            return QueryTop(_sql.ToString(), p, prepare);
         }
 
-        public bool QueryAn(string sql, Action<IParameters> p = null, bool prepare = true)
+        public bool QueryTop(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -190,7 +190,7 @@ namespace CloudUn.Db
             return reader.Read();
         }
 
-        public async Task<bool> QueryAnAsync(Action<IParameters> p = null, bool prepare = true)
+        public async Task<bool> QueryTopAsync(Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -211,7 +211,7 @@ namespace CloudUn.Db
             return reader.Read();
         }
 
-        public async Task<bool> QueryAnAsync(string sql, Action<IParameters> p = null, bool prepare = true)
+        public async Task<bool> QueryTopAsync(string sql, Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -232,36 +232,36 @@ namespace CloudUn.Db
             return reader.Read();
         }
 
-        public D QueryAn<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
-            if (QueryAn(p, prepare))
+            if (QueryTop(p, prepare))
             {
                 return ToObject<D>(proj);
             }
             return default;
         }
 
-        public D QueryAn<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
-            if (QueryAn(sql, p, prepare))
+            if (QueryTop(sql, p, prepare))
             {
                 return ToObject<D>(proj);
             }
             return default;
         }
 
-        public async Task<D> QueryAnAsync<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
-            if (await QueryAnAsync(p, prepare))
+            if (await QueryTopAsync(p, prepare))
             {
                 return ToObject<D>(proj);
             }
             return default;
         }
 
-        public async Task<D> QueryAnAsync<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
-            if (await QueryAnAsync(sql, p, prepare))
+            if (await QueryTopAsync(sql, p, prepare))
             {
                 return ToObject<D>(proj);
             }

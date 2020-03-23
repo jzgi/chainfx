@@ -36,9 +36,9 @@ namespace CloudUn.Web
 
         public bool IsButtonTag => element == 0x2000;
 
-        public bool IsAnchor => modal == Modal.Anchor;
-
-        public bool IsButton => modal == Modal.Button;
+        // public bool IsAnchor => modal == Modal.Anchor;
+        //
+        // public bool IsButton => modal == Modal.Button;
 
         public bool IsPost => HasConfirm || HasPrompt || HasShow;
 

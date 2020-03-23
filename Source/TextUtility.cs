@@ -556,8 +556,9 @@ namespace CloudUn
 
             int p = pos;
             while (p < len && str[p] != sep) p++;
+            string ret = p == len ? str : str.Substring(pos, p);
             pos = p;
-            return p == len ? str : str.Substring(pos, p);
+            return ret;
         }
 
         public static short ParseShort(this string str, ref int pos, char sep = '-')
