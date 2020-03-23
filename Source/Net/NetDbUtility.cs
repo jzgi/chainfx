@@ -12,7 +12,7 @@ namespace CloudUn.Net
 
         public static R[] ChainQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
         {
-            return dc.Query<R>("SELECT * FROM un.chain WHERE typ = @1 AND code = @2", p => p.Set(typ).Set(code));
+            return dc.Query<R>("SELECT * FROM un.chain WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
         }
 
         public static void NetQuery(this DbContext dc, short typ, string[] tags)

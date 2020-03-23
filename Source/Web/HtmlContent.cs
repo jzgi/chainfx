@@ -1873,7 +1873,7 @@ namespace CloudUn.Web
             Add("');\"");
         }
 
-        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string title = null, bool refresh = true, bool top = true)
+        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool refresh = true, bool top = true)
         {
             byte ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -1905,9 +1905,15 @@ namespace CloudUn.Web
             Add("</div>");
 
             Add("<section class=\"uk-flex uk-flex-middle\">");
-            if (title != null)
+            if (caption != null)
             {
-                Add(title);
+                Add(caption);
+            }
+            if (rangekey != null)
+            {
+                Add("<input name=\"rangekey\" type=\"hidden\" value=\"");
+                Add(rangekey);
+                Add("\">");
             }
 
             if (refresh)
