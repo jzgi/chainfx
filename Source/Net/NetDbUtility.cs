@@ -8,14 +8,18 @@ namespace CloudUn.Net
         {
             using var dc = Framework.NewDbContext();
             // DDL
+            
+            
+            // 
         }
 
-        public static R[] ChainQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
+        public static R[] UnQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
         {
-            return dc.Query<R>("SELECT * FROM un.chain WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
+            dc.Query("SELECT * FROM un.chains WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
+            return null;
         }
 
-        public static void NetQuery(this DbContext dc, short typ, string[] tags)
+        public static void UnQuery(this DbContext dc, short typ, string[] tags)
         {
         }
 

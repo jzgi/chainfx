@@ -40,7 +40,8 @@ namespace CloudUn.Web
             var cnt = new JsonContent(4096);
             try
             {
-                cnt.Put(null, prin, proj);
+                cnt.PutToken(prin, proj); // use the special putting method to append time stamp
+
                 var bytebuf = cnt.Buffer;
                 int count = cnt.Count;
 
@@ -89,6 +90,13 @@ namespace CloudUn.Web
             try
             {
                 var jo = (JObj) new JsonParser(str.ToString()).Parse();
+                // check time expiry
+                DateTime stamp = jo["$"];
+                if ((DateTime.Now - stamp).Hours > 2)
+                {
+                    return default;
+                }
+                // construct a principal object
                 P prin = new P();
                 prin.Read(jo, 0xff);
                 return prin;

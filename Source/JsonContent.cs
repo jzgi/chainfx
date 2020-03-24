@@ -490,6 +490,20 @@ namespace CloudUn
             }
         }
 
+        internal void PutToken(IData v, byte proj = 0x0f)
+        {
+            counts[level]++;
+
+            counts[++level] = 0; // enter
+            Add('{');
+            v.Write(this, proj);
+            // append a time stamp
+            Put("$", DateTime.Now);
+
+            Add('}');
+            level--; // exit
+        }
+
         public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
