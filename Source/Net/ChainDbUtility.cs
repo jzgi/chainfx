@@ -13,9 +13,9 @@ namespace CloudUn.Net
             // 
         }
 
-        public static R[] UnQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
+        public static R[] ChainQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
         {
-            dc.Query("SELECT * FROM un.chains WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
+            dc.Query("SELECT * FROM un.blocks WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
             return null;
         }
 

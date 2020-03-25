@@ -407,7 +407,7 @@ namespace CloudUn.Web
                     // do necessary authentication before entering
                     if (wc.Principal == null && !await wrk.DoAuthenticate(wc)) return;
 
-                    wc.Chain(wrk, key);
+                    wc.AppendSeg(wrk, key);
                     await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
                 }
                 else if (varwork != null) // if variable-key subwork
@@ -426,7 +426,7 @@ namespace CloudUn.Web
                         }
                     }
 
-                    wc.Chain(varwork, key, acc);
+                    wc.AppendSeg(varwork, key, acc);
                     await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                 }
             }

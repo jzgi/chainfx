@@ -1,23 +1,25 @@
-# The CloudUn Enterprise Library  
+# The CloudUn Framework & Server  
 
-The CloudUn framework has been addressing enterprise complexity and powering many Web applications in a compact approach.
+CloudUn is a framework & server for federated cloud. It can be either embedded in application, or deployed as a standalone server. 
+It is combination of a web application framework and a federated blockchain implementation.
 
-The framework introduces a new server-side architectural model called contextual Web programming.
+The characteristics:
 
-* Lightweight -- About 250K in size 
+* A design pattern of contextual web programming.
+* Lightweight -- about 200K in its size. 
 * High performance -- Exploit async I/O, built-in optimized caching. 
-* Concise data API -- Unified APIs for dealing with difference data formats
-* Rapid workflow implementation -- The code structure already implies workflow logic, UI can be derived accordingly 
+* Unified data operation -- for various data formats.
+* Built-in implementation of a high performance federated blockchain. 
 
 <pre>
-dotnet add package CloudUn --version 1.0.0
+dotnet add package CloudUn --version 1.1.0
 </pre>
 
 # Dependencies
 
 The framework specifically uses the following open-source libraries. Many thanks to the great teams respectively!
 
-| ![kestrel](https://dotnet.github.io/images/Logo_DotNet.png) | ![npgsql](http://www.npgsql.org/img/logo.svg) |
+| ![kestrel](/skyiah/cloudun/tree/master/Docs/netcore.png) | ![npgsql](/skyiah/cloudun/tree/master/Docs/postgresql.png) |
 | ---- | ----- |
 | [kestrel](https://github.com/aspnet/AspNetCore) | [npgsql](http://www.npgsql.org) |
-| ASP.NET Core's built-in Web server | .NET Access to PostgreSQL |
+| .NET's built-in web engine | .NET access to PostgreSQL |

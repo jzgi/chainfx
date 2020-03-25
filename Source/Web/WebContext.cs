@@ -59,29 +59,29 @@ namespace CloudUn.Web
         public IData Principal { get; set; }
 
         // levels of keys along the URI path
-        ChainSeg[] chain;
+        WebSeg[] segs;
 
         int level; // actual number of segments
 
-        internal void Chain(WebWork work, string key, object accessor = null)
+        internal void AppendSeg(WebWork work, string key, object accessor = null)
         {
-            if (chain == null)
+            if (segs == null)
             {
-                chain = new ChainSeg[8];
+                segs = new WebSeg[8];
             }
 
-            chain[level++] = new ChainSeg(work, key, accessor);
+            segs[level++] = new WebSeg(work, key, accessor);
         }
 
-        public ChainSeg this[int position] => position <= 0 ? chain[level + position - 1] : default;
+        public WebSeg this[int position] => position <= 0 ? segs[level + position - 1] : default;
 
-        public ChainSeg this[Type typ]
+        public WebSeg this[Type typ]
         {
             get
             {
                 for (int i = level - 1; i >= 0; i--)
                 {
-                    var seg = chain[i];
+                    var seg = segs[i];
                     if (seg.Work.IsOf(typ)) return seg;
                 }
 
@@ -89,13 +89,13 @@ namespace CloudUn.Web
             }
         }
 
-        public ChainSeg this[WebWork work]
+        public WebSeg this[WebWork work]
         {
             get
             {
                 for (int i = level - 1; i >= 0; i--)
                 {
-                    var seg = chain[i];
+                    var seg = segs[i];
                     if (seg.Work == work) return seg;
                 }
 

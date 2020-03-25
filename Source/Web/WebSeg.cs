@@ -5,7 +5,7 @@ namespace CloudUn.Web
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy
     /// </summary>
-    public struct ChainSeg
+    public struct WebSeg
     {
         // as uri segment
         readonly string key;
@@ -15,7 +15,7 @@ namespace CloudUn.Web
 
         readonly WebWork work;
 
-        internal ChainSeg(WebWork work, string key, object accessor)
+        internal WebSeg(WebWork work, string key, object accessor)
         {
             this.key = key;
             this.accessor = accessor;
@@ -34,7 +34,7 @@ namespace CloudUn.Web
         // CONVERSION
         //
 
-        public static implicit operator short(ChainSeg seg)
+        public static implicit operator short(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str)) return (short) seg.accessor;
@@ -46,7 +46,7 @@ namespace CloudUn.Web
             return 0;
         }
 
-        public static implicit operator int(ChainSeg seg)
+        public static implicit operator int(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str)) return (int) seg.accessor;
@@ -58,7 +58,7 @@ namespace CloudUn.Web
             return 0;
         }
 
-        public static implicit operator long(ChainSeg seg)
+        public static implicit operator long(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str)) return (long) seg.accessor;
@@ -70,14 +70,14 @@ namespace CloudUn.Web
             return 0;
         }
 
-        public static implicit operator string(ChainSeg seg)
+        public static implicit operator string(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str)) return (string) seg.accessor;
             return str;
         }
 
-        public static implicit operator ValueTuple<string, string>(ChainSeg seg)
+        public static implicit operator ValueTuple<string, string>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -88,7 +88,7 @@ namespace CloudUn.Web
             return str.ToStringString();
         }
 
-        public static implicit operator ValueTuple<string, short>(ChainSeg seg)
+        public static implicit operator ValueTuple<string, short>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -99,7 +99,7 @@ namespace CloudUn.Web
             return str.ToStringShort();
         }
 
-        public static implicit operator ValueTuple<string, int>(ChainSeg seg)
+        public static implicit operator ValueTuple<string, int>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -110,7 +110,7 @@ namespace CloudUn.Web
             return str.ToStringInt();
         }
 
-        public static implicit operator ValueTuple<string, long>(ChainSeg seg)
+        public static implicit operator ValueTuple<string, long>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -121,7 +121,7 @@ namespace CloudUn.Web
             return str.ToStringLong();
         }
 
-        public static implicit operator ValueTuple<short, string>(ChainSeg seg)
+        public static implicit operator ValueTuple<short, string>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -132,7 +132,7 @@ namespace CloudUn.Web
             return str.ToShortString();
         }
 
-        public static implicit operator ValueTuple<short, short>(ChainSeg seg)
+        public static implicit operator ValueTuple<short, short>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -142,7 +142,7 @@ namespace CloudUn.Web
             return str.ToShortShort();
         }
 
-        public static implicit operator ValueTuple<short, int>(ChainSeg seg)
+        public static implicit operator ValueTuple<short, int>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -153,7 +153,7 @@ namespace CloudUn.Web
             return str.ToShortInt();
         }
 
-        public static implicit operator ValueTuple<short, long>(ChainSeg seg)
+        public static implicit operator ValueTuple<short, long>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -164,7 +164,7 @@ namespace CloudUn.Web
             return str.ToShortLong();
         }
 
-        public static implicit operator ValueTuple<int, string>(ChainSeg seg)
+        public static implicit operator ValueTuple<int, string>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -175,7 +175,7 @@ namespace CloudUn.Web
             return str.ToIntString();
         }
 
-        public static implicit operator ValueTuple<int, short>(ChainSeg seg)
+        public static implicit operator ValueTuple<int, short>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -186,7 +186,7 @@ namespace CloudUn.Web
             return str.ToIntShort();
         }
 
-        public static implicit operator ValueTuple<int, int>(ChainSeg seg)
+        public static implicit operator ValueTuple<int, int>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -197,7 +197,7 @@ namespace CloudUn.Web
             return str.ToIntInt();
         }
 
-        public static implicit operator ValueTuple<int, long>(ChainSeg seg)
+        public static implicit operator ValueTuple<int, long>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -208,7 +208,7 @@ namespace CloudUn.Web
             return str.ToIntLong();
         }
 
-        public static implicit operator ValueTuple<long, string>(ChainSeg seg)
+        public static implicit operator ValueTuple<long, string>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -219,7 +219,7 @@ namespace CloudUn.Web
             return str.ToLongString();
         }
 
-        public static implicit operator ValueTuple<long, short>(ChainSeg seg)
+        public static implicit operator ValueTuple<long, short>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -230,7 +230,7 @@ namespace CloudUn.Web
             return str.ToLongShort();
         }
 
-        public static implicit operator ValueTuple<long, int>(ChainSeg seg)
+        public static implicit operator ValueTuple<long, int>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -241,7 +241,7 @@ namespace CloudUn.Web
             return str.ToLongInt();
         }
 
-        public static implicit operator ValueTuple<long, long>(ChainSeg seg)
+        public static implicit operator ValueTuple<long, long>(WebSeg seg)
         {
             string str = seg.key;
             if (string.IsNullOrEmpty(str))
@@ -252,22 +252,22 @@ namespace CloudUn.Web
             return str.ToLongLong();
         }
 
-        public static implicit operator string[](ChainSeg seg)
+        public static implicit operator string[](WebSeg seg)
         {
             return (string[]) seg.accessor;
         }
 
-        public static implicit operator short[](ChainSeg seg)
+        public static implicit operator short[](WebSeg seg)
         {
             return (short[]) seg.accessor;
         }
 
-        public static implicit operator int[](ChainSeg seg)
+        public static implicit operator int[](WebSeg seg)
         {
             return (int[]) seg.accessor;
         }
 
-        public static implicit operator long[](ChainSeg seg)
+        public static implicit operator long[](WebSeg seg)
         {
             return (long[]) seg.accessor;
         }

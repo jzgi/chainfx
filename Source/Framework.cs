@@ -56,11 +56,6 @@ namespace CloudUn
         internal static readonly FrameworkLogger Logger;
 
 
-        static List<NetClient> polls = null;
-
-        // the thread schedules and drives periodic jobs, such as event polling 
-        static Thread scheduler;
-
         static Framework()
         {
             // load configuration
@@ -89,49 +84,10 @@ namespace CloudUn
 
             WEB = cfg["WEB"];
             EXT = cfg["EXT"];
-
-            // setup chain net peer references
-            NET = cfg["NET"];
-            if (NET != null)
-            {
-                for (var i = 0; i < NET.Count; i++)
-                {
-                    var e = NET.At(i);
-                    peers.Add(new NetClient(e.Key, e.value)
-                    {
-                        Clustered = true
-                    });
-                }
-            }
-
-            // setup the only db source
             DB = cfg["DB"];
-            if (DB != null)
+            if (DB != null) // setup the only db source
             {
                 dbsource = new DbSource(DB);
-            }
-
-            // create and start the scheduler thead
-            if (polls != null)
-            {
-                // to repeatedly check and initiate event polling activities.
-                scheduler = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        // interval
-                        Thread.Sleep(1000);
-
-                        // a schedule cycle
-                        int tick = Environment.TickCount;
-                        for (int i = 0; i < polls.Count; i++)
-                        {
-                            var cli = polls[i];
-                            cli.TryPollAsync(tick);
-                        }
-                    }
-                });
-                scheduler.Start();
             }
         }
 
