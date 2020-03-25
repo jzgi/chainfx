@@ -2,8 +2,8 @@ using CloudUn.Web;
 
 namespace CloudUn.Net
 {
-    [Ui("Types")]
-    public class TypWork : WebWork
+    [Ui("Blocks")]
+    public class BlockWork : WebWork
     {
         public void @default(WebContext wc)
         {
@@ -14,13 +14,11 @@ namespace CloudUn.Net
                 h._UL();
                 h._FORM();
             });
-
         }
-        
-        [Ui("New", "Create New Block Type"), Tool(Modal.ButtonShow)]
-        public void @new(WebContext wc)
+
+        [Ui("Search"), Tool(Modal.AnchorPrompt)]
+        public void search(WebContext wc)
         {
         }
-
     }
 }

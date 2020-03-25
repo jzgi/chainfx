@@ -2,7 +2,7 @@ using System;
 
 namespace CloudUn.Net
 {
-    public class Entity : IData
+    public class Peer : IData
     {
         internal string id;
         

@@ -14,7 +14,11 @@ namespace CloudUn.Net
                 h._UL();
                 h._FORM();
             });
+        }
 
+        [Ui("New", "Create New Peer"), Tool(Modal.ButtonShow)]
+        public void @new(WebContext wc)
+        {
         }
     }
 }

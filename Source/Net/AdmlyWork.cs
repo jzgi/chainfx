@@ -12,6 +12,8 @@ namespace CloudUn.Net
             CreateWork<UserWork>("user");
 
             CreateWork<TypWork>("typ");
+
+            CreateWork<BlockWork>("block");
         }
 
         public void @default(WebContext wc)
