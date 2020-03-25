@@ -19,7 +19,7 @@ dotnet add package CloudUn --version 1.1.0
 
 The framework specifically uses the following open-source libraries. Many thanks to the great teams respectively!
 
-| ![kestrel](/skyiah/cloudun/tree/master/Docs/netcore.png) | ![npgsql](/skyiah/cloudun/tree/master/Docs/postgresql.png) |
+| ![kestrel](https://github.com/skyiah/cloudun/tree/master/Docs/netcore.png) | ![npgsql](https://github.com/skyiah/cloudun/tree/master/Docs/postgresql.png) |
 | ---- | ----- |
 | [kestrel](https://github.com/aspnet/AspNetCore) | [npgsql](http://www.npgsql.org) |
 | .NET's built-in web engine | .NET access to PostgreSQL |
