@@ -2,9 +2,9 @@ using CloudUn.Db;
 
 namespace CloudUn.Net
 {
-    public static class NetDbUtility
+    public static class ChainDbUtility
     {
-        static NetDbUtility()
+        static ChainDbUtility()
         {
             using var dc = Framework.NewDbContext();
             // DDL

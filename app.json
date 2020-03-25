@@ -1,0 +1,14 @@
+{
+  "logging": 2,
+  "cipher": 1249427062,
+  "WEB": {
+    "chain": "http://localhost:8080"
+  },
+  "DB": {
+    "host": "144000.tv",
+    "port": 5432,
+    "database": "chain",
+    "username": "postgres",
+    "password": "Gs721004"
+  }
+}

@@ -4,7 +4,7 @@ using CloudUn;
 
 namespace CloudUn.Net
 {
-    public class NetApp : Framework
+    public class ChainApp : Framework
     {
         static Timer timer;
 
@@ -22,7 +22,7 @@ namespace CloudUn.Net
 
             // CreateService<ChainService>("chain");
 
-            CreateService<NetService>("care");
+            CreateService<ChainService>("chain");
 
             await StartAsync();
         }

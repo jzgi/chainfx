@@ -184,7 +184,7 @@ namespace CloudUn.Web
         {
             await server.StartAsync(this, token);
 
-            Console.WriteLine(Name + " started at " + address[0]);
+            Console.WriteLine(Name + " started at " + address);
 
             // create and start the cleaner thread
             if (_cache != null)
