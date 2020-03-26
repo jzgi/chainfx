@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using CloudUn.Web;
 
@@ -10,7 +11,11 @@ namespace CloudUn.Net
     /// </summary>
     public class ChainService : WebService
     {
-        List<NetClient> polls = null;
+        // a bundle of peers
+        Map<string, ChainPeer> peers = null;
+
+        // for identifying a peer by its IP address
+        Map<IPAddress, ChainPeer> lookup = null;
 
         // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
@@ -18,23 +23,28 @@ namespace CloudUn.Net
 
         protected internal override void OnCreate()
         {
-            // // setup chain net peer references
-            // NET = cfg["NET"];
-            // if (NET != null)
-            // {
-            //     for (var i = 0; i < NET.Count; i++)
-            //     {
-            //         var e = NET.At(i);
-            //         peers.Add(new NetClient(e.Key, e.value)
-            //         {
-            //             Clustered = true
-            //         });
-            //     }
-            // }
-            //
+            // ensure DDL
+
+            // load and setup peers
+            using var dc = NewDbContext();
+            dc.Query("SELECT * FROM chain.peers WHERE status > 0");
+            while (dc.Next())
+            {
+                var p = dc.ToObject<Peer>();
+
+                var cp = new ChainPeer("");
+
+                var addrs = Dns.GetHostAddresses("");
+
+                peers.Add("", cp);
+                foreach (var addr in addrs)
+                {
+                    lookup.Add(addr, cp);
+                }
+            }
 
             // create and start the scheduler thead
-            if (polls != null)
+            if (peers != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -46,16 +56,15 @@ namespace CloudUn.Net
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < polls.Count; i++)
+                        for (int i = 0; i < peers.Count; i++)
                         {
-                            var cli = polls[i];
+                            var cli = peers.ValueAt(i);
                             cli.TryPollAsync(tick);
                         }
                     }
                 });
                 scheduler.Start();
             }
-
 
             CreateWork<AdmlyWork>("admly");
         }

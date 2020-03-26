@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
@@ -8,7 +7,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using CloudUn.Db;
-using CloudUn.Net;
 using CloudUn.Web;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
@@ -36,20 +34,18 @@ namespace CloudUn
         //
 
         // logging level
-        internal static readonly int logging = 3;
+        internal static readonly int logging;
 
-        internal static readonly int cipher;
+        internal static readonly long cryptokey;
 
         internal static readonly string sign;
 
         internal static readonly string certpasswd;
 
-        public static readonly JObj WEB, DB, NET, EXT; // various config parts
+        public static readonly JObj WEB, DB, EXT; // various config parts
 
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
-
-        static readonly Map<string, NetClient> peers = new Map<string, NetClient>(32);
 
         static readonly DbSource dbsource;
 
@@ -65,8 +61,8 @@ namespace CloudUn
             var cfg = (JObj) parser.Parse();
 
             logging = cfg[nameof(logging)];
-            cipher = cfg[nameof(cipher)];
-            sign = cipher.ToString();
+            cryptokey = cfg[nameof(cryptokey)];
+            sign = cryptokey.ToString();
             certpasswd = cfg[nameof(certpasswd)];
 
             // setup logger first
@@ -253,7 +249,7 @@ namespace CloudUn
 
         static int size;
 
-        static ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
+        static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
         public static void Cache(object value, byte flag = 0)
         {

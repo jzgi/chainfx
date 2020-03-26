@@ -45,7 +45,7 @@ namespace CloudUn.Web
                 var bytebuf = cnt.Buffer;
                 int count = cnt.Count;
 
-                int mask = Framework.cipher;
+                int mask = (int) Framework.cryptokey;
                 int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
                 var charbuf = new char[count * 2]; // the target
                 int p = 0;
@@ -71,7 +71,7 @@ namespace CloudUn.Web
 
         public static P Decrypt<P>(string token) where P : IData, new()
         {
-            int mask = Framework.cipher;
+            int mask = (int) Framework.cryptokey;
             int[] masks = {(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff};
             int len = token.Length / 2;
             var str = new Text(1024);

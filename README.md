@@ -1,4 +1,4 @@
-# The CloudUn Framework & Server  
+# The CloudUn Platform  
 
 CloudUn is a framework & server for federated cloud. It can be either embedded in application, or deployed as a standalone server. 
 It is combination of a web application framework and a federated blockchain implementation.
@@ -6,8 +6,8 @@ It is combination of a web application framework and a federated blockchain impl
 The characteristics:
 
 * A design pattern of contextual web programming.
-* Lightweight -- about 200K in its size. 
-* High performance -- Exploit async I/O, built-in optimized caching. 
+* Lightweight -- about 300K in its size. 
+* High performance -- exploit async I/O, built-in optimized caching. 
 * Unified data operation -- for various data formats.
 * Built-in implementation of a high performance federated blockchain. 
 
@@ -17,7 +17,7 @@ dotnet add package CloudUn --version 1.1.0
 
 # Dependencies
 
-The framework specifically uses the following open-source libraries. Many thanks to the great teams respectively!
+The framework specifically uses the following open source software.
 
 | ![kestrel](https://raw.githubusercontent.com/skyiah/cloudun/master/Docs/netcore.png) | ![npgsql](https://raw.githubusercontent.com/skyiah/cloudun/master/Docs/postgresql.png) |
 | ---- | ----- |
