@@ -24,6 +24,7 @@ namespace CloudUn.Net
 
         public void Read(ISource s, byte proj = 15)
         {
+            s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 15)

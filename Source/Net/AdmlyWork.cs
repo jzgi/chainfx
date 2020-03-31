@@ -11,7 +11,7 @@ namespace CloudUn.Net
 
             CreateWork<UserWork>("user");
 
-            CreateWork<TypWork>("typ");
+            CreateWork<DataTypWork>("typ");
 
             CreateWork<BlockWork>("block");
         }

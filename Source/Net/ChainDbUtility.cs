@@ -4,15 +4,6 @@ namespace CloudUn.Net
 {
     public static class ChainDbUtility
     {
-        static ChainDbUtility()
-        {
-            using var dc = Framework.NewDbContext();
-            // DDL
-
-
-            // 
-        }
-
         public static R[] ChainQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
         {
             dc.Query("SELECT * FROM un.blocks WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
@@ -25,16 +16,30 @@ namespace CloudUn.Net
             return null;
         }
 
-        public static void UnQuery(this DbContext dc, short typ, string[] tags)
+        public static M[] ChainQuery<M>(this DbContext dc, short typid, string key) where M : IData
         {
+            dc.Sql("SELECT * FROM chain.blocks WHERE typid = @1 AND key = @2");
+            return default;
         }
 
-        public static void NetStore<M>(this DbContext dc, short typ, string[] tags, M obj) where M : IData
+        public static M[] ChainGet<M>(this DbContext dc, short typid, string[] tags) where M : IData
         {
+            dc.Sql("SELECT * FROM chain.blocks WHERE typid = @1 AND ");
+            return null;
         }
 
-        public static void ChainPut(this DbContext dc, short typ, string[] tags, Block obj)
+        public static void ChainPut(this DbContext dc, short typid, string key, string[] tags, byte[] data)
         {
+            // retrieve prior hash
+
+            // calculate new hash based on prior hash and the content
+            byte[] content = data; // encrypt
+            var prior = (string) dc.Scalar("SELECT hash FROM chain.blocks WHERE typid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(typid));
+            string hash = "" + prior;
+
+            // record insertion
+            dc.Sql("INSERT INTO chain.blocks (typid, key, tags, content, hash) VALUES (@1, @2, @3, @4, @5)");
+            dc.Execute(p => p.Set(typid).Set(key).Set(tags).Set(content).Set(hash));
         }
     }
 }

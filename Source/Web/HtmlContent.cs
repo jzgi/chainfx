@@ -521,11 +521,17 @@ namespace CloudUn.Web
         }
 
 
-        public HtmlContent LABEL(string caption)
+        public HtmlContent LABEL(string caption, string css = null)
         {
             if (caption != null)
             {
-                Add("<label class=\"uk-label\">");
+                Add("<label class=\"uk-label");
+                if (css != null)
+                {
+                    Add(' ');
+                    Add(css);
+                }
+                Add("\">");
                 Add(caption);
                 Add("</label>");
             }
