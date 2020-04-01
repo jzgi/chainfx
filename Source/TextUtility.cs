@@ -1,5 +1,4 @@
 using System;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace CloudUn
@@ -7,7 +6,7 @@ namespace CloudUn
     public static class TextUtility
     {
         // hexidecimal numbers
-        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
         public static string ToHex(ulong v)
         {
@@ -180,7 +179,7 @@ namespace CloudUn
             byte[] raw = Encoding.UTF8.GetBytes(src);
 
             // digest and transform
-            using (MD5 md5 = System.Security.Cryptography.MD5.Create())
+            using (var md5 = System.Security.Cryptography.MD5.Create())
             {
                 byte[] hash = md5.ComputeHash(raw);
                 StringBuilder str = new StringBuilder(32);
@@ -202,7 +201,7 @@ namespace CloudUn
             byte[] raw = Encoding.UTF8.GetBytes(src);
 
             // digest and transform
-            using (SHA1 sha1 = System.Security.Cryptography.SHA1.Create())
+            using (var sha1 = System.Security.Cryptography.SHA1.Create())
             {
                 byte[] hash = sha1.ComputeHash(raw);
                 StringBuilder str = new StringBuilder(32);
@@ -242,7 +241,7 @@ namespace CloudUn
             }
 
             // digest and transform
-            using (MD5 md5 = System.Security.Cryptography.MD5.Create())
+            using (var md5 = System.Security.Cryptography.MD5.Create())
             {
                 byte[] hash = md5.ComputeHash(raw);
                 for (int i = 0; i < 16; i++)
@@ -274,19 +273,30 @@ namespace CloudUn
             return new string(buf);
         }
 
-        public static string FromHex(string v)
+        public static string BytesToHex(byte[] bytes, int size)
         {
-            int vlen = v.Length;
-            char[] buf = new char[vlen / 4];
-            int i = 0;
-            while (i < vlen)
+            char[] buf = new char[size * 2];
+            for (int i = 0; i < size; i++)
             {
-                int m = i / 4;
-                char c = (char) ((Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
-                buf[m] = c;
+                byte b = bytes[i];
+                buf[i * 2] = HEX[(b & 0xf0) >> 4];
+                buf[i * 2 + 1] = HEX[b & 0x0f];
             }
 
             return new string(buf);
+        }
+
+        public static byte[] HexToBytes(string v)
+        {
+            int vlen = v.Length;
+            byte[] buf = new byte[vlen / 2];
+            for (int i = 0; i < buf.Length; i++)
+            {
+                byte b = (byte) ((Dv(v[i * 2]) << 4) + Dv(v[i * 2 + 1]));
+                buf[i] = b;
+            }
+
+            return buf;
         }
 
         static int Dv(char hex)
@@ -302,8 +312,8 @@ namespace CloudUn
             {
                 return num;
             }
-
-            return -1;
+            
+            return 0;
         }
 
         // UTF-8 encoding

@@ -1,6 +1,6 @@
 {
   "logging": 2,
-  "cipher": 1249427062,
+  "crypto": "ebce206103e439514f3c4748c683274e",
   "WEB": {
     "chain": "http://localhost:8080"
   },

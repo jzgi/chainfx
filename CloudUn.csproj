@@ -17,6 +17,7 @@
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
         <AssemblyVersion>1.1</AssemblyVersion>
         <OutputType>Exe</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>

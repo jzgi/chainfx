@@ -36,9 +36,9 @@ namespace CloudUn
         // logging level
         internal static readonly int logging;
 
-        internal static readonly long cryptokey;
+        internal static readonly string crypto;
 
-        internal static readonly string sign;
+        internal static readonly uint[] privatekey;
 
         internal static readonly string certpasswd;
 
@@ -61,8 +61,8 @@ namespace CloudUn
             var cfg = (JObj) parser.Parse();
 
             logging = cfg[nameof(logging)];
-            cryptokey = cfg[nameof(cryptokey)];
-            sign = cryptokey.ToString();
+            crypto = cfg[nameof(crypto)];
+            privatekey = CryptionUtility.HexToKey(crypto);
             certpasswd = cfg[nameof(certpasswd)];
 
             // setup logger first
@@ -213,7 +213,7 @@ namespace CloudUn
 
             var subject = new X500DistinguishedName($"CN={issuer}");
 
-            using (RSA rsa = RSA.Create(2048))
+            using (var rsa = RSA.Create(2048))
             {
                 var request = new CertificateRequest(subject, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 

@@ -141,10 +141,11 @@ namespace CloudUn.Web
             if (Authorize != null)
             {
                 // check if trusted peer
-                if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
-                {
-                    return true; // trusted without further check
-                }
+                // todo check ip instead
+                // if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
+                // {
+                //     return true; // trusted without further check
+                // }
 
                 return Authorize.Do(wc);
             }
