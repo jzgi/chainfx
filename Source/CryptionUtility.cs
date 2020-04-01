@@ -11,10 +11,10 @@ namespace CloudUn
             const uint delta = 0x9E3779B9; // a key schedule constant
             unsafe
             {
-                fixed (byte* p = &buf[0])
+                fixed (byte* p = buf)
                 {
                     uint* pa = (uint*) p, pb = (uint*) p;
-                    for (int seg = 0; seg < len; seg += 8)
+                    for (int seg = 0; seg < len - 8; seg += 8) // NOTE: up to 7 bytes ignored 
                     {
                         uint v0 = *pa++, v1 = *pa++, sum = 0; // set up
                         for (int i = 0; i < 32; i++)
@@ -36,10 +36,10 @@ namespace CloudUn
             const uint delta = 0x9E3779B9; // a key schedule constant
             unsafe
             {
-                fixed (byte* p = &buf[0])
+                fixed (byte* p = buf)
                 {
                     uint* pa = (uint*) p, pb = (uint*) p;
-                    for (int seg = 0; seg < len; seg += 8)
+                    for (int seg = 0; seg < len - 8; seg += 8)
                     {
                         uint v0 = *pa++, v1 = *pa++, sum = 0xC6EF3720; // set up
                         for (int i = 0; i < 32; i++)
@@ -92,9 +92,9 @@ namespace CloudUn
 
         public static void Test()
         {
-            var bs  =TextUtility.HexToBytes("ebce206103e439514f3c4748c683274e");
-            string sssdf =TextUtility.BytesToHex(bs, bs.Length);
-            
+            var bs = TextUtility.HexToBytes("ebce206103e439514f3c4748c683274e");
+            string sssdf = TextUtility.BytesToHex(bs, bs.Length);
+
             uint[] key = {0x34a3, 0x34a3, 0x34a3, 0x34a3};
 
             var c = new TextContent(1024);

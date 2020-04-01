@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CloudUn.Web
@@ -47,8 +46,7 @@ namespace CloudUn.Web
                 int count = cnt.Count;
 
                 CryptionUtility.Encrypt(bytebuf, count, Framework.privatekey);
-                string cs = TextUtility.BytesToHex(bytebuf, count);
-                return cs;
+                return TextUtility.BytesToHex(bytebuf, count);
             }
             finally
             {
@@ -60,11 +58,10 @@ namespace CloudUn.Web
         {
             var bytes = TextUtility.HexToBytes(token);
             CryptionUtility.Decrypt(bytes, bytes.Length, Framework.privatekey);
-            string str = Encoding.UTF8.GetString(bytes);
             // deserialize
             try
             {
-                var jo = (JObj) new JsonParser(str).Parse();
+                var jo = (JObj) new JsonParser(bytes, bytes.Length).Parse();
                 // check time expiry
                 DateTime stamp = jo["$"];
                 if ((DateTime.Now - stamp).Hours > 2)

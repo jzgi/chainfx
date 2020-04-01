@@ -257,28 +257,12 @@ namespace CloudUn
             return true;
         }
 
-        public static string ToHex(string v)
+        public static string BytesToHex(byte[] bytes, int count)
         {
-            int vlen = v.Length;
-            char[] buf = new char[vlen * 4];
-            for (int i = 0; i < vlen; i++)
+            char[] buf = new char[count * 2];
+            for (int i = 0; i < count; i++)
             {
-                char c = v[i];
-                buf[i * 4 + 0] = HEX[(c & 0xf000) >> 12];
-                buf[i * 4 + 1] = HEX[(c & 0x0f00) >> 8];
-                buf[i * 4 + 2] = HEX[(c & 0x00f0) >> 4];
-                buf[i * 4 + 3] = HEX[c & 0x000f];
-            }
-
-            return new string(buf);
-        }
-
-        public static string BytesToHex(byte[] bytes, int size)
-        {
-            char[] buf = new char[size * 2];
-            for (int i = 0; i < size; i++)
-            {
-                byte b = bytes[i];
+                int b = bytes[i];
                 buf[i * 2] = HEX[(b & 0xf0) >> 4];
                 buf[i * 2 + 1] = HEX[b & 0x0f];
             }
@@ -286,13 +270,13 @@ namespace CloudUn
             return new string(buf);
         }
 
-        public static byte[] HexToBytes(string v)
+        public static byte[] HexToBytes(string str)
         {
-            int vlen = v.Length;
-            byte[] buf = new byte[vlen / 2];
+            int strlen = str.Length;
+            byte[] buf = new byte[strlen / 2];
             for (int i = 0; i < buf.Length; i++)
             {
-                byte b = (byte) ((Dv(v[i * 2]) << 4) + Dv(v[i * 2 + 1]));
+                byte b = (byte) ((Dv(str[i * 2]) << 4) | Dv(str[i * 2 + 1]));
                 buf[i] = b;
             }
 
@@ -312,43 +296,9 @@ namespace CloudUn
             {
                 return num;
             }
-            
+
             return 0;
         }
-
-        // UTF-8 encoding
-        public static ArraySegment<byte> ToUtf8(string text)
-        {
-            int len = text.Length;
-            byte[] buf = new byte[len * 3]; // sufficient capacity
-            int p = 0; // current position in the buffer
-            for (int i = 0; i < len; i++)
-            {
-                char c = text[i];
-                // UTF-8 encoding (without surrogate support)
-                if (c < 0x80)
-                {
-                    // have at most seven bits
-                    buf[p++] = ((byte) c);
-                }
-                else if (c < 0x800)
-                {
-                    // 2 text, 11 bits
-                    buf[p++] = (byte) (0xc0 | (c >> 6));
-                    buf[p++] = (byte) (0x80 | (c & 0x3f));
-                }
-                else
-                {
-                    // 3 text, 16 bits
-                    buf[p++] = (byte) (0xe0 | (c >> 12));
-                    buf[p++] = (byte) (0x80 | (c >> 6) & 0x3f);
-                    buf[p++] = (byte) (0x80 | (c & 0x3f));
-                }
-            }
-
-            return new ArraySegment<byte>(buf, 0, p);
-        }
-
 
         //
         // CONVERTION
