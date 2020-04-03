@@ -41,12 +41,11 @@ namespace CloudUn.Web
             try
             {
                 cnt.PutToken(prin, proj); // use the special putting method to append time stamp
-
-                var bytebuf = cnt.Buffer;
+                var buf = cnt.Buffer;
                 int count = cnt.Count;
 
-                CryptionUtility.Encrypt(bytebuf, count, Framework.privatekey);
-                return TextUtility.BytesToHex(bytebuf, count);
+                CryptionUtility.Encrypt(buf, count, Framework.privatekey);
+                return TextUtility.BytesToHex(buf, count);
             }
             finally
             {

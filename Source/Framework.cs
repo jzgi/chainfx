@@ -40,6 +40,8 @@ namespace CloudUn
 
         internal static readonly uint[] privatekey;
 
+        internal static readonly uint[] publickey = {0x4f738f17, 0x55ce9124, 0x012f4a98, 0x6d85e342};
+
         internal static readonly string certpasswd;
 
         public static readonly JObj WEB, DB, EXT; // various config parts

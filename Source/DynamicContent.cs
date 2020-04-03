@@ -18,6 +18,11 @@ namespace CloudUn
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
         };
 
+        static readonly char[] HEX =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+        };
+
         // sexagesimal numbers
         static readonly string[] SEX =
         {
@@ -171,6 +176,15 @@ namespace CloudUn
         public void Add(bool v)
         {
             Add(v ? "true" : "false");
+        }
+
+        internal void Add(byte[] v)
+        {
+            if (v == null) return;
+            for (int i = 0; i < v.Length; i++)
+            {
+                Add(v[i]);
+            }
         }
 
         public void Add(char[] v)
@@ -440,6 +454,26 @@ namespace CloudUn
                 Add(SEX[v.Second]);
             }
         }
+
+        public string MD5(string appendix = null)
+        {
+            if (appendix != null)
+            {
+                Add(appendix);
+            }
+            // digest and transform
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            byte[] hash = md5.ComputeHash(bytebuf, 0, count);
+            var str = new StringBuilder(32);
+            for (int i = 0; i < 16; i++)
+            {
+                byte b = hash[i];
+                str.Append(HEX[b >> 4]);
+                str.Append(HEX[b & 0x0f]);
+            }
+            return str.ToString();
+        }
+
 
         //
         // CLIENT CONTENT

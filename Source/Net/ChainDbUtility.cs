@@ -1,3 +1,6 @@
+using System;
+using System.Data.Common;
+using System.Net.Security;
 using CloudUn.Db;
 
 namespace CloudUn.Net
@@ -16,30 +19,62 @@ namespace CloudUn.Net
             return null;
         }
 
-        public static M[] ChainQuery<M>(this DbContext dc, short typid, string key) where M : IData
+        public static byte[] ChainQuery<M>(this DbContext dc, short datypid, string key) where M : IData
         {
-            dc.Sql("SELECT * FROM chain.blocks WHERE typid = @1 AND key = @2");
+            dc.Sql("SELECT body FROM chain.blocks WHERE datypid = @1 AND key = @2");
+            dc.Query(p => p.Set(datypid).Set(key));
+            dc.Let(out byte[] body);
+
+
             return default;
         }
 
-        public static M[] ChainGet<M>(this DbContext dc, short typid, string[] tags) where M : IData
+        public static M[] ChainGet<M>(this DbContext dc, short datypid, string key) where M : IData
         {
-            dc.Sql("SELECT * FROM chain.blocks WHERE typid = @1 AND ");
+            dc.Sql("SELECT body FROM chain.blocks WHERE datypid = @1 AND key = @2");
+            dc.Query(p => p.Set(datypid).Set(key));
+
+            var datypes = Framework.Obtain<Map<short, DataTyp>>();
+            var dattyp = datypes[datypid];
+            if (dattyp.op <= 1)
+            {
+                return null;
+            }
+
+            var cryptokey = dattyp.op >= 3 ? Framework.publickey : Framework.privatekey;
+
+            while (dc.Next())
+            {
+                dc.Let(out byte[] body);
+                // descrypt
+                CryptionUtility.Decrypt(body, body.Length, cryptokey);
+                
+                var jc = new JsonParser(body, body.Length).Parse();
+            }
             return null;
         }
 
-        public static void ChainPut(this DbContext dc, short typid, string key, string[] tags, byte[] data)
+        public static void ChainPut(this DbContext dc, short datypid, string key, string[] tags, DynamicContent content)
         {
             // retrieve prior hash
 
             // calculate new hash based on prior hash and the content
-            byte[] content = data; // encrypt
-            var prior = (string) dc.Scalar("SELECT hash FROM chain.blocks WHERE typid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(typid));
-            string hash = "" + prior;
+            var datypes = Framework.Obtain<Map<short, DataTyp>>();
+            var dattyp = datypes[datypid];
+            if (dattyp.op <= 1)
+            {
+                return;
+            }
+
+            var cryptokey = dattyp.op >= 3 ? Framework.publickey : Framework.privatekey;
+            CryptionUtility.Encrypt(content.Buffer, content.Count, cryptokey); // encrypt
+            var prior = (string) dc.Scalar("SELECT hash FROM chain.blocks WHERE datypid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(datypid));
+            string hash = content.MD5(prior);
+            var body = new ArraySegment<byte>(content.Buffer, 0, content.Count);
 
             // record insertion
-            dc.Sql("INSERT INTO chain.blocks (typid, key, tags, content, hash) VALUES (@1, @2, @3, @4, @5)");
-            dc.Execute(p => p.Set(typid).Set(key).Set(tags).Set(content).Set(hash));
+            dc.Sql("INSERT INTO chain.blocks (datypid, key, tags, body, hash) VALUES (@1, @2, @3, @4, @5)");
+            dc.Execute(p => p.Set(datypid).Set(key).Set(tags).Set(body).Set(hash));
         }
     }
 }
