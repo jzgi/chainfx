@@ -604,6 +604,41 @@ namespace CloudUn
             return sum;
         }
 
+        public static decimal ParseDecimal(this string str, ref int pos, char sep = '-')
+        {
+            int len = str.Length;
+            if (pos >= len)
+            {
+                return 0;
+            }
+
+            if (str[pos] == sep) pos++; // skip sep
+
+            JNumber num = new JNumber(str[pos]);
+            int p = pos;
+            for (;;)
+            {
+                if (p >= len - 1) break;
+                int b = str[++p];
+                if (b == '.')
+                {
+                    num.Pt = true;
+                }
+                else if (b >= '0' && b <= '9')
+                {
+                    num.Add(b);
+                }
+                else
+                {
+                    pos = p - 1;
+                    return num;
+                }
+            }
+
+            pos = p;
+            return num.Decimal;
+        }
+
 
         public static bool Compare(string a, string b, int num)
         {

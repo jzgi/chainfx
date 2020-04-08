@@ -8,6 +8,7 @@ namespace CloudUn.Net
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 
     /// </summary>
+    [UserAuthenticate]
     public class ChainService : WebService
     {
         // a bundle of peers
@@ -70,9 +71,14 @@ namespace CloudUn.Net
         // inter-node
 
 
-        // REST Data API
+        // HTTP Data API
         public void token(WebContext wc)
         {
+            string id = wc.Query[nameof(id)];
+            string password = wc.Query[nameof(password)];
+
+            using var dc = NewDbContext();
+            
             // retrieve from idents
         }
 

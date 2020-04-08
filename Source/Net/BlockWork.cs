@@ -16,7 +16,7 @@ namespace CloudUn.Net
             });
         }
 
-        [Ui("Search"), Tool(Modal.AnchorPrompt)]
+        [Ui("&#128269;"), Tool(Modal.AnchorPrompt)]
         public void search(WebContext wc)
         {
         }

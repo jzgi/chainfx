@@ -23,6 +23,8 @@ namespace CloudUn.Net
 
         internal short op;
 
+        internal string contract;
+
         internal short status;
 
         public void Read(ISource s, byte proj = 15)
@@ -31,6 +33,7 @@ namespace CloudUn.Net
             s.Get(nameof(name), ref name);
             s.Get(nameof(conttyp), ref conttyp);
             s.Get(nameof(op), ref op);
+            s.Get(nameof(contract), ref contract);
             s.Get(nameof(status), ref status);
         }
 
@@ -40,6 +43,7 @@ namespace CloudUn.Net
             s.Put(nameof(name), name);
             s.Put(nameof(conttyp), conttyp);
             s.Put(nameof(op), op);
+            s.Put(nameof(contract), contract);
             s.Put(nameof(status), status);
         }
     }
