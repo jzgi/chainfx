@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SkyCloud;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public class ChainApp : Framework
     {

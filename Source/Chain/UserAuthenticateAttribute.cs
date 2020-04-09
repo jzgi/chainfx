@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using SkyCloud.Web;
 using static SkyCloud.Framework;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     /// <summary>
     /// To establish principal identity. 

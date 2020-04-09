@@ -3,7 +3,7 @@ using System.Data.Common;
 using System.Net.Security;
 using SkyCloud.Db;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public static class ChainDbUtility
     {

@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using SkyCloud.Web;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 

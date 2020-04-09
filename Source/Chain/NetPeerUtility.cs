@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public static class NetPeerUtility
     {

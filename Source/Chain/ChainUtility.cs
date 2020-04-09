@@ -1,7 +1,7 @@
 using System;
 using SkyCloud.Web;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public static class ChainUtility
     {

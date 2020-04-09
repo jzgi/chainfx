@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using SkyCloud.Web;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     [Ui("Data Types")]
     public class DataTypWork : WebWork

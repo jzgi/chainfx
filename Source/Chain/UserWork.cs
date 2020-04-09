@@ -1,9 +1,9 @@
 using SkyCloud.Web;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
-    [Ui("Blocks")]
-    public class BlockWork : WebWork
+    [Ui("Users")]
+    public class UserWork : WebWork
     {
         public void @default(WebContext wc)
         {
@@ -16,8 +16,8 @@ namespace SkyCloud.Net
             });
         }
 
-        [Ui("&#128269;"), Tool(Modal.AnchorPrompt)]
-        public void search(WebContext wc)
+        [Ui("New"), Tool(Modal.ButtonShow)]
+        public void @new(WebContext wc)
         {
         }
     }

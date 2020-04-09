@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public interface IPollContext
     {

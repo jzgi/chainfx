@@ -1,6 +1,6 @@
 using SkyCloud.Web;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     [Ui("General")]
     public class AdmlyWork : WebWork

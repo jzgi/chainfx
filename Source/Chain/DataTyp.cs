@@ -1,4 +1,4 @@
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public class DataTyp : IData, IKeyable<short>
     {

@@ -1,9 +1,9 @@
 using SkyCloud.Web;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
-    [Ui("Peers")]
-    public class PeerWork : WebWork
+    [Ui("Blocks")]
+    public class BlockWork : WebWork
     {
         public void @default(WebContext wc)
         {
@@ -16,8 +16,8 @@ namespace SkyCloud.Net
             });
         }
 
-        [Ui("New", "Create New Peer"), Tool(Modal.ButtonShow)]
-        public void @new(WebContext wc)
+        [Ui("&#128269;"), Tool(Modal.AnchorPrompt)]
+        public void search(WebContext wc)
         {
         }
     }

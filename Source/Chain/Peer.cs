@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     public class Peer : IData
     {

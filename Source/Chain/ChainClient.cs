@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using SkyCloud.Web;
 using static SkyCloud.DataUtility;
 
-namespace SkyCloud.Net
+namespace SkyCloud.Chain
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
