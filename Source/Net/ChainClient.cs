@@ -2,28 +2,28 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CloudUn.Web;
-using static CloudUn.DataUtility;
+using SkyCloud.Web;
+using static SkyCloud.DataUtility;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class NetClient : HttpClient, IKeyable<string>, IPollContext
+    public class ChainClient : HttpClient, IKeyable<string>, IPollContext
     {
         const int AHEAD = 1000 * 12;
 
         const string POLL_ACTION = "/event";
 
         //  key for the remote or referenced service 
-        readonly string rKey;
+        readonly string key;
 
         // remote or referenced service name 
-        readonly string rName;
+        readonly string name;
 
         // remote or referenced shard 
-        readonly string rShard;
+        readonly string addr;
 
         // the poller task currently running
         Task pollTask;
@@ -32,55 +32,39 @@ namespace CloudUn.Net
 
         short interval;
 
+        // remote crypto
+        long crypto;
+
+        // remote client addresses
+        IPAddress[] addrs;
+
+
         // point of time to next poll, set because of exception or polling interval
         volatile int retryAt;
 
         /// <summary>
-        /// Used to construct a secure client by passing handler with certificate.
-        /// </summary>
-        /// <param name="handler"></param>
-        public NetClient(HttpClientHandler handler) : base(handler)
-        {
-        }
-
-        public bool Clustered { get; set; }
-
-        /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
-        /// <param name="raddr"></param>
-        public NetClient(string raddr) : this(null, raddr)
+        /// <param name="addr"></param>
+        public ChainClient(string addr)
         {
-        }
+            this.addr = addr;
 
-        /// <summary>
-        /// Used to construct a service client. 
-        /// </summary>
-        /// <param name="rkey">the identifying key for the remote service</param>
-        /// <param name="raddr">remote address</param>
-        internal NetClient(string rkey, string raddr)
-        {
-            rKey = rkey;
-            // initialize name and sshard
-            if (rkey != null)
-            {
-                int dash = rkey.LastIndexOf('-');
-                if (dash == -1)
-                {
-                    rName = rkey;
-                }
-                else
-                {
-                    rName = rkey.Substring(0, dash);
-                    rShard = rkey.Substring(dash + 1);
-                }
-            }
-
-            BaseAddress = new Uri(raddr);
+            BaseAddress = new Uri(addr);
             Timeout = TimeSpan.FromSeconds(12);
         }
 
-        public string Key => rKey;
+        public ChainClient(HttpClientHandler handler, string key = null, string name = null, string addr = null) : base(handler)
+        {
+            this.key = key;
+            this.name = name;
+            this.addr = addr;
+
+            BaseAddress = new Uri(addr);
+            Timeout = TimeSpan.FromSeconds(12);
+        }
+
+        public string Key => key;
 
         internal void SetPoller(Action<IPollContext> poller, short interval)
         {
@@ -88,9 +72,9 @@ namespace CloudUn.Net
             this.interval = interval;
         }
 
-        public string RefName => rName;
+        public string RefName => name;
 
-        public string RefShard => rShard;
+        public string RefShard => addr;
 
         internal async void TryPollAsync(int ticks)
         {
@@ -129,13 +113,10 @@ namespace CloudUn.Net
 
         void AddAccessHeaders(HttpRequestMessage req, WebContext wc)
         {
-            if (Clustered)
-            {
-                // var cfg = Framework.Config;
+            // var cfg = Framework.Config;
 //                req.Headers.TryAddWithoutValidation("X-Caller-Sign", Framework.sign);
 //                req.Headers.TryAddWithoutValidation("X-Caller-Name", cfg.name);
 //                req.Headers.TryAddWithoutValidation("X-Caller-Shard", cfg.shard);
-            }
 
             var auth = wc?.Header("Authorization");
             if (auth != null)

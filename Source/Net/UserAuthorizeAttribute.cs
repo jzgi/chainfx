@@ -1,7 +1,7 @@
 ﻿using System;
-using CloudUn.Web;
+using SkyCloud.Web;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     /// <summary>
     /// To implement principal authorization of access to the target resources.

@@ -1,6 +1,6 @@
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
-    public class DataTyp : IData
+    public class DataTyp : IData, IKeyable<short>
     {
         public static readonly Map<short, string> Ops = new Map<short, string>()
         {
@@ -46,5 +46,7 @@ namespace CloudUn.Net
             s.Put(nameof(contract), contract);
             s.Put(nameof(status), status);
         }
+
+        public short Key => id;
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     ///
     /// A JSON member that is either a value, or a property if with name.

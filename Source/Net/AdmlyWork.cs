@@ -1,6 +1,6 @@
-using CloudUn.Web;
+using SkyCloud.Web;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     [Ui("General")]
     public class AdmlyWork : WebWork

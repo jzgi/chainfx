@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 

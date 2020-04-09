@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.

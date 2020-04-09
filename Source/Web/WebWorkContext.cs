@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace CloudUn.Web
+namespace SkyCloud.Web
 {
     /// <summary>
     /// The creation environment for a particular work instance.

@@ -1,6 +1,6 @@
 using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

@@ -1,6 +1,6 @@
 using System;
 
-namespace CloudUn.Web
+namespace SkyCloud.Web
 {
     /// <summary>
     /// To specify basic user interface-related information for a nodule (work or action) object.

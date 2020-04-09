@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     /// <summary>
     /// A lightweight alternative to the List class. The internal array is created on demand.

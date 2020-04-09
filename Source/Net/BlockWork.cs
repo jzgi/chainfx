@@ -1,6 +1,6 @@
-using CloudUn.Web;
+using SkyCloud.Web;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     [Ui("Blocks")]
     public class BlockWork : WebWork

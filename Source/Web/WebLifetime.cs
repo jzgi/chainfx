@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace CloudUn.Web
+namespace SkyCloud.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

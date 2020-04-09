@@ -6,15 +6,15 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using CloudUn.Db;
-using CloudUn.Web;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using SkyCloud.Db;
+using SkyCloud.Web;
 
-namespace CloudUn
+namespace SkyCloud
 {
     /// <summary>
     /// The application scope that holds global states.

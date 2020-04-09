@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace CloudUn
+namespace SkyCloud.Net
 {
     public interface IPollContext
     {

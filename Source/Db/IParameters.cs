@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn.Db
+namespace SkyCloud.Db
 {
     /// <summary>
     /// To set SQL parameters.  

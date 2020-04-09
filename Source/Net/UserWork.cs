@@ -1,6 +1,6 @@
-using CloudUn.Web;
+using SkyCloud.Web;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     [Ui("Users")]
     public class UserWork : WebWork

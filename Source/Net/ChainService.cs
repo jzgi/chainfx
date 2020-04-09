@@ -1,9 +1,9 @@
 using System;
 using System.Net;
 using System.Threading;
-using CloudUn.Web;
+using SkyCloud.Web;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 
@@ -11,11 +11,13 @@ namespace CloudUn.Net
     [UserAuthenticate]
     public class ChainService : WebService
     {
+        Map<short, DataTyp> datyps = null;
+
         // a bundle of peers
-        Map<string, ChainPeer> peers = null;
+        Map<string, ChainClient> clients = null;
 
         // for identifying a peer by its IP address
-        Map<IPAddress, ChainPeer> lookup = null;
+        Map<IPAddress, ChainClient> lookup = null;
 
         // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
@@ -32,11 +34,11 @@ namespace CloudUn.Net
             {
                 var p = dc.ToObject<Peer>();
 
-                var cp = new ChainPeer("");
+                var cp = new ChainClient("");
 
                 var addrs = Dns.GetHostAddresses("");
 
-                peers.Add("", cp);
+                clients.Add("", cp);
                 foreach (var addr in addrs)
                 {
                     lookup.Add(addr, cp);
@@ -44,7 +46,7 @@ namespace CloudUn.Net
             }
 
             // create and start the scheduler thead
-            if (peers != null)
+            if (clients != null)
             {
                 // to repeatedly check and initiate event polling activities.
                 scheduler = new Thread(() =>
@@ -56,9 +58,9 @@ namespace CloudUn.Net
 
                         // a schedule cycle
                         int tick = Environment.TickCount;
-                        for (int i = 0; i < peers.Count; i++)
+                        for (int i = 0; i < clients.Count; i++)
                         {
-                            var cli = peers.ValueAt(i);
+                            var cli = clients.ValueAt(i);
                             cli.TryPollAsync(tick);
                         }
                     }
@@ -68,7 +70,19 @@ namespace CloudUn.Net
 
             CreateWork<AdmlyWork>("admly");
         }
-        // inter-node
+
+        void load()
+        {
+            using var dc = NewDbContext();
+            dc.Sql("SELECT * FROM chain.datyps");
+            datyps = dc.Query<short, DataTyp>();
+            
+            dc.Query("SELECT * FROM chain.peers");
+            while (dc.Next())
+            {
+                
+            }
+        }
 
 
         // HTTP Data API

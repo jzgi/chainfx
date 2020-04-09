@@ -1,6 +1,6 @@
 using System;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     public class Peer : IData
     {

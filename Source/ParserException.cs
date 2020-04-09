@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     /// <summary>
     /// To indicate that a content parsing-related exception occured.

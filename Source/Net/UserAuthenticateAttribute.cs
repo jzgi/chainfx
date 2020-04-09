@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using CloudUn.Web;
-using static CloudUn.Framework;
+using SkyCloud.Web;
+using static SkyCloud.Framework;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     /// <summary>
     /// To establish principal identity. 

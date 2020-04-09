@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace CloudUn.Db
+namespace SkyCloud.Db
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn
+namespace SkyCloud
 {
     /// <summary>
     /// Represents an output sink fovoid a dataset, a single data object, ovoid only some of its data fields.

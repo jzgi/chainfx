@@ -1,6 +1,6 @@
 using System;
 
-namespace CloudUn.Db
+namespace SkyCloud.Db
 {
     ///
     /// Thrown to indicate an error during a database operation.

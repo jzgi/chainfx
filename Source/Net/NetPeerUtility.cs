@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     public static class NetPeerUtility
     {
@@ -18,11 +18,11 @@ namespace CloudUn.Net
             return null;
         }
 
-        public static void CallAny(this NetClient[] df)
+        public static void CallAny(this ChainClient[] df)
         {
         }
 
-        public static void CallAll(this NetClient[] df)
+        public static void CallAll(this ChainClient[] df)
         {
         }
 

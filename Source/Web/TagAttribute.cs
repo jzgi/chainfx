@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace CloudUn.Web
+namespace SkyCloud.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

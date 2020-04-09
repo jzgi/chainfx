@@ -1,9 +1,9 @@
 using System;
 using System.Data.Common;
 using System.Net.Security;
-using CloudUn.Db;
+using SkyCloud.Db;
 
-namespace CloudUn.Net
+namespace SkyCloud.Net
 {
     public static class ChainDbUtility
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudUn.Web
+namespace SkyCloud.Web
 {
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace CloudUn
+namespace SkyCloud
 {
     public static class TextUtility
     {

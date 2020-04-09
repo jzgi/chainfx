@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
-namespace CloudUn
+namespace SkyCloud
 {
     public class FrameworkLogger : ILoggerProvider, ILogger
     {

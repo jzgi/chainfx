@@ -1,4 +1,4 @@
-﻿namespace CloudUn
+﻿namespace SkyCloud
 {
     /// <summary>
     /// Represents a binary content ready to send through web context. 
