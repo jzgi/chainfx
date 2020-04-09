@@ -137,11 +137,8 @@ namespace SkyCloud
             {
                 return v;
             }
-            else
-            {
-                v = h - 'A';
-                if (v >= 0 && v <= 5) return 10 + v;
-            }
+            v = h - 'A';
+            if (v >= 0 && v <= 5) return 10 + v;
             return 0;
         }
     }

@@ -8,6 +8,8 @@ namespace SkyCloud
         // hexidecimal numbers
         static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+        static readonly char[] HEXU = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
         public static string ToHex(ulong v)
         {
             char[] buf = new char[16];
@@ -172,22 +174,24 @@ namespace SkyCloud
         // DIGEST
         //
 
-        public static string MD5(string src)
+        public static string MD5(string src, bool uppercase = false)
         {
             if (src == null) return null;
+
+            var arr = uppercase ? HEXU : HEX;
 
             byte[] raw = Encoding.UTF8.GetBytes(src);
 
             // digest and transform
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
-                byte[] hash = md5.ComputeHash(raw);
-                StringBuilder str = new StringBuilder(32);
+                var hash = md5.ComputeHash(raw);
+                var str = new StringBuilder(32);
                 for (int i = 0; i < 16; i++)
                 {
                     byte b = hash[i];
-                    str.Append(HEX[b >> 4]);
-                    str.Append(HEX[b & 0x0f]);
+                    str.Append(arr[b >> 4]);
+                    str.Append(arr[b & 0x0f]);
                 }
 
                 return str.ToString();
@@ -290,7 +294,6 @@ namespace SkyCloud
             {
                 return num + 10;
             }
-
             num = hex - '0';
             if (num >= 0 && num <= 9)
             {

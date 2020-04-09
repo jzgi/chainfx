@@ -60,7 +60,10 @@ namespace SkyCloud.Chain
             this.name = name;
             this.addr = addr;
 
-            BaseAddress = new Uri(addr);
+            if (addr != null)
+            {
+                BaseAddress = new Uri(addr);
+            }
             Timeout = TimeSpan.FromSeconds(12);
         }
 

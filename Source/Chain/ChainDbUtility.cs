@@ -7,19 +7,19 @@ namespace SkyCloud.Chain
 {
     public static class ChainDbUtility
     {
-        public static R[] ChainQuery<R>(this DbContext dc, short typ, int code) where R : IData, new()
+        public static R[] ChainQuery<R>(this DbContext dc, short datypid, string key) where R : IData, new()
         {
-            dc.Query("SELECT * FROM un.blocks WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
+            dc.Query("SELECT * FROM chain.blocks WHERE datypid = @1 AND key = @2", p => p.Set(datypid).Set(key));
             return null;
         }
 
-        internal static Block[] ChainGetBlock(this DbContext dc, short typ, int code)
+        internal static Block[] ChainGetBlock(this DbContext dc, short datypid, int code)
         {
-            dc.Query("SELECT * FROM un.blocks WHERE typ = @1 AND keyno = @2", p => p.Set(typ).Set(code));
+            dc.Query("SELECT * FROM chain.blocks WHERE datypid = @1 AND key = @2", p => p.Set(datypid).Set(code));
             return null;
         }
 
-        public static byte[] ChainQuery<M>(this DbContext dc, short datypid, string key) where M : IData
+        public static byte[] ChainQueryDat<M>(this DbContext dc, short datypid, string key) where M : IData
         {
             dc.Sql("SELECT body FROM chain.blocks WHERE datypid = @1 AND key = @2");
             dc.Query(p => p.Set(datypid).Set(key));
@@ -48,7 +48,7 @@ namespace SkyCloud.Chain
                 dc.Let(out byte[] body);
                 // descrypt
                 CryptionUtility.Decrypt(body, body.Length, cryptokey);
-                
+
                 var jc = new JsonParser(body, body.Length).Parse();
             }
             return null;

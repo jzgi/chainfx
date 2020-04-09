@@ -23,6 +23,11 @@ namespace SkyCloud
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
         };
 
+        static readonly char[] HEXU =
+        {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+
         // sexagesimal numbers
         static readonly string[] SEX =
         {
@@ -455,12 +460,14 @@ namespace SkyCloud
             }
         }
 
-        public string MD5(string appendix = null)
+        public string MD5(string appendix = null, bool uppercase = false)
         {
             if (appendix != null)
             {
                 Add(appendix);
             }
+            // upper or lower
+            var arr = uppercase ? HEXU : HEX;
             // digest and transform
             using var md5 = System.Security.Cryptography.MD5.Create();
             byte[] hash = md5.ComputeHash(bytebuf, 0, count);
@@ -468,8 +475,8 @@ namespace SkyCloud
             for (int i = 0; i < 16; i++)
             {
                 byte b = hash[i];
-                str.Append(HEX[b >> 4]);
-                str.Append(HEX[b & 0x0f]);
+                str.Append(arr[b >> 4]);
+                str.Append(arr[b & 0x0f]);
             }
             return str.ToString();
         }
