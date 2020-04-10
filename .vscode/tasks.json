@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/CloudUn.csproj"
+                "${workspaceFolder}/SkyCloud.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

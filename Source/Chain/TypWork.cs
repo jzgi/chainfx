@@ -12,7 +12,7 @@ namespace SkyCloud.Chain
             {
                 h.TOOLBAR();
                 using var dc = NewDbContext();
-                var arr = dc.Query<Typ>("SELECT * FROM chain.datyps");
+                var arr = dc.Query<Typ>("SELECT * FROM chain.typs");
 
                 h.TABLE(arr, o =>
                 {

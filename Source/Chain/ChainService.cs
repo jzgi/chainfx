@@ -79,7 +79,7 @@ namespace SkyCloud.Chain
 
                 // load data types
                 using var dc = NewDbContext();
-                dc.Sql("SELECT * FROM chain.datyps");
+                dc.Sql("SELECT * FROM chain.typs");
                 while (dc.Next())
                 {
                     var dt = dc.ToObject<Typ>();

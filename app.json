@@ -5,9 +5,9 @@
     "chain": "http://localhost:8080"
   },
   "DB": {
-    "host": "144000.tv",
+    "host": "skyiah.com",
     "port": 5432,
-    "database": "chain",
+    "database": "care",
     "username": "postgres",
     "password": "Gs721004"
   }

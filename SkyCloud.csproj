@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Description>Enterprise Cloud Library for DAPP</Description>
+        <Description>Enterprise Cloud + Blockchain for DAPP</Description>
         <VersionPrefix>1.1</VersionPrefix>
         <Authors>skyiah</Authors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DebugType>portable</DebugType>
-        <PackageId>CloudUn</PackageId>
+        <PackageId>SkyCloud</PackageId>
         <RuntimeFrameworkVersion>3.1.1</RuntimeFrameworkVersion>
         <Version>1.1.0</Version>
         <LangVersion>8</LangVersion>
         <Company>Skyiah Technologies</Company>
-        <PackageProjectUrl>https://github.com/skyiah/cloudun</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/skyiah/cloudun</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/skyiah/skycloud</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/skyiah/skycloud</RepositoryUrl>
         <PackageVersion>1.1.0</PackageVersion>
-        <Title>Enterprise Cloud Library for DAPP</Title>
+        <Title>SkyCloud Framework for DAPP</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
         <AssemblyVersion>1.1</AssemblyVersion>
         <OutputType>Exe</OutputType>

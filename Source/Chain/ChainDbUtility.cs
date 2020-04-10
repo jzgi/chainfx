@@ -7,15 +7,15 @@ namespace SkyCloud.Chain
 {
     public static class ChainDbUtility
     {
-        public static R[] ChainQuery<R>(this DbContext dc, short datypid, string key) where R : IData, new()
+        public static R[] ChainQuery<R>(this DbContext dc, short typid, string key) where R : IData, new()
         {
-            dc.Query("SELECT * FROM chain.blocks WHERE datypid = @1 AND key = @2", p => p.Set(datypid).Set(key));
+            dc.Query("SELECT * FROM chain.blocks WHERE datypid = @1 AND key = @2", p => p.Set(typid).Set(key));
             return null;
         }
 
-        internal static Block[] ChainGetBlock(this DbContext dc, short datypid, int code)
+        internal static Block[] ChainGetBlock(this DbContext dc, short typid, int code)
         {
-            dc.Query("SELECT * FROM chain.blocks WHERE datypid = @1 AND key = @2", p => p.Set(datypid).Set(code));
+            dc.Query("SELECT * FROM chain.blocks WHERE datypid = @1 AND key = @2", p => p.Set(typid).Set(code));
             return null;
         }
 
@@ -54,13 +54,13 @@ namespace SkyCloud.Chain
             return null;
         }
 
-        public static void ChainPut(this DbContext dc, short datypid, string key, string[] tags, DynamicContent content)
+        public static void ChainPut(this DbContext dc, short typid, string key, string[] tags, DynamicContent content)
         {
             // retrieve prior hash
 
             // calculate new hash based on prior hash and the content
             var datypes = Framework.Obtain<Map<short, Typ>>();
-            var dattyp = datypes[datypid];
+            var dattyp = datypes[typid];
             if (dattyp.op <= 1)
             {
                 return;
@@ -68,13 +68,13 @@ namespace SkyCloud.Chain
 
             var cryptokey = dattyp.op >= 3 ? Framework.publickey : Framework.privatekey;
             CryptionUtility.Encrypt(content.Buffer, content.Count, cryptokey); // encrypt
-            var prior = (string) dc.Scalar("SELECT hash FROM chain.blocks WHERE datypid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(datypid));
+            var prior = (string) dc.Scalar("SELECT hash FROM chain.blocks WHERE datypid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(typid));
             string hash = content.MD5(prior);
             var body = new ArraySegment<byte>(content.Buffer, 0, content.Count);
 
             // record insertion
             dc.Sql("INSERT INTO chain.blocks (datypid, key, tags, body, hash) VALUES (@1, @2, @3, @4, @5)");
-            dc.Execute(p => p.Set(datypid).Set(key).Set(tags).Set(body).Set(hash));
+            dc.Execute(p => p.Set(typid).Set(key).Set(tags).Set(body).Set(hash));
         }
     }
 }
