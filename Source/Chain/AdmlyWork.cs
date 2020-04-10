@@ -9,7 +9,7 @@ namespace SkyCloud.Chain
         {
             CreateWork<PeerWork>("peer");
 
-            CreateWork<UserWork>("user");
+            CreateWork<LoginWork>("user");
 
             CreateWork<DataTypWork>("typ");
 

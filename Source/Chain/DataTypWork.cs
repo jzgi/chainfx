@@ -18,27 +18,30 @@ namespace SkyCloud.Chain
                 {
                     h.TD(o.id);
                     h.TD(o.name);
+                    h.TD(o.contentyp);
                     h.TD(DataTyp.Ops[o.op]);
+                    h.TD(o.contract == null ? string.Empty : "Contract");
                     h.TD(DataTyp.Statuses[o.status]);
                 });
             });
         }
 
-        [Ui("New", "Create New Data Type"), Tool(Modal.ButtonShow)]
+        [Ui("➕", "Create New Data Type"), Tool(Modal.ButtonShow, Size.Full)]
         public async Task @new(WebContext wc)
         {
             if (wc.IsGet)
             {
                 var o = new DataTyp { };
-
                 o.Read(wc.Query, 0);
                 wc.GivePane(200, h =>
                 {
-                    const string css = "uk-width-small";
-                    h.FORM_().FIELDSUL_("数据类型参数");
+                    const string css = "uk-width-medium";
+                    h.FORM_().FIELDSUL_("Attributes");
                     h.LI_().LABEL("ID", css).NUMBER(null, nameof(o.id), o.id, min: 1, required: true)._LI();
                     h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, min: 2, max: 20, required: true)._LI();
-                    h.LI_().LABEL("Operation", css).SELECT(null, nameof(o.op), o.op, DataTyp.Ops)._LI();
+                    h.LI_().LABEL("Content Type", css).TEXT(null, nameof(o.contentyp), o.contentyp, min: 2, max: 20, required: true)._LI();
+                    h.LI_().LABEL("Op", css).SELECT(null, nameof(o.op), o.op, DataTyp.Ops)._LI();
+                    h.LI_().LABEL("Contract", css).TEXTAREA(null, nameof(o.contract), o.contract, min: 20, max: 400, required: true)._LI();
                     h.LI_().LABEL("Status", css).SELECT(null, nameof(o.status), o.status, DataTyp.Statuses, required: true)._LI();
                     h._FIELDSUL()._FORM();
                 });

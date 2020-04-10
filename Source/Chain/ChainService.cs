@@ -8,7 +8,7 @@ namespace SkyCloud.Chain
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 
     /// </summary>
-    [UserAuthenticate]
+    [LoginAuthenticate]
     public class ChainService : WebService
     {
         Map<short, DataTyp> datyps = null;

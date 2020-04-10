@@ -15,75 +15,60 @@ create table peers
 
 alter table peers owner to postgres;
 
-create table typs
+create table datyps
 (
     id smallint not null
-        constraint typs_pk
+        constraint datyps_pk
             primary key,
-    remark varchar(20),
-    r boolean,
-    w boolean,
-    status integer
+    name varchar(20),
+    status integer,
+    contentyp varchar(20),
+    op smallint,
+    contract bytea
 );
 
-alter table typs owner to postgres;
+alter table datyps owner to postgres;
 
-create table peerblocks
-(
-    peerid varchar(10) not null
-        constraint peerblocks_peerid_fk
-            references peers (id),
-    seq integer not null,
-    typid smallint
-        constraint peerblocks_typid_fk
-            references typs,
-    key varchar(20),
-    tags varchar(20) [],
-    hash char(32),
-    stamp timestamp(0),
-    status smallint default 0 not null,
-    content bytea,
-    constraint peerblocks_pk
-        primary key (peerid, seq)
-);
-
-alter table peerblocks owner to postgres;
-
-create index peerblocks_tags_idx
-    on peerblocks (tags);
-
-create index peerblocks_typid_key_idx
-    on peerblocks (typid, key);
-
-create table users
+create table logins
 (
     id varchar(10) not null
-        constraint users_pk
+        constraint logins_pk
             primary key,
-    name varchar(10),
+    name varchar(20),
     credential char [],
     status smallint default 0 not null,
     role smallint
 );
 
-alter table users owner to postgres;
+alter table logins owner to postgres;
 
 create table blocks
 (
-    seq serial not null
-        constraint blocks_pk
-            primary key,
-    typid smallint,
+    aid varchar(10) not null
+        constraint blocks_aid_fk
+            references peers,
+    seq integer not null,
+    bid varchar(10)
+        constraint blocks_bid_fk
+            references peers,
+    datypid smallint
+        constraint blocks_datypid_fk
+            references datyps,
     key varchar(20),
     tags varchar(20) [],
-    content bytea,
+    body bytea,
     hash char(32),
     stamp timestamp(0),
-    status smallint default 0 not null
+    status smallint default 0 not null,
+    constraint blocks_pk
+        primary key (aid, seq)
 );
 
 alter table blocks owner to postgres;
 
-create index blocks_typid_key_idx
-    on blocks (typid, key);
+create index blocks_datypid_key_idx
+    on blocks (datypid, key);
+
+create index blocks_tags_idx
+    on blocks (tags);
 

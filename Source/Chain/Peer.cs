@@ -10,8 +10,6 @@ namespace SkyCloud.Chain
 
         internal string raddr;
 
-        internal DateTime stamp;
-
         internal short status;
 
         public void Read(ISource s, byte proj = 15)
@@ -19,7 +17,6 @@ namespace SkyCloud.Chain
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
             s.Get(nameof(raddr), ref raddr);
-            s.Get(nameof(stamp), ref stamp);
             s.Get(nameof(status), ref status);
         }
 
@@ -28,7 +25,6 @@ namespace SkyCloud.Chain
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
             s.Put(nameof(raddr), raddr);
-            s.Put(nameof(stamp), stamp);
             s.Put(nameof(status), status);
         }
     }

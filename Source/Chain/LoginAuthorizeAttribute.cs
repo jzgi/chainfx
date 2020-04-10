@@ -7,18 +7,18 @@ namespace SkyCloud.Chain
     /// To implement principal authorization of access to the target resources.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class UserAuthorizeAttribute : AuthorizeAttribute
+    public class LoginAuthorizeAttribute : AuthorizeAttribute
     {
         readonly short role;
 
-        public UserAuthorizeAttribute(short role = 0)
+        public LoginAuthorizeAttribute(short role = 0)
         {
             this.role = role;
         }
 
         public override bool Do(WebContext wc)
         {
-            var prin = (User) wc.Principal;
+            var prin = (Login) wc.Principal;
 
             if (prin == null) return false;
 

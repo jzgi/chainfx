@@ -290,9 +290,9 @@ namespace SkyCloud.Chain
         }
 
 
-        public static void SetTokenCookie(this WebContext wc, User o)
+        public static void SetTokenCookie(this WebContext wc, Login o)
         {
-            const byte proj_all_but_privacy = 0x0f ^ User.PRIVACY;
+            const byte proj_all_but_privacy = 0x0f ^ Login.PRIVACY;
             string token = AuthenticateAttribute.Encrypt(o, proj_all_but_privacy);
             wc.SetCookie(nameof(token), token);
         }

@@ -1,8 +1,8 @@
 namespace SkyCloud.Chain
 {
-    public class User : IData
+    public class Login : IData
     {
-        public static readonly User Empty = new User();
+        public static readonly Login Empty = new Login();
 
         public const byte ID = 1, PRIVACY = 2, LATER = 4, EXTRA = 0x10;
 
@@ -10,14 +10,14 @@ namespace SkyCloud.Chain
         public static readonly Map<short, string> Roles = new Map<short, string>
         {
             {0, "APP"},
-            {1, "ADMIN"},
+            {1, "Admin"},
         };
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "DISABLED"},
-            {1, "ENABLED"},
+            {0, "Disabled"},
+            {1, "Enabled"},
         };
 
         internal string id;
