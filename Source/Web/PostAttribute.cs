@@ -24,7 +24,7 @@ namespace SkyCloud.Web
             this.tip = tip;
         }
 
-        internal override void Print(HtmlContent h)
+        internal override void Describe(HtmlContent h)
         {
             h.P_();
             h.T("POST").SP().T(tip);

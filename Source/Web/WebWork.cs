@@ -273,32 +273,32 @@ namespace SkyCloud.Web
             );
         }
 
-        protected void Describe(HtmlContent hc)
+        protected void Describe(HtmlContent h)
         {
             for (int i = 0; i < actions?.Count; i++)
             {
-                var a = actions.At(i).Value;
+                var a = actions.ValueAt(i);
                 if (a.Tags != null)
                 {
-                    hc.T("<article style=\"border: 1px solid silver; padding: 8px;\">");
-                    hc.T("<h3><code>").TT(a.Pathing).T("</code></h3>");
-                    hc.HR();
+                    h.ARTICLE_("uk-card uk-card-primary");
+                    h.HEADER_("uk-card-header").TT(a.Pathing)._HEADER();
+                    h.MAIN_("uk-card-body");
                     for (int k = 0; k < a.Tags.Length; k++)
                     {
                         var c = a.Tags[k];
-                        c.Print(hc);
+                        c.Describe(h);
                     }
-
-                    hc.T("</article>");
+                    h._MAIN();
+                    h._ARTICLE();
                 }
             }
 
-            varwork?.Describe(hc);
+            varwork?.Describe(h);
 
             for (int i = 0; i < works?.Count; i++)
             {
                 var w = works.At(i).Value;
-                w.Describe(hc);
+                w.Describe(h);
             }
         }
 

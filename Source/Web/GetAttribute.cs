@@ -21,7 +21,7 @@ namespace SkyCloud.Web
             this.headers = Preprocess(headers);
         }
 
-        internal override void Print(HtmlContent h)
+        internal override void Describe(HtmlContent h)
         {
             h.P_();
             h.T("GET").SP().T(tip);

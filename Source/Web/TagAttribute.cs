@@ -10,7 +10,7 @@ namespace SkyCloud.Web
     {
         private const string CRLF = "\r\n";
 
-        internal abstract void Print(HtmlContent h);
+        internal abstract void Describe(HtmlContent h);
 
         internal static string Preprocess(string v)
         {

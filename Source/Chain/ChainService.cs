@@ -108,7 +108,13 @@ namespace SkyCloud.Chain
         }
 
 
-        // HTTP Data API
+        [Get("Get access token for a login", query: "?id=<-login-id->&password=")]
+        [Reply(200, "Success", body: @"{
+            name : string, // login name
+            id : string, // login id
+            token : // access token
+        }")]
+        [Reply(404, "login not found or invalid password")]
         public void token(WebContext wc)
         {
             string id = wc.Query[nameof(id)];

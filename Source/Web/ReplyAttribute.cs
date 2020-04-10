@@ -24,7 +24,7 @@ namespace SkyCloud.Web
             this.body = Preprocess(body);
         }
 
-        internal override void Print(HtmlContent h)
+        internal override void Describe(HtmlContent h)
         {
             h.P_();
             h.T(status).SP().T(tip);

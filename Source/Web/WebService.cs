@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SkyCloud.Chain;
 
 namespace SkyCloud.Web
 {
@@ -180,6 +181,22 @@ namespace SkyCloud.Web
             ((WebContext) context).Close();
         }
 
+        /// <summary>
+        /// To generate API reference documentation for this service.
+        /// </summary>
+        /// <param name="wc"></param>
+        public void @ref(WebContext wc)
+        {
+            wc.GivePage(200, h =>
+            {
+                h.DIV_("uk-top-bar").T(Name).T(" API Reference")._DIV();
+                h.DIV_("uk-top-placeholder")._DIV();
+                
+                Describe(h);
+                
+            });
+        }
+        
         internal async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);

@@ -9,7 +9,7 @@ namespace SkyCloud.Chain
         public void @default(WebContext wc)
         {
             using var dc = NewDbContext();
-            var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
+            var arr = dc.Query<Peer>("SELECT * FROM chain.peers WHERE id != '&'");
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
@@ -34,7 +34,7 @@ namespace SkyCloud.Chain
                 wc.GivePane(200, h =>
                 {
                     const string css = "uk-width-small";
-                    h.FORM_().FIELDSUL_("Login Attributes");
+                    h.FORM_().FIELDSUL_("Attributes");
                     h.LI_().LABEL("ID", css).TEXT(null, nameof(o.id), o.id, max: 10, required: true)._LI();
                     h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().LABEL("Address", css).URL(null, nameof(o.raddr), o.raddr, max: 20, required: true)._LI();
