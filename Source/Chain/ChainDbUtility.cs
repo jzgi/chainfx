@@ -34,7 +34,7 @@ namespace SkyCloud.Chain
             dc.Sql("SELECT body FROM chain.blocks WHERE datypid = @1 AND key = @2");
             dc.Query(p => p.Set(datypid).Set(key));
 
-            var datypes = Framework.Obtain<Map<short, DataTyp>>();
+            var datypes = Framework.Obtain<Map<short, Typ>>();
             var dattyp = datypes[datypid];
             if (dattyp.op <= 1)
             {
@@ -59,7 +59,7 @@ namespace SkyCloud.Chain
             // retrieve prior hash
 
             // calculate new hash based on prior hash and the content
-            var datypes = Framework.Obtain<Map<short, DataTyp>>();
+            var datypes = Framework.Obtain<Map<short, Typ>>();
             var dattyp = datypes[datypid];
             if (dattyp.op <= 1)
             {

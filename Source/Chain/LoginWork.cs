@@ -18,7 +18,7 @@ namespace SkyCloud.Chain
                     h.TDCHECK(o.id);
                     h.TD(o.id);
                     h.TD(o.name);
-                    h.TD(Login.Roles[o.role]);
+                    h.TD(Login.Typs[o.typ]);
                     h.TD(Login.Statuses[o.status]);
                     h.TDFORM(() => h.VARTOOLS(o.id));
                 });
@@ -37,7 +37,7 @@ namespace SkyCloud.Chain
                     h.FORM_().FIELDSUL_("Login Attributes");
                     h.LI_().LABEL("ID", css).TEXT(null, nameof(o.id), o.id, max: 10, required: true)._LI();
                     h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().LABEL("Role", css).SELECT(null, nameof(o.role), o.role, Login.Roles, required: true)._LI();
+                    h.LI_().LABEL("Role", css).SELECT(null, nameof(o.typ), o.typ, Login.Typs, required: true)._LI();
                     h.LI_().LABEL("Status", css).SELECT(null, nameof(o.status), o.status, Login.Statuses, required: true)._LI();
                     h._FIELDSUL()._FORM();
                 });

@@ -1,13 +1,20 @@
-using System;
-
 namespace SkyCloud.Chain
 {
-    public class Peer : IData
+    public class Peer : IData, IKeyable<string>
     {
+        public static readonly Peer Empty = new Peer();
+
+        public static readonly Map<short, string> Statuses = new Map<short, string>
+        {
+            {0, "Disabled"},
+            {1, "Enabled"}
+        };
+
         internal string id;
 
         internal string name;
 
+        // remote address
         internal string raddr;
 
         internal short status;
@@ -27,5 +34,7 @@ namespace SkyCloud.Chain
             s.Put(nameof(raddr), raddr);
             s.Put(nameof(status), status);
         }
+
+        public string Key => id;
     }
 }

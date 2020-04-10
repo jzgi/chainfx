@@ -11,7 +11,7 @@ namespace SkyCloud.Chain
 
             CreateWork<LoginWork>("user");
 
-            CreateWork<DataTypWork>("typ");
+            CreateWork<TypWork>("datyp");
 
             CreateWork<BlockWork>("block");
         }

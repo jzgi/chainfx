@@ -24,7 +24,7 @@ namespace SkyCloud.Chain
 
             if (role > 0)
             {
-                return (prin.role & role) == role;
+                return (prin.typ & role) == role;
             }
 
             return true;

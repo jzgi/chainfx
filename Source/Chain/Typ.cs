@@ -1,6 +1,6 @@
 namespace SkyCloud.Chain
 {
-    public class DataTyp : IData, IKeyable<short>
+    public class Typ : IData, IKeyable<short>
     {
         public static readonly Map<short, string> Ops = new Map<short, string>()
         {

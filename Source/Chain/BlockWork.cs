@@ -8,6 +8,8 @@ namespace SkyCloud.Chain
         [Ui("All"), Tool(Modal.Anchor)]
         public void @default(WebContext wc)
         {
+            using var dc = NewDbContext();
+            
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();

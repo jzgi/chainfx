@@ -4,13 +4,13 @@ namespace SkyCloud.Chain
     {
         public static readonly Login Empty = new Login();
 
-        public const byte ID = 1, PRIVACY = 2, LATER = 4, EXTRA = 0x10;
+        public const byte ID = 1, PRIVACY = 2;
 
-        // status
-        public static readonly Map<short, string> Roles = new Map<short, string>
+        // types
+        public static readonly Map<short, string> Typs = new Map<short, string>
         {
             {0, "APP"},
-            {1, "Admin"},
+            {1, "admin"},
         };
 
         // status
@@ -22,29 +22,35 @@ namespace SkyCloud.Chain
 
         internal string id;
 
+        internal short typ;
+
         internal string name;
 
         internal string credential;
-
-        internal short role;
 
         internal short status;
 
         public void Read(ISource s, byte proj = 15)
         {
             s.Get(nameof(id), ref id);
+            s.Get(nameof(typ), ref typ);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(credential), ref credential);
-            s.Get(nameof(role), ref role);
+            if ((proj & PRIVACY) == PRIVACY)
+            {
+                s.Get(nameof(credential), ref credential);
+            }
             s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 15)
         {
             s.Put(nameof(id), id);
+            s.Put(nameof(typ), typ);
             s.Put(nameof(name), name);
-            s.Put(nameof(credential), credential);
-            s.Put(nameof(role), role);
+            if ((proj & PRIVACY) == PRIVACY)
+            {
+                s.Put(nameof(credential), credential);
+            }
             s.Put(nameof(status), status);
         }
     }

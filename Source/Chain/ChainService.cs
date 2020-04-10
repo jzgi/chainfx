@@ -11,13 +11,15 @@ namespace SkyCloud.Chain
     [LoginAuthenticate]
     public class ChainService : WebService
     {
-        Map<short, DataTyp> datyps = null;
+        readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
+
+        readonly Map<short, Typ> datyps = new Map<short, Typ>(16);
 
         // a bundle of peers
-        Map<string, ChainClient> clients = null;
+        readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
 
         // for identifying a peer by its IP address
-        Map<IPAddress, ChainClient> lookup = null;
+        readonly Map<string, ChainClient> iptab = new Map<string, ChainClient>(64);
 
         // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
@@ -28,22 +30,7 @@ namespace SkyCloud.Chain
             // ensure DDL
 
             // load and setup peers
-            using var dc = NewDbContext();
-            dc.Query("SELECT * FROM chain.peers WHERE status > 0");
-            while (dc.Next())
-            {
-                var p = dc.ToObject<Peer>();
-
-                var cp = new ChainClient("");
-
-                var addrs = Dns.GetHostAddresses("");
-
-                clients.Add("", cp);
-                foreach (var addr in addrs)
-                {
-                    lookup.Add(addr, cp);
-                }
-            }
+            Reload();
 
             // create and start the scheduler thead
             if (clients != null)
@@ -54,14 +41,23 @@ namespace SkyCloud.Chain
                     while (true)
                     {
                         // interval
-                        Thread.Sleep(1000);
+                        Thread.Sleep(7000);
 
-                        // a schedule cycle
-                        int tick = Environment.TickCount;
-                        for (int i = 0; i < clients.Count; i++)
+                        // a scheduling cycle
+                        var tick = Environment.TickCount;
+                        @lock.EnterReadLock();
+                        try
                         {
-                            var cli = clients.ValueAt(i);
-                            cli.TryPollAsync(tick);
+                            var clis = clients;
+                            for (int i = 0; i < clients.Count; i++)
+                            {
+                                var cli = clis.ValueAt(i);
+                                cli.TryPollAsync(tick);
+                            }
+                        }
+                        finally
+                        {
+                            @lock.ExitReadLock();
                         }
                     }
                 });
@@ -71,16 +67,43 @@ namespace SkyCloud.Chain
             CreateWork<AdmlyWork>("admly");
         }
 
-        void load()
+        void Reload()
         {
-            using var dc = NewDbContext();
-            dc.Sql("SELECT * FROM chain.datyps");
-            datyps = dc.Query<short, DataTyp>();
-            
-            dc.Query("SELECT * FROM chain.peers");
-            while (dc.Next())
+            @lock.EnterWriteLock();
+            try
             {
-                
+                // clear up data maps
+                datyps.Clear();
+                clients.Clear();
+                iptab.Clear();
+
+                // load data types
+                using var dc = NewDbContext();
+                dc.Sql("SELECT * FROM chain.datyps");
+                while (dc.Next())
+                {
+                    var dt = dc.ToObject<Typ>();
+                    datyps.Add(dt);
+                }
+
+                // load and init peer clients
+                var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
+                foreach (var o in arr)
+                {
+                    if (o.id == "&") continue;
+                    var cli = new ChainClient(o.raddr);
+                    clients.Add(cli);
+                    // add to iptab 
+                    var addrs = Dns.GetHostAddresses(o.raddr);
+                    foreach (var a in addrs)
+                    {
+                        iptab.Add(a.ToString(), cli);
+                    }
+                }
+            }
+            finally
+            {
+                @lock.ExitWriteLock();
             }
         }
 
@@ -92,7 +115,7 @@ namespace SkyCloud.Chain
             string password = wc.Query[nameof(password)];
 
             using var dc = NewDbContext();
-            
+
             // retrieve from idents
         }
 
