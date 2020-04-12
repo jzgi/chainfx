@@ -191,12 +191,11 @@ namespace SkyCloud.Web
             {
                 h.DIV_("uk-top-bar").T(Name).T(" API Reference")._DIV();
                 h.DIV_("uk-top-placeholder")._DIV();
-                
+
                 Describe(h);
-                
             });
         }
-        
+
         internal async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);

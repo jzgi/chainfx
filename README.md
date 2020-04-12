@@ -5,11 +5,12 @@ It is combination of a web application framework and a federated blockchain impl
 
 The characteristics:
 
+* Built-in implementation of a high performance federated blockchain. 
+* General IoT orchestration & management. 
 * A design pattern of contextual web programming.
 * Lightweight -- about 300K in its size. 
 * High performance -- exploit async I/O, built-in optimized caching. 
 * Unified data operation -- for various data formats.
-* Built-in implementation of a high performance federated blockchain. 
 
 <pre>
 dotnet add package SkyCloud --version 1.1.0

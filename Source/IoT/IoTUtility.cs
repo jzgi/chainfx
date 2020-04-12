@@ -3,9 +3,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace SkyCloud.Chain
+namespace SkyCloud.IoT
 {
-    public static class NetPeerUtility
+    public static class IoTUtility
     {
         public static string GetValue(this HttpHeaders headers, string name)
         {
@@ -18,13 +18,6 @@ namespace SkyCloud.Chain
             return null;
         }
 
-        public static void CallAny(this ChainClient[] df)
-        {
-        }
-
-        public static void CallAll(this ChainClient[] df)
-        {
-        }
 
         public static async void CallAll(Task<HttpResponseMessage>[] requests, Action<HttpResponseMessage> a)
         {
