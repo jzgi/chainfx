@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using SkyCloud.Web;
 
 namespace SkyCloud.IoT
@@ -10,6 +12,9 @@ namespace SkyCloud.IoT
     {
         readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
+
+        // edge devices
+        private ConcurrentDictionary<string, Device> devs;
 
         // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
@@ -42,8 +47,16 @@ namespace SkyCloud.IoT
             // retrieve from idents
         }
 
-        public void query(WebContext wc)
+        public async Task accept(WebContext wc)
         {
+            // device token
+            string token = null;
+
+            // identity id of client
+            string uid = null;
+
+            var dev = devs[uid];
+            dev.Socket = await wc.AcceptWebSocketAsync();
         }
 
         public void querya(WebContext wc)
