@@ -46,7 +46,7 @@ namespace SkyCloud.Chain
             {
                 var o = await wc.ReadObjectAsync<Login>();
                 using var dc = NewDbContext();
-                dc.Sql("INSERT INTO chain.logins ").targs(o)._VALUES_(o);
+                dc.Sql("INSERT INTO chain.logins ").colset(o)._VALUES_(o);
                 await dc.ExecuteAsync(p => o.Write(p));
                 wc.GivePane(200); // close dialog
             }

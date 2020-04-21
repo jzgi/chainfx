@@ -446,7 +446,7 @@ namespace SkyCloud.Db
             return this;
         }
 
-        public DbSql targs(IData obj, byte proj = 0x0f, string extra = null)
+        public DbSql colset(IData obj, byte proj = 0x0f, string extra = null)
         {
             Add('(');
             collst(obj, proj);
