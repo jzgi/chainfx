@@ -304,7 +304,7 @@ namespace SkyCloud.Web
 
         readonly WebException AuthReq = new WebException("Authentication required") {Code = 401};
 
-        readonly WebException AccessorReq = new WebException("Accessor required") {Code = 500};
+        readonly WebException AccessorReq = new WebException("Accessor required") {Code = 403};
 
         internal async Task<bool> DoAuthenticate(WebContext wc)
         {

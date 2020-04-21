@@ -8,6 +8,9 @@ namespace SkyCloud.Web
     [AttributeUsage(AttributeTargets.Method)]
     public class ToolAttribute : Attribute
     {
+        public static readonly ToolAttribute ButtonConfirm = new ToolAttribute(Modal.ButtonConfirm);
+
+
         readonly Modal modal;
 
         readonly int element; // ui element

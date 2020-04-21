@@ -122,12 +122,9 @@ namespace SkyCloud.Web
             return this;
         }
 
-        public HtmlContent T(DateTime v, bool time = true, bool cond = true)
+        public HtmlContent T(DateTime v, byte date = 3, byte time = 3)
         {
-            if (cond)
-            {
-                Add(v, time);
-            }
+            Add(v, date, time);
             return this;
         }
 
@@ -1692,6 +1689,19 @@ namespace SkyCloud.Web
             return this;
         }
 
+        public HtmlContent TDRADIO<K>(K key, bool toolbar = true)
+        {
+            Add("<td style=\"width: 1%\"><input");
+            if (toolbar)
+            {
+                Add(" form=\"tool-bar-form\"");
+            }
+            Add(" name=\"key\" type=\"radio\" class=\"uk-radio\" value=\"");
+            PutKey(key);
+            Add("\"></td>");
+            return this;
+        }
+
 
         public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, short height = 0)
         {
@@ -3070,9 +3080,9 @@ namespace SkyCloud.Web
                 Add("\"");
 
                 Add(" rows=\"");
-                Add(max < 50 ? 2 :
-                    max < 100 ? 3 :
-                    max < 200 ? 4 : 5);
+                Add(max <= 30 ? 2 :
+                    max <= 50 ? 3 :
+                    max <= 80 ? 4 : 5);
                 Add("\"");
             }
 
@@ -3099,6 +3109,10 @@ namespace SkyCloud.Web
         {
             LABEL(label);
             Add("<select class=\"uk-select");
+            if (rtl)
+            {
+                Add(" uk-select-right");
+            }
             if (css != null)
             {
                 Add(' ');
@@ -3114,10 +3128,6 @@ namespace SkyCloud.Web
                 Add(" size=\"");
                 Add(size);
                 Add("\"");
-            }
-            if (rtl)
-            {
-                Add(" dir=\"rtl\"");
             }
             if (refresh)
             {

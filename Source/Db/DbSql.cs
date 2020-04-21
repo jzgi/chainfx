@@ -446,17 +446,17 @@ namespace SkyCloud.Db
             return this;
         }
 
-        public DbSql _(IData obj, byte proj = 0x0f, string extra = null)
+        public DbSql targs(IData obj, byte proj = 0x0f, string extra = null)
         {
-            Add(" (");
+            Add('(');
             collst(obj, proj);
             if (extra != null)
             {
-                Add(",");
+                Add(',');
                 Add(extra);
             }
 
-            Add(")");
+            Add(')');
             return this;
         }
 
@@ -475,7 +475,7 @@ namespace SkyCloud.Db
                 Add(i);
             }
 
-            Add(")");
+            Add(')');
             return this;
         }
 

@@ -435,26 +435,35 @@ namespace SkyCloud
             }
         }
 
-        public void Add(DateTime v, bool time = true)
+        public void Add(DateTime v, byte date = 3, byte time = 3)
         {
-            short yr = (short) v.Year;
+            if (date >= 3)
+            {
+                short yr = (short) v.Year;
 
-            // yyyy-mm-dd
-            if (yr < 1000) Add('0');
-            if (yr < 100) Add('0');
-            if (yr < 10) Add('0');
-            Add(v.Year);
-            Add('-');
-            Add(SEX[v.Month]);
-            Add('-');
-            Add(SEX[v.Day]);
+                // yyyy-mm-dd
+                if (yr < 1000) Add('0');
+                if (yr < 100) Add('0');
+                if (yr < 10) Add('0');
+                Add(v.Year);
+            }
+            if (date > 2) Add('-');
+            if (date >= 2) Add(SEX[v.Month]);
+            if (date > 1) Add('-');
+            if (date >= 1) Add(SEX[v.Month]);
 
-            if (time && (v.Hour != 0 || v.Minute != 0 || v.Second != 0 || v.Millisecond != 0))
+            if (time >= 1)
             {
                 Add(' '); // a space for separation
                 Add(SEX[v.Hour]);
+            }
+            if (time >= 2)
+            {
                 Add(':');
                 Add(SEX[v.Minute]);
+            }
+            if (time >= 2)
+            {
                 Add(':');
                 Add(SEX[v.Second]);
             }

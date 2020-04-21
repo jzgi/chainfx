@@ -31,26 +31,28 @@ namespace SkyCloud.Chain
 
         public static M[] ChainGet<M>(this DbContext dc, short typid, string key) where M : IData
         {
+            // var typs = Framework.Obtain<Map<short, Typ>>();
+
             dc.Sql("SELECT body FROM chain.blocks WHERE typid = @1 AND key = @2");
             dc.Query(p => p.Set(typid).Set(key));
 
-            var datypes = Framework.Obtain<Map<short, Typ>>();
-            var dattyp = datypes[typid];
-            if (dattyp.op <= 1)
-            {
-                return null;
-            }
-
-            var cryptokey = dattyp.op >= 3 ? Framework.publickey : Framework.privatekey;
-
-            while (dc.Next())
-            {
-                dc.Let(out byte[] body);
-                // descrypt
-                CryptionUtility.Decrypt(body, body.Length, cryptokey);
-
-                var jc = new JsonParser(body, body.Length).Parse();
-            }
+            // var typ = typs[typid];
+            // if (typ == null) return null;
+            // if (typ.op <= 1)
+            // {
+            //     return null;
+            // }
+            //
+            // var cryptokey = typ.op >= 3 ? Framework.publickey : Framework.privatekey;
+            //
+            // while (dc.Next())
+            // {
+            //     dc.Let(out byte[] body);
+            //     // descrypt
+            //     CryptionUtility.Decrypt(body, body.Length, cryptokey);
+            //
+            //     var jc = new JsonParser(body, body.Length).Parse();
+            // }
             return null;
         }
 

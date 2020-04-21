@@ -201,21 +201,23 @@ namespace SkyCloud
 
         public bool TryGetValue(K key, out V value)
         {
-            int code = key.GetHashCode() & 0x7fffffff;
-            int buck = code % buckets.Length; // target bucket
-            int idx = buckets[buck];
-            while (idx != -1)
+            if (key != null)
             {
-                var e = entries[idx];
-                if (e.Match(code, key))
+                int code = key.GetHashCode() & 0x7fffffff;
+                int buck = code % buckets.Length; // target bucket
+                int idx = buckets[buck];
+                while (idx != -1)
                 {
-                    value = e.value;
-                    return true;
+                    var e = entries[idx];
+                    if (e.Match(code, key))
+                    {
+                        value = e.value;
+                        return true;
+                    }
+
+                    idx = entries[idx].next; // adjust for next index
                 }
-
-                idx = entries[idx].next; // adjust for next index
             }
-
             value = default;
             return false;
         }
