@@ -1805,7 +1805,7 @@ namespace SkyCloud.Web
 
         public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
-            Add("<main uk-grid class=\"uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl\">");
+            Add("<main uk-grid class=\"uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl  uk-child-width-1-5@xxl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)

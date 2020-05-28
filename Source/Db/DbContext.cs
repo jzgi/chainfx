@@ -88,6 +88,7 @@ namespace SkyCloud.Db
 
                 reader?.Close();
                 command.Transaction = null;
+                command.Dispose();
                 connection.Close();
             }
         }

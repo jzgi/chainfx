@@ -7,6 +7,8 @@ namespace SkyCloud.Web
     ///
     public class WebException : Exception
     {
+        public static readonly WebException AuthFailed = new WebException("Authorization Failed") {Code = 403};
+
         /// <summary>
         /// The status code.
         /// </summary>

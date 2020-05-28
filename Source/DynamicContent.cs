@@ -447,10 +447,10 @@ namespace SkyCloud
                 if (yr < 10) Add('0');
                 Add(v.Year);
             }
-            if (date > 2) Add('-');
+            if (date > 2) Add('/');
             if (date >= 2) Add(SEX[v.Month]);
-            if (date > 1) Add('-');
-            if (date >= 1) Add(SEX[v.Month]);
+            if (date > 1) Add('/');
+            if (date >= 1) Add(SEX[v.Day]);
 
             if (time >= 1)
             {
@@ -462,7 +462,7 @@ namespace SkyCloud
                 Add(':');
                 Add(SEX[v.Minute]);
             }
-            if (time >= 2)
+            if (time >= 3)
             {
                 Add(':');
                 Add(SEX[v.Second]);

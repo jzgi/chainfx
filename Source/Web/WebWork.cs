@@ -52,7 +52,7 @@ namespace SkyCloud.Web
         {
             type = GetType();
 
-            Ui = (UiAttribute) type.GetCustomAttribute(typeof(UiAttribute), false);
+            Ui = (UiAttribute) type.GetCustomAttribute(typeof(UiAttribute), true);
             Authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
             Authorize = (AuthorizeAttribute) type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
             Before = (BeforeAttribute) type.GetCustomAttribute(typeof(BeforeAttribute), false);
