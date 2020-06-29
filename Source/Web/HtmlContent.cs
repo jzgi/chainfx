@@ -1474,34 +1474,34 @@ namespace SkyCloud.Web
                 int page = Web.Subscript;
                 if (page > 0)
                 {
-                    Add("<li class=\"pagination-previous uk-active\">");
+                    Add("<li class=\"uk-active\">");
                     Add("<a href=\"");
                     Add(act.Key);
                     Add('-');
                     Add(page - 1);
                     Add(Web.QueryStr);
-                    Add("\">◁</a>");
+                    Add("\">≪</a>");
                     Add("</li>");
                 }
                 else
                 {
-                    Add("<li class=\"pagination-previous uk-disabled\">◁</li>");
+                    Add("<li class=\"uk-disabled\">≪</li>");
                 }
 
                 if (count >= limit)
                 {
-                    Add("<li class=\"pagination-next uk-active\">");
+                    Add("<li class=\"uk-active\">");
                     Add("<a href=\"");
                     Add(act.Key);
                     Add('-');
                     Add(page + 1);
                     Add(Web.QueryStr);
-                    Add("\">▷</a>");
+                    Add("\">≫</a>");
                     Add("</li>");
                 }
                 else
                 {
-                    Add("<li class=\"pagination-next uk-disabled\">▷</li>");
+                    Add("<li class=\"uk-disabled\">≫</li>");
                 }
 
                 Add("</ul>");

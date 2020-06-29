@@ -87,7 +87,8 @@ namespace SkyCloud.Chain
                 }
 
                 // load and init peer clients
-                var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
+                var arr = dc.Query<Peer>("SELECT * FROM chain.nodes");
+                if (arr == null) return;
                 foreach (var o in arr)
                 {
                     if (o.id == "&") continue;

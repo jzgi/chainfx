@@ -506,38 +506,66 @@ namespace SkyCloud.Db
             return this;
         }
 
-        public DbSql _IN_(short[] vals)
+        public DbSql _IN_(short[] vals, bool literal = false)
         {
             Add(" IN (");
             for (int i = 1; i <= vals.Length; i++)
             {
                 if (i > 1) Add(',');
-                Add('@');
-                Add('v');
-                Add(i);
+                if (literal)
+                {
+                    Add(vals[i]);
+                }
+                else
+                {
+                    Add('@');
+                    Add('v');
+                    Add(i);
+                }
             }
 
             Add(')');
             return this;
         }
 
-        public DbSql _IN_(int[] vals)
-        {
-            Add(" IN (");
-            T(vals);
-            Add(')');
-            return this;
-        }
-
-        public DbSql _IN_(long[] vals)
+        public DbSql _IN_(int[] vals, bool literal = false)
         {
             Add(" IN (");
             for (int i = 1; i <= vals.Length; i++)
             {
                 if (i > 1) Add(',');
-                Add('@');
-                Add('v');
-                Add(i);
+                if (literal)
+                {
+                    Add(vals[i]);
+                }
+                else
+                {
+                    Add('@');
+                    Add('v');
+                    Add(i);
+                }
+            }
+
+            Add(')');
+            return this;
+        }
+
+        public DbSql _IN_(long[] vals, bool literal = false)
+        {
+            Add(" IN (");
+            for (int i = 1; i <= vals.Length; i++)
+            {
+                if (i > 1) Add(',');
+                if (literal)
+                {
+                    Add(vals[i]);
+                }
+                else
+                {
+                    Add('@');
+                    Add('v');
+                    Add(i);
+                }
             }
 
             Add(')');
@@ -558,15 +586,24 @@ namespace SkyCloud.Db
             return this;
         }
 
-        public DbSql _IN_(string[] vals)
+        public DbSql _IN_(string[] vals, bool literal = false)
         {
             Add(" IN (");
             for (int i = 1; i <= vals.Length; i++)
             {
                 if (i > 1) Add(',');
-                Add('@');
-                Add('v');
-                Add(i);
+                if (literal)
+                {
+                    Add('\'');
+                    Add(vals[i]);
+                    Add('\'');
+                }
+                else
+                {
+                    Add('@');
+                    Add('v');
+                    Add(i);
+                }
             }
 
             Add(')');

@@ -82,22 +82,20 @@ namespace SkyCloud
 
         public V ValueAt(int idx) => entries[idx].value;
 
-        public V[] GroupOf(K key)
+        public V[] SubGroupOf(K key)
         {
             int idx = IndexOf(key);
             if (idx > -1)
             {
                 int tail = entries[idx].tail;
                 int ret = tail - idx; // number of returned elements
-                V[] arr = new V[ret];
+                var arr = new V[ret];
                 for (int i = 0; i < ret; i++)
                 {
                     arr[i] = entries[idx + 1 + i].value;
                 }
-
                 return arr;
             }
-
             return null;
         }
 
@@ -233,7 +231,7 @@ namespace SkyCloud
         }
 
 
-        public V[] All(Predicate<V> filter)
+        public V[] FindAll(Predicate<V> filter)
         {
             var list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
@@ -247,7 +245,7 @@ namespace SkyCloud
             return list.ToArray();
         }
 
-        public Map<R, V> All<R>(Func<K, V, bool> filter, Func<V, R> keyer)
+        public Map<R, V> FindAll<R>(Func<K, V, bool> filter, Func<V, R> keyer)
         {
             var map = new Map<R, V>(32);
             for (int i = 0; i < count; i++)

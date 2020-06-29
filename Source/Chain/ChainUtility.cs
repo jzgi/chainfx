@@ -7,6 +7,15 @@ namespace SkyCloud.Chain
 {
     public static class ChainUtility
     {
+        static readonly Map<short, BlockDef> blockDefs = new Map<short, BlockDef>();
+
+
+        public static void RegisterBlockDef(short id, string name,
+            IConsensus cons,
+            ISmartContract scon)
+        {
+        }
+
         public static string GetValue(this HttpHeaders headers, string name)
         {
             if (headers.TryGetValues(name, out var values))

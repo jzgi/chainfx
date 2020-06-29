@@ -88,7 +88,7 @@ namespace SkyCloud
         public static implicit operator char(Field v)
         {
             string str = v.First;
-            if (str != null && str.Length > 0)
+            if (!string.IsNullOrEmpty(str))
             {
                 return str[0];
             }
@@ -283,7 +283,13 @@ namespace SkyCloud
                 return new[] {str};
             }
 
-            return (string[]) v.value;
+            var strs = (string[]) v.value;
+            var arr = new string[len];
+            for (int i = 0; i < len; i++)
+            {
+                arr[i] = strs[i];
+            }
+            return arr;
         }
     }
 }
