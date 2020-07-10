@@ -2831,9 +2831,9 @@ namespace SkyCloud.Web
             Add("\" value=\"");
             AddPrimitive(v);
             Add("\"");
-            if (check) Add(" checked");
-            if (required) Add("\" required");
-            if (disabled) Add("\" disabled");
+            if (check) Add(" checked=\"checked\"");
+            if (required) Add("\" required=\"required\"");
+            if (disabled) Add("\" disabled=\"disabled\"");
             Add(">");
             if (tip != null)
             {

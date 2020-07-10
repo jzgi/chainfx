@@ -95,11 +95,13 @@ namespace SkyCloud
             {
                 throw new FrameworkException("Missing 'WEB' in " + APP_JSON);
             }
+
             string addr = WEB[name];
             if (addr == null)
             {
                 throw new FrameworkException("missing WEB '" + name + "' in " + APP_JSON);
             }
+
             // create service
             var svc = new T
             {
@@ -244,6 +246,7 @@ namespace SkyCloud
             {
                 throw new FrameworkException("missing DB in " + APP_JSON);
             }
+
             return dbsource.NewDbContext(level);
         }
 
@@ -402,6 +405,7 @@ namespace SkyCloud
                             @lock.ExitWriteLock();
                         }
                     }
+
                     return value;
                 }
                 finally
@@ -428,6 +432,11 @@ namespace SkyCloud
 
                 return value;
             }
+        }
+
+        public static void StartChain()
+        {
+            
         }
     }
 }
