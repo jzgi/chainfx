@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ namespace SkyCloud.Chain
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class ChainClient : HttpClient, IKeyable<string>, IPollContext
+    public class ChainConnect : HttpClient, IKeyable<string>, IPollContext
     {
         const int AHEAD = 1000 * 12;
 
@@ -46,7 +46,7 @@ namespace SkyCloud.Chain
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
         /// <param name="addr"></param>
-        public ChainClient(string addr)
+        public ChainConnect(string addr)
         {
             this.addr = addr;
 
@@ -54,7 +54,7 @@ namespace SkyCloud.Chain
             Timeout = TimeSpan.FromSeconds(12);
         }
 
-        public ChainClient(HttpClientHandler handler, string key = null, string name = null, string addr = null) : base(handler)
+        public ChainConnect(HttpClientHandler handler, string key = null, string name = null, string addr = null) : base(handler)
         {
             this.key = key;
             this.name = name;
@@ -64,6 +64,7 @@ namespace SkyCloud.Chain
             {
                 BaseAddress = new Uri(addr);
             }
+
             Timeout = TimeSpan.FromSeconds(12);
         }
 

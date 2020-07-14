@@ -1,13 +1,13 @@
 namespace SkyCloud.Chain
 {
-    public class Login : IData
+    public class Transact : IData
     {
-        public static readonly Login Empty = new Login();
+        public static readonly Transact Empty = new Transact();
 
         public const byte ID = 1, PRIVACY = 2;
 
         // types
-        public static readonly Map<short, string> Typs = new Map<short, string>
+        public static readonly Map<short, string> Ops = new Map<short, string>
         {
             {0, "APP"},
             {1, "admin"},
@@ -20,7 +20,7 @@ namespace SkyCloud.Chain
             {1, "Enabled"},
         };
 
-        internal string id;
+        internal int id;
 
         internal short typ;
 

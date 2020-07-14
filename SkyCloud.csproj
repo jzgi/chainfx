@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Description>Enterprise Cloud + Blockchain for DAPP</Description>
+        <Description>Enterprise framework for DAPP</Description>
         <VersionPrefix>1.1</VersionPrefix>
         <Authors>skyiah</Authors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -12,16 +12,16 @@
         <Company>Skyiah Technologies</Company>
         <PackageProjectUrl>https://github.com/skyiah/skycloud</PackageProjectUrl>
         <RepositoryUrl>https://github.com/skyiah/skycloud</RepositoryUrl>
-        <PackageVersion>1.1.0</PackageVersion>
-        <Title>SkyCloud Framework for DAPP</Title>
+        <PackageVersion>4.1.0</PackageVersion>
+        <Title>SkyCloud Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
-        <AssemblyVersion>1.1</AssemblyVersion>
-        <OutputType>Exe</OutputType>
+        <AssemblyVersion>4.1</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <WarningLevel>4</WarningLevel>
+        <DocumentationFile></DocumentationFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <PlatformTarget>x64</PlatformTarget>

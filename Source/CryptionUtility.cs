@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SkyCloud
 {
-    public class CryptionUtility
+    public static class CryptionUtility
     {
         public static void Encrypt(byte[] buf, int len, uint[] key)
         {
@@ -23,6 +23,7 @@ namespace SkyCloud
                             v0 += ((v1 << 4) + k0) ^ (v1 + sum) ^ ((v1 >> 5) + k1);
                             v1 += ((v0 << 4) + k2) ^ (v0 + sum) ^ ((v0 >> 5) + k3);
                         }
+
                         *pb++ = v0;
                         *pb++ = v1;
                     }
@@ -48,6 +49,7 @@ namespace SkyCloud
                             v0 -= ((v1 << 4) + k0) ^ (v1 + sum) ^ ((v1 >> 5) + k1);
                             sum -= delta;
                         }
+
                         *pb++ = v0;
                         *pb++ = v1;
                     }
@@ -71,6 +73,7 @@ namespace SkyCloud
                 uint c = ((Dv(v[i++]) << 28) + (Dv(v[i++]) << 24) + (Dv(v[i++]) << 20) + (Dv(v[i++]) << 16) + (Dv(v[i++]) << 12) + (Dv(v[i++]) << 8) + (Dv(v[i++]) << 4) + Dv(v[i++]));
                 buf[m] = c;
             }
+
             return buf;
         }
 
@@ -81,11 +84,13 @@ namespace SkyCloud
             {
                 return (uint) (num + 10);
             }
+
             num = hex - '0';
             if (num >= 0 && num <= 9)
             {
                 return (uint) num;
             }
+
             return 0;
         }
 

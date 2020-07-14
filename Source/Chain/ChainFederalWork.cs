@@ -3,8 +3,8 @@ using SkyCloud.Web;
 
 namespace SkyCloud.Chain
 {
-    [Ui("Peers")]
-    public class PeerWork : WebWork
+    [Ui("联盟")]
+    public class ChainFederalWork : WebWork
     {
         public void @default(WebContext wc)
         {
@@ -19,7 +19,6 @@ namespace SkyCloud.Chain
                     h.TD(o.id);
                     h.TD(o.name);
                     h.TD(o.raddr);
-                    h.TD(Login.Statuses[o.status]);
                     h.TDFORM(() => h.VARTOOLS(o.id));
                 });
             });
@@ -38,7 +37,6 @@ namespace SkyCloud.Chain
                     h.LI_().LABEL("ID", css).TEXT(null, nameof(o.id), o.id, max: 10, required: true)._LI();
                     h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().LABEL("Address", css).URL(null, nameof(o.raddr), o.raddr, max: 20, required: true)._LI();
-                    h.LI_().LABEL("Status", css).SELECT(null, nameof(o.status), o.status, Login.Statuses, required: true)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

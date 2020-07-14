@@ -16,11 +16,11 @@ namespace SkyCloud.Chain
         {
         }
 
-        public ChainException(string message) : base(message)
+        public ChainException(string msg) : base(msg)
         {
         }
 
-        public ChainException(string message, Exception inner) : base(message, inner)
+        public ChainException(string msg, Exception inner) : base(msg, inner)
         {
         }
     }

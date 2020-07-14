@@ -1,6 +1,6 @@
 namespace SkyCloud.Chain
 {
-    public interface ISmartContract
+    public class Transiter
     {
         
     }

@@ -1,6 +1,6 @@
 namespace SkyCloud.Chain
 {
-    public interface IConsensus
+    public class Consenter
     {
         
     }

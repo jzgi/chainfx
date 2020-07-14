@@ -3,7 +3,7 @@
 namespace SkyCloud
 {
     /// <summary>
-    /// Represents an output sink fovoid a dataset, a single data object, ovoid only some of its data fields.
+    /// Represents an output sink that can be a dataset, a single data object, or only some of its data fields.
     /// </summary>
     public interface ISink
     {

@@ -7,14 +7,8 @@ namespace SkyCloud.Chain
 {
     public static class ChainUtility
     {
-        static readonly Map<short, BlockDef> blockDefs = new Map<short, BlockDef>();
+        // static readonly Map<short, Record> blockDefs = new Map<short, Record>();
 
-
-        public static void RegisterBlockDef(short id, string name,
-            IConsensus cons,
-            ISmartContract scon)
-        {
-        }
 
         public static string GetValue(this HttpHeaders headers, string name)
         {
@@ -27,13 +21,6 @@ namespace SkyCloud.Chain
             return null;
         }
 
-        public static void CallAny(this ChainClient[] df)
-        {
-        }
-
-        public static void CallAll(this ChainClient[] df)
-        {
-        }
 
         public static async void CallAll(Task<HttpResponseMessage>[] requests, Action<HttpResponseMessage> a)
         {

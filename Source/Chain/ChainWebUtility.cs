@@ -59,10 +59,12 @@ namespace SkyCloud.Chain
                 {
                     continue;
                 }
+
                 if (sub.Ui == null || !sub.DoAuthorize(wc))
                 {
                     continue;
                 }
+
                 h.Add("<li><a href=\"#\">");
                 h.Add(sub.Label);
                 h.Add("</a></li>");
@@ -83,14 +85,17 @@ namespace SkyCloud.Chain
                 {
                     continue;
                 }
+
                 if (sub.Ui == null || !sub.DoAuthorize(wc))
                 {
                     continue;
                 }
+
                 h.Add("<li style=\"height: 100%\"><iframe id=\"");
                 h.Add(sub.Key);
                 h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
             }
+
             h.Add(" </ul>");
 
             // lazy set src for iframes
@@ -287,14 +292,6 @@ namespace SkyCloud.Chain
         {
             h.T("<a class=\"uk-icon-button uk-light\" href=\"tel:").T(tel).T("\" uk-icon=\"icon: receiver\"></a>");
             return h;
-        }
-
-
-        public static void SetTokenCookie(this WebContext wc, Login o)
-        {
-            const byte proj_all_but_privacy = 0x0f ^ Login.PRIVACY;
-            string token = AuthenticateAttribute.Encrypt(o, proj_all_but_privacy);
-            wc.SetCookie(nameof(token), token);
         }
     }
 }

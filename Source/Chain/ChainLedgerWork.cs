@@ -2,14 +2,14 @@ using SkyCloud.Web;
 
 namespace SkyCloud.Chain
 {
-    [Ui("Blocks")]
-    public class BlockWork : WebWork
+    [Ui("块链")]
+    public class ChainLedgerWork : WebWork
     {
         [Ui("All"), Tool(Modal.Anchor)]
         public void @default(WebContext wc)
         {
             using var dc = NewDbContext();
-            
+
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
