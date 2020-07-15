@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
-using SkyCloud.Web;
 using static SkyCloud.DataUtility;
 using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
@@ -163,18 +162,18 @@ namespace SkyCloud.Web
 
         string uri;
 
-        public string Uri => uri ?? (uri = string.IsNullOrEmpty(QueryStr) ? Path : Path + QueryStr);
+        public string Uri => uri ??= string.IsNullOrEmpty(QueryStr) ? Path : Path + QueryStr;
 
         string url;
 
-        public string Url => url ?? (url = fRequest.Scheme + "://" + Header("Host") + fRequest.RawTarget);
+        public string Url => url ??= fRequest.Scheme + "://" + Header("Host") + fRequest.RawTarget;
 
         public string QueryStr => fRequest.QueryString;
 
         // URL query 
         Form query;
 
-        public Form Query => query ?? (query = new FormParser(QueryStr).Parse());
+        public Form Query => query ??= new FormParser(QueryStr).Parse();
 
         public void AddParam(string name, string value)
         {
@@ -193,15 +192,15 @@ namespace SkyCloud.Web
 
         string csign;
 
-        public string CallerSign => csign ?? (csign = Header("X-Caller-Sign"));
+        public string CallerSign => csign ??= Header("X-Caller-Sign");
 
         string cname;
 
-        public string CallerName => cname ?? (cname = Header("X-Caller-Name"));
+        public string CallerName => cname ??= Header("X-Caller-Name");
 
         string cshard;
 
-        public string CallerShard => cshard ?? (cshard = Header("X-Caller-Shard"));
+        public string CallerShard => cshard ??= Header("X-Caller-Shard");
 
         //
         // HEADER
@@ -289,7 +288,7 @@ namespace SkyCloud.Web
                 {
                     // reading
                     int len = (int) clen;
-                    buffer = WebUtility.Rent(len); // borrow from the pool
+                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -309,7 +308,7 @@ namespace SkyCloud.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = WebUtility.Rent(len); // borrow from the pool
+                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -333,7 +332,7 @@ namespace SkyCloud.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = WebUtility.Rent(len); // borrow from the pool
+                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -368,7 +367,7 @@ namespace SkyCloud.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = WebUtility.Rent(len); // borrow from the pool
+                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -560,7 +559,7 @@ namespace SkyCloud.Web
             // request content buffer
             if (buffer != null)
             {
-                WebUtility.Return(buffer);
+                ArrayUtility.Return(buffer);
             }
 
             // pool returning
@@ -569,7 +568,7 @@ namespace SkyCloud.Web
                 if (Content is DynamicContent dyn)
                 {
                     dyn.Dispose();
-                    WebUtility.Return(dyn.Buffer);
+                    ArrayUtility.Return(dyn.Buffer);
                 }
             }
         }

@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SkyCloud.Chain;
-using SkyCloud.Web;
 using static SkyCloud.DataUtility;
 
 namespace SkyCloud.Web
@@ -371,7 +370,7 @@ namespace SkyCloud.Web
             {
                 if (content is DynamicContent cnt)
                 {
-                    WebUtility.Return(cnt.Buffer);
+                    ArrayUtility.Return(cnt.Buffer);
                 }
             }
 
@@ -413,7 +412,7 @@ namespace SkyCloud.Web
             {
                 if (content is DynamicContent cnt)
                 {
-                    WebUtility.Return(cnt.Buffer);
+                    ArrayUtility.Return(cnt.Buffer);
                 }
             }
 

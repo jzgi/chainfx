@@ -1,5 +1,4 @@
 using System;
-using SkyCloud.Web;
 
 namespace SkyCloud
 {
@@ -368,7 +367,7 @@ namespace SkyCloud
             }
             finally
             {
-                WebUtility.Return(cnt.Buffer); // return buffer to pool
+                ArrayUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
     }

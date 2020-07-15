@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using WebUtility = SkyCloud.Web.WebUtility;
 
 namespace SkyCloud
 {
@@ -102,7 +101,7 @@ namespace SkyCloud
         {
             if (binary)
             {
-                bytebuf = WebUtility.Rent(capacity);
+                bytebuf = ArrayUtility.Borrow(capacity);
             }
             else
             {
@@ -118,7 +117,7 @@ namespace SkyCloud
 
         string etag;
 
-        public string ETag => etag ?? (etag = TextUtility.ToHex(checksum));
+        public string ETag => etag ??= TextUtility.ToHex(checksum);
 
         void AddByte(byte b)
         {
@@ -128,9 +127,9 @@ namespace SkyCloud
             {
                 int nlen = olen * 2; // new doubled length
                 byte[] obuf = bytebuf;
-                bytebuf = WebUtility.Rent(nlen);
+                bytebuf = ArrayUtility.Borrow(nlen);
                 Array.Copy(obuf, 0, bytebuf, 0, olen);
-                WebUtility.Return(obuf);
+                ArrayUtility.Return(obuf);
             }
 
             bytebuf[count++] = b;

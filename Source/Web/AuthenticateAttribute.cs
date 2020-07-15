@@ -50,7 +50,7 @@ namespace SkyCloud.Web
             }
             finally
             {
-                WebUtility.Return(cnt.Buffer);
+                ArrayUtility.Return(cnt.Buffer);
             }
         }
 
