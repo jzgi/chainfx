@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SkyCloud.Web;
 
 namespace SkyCloud.Web
 {
@@ -49,7 +50,7 @@ namespace SkyCloud.Web
             }
             finally
             {
-                BufferUtility.Return(cnt.Buffer);
+                WebUtility.Return(cnt.Buffer);
             }
         }
 

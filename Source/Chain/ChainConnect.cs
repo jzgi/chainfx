@@ -154,98 +154,19 @@ namespace SkyCloud.Chain
             return null;
         }
 
-        public async Task<M> PollAsync<M>() where M : class, ISource
+        public Task<M> PollAsync<M>() where M : class, ISource
         {
-            if (QueryString == null)
-            {
-                throw new FrameworkException("missing query before event poll");
-            }
-
-            string uri = POLL_ACTION + "?" + QueryString;
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, null);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
-                {
-                    return null;
-                }
-
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                return (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
-        public async Task<D> PollObjectAsync<D>(byte proj = 0x0f) where D : IData, new()
+        public Task<D> PollObjectAsync<D>(byte proj = 15) where D : IData, new()
         {
-            if (QueryString == null)
-            {
-                throw new FrameworkException("missing query before event poll");
-            }
-
-            string uri = POLL_ACTION + "?" + QueryString;
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, null);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
-                {
-                    return default;
-                }
-
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
-                D obj = new D();
-                obj.Read(inp, proj);
-                return obj;
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return default;
+            throw new NotImplementedException();
         }
 
-        public async Task<D[]> PollArrayAsync<D>(byte proj = 0x0f) where D : IData, new()
+        public Task<D[]> PollArrayAsync<D>(byte proj = 15) where D : IData, new()
         {
-            if (QueryString == null)
-            {
-                throw new FrameworkException("missing query before event poll");
-            }
-
-            string uri = POLL_ACTION + "?" + QueryString;
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, null);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
-                {
-                    return null;
-                }
-
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                ISource inp = ParseContent(ctyp, bytea, bytea.Length);
-                return inp.ToArray<D>(proj);
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
 
@@ -269,154 +190,6 @@ namespace SkyCloud.Chain
             }
 
             return (500, null);
-        }
-
-        public async Task<(short, M)> GetAsync<M>(string uri, WebContext wc) where M : class, ISource
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, wc);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                    string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                    var model = (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
-                    return ((short) rsp.StatusCode, model);
-                }
-
-                return ((short) rsp.StatusCode, null);
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return (500, null);
-        }
-
-        public async Task<(short, D)> GetObjectAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, wc);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                    string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                    ISource inp = ParseContent(ctyp, bytea, bytea.Length);
-                    D obj = new D();
-                    obj.Read(inp, proj);
-                    return ((short) rsp.StatusCode, obj);
-                }
-
-                return ((short) rsp.StatusCode, default);
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return (500, default);
-        }
-
-        public async Task<(short, D[])> GetArrayAsync<D>(string uri, byte proj = 0x0f, WebContext wc = null) where D : IData, new()
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, wc);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
-                    string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                    ISource inp = ParseContent(ctyp, bytea, bytea.Length);
-                    var arr = inp.ToArray<D>(proj);
-                    return ((short) rsp.StatusCode, arr);
-                }
-
-                return ((short) rsp.StatusCode, null);
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return (500, null);
-        }
-
-        public async Task<short> PostAsync(string uri, IContent content, WebContext wc = null)
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Post, uri);
-                AddAccessHeaders(req, wc);
-                req.Content = (HttpContent) content;
-                req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
-                req.Headers.TryAddWithoutValidation("Content-Length", content.Count.ToString());
-
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return (short) rsp.StatusCode;
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-            finally
-            {
-                if (content is DynamicContent cnt)
-                {
-                    BufferUtility.Return(cnt.Buffer);
-                }
-            }
-
-            return 0;
-        }
-
-        public async Task<(short, M)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Post, uri);
-                if (token != null)
-                {
-                    req.Headers.Add("Authorization", "Token " + token);
-                }
-
-                req.Content = (HttpContent) content;
-                req.Headers.TryAddWithoutValidation("Content-Type", content.Type);
-                req.Headers.TryAddWithoutValidation("Content-Length", content.Count.ToString());
-
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                string ctyp = rsp.Content.Headers.GetValue("Content-Type");
-                if (ctyp == null)
-                {
-                    return ((short) rsp.StatusCode, null);
-                }
-                else
-                {
-                    byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
-                    M src = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
-                    return ((short) rsp.StatusCode, src);
-                }
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-            finally
-            {
-                if (content is DynamicContent cnt)
-                {
-                    BufferUtility.Return(cnt.Buffer);
-                }
-            }
-
-            return default;
         }
     }
 }

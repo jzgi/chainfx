@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using SkyCloud.Web;
 
 namespace SkyCloud
 {
@@ -100,7 +101,7 @@ namespace SkyCloud
             }
             finally
             {
-                BufferUtility.Return(cnt.Buffer); // return buffer to pool
+                WebUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
 
@@ -114,7 +115,7 @@ namespace SkyCloud
             }
             finally
             {
-                BufferUtility.Return(cnt.Buffer); // return buffer to pool
+                WebUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
 
@@ -128,7 +129,7 @@ namespace SkyCloud
             }
             finally
             {
-                BufferUtility.Return(cnt.Buffer); // return buffer to pool
+                WebUtility.Return(cnt.Buffer); // return buffer to pool
             }
         }
 

@@ -1,13 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using static System.Environment;
 
-namespace SkyCloud
+namespace SkyCloud.Web
 {
     /// <summary>
     /// A global byte buffer pool.
     /// </summary>
-    public static class BufferUtility
+    public static class WebUtility
     {
         // we use number of processor cores as a factor
         static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
@@ -35,6 +38,7 @@ namespace SkyCloud
                 {
                     buf = new byte[pool.Spec];
                 }
+
                 return buf;
             }
 
@@ -80,6 +84,28 @@ namespace SkyCloud
             internal int Spec => spec;
 
             internal int Limit => limit;
+        }
+
+
+        public static string GetValue(this HttpHeaders headers, string name)
+        {
+            if (headers.TryGetValues(name, out var values))
+            {
+                string[] strs = values as string[];
+                return strs?[0];
+            }
+
+            return null;
+        }
+
+
+        public static async void CallAll(Task<HttpResponseMessage>[] requests, Action<HttpResponseMessage> a)
+        {
+            HttpResponseMessage[] results = await Task.WhenAll(requests);
+            for (int i = 0; i < results.Length; i++)
+            {
+                a(results[i]);
+            }
         }
     }
 }

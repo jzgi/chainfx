@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using WebUtility = SkyCloud.Web.WebUtility;
 
 namespace SkyCloud
 {
@@ -101,7 +102,7 @@ namespace SkyCloud
         {
             if (binary)
             {
-                bytebuf = BufferUtility.Rent(capacity);
+                bytebuf = WebUtility.Rent(capacity);
             }
             else
             {
@@ -127,10 +128,11 @@ namespace SkyCloud
             {
                 int nlen = olen * 2; // new doubled length
                 byte[] obuf = bytebuf;
-                bytebuf = BufferUtility.Rent(nlen);
+                bytebuf = WebUtility.Rent(nlen);
                 Array.Copy(obuf, 0, bytebuf, 0, olen);
-                BufferUtility.Return(obuf);
+                WebUtility.Return(obuf);
             }
+
             bytebuf[count++] = b;
 
             // calculate checksum
@@ -174,6 +176,7 @@ namespace SkyCloud
                     charbuf = new char[nlen];
                     Array.Copy(obuf, 0, charbuf, 0, olen);
                 }
+
                 charbuf[count++] = c;
             }
         }
@@ -255,12 +258,14 @@ namespace SkyCloud
                 Add('0');
                 return;
             }
+
             int x = v; // convert to int
             if (v < 0)
             {
                 Add('-');
                 x = -x;
             }
+
             bool bgn = false;
             for (int i = SHORT.Length - 1; i > 0; i--)
             {
@@ -273,6 +278,7 @@ namespace SkyCloud
                     bgn = true;
                 }
             }
+
             Add(DIGIT[x]); // last reminder
         }
 
@@ -289,6 +295,7 @@ namespace SkyCloud
                 Add('-');
                 v = -v;
             }
+
             bool bgn = false;
             for (int i = INT.Length - 1; i > 0; i--)
             {
@@ -301,6 +308,7 @@ namespace SkyCloud
                     bgn = true;
                 }
             }
+
             Add(DIGIT[v]); // last reminder
         }
 
@@ -317,6 +325,7 @@ namespace SkyCloud
                 Add('-');
                 v = -v;
             }
+
             bool bgn = false;
             for (int i = LONG.Length - 1; i > 0; i--)
             {
@@ -329,6 +338,7 @@ namespace SkyCloud
                     bgn = true;
                 }
             }
+
             Add(DIGIT[v]); // last reminder
         }
 
@@ -375,6 +385,7 @@ namespace SkyCloud
                         Add(DIGIT[q]);
                         bgn = true;
                     }
+
                     if (i == scale)
                     {
                         if (!bgn)
@@ -382,9 +393,11 @@ namespace SkyCloud
                             Add('0'); // 0.XX
                             bgn = true;
                         }
+
                         Add('.');
                     }
                 }
+
                 Add(DIGIT[x]); // last reminder
             }
             else // 32 bits
@@ -401,6 +414,7 @@ namespace SkyCloud
                         Add(DIGIT[q]);
                         bgn = true;
                     }
+
                     if (i == scale)
                     {
                         if (!bgn)
@@ -408,9 +422,11 @@ namespace SkyCloud
                             Add('0'); // 0.XX
                             bgn = true;
                         }
+
                         Add('.');
                     }
                 }
+
                 Add(DIGIT[x]); // last reminder
             }
 
@@ -447,6 +463,7 @@ namespace SkyCloud
                 if (yr < 10) Add('0');
                 Add(v.Year);
             }
+
             if (date > 2) Add('/');
             if (date >= 2) Add(SEX[v.Month]);
             if (date > 1) Add('/');
@@ -457,11 +474,13 @@ namespace SkyCloud
                 Add(' '); // a space for separation
                 Add(SEX[v.Hour]);
             }
+
             if (time >= 2)
             {
                 Add(':');
                 Add(SEX[v.Minute]);
             }
+
             if (time >= 3)
             {
                 Add(':');
@@ -475,6 +494,7 @@ namespace SkyCloud
             {
                 Add(appendix);
             }
+
             // upper or lower
             var arr = uppercase ? HEXU : HEX;
             // digest and transform
@@ -487,6 +507,7 @@ namespace SkyCloud
                 str.Append(arr[b >> 4]);
                 str.Append(arr[b & 0x0f]);
             }
+
             return str.ToString();
         }
 

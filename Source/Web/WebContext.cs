@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
+using SkyCloud.Web;
 using static SkyCloud.DataUtility;
 using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
@@ -288,7 +289,7 @@ namespace SkyCloud.Web
                 {
                     // reading
                     int len = (int) clen;
-                    buffer = BufferUtility.Rent(len); // borrow from the pool
+                    buffer = WebUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -308,7 +309,7 @@ namespace SkyCloud.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.Rent(len); // borrow from the pool
+                    buffer = WebUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -332,7 +333,7 @@ namespace SkyCloud.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.Rent(len); // borrow from the pool
+                    buffer = WebUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -367,7 +368,7 @@ namespace SkyCloud.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = BufferUtility.Rent(len); // borrow from the pool
+                    buffer = WebUtility.Rent(len); // borrow from the pool
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -559,7 +560,7 @@ namespace SkyCloud.Web
             // request content buffer
             if (buffer != null)
             {
-                BufferUtility.Return(buffer);
+                WebUtility.Return(buffer);
             }
 
             // pool returning
@@ -568,7 +569,7 @@ namespace SkyCloud.Web
                 if (Content is DynamicContent dyn)
                 {
                     dyn.Dispose();
-                    BufferUtility.Return(dyn.Buffer);
+                    WebUtility.Return(dyn.Buffer);
                 }
             }
         }
