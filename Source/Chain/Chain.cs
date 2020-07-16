@@ -18,7 +18,7 @@ namespace SkyCloud.Chain
         static Thread scheduler;
 
 
-        internal static void OnCreate()
+        internal static void ConfigureChain(JObj chaincfg)
         {
             // ensure DDL
 
@@ -29,31 +29,7 @@ namespace SkyCloud.Chain
             if (clients != null)
             {
                 // to repeatedly check and initiate event polling activities.
-                scheduler = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        // interval
-                        Thread.Sleep(7000);
-
-                        // a scheduling cycle
-                        var tick = Environment.TickCount;
-                        @lock.EnterReadLock();
-                        try
-                        {
-                            var clis = clients;
-                            for (int i = 0; i < clients.Count; i++)
-                            {
-                                var cli = clis.ValueAt(i);
-                                cli.TryPollAsync(tick);
-                            }
-                        }
-                        finally
-                        {
-                            @lock.ExitReadLock();
-                        }
-                    }
-                });
+                scheduler = new Thread(Orchestrate);
                 scheduler.Start();
             }
         }
@@ -89,6 +65,32 @@ namespace SkyCloud.Chain
             finally
             {
                 @lock.ExitWriteLock();
+            }
+        }
+
+        static void Orchestrate(object state)
+        {
+            while (true)
+            {
+                // interval
+                Thread.Sleep(7000);
+
+                // a scheduling cycle
+                var tick = Environment.TickCount;
+                @lock.EnterReadLock();
+                try
+                {
+                    var clis = clients;
+                    for (int i = 0; i < clients.Count; i++)
+                    {
+                        var cli = clis.ValueAt(i);
+                        cli.TryPollAsync(tick);
+                    }
+                }
+                finally
+                {
+                    @lock.ExitReadLock();
+                }
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SkyCloud.Web;
 
 namespace SkyCloud.Web
 {
@@ -45,7 +44,7 @@ namespace SkyCloud.Web
                 var buf = cnt.Buffer;
                 int count = cnt.Count;
 
-                CryptionUtility.Encrypt(buf, count, Framework.privatekey);
+                CryptionUtility.Encrypt(buf, count, Framework.PrivateKey);
                 return TextUtility.BytesToHex(buf, count);
             }
             finally
@@ -57,7 +56,7 @@ namespace SkyCloud.Web
         public static P Decrypt<P>(string token) where P : IData, new()
         {
             var bytes = TextUtility.HexToBytes(token);
-            CryptionUtility.Decrypt(bytes, bytes.Length, Framework.privatekey);
+            CryptionUtility.Decrypt(bytes, bytes.Length, Framework.PrivateKey);
             // deserialize
             try
             {
@@ -68,6 +67,7 @@ namespace SkyCloud.Web
                 {
                     return default;
                 }
+
                 // construct a principal object
                 P prin = new P();
                 prin.Read(jo, 0xff);

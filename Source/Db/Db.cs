@@ -7,13 +7,13 @@ namespace SkyCloud.Db
 {
     public class Db
     {
-        protected static DbSource dbsource;
+        static DbSource dbsource;
 
         //
         // db-object cache
         //
 
-        public static DbSource DbSource() => dbsource;
+        public static DbSource DbSource => dbsource;
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
@@ -25,40 +25,50 @@ namespace SkyCloud.Db
             return dbsource.NewDbContext(level);
         }
 
-        static Cell[] cells;
+
+        const int MAX_HOLDS = 32;
+
+        static Hold[] holds;
 
         static int size;
 
         static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
-        public static void Cache(object value, byte flag = 0)
-        {
-            if (cells == null)
-            {
-                cells = new Cell[32];
-            }
 
-            cells[size++] = new Cell(value, flag);
+        internal static void ConfigureDb(JObj db_cfg)
+        {
+            dbsource = new DbSource(db_cfg);
         }
 
-        public static void Cache<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+
+        public static void Register(object value, byte flag = 0)
         {
-            if (cells == null)
+            if (holds == null)
             {
-                cells = new Cell[8];
+                holds = new Hold[MAX_HOLDS];
             }
 
-            cells[size++] = new Cell(typeof(V), fetch, maxage, flag);
+            holds[size++] = new Hold(value, flag);
         }
 
-        public static void Cache<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void Register<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
-            if (cells == null)
+            if (holds == null)
             {
-                cells = new Cell[8];
+                holds = new Hold[MAX_HOLDS];
             }
 
-            cells[size++] = new Cell(typeof(V), fetchAsync, maxage, flag);
+            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
+        }
+
+        public static void Register<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        {
+            if (holds == null)
+            {
+                holds = new Hold[MAX_HOLDS];
+            }
+
+            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
         }
 
         /// <summary>
@@ -68,11 +78,11 @@ namespace SkyCloud.Db
         /// <returns>the result object or null</returns>
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            if (cells != null)
+            if (holds != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var c = cells[i];
+                    var c = holds[i];
                     if (c.Flag == 0 || (c.Flag & flag) > 0)
                     {
                         if (!c.IsAsync && typeof(T).IsAssignableFrom(c.Typ))
@@ -88,11 +98,11 @@ namespace SkyCloud.Db
 
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (cells != null)
+            if (holds != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = cells[i];
+                    var cell = holds[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -110,7 +120,7 @@ namespace SkyCloud.Db
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Cell
+        class Hold
         {
             readonly Type typ;
 
@@ -127,14 +137,14 @@ namespace SkyCloud.Db
 
             readonly byte flag;
 
-            internal Cell(object value, byte flag)
+            internal Hold(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
                 this.flag = flag;
             }
 
-            internal Cell(Type typ, Func<DbContext, object> fetch, int maxage, byte flag)
+            internal Hold(Type typ, Func<DbContext, object> fetch, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
@@ -11,8 +10,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyCloud.Chain;
-using SkyCloud.Db;
 using SkyCloud.Web;
 
 namespace SkyCloud
@@ -35,29 +32,31 @@ namespace SkyCloud
         //
 
         // logging level
-        internal static readonly int logging;
+        static int logging;
 
-        internal static readonly string crypto;
+        static string crypto;
 
-        internal static readonly uint[] privatekey;
+        static uint[] privatekey;
 
-        internal static readonly uint[] publickey = {0x4f738f17, 0x55ce9124, 0x012f4a98, 0x6d85e342};
+        static string certpasswd;
 
-        internal static readonly string certpasswd;
+        public static JObj webcfg, dbcfg, chaincfg, extcfg; // various config parts
 
-        public static readonly JObj WEB, DB, EXT; // various config parts
 
+        static FrameworkLogger logger;
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
-        internal static readonly FrameworkLogger Logger;
 
+        public static uint[] PrivateKey => privatekey;
 
-        static Framework()
+        public static FrameworkLogger Logger => logger;
+
+        public static void Configure(string file = "app.json")
         {
             // load configuration
             //
-            byte[] bytes = File.ReadAllBytes(APP_JSON);
+            var bytes = File.ReadAllBytes(file);
             var parser = new JsonParser(bytes, bytes.Length);
             var cfg = (JObj) parser.Parse();
 
@@ -68,37 +67,45 @@ namespace SkyCloud
 
             // setup logger first
             //
-            string file = DateTime.Now.ToString("yyyyMM") + ".log";
-            Logger = new FrameworkLogger(file)
+            string logf = DateTime.Now.ToString("yyyyMM") + ".log";
+            logger = new FrameworkLogger(logf)
             {
                 Level = logging
             };
-            if (!File.Exists(APP_JSON))
+            if (!File.Exists(file))
             {
-                Logger.Log(LogLevel.Error, APP_JSON + " file not found");
+                logger.Log(LogLevel.Error, file + " file not found");
                 return;
             }
 
-            WEB = cfg["WEB"];
-            EXT = cfg["EXT"];
-            DB = cfg["DB"];
-            if (DB != null) // setup the only db source
+            dbcfg = cfg["db"];
+            if (dbcfg != null) // setup the db source
             {
-                dbsource = new DbSource(DB);
+                ConfigureDb(dbcfg);
             }
+
+            chaincfg = cfg["chain"];
+            if (chaincfg != null) // setup the chain node
+            {
+                ConfigureChain(chaincfg);
+            }
+
+            webcfg = cfg["web"];
+
+            extcfg = cfg["ext"];
         }
 
         public static T CreateService<T>(string name) where T : WebService, new()
         {
-            if (WEB == null)
+            if (webcfg == null)
             {
-                throw new FrameworkException("Missing 'WEB' in " + APP_JSON);
+                throw new FrameworkException("Missing 'web' in config");
             }
 
-            string addr = WEB[name];
+            string addr = webcfg[name];
             if (addr == null)
             {
-                throw new FrameworkException("missing WEB '" + name + "' in " + APP_JSON);
+                throw new FrameworkException("missing web '" + name + "' in config");
             }
 
             // create service
@@ -165,7 +172,7 @@ namespace SkyCloud
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
-        public static async Task StartAsync()
+        public static async Task StartServicesAsync()
         {
             var exitevt = new ManualResetEventSlim(false);
 
