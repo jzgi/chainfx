@@ -6,8 +6,8 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DebugType>portable</DebugType>
         <PackageId>SkyCloud</PackageId>
-        <RuntimeFrameworkVersion>3.1.1</RuntimeFrameworkVersion>
-        <Version>1.1.0</Version>
+        <RuntimeFrameworkVersion>4.0.1</RuntimeFrameworkVersion>
+        <Version>4.0.1</Version>
         <LangVersion>8</LangVersion>
         <Company>Skyiah Technologies</Company>
         <PackageProjectUrl>https://github.com/skyiah/skycloud</PackageProjectUrl>
@@ -21,7 +21,6 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <WarningLevel>4</WarningLevel>
-        <DocumentationFile></DocumentationFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <PlatformTarget>x64</PlatformTarget>

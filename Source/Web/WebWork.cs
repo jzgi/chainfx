@@ -288,6 +288,7 @@ namespace SkyCloud.Web
                         var c = a.Tags[k];
                         c.Describe(h);
                     }
+
                     h._MAIN();
                     h._ARTICLE();
                 }
@@ -315,6 +316,7 @@ namespace SkyCloud.Web
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -469,17 +471,17 @@ namespace SkyCloud.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Framework.NewDbContext(level);
+            return Db.Db.NewDbContext(level);
         }
 
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            return Framework.Obtain<T>(flag);
+            return Db.Db.Obtain<T>(flag);
         }
 
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            return await Framework.ObtainAsync<T>(flag);
+            return await Db.Db.ObtainAsync<T>(flag);
         }
 
 
@@ -496,6 +498,7 @@ namespace SkyCloud.Web
             {
                 cells = new Cell[16];
             }
+
             cells[size++] = new Cell(value, flag);
         }
 
@@ -516,6 +519,7 @@ namespace SkyCloud.Web
                     }
                 }
             }
+
             return Parent?.Lookup<T>(flag);
         }
 

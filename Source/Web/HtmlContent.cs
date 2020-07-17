@@ -83,6 +83,7 @@ namespace SkyCloud.Web
             {
                 Add(v);
             }
+
             return this;
         }
 
@@ -92,6 +93,7 @@ namespace SkyCloud.Web
             {
                 Add(v);
             }
+
             return this;
         }
 
@@ -101,6 +103,7 @@ namespace SkyCloud.Web
             {
                 Add(v);
             }
+
             return this;
         }
 
@@ -110,6 +113,7 @@ namespace SkyCloud.Web
             {
                 Add(v);
             }
+
             return this;
         }
 
@@ -119,6 +123,7 @@ namespace SkyCloud.Web
             {
                 Add(v);
             }
+
             return this;
         }
 
@@ -134,6 +139,7 @@ namespace SkyCloud.Web
             {
                 Add(v);
             }
+
             return this;
         }
 
@@ -221,6 +227,7 @@ namespace SkyCloud.Web
             {
                 Add("<s>");
             }
+
             AddPrimitive(v);
             if (cond)
             {
@@ -236,6 +243,7 @@ namespace SkyCloud.Web
             {
                 Add("<s>");
             }
+
             AddPrimitive(v);
             Add("&nbsp;");
             AddPrimitive(x);
@@ -243,6 +251,7 @@ namespace SkyCloud.Web
             {
                 Add("</s>");
             }
+
             return this;
         }
 
@@ -282,6 +291,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             return this;
         }
@@ -301,6 +311,7 @@ namespace SkyCloud.Web
                 Add("\" style=\"background-color: ");
                 Add(color);
             }
+
             Add("\">");
             AddPrimitive(v);
             Add("</abbr>");
@@ -334,6 +345,7 @@ namespace SkyCloud.Web
             {
                 Add(caption);
             }
+
             Add("</th>");
             return this;
         }
@@ -425,6 +437,7 @@ namespace SkyCloud.Web
                 {
                     Add('¥');
                 }
+
                 Add(v);
             }
 
@@ -447,6 +460,7 @@ namespace SkyCloud.Web
             {
                 AddEsc(v);
             }
+
             Add("</td>");
             return this;
         }
@@ -460,6 +474,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add('>');
             AddPrimitive(v);
             Add("&nbsp;");
@@ -514,6 +529,7 @@ namespace SkyCloud.Web
                 Add("</form>");
                 Add("</td>");
             }
+
             return this;
         }
 
@@ -528,6 +544,7 @@ namespace SkyCloud.Web
                     Add(' ');
                     Add(css);
                 }
+
                 Add("\">");
                 Add(caption);
                 Add("</label>");
@@ -738,6 +755,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             AddPrimitive(v);
             Add("</p>");
@@ -753,6 +771,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             AddPrimitive(a);
             Add("&nbsp;");
@@ -971,6 +990,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             return this;
         }
@@ -1026,6 +1046,7 @@ namespace SkyCloud.Web
             {
                 Add('¥');
             }
+
             Add(p);
             Add("</p>");
             return this;
@@ -1039,6 +1060,7 @@ namespace SkyCloud.Web
             {
                 Add("&checkmark;");
             }
+
             Add("</p>");
             return this;
         }
@@ -1069,15 +1091,18 @@ namespace SkyCloud.Web
             {
                 Add("<em>");
             }
+
             if (s)
             {
                 Add("<s>");
             }
+
             Add(v);
             if (s)
             {
                 Add("</s>");
             }
+
             if (em)
             {
                 Add("</em>");
@@ -1124,6 +1149,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" href=\"");
 
             AddEsc(a);
@@ -1142,6 +1168,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" href=\"");
 
             AddPrimitive(a);
@@ -1161,6 +1188,7 @@ namespace SkyCloud.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" href=\"");
 
             AddPrimitive(a);
@@ -1215,11 +1243,13 @@ namespace SkyCloud.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
                 Add(" class=\"uk-border-circle\"");
             }
+
             Add(" src=\"");
             return this;
         }
@@ -1335,6 +1365,7 @@ namespace SkyCloud.Web
                 Add(head);
                 Add("</h4>");
             }
+
             Add("<p>");
             Add(p);
             Add("</p>");
@@ -1352,6 +1383,7 @@ namespace SkyCloud.Web
                 {
                     Add(" class=\"uk-active\"");
                 }
+
                 Add("><a href=\"");
                 Add(uri);
                 Add('-');
@@ -1360,6 +1392,7 @@ namespace SkyCloud.Web
                 Add(items[i]);
                 Add("</a></li>");
             }
+
             Add("</ul>");
             return this;
         }
@@ -1371,6 +1404,7 @@ namespace SkyCloud.Web
             {
                 Add(css);
             }
+
             Add('"');
             if (action != null)
             {
@@ -1378,26 +1412,31 @@ namespace SkyCloud.Web
                 Add(action);
                 Add('"');
             }
+
             if (post)
             {
                 Add(" method=\"post\"");
             }
+
             if (mp)
             {
                 Add(" enctype=\"multipart/form-data\"");
             }
+
             if (oninput != null)
             {
                 Add(" oninput=\"");
                 Add(oninput);
                 Add('"');
             }
+
             if (onsubmit != null)
             {
                 Add(" onsubmit=\"");
                 Add(onsubmit);
                 Add('"');
             }
+
             Add(">");
             return this;
         }
@@ -1453,12 +1492,14 @@ namespace SkyCloud.Web
                 Add("\" formaction=\"");
                 Add(action);
             }
+
             if (subscript > -1)
             {
                 Add('-');
                 Add(subscript);
             }
-            Add("\" onclick=\"if (this.form) { if (!this.form.reportValidity()) return; this.disabled = true; this.form.method = this.formMethod; this.form.action = this.formAction; this.form.submit(); }\">");
+
+            Add("\" onclick=\"btnSubmit(this);\">");
             AddEsc(caption);
             Add("</button>");
             return this;
@@ -1530,11 +1571,13 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(li);
                     }
+
                     Add("\">");
                     item(obj);
                     Add("</li>");
                 }
             }
+
             Add("</ul>");
             return this;
         }
@@ -1547,6 +1590,7 @@ namespace SkyCloud.Web
                 Add(' ');
                 Add(ul);
             }
+
             Add("\">");
 
             if (map != null)
@@ -1560,11 +1604,13 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(li);
                     }
+
                     Add("\">");
                     item(ety);
                     Add("</li>");
                 }
             }
+
             Add("</ul>");
         }
 
@@ -1576,6 +1622,7 @@ namespace SkyCloud.Web
                 Add(' ');
                 Add(ul);
             }
+
             Add("\">");
 
             if (src != null && src.IsDataSet)
@@ -1588,11 +1635,13 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(li);
                     }
+
                     Add("\">");
                     item(src);
                     Add("</li>");
                 }
             }
+
             Add("</ul>");
             return this;
         }
@@ -1605,6 +1654,7 @@ namespace SkyCloud.Web
                 Add(' ');
                 Add(ul);
             }
+
             Add("\">");
 
             if (arr != null)
@@ -1618,6 +1668,7 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(li);
                     }
+
                     Add("\">");
                     item(obj);
                     Add("</li>");
@@ -1637,6 +1688,7 @@ namespace SkyCloud.Web
                 Add(' ');
                 Add(ul);
             }
+
             Add("\">");
 
             if (map != null)
@@ -1650,6 +1702,7 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(li);
                     }
+
                     Add("\">");
                     card(ety);
                     Add("</li>");
@@ -1682,6 +1735,7 @@ namespace SkyCloud.Web
             {
                 Add(" form=\"tool-bar-form\"");
             }
+
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(key);
             Add("\" onchange=\"checkToggle(this);\">");
@@ -1696,6 +1750,7 @@ namespace SkyCloud.Web
             {
                 Add(" form=\"tool-bar-form\"");
             }
+
             Add(" name=\"key\" type=\"radio\" class=\"uk-radio\" value=\"");
             PutKey(key);
             Add("\"></td>");
@@ -1716,6 +1771,7 @@ namespace SkyCloud.Web
             {
                 Add("class=\"uk-overflow-auto\">");
             }
+
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
 
             if (arr != null && tr != null) // tbody if having data objects
@@ -1725,6 +1781,7 @@ namespace SkyCloud.Web
                 {
                     thead();
                 }
+
                 for (int i = 0; i < arr.Length; i++)
                 {
                     var obj = arr[i];
@@ -1732,8 +1789,10 @@ namespace SkyCloud.Web
                     tr(obj);
                     Add("</tr>");
                 }
+
                 Add("</tbody>");
             }
+
             Add("</table>");
             Add("</div>");
         }
@@ -1752,11 +1811,13 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(obj);
                     Add("</form>");
                 }
             }
+
             Add("</main>");
         }
 
@@ -1774,11 +1835,13 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(ety);
                     Add("</form>");
                 }
             }
+
             Add("</main>");
         }
 
@@ -1795,11 +1858,13 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(src);
                     Add("</form>");
                 }
             }
+
             Add("</main>");
         }
 
@@ -1818,6 +1883,7 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(obj);
                     Add("</form>");
@@ -1843,12 +1909,14 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(ety);
                     Add("</form>");
                     Add("</div>");
                 }
             }
+
             Add("</main>");
         }
 
@@ -1866,6 +1934,7 @@ namespace SkyCloud.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(src);
                     Add("</article>");
@@ -1925,6 +1994,7 @@ namespace SkyCloud.Web
             {
                 Add(caption);
             }
+
             if (rangekey != null)
             {
                 Add("<input name=\"rangekey\" type=\"hidden\" value=\"");
@@ -1955,6 +2025,7 @@ namespace SkyCloud.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\">");
             return this;
         }
@@ -1987,6 +2058,7 @@ namespace SkyCloud.Web
                     Add(' ');
                     Add(css);
                 }
+
                 Add("\">");
             }
 
@@ -2015,10 +2087,12 @@ namespace SkyCloud.Web
                     }
                 }
             }
+
             if (nav)
             {
                 Add("</nav>");
             }
+
             return this;
         }
 
@@ -2032,6 +2106,7 @@ namespace SkyCloud.Web
             {
                 PutTool(act, toola, subscript, caption, tip, enabled, css);
             }
+
             return this;
         }
 
@@ -2048,6 +2123,28 @@ namespace SkyCloud.Web
                     PutVarTool(act, toola, varkey, subscript, caption, tip, enable, css);
                 }
             }
+
+            return this;
+        }
+
+        public HtmlContent CROPPIE(short wid, short hei, string caption, bool large = false)
+        {
+            Add("<main id=\"imgbnd\" class=\"");
+            Add(large ? "uk-height-large" : "uk-height-medium");
+            Add("\"><input class=\"uk-button uk-button-secondary\" type=\"file\" id=\"imginp\" style=\"display: none;\" required onchange=\"bind(this.parentNode, window.URL.createObjectURL(this.files[0]),");
+            Add(wid);
+            Add(", ");
+            Add(hei);
+            Add(");\">");
+            Add("<input type=\"hidden\" id=\"img\" name=\"img\">");
+            Add("</main>");
+            Add("<hr>");
+            Add("<div class=\"uk-card-footer uk-flex-center\">");
+            Add("<button type=\"button\" class=\"uk-button uk-button-secondary\" onclick=\"$('#imginp').click(); return;\">");
+            Add(caption);
+            Add("</button>");
+            Add("</div>");
+
             return this;
         }
 
@@ -2118,6 +2215,7 @@ namespace SkyCloud.Web
                     Add('-');
                     Add(subscript);
                 }
+
                 Add("\"");
             }
             else
@@ -2133,6 +2231,7 @@ namespace SkyCloud.Web
                     Add('-');
                     Add(subscript);
                 }
+
                 Add("\"");
                 if (tool.IsPost)
                 {
@@ -2200,7 +2299,7 @@ namespace SkyCloud.Web
             // check action's availability
             //
             bool ok = enabled && act.DoAuthorize(Web);
-            tip = tip ?? act.Tip;
+            tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
             {
@@ -2225,6 +2324,7 @@ namespace SkyCloud.Web
                     Add('-');
                     Add(subscript);
                 }
+
                 Add("\"");
             }
             else
@@ -2242,6 +2342,7 @@ namespace SkyCloud.Web
                     Add('-');
                     Add(subscript);
                 }
+
                 Add("\"");
                 if (tool.IsPost)
                 {
@@ -2805,6 +2906,7 @@ namespace SkyCloud.Web
             {
                 Add("<label>");
             }
+
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
@@ -2816,6 +2918,7 @@ namespace SkyCloud.Web
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }
+
             return this;
         }
 
@@ -2826,6 +2929,7 @@ namespace SkyCloud.Web
             {
                 Add("<label>");
             }
+
             Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -2840,6 +2944,7 @@ namespace SkyCloud.Web
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }
+
             return this;
         }
 
@@ -2971,6 +3076,7 @@ namespace SkyCloud.Web
                     }
                 }
             }
+
             _FIELDSUL();
             return this;
         }
@@ -3037,16 +3143,19 @@ namespace SkyCloud.Web
             {
                 FIELDSUL_(legend, css);
             }
+
             for (int i = 0; i < opt.Length; i++)
             {
                 var o = opt[i];
                 if (i > 0) Add("&nbsp;&nbsp;");
                 RADIO(name, o, o, o.Equals(v));
             }
+
             if (legend != null)
             {
                 _FIELDSUL();
             }
+
             return this;
         }
 
@@ -3113,11 +3222,13 @@ namespace SkyCloud.Web
             {
                 Add(" uk-select-right");
             }
+
             if (css != null)
             {
                 Add(' ');
                 Add(css);
             }
+
             Add("\" name=\"");
             AddPrimitive(name);
             Add("\"");
@@ -3129,10 +3240,12 @@ namespace SkyCloud.Web
                 Add(size);
                 Add("\"");
             }
+
             if (refresh)
             {
                 Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
             }
+
             Add(">");
             return this;
         }
@@ -3159,6 +3272,7 @@ namespace SkyCloud.Web
             {
                 AddPrimitive(v);
             }
+
             Add("</option>");
             return this;
         }
@@ -3223,6 +3337,7 @@ namespace SkyCloud.Web
                             Add("</optgroup>");
                             grpopen = false;
                         }
+
                         Add("<optgroup label=\"");
                         AddPrimitive(e.Value);
                         Add("\">");

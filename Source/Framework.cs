@@ -40,7 +40,7 @@ namespace SkyCloud
 
         static string certpasswd;
 
-        public static JObj webcfg, dbcfg, chaincfg, extcfg; // various config parts
+        public static JObj webcfg, dbcfg, extcfg; // various config parts
 
 
         static FrameworkLogger logger;
@@ -52,7 +52,7 @@ namespace SkyCloud
 
         public static FrameworkLogger Logger => logger;
 
-        public static void Configure(string file = "app.json")
+        public static void Configure(string file = "app.json", bool chain = true)
         {
             // load configuration
             //
@@ -66,17 +66,11 @@ namespace SkyCloud
             certpasswd = cfg[nameof(certpasswd)];
 
             // setup logger first
-            //
             string logf = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new FrameworkLogger(logf)
             {
                 Level = logging
             };
-            if (!File.Exists(file))
-            {
-                logger.Log(LogLevel.Error, file + " file not found");
-                return;
-            }
 
             dbcfg = cfg["db"];
             if (dbcfg != null) // setup the db source
@@ -84,10 +78,9 @@ namespace SkyCloud
                 ConfigureDb(dbcfg);
             }
 
-            chaincfg = cfg["chain"];
-            if (chaincfg != null) // setup the chain node
+            if (chain) // setup the chain node
             {
-                ConfigureChain(chaincfg);
+                ConfigureChain(true);
             }
 
             webcfg = cfg["web"];
@@ -172,7 +165,7 @@ namespace SkyCloud
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
-        public static async Task StartServicesAsync()
+        public static async Task StartAllAsync()
         {
             var exitevt = new ManualResetEventSlim(false);
 

@@ -18,9 +18,21 @@ namespace SkyCloud.Chain
         static Thread scheduler;
 
 
-        internal static void ConfigureChain(JObj chaincfg)
+        internal static void ConfigureChain(bool ddl)
         {
             // ensure DDL
+            using var dc = NewDbContext();
+            if (!dc.QueryTop("SELECT 1 FROM pg_namespace WHERE nspname = 'chain'"))
+            {
+                if (ddl) // create tables
+                {
+                    
+                }
+                else
+                {
+                    return;
+                }
+            }
 
             // load and setup peers
             Reload();

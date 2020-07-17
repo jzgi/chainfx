@@ -25,11 +25,11 @@ namespace SkyCloud.Web
 
         string address;
 
-        // cache of responses
-        readonly ConcurrentDictionary<string, Response> _cache;
-
         // the embedded HTTP server
         readonly KestrelServer server;
+
+        // cache of recent responses
+        readonly ConcurrentDictionary<string, Response> cache;
 
         // the response cache cleaner thread
         Thread cleaner;
@@ -42,7 +42,7 @@ namespace SkyCloud.Web
 
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            _cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
+            cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
 
             // create the embedded server instance
             var opts = new KestrelServerOptions();
@@ -203,7 +203,7 @@ namespace SkyCloud.Web
             Console.WriteLine("[" + Name + "] started at " + address);
 
             // create and start the cleaner thread
-            if (_cache != null)
+            if (cache != null)
             {
                 cleaner = new Thread(() =>
                 {
@@ -213,11 +213,11 @@ namespace SkyCloud.Web
                         Thread.Sleep(30000); // every 30 seconds 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
-                        foreach (var re in _cache)
+                        foreach (var re in cache)
                         {
                             if (!re.Value.TryClean(now))
                             {
-                                _cache.TryRemove(re.Key, out _);
+                                cache.TryRemove(re.Key, out _);
                             }
                         }
                     }
@@ -250,7 +250,7 @@ namespace SkyCloud.Web
                 if (!wc.IsInCache && wc.Shared == true && Response.IsCacheable(wc.StatusCode))
                 {
                     var re = new Response(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    _cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
+                    cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
                     wc.IsInCache = true;
                 }
             }
@@ -260,7 +260,7 @@ namespace SkyCloud.Web
         {
             if (wc.IsGet)
             {
-                if (_cache.TryGetValue(wc.Uri, out var resp))
+                if (cache.TryGetValue(wc.Uri, out var resp))
                 {
                     return resp.TryGive(wc, Environment.TickCount);
                 }
