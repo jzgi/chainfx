@@ -2657,7 +2657,43 @@ namespace SkyCloud.Web
         public HtmlContent DATE(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
         {
             LABEL(label);
-            Add("<input type=\"date\" name=\"");
+            Add("<input type=\"date\" class=\"uk-width-1-1\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(val);
+            Add("\"");
+
+            if (max != default)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+
+            if (min != default)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+
+            if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent DATETIME(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
+        {
+            LABEL(label);
+            Add("<input type=\"datetime-local\" class=\"uk-width-1-1\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(val);
@@ -2907,12 +2943,12 @@ namespace SkyCloud.Web
                 Add("<label>");
             }
 
-            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add("<p class=\"uk-flex uk-input\"><input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (check) Add(" checked");
             if (required) Add(" required");
-            Add(">");
+            Add("></p>");
             if (tip != null)
             {
                 Add(tip); // caption following the checkbox
@@ -2930,7 +2966,7 @@ namespace SkyCloud.Web
                 Add("<label>");
             }
 
-            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add("<p class=\"uk-flex uk-input\"><input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(v);
@@ -2938,7 +2974,7 @@ namespace SkyCloud.Web
             if (check) Add(" checked=\"checked\"");
             if (required) Add("\" required=\"required\"");
             if (disabled) Add("\" disabled=\"disabled\"");
-            Add(">");
+            Add("></p>");
             if (tip != null)
             {
                 Add(tip); // caption following the checkbox
@@ -2956,7 +2992,7 @@ namespace SkyCloud.Web
             {
                 var e = opt[i];
                 Add(" <label>");
-                Add("<input type=\"checkbox\" name=\"");
+                Add("<p class=\"uk-flex uk-input\"><input type=\"checkbox\" name=\"");
                 Add(name);
                 Add("\"");
                 if (v != null && v.Contains(e))
@@ -2964,7 +3000,7 @@ namespace SkyCloud.Web
                     Add(" checked");
                 }
 
-                Add(">");
+                Add("></p>");
                 Add(e);
                 Add(" </label>");
             }

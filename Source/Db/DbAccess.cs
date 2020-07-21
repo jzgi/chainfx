@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SkyCloud.Db
 {
-    public class Db
+    public class DbAccess
     {
         static DbSource dbsource;
 

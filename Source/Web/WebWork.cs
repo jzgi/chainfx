@@ -471,17 +471,17 @@ namespace SkyCloud.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Db.Db.NewDbContext(level);
+            return DbAccess.NewDbContext(level);
         }
 
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            return Db.Db.Obtain<T>(flag);
+            return DbAccess.Obtain<T>(flag);
         }
 
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            return await Db.Db.ObtainAsync<T>(flag);
+            return await DbAccess.ObtainAsync<T>(flag);
         }
 
 

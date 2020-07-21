@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Description>Enterprise framework for DAPP</Description>
-        <VersionPrefix>1.1</VersionPrefix>
+        <VersionPrefix>4.1</VersionPrefix>
         <Authors>skyiah</Authors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DebugType>portable</DebugType>
         <PackageId>SkyCloud</PackageId>
-        <RuntimeFrameworkVersion>4.0.1</RuntimeFrameworkVersion>
+        <RuntimeFrameworkVersion>3.1</RuntimeFrameworkVersion>
         <Version>4.0.1</Version>
         <LangVersion>8</LangVersion>
         <Company>Skyiah Technologies</Company>

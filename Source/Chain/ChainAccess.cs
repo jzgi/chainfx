@@ -1,10 +1,11 @@
 using System;
 using System.Net;
 using System.Threading;
+using SkyCloud.Db;
 
 namespace SkyCloud.Chain
 {
-    public class Chain : Db.Db
+    public class ChainAccess : DbAccess
     {
         static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 

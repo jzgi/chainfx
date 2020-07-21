@@ -17,7 +17,7 @@ namespace SkyCloud
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Framework : Chain.Chain
+    public class Framework : Chain.ChainAccess
     {
         public const string APP_JSON = "app.json";
 
