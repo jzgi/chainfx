@@ -1,9 +1,9 @@
 using System;
 using System.Net;
 using System.Threading;
-using SkyCloud.Web;
+using SkyChain.Web;
 
-namespace SkyCloud.Chain
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 

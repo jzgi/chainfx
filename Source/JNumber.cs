@@ -1,4 +1,4 @@
-namespace SkyCloud
+namespace SkyChain
 {
     ///
     /// Used to build a number during a parsing process.

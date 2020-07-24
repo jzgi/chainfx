@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// A JSON array model.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// To indicate that a content parsing-related exception occured.

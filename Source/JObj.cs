@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// A JSON object model.

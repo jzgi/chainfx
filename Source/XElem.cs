@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// An XML element.

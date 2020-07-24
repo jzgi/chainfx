@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyCloud.Web;
+using SkyChain.Web;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// The application scope that holds global states.

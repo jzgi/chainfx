@@ -1,4 +1,4 @@
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// A data structure that is parser for a certain content format.

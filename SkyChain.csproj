@@ -5,15 +5,15 @@
         <Authors>skyiah</Authors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DebugType>portable</DebugType>
-        <PackageId>SkyCloud</PackageId>
+        <PackageId>SkyChain</PackageId>
         <RuntimeFrameworkVersion>3.1</RuntimeFrameworkVersion>
         <Version>4.0.1</Version>
         <LangVersion>8</LangVersion>
         <Company>Skyiah Technologies</Company>
-        <PackageProjectUrl>https://github.com/skyiah/skycloud</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/skyiah/skycloud</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/skyiah/skychain</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/skyiah/skychain</RepositoryUrl>
         <PackageVersion>4.1.0</PackageVersion>
-        <Title>SkyCloud Framework</Title>
+        <Title>SkyChain Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
         <AssemblyVersion>4.1</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -27,7 +27,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
-        <PackageReference Include="Npgsql" Version="4.1.3.1" />
+        <PackageReference Include="Npgsql" Version="4.1.4" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Net.WebSockets" Version="4.3.0" />
         <PackageReference Include="System.Threading.Timer" Version="4.3.0" />

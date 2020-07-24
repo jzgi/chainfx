@@ -1,4 +1,4 @@
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// The enumeration of JSON member types.

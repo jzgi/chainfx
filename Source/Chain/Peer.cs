@@ -1,4 +1,4 @@
-namespace SkyCloud.Chain
+namespace SkyChain.Chain
 {
     public class Peer : IData, IKeyable<string>
     {

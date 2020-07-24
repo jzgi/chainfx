@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// To document the response returned by the target action.

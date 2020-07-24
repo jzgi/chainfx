@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace SkyCloud
+namespace SkyChain
 {
     public static class CryptionUtility
     {

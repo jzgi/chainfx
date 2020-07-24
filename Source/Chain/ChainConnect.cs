@@ -2,10 +2,10 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SkyCloud.Web;
-using static SkyCloud.DataUtility;
+using SkyChain.Web;
+using static SkyChain.DataUtility;
 
-namespace SkyCloud.Chain
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// To document a GET request to the target action.

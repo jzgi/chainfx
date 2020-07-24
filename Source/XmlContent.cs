@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 

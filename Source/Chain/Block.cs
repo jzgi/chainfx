@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyCloud.Chain
+namespace SkyChain.Chain
 {
     public class Block : IData
     {

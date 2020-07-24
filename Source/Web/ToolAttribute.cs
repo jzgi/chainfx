@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyCloud.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// To specify a user interface tool(set) that works in a particular pattern.

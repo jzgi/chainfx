@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyCloud.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.

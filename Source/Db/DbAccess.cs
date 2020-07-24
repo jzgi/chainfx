@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyCloud.Db
+namespace SkyChain.Db
 {
     public class DbAccess
     {

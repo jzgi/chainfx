@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace SkyCloud.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

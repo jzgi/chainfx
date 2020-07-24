@@ -1,6 +1,6 @@
-using SkyCloud.Web;
+using SkyChain.Web;
 
-namespace SkyCloud.Chain
+namespace SkyChain.Chain
 {
     [Ui("块链")]
     public class ChainLedgerWork : WebWork

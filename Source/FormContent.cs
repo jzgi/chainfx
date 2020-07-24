@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// To generate a urlencoded byte or char string.

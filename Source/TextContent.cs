@@ -1,4 +1,4 @@
-namespace SkyCloud
+namespace SkyChain
 {
     /// <summary>
     /// To generate a plain/text string or CSV content. 

@@ -22,7 +22,7 @@ create table blocklns
     idx smallint not null,
     typ smallint,
     key varchar(20),
-    "desc" varchar(20),
+    descr varchar(20),
     stamp timestamp(0),
     hash varchar(32),
     amt money,
@@ -61,7 +61,8 @@ create table transacts
     rnodeid varchar(8),
     rkey varchar(20),
     rbalance money,
-    status smallint not null
+    status smallint not null,
+    descr varchar(20)
 );
 
 alter table transacts owner to postgres;

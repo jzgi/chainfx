@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// To implement principal authorization of access to the target resources.

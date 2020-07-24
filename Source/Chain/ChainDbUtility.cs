@@ -1,7 +1,7 @@
 using System;
-using SkyCloud.Db;
+using SkyChain.Db;
 
-namespace SkyCloud.Chain
+namespace SkyChain.Chain
 {
     public static class ChainDbUtility
     {

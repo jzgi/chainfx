@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyCloud.Db
+namespace SkyChain.Db
 {
     /// <summary>
     /// To set SQL parameters.  
