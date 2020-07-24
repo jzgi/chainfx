@@ -1,3 +1,5 @@
+using System;
+
 namespace SkyChain.Chain
 {
     public class Peer : IData, IKeyable<string>
@@ -14,8 +16,9 @@ namespace SkyChain.Chain
 
         internal string name;
 
-        // remote address
-        internal string raddr;
+        internal string raddr; // remote address
+
+        internal DateTime stamp;
 
         internal short status;
 
@@ -24,6 +27,7 @@ namespace SkyChain.Chain
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
             s.Get(nameof(raddr), ref raddr);
+            s.Get(nameof(stamp), ref stamp);
             s.Get(nameof(status), ref status);
         }
 
@@ -32,6 +36,7 @@ namespace SkyChain.Chain
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
             s.Put(nameof(raddr), raddr);
+            s.Put(nameof(stamp), stamp);
             s.Put(nameof(status), status);
         }
 

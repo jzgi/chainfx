@@ -9,16 +9,16 @@ namespace SkyChain.Chain
         public void @default(WebContext wc)
         {
             using var dc = NewDbContext();
-            var arr = dc.Query<Transact>("SELECT * FROM chain.logins");
+            var arr = dc.Query<Record>("SELECT * FROM chain.logins");
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
                 h.TABLE(arr, o =>
                 {
-                    h.TDCHECK(o.id);
-                    h.TD(o.id);
-                    h.TD(o.name);
-                    h.TDFORM(() => h.VARTOOLS(o.id));
+                    h.TDCHECK(o.txid);
+                    h.TD(o.txid);
+                    h.TD(o.key);
+                    h.TDFORM(() => h.VARTOOLS(o.txid));
                 });
             });
         }
@@ -28,7 +28,7 @@ namespace SkyChain.Chain
         {
             if (wc.IsGet)
             {
-                var o = new Transact { };
+                var o = new Record { };
                 wc.GivePane(200, h =>
                 {
                     const string css = "uk-width-small";

@@ -1,6 +1,6 @@
 namespace SkyChain.Chain
 {
-    public class Consenter
+    public class Transit
     {
         
     }

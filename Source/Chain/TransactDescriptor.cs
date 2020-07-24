@@ -6,9 +6,17 @@ namespace SkyChain.Chain
 
         string name;
 
-        Transiter transiter;
+        Transit transit;
 
-        Consenter consenter;
+        Consent consent;
+
+        public TransactDescriptor(short typ, string name, Transit transit, Consent consent)
+        {
+            this.typ = typ;
+            this.name = name;
+            this.transit = transit;
+            this.consent = consent;
+        }
 
         public short Key => typ;
     }

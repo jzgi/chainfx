@@ -1,6 +1,6 @@
 namespace SkyChain.Chain
 {
-    public class Transiter
+    public class Consent
     {
         
     }

@@ -18,7 +18,6 @@ namespace SkyChain.Chain
         // the thread schedules and drives periodic jobs, such as event polling 
         static Thread scheduler;
 
-
         internal static void ConfigureChain(bool ddl)
         {
             // ensure DDL
@@ -27,7 +26,6 @@ namespace SkyChain.Chain
             {
                 if (ddl) // create tables
                 {
-                    
                 }
                 else
                 {
@@ -105,6 +103,23 @@ namespace SkyChain.Chain
                     @lock.ExitReadLock();
                 }
             }
+        }
+
+        //
+        // types
+        //
+
+        static readonly Map<short, TransactDescriptor> descrs = new Map<short, TransactDescriptor>(32);
+
+        public static void DefineTransact<T, C>(short typ, string name) where T : Transit, new() where C : Consent, new()
+        {
+            var descr = new TransactDescriptor(
+                typ,
+                name,
+                new T(),
+                new C()
+            );
+            descrs.Add(descr);
         }
     }
 }
