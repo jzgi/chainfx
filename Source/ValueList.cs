@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace Skyiah
 {
     /// <summary>
     /// A lightweight alternative to the List class. The internal array is created on demand.

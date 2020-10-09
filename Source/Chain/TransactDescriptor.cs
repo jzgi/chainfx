@@ -1,4 +1,4 @@
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
     public class TransactDescriptor : IKeyable<short>
     {

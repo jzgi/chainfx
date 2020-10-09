@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Web
+namespace Skyiah.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
@@ -1957,6 +1957,40 @@ namespace SkyChain.Web
             Add(tip);
             Add("');\"");
         }
+
+        public HtmlContent TABBEDBAR(bool group = true)
+        {
+            var wrk = Web.Work;
+            var wrks = wrk.Parent.Works;
+
+            Add("<form class=\"uk-top-bar uk-flex-center\">");
+            Add("<ul class=\"uk-subnav\">");
+
+            for (int i = 0; i < wrks.Count; i++)
+            {
+                var w = wrks.ValueAt(i);
+                if (group && w.Group != wrk.Group) continue;
+
+                // render tabs
+                Add("<li");
+                if (w == wrk)
+                {
+                    Add(" class=\"uk-active\"");
+                }
+                Add("><a href=\"../");
+                Add(w.Key);
+                Add("/\">");
+                Add(w.Label);
+                Add("</a></li>");
+            }
+
+            Add("</ul>");
+
+            Add("</form>");
+            Add("<div class=\"uk-top-placeholder\"></div>");
+            return this;
+        }
+
 
         public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool refresh = true, bool top = true)
         {

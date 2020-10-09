@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using static System.Environment;
 
-namespace SkyChain
+namespace Skyiah
 {
     /// <summary>
     /// A set of commonly-used array operations.
@@ -16,12 +16,11 @@ namespace SkyChain
         // pool of byte buffers
         static readonly Pool[] pools =
         {
-            new Pool(1024 * 8, factor * 16),
             new Pool(1024 * 16, factor * 16),
             new Pool(1024 * 32, factor * 16),
             new Pool(1024 * 64, factor * 8),
             new Pool(1024 * 128, factor * 8),
-            new Pool(1024 * 256, factor * 8),
+            new Pool(1024 * 256, factor * 4),
             new Pool(1024 * 512, factor * 4)
         };
 

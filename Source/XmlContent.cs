@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace Skyiah
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 

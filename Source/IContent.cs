@@ -1,4 +1,4 @@
-﻿namespace SkyChain
+﻿namespace Skyiah
 {
     /// <summary>
     /// Represents a binary content ready to send through web context. 

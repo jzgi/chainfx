@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Web
+namespace Skyiah.Web
 {
     /// <summary>
     /// To specify basic user interface-related information for a nodule (work or action) object.

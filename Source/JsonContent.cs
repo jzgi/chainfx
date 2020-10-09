@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SkyChain
+namespace Skyiah
 {
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.

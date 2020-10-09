@@ -10,14 +10,15 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Web;
+using Skyiah.Chain;
+using Skyiah.Web;
 
-namespace SkyChain
+namespace Skyiah
 {
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Framework : Chain.ChainAccess
+    public class Framework : ChainOp
     {
         public const string APP_JSON = "app.json";
 

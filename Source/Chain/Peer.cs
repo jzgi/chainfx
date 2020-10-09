@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
     public class Peer : IData, IKeyable<string>
     {

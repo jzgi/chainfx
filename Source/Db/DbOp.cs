@@ -3,9 +3,9 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Db
+namespace Skyiah.Db
 {
-    public class DbAccess
+    public class DbOp
     {
         static DbSource dbsource;
 

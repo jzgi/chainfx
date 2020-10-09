@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using SkyChain.Web;
+using Skyiah.Web;
 
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
     [Ui("事务")]
     public class TransactWork : WebWork

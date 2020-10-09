@@ -1,7 +1,6 @@
 # The SkyChain Platform  
 
-SkyChain is a framework & server for federated cloud. It can be either embedded in application, or deployed as a standalone server. 
-It is combination of a web application framework and a federated blockchain implementation.
+SkyChain is an embeddable blockchain engine & web framework for building workflow-driven federated decentralized applications.
 
 The characteristics:
 
@@ -19,7 +18,7 @@ dotnet add package SkyChain --version 4.1.0
 
 The framework specifically uses the following open source software.
 
-| ![kestrel](https://raw.githubusercontent.com/skyiah/SkyChain/master/Docs/netcore.png) | ![npgsql](https://raw.githubusercontent.com/skyiah/SkyChain/master/Docs/postgresql.png) |
+| ![kestrel](https://raw.githubusercontent.com/skyiah/SkyChain/master/Docs/netcore.jpg) | ![npgsql](https://raw.githubusercontent.com/skyiah/SkyChain/master/Docs/postgresql.png) |
 | ---- | ----- |
 | [kestrel](https://github.com/aspnet/AspNetCore) | [npgsql](http://www.npgsql.org) |
 | .NET's built-in web engine | .NET access to PostgreSQL |

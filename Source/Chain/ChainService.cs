@@ -1,9 +1,9 @@
 using System;
 using System.Net;
 using System.Threading;
-using SkyChain.Web;
+using Skyiah.Web;
 
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 
@@ -75,7 +75,7 @@ namespace SkyChain.Chain
                 using var dc = NewDbContext();
 
                 // load and init peer clients
-                var arr = dc.Query<Peer>("SELECT * FROM chain.nodes");
+                var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
                 if (arr == null) return;
                 foreach (var o in arr)
                 {

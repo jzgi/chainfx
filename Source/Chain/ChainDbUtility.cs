@@ -1,14 +1,14 @@
 using System;
-using SkyChain.Db;
+using Skyiah.Db;
 
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
     public static class ChainDbUtility
     {
         public static bool ChainOpen(this DbContext dc, short typ, string key, int amt, byte[] attach)
         {
             // if exists
-            dc.Sql("SELECT * FROM chain.transacts WHERE typ = 1 AND key = @1");
+            dc.Sql("SELECT * FROM chain.recs WHERE typ = 1 AND key = @1");
             dc.Sql("SELECT * FROM chain.blocklns WHERE nodeid = '&' AND typ = 1 AND key = @1");
 
 

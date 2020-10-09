@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Web
+namespace Skyiah.Web
 {
     /// <summary>
     /// To document the response returned by the target action.

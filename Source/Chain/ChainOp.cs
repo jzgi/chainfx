@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Threading;
-using SkyChain.Db;
+using Skyiah.Db;
 
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
-    public class ChainAccess : DbAccess
+    public class ChainOp : DbOp
     {
         static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
@@ -58,7 +59,7 @@ namespace SkyChain.Chain
                 using var dc = NewDbContext();
 
                 // load and init peer clients
-                var arr = dc.Query<Peer>("SELECT * FROM chain.nodes");
+                var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
                 if (arr == null) return;
                 foreach (var o in arr)
                 {
@@ -121,5 +122,12 @@ namespace SkyChain.Chain
             );
             descrs.Add(descr);
         }
+        
+        
+        static readonly Queue queue = new Queue();
+    }
+
+    public class Queue : ConcurrentQueue<Record>
+    {
     }
 }

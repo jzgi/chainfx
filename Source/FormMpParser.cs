@@ -1,4 +1,4 @@
-namespace SkyChain
+namespace Skyiah
 {
     /// <summary>
     /// To parse multipart/form-data content, with the part Content-Length extension.

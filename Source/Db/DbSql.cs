@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace SkyChain.Db
+namespace Skyiah.Db
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

@@ -3,9 +3,9 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using SkyChain.Db;
+using Skyiah.Db;
 
-namespace SkyChain.Web
+namespace Skyiah.Web
 {
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
@@ -471,17 +471,17 @@ namespace SkyChain.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Db.DbAccess.NewDbContext(level);
+            return Db.DbOp.NewDbContext(level);
         }
 
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            return Db.DbAccess.Obtain<T>(flag);
+            return Db.DbOp.Obtain<T>(flag);
         }
 
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            return await Db.DbAccess.ObtainAsync<T>(flag);
+            return await Db.DbOp.ObtainAsync<T>(flag);
         }
 
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace Skyiah
 {
     /// <summary>
     /// To generate a urlencoded byte or char string.

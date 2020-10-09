@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
-namespace SkyChain
+namespace Skyiah
 {
     public class FrameworkLogger : ILoggerProvider, ILogger
     {

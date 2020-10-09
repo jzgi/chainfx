@@ -2,10 +2,10 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SkyChain.Web;
-using static SkyChain.DataUtility;
+using Skyiah.Web;
+using static Skyiah.DataUtility;
 
-namespace SkyChain.Chain
+namespace Skyiah.Chain
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.

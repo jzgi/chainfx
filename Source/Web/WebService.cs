@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SkyChain.Chain;
+using Skyiah.Chain;
 
-namespace SkyChain.Web
+namespace Skyiah.Web
 {
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.

@@ -1,7 +1,7 @@
 using System.Data;
 using System.Text;
 
-namespace SkyChain.Db
+namespace Skyiah.Db
 {
     public class DbSource : IKeyable<string>
     {
