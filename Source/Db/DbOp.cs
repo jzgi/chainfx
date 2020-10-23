@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Skyiah.Db
+namespace SkyChain.Db
 {
     public class DbOp
     {

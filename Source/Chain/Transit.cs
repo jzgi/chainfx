@@ -1,4 +1,4 @@
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     public class Transit
     {

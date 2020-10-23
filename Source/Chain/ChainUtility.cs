@@ -1,18 +1,16 @@
 using System;
-using Skyiah.Db;
+using SkyChain.Db;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
-    public static class ChainDbUtility
+    public static class ChainUtility
     {
-        public static bool ChainOpen(this DbContext dc, short typ, string key, int amt, byte[] attach)
+        public static bool ChainOpen(this DbContext dc, string acct, short typ, int caseid, short op, string descr, int amt, JObj doc)
         {
             // if exists
-            dc.Sql("SELECT * FROM chain.recs WHERE typ = 1 AND key = @1");
-            dc.Sql("SELECT * FROM chain.blocklns WHERE nodeid = '&' AND typ = 1 AND key = @1");
+            
 
-
-            dc.Sql("INSERT INTO chain.transacts (code, typ, amt, attach, lnodeid, lkey, lbalance) VALUES ()");
+            // dc.Sql("INSERT INTO chain.entries (id, peerid, acct, rpeerid, racct, typ, caseid, op, descr, amt, doc) VALUES ()");
             return true;
         }
 

@@ -4,69 +4,74 @@ alter schema chain owner to postgres;
 
 create table peers
 (
-	id varchar(8) not null
-		constraint peers_pk
-			primary key,
-	name varchar(20),
-	raddr varchar(50),
-	stamp timestamp(0),
-	status smallint default 0 not null
+    id varchar(8) not null
+        constraint peers_pk
+            primary key,
+    name varchar(20),
+    raddr varchar(50),
+    created timestamp(0),
+    status smallint default 0 not null,
+    icon bytea
 );
 
 alter table peers owner to postgres;
 
+create table blocks
+(
+    peerid varchar(8) not null,
+    seq integer not null,
+    stamp timestamp(0) not null,
+    prevtag varchar(16) not null,
+    tag varchar(16) not null,
+    status smallint default 0 not null,
+    constraint "PK_blocks"
+        primary key (peerid, seq)
+);
+
+alter table blocks owner to postgres;
+
 create table blockrecs
 (
-	peerid varchar(10) not null,
-	seq integer not null,
-	idx smallint not null,
-	hash varchar(32),
-	stamp timestamp(0),
-	txpeerid varchar(10),
-	txno integer,
-	typ smallint,
-	key varchar(20),
-	descr varchar(20),
-	amt money,
-	balance money,
-	doc jsonb,
-	rtpeerid varchar(10),
-	state smallint
+    peerid varchar(8) not null,
+    seq integer not null,
+    acct varchar(30) not null,
+    typ smallint not null,
+    time timestamp(0) not null,
+    oprid integer,
+    descr varchar(20),
+    amt money not null,
+    bal money not null,
+    doc jsonb,
+    digest bigint,
+    fpeerid varchar(8),
+    constraint blocktxs_block_fk
+        foreign key (peerid, seq) references blocks
 );
 
 alter table blockrecs owner to postgres;
 
-create unique index blocklns_trace_idx
-	on blockrecs (peerid, typ, key, stamp);
+create index blocktxs_block_idx
+    on blockrecs (peerid, seq);
 
-create table recs
+create index blocktxs_record_idx
+    on blockrecs (peerid, acct, typ);
+
+create table entries
 (
-	txpeerid varchar(8) not null,
-	txno serial not null,
-	op smallint not null,
-	stamp timestamp(0),
-	typ smallint not null,
-	descr varchar(20),
-	key varchar(20) not null,
-	amt money not null,
-	balance money not null,
-	doc jsonb,
-	rtpeerid varchar(8),
-	status smallint not null
+    peerid varchar(8) not null,
+    acct varchar(20) not null,
+    rpeerid varchar(8) not null,
+    racct varchar(20) not null,
+    typ smallint not null,
+    caseid integer,
+    op smallint not null,
+    descr varchar(20),
+    amt money not null,
+    doc jsonb,
+    created timestamp(0),
+    status smallint default 0 not null,
+    id serial not null
 );
 
-alter table recs owner to postgres;
-
-create table blocks
-(
-	peerid varchar(8) not null,
-	seq integer not null,
-	prevhash varchar(32),
-	hash varchar(32),
-	stamp timestamp(0),
-	recs smallint,
-	status smallint default 0 not null
-);
-
-alter table blocks owner to postgres;
+alter table entries owner to postgres;
 

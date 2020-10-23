@@ -1,6 +1,6 @@
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
-    public class TransactDescriptor : IKeyable<short>
+    public class TransactDescr : IKeyable<short>
     {
         short typ;
 
@@ -10,7 +10,7 @@ namespace Skyiah.Chain
 
         Consent consent;
 
-        public TransactDescriptor(short typ, string name, Transit transit, Consent consent)
+        public TransactDescr(short typ, string name, Transit transit, Consent consent)
         {
             this.typ = typ;
             this.name = name;

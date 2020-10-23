@@ -1,4 +1,4 @@
-namespace Skyiah.Web
+namespace SkyChain.Web
 {
     public enum Modal
     {

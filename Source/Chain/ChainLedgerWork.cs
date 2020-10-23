@@ -1,6 +1,6 @@
-using Skyiah.Web;
+using SkyChain.Web;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     [Ui("块链")]
     public class ChainLedgerWork : WebWork

@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.

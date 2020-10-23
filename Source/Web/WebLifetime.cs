@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Skyiah.Web
+namespace SkyChain.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

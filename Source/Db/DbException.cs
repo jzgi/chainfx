@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah.Db
+namespace SkyChain.Db
 {
     ///
     /// Thrown to indicate an error during a database operation.

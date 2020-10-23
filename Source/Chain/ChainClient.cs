@@ -2,83 +2,88 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Skyiah.Web;
-using static Skyiah.DataUtility;
+using SkyChain.Web;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     /// <summary>
-    /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
+    /// A chain client connector targeted to a specific peer..
     /// </summary>
-    public class ChainConnect : HttpClient, IKeyable<string>, IPollContext
+    public class ChainClient : HttpClient, IKeyable<string>
     {
+        const int TIMEOUT_SECONDS = 12;
+
         const int AHEAD = 1000 * 12;
 
         const string POLL_ACTION = "/event";
 
-        //  key for the remote or referenced service 
-        readonly string key;
+        // when a chain connector
+        readonly Peer info;
 
-        // remote or referenced service name 
-        readonly string name;
+        // acceptable remote addresses
+        readonly IPAddress[] addrs;
 
-        // remote or referenced shard 
-        readonly string addr;
+        // the lastest status
+        short status;
 
-        // the poller task currently running
-        Task pollTask;
+        // the lastest result
+        Block block;
 
-        Action<IPollContext> poller;
+        BlockRecord[] blockrecs;
 
-        short interval;
 
-        // remote crypto
-        long crypto;
+        /// <summary>
+        /// To construct a chain client. 
+        /// </summary>
+        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(handler ?? new ChainClientHandler())
+        {
+            this.info = info;
+            var baseuri = info.uri;
 
-        // remote client addresses
-        IPAddress[] addrs;
-
+            try
+            {
+                addrs = Dns.GetHostAddresses(baseuri);
+                BaseAddress = new Uri(baseuri + "/poll");
+            }
+            catch (Exception e)
+            {
+            }
+            Timeout = TimeSpan.FromSeconds(TIMEOUT_SECONDS);
+        }
 
         // point of time to next poll, set because of exception or polling interval
         volatile int retryAt;
 
         /// <summary>
-        /// Used to construct a random client that does not necessarily connect to a remote service. 
+        /// To construct a random client. 
         /// </summary>
-        /// <param name="addr"></param>
-        public ChainConnect(string addr)
+        public ChainClient(string baseuri, ChainClientHandler handler = null) : base(handler ?? new ChainClientHandler())
         {
-            this.addr = addr;
-
-            BaseAddress = new Uri(addr);
-            Timeout = TimeSpan.FromSeconds(12);
+            BaseAddress = new Uri(baseuri);
+            Timeout = TimeSpan.FromSeconds(TIMEOUT_SECONDS);
         }
 
-        public ChainConnect(HttpClientHandler handler, string key = null, string name = null, string addr = null) : base(handler)
-        {
-            this.key = key;
-            this.name = name;
-            this.addr = addr;
 
-            if (addr != null)
+        public Peer Info => info;
+
+        public string Key => info?.name;
+
+        public short Status
+        {
+            get
             {
-                BaseAddress = new Uri(addr);
+                lock (this) return status;
             }
-
-            Timeout = TimeSpan.FromSeconds(12);
         }
 
-        public string Key => key;
-
-        internal void SetPoller(Action<IPollContext> poller, short interval)
+        public Block Result
         {
-            this.poller = poller;
-            this.interval = interval;
+            get
+            {
+                lock (this) return block;
+            }
         }
 
-        public string RefName => name;
-
-        public string RefShard => addr;
 
         internal async void TryPollAsync(int ticks)
         {
@@ -87,28 +92,39 @@ namespace Skyiah.Chain
                 return;
             }
 
-            if (pollTask != null && !pollTask.IsCompleted)
+            lock (this)
             {
-                return;
             }
 
-            await (pollTask = Task.Run(() =>
+            string uri = POLL_ACTION + "?" + QueryString;
+            try
             {
-                try
+                // request
+                var req = new HttpRequestMessage(HttpMethod.Get, uri);
+                AddAccessHeaders(req, null);
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                // response
+                if (rsp.StatusCode != HttpStatusCode.OK)
                 {
-                    // execute an event poll/process cycle
-                    poller(this);
+                    return;
                 }
-                catch (Exception e)
-                {
-                    Framework.WAR("Error in event poller");
-                    Framework.WAR(e.Message);
-                }
-                finally
-                {
-                    retryAt += interval * 1000;
-                }
-            }));
+                var hdrs = rsp.Content.Headers;
+
+                // block properties
+
+
+                string ctyp = hdrs.GetValue("Content-Type");
+
+                // block content
+                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+
+                JArr arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
+                int len = arr.Count;
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + AHEAD;
+            }
         }
 
         //

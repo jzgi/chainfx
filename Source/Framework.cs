@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Skyiah.Chain;
-using Skyiah.Web;
+using SkyChain.Chain;
+using SkyChain.Web;
 
-namespace Skyiah
+namespace SkyChain
 {
     /// <summary>
     /// The application scope that holds global states.
@@ -53,7 +53,10 @@ namespace Skyiah
 
         public static FrameworkLogger Logger => logger;
 
-        public static void Configure(string file = "app.json", bool chain = true)
+        /// <summary>
+        /// Load & process the configuration file.
+        /// </summary>
+        public static void Configure(string file = "app.json")
         {
             // load configuration
             //
@@ -77,11 +80,6 @@ namespace Skyiah
             if (dbcfg != null) // setup the db source
             {
                 ConfigureDb(dbcfg);
-            }
-
-            if (chain) // setup the chain node
-            {
-                ConfigureChain(true);
             }
 
             webcfg = cfg["web"];

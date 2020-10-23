@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     ///
     /// Thrown to indicate a chain-related error.

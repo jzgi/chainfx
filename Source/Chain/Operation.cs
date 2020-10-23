@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
-    public class Record : IData
+    public class Operation : IData
     {
-        public static readonly Record Empty = new Record();
+        public static readonly Operation Empty = new Operation();
 
         public const byte ID = 1, PRIVACY = 2;
 

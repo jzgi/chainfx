@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Skyiah.Db
+namespace SkyChain.Db
 {
     /// <summary>
     /// To set SQL parameters.  

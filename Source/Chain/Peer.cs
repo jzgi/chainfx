@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     public class Peer : IData, IKeyable<string>
     {
@@ -8,17 +8,18 @@ namespace Skyiah.Chain
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "Disabled"},
-            {1, "Enabled"}
+            {0, null},
+            {1, "暂停"},
+            {2, "运行"}
         };
 
         internal string id;
 
         internal string name;
 
-        internal string raddr; // remote address
+        internal string uri; // remote address
 
-        internal DateTime stamp;
+        internal DateTime created;
 
         internal short status;
 
@@ -26,8 +27,8 @@ namespace Skyiah.Chain
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(raddr), ref raddr);
-            s.Get(nameof(stamp), ref stamp);
+            s.Get(nameof(uri), ref uri);
+            s.Get(nameof(created), ref created);
             s.Get(nameof(status), ref status);
         }
 
@@ -35,8 +36,8 @@ namespace Skyiah.Chain
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            s.Put(nameof(raddr), raddr);
-            s.Put(nameof(stamp), stamp);
+            s.Put(nameof(uri), uri);
+            s.Put(nameof(created), created);
             s.Put(nameof(status), status);
         }
 

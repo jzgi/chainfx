@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skyiah
+namespace SkyChain
 {
     /// <summary>
     /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Skyiah.Web;
+using SkyChain.Web;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     [Ui("事务")]
     public class TransactWork : WebWork
@@ -9,7 +9,7 @@ namespace Skyiah.Chain
         public void @default(WebContext wc)
         {
             using var dc = NewDbContext();
-            var arr = dc.Query<Record>("SELECT * FROM chain.logins");
+            var arr = dc.Query<Operation>("SELECT * FROM chain.logins");
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
@@ -28,7 +28,7 @@ namespace Skyiah.Chain
         {
             if (wc.IsGet)
             {
-                var o = new Record { };
+                var o = new Operation { };
                 wc.GivePane(200, h =>
                 {
                     const string css = "uk-width-small";

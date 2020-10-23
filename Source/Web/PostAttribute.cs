@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Skyiah.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// To document a POST request to the target action.

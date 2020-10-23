@@ -1,4 +1,4 @@
-namespace Skyiah
+namespace SkyChain
 {
     ///
     /// Parse JSON into object model from either bytes or string.

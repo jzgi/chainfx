@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah
+namespace SkyChain
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

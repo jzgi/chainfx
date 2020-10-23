@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using static System.Environment;
 
-namespace Skyiah
+namespace SkyChain
 {
     /// <summary>
     /// A set of commonly-used array operations.

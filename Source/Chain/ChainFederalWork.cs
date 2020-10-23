@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Skyiah.Web;
+using SkyChain.Web;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
-    [Ui("网联")]
+    [Ui("联盟")]
     public class ChainFederalWork : WebWork
     {
         public void @default(WebContext wc)
@@ -18,7 +18,7 @@ namespace Skyiah.Chain
                     h.TDCHECK(o.id);
                     h.TD(o.id);
                     h.TD(o.name);
-                    h.TD(o.raddr);
+                    h.TD(o.uri);
                     h.TDFORM(() => h.VARTOOLS(o.id));
                 });
             });
@@ -36,7 +36,7 @@ namespace Skyiah.Chain
                     h.FORM_().FIELDSUL_("Attributes");
                     h.LI_().LABEL("ID", css).TEXT(null, nameof(o.id), o.id, max: 10, required: true)._LI();
                     h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().LABEL("Address", css).URL(null, nameof(o.raddr), o.raddr, max: 20, required: true)._LI();
+                    h.LI_().LABEL("Address", css).URL(null, nameof(o.uri), o.uri, max: 20, required: true)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

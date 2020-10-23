@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah
+namespace SkyChain
 {
     /// <summary>
     /// A JSON object model.

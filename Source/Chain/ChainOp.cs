@@ -1,59 +1,99 @@
 using System;
 using System.Collections.Concurrent;
-using System.Net;
 using System.Threading;
-using Skyiah.Db;
+using SkyChain.Db;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     public class ChainOp : DbOp
     {
         static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
-        // a bundle of peers
-        static readonly Map<string, ChainConnect> clients = new Map<string, ChainConnect>(32);
+        static Peer info;
 
-        // for identifying a peer by its IP address
-        static readonly Map<string, ChainConnect> iptab = new Map<string, ChainConnect>(64);
+        // a bundle of connected peers
+        static readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
 
-        // the thread schedules and drives periodic jobs, such as event polling 
-        static Thread scheduler;
+        // validate submitted entries and package demostic blocks 
+        static Thread validator;
 
-        internal static void ConfigureChain(bool ddl)
+        // periodic polling of foreign blocks 
+        static Thread poller;
+
+        /// <summary>
+        /// Setup blockchain on this peer node.
+        /// </summary>
+        public static void InitializeChain()
         {
-            // ensure DDL
-            using var dc = NewDbContext();
-            if (!dc.QueryTop("SELECT 1 FROM pg_namespace WHERE nspname = 'chain'"))
+            // ensure the related db structures
+            if (!EnsureDb(true))
             {
-                if (ddl) // create tables
-                {
-                }
-                else
-                {
-                    return;
-                }
+                return;
             }
 
-            // load and setup peers
-            Reload();
+            // init connected peers
+            LoadPeers();
 
-            // create and start the scheduler thead
+            // init the poller thead
             if (clients != null)
             {
                 // to repeatedly check and initiate event polling activities.
-                scheduler = new Thread(Orchestrate);
-                scheduler.Start();
+                poller = new Thread(Poll);
+                poller.Start();
             }
         }
 
-        static void Reload()
+        static bool EnsureDb(bool create)
+        {
+            using var dc = NewDbContext();
+            bool exists = dc.QueryTop("SELECT 1 FROM pg_namespace WHERE nspname = 'chain'");
+            if (!exists && create)
+            {
+                // blocks table
+                dc.Execute(@"
+create table blocks (
+    peerid varchar(8) not null,
+    seq integer not null,
+    stamp timestamp(0) not null,
+    prevtag varchar(16) not null,
+    tag varchar(16) not null,
+    status smallint default 0 not null,
+    constraint blocks_pk primary key (peerid, seq)
+);"
+                );
+
+                dc.Execute(@"
+create table blockrecs
+(
+    peerid varchar(8) not null,
+    seq integer not null,
+    acct varchar(30) not null,
+    typ smallint not null,
+    time timestamp(0) not null,
+    oprid integer,
+    descr varchar(20),
+    amt money not null,
+    bal money not null,
+    doc jsonb,
+    digest bigint,
+    fpeerid varchar(8),
+    constraint blockrecs_block_fk
+        foreign key (peerid, seq) references blocks
+);"
+                );
+
+                return true;
+            }
+            return exists;
+        }
+
+        static void LoadPeers()
         {
             @lock.EnterWriteLock();
             try
             {
                 // clear up data maps
                 clients.Clear();
-                iptab.Clear();
 
                 // load data types
                 using var dc = NewDbContext();
@@ -63,14 +103,14 @@ namespace Skyiah.Chain
                 if (arr == null) return;
                 foreach (var o in arr)
                 {
-                    if (o.id == "&") continue;
-                    var cli = new ChainConnect(o.raddr);
-                    clients.Add(cli);
-                    // add to iptab 
-                    var addrs = Dns.GetHostAddresses(o.raddr);
-                    foreach (var a in addrs)
+                    if (o.id == "&")
                     {
-                        iptab.Add(a.ToString(), cli);
+                        info = o;
+                    }
+                    else
+                    {
+                        var cli = new ChainClient(o);
+                        clients.Add(cli);
                     }
                 }
             }
@@ -80,7 +120,7 @@ namespace Skyiah.Chain
             }
         }
 
-        static void Orchestrate(object state)
+        static void Poll(object state)
         {
             while (true)
             {
@@ -96,7 +136,10 @@ namespace Skyiah.Chain
                     for (int i = 0; i < clients.Count; i++)
                     {
                         var cli = clis.ValueAt(i);
-                        cli.TryPollAsync(tick);
+
+                        // start asynchronously
+                        // var task = cli.TryPollAsync(tick);
+                        // task.Start();
                     }
                 }
                 finally
@@ -110,24 +153,19 @@ namespace Skyiah.Chain
         // types
         //
 
-        static readonly Map<short, TransactDescriptor> descrs = new Map<short, TransactDescriptor>(32);
+        static readonly Map<short, TransactDefinition> defs = new Map<short, TransactDefinition>(32);
 
-        public static void DefineTransact<T, C>(short typ, string name) where T : Transit, new() where C : Consent, new()
+        public static void Define(short typ, string name, params Activity[] steps)
         {
-            var descr = new TransactDescriptor(
-                typ,
-                name,
-                new T(),
-                new C()
-            );
-            descrs.Add(descr);
+            var def = new TransactDefinition(typ, name, steps);
+            defs.Add(def);
         }
-        
-        
+
+
         static readonly Queue queue = new Queue();
     }
 
-    public class Queue : ConcurrentQueue<Record>
+    public class Queue : ConcurrentQueue<Operation>
     {
     }
 }

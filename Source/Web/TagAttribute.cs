@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Skyiah.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

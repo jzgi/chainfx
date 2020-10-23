@@ -1,9 +1,8 @@
 using System;
-using System.Net;
 using System.Threading;
-using Skyiah.Web;
+using SkyChain.Web;
 
-namespace Skyiah.Chain
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A web service that realizes API for both inter-node communication and 
@@ -13,10 +12,7 @@ namespace Skyiah.Chain
         readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
         // a bundle of peers
-        readonly Map<string, WebConnect> clients = new Map<string, WebConnect>(32);
-
-        // for identifying a peer by its IP address
-        readonly Map<string, WebConnect> iptab = new Map<string, WebConnect>(64);
+        readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
 
         // the thread schedules and drives periodic jobs, such as event polling 
         Thread scheduler;
@@ -24,11 +20,6 @@ namespace Skyiah.Chain
 
         protected internal override void OnCreate()
         {
-            // ensure DDL
-
-            // load and setup peers
-            Reload();
-
             // create and start the scheduler thead
             if (clients != null)
             {
@@ -49,7 +40,7 @@ namespace Skyiah.Chain
                             for (int i = 0; i < clients.Count; i++)
                             {
                                 var cli = clis.ValueAt(i);
-                                cli.TryPollAsync(tick);
+                                // cli.TryPollAsync(tick);
                             }
                         }
                         finally
@@ -59,40 +50,6 @@ namespace Skyiah.Chain
                     }
                 });
                 scheduler.Start();
-            }
-        }
-
-        void Reload()
-        {
-            @lock.EnterWriteLock();
-            try
-            {
-                // clear up data maps
-                clients.Clear();
-                iptab.Clear();
-
-                // load data types
-                using var dc = NewDbContext();
-
-                // load and init peer clients
-                var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
-                if (arr == null) return;
-                foreach (var o in arr)
-                {
-                    if (o.id == "&") continue;
-                    var cli = new WebConnect(o.raddr);
-                    clients.Add(cli);
-                    // add to iptab 
-                    var addrs = Dns.GetHostAddresses(o.raddr);
-                    foreach (var a in addrs)
-                    {
-                        iptab.Add(a.ToString(), cli);
-                    }
-                }
-            }
-            finally
-            {
-                @lock.ExitWriteLock();
             }
         }
 

@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace Skyiah.Web
+namespace SkyChain.Web
 {
     /// <summary>
     /// A global byte buffer pool.

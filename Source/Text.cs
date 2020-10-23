@@ -1,6 +1,6 @@
 using System;
 
-namespace Skyiah
+namespace SkyChain
 {
     /// <summary>
     /// A text/plain model or comma-separate values (CSV). Also it can be used as a UTF-8 string builder.
