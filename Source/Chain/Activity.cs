@@ -14,10 +14,7 @@
 
         public string Name { get; set; }
 
-
-        //
-        //
-        //
+        public int Period { get; set; } = 30;
 
         public bool IsStart => step == 1;
 

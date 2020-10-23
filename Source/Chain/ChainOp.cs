@@ -161,6 +161,8 @@ create table blockrecs
             defs.Add(def);
         }
 
+        public static TransactDefinition GetDefinition(short typ) => defs?[typ];
+
 
         static readonly Queue queue = new Queue();
     }

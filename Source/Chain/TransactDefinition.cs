@@ -37,6 +37,8 @@
 
         public Activity StartActivity => activities[0];
 
+        public Activity GetActivity(short step) => activities[step];
+
         public short Size => size;
     }
 }

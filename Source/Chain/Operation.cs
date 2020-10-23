@@ -8,71 +8,59 @@ namespace SkyChain.Chain
 
         public const byte ID = 1, PRIVACY = 2;
 
-        // types
-        public static readonly Map<short, string> Ops = new Map<short, string>
-        {
-            {0, "APP"},
-            {1, "admin"},
-        };
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {0, "Disabled"},
-            {1, "Enabled"},
+            {-1, "否决"},
+            {0, null},
+            {1, "进行"},
+            {2, "通过"},
+            {3, "存档"},
         };
 
-        internal string txpeerid;
-
-        internal int txid;
-
-        internal short op;
-
-        internal DateTime stamp;
-
+        internal int id;
+        internal string acct;
+        internal string npeerid;
+        internal string nacct;
         internal short typ;
-
-        internal string descr;
-
-        internal string key;
-
+        internal int inst;
+        internal short step;
+        internal decimal descr;
         internal decimal amt;
-
-        internal decimal balance;
-
-        internal IData doc;
-
-        internal string rtpeerid; // related peer id
-
+        internal JObj doc;
+        internal DateTime created;
         internal short status;
 
         public void Read(ISource s, byte proj = 15)
         {
-            s.Get(nameof(txpeerid), ref txpeerid);
-            s.Get(nameof(txid), ref txid);
-            s.Get(nameof(op), ref op);
-            s.Get(nameof(stamp), ref stamp);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(acct), ref acct);
+            s.Get(nameof(npeerid), ref npeerid);
+            s.Get(nameof(nacct), ref nacct);
             s.Get(nameof(typ), ref typ);
-            s.Get(nameof(key), ref key);
+            s.Get(nameof(inst), ref inst);
+            s.Get(nameof(step), ref step);
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(amt), ref amt);
-            s.Get(nameof(balance), ref balance);
-            s.Get(nameof(rtpeerid), ref rtpeerid);
+            s.Get(nameof(doc), ref doc);
+            s.Get(nameof(created), ref created);
             s.Get(nameof(status), ref status);
         }
 
         public void Write(ISink s, byte proj = 15)
         {
-            s.Put(nameof(txpeerid), txpeerid);
-            s.Put(nameof(txid), txid);
-            s.Put(nameof(op), op);
-            s.Put(nameof(stamp), stamp);
+            s.Put(nameof(id), id);
+            s.Put(nameof(acct), acct);
+            s.Put(nameof(npeerid), npeerid);
+            s.Put(nameof(nacct), nacct);
             s.Put(nameof(typ), typ);
-            s.Put(nameof(key), key);
+            s.Put(nameof(inst), inst);
+            s.Put(nameof(step), step);
             s.Put(nameof(descr), descr);
             s.Put(nameof(amt), amt);
-            s.Put(nameof(balance), balance);
-            s.Put(nameof(rtpeerid), rtpeerid);
+            s.Put(nameof(doc), doc);
+            s.Put(nameof(created), created);
             s.Put(nameof(status), status);
         }
     }

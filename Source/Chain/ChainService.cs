@@ -1,5 +1,3 @@
-using System;
-using System.Threading;
 using SkyChain.Web;
 
 namespace SkyChain.Chain
@@ -9,78 +7,48 @@ namespace SkyChain.Chain
     /// </summary>
     public class ChainService : WebService
     {
-        readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
-
-        // a bundle of peers
-        readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
-
-        // the thread schedules and drives periodic jobs, such as event polling 
-        Thread scheduler;
-
-
-        protected internal override void OnCreate()
+        public void forblock(WebContext wc)
         {
-            // create and start the scheduler thead
-            if (clients != null)
-            {
-                // to repeatedly check and initiate event polling activities.
-                scheduler = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        // interval
-                        Thread.Sleep(7000);
-
-                        // a scheduling cycle
-                        var tick = Environment.TickCount;
-                        @lock.EnterReadLock();
-                        try
-                        {
-                            var clis = clients;
-                            for (int i = 0; i < clients.Count; i++)
-                            {
-                                var cli = clis.ValueAt(i);
-                                // cli.TryPollAsync(tick);
-                            }
-                        }
-                        finally
-                        {
-                            @lock.ExitReadLock();
-                        }
-                    }
-                });
-                scheduler.Start();
-            }
-        }
-
-
-        [Get("Get access token for a login", query: "?id=<-login-id->&password=")]
-        [Reply(200, "Success", body: @"{
-            name : string, // login name
-            id : string, // login id
-            token : // access token
-        }")]
-        [Reply(404, "login not found or invalid password")]
-        public void token(WebContext wc)
-        {
-            string id = wc.Query[nameof(id)];
-            string password = wc.Query[nameof(password)];
-
+            // headers
+            int lastid = 0;
+            // query
             using var dc = NewDbContext();
+            var b = dc.QueryTop<Block>("SELECT * FROM chain.blocks WHERE peerid = '&' AND id > @1 ORDER BY id LIMIT 1", p => p.Set(lastid));
+            if (b == null)
+            {
+                wc.Give(204); // no content
+                return;
+            }
 
-            // retrieve from idents
+            // load block records
+            var recs = dc.Query<Block>("SELECT * FROM chain.blockrecs WHERE peerid = '&' AND seq = @1", p => p.Set(b.seq));
+
+            // putting into content
+            var jc = new JsonContent(1024 * 256, true);
+            try
+            {
+            }
+            finally
+            {
+                ArrayUtility.Return(jc.Buffer);
+            }
+            jc.Put(null, recs);
+
+            // return 
+            wc.Give(200, jc);
         }
 
-        public void query(WebContext wc)
+        public void input(WebContext wc)
         {
-        }
+            // get input data fields
+            Operation op = new Operation();
 
-        public void querya(WebContext wc)
-        {
-        }
+            // find typ
+            var def = ChainOp.GetDefinition(op.typ);
 
-        public void put(WebContext wc)
-        {
+            var act = def.GetActivity(op.step);
+
+            act.OnInput(op);
         }
     }
 }

@@ -3,7 +3,7 @@ using SkyChain.Web;
 namespace SkyChain.Chain
 {
     [Ui("块链")]
-    public class ChainLedgerWork : WebWork
+    public class ChainBlockWork : WebWork
     {
         [Ui("All"), Tool(Modal.Anchor)]
         public void @default(WebContext wc)

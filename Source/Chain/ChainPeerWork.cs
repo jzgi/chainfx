@@ -3,8 +3,8 @@ using SkyChain.Web;
 
 namespace SkyChain.Chain
 {
-    [Ui("联盟")]
-    public class ChainFederalWork : WebWork
+    [Ui("盟友")]
+    public class ChainPeerWork : WebWork
     {
         public void @default(WebContext wc)
         {
