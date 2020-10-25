@@ -1,4 +1,6 @@
-﻿namespace SkyChain.Chain
+﻿using SkyChain.Db;
+
+namespace SkyChain.Chain
 {
     public abstract class Activity
     {
@@ -32,7 +34,7 @@
         /// </summary>
         /// <param name="op">The operation record passed in</param>
         /// <returns>true indicates succeeded.</returns>
-        public virtual bool OnInput(Operation op)
+        public virtual bool OnSubmit(Operation op, DbContext dc, bool remote)
         {
             return true;
         }

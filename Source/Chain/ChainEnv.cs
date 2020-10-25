@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using SkyChain.Db;
 
 namespace SkyChain.Chain
 {
-    public class ChainOp : DbOp
+    public class ChainEnv : DbEnv
     {
         static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
@@ -19,6 +18,8 @@ namespace SkyChain.Chain
 
         // periodic polling of foreign blocks 
         static Thread poller;
+
+        public static Peer Info => info;
 
         /// <summary>
         /// Setup blockchain on this peer node.
@@ -162,12 +163,5 @@ create table blockrecs
         }
 
         public static TransactDefinition GetDefinition(short typ) => defs?[typ];
-
-
-        static readonly Queue queue = new Queue();
-    }
-
-    public class Queue : ConcurrentQueue<Operation>
-    {
     }
 }

@@ -15,10 +15,10 @@ namespace SkyChain.Chain
                 h.TOOLBAR();
                 h.TABLE(arr, o =>
                 {
-                    h.TDCHECK(o.acct);
-                    h.TD(o.acct);
+                    h.TDCHECK(o.an);
+                    h.TD(o.an);
                     h.TD(o.step);
-                    h.TDFORM(() => h.VARTOOLS(o.acct));
+                    h.TDFORM(() => h.VARTOOLS(o.an));
                 });
             });
         }

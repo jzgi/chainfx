@@ -18,7 +18,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Framework : ChainOp
+    public class Framework : ChainEnv
     {
         public const string APP_JSON = "app.json";
 

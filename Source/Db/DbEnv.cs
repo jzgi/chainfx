@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class DbOp
+    public class DbEnv
     {
         static DbSource dbsource;
 

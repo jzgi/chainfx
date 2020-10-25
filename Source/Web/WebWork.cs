@@ -471,17 +471,17 @@ namespace SkyChain.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Db.DbOp.NewDbContext(level);
+            return Db.DbEnv.NewDbContext(level);
         }
 
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            return Db.DbOp.Obtain<T>(flag);
+            return Db.DbEnv.Obtain<T>(flag);
         }
 
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            return await Db.DbOp.ObtainAsync<T>(flag);
+            return await Db.DbEnv.ObtainAsync<T>(flag);
         }
 
 
