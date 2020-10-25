@@ -231,13 +231,13 @@ namespace SkyChain
         }
 
 
-        public V[] FindAll(Predicate<V> filter)
+        public V[] All(Predicate<V> cond = null)
         {
             var list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
                 var v = entries[i].value;
-                if (filter == null || filter(v))
+                if (cond == null || cond(v))
                 {
                     list.Add(v);
                 }
@@ -245,7 +245,7 @@ namespace SkyChain
             return list.ToArray();
         }
 
-        public Map<R, V> FindAll<R>(Func<K, V, bool> filter, Func<V, R> keyer)
+        public Map<R, V> All<R>(Func<K, V, bool> cond, Func<V, R> keyer)
         {
             var map = new Map<R, V>(32);
             for (int i = 0; i < count; i++)
@@ -254,7 +254,7 @@ namespace SkyChain
                 for (int k = 0; k < ety.Size; k++)
                 {
                     var v = ety[k];
-                    if (filter(ety.Key, v))
+                    if (cond(ety.Key, v))
                     {
                         map.Add(keyer(v), v);
                     }

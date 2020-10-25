@@ -48,19 +48,16 @@ namespace SkyChain.Chain
             return true;
         }
 
-        internal static Block[] ChainGetBlock(this DbContext dc, short typid, int code)
+        internal static Record[] ChainGetTranaction(this DbContext dc, string tn)
         {
-            dc.Query("SELECT * FROM chain.blocks WHERE typid = @1 AND key = @2", p => p.Set(typid).Set(code));
-            return null;
+            var recs = dc.Query<Record>("SELECT * FROM chain.blockrecs WHERE tn = @1 ORDER BY step", p => p.Set(tn));
+            return recs;
         }
 
-        public static byte[] ChainQuery(this DbContext dc, short typ, string an)
+        public static Record[] ChainGetTrace(this DbContext dc, short typ, string an, string inst = null)
         {
-            dc.Sql("SELECT body FROM chain.blocks WHERE typid = @1 AND key = @2");
-            dc.Query(p => p.Set(typ).Set(an));
-            dc.Let(out byte[] body);
-
-            return default;
+            var recs = dc.Query<Record>("SELECT * FROM chain.blockrecs WHERE typ = @1 AND an = @2 AND inst = @3 ORDER BY stemp DESC", p => p.Set(typ).Set(an).Set(inst));
+            return recs;
         }
 
         public static (int amt, int balance, DateTime stamp) ChainGet(this DbContext dc, short typ, string key, string nodeid = "&")

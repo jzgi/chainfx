@@ -21,15 +21,16 @@ namespace SkyChain.Chain
 
         internal string tn;
         internal short step;
-        
+
         internal string an; // account number
         internal short typ;
         internal string inst;
-        
+
         internal string descr;
         internal decimal amt;
         internal JObj doc;
         internal DateTime stamp;
+        internal short value;
         internal short status;
 
         internal string npeerid;
@@ -46,6 +47,7 @@ namespace SkyChain.Chain
             s.Get(nameof(amt), ref amt);
             s.Get(nameof(doc), ref doc);
             s.Get(nameof(stamp), ref stamp);
+            s.Get(nameof(value), ref value);
             s.Get(nameof(status), ref status);
             s.Get(nameof(npeerid), ref npeerid);
             s.Get(nameof(nan), ref nan);
@@ -62,6 +64,7 @@ namespace SkyChain.Chain
             s.Put(nameof(amt), amt);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stamp), stamp);
+            s.Put(nameof(value), value);
             s.Put(nameof(status), status);
             s.Put(nameof(npeerid), npeerid);
             s.Put(nameof(nan), nan);

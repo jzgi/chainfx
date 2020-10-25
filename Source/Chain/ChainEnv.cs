@@ -35,8 +35,12 @@ namespace SkyChain.Chain
             // init connected peers
             LoadPeers();
 
+            // init the validator thead
+            validator = new Thread(Validate);
+            validator.Start();
+
             // init the poller thead
-            if (clients != null)
+            if (clients.Count > 0)
             {
                 // to repeatedly check and initiate event polling activities.
                 poller = new Thread(Poll);
@@ -60,8 +64,8 @@ create table blocks (
     tag varchar(16) not null,
     status smallint default 0 not null,
     constraint blocks_pk primary key (peerid, seq)
-);"
-                );
+);
+                ");
 
                 dc.Execute(@"
 create table blockrecs
@@ -104,7 +108,7 @@ create table blockrecs
                 if (arr == null) return;
                 foreach (var o in arr)
                 {
-                    if (o.id == "&")
+                    if (o.IsMe)
                     {
                         info = o;
                     }
@@ -118,6 +122,37 @@ create table blockrecs
             finally
             {
                 @lock.ExitWriteLock();
+            }
+        }
+
+
+        const int MAX_BLOCK_SIZE = 64;
+
+        const int MAX_BLOCK_MINUTES = 24 * 60;
+
+        static void Validate(object state)
+        {
+            while (true)
+            {
+                var lst = new ValueList<Operation>(MAX_BLOCK_SIZE);
+                // archiving 
+                using (var dc = NewDbContext())
+                {
+                    var c = lst.Count;
+                    var last = lst[c - 1];
+                    dc.Query("SELECT * FROM ops WHERE status = 2 AND tn > @1", p => p.Set(last.tn));
+                    int num = 0;
+                    while (dc.Next())
+                    {
+                        var op = dc.ToObject<Operation>();
+                    }
+                }
+
+                // validating
+                // Array.Sort(defs.All(), (a, b) => a.);
+                // using (var dc = NewDbContext())
+                // {
+                // }
             }
         }
 
@@ -154,7 +189,7 @@ create table blockrecs
         // types
         //
 
-        static readonly Map<short, TransactDefinition> defs = new Map<short, TransactDefinition>(32);
+        internal static readonly Map<short, TransactDefinition> defs = new Map<short, TransactDefinition>(32);
 
         public static void Define(short typ, string name, params Activity[] steps)
         {

@@ -29,7 +29,7 @@ namespace SkyChain.Chain
         // the lastest result
         Block block;
 
-        BlockRecord[] blockrecs;
+        Record[] blockrecs;
 
 
         /// <summary>
