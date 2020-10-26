@@ -2,9 +2,9 @@
 {
     public class ChainContext
     {
-        private TransactDef def;
+        private ChainFlow flow;
 
-        private Activity act;
+        private ChainActivity act;
 
         private Operation op;
         

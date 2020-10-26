@@ -9,7 +9,7 @@ namespace SkyChain.Chain
         public static async Task<bool> ChainStartTran(this DbContext dc, string an, short typ, string inst, string descr, decimal amt, JObj doc = null, string npeerid = null, string nan = null)
         {
             // if exists
-            var def = ChainEnv.GetDefinition(typ);
+            var def = ChainEnv.GetFlow(typ);
             if (def == null)
             {
                 throw new ChainException("definition not found: typ = " + typ);
@@ -36,7 +36,7 @@ namespace SkyChain.Chain
                 nan = nan
             };
 
-            var ok = act.OnSubmit(cc, dc);
+            var ok = act.OnInput(cc, dc);
             if (!ok)
             {
                 return false;

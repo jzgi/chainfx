@@ -1,18 +1,16 @@
-﻿using System;
-
-namespace SkyChain.Chain
+﻿namespace SkyChain.Chain
 {
-    public class TransactDef : IKeyable<short>
+    public class ChainFlow : IKeyable<short>
     {
         readonly short typ;
 
         readonly string name;
 
-        readonly Activity[] activities;
+        readonly ChainActivity[] activities;
 
         readonly short size;
 
-        public TransactDef(short typ, string name, Activity[] activities)
+        public ChainFlow(short typ, string name, ChainActivity[] activities)
         {
             this.typ = typ;
             this.name = name;
@@ -24,7 +22,7 @@ namespace SkyChain.Chain
             {
                 var a = activities[i];
                 // set contextual
-                a.parent = this;
+                a.flow = this;
                 a.step = i;
                 // call custom initializer
                 a.OnDefine();
@@ -37,11 +35,11 @@ namespace SkyChain.Chain
 
         public string Name => name;
 
-        public Activity[] Activities => activities;
+        public ChainActivity[] Activities => activities;
 
-        public Activity StartActivity => activities[0];
+        public ChainActivity StartActivity => activities[0];
 
-        public Activity GetActivity(short step) => activities[step];
+        public ChainActivity GetActivity(short step) => activities[step];
 
         public short Size => size;
     }

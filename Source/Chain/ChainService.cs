@@ -45,11 +45,11 @@ namespace SkyChain.Chain
             Operation op = new Operation();
 
             // find typ
-            var def = ChainEnv.GetDefinition(op.typ);
+            var def = ChainEnv.GetFlow(op.typ);
 
             var act = def.GetActivity(op.step);
 
-            act.OnSubmit(cc, null);
+            act.OnInput(cc, null);
         }
     }
 }

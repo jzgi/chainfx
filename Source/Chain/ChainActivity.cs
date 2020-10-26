@@ -3,10 +3,10 @@ using SkyChain.Db;
 
 namespace SkyChain.Chain
 {
-    public abstract class Activity
+    public abstract class ChainActivity
     {
-        // the parent transaction descriptor
-        internal TransactDef parent;
+        // the parent workflow
+        internal ChainFlow flow;
 
         // ordinal of the step
         internal short step;
@@ -14,7 +14,7 @@ namespace SkyChain.Chain
         // last validation check
         internal DateTime last;
 
-        public TransactDef Parent => parent;
+        public ChainFlow Flow => flow;
 
         public short Step => step;
 
@@ -24,7 +24,7 @@ namespace SkyChain.Chain
 
         public bool IsStart => step == 1;
 
-        public bool IsEnd => step == parent.Size;
+        public bool IsEnd => step == flow.Size;
 
         /// <summary>
         /// only called from the validator thread 
@@ -51,7 +51,7 @@ namespace SkyChain.Chain
         /// Called in an inputter thread.
         /// </summary>
         /// <returns>true indicates succeeded.</returns>
-        public virtual bool OnSubmit(ChainContext cc, DbContext dc)
+        public virtual bool OnInput(ChainContext cc, DbContext dc)
         {
             return true;
         }

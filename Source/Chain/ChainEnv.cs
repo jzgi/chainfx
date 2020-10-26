@@ -153,9 +153,9 @@ create table blockrecs
                 {
                     // typ cycle control
                     var now = DateTime.Now;
-                    for (int i = 0; i < defs.Count; i++)
+                    for (int i = 0; i < flows.Count; i++)
                     {
-                        var def = defs.ValueAt(i);
+                        var def = flows.ValueAt(i);
                         var steplst = new ValueList<short>(def.Size);
                         foreach (var act in def.Activities)
                         {
@@ -219,18 +219,18 @@ create table blockrecs
         // types
         //
 
-        internal static readonly Map<short, TransactDef> defs = new Map<short, TransactDef>(32);
+        internal static readonly Map<short, ChainFlow> flows = new Map<short, ChainFlow>(32);
 
-        public static void Define(short typ, string name, params Activity[] steps)
+        public static void Define(short typ, string name, params ChainActivity[] steps)
         {
-            var def = new TransactDef(
+            var flow = new ChainFlow(
                 typ,
                 name,
                 steps
             );
-            defs.Add(def);
+            flows.Add(flow);
         }
 
-        public static TransactDef GetDefinition(short typ) => defs?[typ];
+        public static ChainFlow GetFlow(short typ) => flows?[typ];
     }
 }

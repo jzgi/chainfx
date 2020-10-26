@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SkyChain.Chain
+﻿namespace SkyChain.Chain
 {
-    public class Operation : IData
+    public class Operation : Record
     {
         public static readonly Operation Empty = new Operation();
 
@@ -19,55 +17,29 @@ namespace SkyChain.Chain
             {3, "存档"},
         };
 
-        internal string tn;
-        internal short step;
-
-        internal string an; // account number
-        internal short typ;
-        internal string inst;
-
-        internal string descr;
-        internal decimal amt;
-        internal JObj doc;
-        internal DateTime stamp;
         internal short value;
-        internal short status;
-
         internal string npeerid;
         internal string nan;
+        internal short status;
 
-        public void Read(ISource s, byte proj = 15)
+        public override void Read(ISource s, byte proj = 15)
         {
-            s.Get(nameof(tn), ref tn);
-            s.Get(nameof(step), ref step);
-            s.Get(nameof(an), ref an);
-            s.Get(nameof(typ), ref typ);
-            s.Get(nameof(inst), ref inst);
-            s.Get(nameof(descr), ref descr);
-            s.Get(nameof(amt), ref amt);
-            s.Get(nameof(doc), ref doc);
-            s.Get(nameof(stamp), ref stamp);
+            base.Read(s, proj);
+
             s.Get(nameof(value), ref value);
-            s.Get(nameof(status), ref status);
             s.Get(nameof(npeerid), ref npeerid);
             s.Get(nameof(nan), ref nan);
+            s.Get(nameof(status), ref status);
         }
 
-        public void Write(ISink s, byte proj = 15)
+        public override void Write(ISink s, byte proj = 15)
         {
-            s.Put(nameof(tn), tn);
-            s.Put(nameof(step), step);
-            s.Put(nameof(an), an);
-            s.Put(nameof(typ), typ);
-            s.Put(nameof(inst), inst);
-            s.Put(nameof(descr), descr);
-            s.Put(nameof(amt), amt);
-            s.Put(nameof(doc), doc);
-            s.Put(nameof(stamp), stamp);
+            base.Write(s, proj);
+
             s.Put(nameof(value), value);
-            s.Put(nameof(status), status);
             s.Put(nameof(npeerid), npeerid);
             s.Put(nameof(nan), nan);
+            s.Put(nameof(status), status);
         }
     }
 }
