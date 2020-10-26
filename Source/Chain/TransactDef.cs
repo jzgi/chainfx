@@ -1,6 +1,8 @@
-﻿namespace SkyChain.Chain
+﻿using System;
+
+namespace SkyChain.Chain
 {
-    public class TransactDefinition : IKeyable<short>
+    public class TransactDef : IKeyable<short>
     {
         readonly short typ;
 
@@ -10,7 +12,7 @@
 
         readonly short size;
 
-        public TransactDefinition(short typ, string name, Activity[] activities)
+        public TransactDef(short typ, string name, Activity[] activities)
         {
             this.typ = typ;
             this.name = name;
@@ -30,6 +32,8 @@
         }
 
         public short Key => typ;
+
+        public short Typ => typ;
 
         public string Name => name;
 

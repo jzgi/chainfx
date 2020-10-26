@@ -20,6 +20,8 @@ namespace SkyChain.Chain
             var tn = (string) dc.Scalar("SELECT lpad(to_hex(nextval('chain.txn')),8, '0')");
             tn = ChainEnv.Info.id + tn;
 
+            var cc = new ChainContext();
+
             var op = new Operation()
             {
                 tn = tn,
@@ -34,7 +36,7 @@ namespace SkyChain.Chain
                 nan = nan
             };
 
-            var ok = act.OnSubmit(op, dc, false);
+            var ok = act.OnSubmit(cc, dc);
             if (!ok)
             {
                 return false;

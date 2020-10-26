@@ -41,6 +41,7 @@ namespace SkyChain.Chain
         public void input(WebContext wc)
         {
             // get input data fields
+            var cc = new ChainContext();
             Operation op = new Operation();
 
             // find typ
@@ -48,7 +49,7 @@ namespace SkyChain.Chain
 
             var act = def.GetActivity(op.step);
 
-            act.OnSubmit(op, null, true);
+            act.OnSubmit(cc, null);
         }
     }
 }

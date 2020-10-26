@@ -149,10 +149,40 @@ create table blockrecs
                 }
 
                 // validating
-                // Array.Sort(defs.All(), (a, b) => a.);
-                // using (var dc = NewDbContext())
-                // {
-                // }
+                using (var dc = NewDbContext())
+                {
+                    // typ cycle control
+                    var now = DateTime.Now;
+                    for (int i = 0; i < defs.Count; i++)
+                    {
+                        var def = defs.ValueAt(i);
+                        var steplst = new ValueList<short>(def.Size);
+                        foreach (var act in def.Activities)
+                        {
+                            if (act.IsNewCycle(now))
+                            {
+                                steplst.Add(act.step);
+                            }
+                        }
+                        var vals = steplst.ToArray();
+                        
+                        var cc = new ChainContext();
+                        
+                        dc.Sql("SELECT * FROM chain.ops WHERE status = 2 AND typ = @1 AND step ")._IN_(vals);
+                        dc.Query(p => p.Set(def.Typ).SetForIn(vals));
+                        while (dc.Next())
+                        {
+                            var op = dc.ToObject<Operation>();
+                            var act = def.GetActivity(op.step);
+                            if (act == null)
+                            {
+                            }
+                            // callback
+                            var okay = act.OnValidate(cc);
+                        }
+                        
+                    }
+                }
             }
         }
 
@@ -189,14 +219,18 @@ create table blockrecs
         // types
         //
 
-        internal static readonly Map<short, TransactDefinition> defs = new Map<short, TransactDefinition>(32);
+        internal static readonly Map<short, TransactDef> defs = new Map<short, TransactDef>(32);
 
         public static void Define(short typ, string name, params Activity[] steps)
         {
-            var def = new TransactDefinition(typ, name, steps);
+            var def = new TransactDef(
+                typ,
+                name,
+                steps
+            );
             defs.Add(def);
         }
 
-        public static TransactDefinition GetDefinition(short typ) => defs?[typ];
+        public static TransactDef GetDefinition(short typ) => defs?[typ];
     }
 }
