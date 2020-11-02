@@ -42,6 +42,10 @@ namespace SkyChain.Chain
 
         public string Key => id;
 
+        public string Name => name;
+
+        public string Uri => uri;
+
         public bool IsMe => me;
     }
 }

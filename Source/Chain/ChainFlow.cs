@@ -18,12 +18,12 @@
             this.size = (short) activities.Length;
 
             // init each steps
-            for (short i = 0; i <= size; i++)
+            for (short i = 0; i < size; i++)
             {
                 var a = activities[i];
                 // set contextual
                 a.flow = this;
-                a.step = i;
+                a.step = (short) (i + 1);
                 // call custom initializer
                 a.OnDefine();
             }

@@ -840,16 +840,25 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent MAIN_(string css = null)
+        public HtmlContent MAIN_(string css = null, bool grid = false)
         {
             Add("<main");
-            if (css != null)
+            if (grid)
+            {
+                Add(" uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl");
+                if (css != null)
+                {
+                    Add(' ');
+                    Add(css);
+                }
+                Add("\"");
+            }
+            else if (css != null)
             {
                 Add(" class=\"");
                 Add(css);
                 Add("\"");
             }
-
             Add(">");
             return this;
         }
@@ -1140,7 +1149,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_(string a, string css = null)
+        public HtmlContent A_HREF_(string a, string css = null, bool end = false)
         {
             Add("<a");
             if (css != null)
@@ -1149,17 +1158,17 @@ namespace SkyChain.Web
                 Add(css);
                 Add("\"");
             }
-
             Add(" href=\"");
-
             AddEsc(a);
-
             Add("\"");
-
+            if (end)
+            {
+                Add(">");
+            }
             return this;
         }
 
-        public HtmlContent A_HREF_<A, B>(A a, B b, string css = null)
+        public HtmlContent A_HREF_<B>(string a, B b, string css = null, bool end = false)
         {
             Add("<a");
             if (css != null)
@@ -1168,18 +1177,18 @@ namespace SkyChain.Web
                 Add(css);
                 Add("\"");
             }
-
             Add(" href=\"");
-
-            AddPrimitive(a);
+            AddEsc(a);
             AddPrimitive(b);
-
             Add("\"");
-
+            if (end)
+            {
+                Add(">");
+            }
             return this;
         }
 
-        public HtmlContent A_HREF_<A, B, C>(A a, B b, C c, string css = null)
+        public HtmlContent A_HREF_<B, C>(string a, B b, C c, string css = null, bool end = false)
         {
             Add("<a");
             if (css != null)
@@ -1188,15 +1197,15 @@ namespace SkyChain.Web
                 Add(css);
                 Add("\"");
             }
-
             Add(" href=\"");
-
-            AddPrimitive(a);
+            AddEsc(a);
             AddPrimitive(b);
             AddPrimitive(c);
-
             Add("\"");
-
+            if (end)
+            {
+                Add(">");
+            }
             return this;
         }
 
@@ -1208,22 +1217,21 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent _ONCLICK_<A, B>(A a, B b)
+        public HtmlContent _ONCLICK_<B>(string a, B b)
         {
             Add(" onclick=\"");
-            AddPrimitive(a);
+            AddEsc(a);
             AddPrimitive(b);
             Add("\">");
             return this;
         }
 
-        public HtmlContent _ONCLICK_<A, B, C>(A a, B b, C c)
+        public HtmlContent _ONCLICK_<B, C>(string a, B b, C c)
         {
             Add(" onclick=\"");
-            AddPrimitive(a);
+            AddEsc(a);
             AddPrimitive(b);
             AddPrimitive(c);
-
             Add("\">");
             return this;
         }
@@ -1260,10 +1268,29 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC(string src, string css = null, bool circle = false)
+        public HtmlContent PIC(string a, string css = null, bool circle = false)
         {
             PIC_(css, circle);
-            Add(src);
+            AddEsc(a);
+            _PIC();
+            return this;
+        }
+
+        public HtmlContent PIC<B>(string a, B b, string css = null, bool circle = false)
+        {
+            PIC_(css, circle);
+            AddEsc(a);
+            AddPrimitive(b);
+            _PIC();
+            return this;
+        }
+
+        public HtmlContent PIC<B, C>(string a, B b, C c, string css = null, bool circle = false)
+        {
+            PIC_(css, circle);
+            AddEsc(a);
+            AddPrimitive(b);
+            AddPrimitive(c);
             _PIC();
             return this;
         }
@@ -1478,6 +1505,22 @@ namespace SkyChain.Web
         {
             Add("</ul>");
             Add("</fieldset>");
+            return this;
+        }
+
+        public HtmlContent BUTTON_(string action, string css = null)
+        {
+            Add("<button type=\"submit\" class=\"");
+            Add(css);
+            Add(" formaction=\"");
+            Add(action);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _BUTTON()
+        {
+            Add("</button>");
             return this;
         }
 
@@ -1777,10 +1820,7 @@ namespace SkyChain.Web
             if (arr != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
-                if (thead != null)
-                {
-                    thead();
-                }
+                thead?.Invoke();
 
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -1870,7 +1910,7 @@ namespace SkyChain.Web
 
         public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
-            Add("<main uk-grid class=\"uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl  uk-child-width-1-5@xxl\">");
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl uk-child-width-1-5@xxl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)

@@ -2,7 +2,7 @@
 {
     public class Operation : Record
     {
-        public static readonly Operation Empty = new Operation();
+        public new static readonly Operation Empty = new Operation();
 
         public const byte ID = 1, PRIVACY = 2;
 

@@ -2,9 +2,9 @@ create schema chain;
 
 alter schema chain owner to postgres;
 
-create sequence txn;
+create sequence tseq;
 
-alter sequence txn owner to postgres;
+alter sequence tseq owner to postgres;
 
 create table peers
 (
@@ -16,7 +16,7 @@ create table peers
     created timestamp(0),
     status smallint default 0 not null,
     icon bytea,
-    local boolean
+    me boolean
 );
 
 alter table peers owner to postgres;
@@ -34,29 +34,6 @@ create table blocks
 );
 
 alter table blocks owner to postgres;
-
-create table ops
-(
-    tn varchar(20) not null,
-    step smallint not null,
-    an varchar(20) not null,
-    typ smallint not null,
-    inst varchar(10),
-    descr varchar(20),
-    amt money not null,
-    doc jsonb,
-    stamp timestamp(0),
-    status smallint default 0 not null,
-    npeerid varchar(4),
-    nan varchar(20),
-    constraint ops_pk
-        primary key (tn, step)
-);
-
-alter table ops owner to postgres;
-
-create index ops_item_idx
-    on ops (an, typ, inst);
 
 create table blockrecs
 (
@@ -79,12 +56,39 @@ create table blockrecs
 
 alter table blockrecs owner to postgres;
 
-create unique index blockrecs_op_uidx
-    on blockrecs (tn, step);
+create index blockrecs_block_idx
+    on blockrecs (peerid, seq);
 
 create index blockrecs_item_idx
     on blockrecs (an, typ, inst);
 
-create index blockrecs_block_idx
-    on blockrecs (peerid, seq);
+create unique index blockrecs_op_uidx
+    on blockrecs (tn, step);
+
+create table ops
+(
+    tn varchar(20) not null,
+    step smallint not null,
+    an varchar(20) not null,
+    typ smallint not null,
+    inst varchar(10),
+    descr varchar(20),
+    amt money not null,
+    doc jsonb,
+    stamp timestamp(0),
+    value smallint,
+    npeerid varchar(4),
+    nan varchar(20),
+    status smallint default 0 not null,
+    constraint ops_pk
+        primary key (tn, step)
+);
+
+alter table ops owner to postgres;
+
+create index ops_item_idx
+    on ops (an, typ, inst);
+
+create index ops_validate_idx
+    on ops (status, typ, step);
 

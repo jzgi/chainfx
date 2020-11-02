@@ -41,7 +41,7 @@ namespace SkyChain.Db
         }
 
 
-        public static void Register(object value, byte flag = 0)
+        public static void Attach(object value, byte flag = 0)
         {
             if (holds == null)
             {
@@ -51,7 +51,7 @@ namespace SkyChain.Db
             holds[size++] = new Hold(value, flag);
         }
 
-        public static void Register<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+        public static void Attach<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
@@ -61,7 +61,7 @@ namespace SkyChain.Db
             holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
         }
 
-        public static void Register<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void Attach<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {

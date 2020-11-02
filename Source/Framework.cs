@@ -164,7 +164,7 @@ namespace SkyChain
         /// 
         /// Runs a number of web services and block until shutdown.
         /// 
-        public static async Task StartAllAsync()
+        public static async Task StartWebAsync()
         {
             var exitevt = new ManualResetEventSlim(false);
 

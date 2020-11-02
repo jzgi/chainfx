@@ -21,7 +21,7 @@ namespace SkyChain.Web
         /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
-        public WebClient(string baseuri, WebClientHandler handler = null) : base(handler)
+        public WebClient(string baseuri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
         {
             this.baseuri = baseuri;
 

@@ -6,6 +6,12 @@ namespace SkyChain.Chain
 {
     public static class ChainUtility
     {
+        public static Peer[] FetchChainPeers(this DbContext dc)
+        {
+            return dc.Query<Peer>("SELECT * FROM chain.peers");
+        }
+
+
         public static async Task<bool> ChainStartTran(this DbContext dc, string an, short typ, string inst, string descr, decimal amt, JObj doc = null, string npeerid = null, string nan = null)
         {
             // if exists
@@ -28,7 +34,7 @@ namespace SkyChain.Chain
                 step = act.step,
                 an = an,
                 typ = typ,
-                inst = inst,
+                @case = inst,
                 descr = descr,
                 doc = doc,
                 stamp = DateTime.Now,
@@ -56,10 +62,9 @@ namespace SkyChain.Chain
             return recs;
         }
 
-        public static Record[] ChainGetTrace(this DbContext dc, short typ, string an, string inst = null)
+        public static async Task<Record[]> ChainGetTraceAsync(this DbContext dc, short typ, string an, string @case = null)
         {
-            var recs = dc.Query<Record>("SELECT * FROM chain.blockrecs WHERE typ = @1 AND an = @2 AND inst = @3 ORDER BY stemp DESC", p => p.Set(typ).Set(an).Set(inst));
-            return recs;
+            return await dc.QueryAsync<Record>("SELECT * FROM chain.blockrecs WHERE typ = @1 AND an = @2 AND \"case\" = @3 ORDER BY stamp DESC", p => p.Set(typ).Set(an).Set(@case));
         }
 
         public static (int amt, int balance, DateTime stamp) ChainGet(this DbContext dc, short typ, string key, string nodeid = "&")

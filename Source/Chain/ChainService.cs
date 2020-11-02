@@ -51,5 +51,20 @@ namespace SkyChain.Chain
 
             act.OnInput(cc, null);
         }
+
+        const int PIC_AGE = 3600 * 6;
+
+        public void peericon(WebContext wc)
+        {
+            string peerid = wc.Query[nameof(peerid)];
+            using var dc = NewDbContext();
+            if (dc.QueryTop("SELECT icon FROM chain.peers WHERE id = @1", p => p.Set(peerid)))
+            {
+                dc.Let(out byte[] bytes);
+                if (bytes == null) wc.Give(204); // no content 
+                else wc.Give(200, new StaticContent(bytes), shared: true, maxage: PIC_AGE);
+            }
+            else wc.Give(404, shared: true, maxage: PIC_AGE); // not found
+        }
     }
 }

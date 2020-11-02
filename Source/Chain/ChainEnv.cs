@@ -24,7 +24,7 @@ namespace SkyChain.Chain
         /// <summary>
         /// Setup blockchain on this peer node.
         /// </summary>
-        public static void InitializeChain()
+        public static void StartChain()
         {
             // ensure the related db structures
             if (!EnsureDb(true))
@@ -37,7 +37,7 @@ namespace SkyChain.Chain
 
             // init the validator thead
             validator = new Thread(Validate);
-            validator.Start();
+            // validator.Start();
 
             // init the poller thead
             if (clients.Count > 0)
@@ -140,7 +140,7 @@ create table blockrecs
                 {
                     var c = lst.Count;
                     var last = lst[c - 1];
-                    dc.Query("SELECT * FROM ops WHERE status = 2 AND tn > @1", p => p.Set(last.tn));
+                    dc.Query("SELECT * FROM chain.ops WHERE status = 2 AND tn > @1", p => p.Set(last.tn));
                     int num = 0;
                     while (dc.Next())
                     {
@@ -221,7 +221,7 @@ create table blockrecs
 
         internal static readonly Map<short, ChainFlow> flows = new Map<short, ChainFlow>(32);
 
-        public static void Define(short typ, string name, params ChainActivity[] steps)
+        public static void DefineFlow(short typ, string name, params ChainActivity[] steps)
         {
             var flow = new ChainFlow(
                 typ,

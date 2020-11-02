@@ -54,15 +54,6 @@ namespace SkyChain.Chain
         // point of time to next poll, set because of exception or polling interval
         volatile int retryAt;
 
-        /// <summary>
-        /// To construct a random client. 
-        /// </summary>
-        public ChainClient(string baseuri, ChainClientHandler handler = null) : base(handler ?? new ChainClientHandler())
-        {
-            BaseAddress = new Uri(baseuri);
-            Timeout = TimeSpan.FromSeconds(TIMEOUT_SECONDS);
-        }
-
 
         public Peer Info => info;
 
