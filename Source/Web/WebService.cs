@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SkyChain.Chain;
 
 namespace SkyChain.Web
 {
@@ -121,7 +120,7 @@ namespace SkyChain.Web
                 return;
             }
 
-            string path = Path.Join(Name, filename);
+            string path = System.IO.Path.Join(Name, filename);
             if (!File.Exists(path))
             {
                 wc.Give(404); // not found

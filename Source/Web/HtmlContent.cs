@@ -256,6 +256,18 @@ namespace SkyChain.Web
         }
 
 
+        public HtmlContent B_()
+        {
+            Add("<b>");
+            return this;
+        }
+
+        public HtmlContent _B()
+        {
+            Add("</b>");
+            return this;
+        }
+
         public HtmlContent BR()
         {
             Add("<br>");
@@ -1548,7 +1560,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public void PAGENATION(int count, int limit = 20)
+        public void PAGENATION(bool eof, int begin = 0, int step = 1)
         {
             var act = Web.Action;
             if (act.Subscript != null)
@@ -1556,13 +1568,13 @@ namespace SkyChain.Web
                 Add("<ul class=\"uk-pagination uk-flex-center\">");
 
                 int page = Web.Subscript;
-                if (page > 0)
+                if (page > begin)
                 {
                     Add("<li class=\"uk-active\">");
                     Add("<a href=\"");
                     Add(act.Key);
                     Add('-');
-                    Add(page - 1);
+                    Add(page - step);
                     Add(Web.QueryStr);
                     Add("\">≪</a>");
                     Add("</li>");
@@ -1572,13 +1584,13 @@ namespace SkyChain.Web
                     Add("<li class=\"uk-disabled\">≪</li>");
                 }
 
-                if (count >= limit)
+                if (!eof)
                 {
                     Add("<li class=\"uk-active\">");
                     Add("<a href=\"");
                     Add(act.Key);
                     Add('-');
-                    Add(page + 1);
+                    Add(page + step);
                     Add(Web.QueryStr);
                     Add("\">≫</a>");
                     Add("</li>");
@@ -1833,6 +1845,40 @@ namespace SkyChain.Web
                 Add("</tbody>");
             }
 
+            Add("</table>");
+            Add("</div>");
+        }
+
+        public void TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, short height = 0)
+        {
+            Add("<div ");
+            if (height > 0)
+            {
+                Add("style=\"overflow-y: scroll; height: ");
+                Add(height);
+                Add("px;\">");
+            }
+            else
+            {
+                Add("class=\"uk-overflow-auto\">");
+            }
+
+            Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
+
+            if (arr != null && tr != null) // tbody if having data objects
+            {
+                Add("<tbody>");
+                thead?.Invoke();
+
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    var obj = arr.At(i);
+                    Add("<tr>");
+                    tr(obj);
+                    Add("</tr>");
+                }
+                Add("</tbody>");
+            }
             Add("</table>");
             Add("</div>");
         }
@@ -2537,7 +2583,6 @@ namespace SkyChain.Web
                 Add(name);
                 Add("-list\"");
             }
-
             Add(">");
             return this;
         }
@@ -3017,15 +3062,16 @@ namespace SkyChain.Web
                 Add("<label>");
             }
 
-            Add("<p class=\"uk-flex uk-input\"><input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add("<p class=\"uk-flex uk-input uk-flex-middle\"><input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (check) Add(" checked");
             if (required) Add(" required");
-            Add("></p>");
+            Add(">&nbsp;");
+            Add(tip); // caption following the checkbox
+            Add("</p>");
             if (tip != null)
             {
-                Add(tip); // caption following the checkbox
                 Add("</label>");
             }
 
@@ -3191,7 +3237,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
+        public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Func<K, V, bool> filter = null)
         {
             FIELDSUL_(legend, css);
             if (opt != null)
@@ -3202,7 +3248,7 @@ namespace SkyChain.Web
                     for (int i = 0; i < opt.Count; i++)
                     {
                         var e = opt.At(i);
-                        if (filter != null && !filter(e.Value)) continue;
+                        if (filter != null && !filter(e.key, e.Value)) continue;
                         if (e.IsHead)
                         {
                             STATIC_(null);
@@ -3417,7 +3463,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Predicate<V> filter = null)
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Func<K, V, bool> filter = null)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (tip != null)
@@ -3439,7 +3485,7 @@ namespace SkyChain.Web
                 for (int i = 0; i < opt.Count; i++)
                 {
                     var e = opt.At(i);
-                    if (filter != null && !filter(e.Value)) continue;
+                    if (filter != null && !filter(e.key, e.Value)) continue;
                     if (e.IsHead)
                     {
                         if (grpopen)
@@ -3472,7 +3518,6 @@ namespace SkyChain.Web
                     grpopen = false;
                 }
             }
-
             _SELECT();
             return this;
         }
@@ -3511,7 +3556,6 @@ namespace SkyChain.Web
                     }
                 }
             }
-
             _SELECT();
             return this;
         }
@@ -3536,7 +3580,6 @@ namespace SkyChain.Web
                     }
                 }
             }
-
             _SELECT();
             return this;
         }
@@ -3558,7 +3601,6 @@ namespace SkyChain.Web
                     Add("</option>");
                 }
             }
-
             _SELECT();
             return this;
         }
@@ -3583,7 +3625,6 @@ namespace SkyChain.Web
                     Add("</option>");
                 }
             }
-
             _SELECT();
             return this;
         }
@@ -3610,7 +3651,6 @@ namespace SkyChain.Web
                     Add("</option>");
                 }
             }
-
             _SELECT();
             return this;
         }

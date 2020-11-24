@@ -78,11 +78,11 @@ namespace SkyChain
             return default;
         }
 
-        public K KeyAt(int idx) => entries[idx].Key;
+        public K KeyAt(int idx) => entries[idx].key;
 
         public V ValueAt(int idx) => entries[idx].value;
 
-        public V[] SubGroupOf(K key)
+        public V[] SubgroupOf(K key)
         {
             int idx = IndexOf(key);
             if (idx > -1)

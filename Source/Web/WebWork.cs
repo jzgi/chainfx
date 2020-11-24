@@ -141,7 +141,7 @@ namespace SkyChain.Web
 
         public string GetFilePath(string file)
         {
-            return Path.Combine(Directory, file);
+            return System.IO.Path.Combine(Directory, file);
         }
 
         // to resolve from the principal object.
@@ -183,7 +183,7 @@ namespace SkyChain.Web
                 Parent = this,
                 Level = Level + 1,
                 IsVar = true,
-                Directory = (Parent == null) ? VARDIR : Path.Combine(Parent.Directory, VARDIR),
+                Directory = (Parent == null) ? VARDIR : System.IO.Path.Combine(Parent.Directory, VARDIR),
                 Pathing = Pathing + (accessor == null ? VARPATHING : string.Empty) + "/",
                 Accessor = accessor,
             };
@@ -231,7 +231,7 @@ namespace SkyChain.Web
                 Parent = this,
                 Level = Level + 1,
                 IsVar = false,
-                Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
+                Directory = (Parent == null) ? name : System.IO.Path.Combine(Parent.Directory, name),
                 Pathing = Pathing + name + "/",
             };
             if (ui != null) wrk.Ui = ui;

@@ -36,16 +36,16 @@ namespace SkyChain.Chain
             LoadPeers();
 
             // init the validator thead
-            validator = new Thread(Validate);
+            // validator = new Thread(Validate);
             // validator.Start();
 
             // init the poller thead
-            if (clients.Count > 0)
-            {
-                // to repeatedly check and initiate event polling activities.
-                poller = new Thread(Poll);
-                poller.Start();
-            }
+            // if (clients.Count > 0)
+            // {
+            //     // to repeatedly check and initiate event polling activities.
+            //     poller = new Thread(Poll);
+            //     // poller.Start();
+            // }
         }
 
         static bool EnsureDb(bool create)

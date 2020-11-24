@@ -50,7 +50,7 @@ namespace SkyChain.Web
 
         public WebAction Action { get; internal set; }
 
-        public int Subscript { get; internal set; }
+        public int Subscript { get; set; }
 
         public Exception Exception { get; set; }
 

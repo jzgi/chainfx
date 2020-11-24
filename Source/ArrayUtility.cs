@@ -173,27 +173,33 @@ namespace SkyChain
             return arr;
         }
 
-        public static E[] RemovedOf<E>(this E[] arr, int index)
+        public static E[] RemovedOf<E>(this E[] arr, E v)
         {
             if (arr == null) return null;
+
+            int index = -1;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i].Equals(v))
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1) return arr;
 
             int nlen = arr.Length - 1;
 
             if (nlen == 0) return null;
-
-            if (index > nlen || index < 0) return arr;
-
-            E[] alloc = new E[nlen];
+            var alloc = new E[nlen];
             if (index > 0)
             {
                 Array.Copy(arr, 0, alloc, 0, index);
             }
-
             if (index < nlen)
             {
                 Array.Copy(arr, index + 1, alloc, index, nlen - index);
             }
-
             return alloc;
         }
 
