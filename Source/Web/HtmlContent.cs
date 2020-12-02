@@ -1560,7 +1560,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public void PAGENATION(bool eof, int begin = 0, int step = 1)
+        public void PAGENATION(bool more, int begin = 0, int step = 1)
         {
             var act = Web.Action;
             if (act.Subscript != null)
@@ -1584,7 +1584,7 @@ namespace SkyChain.Web
                     Add("<li class=\"uk-disabled\">≪</li>");
                 }
 
-                if (!eof)
+                if (more)
                 {
                     Add("<li class=\"uk-active\">");
                     Add("<a href=\"");
@@ -1652,7 +1652,7 @@ namespace SkyChain.Web
             {
                 for (int i = 0; i < map.Count; i++)
                 {
-                    var ety = map.At(i);
+                    var ety = map.EntryAt(i);
                     Add("<li class=\"");
                     if (li != null)
                     {
@@ -1750,7 +1750,7 @@ namespace SkyChain.Web
             {
                 for (int i = 0; i < map.Count; i++)
                 {
-                    var ety = map.At(i);
+                    var ety = map.EntryAt(i);
                     Add("<li class=\"uk-card");
                     if (li != null)
                     {
@@ -1872,7 +1872,7 @@ namespace SkyChain.Web
 
                 for (int i = 0; i < arr.Count; i++)
                 {
-                    var obj = arr.At(i);
+                    var obj = arr.EntryAt(i);
                     Add("<tr>");
                     tr(obj);
                     Add("</tr>");
@@ -1907,14 +1907,14 @@ namespace SkyChain.Web
             Add("</main>");
         }
 
-        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-primary")
+        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-default")
         {
             Add("<main class=\"uk-board\">");
             if (map != null)
             {
                 for (int i = 0; i < map.Count; i++)
                 {
-                    var ety = map.At(i);
+                    var ety = map.EntryAt(i);
                     Add("<form class=\"uk-card");
                     if (css != null)
                     {
@@ -1987,7 +1987,7 @@ namespace SkyChain.Web
             {
                 for (int i = 0; i < map.Count; i++)
                 {
-                    var ety = map.At(i);
+                    var ety = map.EntryAt(i);
                     Add("<div>");
                     Add("<form class=\"uk-card");
                     if (css != null)
@@ -2031,7 +2031,7 @@ namespace SkyChain.Web
             Add("</main>");
         }
 
-        void OnClickDialog(byte mode, bool pick, Size size, string tip)
+        void OnClickDialog(byte mode, bool pick, Appear size, string tip)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
@@ -2311,7 +2311,7 @@ namespace SkyChain.Web
         {
             // check action's availability
             //
-            bool ok = enabled && act.DoAuthorize(Web);
+            bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web));
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
@@ -2418,7 +2418,7 @@ namespace SkyChain.Web
         {
             // check action's availability
             //
-            bool ok = enabled && act.DoAuthorize(Web);
+            bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web));
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
@@ -3129,7 +3129,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false, bool disabled = false)
+        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false, bool disabled = false, string tip = null)
         {
             Add("<label>");
             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
@@ -3154,6 +3154,13 @@ namespace SkyChain.Web
 
             Add(">");
             Add(label);
+            if (tip != null)
+            {
+                Add("&nbsp;");
+                Add("<span class=\"uk-text-small\">");
+                Add(tip);
+                Add("</span>");
+            }
             Add("</label>");
             return this;
         }
@@ -3201,7 +3208,7 @@ namespace SkyChain.Web
                 {
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         if (filter != null && !filter(e.Value)) continue;
                         if (e.IsHead)
                         {
@@ -3247,7 +3254,7 @@ namespace SkyChain.Web
                     bool odd = true;
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         if (filter != null && !filter(e.key, e.Value)) continue;
                         if (e.IsHead)
                         {
@@ -3484,7 +3491,7 @@ namespace SkyChain.Web
                 bool grpopen = false;
                 for (int i = 0; i < opt.Count; i++)
                 {
-                    var e = opt.At(i);
+                    var e = opt.EntryAt(i);
                     if (filter != null && !filter(e.key, e.Value)) continue;
                     if (e.IsHead)
                     {
@@ -3532,7 +3539,7 @@ namespace SkyChain.Web
                 {
                     for (int i = 0; i < opt.Count; i++)
                     {
-                        var e = opt.At(i);
+                        var e = opt.EntryAt(i);
                         var key = e.Key;
                         Add("<option value=\"");
                         if (key is short shortv)

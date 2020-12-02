@@ -1,8 +1,7 @@
 ﻿namespace SkyChain.Db
 {
-    public interface IPath : IData
+    public interface IPath<out P> : IData where P : struct, IPath<P>
     {
-        public void Add<V>(V another) where V : struct, IResult;
-
+        public P Derive(int ordinal);
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// A classifier that realizes graph-based mechine learning.
     /// </summary>
-    public class DbGraph<P, R> where P : struct, IPath where R : struct, IResult
+    public class DbGraph<P, R> where P : struct, IPath<P> where R : struct, IResult<R>
     {
         //
         // key & value mapping
@@ -18,12 +18,12 @@
         public DbGraph(int capacity)
         {
             // find a least power of 2 that is greater than or equal to capacity
-            int size = 1024;
-            while (size < capacity)
+            int num = 1024;
+            while (num < capacity)
             {
-                size <<= 1;
+                num <<= 1;
             }
-            ReInit(size);
+            ReInit(num);
         }
 
         void ReInit(int size) // size must be power of 2
@@ -43,6 +43,10 @@
         }
 
         public int Count => count;
+
+        public P PathAt(int idx) => entries[idx].path;
+
+        public R ResultAt(int idx) => entries[idx].result;
 
 
         public int IndexOf(P path)
@@ -97,8 +101,8 @@
             {
                 if (entries[idx].Match(code, path))
                 {
-                    // entries[idx].Add(value);
-                    return; // replace the old value
+                    entries[idx].Add(result);
+                    return; // merge
                 }
                 idx = entries[idx].next; // adjust for next index
             }
@@ -151,10 +155,9 @@
                 this.result = result;
             }
 
-            internal bool Rep(R r2)
+            internal void Add(R @new)
             {
-                result.Add(r2);
-                return this.code == code;
+                result.OnAdd(@new);
             }
 
             internal bool Match(int code, P path)

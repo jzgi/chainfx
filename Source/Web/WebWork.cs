@@ -89,7 +89,7 @@ namespace SkyChain.Web
             var list = new ValueList<WebAction>(16);
             for (int i = 0; i < actions.Count; i++)
             {
-                var a = actions.At(i).Value;
+                var a = actions.EntryAt(i).Value;
                 if (a.Tool != null)
                 {
                     list.Add(a);
@@ -137,7 +137,7 @@ namespace SkyChain.Web
 
         public WebAction this[string method] => string.IsNullOrEmpty(method) ? @default : actions[method];
 
-        public WebAction this[int index] => actions.At(index).Value;
+        public WebAction this[int index] => actions.EntryAt(index).Value;
 
         public string GetFilePath(string file)
         {
@@ -253,7 +253,7 @@ namespace SkyChain.Web
                 {
                     for (int i = 0; i < actions.Count; i++)
                     {
-                        var act = actions.At(i).Value;
+                        var act = actions.EntryAt(i).Value;
                         xc.Put(act.Key, "");
                     }
                 },
@@ -263,7 +263,7 @@ namespace SkyChain.Web
                     {
                         for (int i = 0; i < works.Count; i++)
                         {
-                            var wrk = works.At(i).Value;
+                            var wrk = works.EntryAt(i).Value;
                             wrk.Describe(xc);
                         }
                     }
@@ -298,7 +298,7 @@ namespace SkyChain.Web
 
             for (int i = 0; i < works?.Count; i++)
             {
-                var w = works.At(i).Value;
+                var w = works.EntryAt(i).Value;
                 w.Describe(h);
             }
         }

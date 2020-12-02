@@ -1,8 +1,7 @@
 ﻿namespace SkyChain.Db
 {
-    public interface IResult : IData
+    public interface IResult<in R> : IData where R : struct, IResult<R>
     {
-        public void Add<V>(V another) where V : struct, IResult;
-
+        public void OnAdd(R another);
     }
 }

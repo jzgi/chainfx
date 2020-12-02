@@ -8,8 +8,9 @@ namespace SkyChain.Web
     [AttributeUsage(AttributeTargets.Method)]
     public class ToolAttribute : Attribute
     {
-        public static readonly ToolAttribute ButtonConfirm = new ToolAttribute(Modal.ButtonConfirm);
+        public static readonly ToolAttribute BUTTON_CONFIRM = new ToolAttribute(Modal.ButtonConfirm);
 
+        public static readonly ToolAttribute BUTTON_PICK_CONFIRM = new ToolAttribute(Modal.ButtonPickConfirm);
 
         readonly Modal modal;
 
@@ -19,29 +20,25 @@ namespace SkyChain.Web
 
         readonly int pick; // form value pick
 
-        readonly Size size;
+        readonly Appear appear;
 
         readonly bool access;
 
-        public ToolAttribute(Modal modal, Size size = Size.Full, bool access = true)
+        public ToolAttribute(Modal modal, Appear appear = Appear.Full, bool access = true)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
-            this.pick = (int) modal & 0x0f00;
-            this.size = size;
+            this.pick = (int) modal & 0x0300;
+            this.appear = appear;
             this.access = access;
         }
 
-        public Size Size => size;
+        public Appear Size => appear;
 
         public bool IsAnchorTag => element == 0x1000;
 
         public bool IsButtonTag => element == 0x2000;
-
-        // public bool IsAnchor => modal == Modal.Anchor;
-        //
-        // public bool IsButton => modal == Modal.Button;
 
         public bool IsPost => HasConfirm || HasPrompt || HasShow;
 

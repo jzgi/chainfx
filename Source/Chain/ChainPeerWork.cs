@@ -24,7 +24,7 @@ namespace SkyChain.Chain
             });
         }
 
-        [Ui("➕", "Create A New Peer"), Tool(Modal.ButtonShow, Size.Large)]
+        [Ui("新建", "Create A New Peer"), Tool(Modal.ButtonShow, Appear.Large)]
         public async Task @new(WebContext wc)
         {
             if (wc.IsGet)

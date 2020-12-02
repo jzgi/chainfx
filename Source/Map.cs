@@ -48,7 +48,7 @@ namespace SkyChain
 
         public int Count => count;
 
-        public Entry At(int idx) => entries[idx];
+        public Entry EntryAt(int idx) => entries[idx];
 
         public Entry EntryOf(K key)
         {
