@@ -141,7 +141,7 @@ namespace SkyChain
             // ensure double-than-needed capacity
             if (!rehash && count >= entries.Length / 2)
             {
-                Entry[] old = entries;
+                var old = entries;
                 int oldc = count;
                 ReInit(entries.Length * 2);
                 // re-add old elements

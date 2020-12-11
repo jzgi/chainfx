@@ -322,7 +322,7 @@ namespace SkyChain.Web
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(byte proj = 0x0f, D obj = default) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(byte proj = 0x0f, D instance = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -348,13 +348,13 @@ namespace SkyChain.Web
                 return default;
             }
 
-            if (obj == null)
+            if (instance == null)
             {
-                obj = new D();
+                instance = new D();
             }
 
-            obj.Read(src, proj);
-            return obj;
+            instance.Read(src, proj);
+            return instance;
         }
 
         public async Task<D[]> ReadArrayAsync<D>(byte proj = 0x0f) where D : IData, new()

@@ -31,7 +31,7 @@ namespace SkyChain.Chain
             });
         }
 
-        [Ui("查询"), Tool(Modal.AnchorPrompt)]
+        [Ui("♀ 查询"), Tool(Modal.AnchorPrompt)]
         public void search(WebContext wc)
         {
         }

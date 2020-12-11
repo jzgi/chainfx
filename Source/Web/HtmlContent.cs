@@ -1883,7 +1883,7 @@ namespace SkyChain.Web
             Add("</div>");
         }
 
-        public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-primary")
+        public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
             Add("<main class=\"uk-board\">");
             if (arr != null)
@@ -2230,7 +2230,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enable = true, string css = "uk-button-secondary")
+        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = "uk-button-secondary")
         {
             // get the var work
             var vw = Web.Work.VarWork;
@@ -2240,7 +2240,7 @@ namespace SkyChain.Web
                 var toola = tool ?? act?.Tool;
                 if (toola != null)
                 {
-                    PutVarTool(act, toola, varkey, subscript, caption, tip, enable, css);
+                    PutVarTool(act, toola, varkey, subscript, caption, tip, enabled, css);
                 }
             }
 
@@ -2536,6 +2536,19 @@ namespace SkyChain.Web
             Add("\" value=\"");
             AddPrimitive(val);
             Add("\">");
+            return this;
+        }
+
+        public HtmlContent HIDDENS<V>(string name, V[] vals)
+        {
+            for (int i = 0; i < vals.Length; i++)
+            {
+                Add("<input type=\"hidden\" name=\"");
+                Add(name);
+                Add("\" value=\"");
+                AddPrimitive(vals[i]);
+                Add("\">");
+            }
             return this;
         }
 
@@ -3059,19 +3072,18 @@ namespace SkyChain.Web
             LABEL(label);
             if (tip != null)
             {
-                Add("<label>");
+                Add("<label class=\"uk-flex uk-input uk-flex-middle\">");
             }
 
-            Add("<p class=\"uk-flex uk-input uk-flex-middle\"><input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\"");
             if (check) Add(" checked");
             if (required) Add(" required");
             Add(">&nbsp;");
-            Add(tip); // caption following the checkbox
-            Add("</p>");
             if (tip != null)
             {
+                Add(tip); // caption following the checkbox
                 Add("</label>");
             }
 
@@ -3083,10 +3095,10 @@ namespace SkyChain.Web
             LABEL(label);
             if (tip != null)
             {
-                Add("<label>");
+                Add("<label class=\"uk-flex uk-input uk-flex-middle\">");
             }
 
-            Add("<p class=\"uk-flex uk-input\"><input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(v);
@@ -3094,7 +3106,7 @@ namespace SkyChain.Web
             if (check) Add(" checked=\"checked\"");
             if (required) Add("\" required=\"required\"");
             if (disabled) Add("\" disabled=\"disabled\"");
-            Add("></p>");
+            Add(">&nbsp;");
             if (tip != null)
             {
                 Add(tip); // caption following the checkbox
@@ -3156,7 +3168,7 @@ namespace SkyChain.Web
             Add(label);
             if (tip != null)
             {
-                Add("&nbsp;");
+                Add("&nbsp;&nbsp;");
                 Add("<span class=\"uk-text-small\">");
                 Add(tip);
                 Add("</span>");
@@ -3377,7 +3389,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT_<V>(string label, V name, bool multiple = false, bool required = false, int size = 0, bool rtl = false, bool refresh = false, string css = null)
+        public HtmlContent SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, bool refresh = false, string css = null)
         {
             LABEL(label);
             Add("<select class=\"uk-select");
@@ -3396,7 +3408,10 @@ namespace SkyChain.Web
             AddPrimitive(name);
             Add("\"");
             if (multiple) Add(" multiple");
-            if (required) Add(" required");
+            if (required)
+            {
+                Add(" value=\"\" required");
+            }
             if (size > 0)
             {
                 Add(" size=\"");
@@ -3410,6 +3425,10 @@ namespace SkyChain.Web
             }
 
             Add(">");
+            if (!required)
+            {
+                Add("<option style=\"display:none\" selected></option>");
+            }
             return this;
         }
 
@@ -3419,13 +3438,14 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent OPTION<T>(T v, string caption = null, bool selected = false)
+        public HtmlContent OPTION<T>(T v, string caption = null, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
             AddPrimitive(v);
 
             Add("\"");
             if (selected) Add(" selected");
+            if (!enabled) Add(" disabled");
             Add(">");
             if (caption != null)
             {
@@ -3440,12 +3460,13 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent OPTION_<T>(T v, bool selected = false)
+        public HtmlContent OPTION_<T>(T v, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
             AddPrimitive(v);
             Add("\"");
             if (selected) Add(" selected");
+            if (!enabled) Add(" disabled");
             Add(">");
             return this;
         }
@@ -3470,7 +3491,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Func<K, V, bool> filter = null)
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, string tip = null, bool multiple = false, bool required = true, sbyte size = 0, bool rtl = false, bool refresh = false, Func<K, V, bool> filter = null)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (tip != null)

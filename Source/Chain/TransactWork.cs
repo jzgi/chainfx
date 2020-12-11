@@ -23,7 +23,7 @@ namespace SkyChain.Chain
             });
         }
 
-        [Ui("新建", "Create A New Login"), Tool(Modal.ButtonShow, Appear.Large)]
+        [Ui("✛ 新建", "Create A New Login"), Tool(Modal.ButtonShow, Appear.Large)]
         public async Task @new(WebContext wc)
         {
             if (wc.IsGet)
