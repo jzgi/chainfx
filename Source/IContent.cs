@@ -1,7 +1,7 @@
 ﻿namespace SkyChain
 {
     /// <summary>
-    /// Represents a binary content ready to send through web context. 
+    /// Represents a binary web content. 
     /// </summary>
     public interface IContent
     {

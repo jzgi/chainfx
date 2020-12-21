@@ -4,7 +4,7 @@ using SkyChain.Db;
 
 namespace SkyChain.Chain
 {
-    public class ChainEnv : DbEnv
+    public class ChainEnviron : DbEnviron
     {
         static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
 
@@ -20,6 +20,8 @@ namespace SkyChain.Chain
         static Thread poller;
 
         public static Peer Info => info;
+
+        public static ChainClient GetChainClient(string key) => clients[key];
 
         /// <summary>
         /// Setup blockchain on this peer node.
@@ -104,11 +106,12 @@ create table blockrecs
                 using var dc = NewDbContext();
 
                 // load and init peer clients
-                var arr = dc.Query<Peer>("SELECT * FROM chain.peers");
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
+                var arr = dc.Query<Peer>();
                 if (arr == null) return;
                 foreach (var o in arr)
                 {
-                    if (o.IsMe)
+                    if (o.IsLocal)
                     {
                         info = o;
                     }
@@ -134,17 +137,17 @@ create table blockrecs
         {
             while (true)
             {
-                var lst = new ValueList<Operation>(MAX_BLOCK_SIZE);
+                var lst = new ValueList<Log>(MAX_BLOCK_SIZE);
                 // archiving 
                 using (var dc = NewDbContext())
                 {
                     var c = lst.Count;
                     var last = lst[c - 1];
-                    dc.Query("SELECT * FROM chain.ops WHERE status = 2 AND tn > @1", p => p.Set(last.tn));
+                    dc.Query("SELECT * FROM chain.ops WHERE status = 2 AND tn > @1", p => p.Set(last.job));
                     int num = 0;
                     while (dc.Next())
                     {
-                        var op = dc.ToObject<Operation>();
+                        var op = dc.ToObject<Log>();
                     }
                 }
 
@@ -153,34 +156,12 @@ create table blockrecs
                 {
                     // typ cycle control
                     var now = DateTime.Now;
-                    for (int i = 0; i < flows.Count; i++)
+                    dc.Sql("SELECT * FROM chain.ops WHERE status = 2 AND typ = @1 AND step ");
+                    dc.Query(p => p.Set(now));
+                    while (dc.Next())
                     {
-                        var def = flows.ValueAt(i);
-                        var steplst = new ValueList<short>(def.Size);
-                        foreach (var act in def.Activities)
-                        {
-                            if (act.IsNewCycle(now))
-                            {
-                                steplst.Add(act.step);
-                            }
-                        }
-                        var vals = steplst.ToArray();
-                        
-                        var cc = new ChainContext();
-                        
-                        dc.Sql("SELECT * FROM chain.ops WHERE status = 2 AND typ = @1 AND step ")._IN_(vals);
-                        dc.Query(p => p.Set(def.Typ).SetForIn(vals));
-                        while (dc.Next())
-                        {
-                            var op = dc.ToObject<Operation>();
-                            var act = def.GetActivity(op.step);
-                            if (act == null)
-                            {
-                            }
-                            // callback
-                            var okay = act.OnValidate(cc);
-                        }
-                        
+                        var op = dc.ToObject<Log>();
+                        // callback
                     }
                 }
             }
@@ -218,19 +199,5 @@ create table blockrecs
         //
         // types
         //
-
-        internal static readonly Map<short, ChainFlow> flows = new Map<short, ChainFlow>(32);
-
-        public static void DefineFlow(short typ, string name, params ChainActivity[] steps)
-        {
-            var flow = new ChainFlow(
-                typ,
-                name,
-                steps
-            );
-            flows.Add(flow);
-        }
-
-        public static ChainFlow GetFlow(short typ) => flows?[typ];
     }
 }

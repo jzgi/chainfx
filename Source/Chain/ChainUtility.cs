@@ -6,92 +6,119 @@ namespace SkyChain.Chain
 {
     public static class ChainUtility
     {
-        public static Peer[] FetchChainPeers(this DbContext dc)
+        public static Peer[] FindPeers(this DbContext dc)
         {
-            return dc.Query<Peer>("SELECT * FROM chain.peers");
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
+            return dc.Query<Peer>();
         }
 
-
-        public static async Task<bool> ChainStartTran(this DbContext dc, string an, short typ, string inst, string descr, decimal amt, JObj doc = null, string npeerid = null, string nan = null)
+        internal static State[] FindStatesByJob(this DbContext dc, string job)
         {
-            // if exists
-            var def = ChainEnv.GetFlow(typ);
-            if (def == null)
-            {
-                throw new ChainException("definition not found: typ = " + typ);
-            }
-            var act = def.StartActivity;
-
-            // padded sequence number
-            var tn = (string) dc.Scalar("SELECT lpad(to_hex(nextval('chain.txn')),8, '0')");
-            tn = ChainEnv.Info.id + tn;
-
-            var cc = new ChainContext();
-
-            var op = new Operation()
-            {
-                tn = tn,
-                step = act.step,
-                an = an,
-                typ = typ,
-                @case = inst,
-                descr = descr,
-                doc = doc,
-                stamp = DateTime.Now,
-                npeerid = npeerid,
-                nan = nan
-            };
-
-            var ok = act.OnInput(cc, dc);
-            if (!ok)
-            {
-                return false;
-                // throw new ChainException("input error: tn = " + op.tn + ", step = " + op.step);
-            }
-
-            // data access
-            dc.Sql("INSERT INTO ops ").colset(op)._VALUES_(op);
-            await dc.ExecuteAsync(p => op.Write(p));
-
-            return true;
-        }
-
-        internal static Record[] ChainGetTranaction(this DbContext dc, string tn)
-        {
-            var recs = dc.Query<Record>("SELECT * FROM chain.blockrecs WHERE tn = @1 ORDER BY step", p => p.Set(tn));
+            dc.Sql("SELECT ").collst(State.Empty).T(" FROM chain.blocksts WHERE job = @1 ORDER BY step");
+            var recs = dc.Query<State>(p => p.Set(job));
             return recs;
         }
 
-        public static async Task<Record[]> ChainGetTraceAsync(this DbContext dc, short typ, string an, string @case = null)
+        public static async Task<State[]> FindStatesAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int page = 0)
         {
-            return await dc.QueryAsync<Record>("SELECT * FROM chain.blockrecs WHERE typ = @1 AND an = @2 AND \"case\" = @3 ORDER BY stamp DESC", p => p.Set(typ).Set(an).Set(@case));
+            dc.Sql("SELECT ").collst(State.Empty).T(" FROM chain.blocksts WHERE acct = @1 AND ldgr LIKE @2 ORDER BY stamp DESC LIMIT @3 OFFSET @3 * @4");
+            return await dc.QueryAsync<State>(p => p.Set(acct).Set(ldgr + "%").Set(limit).Set(page));
         }
 
-        public static (int amt, int balance, DateTime stamp) ChainGet(this DbContext dc, short typ, string key, string nodeid = "&")
+        internal static Log[] FindLogs(this DbContext dc, string job)
         {
-            // var typs = Framework.Obtain<Map<short, Typ>>();
+            dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE job = @1 ORDER BY step");
+            var recs = dc.Query<Log>(p => p.Set(job));
+            return recs;
+        }
 
-            dc.Sql("SELECT body FROM chain.blocks WHERE typid = @1 AND key = @2");
-            dc.Query(p => p.Set(typ).Set(key));
+        public static async Task<Log[]> FindAllAsync(this DbContext dc, string acct, string ldgr)
+        {
+            dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE acct = @1 AND ldgr LIKE @2");
+            return await dc.QueryAsync<Log>(p => p.Set(acct).Set(ldgr + "%"));
+        }
 
-            // var typ = typs[typid];
-            // if (typ == null) return null;
-            // if (typ.op <= 1)
-            // {
-            //     return null;
-            // }
+        public static async Task<Log> FindAsync(this DbContext dc, string job, short step)
+        {
+            dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE job = @1 AND step = @2");
+            return await dc.QueryTopAsync<Log>(p => p.Set(job).Set(step));
+        }
+
+        public static async Task<Log> StartAsync(this DbContext dc, string acct, string ldgr, string descr, decimal amt, JObj doc = null)
+        {
+            // resolve transaction number
+            var jobseq = (int) dc.Scalar("SELECT nextval('chain.jobseq')");
+            string job = ChainEnviron.Info.id + TextUtility.ToHex(jobseq);
+
+            // insert
+            var log = new Log()
+            {
+                job = job,
+                step = 1,
+                acct = acct,
+                ldgr = ldgr,
+                amt = amt,
+                descr = descr,
+                doc = doc,
+                stamp = DateTime.Now,
+                status = Log.CREATED
+            };
+
+            // data access
+            dc.Sql("INSERT INTO ops ").colset(log, 0)._VALUES_(log, 0);
+            await dc.ExecuteAsync(p => log.Write(p));
+
+            // push to tne next step
             //
-            // var cryptokey = typ.op >= 3 ? Framework.publickey : Framework.privatekey;
-            //
-            // while (dc.Next())
-            // {
-            //     dc.Let(out byte[] body);
-            //     // descrypt
-            //     CryptionUtility.Decrypt(body, body.Length, cryptokey);
-            //
-            //     var jc = new JsonParser(body, body.Length).Parse();
-            // }
-            return (0, 0, DateTime.Now);
+            if (log.IsLocal)
+            {
+                dc.Sql("INSERT INTO ops ").colset(log)._VALUES_(log);
+                await dc.ExecuteAsync(p => log.Write(p));
+            }
+
+            return null;
+        }
+
+        public static async Task ForwardAsync(this DbContext dc, string job, short step, string npeer, string nacct, string nname)
+        {
+            // get the 
+            dc.Sql("SELECT ").collst(Log.Empty).T(" FROM logs WHERE job = @1 AND step = @2");
+            var o = dc.QueryTop<Log>(p => p.Set(job).Set(step));
+
+            if (o.IsLocal)
+            {
+                dc.Sql("INSERT INTO ops").T(Log.FORTH)._VALUES_(Log.FORTH);
+                await dc.ExecuteAsync(p => o.Write(p));
+            }
+            else // remote call
+            {
+                var cli = ChainEnviron.GetChainClient(o.ppeer);
+                // cli.PostAsync("");
+            }
+
+            // update status
+            dc.Sql("UPDATE ops SET status = ").T(Log.FORTH).T(" WHERE tn = @1 AND step = @2");
+            await dc.ExecuteAsync();
+        }
+
+        public static async Task SetForwardAsync(this DbContext dc, string tn, short step, string descr, decimal amt, JObj doc = null)
+        {
+        }
+
+        public static async Task BackwardAsync(this DbContext dc, string tn, short step, string descr, decimal amt, JObj doc = null)
+        {
+        }
+
+        public static async Task SetBackwardAsync(this DbContext dc, string tn, short step, string descr, decimal amt, JObj doc = null)
+        {
+        }
+
+        public static async Task AbortAsync(this DbContext dc, string fn, short step, string descr, decimal amt, JObj doc = null)
+        {
+        }
+
+        public static async Task EndAsync(this DbContext dc, string tn, short step, string descr, decimal amt, JObj doc = null)
+        {
         }
     }
 }

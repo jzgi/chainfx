@@ -42,7 +42,6 @@ namespace SkyChain.Web
             {
                 return v;
             }
-
             return 0;
         }
 
@@ -54,7 +53,6 @@ namespace SkyChain.Web
             {
                 return v;
             }
-
             return 0;
         }
 
@@ -66,14 +64,16 @@ namespace SkyChain.Web
             {
                 return v;
             }
-
             return 0;
         }
 
         public static implicit operator string(WebSeg seg)
         {
             string str = seg.key;
-            if (string.IsNullOrEmpty(str)) return (string) seg.accessor;
+            if (string.IsNullOrEmpty(str))
+            {
+                return (string) seg.accessor;
+            }
             return str;
         }
 
@@ -84,8 +84,10 @@ namespace SkyChain.Web
             {
                 return (null, null);
             }
-
-            return str.ToStringString();
+            int pos = 0;
+            var a = str.ParseString(ref pos);
+            var b = str.ParseString(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<string, short>(WebSeg seg)
@@ -95,8 +97,10 @@ namespace SkyChain.Web
             {
                 return (null, 0);
             }
-
-            return str.ToStringShort();
+            int pos = 0;
+            var a = str.ParseString(ref pos);
+            var b = str.ParseShort(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<string, int>(WebSeg seg)
@@ -106,8 +110,10 @@ namespace SkyChain.Web
             {
                 return (null, 0);
             }
-
-            return str.ToStringInt();
+            int pos = 0;
+            var a = str.ParseString(ref pos);
+            var b = str.ParseInt(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<string, long>(WebSeg seg)
@@ -117,8 +123,10 @@ namespace SkyChain.Web
             {
                 return (null, 0);
             }
-
-            return str.ToStringLong();
+            int pos = 0;
+            var a = str.ParseString(ref pos);
+            var b = str.ParseLong(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<short, string>(WebSeg seg)
@@ -128,8 +136,10 @@ namespace SkyChain.Web
             {
                 return (0, null);
             }
-
-            return str.ToShortString();
+            int pos = 0;
+            var a = str.ParseShort(ref pos);
+            var b = str.ParseString(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<short, short>(WebSeg seg)
@@ -139,7 +149,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-            return str.ToShortShort();
+            int pos = 0;
+            var a = str.ParseShort(ref pos);
+            var b = str.ParseShort(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<short, int>(WebSeg seg)
@@ -149,8 +162,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToShortInt();
+            int pos = 0;
+            var a = str.ParseShort(ref pos);
+            var b = str.ParseInt(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<short, long>(WebSeg seg)
@@ -160,8 +175,10 @@ namespace SkyChain.Web
             {
                 return (0, 0L);
             }
-
-            return str.ToShortLong();
+            int pos = 0;
+            var a = str.ParseShort(ref pos);
+            var b = str.ParseLong(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<int, string>(WebSeg seg)
@@ -171,8 +188,10 @@ namespace SkyChain.Web
             {
                 return (0, null);
             }
-
-            return str.ToIntString();
+            int pos = 0;
+            var a = str.ParseInt(ref pos);
+            var b = str.ParseString(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<int, short>(WebSeg seg)
@@ -182,8 +201,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToIntShort();
+            int pos = 0;
+            var a = str.ParseInt(ref pos);
+            var b = str.ParseShort(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<int, int>(WebSeg seg)
@@ -193,8 +214,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToIntInt();
+            int pos = 0;
+            var a = str.ParseInt(ref pos);
+            var b = str.ParseInt(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<int, long>(WebSeg seg)
@@ -204,8 +227,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToIntLong();
+            int pos = 0;
+            var a = str.ParseInt(ref pos);
+            var b = str.ParseShort(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<long, string>(WebSeg seg)
@@ -215,8 +240,10 @@ namespace SkyChain.Web
             {
                 return (0, null);
             }
-
-            return str.ToLongString();
+            int pos = 0;
+            var a = str.ParseLong(ref pos);
+            var b = str.ParseString(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<long, short>(WebSeg seg)
@@ -226,8 +253,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToLongShort();
+            int pos = 0;
+            var a = str.ParseLong(ref pos);
+            var b = str.ParseShort(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<long, int>(WebSeg seg)
@@ -237,8 +266,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToLongInt();
+            int pos = 0;
+            var a = str.ParseLong(ref pos);
+            var b = str.ParseInt(ref pos);
+            return (a, b);
         }
 
         public static implicit operator ValueTuple<long, long>(WebSeg seg)
@@ -248,8 +279,10 @@ namespace SkyChain.Web
             {
                 return (0, 0);
             }
-
-            return str.ToLongLong();
+            int pos = 0;
+            var a = str.ParseLong(ref pos);
+            var b = str.ParseLong(ref pos);
+            return (a, b);
         }
 
         public static implicit operator string[](WebSeg seg)

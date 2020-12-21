@@ -10,17 +10,6 @@ namespace SkyChain
 
         static readonly char[] HEXU = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-        public static string ToHex(ulong v)
-        {
-            char[] buf = new char[16];
-            for (int i = 0; i < 16; i++)
-            {
-                buf[i] = HEX[(v >> (i * 4)) & 0x0fL];
-            }
-
-            return new string(buf);
-        }
-
         // days of week
         static readonly string[] DOW = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
@@ -261,6 +250,40 @@ namespace SkyChain
             return true;
         }
 
+        public static string ToHex(ulong v)
+        {
+            char[] buf = new char[16];
+            for (int i = 0; i < 16; i++)
+            {
+                buf[i] = HEX[(v >> (i * 4)) & 0x0fL];
+            }
+
+            return new string(buf);
+        }
+
+        public static string ToHex(int v)
+        {
+            char[] buf = new char[8];
+            for (int i = 0; i < 8; i++)
+            {
+                buf[i] = HEX[(v >> (i * 4)) & 0x0f];
+            }
+
+            return new string(buf);
+        }
+
+        public static string ToHex(short v)
+        {
+            char[] buf = new char[4];
+            for (int i = 0; i < 4; i++)
+            {
+                buf[i] = HEX[(v >> (i * 4)) & 0x0f];
+            }
+
+            return new string(buf);
+        }
+
+
         public static string BytesToHex(byte[] bytes, int count)
         {
             char[] buf = new char[count * 2];
@@ -377,134 +400,6 @@ namespace SkyChain
         {
             TryParseDate(str, out var v);
             return v;
-        }
-
-        public static (string, string) ToStringString(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseString(ref pos, sep);
-            var b = str.ParseString(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (string, short) ToStringShort(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseString(ref pos, sep);
-            var b = str.ParseShort(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (string, int) ToStringInt(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseString(ref pos, sep);
-            var b = str.ParseInt(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (string, long) ToStringLong(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseString(ref pos, sep);
-            var b = str.ParseLong(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (short, string) ToShortString(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseShort(ref pos, sep);
-            var b = str.ParseString(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (short, short) ToShortShort(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseShort(ref pos, sep);
-            var b = str.ParseShort(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (short, int) ToShortInt(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseShort(ref pos, sep);
-            var b = str.ParseInt(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (short, long) ToShortLong(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseShort(ref pos, sep);
-            var b = str.ParseLong(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (int, string) ToIntString(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseInt(ref pos, sep);
-            var b = str.ParseString(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (int, short) ToIntShort(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseInt(ref pos, sep);
-            var b = str.ParseShort(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (int, int) ToIntInt(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseInt(ref pos, sep);
-            var b = str.ParseInt(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (int, long) ToIntLong(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseInt(ref pos, sep);
-            var b = str.ParseLong(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (long, string) ToLongString(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseLong(ref pos, sep);
-            var b = str.ParseString(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (long, short) ToLongShort(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseLong(ref pos, sep);
-            var b = str.ParseShort(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (long, int) ToLongInt(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseLong(ref pos, sep);
-            var b = str.ParseInt(ref pos, sep);
-            return (a, b);
-        }
-
-        public static (long, long) ToLongLong(this string str, char sep = '-')
-        {
-            int pos = 0;
-            var a = str.ParseLong(ref pos, sep);
-            var b = str.ParseLong(ref pos, sep);
-            return (a, b);
         }
 
         public static string ParseString(this string str, ref int pos, char sep = '-')

@@ -1497,7 +1497,7 @@ namespace SkyChain.Db
             return v;
         }
 
-        public void Write<C>(C cnt) where C : IContent, ISink
+        public void Write<C>(C cnt) where C : DynamicContent, ISink
         {
             int fc = reader.FieldCount;
             for (int i = 0; i < fc; i++)

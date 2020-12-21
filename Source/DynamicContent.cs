@@ -463,9 +463,9 @@ namespace SkyChain
                 Add(v.Year);
             }
 
-            if (date > 2) Add('/');
+            if (date > 2) Add('-');
             if (date >= 2) Add(SEX[v.Month]);
-            if (date > 1) Add('/');
+            if (date > 1) Add('-');
             if (date >= 1) Add(SEX[v.Day]);
 
             if (time >= 1)
@@ -484,6 +484,22 @@ namespace SkyChain
             {
                 Add(':');
                 Add(SEX[v.Second]);
+            }
+        }
+
+        public void AddPrimitive<V>(V v)
+        {
+            if (v is short shortv) Add(shortv);
+            else if (v is int intv) Add(intv);
+            else if (v is long longv) Add(longv);
+            else if (v is string strv) Add(strv);
+            else if (v is bool boolv) Add(boolv);
+            else if (v is decimal decv) Add(decv);
+            else if (v is double doublev) Add(doublev);
+            else if (v is DateTime dtv) Add(dtv);
+            else
+            {
+                Add(v?.ToString());
             }
         }
 

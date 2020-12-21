@@ -38,20 +38,6 @@ namespace SkyChain.Chain
             wc.Give(200, jc);
         }
 
-        public void input(WebContext wc)
-        {
-            // get input data fields
-            var cc = new ChainContext();
-            Operation op = new Operation();
-
-            // find typ
-            var def = ChainEnv.GetFlow(op.typ);
-
-            var act = def.GetActivity(op.step);
-
-            act.OnInput(cc, null);
-        }
-
         const int PIC_AGE = 3600 * 6;
 
         public void peericon(WebContext wc)
@@ -65,6 +51,26 @@ namespace SkyChain.Chain
                 else wc.Give(200, new StaticContent(bytes), shared: true, maxage: PIC_AGE);
             }
             else wc.Give(404, shared: true, maxage: PIC_AGE); // not found
+        }
+
+        public virtual bool onforth(WebContext wc, int fromstep)
+        {
+            return true;
+        }
+
+        public virtual bool onback(WebContext wc, int fromstep)
+        {
+            return true;
+        }
+
+        public virtual bool oncancel(WebContext wc, int fromstep)
+        {
+            return true;
+        }
+
+        public virtual bool ondone(WebContext wc, int fromstep)
+        {
+            return true;
         }
     }
 }

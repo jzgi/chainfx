@@ -47,34 +47,15 @@ namespace SkyChain.Web
             }
         }
 
-        public async Task<(short, byte[])> GetAsync(string uri, WebContext wc = null)
+        public async Task<(short, M)> GetAsync<M>(string uri, string authstr = null) where M : class, ISource
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, wc);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
+                if (authstr != null)
                 {
-                    return ((short) rsp.StatusCode, await rsp.Content.ReadAsByteArrayAsync());
+                    req.Headers.TryAddWithoutValidation("Authorization", authstr);
                 }
-
-                return ((short) rsp.StatusCode, null);
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return (500, null);
-        }
-
-        public async Task<(short, M)> GetAsync<M>(string uri, WebContext wc) where M : class, ISource
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, wc);
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
                 {

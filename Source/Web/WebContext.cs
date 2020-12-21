@@ -190,17 +190,13 @@ namespace SkyChain.Web
             }
         }
 
-        string csign;
+        string ckey;
 
-        public string CallerSign => csign ??= Header("X-Caller-Sign");
+        public string ChainKey => ckey ??= Header("X-Chain-Key");
 
-        string cname;
+        string cfrom;
 
-        public string CallerName => cname ??= Header("X-Caller-Name");
-
-        string cshard;
-
-        public string CallerShard => cshard ??= Header("X-Caller-Shard");
+        public string XFrom => cfrom ??= Header("X-From");
 
         //
         // HEADER

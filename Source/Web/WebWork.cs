@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using SkyChain.Chain;
 using SkyChain.Db;
 
 namespace SkyChain.Web
@@ -325,11 +326,15 @@ namespace SkyChain.Web
             if (Authorize != null)
             {
                 // check if trusted peer
-                // todo check ip instead
-                // if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
-                // {
-                //     return true; // trusted without further check
-                // }
+                var fr = wc.XFrom; // check header
+                if (fr != null && Service is ChainService)
+                {
+                    var cli = ChainEnviron.GetChainClient(fr);
+                    if (cli.IsRemoteAddr(wc.RemoteAddr))
+                    {
+                        return true;
+                    }
+                }
 
                 return Authorize.Do(wc);
             }
@@ -471,17 +476,17 @@ namespace SkyChain.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Db.DbEnv.NewDbContext(level);
+            return Db.DbEnviron.NewDbContext(level);
         }
 
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            return Db.DbEnv.Obtain<T>(flag);
+            return Db.DbEnviron.Obtain<T>(flag);
         }
 
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            return await Db.DbEnv.ObtainAsync<T>(flag);
+            return await Db.DbEnviron.ObtainAsync<T>(flag);
         }
 
 

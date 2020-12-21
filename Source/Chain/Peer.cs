@@ -17,7 +17,7 @@ namespace SkyChain.Chain
         internal string name;
         internal string uri; // remote address
         internal DateTime created;
-        internal bool me;
+        internal bool local;
         internal short status;
 
         public void Read(ISource s, byte proj = 15)
@@ -26,7 +26,7 @@ namespace SkyChain.Chain
             s.Get(nameof(name), ref name);
             s.Get(nameof(uri), ref uri);
             s.Get(nameof(created), ref created);
-            s.Get(nameof(me), ref me);
+            s.Get(nameof(local), ref local);
             s.Get(nameof(status), ref status);
         }
 
@@ -36,7 +36,7 @@ namespace SkyChain.Chain
             s.Put(nameof(name), name);
             s.Put(nameof(uri), uri);
             s.Put(nameof(created), created);
-            s.Put(nameof(me), me);
+            s.Put(nameof(local), local);
             s.Put(nameof(status), status);
         }
 
@@ -46,6 +46,6 @@ namespace SkyChain.Chain
 
         public string Uri => uri;
 
-        public bool IsMe => me;
+        public bool IsLocal => local;
     }
 }

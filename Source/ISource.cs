@@ -5,7 +5,7 @@ namespace SkyChain
     /// <summary>
     /// Represents a provider or input source of dataset, a data object, or some of its data fields.
     /// </summary>
-    public interface ISource
+    public interface ISource : IResource
     {
         bool Get(string name, ref bool v);
 
@@ -57,16 +57,5 @@ namespace SkyChain
         /// </summary>
         /// <returns>True if sucessfully moved to next data record.</returns>
         bool Next();
-
-        /// <summary>
-        /// Outputs current data object.
-        /// </summary>
-        void Write<C>(C cnt) where C : IContent, ISink;
-
-        /// <summary>
-        /// Converts this source into its corresponding content object.
-        /// </summary>
-        /// <returns></returns>
-        IContent Dump();
     }
 }

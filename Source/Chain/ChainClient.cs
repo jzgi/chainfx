@@ -7,11 +7,11 @@ using SkyChain.Web;
 namespace SkyChain.Chain
 {
     /// <summary>
-    /// A chain client connector targeted to a specific peer..
+    /// A chain client connector targeted to a specific remote peer..
     /// </summary>
     public class ChainClient : HttpClient, IKeyable<string>
     {
-        const int TIMEOUT_SECONDS = 12;
+        const int TIMEOUT_SECONDS = 5;
 
         const int AHEAD = 1000 * 12;
 
@@ -29,7 +29,7 @@ namespace SkyChain.Chain
         // the lastest result
         Block block;
 
-        Record[] blockrecs;
+        State[] blockrecs;
 
 
         /// <summary>
@@ -39,11 +39,10 @@ namespace SkyChain.Chain
         {
             this.info = info;
             var baseuri = info.uri;
-
+            BaseAddress = new Uri(baseuri);
             try
             {
-                addrs = Dns.GetHostAddresses(baseuri);
-                BaseAddress = new Uri(baseuri + "/poll");
+                addrs = Dns.GetHostAddresses(BaseAddress.Host);
             }
             catch (Exception e)
             {
@@ -58,6 +57,18 @@ namespace SkyChain.Chain
         public Peer Info => info;
 
         public string Key => info?.name;
+
+        public bool IsRemoteAddr(IPAddress addr)
+        {
+            for (int i = 0; i < addrs.Length; i++)
+            {
+                if (addrs[i].Equals(addr))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public short Status
         {
@@ -74,7 +85,6 @@ namespace SkyChain.Chain
                 lock (this) return block;
             }
         }
-
 
         internal async void TryPollAsync(int ticks)
         {
@@ -102,8 +112,6 @@ namespace SkyChain.Chain
                 var hdrs = rsp.Content.Headers;
 
                 // block properties
-
-
                 string ctyp = hdrs.GetValue("Content-Type");
 
                 // block content
@@ -124,16 +132,14 @@ namespace SkyChain.Chain
 
         void AddAccessHeaders(HttpRequestMessage req, WebContext wc)
         {
-            // var cfg = Framework.Config;
-//                req.Headers.TryAddWithoutValidation("X-Caller-Sign", Framework.sign);
-//                req.Headers.TryAddWithoutValidation("X-Caller-Name", cfg.name);
-//                req.Headers.TryAddWithoutValidation("X-Caller-Shard", cfg.shard);
+            var cfg = Framework.webcfg;
+            req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id);
 
-            var auth = wc?.Header("Authorization");
-            if (auth != null)
-            {
-                req.Headers.TryAddWithoutValidation("Authorization", auth);
-            }
+            // var auth = wc?.Header("Authorization");
+            // if (auth != null)
+            // {
+            //     req.Headers.TryAddWithoutValidation("Authorization", auth);
+            // }
         }
 
         public string QueryString { get; set; }

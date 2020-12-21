@@ -229,7 +229,7 @@ namespace SkyChain
             return ++current < count;
         }
 
-        public void Write<C>(C cnt) where C : IContent, ISink
+        public void Write<C>(C cnt) where C : DynamicContent, ISink
         {
             for (int i = 0; i < count; i++)
             {

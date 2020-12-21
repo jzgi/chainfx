@@ -2792,7 +2792,7 @@ namespace SkyChain.Web
             Add("<input type=\"date\" class=\"uk-width-1-1\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(val);
+            Add(val, 3, 0);
             Add("\"");
 
             if (max != default)
@@ -2862,22 +2862,6 @@ namespace SkyChain.Web
         {
             T("</tbody>");
             return this;
-        }
-
-        void AddPrimitive<V>(V v)
-        {
-            if (v is short shortv) Add(shortv);
-            else if (v is int intv) Add(intv);
-            else if (v is long longv) Add(longv);
-            else if (v is string strv) Add(strv);
-            else if (v is bool boolv) Add(boolv);
-            else if (v is decimal decv) Add(decv);
-            else if (v is double doublev) Add(doublev);
-            else if (v is DateTime dtv) Add(dtv);
-            else
-            {
-                Add(v?.ToString());
-            }
         }
 
         public HtmlContent NUMBERPICK(string label, string name, short v, short max = default, short min = default, short step = 1, bool @readonly = false, bool required = false, string onchange = null, string css = null)
@@ -3365,8 +3349,15 @@ namespace SkyChain.Web
 
                 Add(" rows=\"");
                 Add(max <= 30 ? 2 :
-                    max <= 50 ? 3 :
-                    max <= 80 ? 4 : 5);
+                    max <= 60 ? 3 :
+                    max <= 100 ? 4 :
+                    max <= 150 ? 5 :
+                    max <= 200 ? 6 :
+                    max <= 250 ? 7 :
+                    max <= 300 ? 8 :
+                    max <= 400 ? 10 :
+                    12
+                );
                 Add("\"");
             }
 
@@ -3551,7 +3542,7 @@ namespace SkyChain.Web
         }
 
 
-        public HtmlContent SELECT<K, V>(string label, string name, K[] v, Map<K, V> opt, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<K, V>(string label, string name, K[] v, Map<K, V> opt, bool required = true, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, true, required, size, refresh);
             if (opt != null)

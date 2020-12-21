@@ -244,7 +244,7 @@ namespace SkyChain
             throw new NotImplementedException();
         }
 
-        public void Write<C>(C cnt) where C : IContent, ISink
+        public void Write<C>(C cnt) where C : DynamicContent, ISink
         {
             throw new NotImplementedException();
         }
