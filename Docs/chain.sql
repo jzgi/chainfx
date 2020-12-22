@@ -2,9 +2,9 @@ create schema chain;
 
 alter schema chain owner to postgres;
 
-create sequence tseq;
+create sequence jobseq;
 
-alter sequence tseq owner to postgres;
+alter sequence jobseq owner to postgres;
 
 create table peers
 (
@@ -16,7 +16,7 @@ create table peers
     created timestamp(0),
     status smallint default 0 not null,
     icon bytea,
-    me boolean
+    local boolean
 );
 
 alter table peers owner to postgres;
@@ -35,60 +35,54 @@ create table blocks
 
 alter table blocks owner to postgres;
 
-create table blockrecs
+create table blocksts
 (
-    peerid varchar(4) not null,
+    peer varchar(2) not null,
     seq integer not null,
-    tn varchar(32) not null,
+    job varchar(14) not null,
     step smallint not null,
-    an varchar(30) not null,
-    typ smallint not null,
-    inst integer,
+    acct varchar(30) not null,
+    name varchar(10),
+    ldgr varchar(10) not null,
     descr varchar(20),
     amt money not null,
     bal money not null,
     doc jsonb,
     stamp timestamp(0) not null,
-    digest bigint,
-    constraint blockrecs_blocks_fk
-        foreign key (peerid, seq) references blocks
+    digest bigint
 );
 
-alter table blockrecs owner to postgres;
+alter table blocksts owner to postgres;
 
-create index blockrecs_block_idx
-    on blockrecs (peerid, seq);
+create index blocksts_block_idx
+    on blocksts (peer, seq);
 
-create index blockrecs_item_idx
-    on blockrecs (an, typ, inst);
+create unique index blocksts_op_idx
+    on blocksts (job, step);
 
-create unique index blockrecs_op_uidx
-    on blockrecs (tn, step);
-
-create table ops
+create table logs
 (
-    tn varchar(20) not null,
+    job varchar(10) not null,
     step smallint not null,
-    an varchar(20) not null,
-    typ smallint not null,
-    inst varchar(10),
+    acct varchar(20) not null,
+    ldgr varchar(10) not null,
+    status smallint default 0 not null,
     descr varchar(20),
     amt money not null,
     doc jsonb,
-    stamp timestamp(0),
-    value smallint,
-    npeerid varchar(4),
-    nan varchar(20),
-    status smallint default 0 not null,
-    constraint ops_pk
-        primary key (tn, step)
+    bal money,
+    stamp timestamp(0) not null,
+    ppeer varchar(2),
+    pacct varchar(20),
+    pname varchar(10),
+    npeer varchar(2),
+    nacct varchar(20),
+    nname varchar(10),
+    name varchar(10) not null
 );
 
-alter table ops owner to postgres;
+alter table logs owner to postgres;
 
-create index ops_item_idx
-    on ops (an, typ, inst);
-
-create index ops_validate_idx
-    on ops (status, typ, step);
+create index logs_validate_idx
+    on logs (status, ldgr, step);
 

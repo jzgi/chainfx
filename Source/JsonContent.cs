@@ -14,7 +14,7 @@ namespace SkyChain
         // current level
         int level;
 
-        public JsonContent(bool binary, int capacity) : base(binary, capacity)
+        public JsonContent(bool octet, int capacity) : base(octet, capacity)
         {
             counts = new int[16];
             level = 0;
@@ -450,18 +450,7 @@ namespace SkyChain
             {
                 counts[++level] = 0; // enter
                 Add('[');
-                bool bgn = false;
-                v.CurReset();
-                while (v.Next())
-                {
-                    counts[++level] = 0; // enter an data entry
-                    if (bgn) Add(',');
-                    Add('{');
-                    v.Write(this);
-                    Add('}');
-                    level--;
-                    bgn = true;
-                }
+                v.Write(this);
                 Add(']');
                 level--; // exit
             }

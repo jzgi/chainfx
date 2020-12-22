@@ -27,7 +27,7 @@ namespace SkyChain
 
         public int Count => count;
 
-        internal void CurReset()
+        internal void ResetCur()
         {
             cur = -1;
         }
@@ -35,7 +35,7 @@ namespace SkyChain
         /// <summary>
         /// This add can be used in initialzier
         /// </summary>
-        internal void Add(JMbr elem)
+        internal void Add(JMbr el)
         {
             int len = elements.Length;
             if (count >= len)
@@ -44,7 +44,7 @@ namespace SkyChain
                 Array.Copy(elements, 0, alloc, 0, len);
                 elements = alloc;
             }
-            elements[count++] = elem;
+            elements[count++] = el;
         }
 
         public void Add(JObj el)
@@ -185,7 +185,7 @@ namespace SkyChain
 
         public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
         {
-            D obj = new D();
+            var obj = new D();
             obj.Read(this, proj);
             return obj;
         }
@@ -195,7 +195,7 @@ namespace SkyChain
             var arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
             {
-                D obj = new D();
+                var obj = new D();
                 obj.Read((JObj) elements[i], proj);
                 arr[i] = obj;
             }
@@ -222,7 +222,6 @@ namespace SkyChain
 
                 map.Add(key, obj);
             }
-
             return map;
         }
 

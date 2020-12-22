@@ -80,7 +80,7 @@ namespace SkyChain.Chain
 
         public static async Task ForwardAsync(this DbContext dc, string job, string npeer, string nacct, string nname, decimal amt, JObj doc = null)
         {
-            if (!await dc.QueryTopAsync("SELECT step + 1 FROM chain.logs WHERE job = @1 ORDER BY step DESC"))
+            if (!await dc.QueryTopAsync("SELECT step FROM chain.logs WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
             {
                 throw new ChainException();
             }
@@ -93,8 +93,9 @@ namespace SkyChain.Chain
             var o = new Log()
             {
                 job = job,
-                step = step,
+                step = (short) (step + 1),
                 acct = nacct,
+                name = nname,
                 ldgr = ldgr,
                 amt = amt,
                 descr = ldgr,
@@ -104,7 +105,7 @@ namespace SkyChain.Chain
             };
             if (npeer == null)
             {
-                dc.Sql("INSERT INTO chain.logs").T(Log.FORWARD)._VALUES_(Log.FORWARD);
+                dc.Sql("INSERT INTO chain.logs ").colset(Log.Empty)._VALUES_(Log.Empty);
                 await dc.ExecuteAsync(p => o.Write(p));
             }
             else // remote call
@@ -112,10 +113,6 @@ namespace SkyChain.Chain
                 var cli = ChainEnviron.GetChainClient(o.ppeer);
                 // cli.PostAsync("");
             }
-
-            // update status
-            dc.Sql("UPDATE ops SET status = ").T(Log.FORWARD).T(" WHERE tn = @1 AND step = @2");
-            await dc.ExecuteAsync();
         }
 
         public static async Task SetForwardAsync(this DbContext dc, string tn, short step, string descr, decimal amt, JObj doc = null)

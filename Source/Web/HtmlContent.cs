@@ -10,7 +10,7 @@ namespace SkyChain.Web
         public WebContext Web { get; set; }
 
 
-        public HtmlContent(bool binary, int capacity = 32 * 1024) : base(binary, capacity)
+        public HtmlContent(bool octet, int capacity = 32 * 1024) : base(octet, capacity)
         {
         }
 

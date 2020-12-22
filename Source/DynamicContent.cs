@@ -99,9 +99,9 @@ namespace SkyChain
         // byte-wise etag checksum, for char-based output only
         ulong checksum;
 
-        protected DynamicContent(bool binary, int capacity)
+        protected DynamicContent(bool octet, int capacity)
         {
-            if (binary)
+            if (octet)
             {
                 bytebuf = BorrowByteArray(capacity);
             }
