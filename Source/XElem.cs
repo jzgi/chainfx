@@ -288,7 +288,7 @@ namespace SkyChain
 
         public IContent Dump()
         {
-            var cnt = new XmlContent(4096);
+            var cnt = new XmlContent(true, 4096);
             cnt.ELEM(this);
             return cnt;
         }

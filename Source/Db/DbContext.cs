@@ -1547,7 +1547,7 @@ namespace SkyChain.Db
 
         public IContent Dump()
         {
-            var cnt = new JsonContent(8192);
+            var cnt = new JsonContent(true, 8192);
             int fc = reader.FieldCount;
             while (reader.Read())
             {
@@ -1571,12 +1571,10 @@ namespace SkyChain.Db
 
                     cnt._OBJ();
                 }
-
                 cnt._ARR();
             }
             return cnt;
         }
-
 
         //
         // PARAMETERS

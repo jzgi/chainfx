@@ -50,11 +50,23 @@ namespace SkyChain.Chain
             s.Put(nameof(stamp), stamp);
         }
 
+        public string Job => job;
+
+        public short Step => step;
+
+        public string Acct => acct;
+
+        public string Name => name;
+
+        public string Ldgr => ldgr;
+
         public string Descr => descr;
 
         public decimal Amt => amt;
 
         public decimal Bal => bal;
+
+        public JObj Doc => doc;
 
         public DateTime Stamp => stamp;
     }

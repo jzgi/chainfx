@@ -284,7 +284,7 @@ namespace SkyChain.Web
                 {
                     // reading
                     int len = (int) clen;
-                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
+                    buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -304,7 +304,7 @@ namespace SkyChain.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
+                    buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -328,7 +328,7 @@ namespace SkyChain.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
+                    buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -363,7 +363,7 @@ namespace SkyChain.Web
                 if (clen > 0)
                 {
                     int len = (int) clen;
-                    buffer = ArrayUtility.Borrow(len); // borrow from the pool
+                    buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
                     }
@@ -464,7 +464,7 @@ namespace SkyChain.Web
 
         public void Give(int code, string text, bool? shared = null, short maxage = 12)
         {
-            var cnt = new TextContent(1024);
+            var cnt = new TextContent(true, 1024);
             cnt.Add(text);
             StatusCode = code;
             Content = cnt;
@@ -474,7 +474,7 @@ namespace SkyChain.Web
 
         public void Give(int code, IData obj, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
         {
-            var cnt = new JsonContent(8192);
+            var cnt = new JsonContent(true, 8192);
             cnt.Put(null, obj, proj);
             StatusCode = code;
             Content = cnt;
@@ -484,7 +484,7 @@ namespace SkyChain.Web
 
         public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, short maxAge = 12) where D : IData
         {
-            var cnt = new JsonContent(8192);
+            var cnt = new JsonContent(true, 8192);
             cnt.Put(null, arr, proj);
             StatusCode = code;
             Content = cnt;
@@ -552,19 +552,13 @@ namespace SkyChain.Web
 
         public void Close()
         {
-            // request content buffer
-            if (buffer != null)
-            {
-                ArrayUtility.Return(buffer);
-            }
-
             // pool returning
             if (!IsInCache)
             {
                 if (Content is DynamicContent dyn)
                 {
                     dyn.Dispose();
-                    ArrayUtility.Return(dyn.Buffer);
+                    dyn.Clear();
                 }
             }
         }

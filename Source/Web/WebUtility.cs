@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace SkyChain.Web
@@ -29,7 +28,7 @@ namespace SkyChain.Web
 
         public static void GiveFrame(this WebContext wc, int status, bool? shared = null, short maxage = 60, string title = null, byte group = 0)
         {
-            var h = new HtmlContent(8 * 1024)
+            var h = new HtmlContent(true, 8 * 1024)
             {
                 Web = wc
             };
@@ -122,7 +121,7 @@ namespace SkyChain.Web
 
         public static void GiveOffCanvas(this WebContext wc, short status, bool? shared = null, short maxage = 60, string title = null)
         {
-            var h = new HtmlContent(8 * 1024)
+            var h = new HtmlContent(true, 8 * 1024)
             {
                 Web = wc
             };
@@ -211,7 +210,7 @@ namespace SkyChain.Web
         /// </summary>
         public static void GivePage(this WebContext wc, short status, Action<HtmlContent> main, bool? shared = null, short maxage = 12, string title = null, short refresh = 0)
         {
-            var h = new HtmlContent(32 * 1024)
+            var h = new HtmlContent(true, 32 * 1024)
             {
                 Web = wc
             };
@@ -253,7 +252,7 @@ namespace SkyChain.Web
         /// </summary>
         public static void GivePane(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12)
         {
-            var h = new HtmlContent(8 * 1024)
+            var h = new HtmlContent(true, 8 * 1024)
             {
                 Web = wc
             };

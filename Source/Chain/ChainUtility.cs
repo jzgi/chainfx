@@ -32,6 +32,12 @@ namespace SkyChain.Chain
             return recs;
         }
 
+        public static async Task<Log[]> FindAllAsync(this DbContext dc, string ldgr)
+        {
+            dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE ldgr LIKE @2");
+            return await dc.QueryAsync<Log>(p => p.Set(ldgr + "%"));
+        }
+
         public static async Task<Log[]> FindAllAsync(this DbContext dc, string acct, string ldgr)
         {
             dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE acct = @1 AND ldgr LIKE @2");
@@ -44,11 +50,11 @@ namespace SkyChain.Chain
             return await dc.QueryTopAsync<Log>(p => p.Set(job).Set(step));
         }
 
-        public static async Task<Log> StartAsync(this DbContext dc, string acct, string ldgr, string descr, decimal amt, JObj doc = null)
+        public static async Task<Log> StartAsync(this DbContext dc, string acct, string name, string ldgr, string descr, decimal amt, JObj doc = null)
         {
             // resolve transaction number
-            var jobseq = (int) dc.Scalar("SELECT nextval('chain.jobseq')");
-            string job = ChainEnviron.Info.id + TextUtility.ToHex(jobseq);
+            var jobseq = (long) dc.Scalar("SELECT nextval('chain.jobseq')");
+            string job = ChainEnviron.Info.id + TextUtility.ToHex((int) jobseq);
 
             // insert
             var log = new Log()
@@ -56,6 +62,7 @@ namespace SkyChain.Chain
                 job = job,
                 step = 1,
                 acct = acct,
+                name = name,
                 ldgr = ldgr,
                 amt = amt,
                 descr = descr,
@@ -65,29 +72,39 @@ namespace SkyChain.Chain
             };
 
             // data access
-            dc.Sql("INSERT INTO ops ").colset(log, 0)._VALUES_(log, 0);
+            dc.Sql("INSERT INTO chain.logs ").colset(log, 0)._VALUES_(log, 0);
             await dc.ExecuteAsync(p => log.Write(p));
 
-            // push to tne next step
-            //
-            if (log.IsLocal)
-            {
-                dc.Sql("INSERT INTO ops ").colset(log)._VALUES_(log);
-                await dc.ExecuteAsync(p => log.Write(p));
-            }
-
-            return null;
+            return log;
         }
 
-        public static async Task ForwardAsync(this DbContext dc, string job, short step, string npeer, string nacct, string nname)
+        public static async Task ForwardAsync(this DbContext dc, string job, string npeer, string nacct, string nname, decimal amt, JObj doc = null)
         {
-            // get the 
-            dc.Sql("SELECT ").collst(Log.Empty).T(" FROM logs WHERE job = @1 AND step = @2");
-            var o = dc.QueryTop<Log>(p => p.Set(job).Set(step));
-
-            if (o.IsLocal)
+            if (!await dc.QueryTopAsync("SELECT step + 1 FROM chain.logs WHERE job = @1 ORDER BY step DESC"))
             {
-                dc.Sql("INSERT INTO ops").T(Log.FORTH)._VALUES_(Log.FORTH);
+                throw new ChainException();
+            }
+            dc.Let(out short step);
+
+            dc.Sql("UPDATE chain.logs SET status = ").T(Log.FORWARD).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
+            await dc.QueryTopAsync(p => p.Set(npeer).Set(nacct).Set(nname).Set(job).Set(step));
+            dc.Let(out string ldgr);
+
+            var o = new Log()
+            {
+                job = job,
+                step = step,
+                acct = nacct,
+                ldgr = ldgr,
+                amt = amt,
+                descr = ldgr,
+                doc = doc,
+                stamp = DateTime.Now,
+                status = Log.CREATED
+            };
+            if (npeer == null)
+            {
+                dc.Sql("INSERT INTO chain.logs").T(Log.FORWARD)._VALUES_(Log.FORWARD);
                 await dc.ExecuteAsync(p => o.Write(p));
             }
             else // remote call
@@ -97,7 +114,7 @@ namespace SkyChain.Chain
             }
 
             // update status
-            dc.Sql("UPDATE ops SET status = ").T(Log.FORTH).T(" WHERE tn = @1 AND step = @2");
+            dc.Sql("UPDATE ops SET status = ").T(Log.FORWARD).T(" WHERE tn = @1 AND step = @2");
             await dc.ExecuteAsync();
         }
 

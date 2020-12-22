@@ -251,7 +251,7 @@ namespace SkyChain
 
         public IContent Dump()
         {
-            var cnt = new FormContent(4096);
+            var cnt = new FormContent(true, 4096);
             cnt.Put(null, this);
             return cnt;
         }

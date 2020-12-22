@@ -263,23 +263,23 @@ namespace SkyChain
 
         public static string ToHex(int v)
         {
-            char[] buf = new char[8];
-            for (int i = 0; i < 8; i++)
+            const int LEN = 8;
+            char[] buf = new char[LEN];
+            for (int i = 0; i < LEN; i++)
             {
-                buf[i] = HEX[(v >> (i * 4)) & 0x0f];
+                buf[LEN - i - 1] = HEX[(v >> (i * 4)) & 0x0f];
             }
-
             return new string(buf);
         }
 
         public static string ToHex(short v)
         {
-            char[] buf = new char[4];
-            for (int i = 0; i < 4; i++)
+            const int LEN = 4;
+            char[] buf = new char[LEN];
+            for (int i = 0; i < LEN; i++)
             {
-                buf[i] = HEX[(v >> (i * 4)) & 0x0f];
+                buf[LEN - i - 1] = HEX[(v >> (i * 4)) & 0x0f];
             }
-
             return new string(buf);
         }
 

@@ -318,7 +318,7 @@ namespace SkyChain
             for (int i = 0; i < Count; i++)
             {
                 var mbr = ValueAt(i);
-                var t = mbr.type;
+                var t = mbr.typ;
                 if (t == JType.Array)
                 {
                     cnt.Put(mbr.Key, (JArr) mbr);
@@ -352,14 +352,14 @@ namespace SkyChain
 
         public IContent Dump()
         {
-            var cnt = new JsonContent(4096);
+            var cnt = new JsonContent(true, 4096);
             cnt.PutFromSource(this);
             return cnt;
         }
 
         public override string ToString()
         {
-            var cnt = new JsonContent(4 * 1024, binary: false);
+            var cnt = new JsonContent(false, 4 * 1024);
             try
             {
                 cnt.Put(null, this);
@@ -367,7 +367,7 @@ namespace SkyChain
             }
             finally
             {
-                ArrayUtility.Return(cnt.Buffer); // return buffer to pool
+                cnt.Clear();
             }
         }
     }

@@ -5,9 +5,7 @@ namespace SkyChain
     /// </summary>
     public class TextContent : DynamicContent
     {
-        public TextContent(int capacity) : base(capacity)
-        {
-        }
+        public TextContent(bool binary, int capacity) : base(binary, capacity) {}
 
         public override string Type { get; set; } = "text/plain";
     }

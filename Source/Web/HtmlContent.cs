@@ -10,7 +10,7 @@ namespace SkyChain.Web
         public WebContext Web { get; set; }
 
 
-        public HtmlContent(int capacity = 32 * 1024) : base(capacity)
+        public HtmlContent(bool binary, int capacity = 32 * 1024) : base(binary, capacity)
         {
         }
 
@@ -978,6 +978,26 @@ namespace SkyChain.Web
         public HtmlContent _UL()
         {
             Add("</ul>");
+            return this;
+        }
+
+        public HtmlContent OL_(string css = null)
+        {
+            Add("<ol");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlContent _OL()
+        {
+            Add("</ol>");
             return this;
         }
 
@@ -2535,6 +2555,16 @@ namespace SkyChain.Web
             Add(name);
             Add("\" value=\"");
             AddPrimitive(val);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent HIDDEN(string name, string val)
+        {
+            Add("<input type=\"hidden\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            AddEsc(val);
             Add("\">");
             return this;
         }

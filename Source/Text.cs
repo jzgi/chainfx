@@ -211,7 +211,7 @@ namespace SkyChain
 
         public IContent Dump()
         {
-            var cnt = new TextContent(4096);
+            var cnt = new TextContent(true, 4096);
             cnt.Add(charbuf, 0, count);
             return cnt;
         }

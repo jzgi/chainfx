@@ -149,7 +149,7 @@ namespace SkyChain.Web
             {
                 if (content is DynamicContent cnt)
                 {
-                    ArrayUtility.Return(cnt.Buffer);
+                    cnt.Clear();
                 }
             }
 
@@ -191,7 +191,7 @@ namespace SkyChain.Web
             {
                 if (content is DynamicContent cnt)
                 {
-                    ArrayUtility.Return(cnt.Buffer);
+                    cnt.Clear();
                 }
             }
 

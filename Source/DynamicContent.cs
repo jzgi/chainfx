@@ -4,7 +4,9 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using static System.Environment;
 
 namespace SkyChain
 {
@@ -97,15 +99,15 @@ namespace SkyChain
         // byte-wise etag checksum, for char-based output only
         ulong checksum;
 
-        protected DynamicContent(int capacity, bool binary = true)
+        protected DynamicContent(bool binary, int capacity)
         {
             if (binary)
             {
-                bytebuf = ArrayUtility.Borrow(capacity);
+                bytebuf = BorrowByteArray(capacity);
             }
             else
             {
-                charbuf = new char[capacity];
+                charbuf = BorrowCharArray(capacity);
             }
         }
 
@@ -119,6 +121,22 @@ namespace SkyChain
 
         public string ETag => etag ??= TextUtility.ToHex(checksum);
 
+        public void Clear()
+        {
+            if (bytebuf != null)
+            {
+                Return(bytebuf);
+                bytebuf = null;
+            }
+            else
+            {
+                Return(charbuf);
+                charbuf = null;
+            }
+            count = 0;
+            checksum = 0;
+        }
+
         void AddByte(byte b)
         {
             // ensure capacity
@@ -126,10 +144,10 @@ namespace SkyChain
             if (count >= olen)
             {
                 int nlen = olen * 2; // new doubled length
-                byte[] obuf = bytebuf;
-                bytebuf = ArrayUtility.Borrow(nlen);
-                Array.Copy(obuf, 0, bytebuf, 0, olen);
-                ArrayUtility.Return(obuf);
+                byte[] old = bytebuf;
+                bytebuf = BorrowByteArray(nlen);
+                Array.Copy(old, 0, bytebuf, 0, olen);
+                Return(old);
             }
 
             bytebuf[count++] = b;
@@ -171,9 +189,10 @@ namespace SkyChain
                 if (count >= olen)
                 {
                     int nlen = olen * 2; // new length
-                    char[] obuf = charbuf;
-                    charbuf = new char[nlen];
-                    Array.Copy(obuf, 0, charbuf, 0, olen);
+                    char[] old = charbuf;
+                    charbuf = BorrowCharArray(nlen);
+                    Array.Copy(old, 0, charbuf, 0, olen);
+                    Return(old);
                 }
 
                 charbuf[count++] = c;
@@ -227,13 +246,19 @@ namespace SkyChain
 
         public void Add(StringBuilder v)
         {
-            if (v == null) return;
+            if (v == null)
+            {
+                return;
+            }
             Add(v, 0, v.Length);
         }
 
         public void Add(StringBuilder v, int offset, int len)
         {
-            if (v == null) return;
+            if (v == null)
+            {
+                return;
+            }
             for (int i = offset; i < len; i++)
             {
                 Add(v[i]);
@@ -544,6 +569,184 @@ namespace SkyChain
         public override string ToString()
         {
             return charbuf == null ? Type : new string(charbuf, 0, count);
+        }
+
+
+        //
+        //
+        //
+
+        // we use number of processor cores as a factor
+        static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
+
+        // pool of bytearray
+        static readonly Stack<byte>[] bapool =
+        {
+            new Stack<byte>(1024 * 16, factor * 8),
+            new Stack<byte>(1024 * 32, factor * 8),
+            new Stack<byte>(1024 * 64, factor * 4),
+            new Stack<byte>(1024 * 128, factor * 4),
+            new Stack<byte>(1024 * 256, factor * 2),
+            new Stack<byte>(1024 * 512, factor * 2),
+        };
+
+        static byte[] BorrowByteArray(int size)
+        {
+            // the proper queue
+            for (int i = 0; i < bapool.Length; i++)
+            {
+                var stack = bapool[i];
+                if (stack.Spec < size)
+                {
+                    continue;
+                }
+                return stack.TryPop();
+            }
+
+            // out of pool scope
+            return new byte[size];
+        }
+
+        static void Return(byte[] buf)
+        {
+            if (buf == null) return;
+
+            int len = buf.Length;
+            for (int i = 0; i < bapool.Length; i++)
+            {
+                var stack = bapool[i];
+                if (stack.Spec == len) // the right stack
+                {
+                    if (stack.Count < stack.Capacity)
+                    {
+                        stack.Push(buf);
+                    }
+                }
+                else if (stack.Spec > len)
+                {
+                    break;
+                }
+            }
+        }
+
+        //
+        // pool of chararray
+        static readonly Stack<char>[] capool =
+        {
+            new Stack<char>(1024 * 1, factor * 8),
+            new Stack<char>(1024 * 2, factor * 8),
+            new Stack<char>(1024 * 4, factor * 4),
+            new Stack<char>(1024 * 8, factor * 4),
+            new Stack<char>(1024 * 32, factor * 2),
+            new Stack<char>(1024 * 64, factor * 2)
+        };
+
+        public static char[] BorrowCharArray(int size)
+        {
+            // the proper queue
+            for (int i = 0; i < capool.Length; i++)
+            {
+                var stack = capool[i];
+                if (stack.Spec < size)
+                {
+                    continue;
+                }
+                return stack.TryPop();
+            }
+
+            // out of pool scope
+            return new char[size];
+        }
+
+        public static void Return(char[] buf)
+        {
+            if (buf == null) return;
+
+            int len = buf.Length;
+            for (int i = 0; i < capool.Length; i++)
+            {
+                var stack = capool[i];
+                if (stack.Spec == len) // the right stack
+                {
+                    if (stack.Count < stack.Capacity)
+                    {
+                        stack.Push(buf);
+                    }
+                }
+                else if (stack.Spec > len)
+                {
+                    break;
+                }
+            }
+        }
+
+
+        class Stack<T> where T : struct
+        {
+            readonly T[][] arrays;
+
+            // buffer size in bytes
+            readonly int spec;
+
+            readonly int capacity;
+
+            int count;
+
+            int busy;
+
+            internal Stack(int spec, int capacity)
+            {
+                this.arrays = new T[capacity][];
+                this.spec = spec;
+                this.capacity = capacity;
+            }
+
+            internal int Spec => spec;
+
+            internal int Capacity => capacity;
+
+            internal void Push(T[] v)
+            {
+                var spin = new SpinWait();
+                while (true)
+                {
+                    if (Interlocked.CompareExchange(ref busy, 1, 0) == 0)
+                    {
+                        // get top
+                        if (count < capacity)
+                        {
+                            arrays[count++] = v;
+                            busy = 0;
+                            return;
+                        }
+                        busy = 0;
+                        return;
+                    }
+                    spin.SpinOnce();
+                }
+            }
+
+            internal T[] TryPop()
+            {
+                var spin = new SpinWait();
+                while (true)
+                {
+                    if (Interlocked.CompareExchange(ref busy, 1, 0) == 0)
+                    {
+                        // get top
+                        if (count == 0)
+                        {
+                            arrays[count++] = new T[spec];
+                        }
+                        var v = arrays[--count];
+                        busy = 0;
+                        return v;
+                    }
+                    spin.SpinOnce();
+                }
+            }
+
+            internal int Count => count;
         }
     }
 }

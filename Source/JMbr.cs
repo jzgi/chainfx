@@ -11,7 +11,7 @@ namespace SkyChain
         readonly string name;
 
         // type of the value
-        internal readonly JType type;
+        internal readonly JType typ;
 
         // JObj, JArr, string
         internal readonly object refv;
@@ -21,7 +21,7 @@ namespace SkyChain
         public JMbr(JType jnull, string name = null)
         {
             this.name = name;
-            type = jnull;
+            typ = jnull;
             refv = null;
             numv = default;
         }
@@ -29,7 +29,7 @@ namespace SkyChain
         public JMbr(JObj v, string name = null)
         {
             this.name = name;
-            type = JType.Object;
+            typ = JType.Object;
             refv = v;
             numv = default;
         }
@@ -37,7 +37,7 @@ namespace SkyChain
         public JMbr(JArr v, string name = null)
         {
             this.name = name;
-            type = JType.Array;
+            typ = JType.Array;
             refv = v;
             numv = default;
         }
@@ -45,7 +45,7 @@ namespace SkyChain
         public JMbr(string v, string name = null)
         {
             this.name = name;
-            type = JType.String;
+            typ = JType.String;
             refv = v;
             numv = default;
         }
@@ -53,7 +53,7 @@ namespace SkyChain
         public JMbr(bool v, string name = null)
         {
             this.name = name;
-            type = v ? JType.True : JType.False;
+            typ = v ? JType.True : JType.False;
             refv = null;
             numv = default;
         }
@@ -61,7 +61,7 @@ namespace SkyChain
         public JMbr(JNumber v, string name = null)
         {
             this.name = name;
-            type = JType.Number;
+            typ = JType.Number;
             refv = null;
             numv = v;
         }
@@ -72,7 +72,7 @@ namespace SkyChain
 
         public static implicit operator JObj(JMbr v)
         {
-            if (v.type == JType.Object)
+            if (v.typ == JType.Object)
             {
                 return (JObj) v.refv;
             }
@@ -81,7 +81,7 @@ namespace SkyChain
 
         public static implicit operator JArr(JMbr v)
         {
-            if (v.type == JType.Array)
+            if (v.typ == JType.Array)
             {
                 return (JArr) v.refv;
             }
@@ -90,12 +90,12 @@ namespace SkyChain
 
         public static implicit operator bool(JMbr v)
         {
-            return v.type == JType.True;
+            return v.typ == JType.True;
         }
 
         public static implicit operator char(JMbr v)
         {
-            if (v.type == JType.String)
+            if (v.typ == JType.String)
             {
                 var str = (string) v.refv;
                 return str.Length == 0 ? '\0' : str[0];
@@ -105,7 +105,7 @@ namespace SkyChain
 
         public static implicit operator short(JMbr v)
         {
-            if (v.type == JType.Number)
+            if (v.typ == JType.Number)
             {
                 return v.numv.Short;
             }
@@ -114,7 +114,7 @@ namespace SkyChain
 
         public static implicit operator int(JMbr v)
         {
-            if (v.type == JType.Number)
+            if (v.typ == JType.Number)
             {
                 return v.numv.Int;
             }
@@ -123,7 +123,7 @@ namespace SkyChain
 
         public static implicit operator long(JMbr v)
         {
-            if (v.type == JType.Number)
+            if (v.typ == JType.Number)
             {
                 return v.numv.Long;
             }
@@ -132,7 +132,7 @@ namespace SkyChain
 
         public static implicit operator double(JMbr v)
         {
-            if (v.type == JType.Number)
+            if (v.typ == JType.Number)
             {
                 return v.numv.Double;
             }
@@ -141,7 +141,7 @@ namespace SkyChain
 
         public static implicit operator decimal(JMbr v)
         {
-            if (v.type == JType.Number)
+            if (v.typ == JType.Number)
             {
                 return v.numv.Decimal;
             }
@@ -150,7 +150,7 @@ namespace SkyChain
 
         public static implicit operator JNumber(JMbr v)
         {
-            if (v.type == JType.Number)
+            if (v.typ == JType.Number)
             {
                 return v.numv;
             }
@@ -159,7 +159,7 @@ namespace SkyChain
 
         public static implicit operator DateTime(JMbr v)
         {
-            if (v.type == JType.String)
+            if (v.typ == JType.String)
             {
                 string str = (string) v.refv;
                 if (TextUtility.TryParseDate(str, out var dt)) return dt;
@@ -169,7 +169,7 @@ namespace SkyChain
 
         public static implicit operator string(JMbr v)
         {
-            if (v.type == JType.String)
+            if (v.typ == JType.String)
             {
                 return (string) v.refv;
             }

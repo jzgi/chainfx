@@ -8,18 +8,18 @@
 
         public const short
             CREATED = 0,
-            FORTH = 1,
-            BACK = 2,
-            CANCEL = 3,
+            FORWARD = 1,
+            BACKWARD = 2,
+            ABORT = 3,
             DONE = 4;
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CREATED, null},
-            {FORTH, "推进"},
-            {BACK, "退回"},
-            {CANCEL, "撤销"},
+            {CREATED, "新建"},
+            {FORWARD, "推进"},
+            {BACKWARD, "退回"},
+            {ABORT, "撤销"},
             {DONE, "完成"},
         };
 
@@ -61,5 +61,19 @@
         }
 
         public bool IsLocal => ppeer == null;
+
+        public string PPeer => ppeer;
+
+        public string PAcct => pacct;
+
+        public string PName => pname;
+
+        public string NPeer => npeer;
+
+        public string NAcct => nacct;
+
+        public string NName => nname;
+
+        public short Status => status;
     }
 }

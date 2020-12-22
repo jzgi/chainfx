@@ -15,7 +15,7 @@ namespace SkyChain
 
         int ordinal = -1;
 
-        public FormContent(int capacity) : base(capacity)
+        public FormContent(bool binary, int capacity) : base(binary, capacity)
         {
         }
 

@@ -24,13 +24,13 @@ namespace SkyChain.Chain
             var recs = dc.Query<Block>("SELECT * FROM chain.blockrecs WHERE peerid = '&' AND seq = @1", p => p.Set(b.seq));
 
             // putting into content
-            var jc = new JsonContent(1024 * 256, true);
+            var jc = new JsonContent(true, 1024 * 256);
             try
             {
             }
             finally
             {
-                ArrayUtility.Return(jc.Buffer);
+                jc.Clear();
             }
             jc.Put(null, recs);
 

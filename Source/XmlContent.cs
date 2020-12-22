@@ -7,9 +7,7 @@ namespace SkyChain
     /// </summary>
     public class XmlContent : DynamicContent, ISink
     {
-        public XmlContent(int capacity) : base(capacity)
-        {
-        }
+        public XmlContent(bool binary, int capacity) : base(binary, capacity) {}
 
         public override string Type { get; set; } = "application/xml";
 

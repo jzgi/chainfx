@@ -37,7 +37,7 @@ namespace SkyChain.Web
 
         public static string Encrypt<P>(P prin, byte proj) where P : IData
         {
-            var cnt = new JsonContent(4096);
+            var cnt = new JsonContent(true, 4096);
             try
             {
                 cnt.PutToken(prin, proj); // use the special putting method to append time stamp
@@ -49,7 +49,7 @@ namespace SkyChain.Web
             }
             finally
             {
-                ArrayUtility.Return(cnt.Buffer);
+                cnt.Clear();
             }
         }
 
