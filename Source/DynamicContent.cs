@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -592,7 +593,7 @@ namespace SkyChain
 
         static byte[] BorrowByteArray(int size)
         {
-            // the proper queue
+            // seek the stack
             for (int i = 0; i < bapool.Length; i++)
             {
                 var stack = bapool[i];
@@ -600,7 +601,11 @@ namespace SkyChain
                 {
                     continue;
                 }
-                return stack.TryPop();
+                if (!stack.TryPop(out var buf))
+                {
+                    stack.Push(buf = new byte[stack.Spec]);
+                }
+                return buf;
             }
 
             // out of pool scope
@@ -643,7 +648,7 @@ namespace SkyChain
 
         public static char[] BorrowCharArray(int size)
         {
-            // the proper queue
+            // seek the stack
             for (int i = 0; i < capool.Length; i++)
             {
                 var stack = capool[i];
@@ -651,7 +656,11 @@ namespace SkyChain
                 {
                     continue;
                 }
-                return stack.TryPop();
+                if (!stack.TryPop(out var buf))
+                {
+                    stack.Push(buf = new char[stack.Spec]);
+                }
+                return buf;
             }
 
             // out of pool scope
@@ -680,23 +689,15 @@ namespace SkyChain
             }
         }
 
-
-        class Stack<T> where T : struct
+        class Stack<T> : ConcurrentStack<T[]> where T : struct
         {
-            readonly T[][] arrays;
-
             // buffer size in bytes
             readonly int spec;
 
             readonly int capacity;
 
-            int count;
-
-            int busy;
-
             internal Stack(int spec, int capacity)
             {
-                this.arrays = new T[capacity][];
                 this.spec = spec;
                 this.capacity = capacity;
             }
@@ -704,49 +705,6 @@ namespace SkyChain
             internal int Spec => spec;
 
             internal int Capacity => capacity;
-
-            internal void Push(T[] v)
-            {
-                var spin = new SpinWait();
-                while (true)
-                {
-                    if (Interlocked.CompareExchange(ref busy, 1, 0) == 0)
-                    {
-                        // get top
-                        if (count < capacity)
-                        {
-                            arrays[count++] = v;
-                            busy = 0;
-                            return;
-                        }
-                        busy = 0;
-                        return;
-                    }
-                    spin.SpinOnce();
-                }
-            }
-
-            internal T[] TryPop()
-            {
-                var spin = new SpinWait();
-                while (true)
-                {
-                    if (Interlocked.CompareExchange(ref busy, 1, 0) == 0)
-                    {
-                        // get top
-                        if (count == 0)
-                        {
-                            arrays[count++] = new T[spec];
-                        }
-                        var v = arrays[--count];
-                        busy = 0;
-                        return v;
-                    }
-                    spin.SpinOnce();
-                }
-            }
-
-            internal int Count => count;
         }
     }
 }

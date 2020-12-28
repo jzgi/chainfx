@@ -41,7 +41,7 @@ namespace SkyChain.Db
         }
 
 
-        public static void Attach(object value, byte flag = 0)
+        public static void Register(object value, byte flag = 0)
         {
             if (holds == null)
             {
@@ -51,7 +51,7 @@ namespace SkyChain.Db
             holds[size++] = new Hold(value, flag);
         }
 
-        public static void Attach<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+        public static void Register<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
@@ -61,7 +61,7 @@ namespace SkyChain.Db
             holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
         }
 
-        public static void Attach<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void Register<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
@@ -172,25 +172,24 @@ namespace SkyChain.Db
                 {
                     return value;
                 }
-
                 @lock.EnterUpgradeableReadLock();
                 try
                 {
-                    if (Environment.TickCount >= expiry)
+                    var ptick = (Environment.TickCount & int.MaxValue); // positive tick
+                    if (ptick >= expiry) // refetch
                     {
                         @lock.EnterWriteLock();
                         try
                         {
                             using var dc = NewDbContext();
                             value = fetch(dc);
-                            expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                            expiry = ptick + maxage * 1000;
                         }
                         finally
                         {
                             @lock.ExitWriteLock();
                         }
                     }
-
                     return value;
                 }
                 finally
@@ -205,7 +204,6 @@ namespace SkyChain.Db
                 {
                     return value;
                 }
-
                 int lexpiry = this.expiry;
                 int ticks = Environment.TickCount;
                 if (ticks >= lexpiry)

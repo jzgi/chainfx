@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
+using static SkyChain.Web.Modal;
 
 namespace SkyChain.Chain
 {
@@ -24,7 +25,7 @@ namespace SkyChain.Chain
             });
         }
 
-        [Ui("✛ 新建", "Create A New Peer"), Tool(Modal.ButtonShow, Appear.Large)]
+        [Ui("✛ 新建", "Create A New Peer"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             if (wc.IsGet)

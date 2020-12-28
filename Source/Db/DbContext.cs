@@ -609,7 +609,7 @@ namespace SkyChain.Db
                     return true;
                 }
             }
-            catch
+            catch (Exception e)
             {
             }
             return false;

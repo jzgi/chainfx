@@ -447,7 +447,7 @@ namespace SkyChain.Web
             {
                 if (currency)
                 {
-                    Add('¥');
+                    Add('￥');
                 }
 
                 Add(v);
@@ -1042,10 +1042,44 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent DT_()
+        {
+            Add("<dt>");
+            return this;
+        }
+
+        public HtmlContent _DT()
+        {
+            Add("</dt>");
+            return this;
+        }
+
         public HtmlContent DT(string v)
         {
             Add("<dt>");
             AddEsc(v);
+            Add("</dt>");
+            return this;
+        }
+
+        public HtmlContent DT2(string a, string b)
+        {
+            Add("<dt>");
+            AddEsc(a);
+            Add("&nbsp;");
+            AddEsc(b);
+            Add("</dt>");
+            return this;
+        }
+
+        public HtmlContent DT3(string a, string b, string c)
+        {
+            Add("<dt>");
+            AddEsc(a);
+            Add("&nbsp;");
+            AddEsc(b);
+            Add("&nbsp;");
+            AddEsc(c);
             Add("</dt>");
             return this;
         }
@@ -1085,7 +1119,7 @@ namespace SkyChain.Web
             Add("<p>");
             if (currency)
             {
-                Add('¥');
+                Add('￥');
             }
 
             Add(p);
@@ -1127,7 +1161,7 @@ namespace SkyChain.Web
 
         public HtmlContent CNY(decimal v, bool em = false, bool s = false)
         {
-            Add('¥');
+            Add('￥');
             if (em)
             {
                 Add("<em>");
@@ -1344,7 +1378,7 @@ namespace SkyChain.Web
 
         public HtmlContent QRCODE(string v, string css = null)
         {
-            Add("<div class=\"uk-qrcode uk-flex-center");
+            Add("<div class=\"uk-qrcode");
             if (css != null)
             {
                 Add(' ');
@@ -2105,7 +2139,7 @@ namespace SkyChain.Web
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(top ? "uk-top-bar" : "uk-bottom-bar");
             Add("\">");
-            Add("<div class=\"uk-button-group\">");
+            Add("<span class=\"uk-button-group\">");
             if (toggle)
             {
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
@@ -2127,9 +2161,9 @@ namespace SkyChain.Web
                 }
             }
 
-            Add("</div>");
+            Add("</span>");
 
-            Add("<section class=\"uk-flex uk-flex-middle\">");
+            Add("<span class=\"uk-flex uk-flex-middle\">");
             if (caption != null)
             {
                 Add(caption);
@@ -2147,7 +2181,7 @@ namespace SkyChain.Web
                 Add("<a class=\"uk-icon-button\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             }
 
-            Add("</section>");
+            Add("</span>");
 
             Add("</form>");
             Add("<div class=\"");
@@ -2819,7 +2853,7 @@ namespace SkyChain.Web
         public HtmlContent DATE(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
         {
             LABEL(label);
-            Add("<input type=\"date\" class=\"uk-width-1-1\" name=\"");
+            Add("<input type=\"date\" class=\"uk-input uk-width-1-1\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(val, 3, 0);
@@ -3609,7 +3643,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT(string label, string name, string v, string[] opt, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<V>(string label, string name, V v, V[] opt, bool required = false, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, refresh);
             if (opt != null)
@@ -3620,11 +3654,11 @@ namespace SkyChain.Web
                     {
                         var e = opt[i];
                         Add("<option value=\"");
-                        Add(e);
+                        AddPrimitive(e);
                         Add("\"");
                         if (e.Equals(v)) Add(" selected");
                         Add(">");
-                        Add(e);
+                        AddPrimitive(e);
                         Add("</option>");
                     }
                 }
@@ -3647,56 +3681,6 @@ namespace SkyChain.Web
                     if (v.Contains(e)) Add(" selected");
                     Add(">");
                     Add(e);
-                    Add("</option>");
-                }
-            }
-            _SELECT();
-            return this;
-        }
-
-        public HtmlContent SELECT<K, V>(string label, string name, K v, V[] opt, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
-        {
-            SELECT_(label, name, false, required, size, refresh);
-            if (opt != null)
-            {
-                for (int i = 0; i < opt.Length; i++)
-                {
-                    var e = opt[i];
-                    var key = e.Key;
-                    Add("<option value=\"");
-                    if (key is short shortv) Add(shortv);
-                    else if (key is int intv) Add(intv);
-                    else if (key is string strv) Add(strv);
-                    Add("\"");
-                    if (key.Equals(v)) Add(" selected");
-                    Add(">");
-                    Add(e.ToString());
-                    Add("</option>");
-                }
-            }
-            _SELECT();
-            return this;
-        }
-
-        public HtmlContent SELECT<K, V>(string label, string name, K[] v, V[] opt, bool required = false, sbyte size = 0, bool refresh = false) where V : IKeyable<K>
-        {
-            SELECT_(label, name, true, required, size, refresh);
-            if (opt != null)
-            {
-                for (int i = 0; i < opt.Length; i++)
-                {
-                    var e = opt[i];
-                    var key = e.Key;
-                    Add("<option value=\"");
-                    if (key is short shortv) Add(shortv);
-                    else if (key is int intv) Add(intv);
-                    else if (key is string strv) Add(strv);
-                    Add("\"");
-                    if (v != null && v.Contains(key)) Add(" selected");
-                    Add(">");
-                    if (key is short shortc) Add(shortc);
-                    else if (key is int intc) Add(intc);
-                    else if (key is string strc) Add(strc);
                     Add("</option>");
                 }
             }
@@ -3752,7 +3736,7 @@ namespace SkyChain.Web
 
             Add("<output class=\"uk-output\" name=\"");
             Add(name);
-            Add("\">¥");
+            Add("\">￥");
             Add(v);
             Add("</output>");
             return this;
