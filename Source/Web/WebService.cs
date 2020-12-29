@@ -28,7 +28,7 @@ namespace SkyChain.Web
         readonly KestrelServer server;
 
         // cache of recent responses
-        readonly ConcurrentDictionary<string, Response> cache;
+        readonly ConcurrentDictionary<string, CacheResp> cache;
 
         // the response cache cleaner thread
         Thread cleaner;
@@ -41,7 +41,7 @@ namespace SkyChain.Web
 
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            cache = new ConcurrentDictionary<string, Response>(factor * 4, 1024);
+            cache = new ConcurrentDictionary<string, CacheResp>(factor * 4, 1024);
 
             // create the embedded server instance
             var opts = new KestrelServerOptions();
@@ -120,7 +120,7 @@ namespace SkyChain.Web
                 return;
             }
 
-            string path = System.IO.Path.Join(Name, filename);
+            string path = Path.Join(Name, filename);
             if (!File.Exists(path))
             {
                 wc.Give(404); // not found
@@ -176,14 +176,13 @@ namespace SkyChain.Web
 
         public void DisposeContext(HttpContext context, Exception excep)
         {
-            // dispose the context
+            // close the context
             ((WebContext) context).Close();
         }
 
         /// <summary>
         /// To generate API reference documentation for this service.
         /// </summary>
-        /// <param name="wc"></param>
         public void @ref(WebContext wc)
         {
             wc.GivePage(200, h =>
@@ -246,10 +245,10 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (!wc.IsInCache && wc.Shared == true && Response.IsCacheable(wc.StatusCode))
+                if (!wc.IsInCache && wc.Shared == true && CacheResp.IsCacheable(wc.StatusCode))
                 {
-                    var re = new Response(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    cache.AddOrUpdate(wc.Uri, re, (k, old) => re.MergeWith(old));
+                    var resp = new CacheResp(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
+                    cache.AddOrUpdate(wc.Uri, resp, (k, old) => resp.MergeWith(old));
                     wc.IsInCache = true;
                 }
             }
@@ -272,7 +271,7 @@ namespace SkyChain.Web
         /// <summary>
         /// A prior response for caching that might be cleared but not removed, for better reusability. 
         /// </summary>
-        public class Response
+        public class CacheResp
         {
             // response status, 0 means cleared, otherwise one of the cacheable status
             int code;
@@ -288,7 +287,7 @@ namespace SkyChain.Web
 
             int hits;
 
-            internal Response(int code, IContent content, int maxage, int stamp)
+            internal CacheResp(int code, IContent content, int maxage, int stamp)
             {
                 this.code = code;
                 this.content = content;
@@ -355,7 +354,7 @@ namespace SkyChain.Web
                 }
             }
 
-            internal Response MergeWith(Response old)
+            internal CacheResp MergeWith(CacheResp old)
             {
                 Interlocked.Add(ref hits, old.Hits);
                 return this;

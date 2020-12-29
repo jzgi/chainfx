@@ -1215,7 +1215,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_(string a, string css = null, bool end = false)
+        public HtmlContent A_HREF_(string a, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1234,7 +1234,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<B>(string a, B b, string css = null, bool end = false)
+        public HtmlContent A_HREF_<B>(string a, B b, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1254,7 +1254,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<B, C>(string a, B b, C c, string css = null, bool end = false)
+        public HtmlContent A_HREF_<B, C>(string a, B b, C c, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -2010,7 +2010,7 @@ namespace SkyChain.Web
 
         public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
         {
-            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl uk-child-width-1-5@xxl\">");
+            Add("<div uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl uk-child-width-1-5@xxl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
@@ -2031,7 +2031,7 @@ namespace SkyChain.Web
                 }
             }
 
-            Add("</main>");
+            Add("</div>");
         }
 
         public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-default")
@@ -3115,7 +3115,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent CHECKBOX(string label, string name, bool check, string tip = null, bool required = false)
+        public HtmlContent CHECKBOX<V>(string label, string name, V v, bool check = false, string tip = null, bool required = false, bool disabled = false, string css = null)
         {
             LABEL(label);
             if (tip != null)
@@ -3123,30 +3123,13 @@ namespace SkyChain.Web
                 Add("<label class=\"uk-flex uk-input uk-flex-middle\">");
             }
 
-            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
-            Add(name);
-            Add("\"");
-            if (check) Add(" checked");
-            if (required) Add(" required");
-            Add(">&nbsp;");
-            if (tip != null)
+            Add("<input type=\"checkbox\" class=\"uk-checkbox");
+            if (css != null)
             {
-                Add(tip); // caption following the checkbox
-                Add("</label>");
+                Add(' ');
+                Add(css);
             }
-
-            return this;
-        }
-
-        public HtmlContent CHECKBOX<V>(string label, string name, V v, bool check, string tip = null, bool required = false, bool disabled = false)
-        {
-            LABEL(label);
-            if (tip != null)
-            {
-                Add("<label class=\"uk-flex uk-input uk-flex-middle\">");
-            }
-
-            Add("<input type=\"checkbox\" class=\"uk-checkbox\" name=\"");
+            Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddPrimitive(v);
@@ -3154,9 +3137,10 @@ namespace SkyChain.Web
             if (check) Add(" checked=\"checked\"");
             if (required) Add("\" required=\"required\"");
             if (disabled) Add("\" disabled=\"disabled\"");
-            Add(">&nbsp;");
+            Add(">");
             if (tip != null)
             {
+                Add("&nbsp;");
                 Add(tip); // caption following the checkbox
                 Add("</label>");
             }

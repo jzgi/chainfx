@@ -156,7 +156,7 @@ namespace SkyChain.Web
 
         public bool IsWeChat => UserAgent?.Contains("MicroMessenger/") ?? false;
 
-        public bool ByCall => Header("X-Requested-With") != null;
+        public bool IsAjax => Header("X-Requested-With") != null;
 
         public string Path => fRequest.Path;
 
@@ -524,7 +524,7 @@ namespace SkyChain.Web
             // static content special deal
             if (Content is StaticContent sta)
             {
-                DateTime? since = HeaderDateTime("If-Modified-Since");
+                var since = HeaderDateTime("If-Modified-Since");
                 Debug.Assert(sta != null);
                 if (since != null && sta.Modified <= since)
                 {
@@ -532,7 +532,7 @@ namespace SkyChain.Web
                     return;
                 }
 
-                DateTime? last = sta.Modified;
+                var last = sta.Modified;
                 if (last != null)
                 {
                     SetHeader("Last-Modified", TextUtility.FormatUtcDate(last.Value));
@@ -550,6 +550,7 @@ namespace SkyChain.Web
             await fResponse.Body.WriteAsync(Content.Buffer, 0, Content.Count);
         }
 
+        // on context closing
         public void Close()
         {
             // pool returning

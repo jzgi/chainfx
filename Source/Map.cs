@@ -60,7 +60,7 @@ namespace SkyChain
             return default;
         }
 
-        public V Find(K key, Predicate<V> cond)
+        public V Seek(K key, Predicate<V> cond)
         {
             var idx = IndexOf(key);
             if (idx > -1)

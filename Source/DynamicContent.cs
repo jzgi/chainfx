@@ -5,7 +5,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
 
@@ -573,10 +572,6 @@ namespace SkyChain
         }
 
 
-        //
-        //
-        //
-
         // we use number of processor cores as a factor
         static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
 
@@ -603,7 +598,7 @@ namespace SkyChain
                 }
                 if (!stack.TryPop(out var buf))
                 {
-                    stack.Push(buf = new byte[stack.Spec]);
+                    buf = new byte[stack.Spec];
                 }
                 return buf;
             }
@@ -658,7 +653,7 @@ namespace SkyChain
                 }
                 if (!stack.TryPop(out var buf))
                 {
-                    stack.Push(buf = new char[stack.Spec]);
+                    buf = new char[stack.Spec];
                 }
                 return buf;
             }
