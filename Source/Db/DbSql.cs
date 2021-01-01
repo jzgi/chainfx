@@ -531,9 +531,9 @@ namespace SkyChain.Db
         public DbSql _IN_(int[] vals, bool literal = false)
         {
             Add(" IN (");
-            for (int i = 1; i <= vals.Length; i++)
+            for (int i = 0; i < vals.Length; i++)
             {
-                if (i > 1) Add(',');
+                if (i > 0) Add(',');
                 if (literal)
                 {
                     Add(vals[i]);
@@ -542,10 +542,9 @@ namespace SkyChain.Db
                 {
                     Add('@');
                     Add('v');
-                    Add(i);
+                    Add(i + 1);
                 }
             }
-
             Add(')');
             return this;
         }

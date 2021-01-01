@@ -50,7 +50,7 @@ namespace SkyChain.Web
         {
             this.work = work;
             this.name = mi.Name == "default" ? string.Empty : mi.Name;
-            this.relative = name == string.Empty ? "./?inner=true" : name;
+            this.relative = name == string.Empty ? "./" : name;
             this.async = async;
             this.subscript = subscript;
 

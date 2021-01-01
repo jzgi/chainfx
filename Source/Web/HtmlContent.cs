@@ -1215,7 +1215,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_(string a, bool end = false, string css = null)
+        public HtmlContent A_HREF_<A>(A a, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1225,7 +1225,7 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            AddEsc(a);
+            AddPrimitive(a);
             Add("\"");
             if (end)
             {
@@ -1234,7 +1234,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<B>(string a, B b, bool end = false, string css = null)
+        public HtmlContent A_HREF_<A, B>(A a, B b, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1244,7 +1244,7 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            AddEsc(a);
+            AddPrimitive(a);
             AddPrimitive(b);
             Add("\"");
             if (end)
@@ -1254,7 +1254,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<B, C>(string a, B b, C c, bool end = false, string css = null)
+        public HtmlContent A_HREF_<A, B, C>(A a, B b, C c, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1264,7 +1264,7 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            AddEsc(a);
+            AddPrimitive(a);
             AddPrimitive(b);
             AddPrimitive(c);
             Add("\"");
@@ -1614,7 +1614,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public void PAGENATION(bool more, int begin = 0, int step = 1)
+        public void PAGINATION(bool more, int begin = 0, int step = 1)
         {
             var act = Web.Action;
             if (act.Subscript != null)
@@ -1837,6 +1837,18 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent TR_()
+        {
+            Add("<tr>");
+            return this;
+        }
+
+        public HtmlContent _TR()
+        {
+            Add("</tr>");
+            return this;
+        }
+
         public HtmlContent TDCHECK<K>(K key, bool toolbar = true)
         {
             Add("<td style=\"width: 1%\"><input");
@@ -1847,7 +1859,7 @@ namespace SkyChain.Web
 
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(key);
-            Add("\" onchange=\"checkToggle(this);\">");
+            Add("\" onchange=\"checkToggle(this);\" required>");
             Add("</td>");
             return this;
         }
@@ -2131,7 +2143,6 @@ namespace SkyChain.Web
             return this;
         }
 
-
         public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool refresh = true, bool top = true)
         {
             byte ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
@@ -2190,31 +2201,42 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent BOTTOMBAR_(string css = null)
+        public HtmlContent BOTTOMBAR_(string css = null, bool toggle = false)
         {
             Add("<div class=\"uk-bottom-placeholder\"></div>");
-            Add("<footer class=\"uk-bottom-bar");
+            Add("<div class=\"uk-bottom-bar");
             if (css != null)
             {
                 Add(' ');
                 Add(css);
             }
-
+            if (toggle)
+            {
+                Add("\" id=\"tool-bar-form");
+            }
             Add("\">");
+            if (toggle)
+            {
+                Add("<span style=\"position: absolute; left: 0.75rem\"><input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\"></span>");
+            }
             return this;
         }
 
         public HtmlContent _BOTTOMBAR()
         {
-            Add("</footer>");
+            Add("</div>");
             return this;
         }
 
-
-        public HtmlContent PICK<K>(K varkey, string label = null)
+        public HtmlContent PICK<K>(K varkey, string label = null, bool toolbar = false)
         {
             Add("<label>");
-            Add("<input form=\"tool-bar-form\" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
+            Add("<input");
+            if (toolbar)
+            {
+                Add(" form=\"tool-bar-form\"");
+            }
+            Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(varkey);
             Add("\" onchange=\"checkToggle(this);\">");
             Add(label);
@@ -2384,7 +2406,11 @@ namespace SkyChain.Web
 
                 Add("\" href=\"");
                 Add(act == Web.Action ? act.Key : act.Relative);
-                if (subscript != -1 && act.Subscript != null)
+                if (subscript == -1 && Web.Subscript > 0)
+                {
+                    subscript = Web.Subscript;
+                }
+                if (subscript > 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -2493,7 +2519,11 @@ namespace SkyChain.Web
                 PutKey(varkey);
                 Add('/');
                 Add(act == Web.Action ? act.Key : act.Relative);
-                if (subscript != -1 && act.Subscript != null)
+                if (subscript == -1 && Web.Subscript > 0)
+                {
+                    subscript = Web.Subscript;
+                }
+                if (subscript > 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -3627,7 +3657,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT<V>(string label, string name, V v, V[] opt, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<V>(string label, string name, V v, V[] opt, bool required = true, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, refresh);
             if (opt != null)

@@ -27,8 +27,8 @@ namespace SkyChain.Web
         // the embedded HTTP server
         readonly KestrelServer server;
 
-        // cache of recent responses
-        readonly ConcurrentDictionary<string, CacheResp> cache;
+        // shared cache of recent responses
+        readonly ConcurrentDictionary<string, Resp> shared;
 
         // the response cache cleaner thread
         Thread cleaner;
@@ -41,7 +41,7 @@ namespace SkyChain.Web
 
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            cache = new ConcurrentDictionary<string, CacheResp>(factor * 4, 1024);
+            shared = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
 
             // create the embedded server instance
             var opts = new KestrelServerOptions();
@@ -201,21 +201,22 @@ namespace SkyChain.Web
             Console.WriteLine("[" + Name + "] started at " + address);
 
             // create and start the cleaner thread
-            if (cache != null)
+            if (shared != null)
             {
                 cleaner = new Thread(() =>
                 {
                     while (!token.IsCancellationRequested)
                     {
                         // cleaning cycle
-                        Thread.Sleep(30000); // every 30 seconds 
+                        Thread.Sleep(1000 * 12); // every 12 seconds 
+
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
-                        foreach (var re in cache)
+                        foreach (var resp in shared)
                         {
-                            if (!re.Value.TryClean(now))
+                            if (!resp.Value.TryClean(now))
                             {
-                                cache.TryRemove(re.Key, out _);
+                                shared.TryRemove(resp.Key, out _);
                             }
                         }
                     }
@@ -245,10 +246,10 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (!wc.IsInCache && wc.Shared == true && CacheResp.IsCacheable(wc.StatusCode))
+                if (!wc.IsInCache && wc.Shared == true && Resp.IsCacheable(wc.StatusCode))
                 {
-                    var resp = new CacheResp(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    cache.AddOrUpdate(wc.Uri, resp, (k, old) => resp.MergeWith(old));
+                    var resp = new Resp(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
+                    shared.AddOrUpdate(wc.Uri, resp, (k, old) => resp.MergeWith(old));
                     wc.IsInCache = true;
                 }
             }
@@ -258,7 +259,7 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (cache.TryGetValue(wc.Uri, out var resp))
+                if (shared.TryGetValue(wc.Uri, out var resp))
                 {
                     return resp.TryGive(wc, Environment.TickCount);
                 }
@@ -271,7 +272,7 @@ namespace SkyChain.Web
         /// <summary>
         /// A prior response for caching that might be cleared but not removed, for better reusability. 
         /// </summary>
-        public class CacheResp
+        public class Resp
         {
             // response status, 0 means cleared, otherwise one of the cacheable status
             int code;
@@ -287,7 +288,7 @@ namespace SkyChain.Web
 
             int hits;
 
-            internal CacheResp(int code, IContent content, int maxage, int stamp)
+            internal Resp(int code, IContent content, int maxage, int stamp)
             {
                 this.code = code;
                 this.content = content;
@@ -354,7 +355,7 @@ namespace SkyChain.Web
                 }
             }
 
-            internal CacheResp MergeWith(CacheResp old)
+            internal Resp MergeWith(Resp old)
             {
                 Interlocked.Add(ref hits, old.Hits);
                 return this;
