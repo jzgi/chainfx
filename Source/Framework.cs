@@ -161,9 +161,9 @@ namespace SkyChain
         static readonly CancellationTokenSource Canceller = new CancellationTokenSource();
 
 
-        /// 
-        /// Runs a number of web services and block until shutdown.
-        /// 
+        /// <summary>
+        /// Runs a number of web services and then block until shutdown.
+        /// </summary>
         public static async Task StartWebAsync()
         {
             var exitevt = new ManualResetEventSlim(false);

@@ -10,7 +10,7 @@
             CREATED = 0,
             FORWARD = 1,
             BACKWARD = 2,
-            ABORT = 3,
+            ABORTED = 3,
             DONE = 4;
 
         // status
@@ -19,7 +19,7 @@
             {CREATED, "新建"},
             {FORWARD, "推进"},
             {BACKWARD, "退回"},
-            {ABORT, "撤销"},
+            {ABORTED, "撤销"},
             {DONE, "完成"},
         };
 

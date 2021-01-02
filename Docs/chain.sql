@@ -26,9 +26,9 @@ create table blocks
     peerid varchar(4) not null,
     seq integer not null,
     stamp timestamp(0) not null,
-    prevtag varchar(16) not null,
-    tag varchar(16) not null,
     status smallint default 0 not null,
+    dgst integer,
+    prdgst integer,
     constraint blocks_pk
         primary key (peerid, seq)
 );
@@ -37,7 +37,7 @@ alter table blocks owner to postgres;
 
 create table blocksts
 (
-    peer varchar(2) not null,
+    peerid varchar(2) not null,
     seq integer not null,
     job varchar(14) not null,
     step smallint not null,
@@ -48,14 +48,16 @@ create table blocksts
     amt money not null,
     bal money not null,
     doc jsonb,
-    stamp timestamp(0) not null,
-    digest bigint
+    stated timestamp(0) not null,
+    dgst integer,
+    constraint blocksts_block_fk
+        foreign key (peerid, seq) references blocks
 );
 
 alter table blocksts owner to postgres;
 
 create index blocksts_block_idx
-    on blocksts (peer, seq);
+    on blocksts (peerid, seq);
 
 create unique index blocksts_op_idx
     on blocksts (job, step);
@@ -65,20 +67,23 @@ create table logs
     job varchar(10) not null,
     step smallint not null,
     acct varchar(20) not null,
+    name varchar(10) not null,
     ldgr varchar(10) not null,
     status smallint default 0 not null,
     descr varchar(20),
     amt money not null,
     doc jsonb,
     bal money,
-    stamp timestamp(0) not null,
+    stated timestamp(0) not null,
     ppeer varchar(2),
     pacct varchar(20),
     pname varchar(10),
     npeer varchar(2),
     nacct varchar(20),
     nname varchar(10),
-    name varchar(10) not null
+    stamp timestamp(0),
+    constraint logs_pk
+        primary key (job, step)
 );
 
 alter table logs owner to postgres;

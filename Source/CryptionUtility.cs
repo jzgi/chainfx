@@ -95,6 +95,26 @@ namespace SkyChain
         }
 
 
+        public static void Digest(int v, ref int d)
+        {
+        }
+
+        public static void Digest(short v, ref int d)
+        {
+        }
+
+        public static void Digest(decimal v, ref int d)
+        {
+        }
+
+        public static void Digest(DateTime v, ref int d)
+        {
+        }
+
+        public static void Digest(string v, ref int d)
+        {
+        }
+
         public static void Test()
         {
             var bs = TextUtility.HexToBytes("ebce206103e439514f3c4748c683274e");

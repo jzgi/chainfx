@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Threading;
 using SkyChain.Db;
 
@@ -13,8 +14,8 @@ namespace SkyChain.Chain
         // a bundle of connected peers
         static readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
 
-        // validate submitted entries and package demostic blocks 
-        static Thread validator;
+        // validates logs and archives demostic blocks 
+        static Thread archiver;
 
         // periodic polling of foreign blocks 
         static Thread poller;
@@ -24,7 +25,7 @@ namespace SkyChain.Chain
         public static ChainClient GetChainClient(string key) => clients[key];
 
         /// <summary>
-        /// Setup blockchain on this peer node.
+        /// Sets up and start blockchain on this peer node.
         /// </summary>
         public static void StartChain()
         {
@@ -35,11 +36,11 @@ namespace SkyChain.Chain
             }
 
             // init connected peers
-            LoadPeers();
+            InitializePeers();
 
             // init the validator thead
-            // validator = new Thread(Validate);
-            // validator.Start();
+            archiver = new Thread(Archive);
+            archiver.Start();
 
             // init the poller thead
             // if (clients.Count > 0)
@@ -94,7 +95,7 @@ create table blockrecs
             return exists;
         }
 
-        static void LoadPeers()
+        static void InitializePeers()
         {
             @lock.EnterWriteLock();
             try
@@ -131,39 +132,66 @@ create table blockrecs
 
         const int MAX_BLOCK_SIZE = 64;
 
-        const int MAX_BLOCK_MINUTES = 24 * 60;
+        const int MIN_BLOCK_SIZE = 8;
 
-        static void Validate(object state)
+        static void Archive(object state)
         {
             while (true)
             {
-                var lst = new ValueList<Log>(MAX_BLOCK_SIZE);
+                Thread.Sleep(60 * 1000); // 60 seconds interval
+
+                Cycle:
+
                 // archiving 
-                using (var dc = NewDbContext())
+                using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    var c = lst.Count;
-                    var last = lst[c - 1];
-                    dc.Query("SELECT * FROM chain.ops WHERE status = 2 AND tn > @1", p => p.Set(last.job));
-                    int num = 0;
+                    var lst = new ValueList<Log>(MAX_BLOCK_SIZE);
+                    dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE status = ").T(Log.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    dc.Query();
+
+                    int dgst = 0; // total digest of the list
                     while (dc.Next())
                     {
-                        var op = dc.ToObject<Log>();
+                        var o = dc.ToObject<Log>(State.DIGEST);
+                        lst.Add(o);
+                        CryptionUtility.Digest(o.dgst, ref dgst);
                     }
+                    if (lst.Count < MIN_BLOCK_SIZE)
+                    {
+                        continue;
+                    }
+
+                    // insert
+
+                    dc.Sql("INSERT INTO chain.blocks (peerid, stamp, status, dgst, pdgst) VALUES (@1, @2, 0, @3, (SELECT dgst FROM chain.blocks ORDER BY peerid, seq LIMIT 1)) RETURNING seq");
+                    dc.Query(p => p.Set(info.id).Set(DateTime.Now).Set(dgst));
+                    dc.Let(out int seq);
+                    for (int i = 0; i < lst.Count; i++)
+                    {
+                        var o = lst[i];
+                        dc.Sql("INSERT INTO chain.blocksts ").colset(State.Empty, 0, "peerid, seq")._VALUES_(State.Empty, 0, "@1, @2");
+                        dc.Execute(p =>
+                        {
+                            o.Write(p, 0);
+                            p.Set(info.id).Set(seq);
+                        });
+                    }
+
+                    // delete
+                    var sql = dc.Sql("DELETE FROM chain.logs WHERE  status = ").T(Log.DONE).T(" AND (job, step) IN (");
+                    for (int i = 0; i < lst.Count; i++)
+                    {
+                        var o = lst[i];
+                        if (i > 0)
+                        {
+                            sql.T(',');
+                        }
+                        sql.T('(').T('\'').T(o.job).T('\'').T(',').T(o.step).T(')');
+                    }
+                    sql.T(")");
                 }
 
-                // validating
-                using (var dc = NewDbContext())
-                {
-                    // typ cycle control
-                    var now = DateTime.Now;
-                    dc.Sql("SELECT * FROM chain.ops WHERE status = 2 AND typ = @1 AND step ");
-                    dc.Query(p => p.Set(now));
-                    while (dc.Next())
-                    {
-                        var op = dc.ToObject<Log>();
-                        // callback
-                    }
-                }
+                goto Cycle;
             }
         }
 
@@ -195,9 +223,5 @@ create table blockrecs
                 }
             }
         }
-
-        //
-        // types
-        //
     }
 }

@@ -67,7 +67,7 @@ namespace SkyChain.Chain
                 amt = amt,
                 descr = descr,
                 doc = doc,
-                stamp = DateTime.Now,
+                stated = DateTime.Now,
                 status = Log.CREATED
             };
 
@@ -100,7 +100,7 @@ namespace SkyChain.Chain
                 amt = amt,
                 descr = ldgr,
                 doc = doc,
-                stamp = DateTime.Now,
+                stated = DateTime.Now,
                 status = Log.CREATED
             };
             if (npeer == null)
