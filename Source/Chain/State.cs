@@ -1,13 +1,10 @@
 ﻿using System;
-using static SkyChain.CryptionUtility;
 
 namespace SkyChain.Chain
 {
     public class State : IData
     {
         public static readonly State Empty = new State();
-
-        public const byte DIGEST = 0x10;
 
         // globally-unique flow number
         internal string job;
@@ -16,21 +13,14 @@ namespace SkyChain.Chain
         // account number
         internal string acct;
         internal string name;
-
         internal string ldgr;
-
         internal string descr;
-
         internal decimal amt;
-
         internal decimal bal;
-
         internal JObj doc;
-
         internal DateTime stated;
 
-
-        internal int dgst;
+        internal long dgst;
 
         public virtual void Read(ISource s, byte proj = 15)
         {
@@ -58,19 +48,6 @@ namespace SkyChain.Chain
             s.Put(nameof(bal), bal);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
-            
-            if ((proj & DIGEST) == DIGEST)
-            {
-                Digest(job, ref dgst);
-                Digest(step, ref dgst);
-                Digest(acct, ref dgst);
-                Digest(name, ref dgst);
-                Digest(ldgr, ref dgst);
-                Digest(descr, ref dgst);
-                Digest(amt, ref dgst);
-                Digest(bal, ref dgst);
-                // Digest(doc, ref dgst);
-            }
         }
 
         public string Job => job;

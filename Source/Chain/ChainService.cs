@@ -1,41 +1,70 @@
+using System.Threading.Tasks;
 using SkyChain.Web;
+using static SkyChain.Chain.Chain;
 
 namespace SkyChain.Chain
 {
     /// <summary>
-    /// A web service that realizes API for both inter-node communication and 
+    /// A web service that realizes API for inter-peer communication. 
     /// </summary>
     public class ChainService : WebService
     {
-        public void forblock(WebContext wc)
+        /// <summary>
+        /// Try to return a block of data whose sequential number is immediately larger than the specified.
+        /// </summary>
+        /// <returns></returns>
+        public async Task block(WebContext wc, int lastseq)
         {
-            // headers
-            int lastid = 0;
-            // query
+            var peerid = ChainEnviron.Info.id;
+
+            // check if existing
             using var dc = NewDbContext();
-            var b = dc.QueryTop<Block>("SELECT * FROM chain.blocks WHERE peerid = '&' AND id > @1 ORDER BY id LIMIT 1", p => p.Set(lastid));
-            if (b == null)
+            if (!await dc.QueryTopAsync("SELECT seq, dgst, pdgst FROM chain.blocks WHERE peerid = @1 AND seq > @1 ORDER BY peerid, seq LIMIT 1", p => p.Set(peerid).Set(lastseq)))
             {
                 wc.Give(204); // no content
                 return;
             }
+            dc.Let(out int seq);
+            dc.Let(out int dgst);
+            dc.Let(out int pdgst);
 
-            // load block records
-            var recs = dc.Query<Block>("SELECT * FROM chain.blockrecs WHERE peerid = '&' AND seq = @1", p => p.Set(b.seq));
+            // load block states
+            dc.Sql("SELECT ").collst(State.Empty, 0xff).T(" FROM chain.blocksts WHERE peerid = @1 AND seq = @2");
+            await dc.QueryAsync(p => p.Set(peerid).Set(seq));
 
             // putting into content
-            var jc = new JsonContent(true, 1024 * 256);
+            var j = new JsonContent(true, 1024 * 256);
             try
             {
+                j.ARR_();
+                while (dc.Next())
+                {
+                    var o = dc.ToObject<State>(0xff);
+                    j.OBJ_();
+                    j.Put(nameof(o.job), o.job);
+                    j.Put(nameof(o.step), o.step);
+                    j.Put(nameof(o.acct), o.acct);
+                    j.Put(nameof(o.name), o.name);
+                    j.Put(nameof(o.ldgr), o.ldgr);
+                    j.Put(nameof(o.descr), o.descr);
+                    j.Put(nameof(o.amt), o.amt);
+                    j.Put(nameof(o.bal), o.bal);
+                    j.Put(nameof(o.doc), o.doc);
+                    j.Put(nameof(o.stated), o.stated);
+                    j.Put(nameof(o.dgst), o.dgst);
+                    j._OBJ();
+                }
+                j._ARR();
             }
             finally
             {
-                jc.Clear();
+                j.Clear();
             }
-            jc.Put(null, recs);
 
-            // return 
-            wc.Give(200, jc);
+            wc.SetHeader(X_SEQ, seq);
+            wc.SetHeader(X_DIGEST, dgst);
+            wc.SetHeader(X_PREV_DIGEST, pdgst);
+            wc.Give(200, j);
         }
 
         const int PIC_AGE = 3600 * 6;

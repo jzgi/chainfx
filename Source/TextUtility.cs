@@ -250,14 +250,14 @@ namespace SkyChain
             return true;
         }
 
-        public static string ToHex(ulong v)
+        public static string ToHex(long v)
         {
-            char[] buf = new char[16];
-            for (int i = 0; i < 16; i++)
+            const int LEN = 16;
+            char[] buf = new char[LEN];
+            for (int i = 0; i < LEN; i++)
             {
-                buf[i] = HEX[(v >> (i * 4)) & 0x0fL];
+                buf[LEN - i - 1] = HEX[(v >> (i * 4)) & 0x0fL];
             }
-
             return new string(buf);
         }
 

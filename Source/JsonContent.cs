@@ -8,6 +8,8 @@ namespace SkyChain
     ///
     public class JsonContent : DynamicContent, ISink
     {
+        const int MAX_LEVELS = 16;
+
         // starting positions of each level
         readonly int[] counts;
 
@@ -16,7 +18,7 @@ namespace SkyChain
 
         public JsonContent(bool octet, int capacity) : base(octet, capacity)
         {
-            counts = new int[16];
+            counts = new int[MAX_LEVELS];
             level = 0;
         }
 

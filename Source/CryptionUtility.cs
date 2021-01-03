@@ -95,8 +95,30 @@ namespace SkyChain
         }
 
 
-        public static void Digest(int v, ref int d)
+        public static void Digest(long v, ref long checksum)
         {
+            var cs = checksum;
+
+            DigestByte((byte) v);
+            DigestByte((byte) (v >> 8));
+            DigestByte((byte) (v >> 16));
+            DigestByte((byte) (v >> 24));
+            DigestByte((byte) (v >> 32));
+            DigestByte((byte) (v >> 40));
+            DigestByte((byte) (v >> 48));
+            DigestByte((byte) (v >> 56));
+
+            checksum = cs;
+
+            void DigestByte(byte b)
+            {
+                cs ^= b << ((b & 0b00000111) * 8);
+                unchecked
+                {
+                    cs *= ((b & 0b00011000) >> 3) switch {0 => 7, 1 => 11, 2 => 13, _ => 17};
+                }
+                cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
+            }
         }
 
         public static void Digest(short v, ref int d)

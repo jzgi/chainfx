@@ -29,7 +29,7 @@ namespace SkyChain.Chain
         // the lastest result
         Block block;
 
-        State[] blockrecs;
+        State[] states;
 
 
         /// <summary>
@@ -53,10 +53,15 @@ namespace SkyChain.Chain
         // point of time to next poll, set because of exception or polling interval
         volatile int retryAt;
 
+        int lastseq;
+
+        Task task;
+
+        public string Key => info?.name;
 
         public Peer Info => info;
 
-        public string Key => info?.name;
+        public (Block, State[]) Result => (block, states);
 
         public bool IsRemoteAddr(IPAddress addr)
         {
@@ -70,23 +75,17 @@ namespace SkyChain.Chain
             return false;
         }
 
-        public short Status
+        public bool IsCompleted => task.IsCompleted;
+
+        public void Start()
         {
-            get
-            {
-                lock (this) return status;
-            }
+            block = null;
+            states = null;
+            task = PollAsync(2);
+            task.Start();
         }
 
-        public Block Result
-        {
-            get
-            {
-                lock (this) return block;
-            }
-        }
-
-        internal async void TryPollAsync(int ticks)
+        internal async Task PollAsync(int ticks)
         {
             if (ticks < retryAt)
             {
@@ -97,7 +96,7 @@ namespace SkyChain.Chain
             {
             }
 
-            string uri = POLL_ACTION + "?" + QueryString;
+            string uri = "/block-" + lastseq;
             try
             {
                 // request
@@ -114,10 +113,17 @@ namespace SkyChain.Chain
                 // block properties
                 string ctyp = hdrs.GetValue("Content-Type");
 
+                block = new Block
+                {
+                    peerid = null,
+                    seq = 0,
+                };
+
                 // block content
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
+                states = arr.ToArray<State>();
 
-                JArr arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
                 int len = arr.Count;
             }
             catch
@@ -141,47 +147,6 @@ namespace SkyChain.Chain
             //     req.Headers.TryAddWithoutValidation("Authorization", auth);
             // }
         }
-
-        public string QueryString { get; set; }
-
-        public async Task<byte[]> PollAsync()
-        {
-            if (QueryString == null)
-            {
-                throw new FrameworkException("missing query before event poll");
-            }
-
-            string uri = POLL_ACTION + "?" + QueryString;
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, null);
-                var resp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return await resp.Content.ReadAsByteArrayAsync();
-            }
-            catch
-            {
-                retryAt = Environment.TickCount + AHEAD;
-            }
-
-            return null;
-        }
-
-        public Task<M> PollAsync<M>() where M : class, ISource
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<D> PollObjectAsync<D>(byte proj = 15) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<D[]> PollArrayAsync<D>(byte proj = 15) where D : IData, new()
-        {
-            throw new NotImplementedException();
-        }
-
 
         public async Task<(short, byte[])> GetAsync(string uri, WebContext wc = null)
         {

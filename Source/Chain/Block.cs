@@ -13,16 +13,13 @@ namespace SkyChain.Chain
         internal short status;
         internal DateTime stamp;
         internal short sts;
-        internal int pdgst;
-        internal int dgst;
+        internal long pdgst;
+        internal long dgst;
 
         public void Read(ISource s, byte proj = 15)
         {
             s.Get(nameof(peerid), ref peerid);
-            if ((proj & ID) == ID)
-            {
-                s.Get(nameof(seq), ref seq);
-            }
+            s.Get(nameof(seq), ref seq);
             s.Get(nameof(status), ref status);
             s.Get(nameof(stamp), ref stamp);
             s.Get(nameof(sts), ref sts);
@@ -33,10 +30,7 @@ namespace SkyChain.Chain
         public void Write(ISink s, byte proj = 15)
         {
             s.Put(nameof(peerid), peerid);
-            if ((proj & ID) == ID)
-            {
-                s.Put(nameof(seq), seq);
-            }
+            s.Put(nameof(seq), seq);
             s.Put(nameof(status), status);
             s.Put(nameof(stamp), stamp);
             s.Put(nameof(sts), sts);

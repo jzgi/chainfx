@@ -71,6 +71,8 @@ namespace SkyChain.Db
             // command parameter reset
             command.Parameters.Clear();
             paramidx = 0;
+
+            checksum = 0;
         }
 
         public void Dispose()
@@ -550,7 +552,7 @@ namespace SkyChain.Db
 
         public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
         {
-            D obj = new D();
+            var obj = new D();
             obj.Read(this, proj);
             return obj;
         }
@@ -560,7 +562,7 @@ namespace SkyChain.Db
             var lst = new ValueList<D>(32);
             while (Next())
             {
-                D obj = new D();
+                var obj = new D();
                 obj.Read(this, proj);
                 lst.Add(obj);
             }
@@ -1484,7 +1486,7 @@ namespace SkyChain.Db
                     for (int i = 0; i < len; i++)
                     {
                         JObj jo = ja[i];
-                        D obj = new D();
+                        var obj = new D();
                         obj.Read(jo, proj);
                         v[i] = obj;
                     }
@@ -1586,10 +1588,15 @@ namespace SkyChain.Db
 
         public void Put(string name, JNumber v)
         {
+            var tv = v.Decimal;
             command.Parameters.Add(new NpgsqlParameter<decimal>(name, NpgsqlDbType.Numeric)
             {
-                TypedValue = v.Decimal
+                TypedValue = tv
             });
+            if (Digest)
+            {
+                Check(tv);
+            }
         }
 
         public void Put(string name, bool v)
@@ -1598,6 +1605,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, char v)
@@ -1619,6 +1630,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, int v)
@@ -1627,6 +1642,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, long v)
@@ -1635,14 +1654,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
-        }
-
-        public void Put(string name, uint v)
-        {
-            command.Parameters.Add(new NpgsqlParameter<uint>(name, NpgsqlDbType.Oid)
+            if (Digest)
             {
-                TypedValue = v
-            });
+                Check(v);
+            }
         }
 
         public void Put(string name, float v)
@@ -1667,23 +1682,23 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, DateTime v)
         {
-            bool isdate = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
-            command.Parameters.Add(new NpgsqlParameter<DateTime>(name, isdate ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
+            bool notime = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
+            command.Parameters.Add(new NpgsqlParameter<DateTime>(name, notime ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
             {
                 TypedValue = v
             });
-        }
-
-        public void Put(string name, Guid v)
-        {
-            command.Parameters.Add(new NpgsqlParameter<Guid>(name, NpgsqlDbType.Uuid)
+            if (Digest)
             {
-                TypedValue = v
-            });
+                Check(v, !notime);
+            }
         }
 
         public void Put(string name, string v)
@@ -1693,16 +1708,26 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, bool[] v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Boolean)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void Put(string name, char[] v)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Char)
+            {
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void Put(string name, ArraySegment<byte> v)
@@ -1819,10 +1844,15 @@ namespace SkyChain.Db
             }
             else
             {
+                var tv = v.ToString();
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = v.ToString()
+                    Value = tv
                 });
+                if (Digest)
+                {
+                    Check(tv);
+                }
             }
         }
 
@@ -1837,10 +1867,15 @@ namespace SkyChain.Db
             }
             else
             {
+                var tv = DataUtility.ToString(v, proj);
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = DataUtility.ToString(v, proj)
+                    Value = tv
                 });
+                if (Digest)
+                {
+                    Check(tv);
+                }
             }
         }
 
@@ -1855,10 +1890,15 @@ namespace SkyChain.Db
             }
             else
             {
+                var tv = DataUtility.ToString(v, proj);
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = DataUtility.ToString(v, proj)
+                    Value = tv
                 });
+                if (Digest)
+                {
+                    Check(tv);
+                }
             }
         }
 
@@ -1911,12 +1951,6 @@ namespace SkyChain.Db
             return this;
         }
 
-        public IParameters Set(uint v)
-        {
-            Put(PARAMS[paramidx++], v);
-            return this;
-        }
-
         public IParameters Set(float v)
         {
             Put(PARAMS[paramidx++], v);
@@ -1942,12 +1976,6 @@ namespace SkyChain.Db
         }
 
         public IParameters Set(DateTime v)
-        {
-            Put(PARAMS[paramidx++], v);
-            return this;
-        }
-
-        public IParameters Set(Guid v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
@@ -2005,11 +2033,6 @@ namespace SkyChain.Db
             return this;
         }
 
-        public IParameters Set(uint[] v)
-        {
-            throw new NotImplementedException();
-        }
-
         public IParameters Set(float[] v)
         {
             Put(PARAMS[paramidx++], v);
@@ -2023,12 +2046,6 @@ namespace SkyChain.Db
         }
 
         public IParameters Set(DateTime[] v)
-        {
-            Put(PARAMS[paramidx++], v);
-            return this;
-        }
-
-        public IParameters Set(Guid[] v)
         {
             Put(PARAMS[paramidx++], v);
             return this;
@@ -2063,7 +2080,6 @@ namespace SkyChain.Db
             Put(PARAMS[paramidx++], v, proj);
             return this;
         }
-
 
         public IParameters SetForIn(short[] v)
         {
@@ -2108,6 +2124,106 @@ namespace SkyChain.Db
                 Put(INPARAMS[i], v[i]);
             }
             return this;
+        }
+
+        //
+        // digest
+        //
+
+
+        public bool Digest { get; set; }
+
+        long checksum;
+
+        public long Checksum => checksum;
+
+        void Check(string v)
+        {
+            if (v != null)
+            {
+                for (int i = 0; i < v.Length; i++)
+                {
+                    var c = v[i];
+                    DigestByte((byte) c);
+                    DigestByte((byte) (c >> 8));
+                }
+            }
+        }
+
+        void Check(bool v)
+        {
+            DigestByte(v ? (byte) 1 : (byte) 0);
+        }
+
+        void Check(short v)
+        {
+            DigestByte((byte) v);
+            DigestByte((byte) (v >> 8));
+        }
+
+        void Check(int v)
+        {
+            DigestByte((byte) v);
+            DigestByte((byte) (v >> 8));
+            DigestByte((byte) (v >> 16));
+            DigestByte((byte) (v >> 24));
+        }
+
+        void Check(long v)
+        {
+            DigestByte((byte) v);
+            DigestByte((byte) (v >> 8));
+            DigestByte((byte) (v >> 16));
+            DigestByte((byte) (v >> 24));
+            DigestByte((byte) (v >> 32));
+            DigestByte((byte) (v >> 40));
+            DigestByte((byte) (v >> 48));
+            DigestByte((byte) (v >> 56));
+        }
+
+        void Check(decimal v)
+        {
+            var bits = decimal.GetBits(v);
+            for (int i = 0; i < bits.Length; i++)
+            {
+                Check(bits[i]);
+            }
+        }
+
+        void Check(float v)
+        {
+            Check((decimal) v);
+        }
+
+        void Check(double v)
+        {
+            Check((decimal) v);
+        }
+
+        void Check(DateTime v, bool time)
+        {
+            Check(v.Year);
+            Check(v.Month);
+            Check(v.Day);
+            if (time)
+            {
+                Check(v.Hour);
+                Check(v.Minute);
+                Check(v.Second);
+                Check(v.Millisecond);
+            }
+        }
+
+        void DigestByte(byte b)
+        {
+            var cs = checksum;
+            cs ^= b << ((b & 0b00000111) * 8);
+            unchecked
+            {
+                cs *= ((b & 0b00011000) >> 3) switch {0 => 7, 1 => 11, 2 => 13, _ => 17};
+            }
+            cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
+            checksum = cs;
         }
     }
 }

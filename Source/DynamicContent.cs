@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Environment;
+using static SkyChain.TextUtility;
 
 namespace SkyChain
 {
@@ -97,7 +98,7 @@ namespace SkyChain
         int count;
 
         // byte-wise etag checksum, for char-based output only
-        ulong checksum;
+        long checksum;
 
         protected DynamicContent(bool octet, int capacity)
         {
@@ -117,9 +118,10 @@ namespace SkyChain
 
         public int Count => count;
 
+        // double-quoted entity tag
         string etag;
 
-        public string ETag => etag ??= TextUtility.ToHex(checksum);
+        public string ETag => etag ??= ToHex(checksum);
 
         public void Clear()
         {
@@ -144,7 +146,7 @@ namespace SkyChain
             if (count >= olen)
             {
                 int nlen = olen * 2; // new doubled length
-                byte[] old = bytebuf;
+                var old = bytebuf;
                 bytebuf = BorrowByteArray(nlen);
                 Array.Copy(old, 0, bytebuf, 0, olen);
                 Return(old);
@@ -153,9 +155,14 @@ namespace SkyChain
             bytebuf[count++] = b;
 
             // calculate checksum
-            ulong cs = checksum;
-            cs ^= b; // XOR
-            checksum = cs >> 57 | cs << 7; // circular left shift 7 bit
+            var cs = checksum;
+            cs ^= b << ((b & 0b00000111) * 8);
+            unchecked
+            {
+                cs *= ((b & 0b00011000) >> 3) switch {0 => 7, 1 => 11, 2 => 13, _ => 17};
+            }
+            cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
+            checksum = cs;
         }
 
         public void Add(char c)
@@ -189,7 +196,7 @@ namespace SkyChain
                 if (count >= olen)
                 {
                     int nlen = olen * 2; // new length
-                    char[] old = charbuf;
+                    var old = charbuf;
                     charbuf = BorrowCharArray(nlen);
                     Array.Copy(old, 0, charbuf, 0, olen);
                     Return(old);
@@ -620,11 +627,12 @@ namespace SkyChain
                     if (stack.Count < stack.Capacity)
                     {
                         stack.Push(buf);
+                        return;
                     }
                 }
                 else if (stack.Spec > len)
                 {
-                    break;
+                    return;
                 }
             }
         }
@@ -675,11 +683,12 @@ namespace SkyChain
                     if (stack.Count < stack.Capacity)
                     {
                         stack.Push(buf);
+                        return;
                     }
                 }
                 else if (stack.Spec > len)
                 {
-                    break;
+                    return;
                 }
             }
         }

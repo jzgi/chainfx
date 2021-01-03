@@ -21,7 +21,7 @@ namespace SkyChain.Chain
 
         public static async Task<State[]> FindStatesAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int page = 0)
         {
-            dc.Sql("SELECT ").collst(State.Empty).T(" FROM chain.blocksts WHERE acct = @1 AND ldgr LIKE @2 ORDER BY stamp DESC LIMIT @3 OFFSET @3 * @4");
+            dc.Sql("SELECT ").collst(State.Empty).T(" FROM chain.blocksts WHERE acct = @1 AND ldgr LIKE @2 ORDER BY stated DESC LIMIT @3 OFFSET @3 * @4");
             return await dc.QueryAsync<State>(p => p.Set(acct).Set(ldgr + "%").Set(limit).Set(page));
         }
 

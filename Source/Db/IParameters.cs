@@ -7,6 +7,10 @@ namespace SkyChain.Db
     /// </summary>
     public interface IParameters : ISink
     {
+        bool Digest { get; set; }
+
+        long Checksum { get; }
+
         IParameters SetNull();
 
         IParameters Set(bool v);
@@ -21,8 +25,6 @@ namespace SkyChain.Db
 
         IParameters Set(long v);
 
-        IParameters Set(uint v);
-
         IParameters Set(float v);
 
         IParameters Set(double v);
@@ -32,8 +34,6 @@ namespace SkyChain.Db
         IParameters Set(JNumber v);
 
         IParameters Set(DateTime v);
-
-        IParameters Set(Guid v);
 
         IParameters Set(string v);
 
@@ -51,15 +51,11 @@ namespace SkyChain.Db
 
         IParameters Set(long[] v);
 
-        IParameters Set(uint[] v);
-
         IParameters Set(float[] v);
 
         IParameters Set(double[] v);
 
         IParameters Set(DateTime[] v);
-
-        IParameters Set(Guid[] v);
 
         IParameters Set(string[] v);
 

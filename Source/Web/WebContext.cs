@@ -500,7 +500,7 @@ namespace SkyChain.Web
             // cache control header
             if (Shared.HasValue)
             {
-                string hv = (Shared.Value ? "public" : "private") + ", max-age=" + MaxAge;
+                string hv = (Shared.Value ? "public" : "private") + ", max-age=" + MaxAge + ", must-revalidate";
                 SetHeader("Cache-Control", hv);
             }
 

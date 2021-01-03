@@ -1,14 +1,13 @@
 using System;
 using System.Data;
 using System.Threading;
+using Microsoft.VisualBasic.FileIO;
 using SkyChain.Db;
 
 namespace SkyChain.Chain
 {
     public class ChainEnviron : DbEnviron
     {
-        static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
-
         static Peer info;
 
         // a bundle of connected peers
@@ -29,113 +28,57 @@ namespace SkyChain.Chain
         /// </summary>
         public static void StartChain()
         {
-            // ensure the related db structures
-            if (!EnsureDb(true))
-            {
-                return;
-            }
-
-            // init connected peers
+            // all connected peers
             InitializePeers();
 
-            // init the validator thead
+            // the archiver thead
             archiver = new Thread(Archive);
             archiver.Start();
 
-            // init the poller thead
-            // if (clients.Count > 0)
-            // {
-            //     // to repeatedly check and initiate event polling activities.
-            //     poller = new Thread(Poll);
-            //     // poller.Start();
-            // }
-        }
-
-        static bool EnsureDb(bool create)
-        {
-            using var dc = NewDbContext();
-            bool exists = dc.QueryTop("SELECT 1 FROM pg_namespace WHERE nspname = 'chain'");
-            if (!exists && create)
+            // the poller thead
+            if (clients.Count > 0)
             {
-                // blocks table
-                dc.Execute(@"
-create table blocks (
-    peerid varchar(8) not null,
-    seq integer not null,
-    stamp timestamp(0) not null,
-    prevtag varchar(16) not null,
-    tag varchar(16) not null,
-    status smallint default 0 not null,
-    constraint blocks_pk primary key (peerid, seq)
-);
-                ");
-
-                dc.Execute(@"
-create table blockrecs
-(
-    peerid varchar(8) not null,
-    seq integer not null,
-    acct varchar(30) not null,
-    typ smallint not null,
-    time timestamp(0) not null,
-    oprid integer,
-    descr varchar(20),
-    amt money not null,
-    bal money not null,
-    doc jsonb,
-    digest bigint,
-    fpeerid varchar(8),
-    constraint blockrecs_block_fk
-        foreign key (peerid, seq) references blocks
-);"
-                );
-
-                return true;
+                poller = new Thread(Poll);
+                // poller.Start();
             }
-            return exists;
         }
+
 
         static void InitializePeers()
         {
-            @lock.EnterWriteLock();
-            try
+            // clear up data maps
+            clients.Clear();
+
+            // load data types
+            using var dc = NewDbContext();
+
+            // load and init peer clients
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
+            var arr = dc.Query<Peer>();
+            if (arr == null) return;
+            foreach (var o in arr)
             {
-                // clear up data maps
-                clients.Clear();
-
-                // load data types
-                using var dc = NewDbContext();
-
-                // load and init peer clients
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
-                var arr = dc.Query<Peer>();
-                if (arr == null) return;
-                foreach (var o in arr)
+                if (o.IsLocal)
                 {
-                    if (o.IsLocal)
-                    {
-                        info = o;
-                    }
-                    else
-                    {
-                        var cli = new ChainClient(o);
-                        clients.Add(cli);
-                    }
+                    info = o;
                 }
-            }
-            finally
-            {
-                @lock.ExitWriteLock();
+                else
+                {
+                    var cli = new ChainClient(o);
+                    clients.Add(cli);
+                }
             }
         }
 
 
-        const int MAX_BLOCK_SIZE = 64;
+        const int MAX_BLOCK_SIZE = 32;
 
         const int MIN_BLOCK_SIZE = 8;
 
-        static void Archive(object state)
+        static async void Archive(object state)
         {
+            int seq = 0;
+            long lastdgst = 0;
             while (true)
             {
                 Thread.Sleep(60 * 1000); // 60 seconds interval
@@ -145,81 +88,93 @@ create table blockrecs
                 // archiving 
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    var lst = new ValueList<Log>(MAX_BLOCK_SIZE);
-                    dc.Sql("SELECT ").collst(Log.Empty).T(" FROM chain.logs WHERE status = ").T(Log.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                    dc.Query();
-
-                    int dgst = 0; // total digest of the list
-                    while (dc.Next())
-                    {
-                        var o = dc.ToObject<Log>(State.DIGEST);
-                        lst.Add(o);
-                        CryptionUtility.Digest(o.dgst, ref dgst);
-                    }
-                    if (lst.Count < MIN_BLOCK_SIZE)
+                    dc.Sql("SELECT ").collst(State.Empty).T(" FROM chain.logs WHERE status = ").T(Log.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    var arr = await dc.QueryAsync<State>();
+                    if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
                         continue;
                     }
 
-                    // insert
-
-                    dc.Sql("INSERT INTO chain.blocks (peerid, stamp, status, dgst, pdgst) VALUES (@1, @2, 0, @3, (SELECT dgst FROM chain.blocks ORDER BY peerid, seq LIMIT 1)) RETURNING seq");
-                    dc.Query(p => p.Set(info.id).Set(DateTime.Now).Set(dgst));
-                    dc.Let(out int seq);
-                    for (int i = 0; i < lst.Count; i++)
+                    // insert archives
+                    if (seq == 0 && dc.QueryTop("SELECT seq, dgst FROM chain.blocks ORDER BY peerid, seq LIMIT 1"))
                     {
-                        var o = lst[i];
-                        dc.Sql("INSERT INTO chain.blocksts ").colset(State.Empty, 0, "peerid, seq")._VALUES_(State.Empty, 0, "@1, @2");
-                        dc.Execute(p =>
+                        dc.Let(out seq); // last seq
+                        dc.Let(out lastdgst);
+                    }
+                    seq++;
+                    var blk = new Block
+                    {
+                        peerid = info.id,
+                        seq = seq,
+                        stamp = DateTime.Now,
+                        status = 0,
+                        pdgst = lastdgst,
+                        dgst = 0, // calculated later
+                    };
+                    dc.Sql("INSERT INTO ").collst(Block.Empty)._VALUES_(Block.Empty);
+                    await dc.QueryAsync(p => blk.Write(p));
+                    long totalcs = 0; // total checksum
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        var o = arr[i];
+                        dc.Sql("INSERT INTO chain.blocksts ").colset(State.Empty, 0, "peerid, seq, dgst")._VALUES_(State.Empty, 0, "@1, @2, @3");
+                        await dc.ExecuteAsync(p =>
                         {
+                            p.Digest = true;
                             o.Write(p, 0);
-                            p.Set(info.id).Set(seq);
+                            p.Digest = false;
+                            p.Set(info.id).Set(seq).Set(p.Checksum);
+
+                            CryptionUtility.Digest(p.Checksum, ref totalcs);
                         });
                     }
+                    await dc.ExecuteAsync("UPDATE chain.blocks SET dgst = @1 WHERE peerid = @1 AND seq = @2", p => p.Set(blk.peerid).Set(totalcs));
+                    // keep digest used in next cycle
+                    lastdgst = totalcs;
 
-                    // delete
-                    var sql = dc.Sql("DELETE FROM chain.logs WHERE  status = ").T(Log.DONE).T(" AND (job, step) IN (");
-                    for (int i = 0; i < lst.Count; i++)
+                    // delete logs
+                    var s = dc.Sql("DELETE FROM chain.logs WHERE status = ").T(Log.DONE).T(" AND (job, step) IN (");
+                    for (int i = 0; i < arr.Length; i++)
                     {
-                        var o = lst[i];
-                        if (i > 0)
-                        {
-                            sql.T(',');
-                        }
-                        sql.T('(').T('\'').T(o.job).T('\'').T(',').T(o.step).T(')');
+                        var o = arr[i];
+                        if (i > 0) s.T(',');
+                        s.T('(').TT(o.job).T(',').T(o.step).T(')');
                     }
-                    sql.T(")");
+                    s.T(')');
+                    await dc.ExecuteAsync(prepare: false);
                 }
-
                 goto Cycle;
             }
         }
 
-        static void Poll(object state)
+        static async void Poll(object state)
         {
             while (true)
             {
-                // interval
-                Thread.Sleep(7000);
+                Thread.Sleep(60 * 1000); // 60 seconds inteval
 
+                Cycle:
                 // a scheduling cycle
                 var tick = Environment.TickCount;
-                @lock.EnterReadLock();
-                try
-                {
-                    var clis = clients;
-                    for (int i = 0; i < clients.Count; i++)
-                    {
-                        var cli = clis.ValueAt(i);
 
-                        // start asynchronously
-                        // var task = cli.TryPollAsync(tick);
-                        // task.Start();
-                    }
-                }
-                finally
+                int busy = 0;
+                for (int i = 0; i < clients.Count; i++)
                 {
-                    @lock.ExitReadLock();
+                    var cli = clients.ValueAt(i);
+
+                    if (cli.IsCompleted)
+                    {
+                        var (block, states) = cli.Result;
+                        
+                        // db
+                    }
+
+                    if (busy == 0)
+                    {
+                        goto Cycle;
+                    }
+                    
+                    
                 }
             }
         }
