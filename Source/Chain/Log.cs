@@ -1,6 +1,6 @@
 ﻿namespace SkyChain.Chain
 {
-    public class Log : State
+    public class Log : Record
     {
         public new static readonly Log Empty = new Log();
 

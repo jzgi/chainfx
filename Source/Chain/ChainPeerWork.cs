@@ -35,7 +35,7 @@ namespace SkyChain.Chain
                 {
                     const string css = "uk-width-small";
                     h.FORM_().FIELDSUL_("Attributes");
-                    h.LI_().LABEL("ID", css).TEXT(null, nameof(o.id), o.id, max: 10, required: true)._LI();
+                    h.LI_().LABEL("ID", css).NUMBER(null, nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().LABEL("Address", css).URL(null, nameof(o.uri), o.uri, max: 20, required: true)._LI();
                     h._FIELDSUL()._FORM();

@@ -2,7 +2,7 @@ using System;
 
 namespace SkyChain.Chain
 {
-    public class Peer : IData, IKeyable<string>
+    public class Peer : IData, IKeyable<short>
     {
         public static readonly Peer Empty = new Peer();
 
@@ -13,7 +13,7 @@ namespace SkyChain.Chain
             {2, "运行"}
         };
 
-        internal string id;
+        internal short id;
         internal string name;
         internal string uri; // remote address
         internal DateTime created;
@@ -40,7 +40,7 @@ namespace SkyChain.Chain
             s.Put(nameof(status), status);
         }
 
-        public string Key => id;
+        public short Key => id;
 
         public string Name => name;
 

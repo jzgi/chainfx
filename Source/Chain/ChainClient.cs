@@ -7,15 +7,13 @@ using SkyChain.Web;
 namespace SkyChain.Chain
 {
     /// <summary>
-    /// A chain client connector targeted to a specific remote peer..
+    /// A chain client connector for a specific remote peer..
     /// </summary>
     public class ChainClient : HttpClient, IKeyable<string>
     {
-        const int TIMEOUT_SECONDS = 5;
+        const int TIMEOUT_SECONDS = 3;
 
         const int AHEAD = 1000 * 12;
-
-        const string POLL_ACTION = "/event";
 
         // when a chain connector
         readonly Peer info;
@@ -23,13 +21,20 @@ namespace SkyChain.Chain
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        // the lastest status
-        short status;
+        // the lastest status, aligned to HTTP specs
+        HttpStatusCode status;
 
         // the lastest result
         Block block;
 
-        State[] states;
+        Record[] records;
+
+        // point of time to next poll, set because of exception or polling interval
+        volatile int retryAt;
+
+        int lastseq;
+
+        Task task;
 
 
         /// <summary>
@@ -50,18 +55,11 @@ namespace SkyChain.Chain
             Timeout = TimeSpan.FromSeconds(TIMEOUT_SECONDS);
         }
 
-        // point of time to next poll, set because of exception or polling interval
-        volatile int retryAt;
-
-        int lastseq;
-
-        Task task;
-
         public string Key => info?.name;
 
         public Peer Info => info;
 
-        public (Block, State[]) Result => (block, states);
+        public (Block, Record[]) Result => (block, records);
 
         public bool IsRemoteAddr(IPAddress addr)
         {
@@ -77,33 +75,30 @@ namespace SkyChain.Chain
 
         public bool IsCompleted => task.IsCompleted;
 
-        public void Start()
+        public void StartPoll(int ticks)
         {
+            // reset
             block = null;
-            states = null;
-            task = PollAsync(2);
-            task.Start();
+            records = null;
+
+            // schedule to execute
+            (task = PollAsync()).Start();
         }
 
-        internal async Task PollAsync(int ticks)
+        async Task PollAsync()
         {
-            if (ticks < retryAt)
-            {
-                return;
-            }
-
-            lock (this)
-            {
-            }
-
-            string uri = "/block-" + lastseq;
+            string uri = "/onpoll-" + lastseq;
             try
             {
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                AddAccessHeaders(req, null);
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id.ToString());
+
+
                 // response
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                status = rsp.StatusCode;
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
                     return;
@@ -112,19 +107,24 @@ namespace SkyChain.Chain
 
                 // block properties
                 string ctyp = hdrs.GetValue("Content-Type");
+                var x_seq = hdrs.GetValue(Chain.X_SEQ);
+                var x_stamp = hdrs.GetValue(Chain.X_STAMP);
+                var x_digest = hdrs.GetValue(Chain.X_DIGEST);
+                var x_prev_digest = hdrs.GetValue(Chain.X_PREV_DIGEST);
 
+
+                // block & records
                 block = new Block
                 {
-                    peerid = null,
-                    seq = 0,
+                    peerid = 0,
+                    seq = x_seq.ToInt(),
+                    stamp = x_stamp.ToDateTime(),
+                    dgst = x_digest.ToLong(),
+                    pdgst = x_prev_digest.ToLong(),
                 };
-
-                // block content
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                states = arr.ToArray<State>();
-
-                int len = arr.Count;
+                records = arr.ToArray<Record>();
             }
             catch
             {
@@ -139,7 +139,7 @@ namespace SkyChain.Chain
         void AddAccessHeaders(HttpRequestMessage req, WebContext wc)
         {
             var cfg = Framework.webcfg;
-            req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id);
+            req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id.ToString());
 
             // var auth = wc?.Header("Authorization");
             // if (auth != null)

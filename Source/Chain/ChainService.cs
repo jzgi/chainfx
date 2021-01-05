@@ -10,10 +10,9 @@ namespace SkyChain.Chain
     public class ChainService : WebService
     {
         /// <summary>
-        /// Try to return a block of data whose sequential number is immediately larger than the specified.
+        /// Try to return a block newer than last one.
         /// </summary>
-        /// <returns></returns>
-        public async Task block(WebContext wc, int lastseq)
+        public async Task onpoll(WebContext wc, int lastseq)
         {
             var peerid = ChainEnviron.Info.id;
 
@@ -29,7 +28,7 @@ namespace SkyChain.Chain
             dc.Let(out int pdgst);
 
             // load block states
-            dc.Sql("SELECT ").collst(State.Empty, 0xff).T(" FROM chain.blocksts WHERE peerid = @1 AND seq = @2");
+            dc.Sql("SELECT ").collst(Record.Empty, 0xff).T(" FROM chain.blockrcs WHERE peerid = @1 AND seq = @2");
             await dc.QueryAsync(p => p.Set(peerid).Set(seq));
 
             // putting into content
@@ -39,7 +38,7 @@ namespace SkyChain.Chain
                 j.ARR_();
                 while (dc.Next())
                 {
-                    var o = dc.ToObject<State>(0xff);
+                    var o = dc.ToObject<Record>(0xff);
                     j.OBJ_();
                     j.Put(nameof(o.job), o.job);
                     j.Put(nameof(o.step), o.step);

@@ -72,7 +72,7 @@ namespace SkyChain.Db
         }
 
         /// <summary>
-        /// Search for typed object in this scope and the scopes of ancestors; 
+        /// Search for typed object in this scope and settle all dependencies. 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>the result object or null</returns>

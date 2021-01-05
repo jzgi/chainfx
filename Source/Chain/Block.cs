@@ -8,7 +8,7 @@ namespace SkyChain.Chain
 
         public const byte ID = 1, EXTRA = 0x10;
 
-        internal string peerid;
+        internal short peerid;
         internal int seq;
         internal short status;
         internal DateTime stamp;

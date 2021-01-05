@@ -2,12 +2,12 @@
 
 namespace SkyChain.Chain
 {
-    public class State : IData
+    public class Record : IData, IKeyable<long>
     {
-        public static readonly State Empty = new State();
+        public static readonly Record Empty = new Record();
 
-        // globally-unique flow number
-        internal string job;
+        // globally-unique record number
+        internal long job;
         internal short step;
 
         // account number
@@ -50,7 +50,7 @@ namespace SkyChain.Chain
             s.Put(nameof(stated), stated);
         }
 
-        public string Job => job;
+        public long Job => job;
 
         public short Step => step;
 
@@ -69,5 +69,7 @@ namespace SkyChain.Chain
         public JObj Doc => doc;
 
         public DateTime Stated => stated;
+
+        public long Key => job;
     }
 }

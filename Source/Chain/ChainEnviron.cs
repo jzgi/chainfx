@@ -88,8 +88,8 @@ namespace SkyChain.Chain
                 // archiving 
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    dc.Sql("SELECT ").collst(State.Empty).T(" FROM chain.logs WHERE status = ").T(Log.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                    var arr = await dc.QueryAsync<State>();
+                    dc.Sql("SELECT ").collst(Record.Empty).T(" FROM chain.logs WHERE status = ").T(Log.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    var arr = await dc.QueryAsync<Record>();
                     if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
                         continue;
@@ -117,7 +117,7 @@ namespace SkyChain.Chain
                     for (int i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        dc.Sql("INSERT INTO chain.blocksts ").colset(State.Empty, 0, "peerid, seq, dgst")._VALUES_(State.Empty, 0, "@1, @2, @3");
+                        dc.Sql("INSERT INTO chain.blockrcs ").colset(Record.Empty, 0, "peerid, seq, dgst")._VALUES_(Record.Empty, 0, "@1, @2, @3");
                         await dc.ExecuteAsync(p =>
                         {
                             p.Digest = true;
@@ -138,7 +138,7 @@ namespace SkyChain.Chain
                     {
                         var o = arr[i];
                         if (i > 0) s.T(',');
-                        s.T('(').TT(o.job).T(',').T(o.step).T(')');
+                        s.T('(').T(o.job).T(',').T(o.step).T(')');
                     }
                     s.T(')');
                     await dc.ExecuteAsync(prepare: false);
@@ -151,7 +151,7 @@ namespace SkyChain.Chain
         {
             while (true)
             {
-                Thread.Sleep(60 * 1000); // 60 seconds inteval
+                Thread.Sleep(60 * 1000); // 60 seconds interval
 
                 Cycle:
                 // a scheduling cycle
@@ -165,7 +165,7 @@ namespace SkyChain.Chain
                     if (cli.IsCompleted)
                     {
                         var (block, states) = cli.Result;
-                        
+
                         // db
                     }
 
@@ -173,8 +173,6 @@ namespace SkyChain.Chain
                     {
                         goto Cycle;
                     }
-                    
-                    
                 }
             }
         }

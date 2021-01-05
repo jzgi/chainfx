@@ -346,6 +346,16 @@ namespace SkyChain.Db
             return this;
         }
 
+        public DbSql T(long v, bool cond = true)
+        {
+            if (cond)
+            {
+                Add(v);
+            }
+
+            return this;
+        }
+
         public DbSql T(string v, bool cond = true)
         {
             if (cond)
