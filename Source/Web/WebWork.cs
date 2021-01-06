@@ -327,7 +327,7 @@ namespace SkyChain.Web
             {
                 // check if trusted peer
                 var fr = wc.XFrom; // check header
-                if (fr != null && Service is ChainService)
+                if (fr != 0 && Service is ChainService)
                 {
                     var cli = ChainEnviron.GetChainClient(fr);
                     if (cli.IsRemoteAddr(wc.RemoteAddr))

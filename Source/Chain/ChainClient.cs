@@ -9,7 +9,7 @@ namespace SkyChain.Chain
     /// <summary>
     /// A chain client connector for a specific remote peer..
     /// </summary>
-    public class ChainClient : HttpClient, IKeyable<string>
+    public class ChainClient : HttpClient, IKeyable<short>
     {
         const int TIMEOUT_SECONDS = 3;
 
@@ -55,7 +55,7 @@ namespace SkyChain.Chain
             Timeout = TimeSpan.FromSeconds(TIMEOUT_SECONDS);
         }
 
-        public string Key => info?.name;
+        public short Key => info.id;
 
         public Peer Info => info;
 
@@ -135,6 +135,60 @@ namespace SkyChain.Chain
         //
         // RPC
         //
+
+        public async Task<short> CallJobForwardAsync(long job, short step, string acct, string name, string ldgr)
+        {
+            try
+            {
+                var req = new HttpRequestMessage(HttpMethod.Get, "/onforth");
+                req.Headers.TryAddWithoutValidation(Chain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_JOB, job.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_STEP, step.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_ACCOUNT, acct);
+                req.Headers.TryAddWithoutValidation(Chain.X_NAME, name);
+                req.Headers.TryAddWithoutValidation(Chain.X_LEDGER, ldgr);
+
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.IsSuccessStatusCode)
+                {
+                    return (short) rsp.StatusCode;
+                }
+
+                return (short) rsp.StatusCode;
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + AHEAD;
+            }
+
+            return 500;
+        }
+
+        public async Task<short> CallJobBackwardAsync(long job, short step)
+        {
+            try
+            {
+                var req = new HttpRequestMessage(HttpMethod.Get, "/onback");
+                req.Headers.TryAddWithoutValidation(Chain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_JOB, job.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_STEP, step.ToString());
+
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.IsSuccessStatusCode)
+                {
+                    return (short) rsp.StatusCode;
+                }
+
+                return (short) rsp.StatusCode;
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + AHEAD;
+            }
+
+            return 500;
+        }
+
 
         void AddAccessHeaders(HttpRequestMessage req, WebContext wc)
         {

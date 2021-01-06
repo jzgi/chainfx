@@ -190,13 +190,9 @@ namespace SkyChain.Web
             }
         }
 
-        string ckey;
+        short cfrom;
 
-        public string ChainKey => ckey ??= Header("X-Chain-Key");
-
-        string cfrom;
-
-        public string XFrom => cfrom ??= Header("X-From");
+        public short XFrom => cfrom = HeaderShort(Chain.Chain.X_FROM).Value;
 
         //
         // HEADER

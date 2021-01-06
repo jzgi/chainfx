@@ -76,7 +76,7 @@ namespace SkyChain.Chain
             return op;
         }
 
-        public static async Task JobForwardAsync(this DbContext dc, long job, string npeer, string nacct, string nname, decimal amt, JObj doc = null)
+        public static async Task JobForwardAsync(this DbContext dc, long job, short npeerid, string nacct, string nname, decimal amt, JObj doc = null)
         {
             if (!await dc.QueryTopAsync("SELECT step FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
             {
@@ -85,7 +85,7 @@ namespace SkyChain.Chain
             dc.Let(out short step);
 
             dc.Sql("UPDATE chain.ops SET status = ").T(Op.FORWARD).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
-            await dc.QueryTopAsync(p => p.Set(npeer).Set(nacct).Set(nname).Set(job).Set(step));
+            await dc.QueryTopAsync(p => p.Set(npeerid).Set(nacct).Set(nname).Set(job).Set(step));
             dc.Let(out string ldgr);
 
             var o = new Op()
@@ -101,20 +101,44 @@ namespace SkyChain.Chain
                 stated = DateTime.Now,
                 status = Op.CREATED
             };
-            if (npeer == null)
+            if (npeerid == 0)
             {
                 dc.Sql("INSERT INTO chain.logs ").colset(Op.Empty)._VALUES_(Op.Empty);
                 await dc.ExecuteAsync(p => o.Write(p));
             }
             else // remote call
             {
-                var cli = ChainEnviron.GetChainClient(o.ppeer);
-                // cli.PostAsync("");
+                var cli = ChainEnviron.GetChainClient(o.ppeerid);
+                var status = await cli.CallJobForwardAsync(job, o.step, o.Acct, o.name, o.ldgr);
+                if (status != 201)
+                {
+                    dc.Rollback();
+                }
             }
         }
 
-        public static async Task JobBackwardAsync(this DbContext dc, string tn, short step, string descr, decimal amt, JObj doc = null)
+        public static async Task JobBackwardAsync(this DbContext dc, long job, short step)
         {
+            if (!await dc.QueryTopAsync("SELECT step, ppeerid FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
+            {
+                throw new ChainException();
+            }
+            dc.Let(out step);
+            dc.Let(out short ppeerid);
+            if (ppeerid == 0) // this node
+            {
+                dc.Sql("UPDATE chain.ops SET ").colset(Op.Empty)._VALUES_(Op.Empty);
+                await dc.ExecuteAsync(p => p.Set(job));
+            }
+            else // remote call
+            {
+                var cli = ChainEnviron.GetChainClient(ppeerid);
+                var status = await cli.CallJobBackwardAsync(job, step);
+                if (status != 201)
+                {
+                    dc.Rollback();
+                }
+            }
         }
 
         public static async Task JobAbortAsync(this DbContext dc, string fn, short step, string descr, decimal amt, JObj doc = null)

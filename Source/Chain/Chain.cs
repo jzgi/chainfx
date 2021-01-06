@@ -13,5 +13,15 @@
         public const string X_JOB = "X-Job";
 
         public const string X_STEP = "X-Step";
+
+        public const string X_FROM = "X-From";
+
+        public const string X_ACCOUNT = "X-Account";
+
+        public const string X_NAME = "X-Name";
+
+        public const string X_LEDGER = "X-Ledger";
+
+        public const string X_DESCRIPTION = "X-Description";
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Data;
 using System.Threading;
-using Microsoft.VisualBasic.FileIO;
 using SkyChain.Db;
 
 namespace SkyChain.Chain
@@ -11,7 +10,7 @@ namespace SkyChain.Chain
         static Peer info;
 
         // a bundle of connected peers
-        static readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
+        static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
 
         // validates ops and archives demostic blocks 
         static Thread archiver;
@@ -21,7 +20,7 @@ namespace SkyChain.Chain
 
         public static Peer Info => info;
 
-        public static ChainClient GetChainClient(string key) => clients[key];
+        public static ChainClient GetChainClient(short key) => clients[key];
 
         /// <summary>
         /// Sets up and start blockchain on this peer node.

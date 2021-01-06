@@ -24,10 +24,10 @@
         };
 
 
-        internal string ppeer;
+        internal short ppeerid;
         internal string pacct;
         internal string pname;
-        internal string npeer;
+        internal short npeerid;
         internal string nacct;
         internal string nname;
 
@@ -38,10 +38,10 @@
         {
             base.Read(s, proj);
 
-            s.Get(nameof(ppeer), ref ppeer);
+            s.Get(nameof(ppeerid), ref ppeerid);
             s.Get(nameof(pacct), ref pacct);
             s.Get(nameof(pname), ref pname);
-            s.Get(nameof(npeer), ref npeer);
+            s.Get(nameof(npeerid), ref npeerid);
             s.Get(nameof(nacct), ref nacct);
             s.Get(nameof(nname), ref nname);
             s.Get(nameof(status), ref status);
@@ -51,24 +51,24 @@
         {
             base.Write(s, proj);
 
-            s.Put(nameof(ppeer), ppeer);
+            s.Put(nameof(ppeerid), ppeerid);
             s.Put(nameof(pacct), pacct);
             s.Put(nameof(pname), pname);
-            s.Put(nameof(npeer), npeer);
+            s.Put(nameof(npeerid), npeerid);
             s.Put(nameof(nacct), nacct);
             s.Put(nameof(nname), nname);
             s.Put(nameof(status), status);
         }
 
-        public bool IsLocal => ppeer == null;
+        public bool IsLocal => ppeerid == 0;
 
-        public string PPeer => ppeer;
+        public short PPeerId => ppeerid;
 
         public string PAcct => pacct;
 
         public string PName => pname;
 
-        public string NPeer => npeer;
+        public short NPeerId => npeerid;
 
         public string NAcct => nacct;
 
