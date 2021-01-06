@@ -9,5 +9,9 @@
         public const string X_DIGEST = "X-Digest";
 
         public const string X_PREV_DIGEST = "X-Prev-Digest";
+
+        public const string X_JOB = "X-Job";
+
+        public const string X_STEP = "X-Step";
     }
 }

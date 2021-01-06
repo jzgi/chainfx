@@ -13,7 +13,7 @@ namespace SkyChain.Chain
         // a bundle of connected peers
         static readonly Map<string, ChainClient> clients = new Map<string, ChainClient>(32);
 
-        // validates logs and archives demostic blocks 
+        // validates ops and archives demostic blocks 
         static Thread archiver;
 
         // periodic polling of foreign blocks 
@@ -88,8 +88,8 @@ namespace SkyChain.Chain
                 // archiving 
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    dc.Sql("SELECT ").collst(Record.Empty).T(" FROM chain.logs WHERE status = ").T(Log.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                    var arr = await dc.QueryAsync<Record>();
+                    dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.ops WHERE status = ").T(Op.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    var arr = await dc.QueryAsync<BlockOp>();
                     if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
                         continue;
@@ -117,7 +117,7 @@ namespace SkyChain.Chain
                     for (int i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        dc.Sql("INSERT INTO chain.blockrcs ").colset(Record.Empty, 0, "peerid, seq, dgst")._VALUES_(Record.Empty, 0, "@1, @2, @3");
+                        dc.Sql("INSERT INTO chain.blockrcs ").colset(BlockOp.Empty, 0, "peerid, seq, dgst")._VALUES_(BlockOp.Empty, 0, "@1, @2, @3");
                         await dc.ExecuteAsync(p =>
                         {
                             p.Digest = true;
@@ -132,8 +132,8 @@ namespace SkyChain.Chain
                     // keep digest used in next cycle
                     lastdgst = totalcs;
 
-                    // delete logs
-                    var s = dc.Sql("DELETE FROM chain.logs WHERE status = ").T(Log.DONE).T(" AND (job, step) IN (");
+                    // delete ops
+                    var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Op.DONE).T(" AND (job, step) IN (");
                     for (int i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];

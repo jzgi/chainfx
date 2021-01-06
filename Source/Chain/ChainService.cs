@@ -28,7 +28,7 @@ namespace SkyChain.Chain
             dc.Let(out int pdgst);
 
             // load block states
-            dc.Sql("SELECT ").collst(Record.Empty, 0xff).T(" FROM chain.blockrcs WHERE peerid = @1 AND seq = @2");
+            dc.Sql("SELECT ").collst(BlockOp.Empty, 0xff).T(" FROM chain.blockrcs WHERE peerid = @1 AND seq = @2");
             await dc.QueryAsync(p => p.Set(peerid).Set(seq));
 
             // putting into content
@@ -38,7 +38,7 @@ namespace SkyChain.Chain
                 j.ARR_();
                 while (dc.Next())
                 {
-                    var o = dc.ToObject<Record>(0xff);
+                    var o = dc.ToObject<BlockOp>(0xff);
                     j.OBJ_();
                     j.Put(nameof(o.job), o.job);
                     j.Put(nameof(o.step), o.step);
@@ -96,9 +96,21 @@ namespace SkyChain.Chain
             return true;
         }
 
-        public virtual bool ondone(WebContext wc, int fromstep)
+        public async Task onend(WebContext wc)
         {
-            return true;
+            var job = wc.HeaderLong(X_JOB);
+            var step = wc.HeaderShort(X_STEP);
+
+            if (!job.HasValue || !step.HasValue)
+            {
+                wc.Give(400); // bad request
+                return;
+            }
+
+            using var dc = NewDbContext();
+            await dc.JobEndAsync(job.Value, step.Value);
+
+            wc.Give(200);
         }
     }
 }

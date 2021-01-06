@@ -27,7 +27,7 @@ namespace SkyChain.Chain
         // the lastest result
         Block block;
 
-        Record[] records;
+        BlockOp[] records;
 
         // point of time to next poll, set because of exception or polling interval
         volatile int retryAt;
@@ -59,7 +59,7 @@ namespace SkyChain.Chain
 
         public Peer Info => info;
 
-        public (Block, Record[]) Result => (block, records);
+        public (Block, BlockOp[]) Result => (block, records);
 
         public bool IsRemoteAddr(IPAddress addr)
         {
@@ -124,7 +124,7 @@ namespace SkyChain.Chain
                 };
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                records = arr.ToArray<Record>();
+                records = arr.ToArray<BlockOp>();
             }
             catch
             {

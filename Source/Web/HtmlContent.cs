@@ -1543,10 +1543,7 @@ namespace SkyChain.Web
         /// <summary>
         /// The combination of fieldset and ul elements.
         /// </summary>
-        /// <param name="legend"></param>
-        /// <param name="css"></param>
-        /// <returns></returns>
-        public HtmlContent FIELDSUL_(string legend = null, string css = null)
+        public HtmlContent FIELDSUL_(string legend = null, bool disabled = false, string css = null)
         {
             Add("<fieldset class=\"uk-fieldset uk-width-1-1");
             if (css != null)
@@ -1554,8 +1551,15 @@ namespace SkyChain.Web
                 Add(' ');
                 Add(css);
             }
+            if (disabled)
+            {
+                Add("\" disabled>");
+            }
+            else
+            {
+                Add("\">");
+            }
 
-            Add("\">");
             if (legend != null)
             {
                 Add("<legend>");
@@ -3181,7 +3185,7 @@ namespace SkyChain.Web
 
         public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
-            FIELDSUL_(legend, css);
+            FIELDSUL_(legend, false, css);
             for (int i = 0; i < opt.Length; i++)
             {
                 var e = opt[i];
@@ -3275,7 +3279,7 @@ namespace SkyChain.Web
 
         public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Predicate<V> filter = null)
         {
-            FIELDSUL_(legend, css);
+            FIELDSUL_(legend, false, css);
             if (opt != null)
             {
                 lock (opt)
@@ -3320,7 +3324,7 @@ namespace SkyChain.Web
 
         public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Func<K, V, bool> filter = null)
         {
-            FIELDSUL_(legend, css);
+            FIELDSUL_(legend, false, css);
             if (opt != null)
             {
                 lock (opt)
@@ -3378,7 +3382,7 @@ namespace SkyChain.Web
         {
             if (legend != null)
             {
-                FIELDSUL_(legend, css);
+                FIELDSUL_(legend, false, css);
             }
 
             for (int i = 0; i < opt.Length; i++)

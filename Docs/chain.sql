@@ -8,7 +8,7 @@ alter sequence jobseq owner to postgres;
 
 create table peers
 (
-    id varchar(4) not null
+    id smallint not null
         constraint peers_pk
             primary key,
     name varchar(20),
@@ -23,23 +23,23 @@ alter table peers owner to postgres;
 
 create table blocks
 (
-    peerid varchar(4) not null,
+    peerid smallint not null,
     seq integer not null,
     stamp timestamp(0) not null,
     status smallint default 0 not null,
-    dgst integer,
-    prdgst integer,
+    dgst bigint,
+    prdgst bigint,
     constraint blocks_pk
         primary key (peerid, seq)
 );
 
 alter table blocks owner to postgres;
 
-create table blocksts
+create table blockops
 (
-    peerid varchar(2) not null,
+    peerid smallint not null,
     seq integer not null,
-    job varchar(14) not null,
+    job bigint not null,
     step smallint not null,
     acct varchar(30) not null,
     name varchar(10),
@@ -49,22 +49,22 @@ create table blocksts
     bal money not null,
     doc jsonb,
     stated timestamp(0) not null,
-    dgst integer,
-    constraint blocksts_block_fk
+    dgst bigint,
+    constraint blockops_block_fk
         foreign key (peerid, seq) references blocks
 );
 
-alter table blocksts owner to postgres;
+alter table blockops owner to postgres;
 
-create index blocksts_block_idx
-    on blocksts (peerid, seq);
+create unique index blockops_op_idx
+    on blockops (job, step);
 
-create unique index blocksts_op_idx
-    on blocksts (job, step);
+create index blockops_block_idx
+    on blockops (peerid, seq);
 
-create table logs
+create table ops
 (
-    job varchar(10) not null,
+    job bigint not null,
     step smallint not null,
     acct varchar(20) not null,
     name varchar(10) not null,
@@ -75,19 +75,19 @@ create table logs
     doc jsonb,
     bal money,
     stated timestamp(0) not null,
-    ppeer varchar(2),
+    ppeer smallint,
     pacct varchar(20),
     pname varchar(10),
-    npeer varchar(2),
+    npeer smallint,
     nacct varchar(20),
     nname varchar(10),
     stamp timestamp(0),
-    constraint logs_pk
+    constraint ops_pk
         primary key (job, step)
 );
 
-alter table logs owner to postgres;
+alter table ops owner to postgres;
 
-create index logs_validate_idx
-    on logs (status, ldgr, step);
+create index ops_validate_idx
+    on ops (status, ldgr, step);
 

@@ -1,8 +1,8 @@
 ﻿namespace SkyChain.Chain
 {
-    public class Log : Record
+    public class Op : BlockOp
     {
-        public new static readonly Log Empty = new Log();
+        public new static readonly Op Empty = new Op();
 
         public const byte ID = 1, PRIVACY = 2;
 

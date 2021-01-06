@@ -212,6 +212,20 @@ namespace SkyChain.Web
             return null;
         }
 
+        public short? HeaderShort(string name)
+        {
+            if (fRequest.Headers.TryGetValue(name, out var vs))
+            {
+                string str = vs;
+                if (short.TryParse(str, out var v))
+                {
+                    return v;
+                }
+            }
+
+            return null;
+        }
+
         public int? HeaderInt(string name)
         {
             if (fRequest.Headers.TryGetValue(name, out var vs))
