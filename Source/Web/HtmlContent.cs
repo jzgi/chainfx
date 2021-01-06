@@ -1096,7 +1096,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD<V>(string label, V p)
         {
             LABEL(label);
-            Add("<p>");
+            Add("<p class=\"uk-width-1-1\">");
             AddPrimitive(p);
             Add("</p>");
             return this;
@@ -1105,7 +1105,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD2<V, X>(string label, V p, X x)
         {
             LABEL(label);
-            Add("<p>");
+            Add("<p class=\"uk-width-1-1\">");
             AddPrimitive(p);
             Add("&nbsp;");
             AddPrimitive(x);
@@ -2355,35 +2355,53 @@ namespace SkyChain.Web
             else if (k is long longv) Add(longv);
             else if (k is string strv) Add(strv);
             else if (k is DateTime dtv) Add(dtv);
-            else if (k is ValueTuple<short, short> k11)
+            else if (k is ValueTuple<short, short> ss)
             {
-                Add(k11.Item1);
+                Add(ss.Item1);
                 Add('-');
-                Add(k11.Item2);
+                Add(ss.Item2);
             }
-            else if (k is ValueTuple<int, int> k22)
+            else if (k is ValueTuple<int, int> ii)
             {
-                Add(k22.Item1);
+                Add(ii.Item1);
                 Add('-');
-                Add(k22.Item2);
+                Add(ii.Item2);
             }
-            else if (k is ValueTuple<string, string> k33)
+            else if (k is ValueTuple<long, long> ll)
             {
-                Add(k33.Item1);
+                Add(ll.Item1);
                 Add('-');
-                Add(k33.Item2);
+                Add(ll.Item2);
             }
-            else if (k is ValueTuple<string, int> k32)
+            else if (k is ValueTuple<string, string> tt)
             {
-                Add(k32.Item1);
+                Add(tt.Item1);
                 Add('-');
-                Add(k32.Item2);
+                Add(tt.Item2);
             }
-            else if (k is ValueTuple<int, string> k23)
+            else if (k is ValueTuple<string, int> ti)
             {
-                Add(k23.Item1);
+                Add(ti.Item1);
                 Add('-');
-                Add(k23.Item2);
+                Add(ti.Item2);
+            }
+            else if (k is ValueTuple<int, string> it)
+            {
+                Add(it.Item1);
+                Add('-');
+                Add(it.Item2);
+            }
+            else if (k is ValueTuple<long, short> ls)
+            {
+                Add(ls.Item1);
+                Add('-');
+                Add(ls.Item2);
+            }
+            else if (k is ValueTuple<short, long> sl)
+            {
+                Add(sl.Item1);
+                Add('-');
+                Add(sl.Item2);
             }
         }
 

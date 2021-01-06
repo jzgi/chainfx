@@ -190,9 +190,9 @@ namespace SkyChain.Web
             }
         }
 
-        short cfrom;
+        short? cfrom;
 
-        public short XFrom => cfrom = HeaderShort(Chain.Chain.X_FROM).Value;
+        public short? XFrom => cfrom = HeaderShort(Chain.Chain.X_FROM);
 
         //
         // HEADER

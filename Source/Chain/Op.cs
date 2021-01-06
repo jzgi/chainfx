@@ -1,26 +1,30 @@
 ﻿namespace SkyChain.Chain
 {
-    public class Op : BlockOp
+    public class Op : BlockOp, IDualKeyable<long, short>
     {
         public new static readonly Op Empty = new Op();
 
         public const byte ID = 1, PRIVACY = 2;
 
         public const short
-            CREATED = 0,
-            FORWARD = 1,
-            BACKWARD = 2,
-            ABORTED = 3,
-            DONE = 4;
+            STARTED = 0b000,
+            ABORTED = 0b001,
+            FORWARD_IN = 0b010,
+            FORWARD_OUT = 0b011,
+            BACKWARD_IN = 0b100,
+            BACKWARD_OUT = 0b101,
+            ENDED = 0b111;
 
         // status
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {CREATED, "新建"},
-            {FORWARD, "推进"},
-            {BACKWARD, "退回"},
+            {STARTED, "开始"},
             {ABORTED, "撤销"},
-            {DONE, "完成"},
+            {FORWARD_IN, "送入"},
+            {FORWARD_OUT, "送出"},
+            {BACKWARD_IN, "退来"},
+            {BACKWARD_OUT, "退走"},
+            {ENDED, "结束"},
         };
 
 
@@ -75,5 +79,9 @@
         public string NName => nname;
 
         public short Status => status;
+
+        public bool IsPresent => (status & 0b001) == 0;
+
+        public (long, short) CompositeKey => (job, step);
     }
 }

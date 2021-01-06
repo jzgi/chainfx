@@ -42,16 +42,27 @@ namespace SkyChain.Chain
             return await dc.QueryAsync<Op>(p => p.Set(acct).Set(ldgr + "%"));
         }
 
+        public static async Task<Op> FindOpAsync(this DbContext dc, long job, short step)
+        {
+            dc.Sql("SELECT ").collst(Op.Empty).T(" FROM chain.ops WHERE job = @1 AND step = @2");
+            return await dc.QueryTopAsync<Op>(p => p.Set(job).Set(step));
+        }
+
         public static async Task<Op[]> FindOpsAsync(this DbContext dc, long job)
         {
             dc.Sql("SELECT ").collst(Op.Empty).T(" FROM chain.ops WHERE job = @1 ORDER BY step");
             return await dc.QueryAsync<Op>(p => p.Set(job));
         }
 
+        /// <summary>
+        /// To start a job by creating its first step.
+        /// </summary>
+        /// <returns></returns>
         public static async Task<Op> JobStartAsync(this DbContext dc, string acct, string name, string ldgr, string descr, decimal amt, JObj doc = null)
         {
-            // resolve transaction number
-            var jobseq = (long) dc.Scalar("SELECT nextval('chain.jobseq')");
+            // job number is unique
+            await dc.QueryAsync("SELECT nextval('chain.jobseq')");
+            dc.Let(out int jobseq);
             long job = ((long) ChainEnviron.Info.id << 32) + jobseq;
 
             // insert
@@ -66,7 +77,7 @@ namespace SkyChain.Chain
                 descr = descr,
                 doc = doc,
                 stated = DateTime.Now,
-                status = Op.CREATED
+                status = Op.STARTED
             };
 
             // data access
@@ -84,7 +95,7 @@ namespace SkyChain.Chain
             }
             dc.Let(out short step);
 
-            dc.Sql("UPDATE chain.ops SET status = ").T(Op.FORWARD).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
+            dc.Sql("UPDATE chain.ops SET status = ").T(Op.FORWARD_IN).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
             await dc.QueryTopAsync(p => p.Set(npeerid).Set(nacct).Set(nname).Set(job).Set(step));
             dc.Let(out string ldgr);
 
@@ -99,7 +110,7 @@ namespace SkyChain.Chain
                 descr = ldgr,
                 doc = doc,
                 stated = DateTime.Now,
-                status = Op.CREATED
+                status = Op.STARTED
             };
             if (npeerid == 0)
             {
@@ -145,23 +156,30 @@ namespace SkyChain.Chain
         {
         }
 
-        public static async Task JobEndAsync(this DbContext dc, long job, short forstep)
+        public static async Task JobEndAsync(this DbContext dc, long job, short curstep, JObj doc = null)
         {
             // locate the end op
-            dc.Sql("SELECT step, ppeerid FROM chain.ops WHERE job = @1");
+            dc.Sql("SELECT ppeerid FROM chain.ops WHERE job = @1");
             await dc.QueryTopAsync(p => p.Set(job));
-            dc.Let(out short step);
             dc.Let(out short ppeerid);
 
             // end the previous step
-            if (step > 1)
+            if (curstep > 1)
             {
-                await dc.JobEndAsync(job, (short) (step - 1));
+                if (ppeerid > 0)
+                {
+                    var cli = ChainEnviron.GetChainClient(ppeerid);
+                    await cli.CallJobEndAsync(job, (short) (curstep - 1));
+                }
+                else
+                {
+                    await dc.JobEndAsync(job, (short) (curstep - 1));
+                }
             }
 
             // end this step
-            dc.Sql("UPDATE ops SET bal = @1, status = ").T(Op.DONE).T(" WHERE job = @2 AND step = @3");
-            await dc.ExecuteAsync(p => p.Set(job));
+            dc.Sql("UPDATE chain.ops SET status = ").T(Op.ENDED).T(", doc = @1 WHERE job = @2 AND step = @3");
+            await dc.ExecuteAsync(p => p.Set(doc).Set(job).Set(curstep));
         }
     }
 }

@@ -87,7 +87,7 @@ namespace SkyChain.Chain
                 // archiving 
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.ops WHERE status = ").T(Op.DONE).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.ops WHERE status = ").T(Op.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
                     var arr = await dc.QueryAsync<BlockOp>();
                     if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
@@ -132,7 +132,7 @@ namespace SkyChain.Chain
                     lastdgst = totalcs;
 
                     // delete ops
-                    var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Op.DONE).T(" AND (job, step) IN (");
+                    var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Op.ENDED).T(" AND (job, step) IN (");
                     for (int i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];

@@ -189,6 +189,31 @@ namespace SkyChain.Chain
             return 500;
         }
 
+        public async Task<short> CallJobEndAsync(long job, short step)
+        {
+            try
+            {
+                var req = new HttpRequestMessage(HttpMethod.Get, "/onback");
+                req.Headers.TryAddWithoutValidation(Chain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_JOB, job.ToString());
+                req.Headers.TryAddWithoutValidation(Chain.X_STEP, step.ToString());
+
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.IsSuccessStatusCode)
+                {
+                    return (short) rsp.StatusCode;
+                }
+
+                return (short) rsp.StatusCode;
+            }
+            catch
+            {
+                retryAt = Environment.TickCount + AHEAD;
+            }
+
+            return 500;
+        }
+
 
         void AddAccessHeaders(HttpRequestMessage req, WebContext wc)
         {

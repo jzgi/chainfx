@@ -17,4 +17,9 @@ namespace SkyChain
         /// <returns></returns>
         bool GroupWith(K akey);
     }
+
+    public interface IDualKeyable<K, S> : IKeyable<K>
+    {
+        (K, S) CompositeKey { get; }
+    }
 }
