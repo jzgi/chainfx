@@ -23,21 +23,9 @@ alter table peers owner to postgres;
 
 create table blocks
 (
-    peerid smallint not null,
-    seq integer not null,
-    stamp timestamp(0) not null,
-    status smallint default 0 not null,
-    dgst bigint,
-    prdgst bigint,
-    constraint blocks_pk
-        primary key (peerid, seq)
-);
-
-alter table blocks owner to postgres;
-
-create table blockops
-(
-    peerid smallint not null,
+    peerid smallint not null
+        constraint blocks_peerid_fk
+            references peers,
     seq integer not null,
     job bigint not null,
     step smallint not null,
@@ -50,17 +38,18 @@ create table blockops
     doc jsonb,
     stated timestamp(0) not null,
     dgst bigint,
-    constraint blockops_block_fk
-        foreign key (peerid, seq) references blocks
+    blockdgst bigint,
+    constraint blocks_pk
+        primary key (peerid, seq)
 );
 
-alter table blockops owner to postgres;
+alter table blocks owner to postgres;
 
-create unique index blockops_op_idx
-    on blockops (job, step);
+create unique index blocks_op_idx
+    on blocks (job, step);
 
-create index blockops_block_idx
-    on blockops (peerid, seq);
+create index blocks_ldgr_idx
+    on blocks (acct, ldgr, seq);
 
 create table ops
 (
@@ -75,10 +64,10 @@ create table ops
     doc jsonb,
     bal money,
     stated timestamp(0) not null,
-    ppeer smallint,
+    ppeerid smallint,
     pacct varchar(20),
     pname varchar(10),
-    npeer smallint,
+    npeerid smallint,
     nacct varchar(20),
     nname varchar(10),
     stamp timestamp(0),

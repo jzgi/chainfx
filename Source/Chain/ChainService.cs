@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
-using static SkyChain.Chain.Chain;
+using static SkyChain.Chain.ChainUtility;
+using static SkyChain.Chain.IChain;
 
 namespace SkyChain.Chain
 {
@@ -15,30 +16,22 @@ namespace SkyChain.Chain
         public async Task onpoll(WebContext wc, int lastseq)
         {
             var peerid = ChainEnviron.Info.id;
-
-            // check if existing
-            using var dc = NewDbContext();
-            if (!await dc.QueryTopAsync("SELECT seq, dgst, pdgst FROM chain.blocks WHERE peerid = @1 AND seq > @1 ORDER BY peerid, seq LIMIT 1", p => p.Set(peerid).Set(lastseq)))
+            var blockid = wc.HeaderInt(X_BLOCK_ID); // desired block id
+            if (!blockid.HasValue)
             {
-                wc.Give(204); // no content
+                wc.Give(400);
                 return;
             }
-            dc.Let(out int seq);
-            dc.Let(out int dgst);
-            dc.Let(out int pdgst);
 
-            // load block states
-            dc.Sql("SELECT ").collst(BlockOp.Empty, 0xff).T(" FROM chain.blockrcs WHERE peerid = @1 AND seq = @2");
-            await dc.QueryAsync(p => p.Set(peerid).Set(seq));
-
-            // putting into content
+            using var dc = NewDbContext();
+            dc.Sql("SELECT ").collst(Arch.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @3 ORDER BY seq");
+            var arr = await dc.QueryAsync<Arch>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)).Set(WeaveSeq(blockid.Value, short.MaxValue)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
                 j.ARR_();
-                while (dc.Next())
+                foreach (var o in arr)
                 {
-                    var o = dc.ToObject<BlockOp>(0xff);
                     j.OBJ_();
                     j.Put(nameof(o.job), o.job);
                     j.Put(nameof(o.step), o.step);
@@ -60,9 +53,9 @@ namespace SkyChain.Chain
                 j.Clear();
             }
 
-            wc.SetHeader(X_SEQ, seq);
-            wc.SetHeader(X_DIGEST, dgst);
-            wc.SetHeader(X_PREV_DIGEST, pdgst);
+            wc.SetHeader(X_PREV_DIGEST, arr[0].blockdgst);
+            wc.SetHeader(X_DIGEST, arr[^1].blockdgst);
+
             wc.Give(200, j);
         }
 

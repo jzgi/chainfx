@@ -6,49 +6,68 @@ namespace SkyChain.Chain
 {
     public static class ChainUtility
     {
+        internal static (int, short) ResolveSeq(long seq)
+        {
+            var blockid = (int) (seq >> 16);
+            var idx = (short) (seq & 0xffffL);
+            return (blockid, idx);
+        }
+
+        internal static long WeaveSeq(int blockid, short idx)
+        {
+            return (long) blockid << 16 + idx;
+        }
+
+
         public static Peer[] FindPeers(this DbContext dc)
         {
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
             return dc.Query<Peer>();
         }
 
-        internal static async Task<BlockOp[]> FindBlockOpsAsync(this DbContext dc, long job)
+        internal static async Task<Arch[]> LarchJobAsync(this DbContext dc, long job)
         {
-            dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.blockops WHERE job = @1 ORDER BY step");
-            return await dc.QueryAsync<BlockOp>(p => p.Set(job));
+            dc.Sql("SELECT ").collst(Arch.Empty).T(" FROM chain.blocks WHERE job = @1 ORDER BY step");
+            return await dc.QueryAsync<Arch>(p => p.Set(job));
         }
 
-        public static async Task<Map<long, BlockOp>> FindBlockOpsAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int offset = 0)
+        public static async Task<Arch> LarchAsync(this DbContext dc, string acct, string ldgr)
         {
-            var map = new Map<long, BlockOp>();
-            dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.blockops WHERE acct = @1 AND ldgr LIKE @2 ORDER BY stated DESC LIMIT @3 OFFSET @3 * @4");
+            dc.Sql("SELECT ").collst(Arch.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 ORDER BY seq DESC LIMIT 1");
+            return await dc.QueryTopAsync<Arch>(p => p.Set(acct).Set(ldgr));
+        }
+
+        public static async Task<Map<long, Arch>> LarchJournalAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int offset = 0)
+        {
+            var map = new Map<long, Arch>();
+            dc.Sql("SELECT ").collst(Arch.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr LIKE @2 ORDER BY stated DESC LIMIT @3 OFFSET @3 * @4");
             await dc.QueryAsync(p => p.Set(acct).Set(ldgr + "%").Set(limit).Set(offset));
-            BlockOp o;
+            Arch o;
             while (dc.Next())
             {
-                o = dc.ToObject<BlockOp>();
+                o = dc.ToObject<Arch>();
                 map.Add(o);
             }
             // query again to see any rest steps
-            dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.blockops WHERE acct = @1 AND ldgr LIKE @2 AND job = @3 AND step > @4 ORDER BY stated");
+            dc.Sql("SELECT ").collst(Arch.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr LIKE @2 AND job = @3 AND step > @4 ORDER BY stated");
 
 
             return null;
         }
 
-        public static async Task<Op[]> FindOpsAsync(this DbContext dc, string acct, string ldgr)
-        {
-            dc.Sql("SELECT ").collst(Op.Empty).T(" FROM chain.ops WHERE acct = @1 AND ldgr LIKE @2");
-            return await dc.QueryAsync<Op>(p => p.Set(acct).Set(ldgr + "%"));
-        }
-
-        public static async Task<Op> FindOpAsync(this DbContext dc, long job, short step)
+        public static async Task<Op> LopAsync(this DbContext dc, long job, short step)
         {
             dc.Sql("SELECT ").collst(Op.Empty).T(" FROM chain.ops WHERE job = @1 AND step = @2");
             return await dc.QueryTopAsync<Op>(p => p.Set(job).Set(step));
         }
 
-        public static async Task<Op[]> FindOpsAsync(this DbContext dc, long job)
+        public static async Task<Op[]> LopJournalAsync(this DbContext dc, string acct, string ldgr)
+        {
+            dc.Sql("SELECT ").collst(Op.Empty).T(" FROM chain.ops WHERE acct = @1 AND ldgr LIKE @2");
+            return await dc.QueryAsync<Op>(p => p.Set(acct).Set(ldgr + "%"));
+        }
+
+        public static async Task<Op[]> LopJobAsync(this DbContext dc, long job)
         {
             dc.Sql("SELECT ").collst(Op.Empty).T(" FROM chain.ops WHERE job = @1 ORDER BY step");
             return await dc.QueryAsync<Op>(p => p.Set(job));
@@ -87,7 +106,7 @@ namespace SkyChain.Chain
             return op;
         }
 
-        public static async Task JobForwardAsync(this DbContext dc, long job, short npeerid, string nacct, string nname, decimal amt, JObj doc = null)
+        public static async Task JobForthAsync(this DbContext dc, long job, short npeerid, string nacct, string nname, decimal amt, JObj doc = null)
         {
             if (!await dc.QueryTopAsync("SELECT step FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
             {
@@ -95,7 +114,7 @@ namespace SkyChain.Chain
             }
             dc.Let(out short step);
 
-            dc.Sql("UPDATE chain.ops SET status = ").T(Op.FORWARD_IN).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
+            dc.Sql("UPDATE chain.ops SET status = ").T(Op.FORTH_IN).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
             await dc.QueryTopAsync(p => p.Set(npeerid).Set(nacct).Set(nname).Set(job).Set(step));
             dc.Let(out string ldgr);
 
@@ -128,7 +147,7 @@ namespace SkyChain.Chain
             }
         }
 
-        public static async Task JobBackwardAsync(this DbContext dc, long job, short step)
+        public static async Task JobBackAsync(this DbContext dc, long job, short step)
         {
             if (!await dc.QueryTopAsync("SELECT step, ppeerid FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
             {

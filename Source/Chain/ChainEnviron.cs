@@ -48,16 +48,14 @@ namespace SkyChain.Chain
             // clear up data maps
             clients.Clear();
 
-            // load data types
-            using var dc = NewDbContext();
-
             // load and init peer clients
+            using var dc = NewDbContext();
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
             var arr = dc.Query<Peer>();
             if (arr == null) return;
             foreach (var o in arr)
             {
-                if (o.IsLocal)
+                if (o.Local)
                 {
                     info = o;
                 }
@@ -70,14 +68,14 @@ namespace SkyChain.Chain
         }
 
 
-        const int MAX_BLOCK_SIZE = 32;
+        const int MAX_BLOCK_SIZE = 64;
 
         const int MIN_BLOCK_SIZE = 8;
 
         static async void Archive(object state)
         {
-            int seq = 0;
-            long lastdgst = 0;
+            int blockid = 0;
+            long blockdgst = 0;
             while (true)
             {
                 Thread.Sleep(60 * 1000); // 60 seconds interval
@@ -87,49 +85,51 @@ namespace SkyChain.Chain
                 // archiving 
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    dc.Sql("SELECT ").collst(BlockOp.Empty).T(" FROM chain.ops WHERE status = ").T(Op.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                    var arr = await dc.QueryAsync<BlockOp>();
+                    dc.Sql("SELECT ").collst(Arch.Empty).T(" FROM chain.ops WHERE status = ").T(Op.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    var arr = await dc.QueryAsync<Arch>();
                     if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
                         continue;
                     }
 
-                    // insert archives
-                    if (seq == 0 && dc.QueryTop("SELECT seq, dgst FROM chain.blocks ORDER BY peerid, seq LIMIT 1"))
+                    // insert archivals
+                    if (blockid == 0 && await dc.QueryTopAsync("SELECT seq, blockdgst FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1"))
                     {
-                        dc.Let(out seq); // last seq
-                        dc.Let(out lastdgst);
+                        dc.Let(out long seq); // last seq
+                        dc.Let(out blockdgst);
+                        var (bid, _) = ChainUtility.ResolveSeq(seq);
+                        blockid = bid;
                     }
-                    seq++;
-                    var blk = new Block
-                    {
-                        peerid = info.id,
-                        seq = seq,
-                        stamp = DateTime.Now,
-                        status = 0,
-                        pdgst = lastdgst,
-                        dgst = 0, // calculated later
-                    };
-                    dc.Sql("INSERT INTO ").collst(Block.Empty)._VALUES_(Block.Empty);
-                    await dc.QueryAsync(p => blk.Write(p));
-                    long totalcs = 0; // total checksum
-                    for (int i = 0; i < arr.Length; i++)
+                    blockid++;
+
+                    long blockcs = 0; // block checksum
+                    for (short i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        dc.Sql("INSERT INTO chain.blockrcs ").colset(BlockOp.Empty, 0, "peerid, seq, dgst")._VALUES_(BlockOp.Empty, 0, "@1, @2, @3");
+                        long seq = ChainUtility.WeaveSeq(blockid, i);
+                        dc.Sql("INSERT INTO chain.blocks ").colset(Arch.Empty, extra: "peerid, seq, dgst, blockdgst")._VALUES_(Arch.Empty, extra: "@1, @2. @3, @4");
                         await dc.ExecuteAsync(p =>
                         {
                             p.Digest = true;
-                            o.Write(p, 0);
+                            o.Write(p);
                             p.Digest = false;
-                            p.Set(info.id).Set(seq).Set(p.Checksum);
-
-                            CryptionUtility.Digest(p.Checksum, ref totalcs);
+                            CryptionUtility.Digest(p.Checksum, ref blockcs);
+                            p.Set(info.id).Set(seq).Set(p.Checksum); // set primary and checksum
+                            // block-wise digest
+                            if (i == 0) // begin of block 
+                            {
+                                p.Set(blockdgst);
+                            }
+                            else if (i == arr.Length - 1) // end of block
+                            {
+                                p.Set(blockcs);
+                            }
+                            else
+                            {
+                                p.SetNull();
+                            }
                         });
                     }
-                    await dc.ExecuteAsync("UPDATE chain.blocks SET dgst = @1 WHERE peerid = @1 AND seq = @2", p => p.Set(blk.peerid).Set(totalcs));
-                    // keep digest used in next cycle
-                    lastdgst = totalcs;
 
                     // delete ops
                     var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Op.ENDED).T(" AND (job, step) IN (");

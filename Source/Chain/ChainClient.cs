@@ -27,7 +27,7 @@ namespace SkyChain.Chain
         // the lastest result
         Block block;
 
-        BlockOp[] records;
+        Arch[] records;
 
         // point of time to next poll, set because of exception or polling interval
         volatile int retryAt;
@@ -59,7 +59,7 @@ namespace SkyChain.Chain
 
         public Peer Info => info;
 
-        public (Block, BlockOp[]) Result => (block, records);
+        public (Block, Arch[]) Result => (block, records);
 
         public bool IsRemoteAddr(IPAddress addr)
         {
@@ -107,10 +107,10 @@ namespace SkyChain.Chain
 
                 // block properties
                 string ctyp = hdrs.GetValue("Content-Type");
-                var x_seq = hdrs.GetValue(Chain.X_SEQ);
-                var x_stamp = hdrs.GetValue(Chain.X_STAMP);
-                var x_digest = hdrs.GetValue(Chain.X_DIGEST);
-                var x_prev_digest = hdrs.GetValue(Chain.X_PREV_DIGEST);
+                var x_seq = hdrs.GetValue(IChain.X_SEQ);
+                var x_stamp = hdrs.GetValue(IChain.X_STAMP);
+                var x_digest = hdrs.GetValue(IChain.X_DIGEST);
+                var x_prev_digest = hdrs.GetValue(IChain.X_PREV_DIGEST);
 
 
                 // block & records
@@ -124,7 +124,7 @@ namespace SkyChain.Chain
                 };
                 byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                records = arr.ToArray<BlockOp>();
+                records = arr.ToArray<Arch>();
             }
             catch
             {
@@ -141,12 +141,12 @@ namespace SkyChain.Chain
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onforth");
-                req.Headers.TryAddWithoutValidation(Chain.X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_STEP, step.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_ACCOUNT, acct);
-                req.Headers.TryAddWithoutValidation(Chain.X_NAME, name);
-                req.Headers.TryAddWithoutValidation(Chain.X_LEDGER, ldgr);
+                req.Headers.TryAddWithoutValidation(IChain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_JOB, job.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_STEP, step.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_ACCOUNT, acct);
+                req.Headers.TryAddWithoutValidation(IChain.X_NAME, name);
+                req.Headers.TryAddWithoutValidation(IChain.X_LEDGER, ldgr);
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
@@ -169,9 +169,9 @@ namespace SkyChain.Chain
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onback");
-                req.Headers.TryAddWithoutValidation(Chain.X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_STEP, step.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_JOB, job.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_STEP, step.ToString());
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
@@ -194,9 +194,9 @@ namespace SkyChain.Chain
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onback");
-                req.Headers.TryAddWithoutValidation(Chain.X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(Chain.X_STEP, step.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_JOB, job.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_STEP, step.ToString());
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)

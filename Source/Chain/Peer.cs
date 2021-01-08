@@ -46,6 +46,6 @@ namespace SkyChain.Chain
 
         public string Uri => uri;
 
-        public bool IsLocal => local;
+        public bool Local => local;
     }
 }

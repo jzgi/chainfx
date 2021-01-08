@@ -1,7 +1,9 @@
 ﻿namespace SkyChain.Chain
 {
-    public class Chain
+    public interface IChain
     {
+        public const string X_BLOCK_ID = "X-Block-ID";
+
         public const string X_SEQ = "X-Seq";
 
         public const string X_STAMP = "X-Stamp";

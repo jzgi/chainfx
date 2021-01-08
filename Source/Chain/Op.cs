@@ -1,18 +1,23 @@
-﻿namespace SkyChain.Chain
+﻿using System;
+
+namespace SkyChain.Chain
 {
-    public class Op : BlockOp, IDualKeyable<long, short>
+    /// <summary>
+    /// An operational record.
+    /// </summary>
+    public class Op : IData, IDualKeyable<long, short>
     {
-        public new static readonly Op Empty = new Op();
+        public static readonly Op Empty = new Op();
 
         public const byte ID = 1, PRIVACY = 2;
 
         public const short
             STARTED = 0b000,
             ABORTED = 0b001,
-            FORWARD_IN = 0b010,
-            FORWARD_OUT = 0b011,
-            BACKWARD_IN = 0b100,
-            BACKWARD_OUT = 0b101,
+            FORTH_IN = 0b010,
+            FORTH_OUT = 0b011,
+            BACK_IN = 0b100,
+            BACK_OUT = 0b101,
             ENDED = 0b111;
 
         // status
@@ -20,28 +25,43 @@
         {
             {STARTED, "开始"},
             {ABORTED, "撤销"},
-            {FORWARD_IN, "送入"},
-            {FORWARD_OUT, "送出"},
-            {BACKWARD_IN, "退来"},
-            {BACKWARD_OUT, "退走"},
+            {FORTH_IN, "送入"},
+            {FORTH_OUT, "送出"},
+            {BACK_IN, "退来"},
+            {BACK_OUT, "退走"},
             {ENDED, "结束"},
         };
 
-
+        internal long job; // job + step is globally-unique op number
+        internal short step;
+        internal string acct;
+        internal string name;
+        internal string ldgr;
+        internal string descr;
+        internal decimal amt;
+        internal decimal bal;
+        internal JObj doc;
+        internal DateTime stated;
         internal short ppeerid;
         internal string pacct;
         internal string pname;
         internal short npeerid;
         internal string nacct;
         internal string nname;
-
         internal short status;
 
-
-        public override void Read(ISource s, byte proj = 15)
+        public void Read(ISource s, byte proj = 15)
         {
-            base.Read(s, proj);
-
+            s.Get(nameof(job), ref job);
+            s.Get(nameof(step), ref step);
+            s.Get(nameof(acct), ref acct);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(ldgr), ref ldgr);
+            s.Get(nameof(descr), ref descr);
+            s.Get(nameof(amt), ref amt);
+            s.Get(nameof(bal), ref bal);
+            s.Get(nameof(doc), ref doc);
+            s.Get(nameof(stated), ref stated);
             s.Get(nameof(ppeerid), ref ppeerid);
             s.Get(nameof(pacct), ref pacct);
             s.Get(nameof(pname), ref pname);
@@ -51,10 +71,18 @@
             s.Get(nameof(status), ref status);
         }
 
-        public override void Write(ISink s, byte proj = 15)
+        public void Write(ISink s, byte proj = 15)
         {
-            base.Write(s, proj);
-
+            s.Put(nameof(job), job);
+            s.Put(nameof(step), step);
+            s.Put(nameof(acct), acct);
+            s.Put(nameof(name), name);
+            s.Put(nameof(ldgr), ldgr);
+            s.Put(nameof(descr), descr);
+            s.Put(nameof(amt), amt);
+            s.Put(nameof(bal), bal);
+            s.Put(nameof(doc), doc);
+            s.Put(nameof(stated), stated);
             s.Put(nameof(ppeerid), ppeerid);
             s.Put(nameof(pacct), pacct);
             s.Put(nameof(pname), pname);
@@ -64,23 +92,45 @@
             s.Put(nameof(status), status);
         }
 
+        public long Job => job;
+
+        public short Step => step;
+
+        public string Acct => acct;
+
+        public string Name => name;
+
+        public string Ldgr => ldgr;
+
+        public string Descr => descr;
+
+        public decimal Amt => amt;
+
+        public decimal Bal => bal;
+
+        public JObj Doc => doc;
+
+        public DateTime Stated => stated;
+
         public bool IsLocal => ppeerid == 0;
 
-        public short PPeerId => ppeerid;
+        public short PrevPeerId => ppeerid;
 
-        public string PAcct => pacct;
+        public string PrevAcct => pacct;
 
-        public string PName => pname;
+        public string PrevName => pname;
 
-        public short NPeerId => npeerid;
+        public short NextPeerId => npeerid;
 
-        public string NAcct => nacct;
+        public string NextAcct => nacct;
 
-        public string NName => nname;
+        public string NextName => nname;
 
         public short Status => status;
 
         public bool IsPresent => (status & 0b001) == 0;
+
+        public long Key => job;
 
         public (long, short) CompositeKey => (job, step);
     }

@@ -192,7 +192,7 @@ namespace SkyChain.Web
 
         short? cfrom;
 
-        public short? XFrom => cfrom = HeaderShort(Chain.Chain.X_FROM);
+        public short? XFrom => cfrom = HeaderShort(Chain.IChain.X_FROM);
 
         //
         // HEADER

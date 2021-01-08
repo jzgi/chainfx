@@ -2941,7 +2941,7 @@ namespace SkyChain.Web
         public HtmlContent DATETIME(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
         {
             LABEL(label);
-            Add("<input type=\"datetime-local\" class=\"uk-width-1-1\" name=\"");
+            Add("<input type=\"datetime-local\" class=\"uk-input uk-width-1-1\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(val);

@@ -2,14 +2,18 @@
 
 namespace SkyChain.Chain
 {
-    public class BlockOp : IData, IKeyable<long>
+    /// <summary>
+    /// An archival record.
+    /// </summary>
+    public class Arch : IData, IKeyable<long>
     {
-        public static readonly BlockOp Empty = new BlockOp();
+        public static readonly Arch Empty = new Arch();
 
-        // globally-unique op number
-        internal long job;
+        public const byte BLOCK = 0xf0;
+
+        internal long seq;
+        internal long job; // job + step is globally-unique op number
         internal short step;
-
         internal string acct;
         internal string name;
         internal string ldgr;
@@ -18,11 +22,15 @@ namespace SkyChain.Chain
         internal decimal bal;
         internal JObj doc;
         internal DateTime stated;
-
         internal long dgst;
+        internal long blockdgst;
 
-        public virtual void Read(ISource s, byte proj = 15)
+        public void Read(ISource s, byte proj = 15)
         {
+            if ((proj & BLOCK) == BLOCK)
+            {
+                s.Get(nameof(seq), ref seq);
+            }
             s.Get(nameof(job), ref job);
             s.Get(nameof(step), ref step);
             s.Get(nameof(acct), ref acct);
@@ -33,10 +41,19 @@ namespace SkyChain.Chain
             s.Get(nameof(bal), ref bal);
             s.Get(nameof(doc), ref doc);
             s.Get(nameof(stated), ref stated);
+            if ((proj & BLOCK) == BLOCK)
+            {
+                s.Get(nameof(dgst), ref dgst);
+                s.Get(nameof(blockdgst), ref blockdgst);
+            }
         }
 
-        public virtual void Write(ISink s, byte proj = 15)
+        public void Write(ISink s, byte proj = 15)
         {
+            if ((proj & BLOCK) == BLOCK)
+            {
+                s.Put(nameof(seq), seq);
+            }
             s.Put(nameof(job), job);
             s.Put(nameof(step), step);
             s.Put(nameof(acct), acct);
@@ -47,6 +64,11 @@ namespace SkyChain.Chain
             s.Put(nameof(bal), bal);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
+            if ((proj & BLOCK) == BLOCK)
+            {
+                s.Put(nameof(dgst), dgst);
+                s.Put(nameof(blockdgst), blockdgst);
+            }
         }
 
         public long Job => job;
