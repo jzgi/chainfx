@@ -2144,41 +2144,41 @@ namespace SkyChain.Db
                 for (int i = 0; i < v.Length; i++)
                 {
                     var c = v[i];
-                    DigestByte((byte) c);
-                    DigestByte((byte) (c >> 8));
+                    CheckByte((byte) c);
+                    CheckByte((byte) (c >> 8));
                 }
             }
         }
 
         void Check(bool v)
         {
-            DigestByte(v ? (byte) 1 : (byte) 0);
+            CheckByte(v ? (byte) 1 : (byte) 0);
         }
 
         void Check(short v)
         {
-            DigestByte((byte) v);
-            DigestByte((byte) (v >> 8));
+            CheckByte((byte) v);
+            CheckByte((byte) (v >> 8));
         }
 
         void Check(int v)
         {
-            DigestByte((byte) v);
-            DigestByte((byte) (v >> 8));
-            DigestByte((byte) (v >> 16));
-            DigestByte((byte) (v >> 24));
+            CheckByte((byte) v);
+            CheckByte((byte) (v >> 8));
+            CheckByte((byte) (v >> 16));
+            CheckByte((byte) (v >> 24));
         }
 
         void Check(long v)
         {
-            DigestByte((byte) v);
-            DigestByte((byte) (v >> 8));
-            DigestByte((byte) (v >> 16));
-            DigestByte((byte) (v >> 24));
-            DigestByte((byte) (v >> 32));
-            DigestByte((byte) (v >> 40));
-            DigestByte((byte) (v >> 48));
-            DigestByte((byte) (v >> 56));
+            CheckByte((byte) v);
+            CheckByte((byte) (v >> 8));
+            CheckByte((byte) (v >> 16));
+            CheckByte((byte) (v >> 24));
+            CheckByte((byte) (v >> 32));
+            CheckByte((byte) (v >> 40));
+            CheckByte((byte) (v >> 48));
+            CheckByte((byte) (v >> 56));
         }
 
         void Check(decimal v)
@@ -2214,7 +2214,7 @@ namespace SkyChain.Db
             }
         }
 
-        void DigestByte(byte b)
+        void CheckByte(byte b)
         {
             var cs = checksum;
             cs ^= b << ((b & 0b00000111) * 8);

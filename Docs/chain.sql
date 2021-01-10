@@ -37,8 +37,15 @@ create table blocks
     bal money not null,
     doc jsonb,
     stated timestamp(0) not null,
-    dgst bigint,
-    blockdgst bigint,
+    chk bigint,
+    blockchk bigint,
+    ppeerid smallint,
+    pacct varchar(20),
+    pname varchar(10),
+    npeerid smallint,
+    nacct varchar(20),
+    nname varchar(10),
+    stamp timestamp(0),
     constraint blocks_pk
         primary key (peerid, seq)
 );

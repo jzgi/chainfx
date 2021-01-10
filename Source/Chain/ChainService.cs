@@ -11,9 +11,9 @@ namespace SkyChain.Chain
     public class ChainService : WebService
     {
         /// <summary>
-        /// Try to return a block newer than last one.
+        /// Try to return a block of data.
         /// </summary>
-        public async Task onpoll(WebContext wc, int lastseq)
+        public async Task onpoll(WebContext wc)
         {
             var peerid = ChainEnviron.Info.id;
             var blockid = wc.HeaderInt(X_BLOCK_ID); // desired block id
@@ -43,7 +43,7 @@ namespace SkyChain.Chain
                     j.Put(nameof(o.bal), o.bal);
                     j.Put(nameof(o.doc), o.doc);
                     j.Put(nameof(o.stated), o.stated);
-                    j.Put(nameof(o.dgst), o.dgst);
+                    j.Put(nameof(o.chk), o.chk);
                     j._OBJ();
                 }
                 j._ARR();
@@ -53,8 +53,8 @@ namespace SkyChain.Chain
                 j.Clear();
             }
 
-            wc.SetHeader(X_PREV_DIGEST, arr[0].blockdgst);
-            wc.SetHeader(X_DIGEST, arr[^1].blockdgst);
+            wc.SetHeader(X_PREV_DIGEST, arr[0].blockchk);
+            wc.SetHeader(X_DIGEST, arr[^1].blockchk);
 
             wc.Give(200, j);
         }
@@ -74,8 +74,17 @@ namespace SkyChain.Chain
             else wc.Give(404, shared: true, maxage: PIC_AGE); // not found
         }
 
-        public virtual bool onforth(WebContext wc, int fromstep)
+        /// <summary>
+        /// To push the job one step forward, create the op record if not existing.
+        /// </summary>
+        public bool onforth(WebContext wc)
         {
+            var job = wc.HeaderLong(X_JOB);
+            var step = wc.HeaderShort(X_STEP);
+            
+            using var dc = NewDbContext();
+            dc.Sql("INSERT INTO chain.ops");
+            
             return true;
         }
 
@@ -84,7 +93,7 @@ namespace SkyChain.Chain
             return true;
         }
 
-        public virtual bool oncancel(WebContext wc, int fromstep)
+        public virtual bool onabort(WebContext wc, int fromstep)
         {
             return true;
         }

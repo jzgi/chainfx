@@ -9,9 +9,13 @@ namespace SkyChain.Chain
     {
         public static readonly Arch Empty = new Arch();
 
-        public const byte BLOCK = 0xf0;
+        public const byte INSTALL = 0x10, INTEGRITY = 0x20;
 
+        internal short peerid;
         internal long seq;
+        internal long chk;
+        internal long blockchk;
+
         internal long job; // job + step is globally-unique op number
         internal short step;
         internal string acct;
@@ -22,13 +26,13 @@ namespace SkyChain.Chain
         internal decimal bal;
         internal JObj doc;
         internal DateTime stated;
-        internal long dgst;
-        internal long blockdgst;
+        internal DateTime stamp;
 
         public void Read(ISource s, byte proj = 15)
         {
-            if ((proj & BLOCK) == BLOCK)
+            if ((proj & INSTALL) == INSTALL)
             {
+                s.Get(nameof(peerid), ref peerid);
                 s.Get(nameof(seq), ref seq);
             }
             s.Get(nameof(job), ref job);
@@ -41,17 +45,19 @@ namespace SkyChain.Chain
             s.Get(nameof(bal), ref bal);
             s.Get(nameof(doc), ref doc);
             s.Get(nameof(stated), ref stated);
-            if ((proj & BLOCK) == BLOCK)
+            s.Get(nameof(stamp), ref stamp);
+            if ((proj & INTEGRITY) == INTEGRITY)
             {
-                s.Get(nameof(dgst), ref dgst);
-                s.Get(nameof(blockdgst), ref blockdgst);
+                s.Get(nameof(chk), ref chk);
+                s.Get(nameof(blockchk), ref blockchk);
             }
         }
 
         public void Write(ISink s, byte proj = 15)
         {
-            if ((proj & BLOCK) == BLOCK)
+            if ((proj & INSTALL) == INSTALL)
             {
+                s.Put(nameof(peerid), peerid);
                 s.Put(nameof(seq), seq);
             }
             s.Put(nameof(job), job);
@@ -64,10 +70,11 @@ namespace SkyChain.Chain
             s.Put(nameof(bal), bal);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
-            if ((proj & BLOCK) == BLOCK)
+            s.Put(nameof(stamp), stamp);
+            if ((proj & INTEGRITY) == INTEGRITY)
             {
-                s.Put(nameof(dgst), dgst);
-                s.Put(nameof(blockdgst), blockdgst);
+                s.Put(nameof(chk), chk);
+                s.Put(nameof(blockchk), blockchk);
             }
         }
 

@@ -11,9 +11,22 @@ namespace SkyChain.Chain
     /// </summary>
     public class ChainClient : HttpClient, IKeyable<short>
     {
-        const int TIMEOUT_SECONDS = 3;
+        const int REQUEST_TIMEOUT = 3;
 
-        const int AHEAD = 1000 * 12;
+        const short
+            NORMAL = 1,
+            NETWORK_ERROR = 2,
+            DATA_ERROR = 3,
+            PEER_ERROR = 4;
+
+        public static readonly Map<short, string> Statuses = new Map<short, string>
+        {
+            {0, null},
+            {NORMAL, "正常"},
+            {NETWORK_ERROR, "网络错误"},
+            {DATA_ERROR, "数据错误"},
+            {PEER_ERROR, "对伴错误"},
+        };
 
         // when a chain connector
         readonly Peer info;
@@ -21,20 +34,10 @@ namespace SkyChain.Chain
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        // the lastest status, aligned to HTTP specs
-        HttpStatusCode status;
+        Task<(short, Arch[])> task;
 
-        // the lastest result
-        Block block;
-
-        Arch[] records;
-
-        // point of time to next poll, set because of exception or polling interval
-        volatile int retryAt;
-
-        int lastseq;
-
-        Task task;
+        // the lastest http response status, 
+        short status;
 
 
         /// <summary>
@@ -52,14 +55,41 @@ namespace SkyChain.Chain
             catch (Exception e)
             {
             }
-            Timeout = TimeSpan.FromSeconds(TIMEOUT_SECONDS);
+            Timeout = TimeSpan.FromSeconds(REQUEST_TIMEOUT);
         }
 
         public short Key => info.id;
 
         public Peer Info => info;
 
-        public (Block, Arch[]) Result => (block, records);
+        ///
+        /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
+        /// 
+        public short TryReap(out Arch[] block)
+        {
+            block = null;
+            if (task == null)
+            {
+                return 0;
+            }
+            if (!task.IsCompleted)
+            {
+                return 1;
+            }
+            var (code, cnt) = task.Result;
+
+            if (code == 500)
+            {
+                status = PEER_ERROR;
+            }
+            else if (code == 200 || code == 204)
+            {
+                status = NORMAL;
+            }
+
+            block = cnt;
+            return code;
+        }
 
         public bool IsRemoteAddr(IPAddress addr)
         {
@@ -73,62 +103,60 @@ namespace SkyChain.Chain
             return false;
         }
 
-        public bool IsCompleted => task.IsCompleted;
-
-        public void StartPoll(int ticks)
+        internal void SetDataError(short seq)
         {
-            // reset
-            block = null;
-            records = null;
-
-            // schedule to execute
-            (task = PollAsync()).Start();
+            status = DATA_ERROR;
+            // this.seq = seq;
         }
 
-        async Task PollAsync()
+        public bool IsCompleted => task.IsCompleted;
+
+        public void StartRemote(int blockid)
         {
-            string uri = "/onpoll-" + lastseq;
+            if (status != DATA_ERROR)
+            {
+                // schedule to execute
+                if (task == null || task.IsCompleted)
+                {
+                    (task = RemoteAsync(blockid)).Start();
+                }
+            }
+        }
+
+        async Task<(short, Arch[])> RemoteAsync(int blockid)
+        {
+            const string uri = "/onimport";
             try
             {
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation("X-From", ChainEnviron.Info.id.ToString());
-
+                req.Headers.TryAddWithoutValidation(IChain.X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(IChain.X_BLOCK_ID, blockid.ToString());
 
                 // response
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                status = rsp.StatusCode;
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
-                    return;
+                    return ((short) rsp.StatusCode, null);
                 }
                 var hdrs = rsp.Content.Headers;
 
                 // block properties
-                string ctyp = hdrs.GetValue("Content-Type");
-                var x_seq = hdrs.GetValue(IChain.X_SEQ);
-                var x_stamp = hdrs.GetValue(IChain.X_STAMP);
-                var x_digest = hdrs.GetValue(IChain.X_DIGEST);
-                var x_prev_digest = hdrs.GetValue(IChain.X_PREV_DIGEST);
+                // string ctyp = hdrs.GetValue("Content-Type");
+                // var x_seq = hdrs.GetValue(IChain.X_SEQ);
+                // var x_stamp = hdrs.GetValue(IChain.X_STAMP);
+                // var x_digest = hdrs.GetValue(IChain.X_DIGEST);
+                // var x_prev_digest = hdrs.GetValue(IChain.X_PREV_DIGEST);
 
-
-                // block & records
-                block = new Block
-                {
-                    peerid = 0,
-                    seq = x_seq.ToInt(),
-                    stamp = x_stamp.ToDateTime(),
-                    dgst = x_digest.ToLong(),
-                    pdgst = x_prev_digest.ToLong(),
-                };
-                byte[] bytea = await rsp.Content.ReadAsByteArrayAsync();
+                var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                records = arr.ToArray<Arch>();
+                var dat = arr.ToArray<Arch>();
+                return (200, dat);
             }
             catch
             {
-                retryAt = Environment.TickCount + AHEAD;
+                status = NETWORK_ERROR;
+                return (0, null);
             }
         }
 
@@ -158,7 +186,7 @@ namespace SkyChain.Chain
             }
             catch
             {
-                retryAt = Environment.TickCount + AHEAD;
+                // retryAt = Environment.TickCount + AHEAD;
             }
 
             return 500;
@@ -183,7 +211,7 @@ namespace SkyChain.Chain
             }
             catch
             {
-                retryAt = Environment.TickCount + AHEAD;
+                // retryAt = Environment.TickCount + AHEAD;
             }
 
             return 500;
@@ -208,7 +236,7 @@ namespace SkyChain.Chain
             }
             catch
             {
-                retryAt = Environment.TickCount + AHEAD;
+                // retryAt = Environment.TickCount + AHEAD;
             }
 
             return 500;
@@ -243,7 +271,7 @@ namespace SkyChain.Chain
             }
             catch
             {
-                retryAt = Environment.TickCount + AHEAD;
+                // retryAt = Environment.TickCount + AHEAD;
             }
 
             return (500, null);
