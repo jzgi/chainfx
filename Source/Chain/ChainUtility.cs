@@ -71,10 +71,10 @@ namespace SkyChain.Chain
         }
 
         /// <summary>
-        /// To start a job by creating its first step.
+        /// To start a job and create its first step.
         /// </summary>
         /// <returns></returns>
-        public static async Task<Operational> JobStartAsync(this DbContext dc, string acct, string name, string ldgr, string descr, decimal amt, JObj doc = null)
+        public static async Task<long> JobStartAsync(this DbContext dc, string acct, string name, string ldgr, string descr, decimal amt, JObj doc = null)
         {
             // job number is unique
             await dc.QueryAsync("SELECT nextval('chain.jobseq')");
@@ -95,27 +95,29 @@ namespace SkyChain.Chain
                 stated = DateTime.Now,
                 status = Operational.STARTED
             };
-
-            // data access
             dc.Sql("INSERT INTO chain.ops ").colset(op, 0)._VALUES_(op, 0);
             await dc.ExecuteAsync(p => op.Write(p));
 
-            return op;
+            return job;
         }
 
-        public static async Task JobForthAsync(this DbContext dc, long job, short npeerid, string nacct, string nname, decimal amt, JObj doc = null)
+        /// <summary>
+        /// To push a jpb one step forward by either creating or reactivating a next step.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="job">job number which is unique in a network</param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        /// <exception cref="ChainException"></exception>
+        public static async Task JobForthAsync(this DbContext dc, long job, short step, string acct_safe, short npeerid, string nacct, string nname, decimal amt, JObj doc = null)
         {
-            if (!await dc.QueryTopAsync("SELECT step FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
-            {
-                throw new ChainException();
-            }
-            dc.Let(out short step);
-
-            dc.Sql("UPDATE chain.ops SET status = ").T(Operational.FORTH_IN).T(", npeer = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
+            // update current step's status
+            dc.Sql("UPDATE chain.ops SET status = ").T(Operational.FORTH_OUT).T(", npeerid = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
             await dc.QueryTopAsync(p => p.Set(npeerid).Set(nacct).Set(nname).Set(job).Set(step));
             dc.Let(out string ldgr);
 
-            var o = new Operational()
+            // create or update next step
+            var op = new Operational()
             {
                 job = job,
                 step = (short) (step + 1),
@@ -123,27 +125,35 @@ namespace SkyChain.Chain
                 name = nname,
                 ldgr = ldgr,
                 amt = amt,
-                descr = ldgr,
+                descr = null,
                 doc = doc,
                 stated = DateTime.Now,
                 status = Operational.STARTED
             };
             if (npeerid == 0)
             {
-                dc.Sql("INSERT INTO chain.logs ").colset(Operational.Empty)._VALUES_(Operational.Empty);
-                await dc.ExecuteAsync(p => o.Write(p));
+                dc.Sql("INSERT INTO chain.logs ").colset(Operational.Empty, 0)._VALUES_(Operational.Empty, 0).T(" ON CONFLICT (job, step) DO UPDATE SET status = ").T(Operational.FORTH_IN);
+                await dc.ExecuteAsync(p => op.Write(p));
             }
             else // remote call
             {
-                var cli = GetChainClient(o.ppeerid);
-                var status = await cli.RemoteForthAsync(job, o.step, o.Acct, o.name, o.ldgr);
-                if (status != 201)
+                var cli = GetChainClient(op.ppeerid);
+                var status = await cli.RemoteForthAsync(op);
+                if (status != 201 && status != 200)
                 {
                     dc.Rollback();
                 }
             }
         }
 
+        /// <summary>
+        /// To push a jpb one step backward.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="job">job number which is unique in a network</param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        /// <exception cref="ChainException"></exception>
         public static async Task JobBackAsync(this DbContext dc, long job, short step)
         {
             if (!await dc.QueryTopAsync("SELECT step, ppeerid FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))

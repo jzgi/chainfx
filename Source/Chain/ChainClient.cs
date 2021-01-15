@@ -148,7 +148,7 @@ namespace SkyChain.Chain
             {
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onpoll");
-                
+
                 req.Headers.TryAddWithoutValidation(Chains.X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_PEER_ID, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_BLOCK_ID, blockid.ToString());
@@ -173,19 +173,41 @@ namespace SkyChain.Chain
             }
         }
 
-        public async Task<short> RemoteForthAsync(long job, short step, string acct, string name, string ldgr)
+        const string
+            CONTENT_TYPE = "Content-Type",
+            CONTENT_LENGTH = "Content-Length",
+            AUTHORIZATION = "Authorization";
+
+        public async Task<short> RemoteForthAsync(Operational op)
         {
             try
             {
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onforth");
+                var req = new HttpRequestMessage(HttpMethod.Post, "/onforth");
 
                 req.Headers.TryAddWithoutValidation(Chains.X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_PEER_ID, info.id.ToString());
-                req.Headers.TryAddWithoutValidation(Chains.X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(Chains.X_STEP, step.ToString());
-                req.Headers.TryAddWithoutValidation(Chains.X_ACCT, acct);
-                req.Headers.TryAddWithoutValidation(Chains.X_NAME, name);
-                req.Headers.TryAddWithoutValidation(Chains.X_LDGR, ldgr);
+                req.Headers.TryAddWithoutValidation(Chains.X_JOB, op.job.ToString());
+                req.Headers.TryAddWithoutValidation(Chains.X_STEP, op.step.ToString());
+                req.Headers.TryAddWithoutValidation(Chains.X_ACCT, op.acct);
+                req.Headers.TryAddWithoutValidation(Chains.X_NAME, op.name);
+                req.Headers.TryAddWithoutValidation(Chains.X_LDGR, op.ldgr);
+
+                // document as content
+                if (op.doc != null)
+                {
+                    var cnt = new JsonContent(true, 4096);
+                    try
+                    {
+                        cnt.PutFromSource(op.doc);
+                        req.Content = cnt;
+                        req.Headers.TryAddWithoutValidation(CONTENT_TYPE, cnt.Type);
+                        req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, cnt.Count.ToString());
+                    }
+                    catch
+                    {
+                        cnt.Clear();
+                    }
+                }
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
@@ -206,8 +228,8 @@ namespace SkyChain.Chain
         {
             try
             {
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onback");
-                
+                var req = new HttpRequestMessage(HttpMethod.Post, "/onback");
+
                 req.Headers.TryAddWithoutValidation(Chains.X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_PEER_ID, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_JOB, job.ToString());
@@ -232,8 +254,8 @@ namespace SkyChain.Chain
         {
             try
             {
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onabort");
-                
+                var req = new HttpRequestMessage(HttpMethod.Post, "/onabort");
+
                 req.Headers.TryAddWithoutValidation(Chains.X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_PEER_ID, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_JOB, job.ToString());
@@ -259,7 +281,7 @@ namespace SkyChain.Chain
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onend");
-                
+
                 req.Headers.TryAddWithoutValidation(Chains.X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_PEER_ID, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(Chains.X_JOB, job.ToString());
