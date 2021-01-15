@@ -4,28 +4,31 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Chain
 {
-    [Ui("联盟")]
+    [Ui("Peers")]
     public class ChainPeerWork : WebWork
     {
         public void @default(WebContext wc)
         {
-            using var dc = NewDbContext();
-            var arr = dc.Query<Peer>("SELECT * FROM chain.peers WHERE id != '&'");
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.TABLE(arr, o =>
+
+                h.BOARD(ChainEnviron.Clients, ety =>
                 {
-                    h.TDCHECK(o.id);
-                    h.TD(o.id);
-                    h.TD(o.name);
-                    h.TD(o.uri);
-                    h.TDFORM(() => h.VARTOOLS(o.id));
+                    var cli = ety.Value;
+
+                    h.HEADER_("uk-card-header");
+                    h.T(cli.Info.name);
+                    h._HEADER();
+
+                    h.SECTION_("uk-card-body");
+
+                    h._SECTION();
                 });
             });
         }
 
-        [Ui("✛ 新建", "Create A New Peer"), Tool(ButtonShow)]
+        [Ui("✛ New"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             if (wc.IsGet)

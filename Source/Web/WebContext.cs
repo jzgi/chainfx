@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
+using SkyChain.Chain;
 using static SkyChain.DataUtility;
 using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
@@ -192,7 +193,7 @@ namespace SkyChain.Web
 
         short? cfrom;
 
-        public short? XFrom => cfrom = HeaderShort(Chain.IChain.X_FROM);
+        public short? XFrom => cfrom = HeaderShort(Chains.X_FROM);
 
         //
         // HEADER
@@ -256,6 +257,20 @@ namespace SkyChain.Web
             {
                 string str = vs;
                 if (TextUtility.TryParseUtcDate(str, out var v))
+                {
+                    return v;
+                }
+            }
+
+            return null;
+        }
+
+        public decimal? HeaderDecimal(string name)
+        {
+            if (fRequest.Headers.TryGetValue(name, out var vs))
+            {
+                string str = vs;
+                if (decimal.TryParse(str, out var v))
                 {
                     return v;
                 }

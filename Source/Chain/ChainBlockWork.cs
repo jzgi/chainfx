@@ -2,10 +2,10 @@ using SkyChain.Web;
 
 namespace SkyChain.Chain
 {
-    [Ui("块链")]
+    [Ui("BLOCKS")]
     public class ChainBlockWork : WebWork
     {
-        [Ui("本地"), Tool(Modal.Anchor)]
+        [Ui("Local"), Tool(Modal.Anchor)]
         public void @default(WebContext wc)
         {
             using var dc = NewDbContext();
@@ -19,7 +19,7 @@ namespace SkyChain.Chain
             });
         }
 
-        [Ui("全链"), Tool(Modal.Anchor)]
+        [Ui("Global"), Tool(Modal.Anchor)]
         public void global(WebContext wc)
         {
             wc.GivePage(200, h =>

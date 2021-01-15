@@ -28,7 +28,7 @@ namespace SkyChain.Db
 
         const int MAX_HOLDS = 32;
 
-        static Hold[] holds;
+        static Cache[] holds;
 
         static int size;
 
@@ -41,34 +41,34 @@ namespace SkyChain.Db
         }
 
 
-        public static void Register(object value, byte flag = 0)
+        public static void RegisterCache(object value, byte flag = 0)
         {
             if (holds == null)
             {
-                holds = new Hold[MAX_HOLDS];
+                holds = new Cache[MAX_HOLDS];
             }
 
-            holds[size++] = new Hold(value, flag);
+            holds[size++] = new Cache(value, flag);
         }
 
-        public static void Register<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+        public static void RegisterCache<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
-                holds = new Hold[MAX_HOLDS];
+                holds = new Cache[MAX_HOLDS];
             }
 
-            holds[size++] = new Hold(typeof(V), fetch, maxage, flag);
+            holds[size++] = new Cache(typeof(V), fetch, maxage, flag);
         }
 
-        public static void Register<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void RegisterCache<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
         {
             if (holds == null)
             {
-                holds = new Hold[MAX_HOLDS];
+                holds = new Cache[MAX_HOLDS];
             }
 
-            holds[size++] = new Hold(typeof(V), fetchAsync, maxage, flag);
+            holds[size++] = new Cache(typeof(V), fetchAsync, maxage, flag);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace SkyChain.Db
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Hold
+        class Cache
         {
             readonly Type typ;
 
@@ -137,14 +137,14 @@ namespace SkyChain.Db
 
             readonly byte flag;
 
-            internal Hold(object value, byte flag)
+            internal Cache(object value, byte flag)
             {
                 this.typ = value.GetType();
                 this.value = value;
                 this.flag = flag;
             }
 
-            internal Hold(Type typ, Func<DbContext, object> fetch, int maxage, byte flag)
+            internal Cache(Type typ, Func<DbContext, object> fetch, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;

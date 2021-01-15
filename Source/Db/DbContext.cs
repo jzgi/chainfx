@@ -29,8 +29,8 @@ namespace SkyChain.Db
 
         readonly NpgsqlCommand command;
 
-        // generator of sql string, can be null
-        DbSql _sql;
+        // builder of sql string, can be null
+        DbSql sqlb;
 
         NpgsqlTransaction transact;
 
@@ -155,21 +155,21 @@ namespace SkyChain.Db
 
         public DbSql Sql(string str)
         {
-            if (_sql == null)
+            if (sqlb == null)
             {
-                _sql = new DbSql(str);
+                sqlb = new DbSql(str);
             }
             else
             {
-                _sql.Clear(); // reset
-                _sql.Add(str);
+                sqlb.Clear(); // reset
+                sqlb.Add(str);
             }
-            return _sql;
+            return sqlb;
         }
 
         public bool QueryTop(Action<IParameters> p = null, bool prepare = true)
         {
-            return QueryTop(_sql.ToString(), p, prepare);
+            return QueryTop(sqlb.ToString(), p, prepare);
         }
 
         public bool QueryTop(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -202,7 +202,7 @@ namespace SkyChain.Db
 
             Clear();
             multiple = false;
-            command.CommandText = _sql.ToString();
+            command.CommandText = sqlb.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -273,7 +273,7 @@ namespace SkyChain.Db
 
         public bool Query(Action<IParameters> p = null, bool prepare = true)
         {
-            return Query(_sql.ToString(), p, prepare);
+            return Query(sqlb.ToString(), p, prepare);
         }
 
         public bool Query(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -306,7 +306,7 @@ namespace SkyChain.Db
 
             Clear();
             multiple = true;
-            command.CommandText = _sql.ToString();
+            command.CommandText = sqlb.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -428,7 +428,7 @@ namespace SkyChain.Db
 
         public int Execute(Action<IParameters> p = null, bool prepare = true)
         {
-            return Execute(_sql.ToString(), p, prepare);
+            return Execute(sqlb.ToString(), p, prepare);
         }
 
         public int Execute(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -449,6 +449,25 @@ namespace SkyChain.Db
             return command.ExecuteNonQuery();
         }
 
+        internal void Reset(string sql = null)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            Clear();
+            command.CommandText = sql ?? sqlb.ToString();
+            command.CommandType = CommandType.Text;
+        }
+
+        internal async Task<int> SimpleExecuteAsync(bool prepare = true)
+        {
+            if (prepare) command.Prepare();
+            return await command.ExecuteNonQueryAsync();
+        }
+
+
         public async Task<int> ExecuteAsync(Action<IParameters> p = null, bool prepare = true)
         {
             if (connection.State != ConnectionState.Open)
@@ -457,7 +476,7 @@ namespace SkyChain.Db
             }
 
             Clear();
-            command.CommandText = _sql.ToString();
+            command.CommandText = sqlb.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -487,7 +506,7 @@ namespace SkyChain.Db
 
         public object Scalar(Action<IParameters> p = null, bool prepare = true)
         {
-            return Scalar(_sql.ToString(), p, prepare);
+            return Scalar(sqlb.ToString(), p, prepare);
         }
 
         public object Scalar(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -518,7 +537,7 @@ namespace SkyChain.Db
             }
 
             Clear();
-            command.CommandText = _sql.ToString();
+            command.CommandText = sqlb.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {

@@ -5,17 +5,13 @@ namespace SkyChain.Chain
     /// <summary>
     /// An archival record.
     /// </summary>
-    public class Arch : IData, IKeyable<long>
+    public class Archival : IData, IKeyable<long>
     {
-        public static readonly Arch Empty = new Arch();
+        public static readonly Archival Empty = new Archival();
 
-        public const byte INSTALL = 0x10, INTEGRITY = 0x20;
+        public const byte INTEGRITY = 0x10;
 
-        internal short peerid;
         internal long seq;
-        internal long chk;
-        internal long blockchk;
-
         internal long job; // job + step is globally-unique op number
         internal short step;
         internal string acct;
@@ -28,13 +24,12 @@ namespace SkyChain.Chain
         internal DateTime stated;
         internal DateTime stamp;
 
+        internal long cs;
+        internal long blockcs;
+
         public void Read(ISource s, byte proj = 15)
         {
-            if ((proj & INSTALL) == INSTALL)
-            {
-                s.Get(nameof(peerid), ref peerid);
-                s.Get(nameof(seq), ref seq);
-            }
+            s.Get(nameof(seq), ref seq);
             s.Get(nameof(job), ref job);
             s.Get(nameof(step), ref step);
             s.Get(nameof(acct), ref acct);
@@ -48,18 +43,14 @@ namespace SkyChain.Chain
             s.Get(nameof(stamp), ref stamp);
             if ((proj & INTEGRITY) == INTEGRITY)
             {
-                s.Get(nameof(chk), ref chk);
-                s.Get(nameof(blockchk), ref blockchk);
+                s.Get(nameof(cs), ref cs);
+                s.Get(nameof(blockcs), ref blockcs);
             }
         }
 
         public void Write(ISink s, byte proj = 15)
         {
-            if ((proj & INSTALL) == INSTALL)
-            {
-                s.Put(nameof(peerid), peerid);
-                s.Put(nameof(seq), seq);
-            }
+            s.Put(nameof(seq), seq);
             s.Put(nameof(job), job);
             s.Put(nameof(step), step);
             s.Put(nameof(acct), acct);
@@ -73,8 +64,8 @@ namespace SkyChain.Chain
             s.Put(nameof(stamp), stamp);
             if ((proj & INTEGRITY) == INTEGRITY)
             {
-                s.Put(nameof(chk), chk);
-                s.Put(nameof(blockchk), blockchk);
+                s.Put(nameof(cs), cs);
+                s.Put(nameof(blockcs), blockcs);
             }
         }
 
@@ -98,6 +89,6 @@ namespace SkyChain.Chain
 
         public DateTime Stated => stated;
 
-        public long Key => job;
+        public long Key => seq;
     }
 }

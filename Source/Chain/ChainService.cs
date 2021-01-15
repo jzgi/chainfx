@@ -1,7 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Chain.ChainUtility;
-using static SkyChain.Chain.IChain;
+using static SkyChain.Chain.Chains;
 
 namespace SkyChain.Chain
 {
@@ -15,17 +16,23 @@ namespace SkyChain.Chain
         /// </summary>
         public async Task onpoll(WebContext wc)
         {
+            // veriify consistency of peer numbering
             var peerid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            {
+                wc.Give(409); // conflict
+            }
+
             var blockid = wc.HeaderInt(X_BLOCK_ID); // desired block id
             if (!blockid.HasValue)
             {
-                wc.Give(400);
+                wc.Give(400); // bad request
                 return;
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Arch.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @3 ORDER BY seq");
-            var arr = await dc.QueryAsync<Arch>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)).Set(WeaveSeq(blockid.Value, short.MaxValue)));
+            dc.Sql("SELECT ").collst(Archival.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<Archival>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
@@ -33,6 +40,7 @@ namespace SkyChain.Chain
                 foreach (var o in arr)
                 {
                     j.OBJ_();
+                    j.Put(nameof(o.seq), o.seq);
                     j.Put(nameof(o.job), o.job);
                     j.Put(nameof(o.step), o.step);
                     j.Put(nameof(o.acct), o.acct);
@@ -43,7 +51,9 @@ namespace SkyChain.Chain
                     j.Put(nameof(o.bal), o.bal);
                     j.Put(nameof(o.doc), o.doc);
                     j.Put(nameof(o.stated), o.stated);
-                    j.Put(nameof(o.chk), o.chk);
+                    j.Put(nameof(o.stamp), o.stamp);
+                    j.Put(nameof(o.cs), o.cs);
+                    j.Put(nameof(o.blockcs), o.blockcs);
                     j._OBJ();
                 }
                 j._ARR();
@@ -53,66 +63,190 @@ namespace SkyChain.Chain
                 j.Clear();
             }
 
-            wc.SetHeader(X_PREV_DIGEST, arr[0].blockchk);
-            wc.SetHeader(X_DIGEST, arr[^1].blockchk);
-
             wc.Give(200, j);
         }
 
-        const int PIC_AGE = 3600 * 6;
-
-        public void peericon(WebContext wc)
-        {
-            string peerid = wc.Query[nameof(peerid)];
-            using var dc = NewDbContext();
-            if (dc.QueryTop("SELECT icon FROM chain.peers WHERE id = @1", p => p.Set(peerid)))
-            {
-                dc.Let(out byte[] bytes);
-                if (bytes == null) wc.Give(204); // no content 
-                else wc.Give(200, new StaticContent(bytes), shared: true, maxage: PIC_AGE);
-            }
-            else wc.Give(404, shared: true, maxage: PIC_AGE); // not found
-        }
 
         /// <summary>
         /// To push the job one step forward, create the op record if not existing.
         /// </summary>
-        public bool onforth(WebContext wc)
+        public async Task onforth(WebContext wc)
         {
+            // veriify consistency of peer numbering
+            var peerid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            {
+                wc.Give(409); // conflict
+                return;
+            }
+
+            // properties form headers and body
             var job = wc.HeaderLong(X_JOB);
             var step = wc.HeaderShort(X_STEP);
-            
-            using var dc = NewDbContext();
-            dc.Sql("INSERT INTO chain.ops");
-            
-            return true;
-        }
-
-        public virtual bool onback(WebContext wc, int fromstep)
-        {
-            return true;
-        }
-
-        public virtual bool onabort(WebContext wc, int fromstep)
-        {
-            return true;
-        }
-
-        public async Task onend(WebContext wc)
-        {
-            var job = wc.HeaderLong(X_JOB);
-            var step = wc.HeaderShort(X_STEP);
-
-            if (!job.HasValue || !step.HasValue)
+            var acct = wc.Header(X_ACCT);
+            var name = wc.Header(X_NAME);
+            var ldgr = wc.Header(X_LDGR);
+            var descr = wc.Header(X_AMT);
+            var amt = wc.HeaderDecimal(X_AMT);
+            if (job == null || step == null || acct == null)
             {
                 wc.Give(400); // bad request
                 return;
             }
 
-            using var dc = NewDbContext();
-            await dc.JobEndAsync(job.Value, step.Value);
+            var doc = await wc.ReadAsync<JObj>();
 
-            wc.Give(200);
+            var o = new Operational()
+            {
+                job = job.Value,
+                step = step.Value,
+                acct = acct,
+                name = name,
+                ldgr = ldgr,
+                descr = descr,
+                amt = amt ?? 0.00M,
+                doc = doc,
+                stated = DateTime.Now,
+                status = Operational.FORTH_IN
+            };
+            using var dc = NewDbContext();
+            dc.Sql("INSERT INTO chain.ops").colset(Operational.Empty, 0)._VALUES_(Operational.Empty, 0);
+            await dc.ExecuteAsync(p => o.Write(p));
+
+            wc.Give(201); // created
+        }
+
+        public async Task onback(WebContext wc)
+        {
+            // veriify consistency of peer numbering
+            var peerid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            {
+                wc.Give(409); // conflict
+            }
+
+            // properties form headers and body
+            var job = wc.HeaderLong(X_JOB);
+            var step = wc.HeaderShort(X_STEP);
+            var acct = wc.Header(X_ACCT);
+            var name = wc.Header(X_NAME);
+            var ldgr = wc.Header(X_LDGR);
+            var descr = wc.Header(X_AMT);
+            var amt = wc.HeaderDecimal(X_AMT);
+            if (job == null || step == null || acct == null)
+            {
+                wc.Give(400); // bad request
+                return;
+            }
+
+            var doc = await wc.ReadAsync<JObj>();
+
+            var o = new Operational()
+            {
+                job = job.Value,
+                step = step.Value,
+                acct = acct,
+                name = name,
+                ldgr = ldgr,
+                descr = descr,
+                amt = amt ?? 0.00M,
+                doc = doc,
+                stated = DateTime.Now,
+                status = Operational.FORTH_IN
+            };
+            using var dc = NewDbContext();
+            dc.Sql("INSERT INTO chain.ops").colset(Operational.Empty, 0)._VALUES_(Operational.Empty, 0);
+            await dc.ExecuteAsync(p => o.Write(p));
+
+            wc.Give(201); // created
+        }
+
+        public async Task onabort(WebContext wc)
+        {
+            // veriify consistency of peer numbering
+            var peerid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            {
+                wc.Give(409); // conflict
+            }
+
+            // properties form headers
+            var job = wc.HeaderLong(X_JOB);
+            var step = wc.HeaderShort(X_STEP);
+            var acct = wc.Header(X_ACCT);
+            if (job == null || step == null || acct == null)
+            {
+                wc.Give(400); // bad request
+                return;
+            }
+
+            try
+            {
+                using var dc = NewDbContext();
+                dc.Sql("UPDATE chain.ops SET status = ").T(Operational.ABORTED).T(" WHERE status = ").T(Operational.FORTH_OUT).T(" AND job = @1 AND step = @2 AND acct = @3");
+                if (await dc.ExecuteAsync(p => p.Set(job.Value).Set(step.Value).Set(acct)) == 1)
+                {
+                    wc.Give(200);
+                }
+                else
+                {
+                    dc.Rollback();
+                    wc.Give(500);
+                }
+            }
+            catch (Exception e)
+            {
+                wc.Give(500);
+            }
+        }
+
+        public async Task onend(WebContext wc)
+        {
+            // veriify consistency of peer numbering
+            var peerid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            {
+                wc.Give(409); // conflict
+            }
+
+            // properties form headers
+            var job = wc.HeaderLong(X_JOB);
+            var step = wc.HeaderShort(X_STEP);
+            var acct = wc.Header(X_ACCT);
+            if (job == null || step == null || acct == null)
+            {
+                wc.Give(400); // bad request
+                return;
+            }
+
+            try
+            {
+                using var dc = NewDbContext();
+                dc.Sql("UPDATE chain.ops SET status = ").T(Operational.ENDED).T(" WHERE status = ").T(Operational.FORTH_OUT).T(" AND job = @1 AND step = @2 AND acct = @3 RETURNING ppeerid, pacct");
+                var res = await dc.ExecuteAsync(p => p.Set(job.Value).Set(step.Value).Set(acct));
+                dc.Let(out short ppeerid);
+                dc.Let(out string pacct);
+
+                // recursively call job ending for this peer
+                if (step > 1 && pacct != null)
+                {
+                    await dc.JobEndAsync(job.Value, (short) (step.Value - 1));
+                }
+
+                if (res == 1)
+                {
+                    wc.Give(200);
+                }
+                else
+                {
+                    dc.Rollback();
+                    wc.Give(500);
+                }
+            }
+            catch (Exception e)
+            {
+                wc.Give(500);
+            }
         }
     }
 }

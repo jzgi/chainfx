@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using System.Threading;
 using SkyChain.Db;
@@ -14,12 +15,14 @@ namespace SkyChain.Chain
         // validates ops and archives demostic blocks 
         static Thread archiver;
 
-        // periodic polling of foreign blocks 
-        static Thread poller;
+        // periodic polling and importing of foreign blocks 
+        static Thread importer;
 
         public static Peer Info => info;
 
         public static ChainClient GetChainClient(short peerid) => clients[peerid];
+
+        public static Map<short, ChainClient> Clients => clients;
 
         /// <summary>
         /// Sets up and start blockchain on this peer node.
@@ -36,7 +39,7 @@ namespace SkyChain.Chain
             // the poller thead
             if (clients.Count > 0)
             {
-                poller = new Thread(Poll);
+                importer = new Thread(Import);
                 // poller.Start();
             }
         }
@@ -84,8 +87,8 @@ namespace SkyChain.Chain
                 // archiving 
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
-                    dc.Sql("SELECT ").collst(Arch.Empty).T(" FROM chain.ops WHERE status = ").T(Op.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                    var arr = await dc.QueryAsync<Arch>();
+                    dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                    var arr = await dc.QueryAsync<Archival>();
                     if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
                         continue;
@@ -105,15 +108,15 @@ namespace SkyChain.Chain
                     for (short i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        long seq = ChainUtility.WeaveSeq(blockid, i);
-                        dc.Sql("INSERT INTO chain.blocks ").colset(Arch.Empty, extra: "peerid, seq, chk, blockchk")._VALUES_(Arch.Empty, extra: "@1, @2. @3, @4");
+                        o.seq = ChainUtility.WeaveSeq(blockid, i); // seq is included being digested
+                        dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, chk, blockchk")._VALUES_(Archival.Empty, extra: "@1, @2. @3");
                         await dc.ExecuteAsync(p =>
                         {
                             p.Digest = true;
                             o.Write(p);
                             p.Digest = false;
                             CryptionUtility.Digest(p.Checksum, ref chk);
-                            p.Set(info.id).Set(seq).Set(p.Checksum); // set primary and checksum
+                            p.Set(info.id).Set(p.Checksum); // set primary and checksum
                             // block-wise digest
                             if (i == 0) // begin of block 
                             {
@@ -131,7 +134,7 @@ namespace SkyChain.Chain
                     }
 
                     // delete ops
-                    var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Op.ENDED).T(" AND (job, step) IN (");
+                    var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" AND (job, step) IN (");
                     for (int i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
@@ -145,13 +148,13 @@ namespace SkyChain.Chain
             }
         }
 
-        static async void Poll(object state)
+        static async void Import(object state)
         {
             while (true)
             {
                 Cycle:
-                Thread.Sleep(60 * 1000); // 60 seconds depay
-                var fresh = true; // a new cycle after the depay
+                var outer = true;
+                Thread.Sleep(60 * 1000); // 60 seconds delay
                 for (int i = 0; i < clients.Count; i++) // LOOP
                 {
                     int busy = 0;
@@ -159,61 +162,81 @@ namespace SkyChain.Chain
                     var code = cli.TryReap(out var arr);
                     if (code == 200)
                     {
-                        using var dc = NewDbContext(IsolationLevel.ReadCommitted);
-                        long chk = 0; // block checksum
-                        for (short k = 0; k < arr.Length; k++)
+                        try
                         {
-                            var o = arr[k];
-                            // long seq = ChainUtility.WeaveSeq(blockid, i);
-                            dc.Sql("INSERT INTO chain.blocks ").colset(Arch.Empty, Arch.INSTALL, extra: "chk, blockchk")._VALUES_(Arch.Empty, Arch.INSTALL, extra: "@1, @2");
-                            await dc.ExecuteAsync(p =>
+                            using var dc = NewDbContext(IsolationLevel.ReadCommitted);
+                            long bchk = 0; // block checksum
+                            for (short k = 0; k < arr.Length; k++)
                             {
+                                var o = arr[k];
+
+                                // long seq = ChainUtility.WeaveSeq(blockid, i);
+                                dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
+                                dc.Reset();
+
+                                // direct parameter setting
+                                var p = (IParameters) dc;
                                 p.Digest = true;
                                 o.Write(p);
                                 p.Digest = false;
 
-                                // validate row check
-                                if (o.chk != p.Checksum)
+                                // validate record-wise checksum
+                                if (o.cs != p.Checksum)
                                 {
+                                    cli.SetDataError(o.seq);
+                                    break;
                                 }
 
-                                CryptionUtility.Digest(p.Checksum, ref chk);
+                                CryptionUtility.Digest(p.Checksum, ref bchk);
                                 p.Set(p.Checksum); // set primary and checksum
                                 // block-wise digest
                                 if (i == 0) // begin of block 
                                 {
-                                    // p.Set(blockchk);
+                                    if (o.blockcs != bchk) // compare with previous block
+                                    {
+                                        cli.SetDataError("");
+                                        break;
+                                    }
+
+                                    p.Set(bchk);
                                 }
                                 else if (i == arr.Length - 1) // end of block
                                 {
                                     // validate block check
-                                    if (chk != o.blockchk)
+                                    if (bchk != o.blockcs)
                                     {
+                                        cli.SetDataError("");
                                     }
-                                    // p.Set(blockchk = chk); // assign & set
+                                    p.Set(bchk = o.blockcs); // assign & set
                                 }
                                 else
                                 {
                                     p.SetNull();
                                 }
-                            });
+
+                                await dc.SimpleExecuteAsync();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            cli.SetInternalError(null);
                         }
                     }
 
-                    if (code == 200 || (fresh && (code == 0 || code == 204)))
+                    if (code == 200 || (outer && (code == 0 || code == 204)))
                     {
-                        cli.StartRemote(0);
+                        cli.ScheduleRemotePoll(0);
                         busy++;
                     }
 
                     //
-                    if (busy == 0) // to delay
+                    if (busy == 0) // to outer for delay
                     {
-                        goto Cycle;
+                        break;
                     }
-                    fresh = false;
-                } // LOOP
-            } // CYCLE
+                    outer = false;
+                }
+            } // outer
         }
     }
 }

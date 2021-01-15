@@ -15,11 +15,14 @@ create table peers
     uri varchar(50),
     created timestamp(0),
     status smallint default 0 not null,
-    icon bytea,
     local boolean
 );
 
 alter table peers owner to postgres;
+
+create unique index peers_local_idx
+    on peers (local)
+    where (local = true);
 
 create table blocks
 (
@@ -37,14 +40,8 @@ create table blocks
     bal money not null,
     doc jsonb,
     stated timestamp(0) not null,
-    chk bigint,
-    blockchk bigint,
-    ppeerid smallint,
-    pacct varchar(20),
-    pname varchar(10),
-    npeerid smallint,
-    nacct varchar(20),
-    nname varchar(10),
+    cs bigint,
+    blockcs bigint,
     stamp timestamp(0),
     constraint blocks_pk
         primary key (peerid, seq)

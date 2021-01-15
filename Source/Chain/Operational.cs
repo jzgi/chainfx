@@ -5,9 +5,9 @@ namespace SkyChain.Chain
     /// <summary>
     /// An operational record.
     /// </summary>
-    public class Op : IData, IDualKeyable<long, short>
+    public class Operational : IData, IDualKeyable<long, short>
     {
-        public static readonly Op Empty = new Op();
+        public static readonly Operational Empty = new Operational();
 
         public const byte ID = 1, PRIVACY = 2;
 

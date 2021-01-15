@@ -41,6 +41,7 @@ namespace SkyChain.Web
             h.Add(title);
             h.Add("</title>");
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<link rel=\"shortcut icon\" href=\"/favicon.ico\" />");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
@@ -222,6 +223,7 @@ namespace SkyChain.Web
             h.Add("<title>");
             h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
+            h.Add("<link rel=\"shortcut icon\" href=\"/favicon.ico\" />");
             if (refresh > 0) // auto refresh of the page
             {
                 h.Add("<meta http-equiv=\"refresh\" content=\"");
