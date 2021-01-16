@@ -108,15 +108,14 @@ namespace SkyChain.Chain
                     for (short i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        o.seq = ChainUtility.WeaveSeq(blockid, i); // seq is included being digested
-                        dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, chk, blockchk")._VALUES_(Archival.Empty, extra: "@1, @2. @3");
+                        dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2. @3");
                         await dc.ExecuteAsync(p =>
                         {
                             p.Digest = true;
                             o.Write(p);
                             p.Digest = false;
                             CryptionUtility.Digest(p.Checksum, ref chk);
-                            p.Set(info.id).Set(p.Checksum); // set primary and checksum
+                            p.Set(info.id).Set(ChainUtility.WeaveSeq(blockid, i)).Set(p.Checksum); // set primary and checksum
                             // block-wise digest
                             if (i == 0) // begin of block 
                             {

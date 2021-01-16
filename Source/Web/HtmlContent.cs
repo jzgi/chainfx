@@ -2161,6 +2161,7 @@ namespace SkyChain.Web
             }
 
             var acts = Web.Work.Tooled;
+            bool inner = Web.Query[nameof(inner)];
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
@@ -2171,7 +2172,7 @@ namespace SkyChain.Web
                     if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, css: "uk-button-primary");
+                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, inner: inner, css: "uk-button-primary");
                     }
                 }
             }
@@ -2304,7 +2305,7 @@ namespace SkyChain.Web
             var toola = tool ?? act?.Tool;
             if (toola != null)
             {
-                PutTool(act, toola, subscript, caption, tip, enabled, css);
+                PutTool(act, toola, subscript, caption, tip, enabled, false, css);
             }
 
             return this;
@@ -2405,7 +2406,7 @@ namespace SkyChain.Web
             }
         }
 
-        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, string css = null)
+        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, bool inner = false, string css = null)
         {
             // check action's availability
             //
@@ -2420,12 +2421,10 @@ namespace SkyChain.Web
                 {
                     Add(" uk-active");
                 }
-
                 if (!ok)
                 {
                     Add(" disabled");
                 }
-
                 Add("\" href=\"");
                 Add(act == Web.Action ? act.Key : act.Relative);
                 if (subscript == -1 && Web.Subscript > 0)
@@ -2437,7 +2436,10 @@ namespace SkyChain.Web
                     Add('-');
                     Add(subscript);
                 }
-
+                if (inner)
+                {
+                    Add("?inner=true");
+                }
                 Add("\"");
             }
             else
@@ -2453,14 +2455,12 @@ namespace SkyChain.Web
                     Add('-');
                     Add(subscript);
                 }
-
                 Add("\"");
                 if (tool.IsPost)
                 {
                     Add(" formmethod=\"post\"");
                 }
             }
-
             if (!ok)
             {
                 Add(" disabled=\"disabled\" onclick=\"return false;\"");

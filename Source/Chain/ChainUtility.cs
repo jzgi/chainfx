@@ -22,22 +22,22 @@ namespace SkyChain.Chain
         }
 
 
-        public static Peer[] FindPeers(this DbContext dc)
+        public static Peer[] LoadPeers(this DbContext dc)
         {
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
             return dc.Query<Peer>();
         }
 
         /// <summary>
-        /// To retrieve all archived steps for the specified job. It may across peers.
+        /// To retrieve all archived steps for the specified job, might across peers.
         /// </summary>
-        public static async Task<Archival[]> FindJobAsync(this DbContext dc, long job)
+        public static async Task<Archival[]> GetArchivalsAsync(this DbContext dc, long job)
         {
             dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE job = @1 ORDER BY step");
             return await dc.QueryAsync<Archival>(p => p.Set(job));
         }
 
-        public static async Task<Archival> FindLastAsync(this DbContext dc, string acct, string ldgr)
+        public static async Task<Archival> GetArchivalAsync(this DbContext dc, string acct, string ldgr)
         {
             dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 ORDER BY seq DESC LIMIT 1");
             return await dc.QueryTopAsync<Archival>(p => p.Set(acct).Set(ldgr));
@@ -46,25 +46,25 @@ namespace SkyChain.Chain
         /// <summary>
         /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<Archival[]> FindJournalAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int page = 0)
+        public static async Task<Archival[]> GetArchivalsAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int page = 0)
         {
             dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr LIKE @3 ORDER BY seq DESC LIMIT @4 OFFSET @4 * @5");
             return await dc.QueryAsync<Archival>(p => p.Set(Info.id).Set(acct).Set(ldgr + "%").Set(limit).Set(page));
         }
 
-        public static async Task<Operational> PeekAsync(this DbContext dc, long job, short step)
+        public static async Task<Operational> GetOperationalAsync(this DbContext dc, long job, short step)
         {
             dc.Sql("SELECT ").collst(Operational.Empty).T(" FROM chain.ops WHERE job = @1 AND step = @2");
             return await dc.QueryTopAsync<Operational>(p => p.Set(job).Set(step));
         }
 
-        public static async Task<Operational[]> PeekAsync(this DbContext dc, string acct, string ldgr)
+        public static async Task<Operational[]> GetOperationalsAsync(this DbContext dc, string acct, string ldgr)
         {
             dc.Sql("SELECT ").collst(Operational.Empty).T(" FROM chain.ops WHERE acct = @1 AND ldgr LIKE @2");
             return await dc.QueryAsync<Operational>(p => p.Set(acct).Set(ldgr + "%"));
         }
 
-        public static async Task<Operational[]> PeekAsync(this DbContext dc, long job)
+        public static async Task<Operational[]> GetOperationalsAsync(this DbContext dc, long job)
         {
             dc.Sql("SELECT ").collst(Operational.Empty).T(" FROM chain.ops WHERE job = @1 ORDER BY step");
             return await dc.QueryAsync<Operational>(p => p.Set(job));

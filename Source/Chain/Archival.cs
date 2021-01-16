@@ -9,9 +9,12 @@ namespace SkyChain.Chain
     {
         public static readonly Archival Empty = new Archival();
 
-        public const byte INTEGRITY = 0x10;
+        public const byte SEQ = 0x10, INTEGRITY = 0x20;
 
         internal long seq;
+        internal long cs;
+        internal long blockcs;
+
         internal long job; // job + step is globally-unique op number
         internal short step;
         internal string acct;
@@ -24,12 +27,14 @@ namespace SkyChain.Chain
         internal DateTime stated;
         internal DateTime stamp;
 
-        internal long cs;
-        internal long blockcs;
-
         public void Read(ISource s, byte proj = 15)
         {
-            s.Get(nameof(seq), ref seq);
+            if ((proj & INTEGRITY) == INTEGRITY)
+            {
+                s.Get(nameof(seq), ref seq);
+                s.Get(nameof(cs), ref cs);
+                s.Get(nameof(blockcs), ref blockcs);
+            }
             s.Get(nameof(job), ref job);
             s.Get(nameof(step), ref step);
             s.Get(nameof(acct), ref acct);
@@ -41,16 +46,16 @@ namespace SkyChain.Chain
             s.Get(nameof(doc), ref doc);
             s.Get(nameof(stated), ref stated);
             s.Get(nameof(stamp), ref stamp);
-            if ((proj & INTEGRITY) == INTEGRITY)
-            {
-                s.Get(nameof(cs), ref cs);
-                s.Get(nameof(blockcs), ref blockcs);
-            }
         }
 
         public void Write(ISink s, byte proj = 15)
         {
-            s.Put(nameof(seq), seq);
+            if ((proj & INTEGRITY) == INTEGRITY)
+            {
+                s.Put(nameof(seq), seq);
+                s.Put(nameof(cs), cs);
+                s.Put(nameof(blockcs), blockcs);
+            }
             s.Put(nameof(job), job);
             s.Put(nameof(step), step);
             s.Put(nameof(acct), acct);
@@ -62,11 +67,6 @@ namespace SkyChain.Chain
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
             s.Put(nameof(stamp), stamp);
-            if ((proj & INTEGRITY) == INTEGRITY)
-            {
-                s.Put(nameof(cs), cs);
-                s.Put(nameof(blockcs), blockcs);
-            }
         }
 
         public long Job => job;
