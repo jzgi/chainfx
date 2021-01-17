@@ -84,3 +84,33 @@ alter table ops owner to postgres;
 create index ops_validate_idx
     on ops (status, ldgr, step);
 
+create function calc_bal_func() returns trigger
+    language plpgsql
+as $$
+DECLARE
+    m MONEY := 0;
+BEGIN
+
+    --     if NEW.amt IS NULL THEN
+--         NEW.amt := 0::money;
+--     end if;
+
+    m := (SELECT bal FROM chain.blocks WHERE peerid = NEW.peerid AND acct = NEW.acct AND ldgr = NEW.ldgr ORDER BY seq DESC LIMIT 1);
+    if m IS NULL THEN
+        NEW.bal := NEW.amt;
+    ELSE
+        NEW.bal := m + NEW.amt;
+    end if;
+    RETURN NEW;
+END
+$$;
+
+alter function calc_bal_func() owner to postgres;
+
+create trigger blocks_trig
+    before insert
+    on blocks
+    for each row
+    when (new.bal = 0::money OR new.bal IS NULL)
+execute procedure calc_bal_func();
+

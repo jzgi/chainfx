@@ -449,7 +449,7 @@ namespace SkyChain.Db
             return command.ExecuteNonQuery();
         }
 
-        internal IParameters ResetCommand(string sql = null)
+        internal IParameters ReCommand(string sql = null)
         {
             if (connection.State != ConnectionState.Open)
             {
