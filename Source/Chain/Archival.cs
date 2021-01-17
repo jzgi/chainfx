@@ -9,7 +9,7 @@ namespace SkyChain.Chain
     {
         public static readonly Archival Empty = new Archival();
 
-        public const byte SEQ = 0x10, INTEGRITY = 0x20;
+        public const byte PACKING = 0x10;
 
         internal long seq;
         internal long cs;
@@ -29,7 +29,7 @@ namespace SkyChain.Chain
 
         public void Read(ISource s, byte proj = 15)
         {
-            if ((proj & INTEGRITY) == INTEGRITY)
+            if ((proj & PACKING) == PACKING)
             {
                 s.Get(nameof(seq), ref seq);
                 s.Get(nameof(cs), ref cs);
@@ -50,7 +50,7 @@ namespace SkyChain.Chain
 
         public void Write(ISink s, byte proj = 15)
         {
-            if ((proj & INTEGRITY) == INTEGRITY)
+            if ((proj & PACKING) == PACKING)
             {
                 s.Put(nameof(seq), seq);
                 s.Put(nameof(cs), cs);

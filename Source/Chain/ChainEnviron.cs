@@ -77,71 +77,77 @@ namespace SkyChain.Chain
         static async void Archive(object state)
         {
             int blockid = 0;
-            long blockchk = 0;
+            long blockcs = 0;
             while (true)
             {
-                Thread.Sleep(60 * 1000); // 60 seconds interval
+                Thread.Sleep(90 * 1000); // 90 seconds interval
 
+                // archiving cycle 
                 Cycle:
-
-                // archiving 
-                using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
+                try
                 {
+                    using var dc = NewDbContext(IsolationLevel.ReadCommitted);
+
                     dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
                     var arr = await dc.QueryAsync<Archival>();
                     if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                     {
-                        continue;
+                        continue; // go for delay
                     }
 
-                    // insert archivals
-                    if (blockid == 0 && await dc.QueryTopAsync("SELECT seq, blockchk FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1"))
+                    // resolve new block id
+                    if (blockid == 0 && await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1"))
                     {
                         dc.Let(out long seq); // last seq
-                        dc.Let(out blockchk);
+                        dc.Let(out blockcs);
                         var (bid, _) = ChainUtility.ResolveSeq(seq);
                         blockid = bid;
                     }
                     blockid++;
 
-                    long chk = 0; // block checksum
+                    // insert archivals
+                    //
+                    long bchk = 0; // current block checksum
+                    dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3, @4");
                     for (short i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2. @3");
-                        await dc.ExecuteAsync(p =>
+                        // set parameters
+                        var p = dc.ResetCommand();
+                        p.Digest = true;
+                        o.Write(p);
+                        p.Digest = false;
+                        CryptionUtility.Digest(p.Checksum, ref bchk);
+                        p.Set(info.id).Set(ChainUtility.WeaveSeq(blockid, i)).Set(p.Checksum); // set primary and checksum
+                        // set block-wise digest
+                        if (i == 0) // begin of block 
                         {
-                            p.Digest = true;
-                            o.Write(p);
-                            p.Digest = false;
-                            CryptionUtility.Digest(p.Checksum, ref chk);
-                            p.Set(info.id).Set(ChainUtility.WeaveSeq(blockid, i)).Set(p.Checksum); // set primary and checksum
-                            // block-wise digest
-                            if (i == 0) // begin of block 
-                            {
-                                p.Set(blockchk);
-                            }
-                            else if (i == arr.Length - 1) // end of block
-                            {
-                                p.Set(blockchk = chk); // assign & set
-                            }
-                            else
-                            {
-                                p.SetNull();
-                            }
-                        });
+                            p.Set(blockcs);
+                        }
+                        else if (i == arr.Length - 1) // end of block
+                        {
+                            p.Set(blockcs = bchk); // assign & set
+                        }
+                        else
+                        {
+                            p.SetNull();
+                        }
+                        await dc.SimpleExecuteAsync();
                     }
 
-                    // delete ops
-                    var s = dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" AND (job, step) IN (");
+                    // delete operationals
+                    //
+                    dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" AND job = @1 AND step = @2");
                     for (int i = 0; i < arr.Length; i++)
                     {
                         var o = arr[i];
-                        if (i > 0) s.T(',');
-                        s.T('(').T(o.job).T(',').T(o.step).T(')');
+                        await dc.ExecuteAsync(p => p.Set(o.job).Set(o.step));
                     }
-                    s.T(')');
-                    await dc.ExecuteAsync(prepare: false);
+                }
+                catch (Exception e)
+                {
+                    Framework.ERR(e.Message);
+                    return; // quit the loop
                 }
                 goto Cycle;
             }
@@ -171,7 +177,7 @@ namespace SkyChain.Chain
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
                                 dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
-                                dc.Reset();
+                                dc.ResetCommand();
 
                                 // direct parameter setting
                                 var p = (IParameters) dc;

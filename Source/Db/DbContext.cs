@@ -30,7 +30,7 @@ namespace SkyChain.Db
         readonly NpgsqlCommand command;
 
         // builder of sql string, can be null
-        DbSql sqlb;
+        DbSql builder;
 
         NpgsqlTransaction transact;
 
@@ -155,21 +155,21 @@ namespace SkyChain.Db
 
         public DbSql Sql(string str)
         {
-            if (sqlb == null)
+            if (builder == null)
             {
-                sqlb = new DbSql(str);
+                builder = new DbSql(str);
             }
             else
             {
-                sqlb.Clear(); // reset
-                sqlb.Add(str);
+                builder.Clear(); // reset
+                builder.Add(str);
             }
-            return sqlb;
+            return builder;
         }
 
         public bool QueryTop(Action<IParameters> p = null, bool prepare = true)
         {
-            return QueryTop(sqlb.ToString(), p, prepare);
+            return QueryTop(builder.ToString(), p, prepare);
         }
 
         public bool QueryTop(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -202,7 +202,7 @@ namespace SkyChain.Db
 
             Clear();
             multiple = false;
-            command.CommandText = sqlb.ToString();
+            command.CommandText = builder.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -273,7 +273,7 @@ namespace SkyChain.Db
 
         public bool Query(Action<IParameters> p = null, bool prepare = true)
         {
-            return Query(sqlb.ToString(), p, prepare);
+            return Query(builder.ToString(), p, prepare);
         }
 
         public bool Query(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -306,7 +306,7 @@ namespace SkyChain.Db
 
             Clear();
             multiple = true;
-            command.CommandText = sqlb.ToString();
+            command.CommandText = builder.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -428,7 +428,7 @@ namespace SkyChain.Db
 
         public int Execute(Action<IParameters> p = null, bool prepare = true)
         {
-            return Execute(sqlb.ToString(), p, prepare);
+            return Execute(builder.ToString(), p, prepare);
         }
 
         public int Execute(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -449,7 +449,7 @@ namespace SkyChain.Db
             return command.ExecuteNonQuery();
         }
 
-        internal void Reset(string sql = null)
+        internal IParameters ResetCommand(string sql = null)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -457,8 +457,15 @@ namespace SkyChain.Db
             }
 
             Clear();
-            command.CommandText = sql ?? sqlb.ToString();
+            command.CommandText = sql ?? builder.ToString();
             command.CommandType = CommandType.Text;
+            return this;
+        }
+
+        internal int SimpleExecute(bool prepare = true)
+        {
+            if (prepare) command.Prepare();
+            return command.ExecuteNonQuery();
         }
 
         internal async Task<int> SimpleExecuteAsync(bool prepare = true)
@@ -476,7 +483,7 @@ namespace SkyChain.Db
             }
 
             Clear();
-            command.CommandText = sqlb.ToString();
+            command.CommandText = builder.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
@@ -506,7 +513,7 @@ namespace SkyChain.Db
 
         public object Scalar(Action<IParameters> p = null, bool prepare = true)
         {
-            return Scalar(sqlb.ToString(), p, prepare);
+            return Scalar(builder.ToString(), p, prepare);
         }
 
         public object Scalar(string sql, Action<IParameters> p = null, bool prepare = true)
@@ -537,7 +544,7 @@ namespace SkyChain.Db
             }
 
             Clear();
-            command.CommandText = sqlb.ToString();
+            command.CommandText = builder.ToString();
             command.CommandType = CommandType.Text;
             if (p != null)
             {
