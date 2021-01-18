@@ -117,7 +117,7 @@ namespace SkyChain.Chain
                             p.Digest = true;
                             o.Write(p);
                             p.Digest = false;
-                            CryptionUtility.Digest(p.Checksum, ref bchk);
+                            CryptoUtility.Digest(p.Checksum, ref bchk);
                             p.Set(info.id).Set(ChainUtility.WeaveSeq(blockid, i)).Set(p.Checksum); // set primary and checksum
                             // set block-wise digest
                             if (i == 0) // begin of block 
@@ -192,7 +192,7 @@ namespace SkyChain.Chain
                                     break;
                                 }
 
-                                CryptionUtility.Digest(p.Checksum, ref bchk);
+                                CryptoUtility.Digest(p.Checksum, ref bchk);
                                 p.Set(p.Checksum); // set primary and checksum
                                 // block-wise digest
                                 if (i == 0) // begin of block 

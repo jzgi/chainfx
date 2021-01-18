@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using static SkyChain.CryptoUtility;
 
 namespace SkyChain.Web
 {
@@ -35,7 +36,7 @@ namespace SkyChain.Web
         public virtual Task<bool> DoAsync(WebContext wc) => throw new NotImplementedException();
 
 
-        public static string Encrypt<P>(P prin, byte proj) where P : IData
+        public static string EncryptPrincipal<P>(P prin, byte proj) where P : IData
         {
             var cnt = new JsonContent(true, 4096);
             try
@@ -44,8 +45,8 @@ namespace SkyChain.Web
                 var buf = cnt.Buffer;
                 int count = cnt.Count;
 
-                CryptionUtility.Encrypt(buf, count, Framework.PrivateKey);
-                return TextUtility.BytesToHex(buf, count);
+                Encrypt(buf, count, Framework.PrivateKey);
+                return BytesToHex(buf, count);
             }
             finally
             {
@@ -53,10 +54,10 @@ namespace SkyChain.Web
             }
         }
 
-        public static P Decrypt<P>(string token) where P : IData, new()
+        public static P DecryptPrincipal<P>(string token) where P : IData, new()
         {
-            var bytes = TextUtility.HexToBytes(token);
-            CryptionUtility.Decrypt(bytes, bytes.Length, Framework.PrivateKey);
+            var bytes = HexToBytes(token);
+            Decrypt(bytes, bytes.Length, Framework.PrivateKey);
             // deserialize
             try
             {

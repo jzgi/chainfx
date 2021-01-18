@@ -66,7 +66,7 @@ namespace SkyChain
 
             logging = cfg[nameof(logging)];
             crypto = cfg[nameof(crypto)];
-            privatekey = CryptionUtility.HexToKey(crypto);
+            privatekey = CryptoUtility.HexToKey(crypto);
             certpasswd = cfg[nameof(certpasswd)];
 
             // setup logger first

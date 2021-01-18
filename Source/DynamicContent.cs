@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Environment;
-using static SkyChain.TextUtility;
 
 namespace SkyChain
 {
@@ -121,7 +120,7 @@ namespace SkyChain
         // double-quoted entity tag
         string etag;
 
-        public string ETag => etag ??= ToHex(checksum);
+        public string ETag => etag ??= CryptoUtility.ToHex(checksum);
 
         public void Clear()
         {
@@ -534,30 +533,6 @@ namespace SkyChain
                 Add(v?.ToString());
             }
         }
-
-        public string MD5(string appendix = null, bool uppercase = false)
-        {
-            if (appendix != null)
-            {
-                Add(appendix);
-            }
-
-            // upper or lower
-            var arr = uppercase ? HEXU : HEX;
-            // digest and transform
-            using var md5 = System.Security.Cryptography.MD5.Create();
-            byte[] hash = md5.ComputeHash(bytebuf, 0, count);
-            var str = new StringBuilder(32);
-            for (int i = 0; i < 16; i++)
-            {
-                byte b = hash[i];
-                str.Append(arr[b >> 4]);
-                str.Append(arr[b & 0x0f]);
-            }
-
-            return str.ToString();
-        }
-
 
         //
         // CLIENT CONTENT
