@@ -21,9 +21,15 @@ namespace SkyChain.Db
 
         IParameters Set(short v);
 
+        IParameters SetOrNull(short v);
+
         IParameters Set(int v);
 
+        IParameters SetOrNull(int v);
+
         IParameters Set(long v);
+
+        IParameters SetOrNull(long v);
 
         IParameters Set(float v);
 

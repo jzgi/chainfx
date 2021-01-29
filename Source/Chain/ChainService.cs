@@ -230,7 +230,7 @@ namespace SkyChain.Chain
                 // recursively call job ending for this peer
                 if (step > 1 && pacct != null)
                 {
-                    await dc.JobEndAsync(job.Value, (short) (step.Value - 1));
+                    await dc.JobEndAsync(job.Value, (short) (step.Value - 1), null);
                 }
 
                 if (res == 1)

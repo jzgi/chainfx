@@ -12,7 +12,6 @@ namespace SkyChain.Chain
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-
                 h.BOARD(ChainEnviron.Clients, ety =>
                 {
                     var cli = ety.Value;

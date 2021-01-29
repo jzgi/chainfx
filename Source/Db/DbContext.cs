@@ -637,7 +637,7 @@ namespace SkyChain.Db
                     return true;
                 }
             }
-            catch (Exception e)
+            catch
             {
             }
             return false;
@@ -787,23 +787,6 @@ namespace SkyChain.Db
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetDateTime(ord);
-                    return true;
-                }
-            }
-            catch
-            {
-            }
-            return false;
-        }
-
-        public bool Get(string name, ref Guid v)
-        {
-            try
-            {
-                int ord = reader.GetOrdinal(name);
-                if (!reader.IsDBNull(ord))
-                {
-                    v = reader.GetGuid(ord);
                     return true;
                 }
             }
@@ -1334,24 +1317,6 @@ namespace SkyChain.Db
         }
 
 
-        public Guid Let(out Guid v)
-        {
-            v = default;
-            try
-            {
-                int ord = ordinal++;
-                if (!reader.IsDBNull(ord))
-                {
-                    v = reader.GetGuid(ord);
-                }
-            }
-            catch
-            {
-            }
-
-            return v;
-        }
-
         public byte[] Let(out byte[] v)
         {
             v = default;
@@ -1430,7 +1395,7 @@ namespace SkyChain.Db
             return v;
         }
 
-        public void Let(out long[] v)
+        public long[] Let(out long[] v)
         {
             v = null;
             try
@@ -1444,6 +1409,7 @@ namespace SkyChain.Db
             catch
             {
             }
+            return v;
         }
 
         public string[] Let(out string[] v)
@@ -1460,18 +1426,45 @@ namespace SkyChain.Db
             catch
             {
             }
-
             return v;
         }
 
-        public void Let(out JObj v)
+        public JObj Let(out JObj v)
         {
-            throw new NotImplementedException();
+            v = null;
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    var str = reader.GetString(ord);
+                    var p = new JsonParser(str);
+                    v = (JObj) p.Parse();
+                }
+            }
+            catch
+            {
+            }
+            return v;
         }
 
-        public void Let(out JArr v)
+        public JArr Let(out JArr v)
         {
-            throw new NotImplementedException();
+            v = null;
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    var str = reader.GetString(ord);
+                    var p = new JsonParser(str);
+                    v = (JArr) p.Parse();
+                }
+            }
+            catch
+            {
+            }
+            return v;
         }
 
         public D Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
@@ -1596,7 +1589,6 @@ namespace SkyChain.Db
                     {
                         cnt.Put(reader.GetName(i), reader.GetString(i));
                     }
-
                     cnt._OBJ();
                 }
                 cnt._ARR();
@@ -1614,14 +1606,14 @@ namespace SkyChain.Db
 
         public void Put(string name, JNumber v)
         {
-            var tv = v.Decimal;
+            var dec = v.Decimal;
             command.Parameters.Add(new NpgsqlParameter<decimal>(name, NpgsqlDbType.Numeric)
             {
-                TypedValue = tv
+                TypedValue = dec
             });
             if (Digest)
             {
-                Check(tv);
+                Check(dec);
             }
         }
 
@@ -1643,11 +1635,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
-        }
-
-        public void Put(string name, byte v)
-        {
-            throw new NotImplementedException();
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, short v)
@@ -1692,6 +1683,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, double v)
@@ -1700,6 +1695,10 @@ namespace SkyChain.Db
             {
                 TypedValue = v
             });
+            if (Digest)
+            {
+                Check(v);
+            }
         }
 
         public void Put(string name, decimal v)
@@ -1746,6 +1745,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, char[] v)
@@ -1754,6 +1760,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, ArraySegment<byte> v)
@@ -1770,6 +1783,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, short[] v)
@@ -1778,6 +1798,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, int[] v)
@@ -1786,6 +1813,20 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, long[] v)
@@ -1794,6 +1835,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, float[] v)
@@ -1802,6 +1850,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, double[] v)
@@ -1810,6 +1865,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, decimal[] v)
@@ -1818,6 +1880,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, DateTime[] v)
@@ -1826,11 +1895,14 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
-        }
-
-        public void Put(string name, Guid[] v)
-        {
-            throw new NotImplementedException();
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    bool notime = e.Hour == 0 && e.Minute == 0 && e.Second == 0 && e.Millisecond == 0;
+                    Check(e, !notime);
+                }
+            }
         }
 
         public void Put(string name, string[] v)
@@ -1839,6 +1911,13 @@ namespace SkyChain.Db
             {
                 Value = (v != null) ? (object) v : DBNull.Value
             });
+            if (v != null && Digest)
+            {
+                foreach (var e in v)
+                {
+                    Check(e);
+                }
+            }
         }
 
         public void Put(string name, JObj v)
@@ -1852,10 +1931,15 @@ namespace SkyChain.Db
             }
             else
             {
+                var str = v.ToString();
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = v.ToString()
+                    Value = str
                 });
+                if (Digest)
+                {
+                    Check(str);
+                }
             }
         }
 
@@ -1870,14 +1954,14 @@ namespace SkyChain.Db
             }
             else
             {
-                var tv = v.ToString();
+                var str = v.ToString();
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = tv
+                    Value = str
                 });
                 if (Digest)
                 {
-                    Check(tv);
+                    Check(str);
                 }
             }
         }
@@ -1893,14 +1977,14 @@ namespace SkyChain.Db
             }
             else
             {
-                var tv = DataUtility.ToString(v, proj);
+                var str = DataUtility.ToString(v, proj);
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = tv
+                    Value = str
                 });
                 if (Digest)
                 {
-                    Check(tv);
+                    Check(str);
                 }
             }
         }
@@ -1916,14 +2000,14 @@ namespace SkyChain.Db
             }
             else
             {
-                var tv = DataUtility.ToString(v, proj);
+                var str = DataUtility.ToString(v, proj);
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
                 {
-                    Value = tv
+                    Value = str
                 });
                 if (Digest)
                 {
-                    Check(tv);
+                    Check(str);
                 }
             }
         }
@@ -1956,12 +2040,26 @@ namespace SkyChain.Db
 
         public IParameters Set(byte v)
         {
-            throw new NotImplementedException();
+            Put(PARAMS[paramidx++], (short) v);
+            return this;
         }
 
         public IParameters Set(short v)
         {
             Put(PARAMS[paramidx++], v);
+            return this;
+        }
+
+        public IParameters SetOrNull(short v)
+        {
+            if (v == 0)
+            {
+                PutNull(PARAMS[paramidx++]);
+            }
+            else
+            {
+                Put(PARAMS[paramidx++], v);
+            }
             return this;
         }
 
@@ -1971,9 +2069,35 @@ namespace SkyChain.Db
             return this;
         }
 
+        public IParameters SetOrNull(int v)
+        {
+            if (v == 0)
+            {
+                PutNull(PARAMS[paramidx++]);
+            }
+            else
+            {
+                Put(PARAMS[paramidx++], v);
+            }
+            return this;
+        }
+
         public IParameters Set(long v)
         {
             Put(PARAMS[paramidx++], v);
+            return this;
+        }
+
+        public IParameters SetOrNull(long v)
+        {
+            if (v == 0)
+            {
+                PutNull(PARAMS[paramidx++]);
+            }
+            else
+            {
+                Put(PARAMS[paramidx++], v);
+            }
             return this;
         }
 
@@ -2174,6 +2298,12 @@ namespace SkyChain.Db
                     CheckByte((byte) (c >> 8));
                 }
             }
+        }
+
+        void Check(char v)
+        {
+            CheckByte((byte) v);
+            CheckByte((byte) (v >> 8));
         }
 
         void Check(bool v)

@@ -48,8 +48,8 @@ namespace SkyChain.Chain
         /// </summary>
         public static async Task<Archival[]> SeekArchivalsAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int page = 0)
         {
-            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr LIKE @3 ORDER BY seq DESC LIMIT @4 OFFSET @4 * @5");
-            return await dc.QueryAsync<Archival>(p => p.Set(Info.id).Set(acct).Set(ldgr + "%").Set(limit).Set(page));
+            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 ORDER BY seq DESC LIMIT @4 OFFSET @4 * @5");
+            return await dc.QueryAsync<Archival>(p => p.Set(Info.id).Set(acct).Set(ldgr).Set(limit).Set(page));
         }
 
         public static async Task<Operational> SeekOperationalAsync(this DbContext dc, long job, short step)
@@ -104,16 +104,11 @@ namespace SkyChain.Chain
         /// <summary>
         /// To push a jpb one step forward by either creating or reactivating a next step.
         /// </summary>
-        /// <param name="dc"></param>
-        /// <param name="job">job number which is unique in a network</param>
-        /// <param name="step"></param>
-        /// <returns></returns>
-        /// <exception cref="ChainException"></exception>
-        public static async Task JobForthAsync(this DbContext dc, long job, short step, string acct_safe, short npeerid, string nacct, string nname, decimal amt, JObj doc = null)
+        public static async Task JobForthAsync(this DbContext dc, long job, short step, string acct_safe, short npeerid, string nacct, string nname, string descr = null, decimal amt = 0.0M, JObj doc = null)
         {
             // update current step's status
-            dc.Sql("UPDATE chain.ops SET status = ").T(Operational.FORTH_OUT).T(", npeerid = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 RETURNING ldgr");
-            await dc.QueryTopAsync(p => p.Set(npeerid).Set(nacct).Set(nname).Set(job).Set(step));
+            dc.Sql("UPDATE chain.ops SET status = ").T(Operational.FORTH_OUT).T(", npeerid = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 AND acct = @6 RETURNING ldgr");
+            await dc.QueryTopAsync(p => { p.SetOrNull(npeerid).Set(nacct).Set(nname).Set(job).Set(step).Set(acct_safe); });
             dc.Let(out string ldgr);
 
             // create or update next step
@@ -124,8 +119,8 @@ namespace SkyChain.Chain
                 acct = nacct,
                 name = nname,
                 ldgr = ldgr,
+                descr = descr,
                 amt = amt,
-                descr = null,
                 doc = doc,
                 stated = DateTime.Now,
                 status = Operational.STARTED
@@ -182,7 +177,7 @@ namespace SkyChain.Chain
         {
         }
 
-        public static async Task JobEndAsync(this DbContext dc, long job, short curstep, JObj doc = null)
+        public static async Task JobEndAsync(this DbContext dc, long job, short curstep, string acct_safe, JObj doc = null)
         {
             // locate the end op
             dc.Sql("SELECT ppeerid FROM chain.ops WHERE job = @1");
@@ -199,13 +194,13 @@ namespace SkyChain.Chain
                 }
                 else
                 {
-                    await dc.JobEndAsync(job, (short) (curstep - 1));
+                    await dc.JobEndAsync(job, (short) (curstep - 1), acct_safe);
                 }
             }
 
             // end this step
-            dc.Sql("UPDATE chain.ops SET status = ").T(Operational.ENDED).T(", doc = @1 WHERE job = @2 AND step = @3");
-            await dc.ExecuteAsync(p => p.Set(doc).Set(job).Set(curstep));
+            dc.Sql("UPDATE chain.ops SET status = ").T(Operational.ENDED).T(", doc = @1, stamp = @2 WHERE job = @3 AND step = @4 AND acct = @5");
+            await dc.ExecuteAsync(p => p.Set(doc).Set(DateTime.Now).Set(job).Set(curstep).Set(acct_safe));
         }
     }
 }

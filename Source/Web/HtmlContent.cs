@@ -511,13 +511,19 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD_(string css = null)
+        public HtmlContent TD_(string css = null, short colspan = 0)
         {
             Add("<td");
             if (css != null)
             {
                 Add(" class=\"");
                 Add(css);
+                Add("\"");
+            }
+            if (colspan > 0)
+            {
+                Add(" colspan=\"");
+                Add(colspan);
                 Add("\"");
             }
 
@@ -1196,21 +1202,18 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_GOTO(string caption, string icon = null, string href = null)
+        public HtmlContent A_GOTO(string caption, string href = null, string css = null)
         {
             Add("<a target=\"_parent\" href=\"");
             Add(href);
-            Add("\" class=\"uk-button uk-button-default\"");
-            Add(">");
-            Add(caption);
-            if (icon != null)
+            Add("\" class=\"uk-button");
+            if (css != null)
             {
-                Add("&nbsp;");
-                Add("<span uk-icon=\"");
-                Add(icon);
-                Add("\"></span>");
+                Add(' ');
+                Add(css);
             }
-
+            Add("\">");
+            Add(caption);
             Add("</a>");
             return this;
         }
@@ -1853,7 +1856,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TDCHECK<K>(K key, bool toolbar = true)
+        public HtmlContent TDCHECK<K>(K key, bool toolbar = true, bool disabled = false)
         {
             Add("<td style=\"width: 1%\"><input");
             if (toolbar)
@@ -1863,8 +1866,12 @@ namespace SkyChain.Web
 
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(key);
-            Add("\" onchange=\"checkToggle(this);\" required>");
-            Add("</td>");
+            Add("\" onchange=\"checkToggle(this);\" required");
+            if (disabled)
+            {
+                Add(" disabled");
+            }
+            Add("></td>");
             return this;
         }
 

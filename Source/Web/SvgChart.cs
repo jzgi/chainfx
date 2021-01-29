@@ -157,12 +157,10 @@ namespace SkyChain.Web
                         cnt.Add(cy);
                         cnt.Add("\" r=\"4\"/>");
                     }
-
                     cnt.Add("</g>");
                 }
             }
-
-            cnt.Add("<svg>");
+            cnt.Add("</svg>");
         }
 
         public void WriteGrid<C>(C cnt) where C : DynamicContent, ISink
