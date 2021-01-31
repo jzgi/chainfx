@@ -78,7 +78,7 @@ namespace SkyChain.Web
 
             h.Add("</ul>");
             // tabs content
-            h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 2.25rem); height: -webkit-calc(100% - 2.25rem);\">");
+            h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 40px); height: -webkit-calc(100% - 40px);\">");
             // the first panel
             h.Add("<li class=\"uk-active\" style=\"height: 100%\">");
             h.Add("<iframe src=\"?inner=true\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
@@ -145,8 +145,7 @@ namespace SkyChain.Web
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
 
             h.Add("<div class=\"uk-offcanvas-content uk-height-1-1\">");
-            h.Add(
-                "<a class=\"uk-icon-link uk-offcanvas-toggle\" uk-icon=\"icon: chevron-right; ratio: 1.5\" uk-toggle=\"target: #offcanvas-push\"></a>");
+            h.Add("<a class=\"uk-icon-link uk-offcanvas-toggle\" uk-icon=\"icon: chevron-right; ratio: 1.5\" uk-toggle=\"target: #offcanvas-push\"></a>");
             h.Add("<div id=\"offcanvas-push\" uk-offcanvas=\"mode: push; overlay: true\">");
             h.Add("<div class=\"uk-offcanvas-bar\">");
             h.Add("<button class=\"uk-offcanvas-close\" type=\"button\" uk-close></button>");

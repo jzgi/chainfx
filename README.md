@@ -1,6 +1,6 @@
-# The SkyChain Platform  
+# Introduction  
 
-SkyChain is a workflow-oriented embedded blockchain & web framework that combines the power of chained blocks and operations.
+SkyChain is a workflow-oriented embedded blockchain engine and web application framework, that combines the power of chained blocks and chained operations.
 
 Its characteristics:
 
