@@ -31,13 +31,13 @@ namespace SkyChain.Chain
         /// <summary>
         /// To retrieve all archived steps for the specified job, might across peers.
         /// </summary>
-        public static async Task<Archival[]> SeekArchivalsAsync(this DbContext dc, long job)
+        public static async Task<Archival[]> GrabArchivalsAsync(this DbContext dc, long job)
         {
             dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE job = @1 ORDER BY step");
             return await dc.QueryAsync<Archival>(p => p.Set(job));
         }
 
-        public static async Task<Archival> SeekArchivalAsync(this DbContext dc, string acct, string ldgr)
+        public static async Task<Archival> GrabArchivalAsync(this DbContext dc, string acct, string ldgr)
         {
             dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 ORDER BY seq DESC LIMIT 1");
             return await dc.QueryTopAsync<Archival>(p => p.Set(acct).Set(ldgr));
@@ -46,13 +46,19 @@ namespace SkyChain.Chain
         /// <summary>
         /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<Archival[]> SeekArchivalsAsync(this DbContext dc, string acct, string ldgr, int limit = 20, int page = 0)
+        public static async Task<Archival[]> GrabArchivalsAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
         {
-            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 ORDER BY seq DESC LIMIT @4 OFFSET @4 * @5");
-            return await dc.QueryAsync<Archival>(p => p.Set(Info.id).Set(acct).Set(ldgr).Set(limit).Set(page));
+            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
+            return await dc.QueryAsync<Archival>(p => p.Set(Info.id).Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
         }
 
-        public static async Task<Operational> SeekOperationalAsync(this DbContext dc, long job, short step)
+        public static async Task<Operational[]> GrabOperationalsAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
+        {
+            dc.Sql("SELECT ").collst(Operational.Empty).T(" FROM chain.ops WHERE acct = @1 AND ldgr = @2 AND step = @3 ORDER BY job DESC LIMIT @4 OFFSET @4 * @5");
+            return await dc.QueryAsync<Operational>(p => p.Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
+        }
+
+        public static async Task<Operational> GrabOperationalAsync(this DbContext dc, long job, short step)
         {
             dc.Sql("SELECT ").collst(Operational.Empty).T(" FROM chain.ops WHERE job = @1 AND step = @2");
             return await dc.QueryTopAsync<Operational>(p => p.Set(job).Set(step));
@@ -123,7 +129,7 @@ namespace SkyChain.Chain
                 amt = amt,
                 doc = doc,
                 stated = DateTime.Now,
-                status = Operational.STARTED
+                status = Operational.FORTH_IN
             };
             if (npeerid == 0)
             {

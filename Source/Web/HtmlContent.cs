@@ -1581,13 +1581,23 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent BUTTON_(string action, string css = null)
+        public HtmlContent BUTTON_(string action, int subscript = -1, bool post = true, string css = null)
         {
-            Add("<button type=\"submit\" class=\"");
+            Add("<button type=\"submit\" class=\"uk-button ");
             Add(css);
-            Add(" formaction=\"");
-            Add(action);
-            Add("\">");
+            Add("\" formmethod=\"");
+            Add(post ? "post" : "get");
+            if (action != null)
+            {
+                Add("\" formaction=\"");
+                Add(action);
+            }
+            if (subscript > -1)
+            {
+                Add('-');
+                Add(subscript);
+            }
+            Add("\" onclick=\"btnSubmit(this);\">");
             return this;
         }
 
@@ -1599,25 +1609,19 @@ namespace SkyChain.Web
 
         public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string css = "uk-button-default")
         {
-            Add("<button type=\"submit\" class=\"uk-button ");
-            Add(css);
-            Add("\" formmethod=\"");
-            Add(post ? "post" : "get");
-            if (action != null)
-            {
-                Add("\" formaction=\"");
-                Add(action);
-            }
-
-            if (subscript > -1)
-            {
-                Add('-');
-                Add(subscript);
-            }
-
-            Add("\" onclick=\"btnSubmit(this);\">");
+            BUTTON_(action, subscript, post, css);
             AddEsc(caption);
-            Add("</button>");
+            _BUTTON();
+            return this;
+        }
+
+        public HtmlContent BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string css = "uk-button-default")
+        {
+            BOTTOMBAR_();
+            BUTTON_(action, subscript, post, css);
+            AddEsc(caption);
+            _BUTTON();
+            _BOTTOMBAR();
             return this;
         }
 
@@ -1890,7 +1894,7 @@ namespace SkyChain.Web
         }
 
 
-        public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, short height = 0)
+        public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, short height = 0, string caption = null)
         {
             Add("<div ");
             if (height > 0)
@@ -1903,14 +1907,17 @@ namespace SkyChain.Web
             {
                 Add("class=\"uk-overflow-auto\">");
             }
-
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
-
+            if (caption != null)
+            {
+                Add("<caption>");
+                Add(caption);
+                Add("</caption>");
+            }
             if (arr != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
                 thead?.Invoke();
-
                 for (int i = 0; i < arr.Length; i++)
                 {
                     var obj = arr[i];
@@ -1918,15 +1925,13 @@ namespace SkyChain.Web
                     tr(obj);
                     Add("</tr>");
                 }
-
                 Add("</tbody>");
             }
-
             Add("</table>");
             Add("</div>");
         }
 
-        public void TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, short height = 0)
+        public void TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, short height = 0, string caption = null)
         {
             Add("<div ");
             if (height > 0)
@@ -1939,9 +1944,13 @@ namespace SkyChain.Web
             {
                 Add("class=\"uk-overflow-auto\">");
             }
-
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
-
+            if (caption != null)
+            {
+                Add("<caption>");
+                Add(caption);
+                Add("</caption>");
+            }
             if (arr != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");

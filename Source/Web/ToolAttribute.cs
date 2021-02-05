@@ -12,6 +12,10 @@ namespace SkyChain.Web
 
         public static readonly ToolAttribute BUTTON_PICK_CONFIRM = new ToolAttribute(Modal.ButtonPickConfirm);
 
+        public static readonly ToolAttribute BUTTON_SCRIPT = new ToolAttribute(Modal.ButtonScript);
+
+        public static readonly ToolAttribute BUTTON_PICK_SCRIPT = new ToolAttribute(Modal.ButtonPickScript);
+
         readonly Modal modal;
 
         readonly int element; // ui element

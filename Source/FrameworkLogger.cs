@@ -55,6 +55,17 @@ namespace SkyChain
 
             logWriter.Write(LVL[(int) level]);
 
+            var now = DateTime.Now;
+
+            logWriter.Write(now.Day);
+            logWriter.Write(" ");
+            logWriter.Write(now.Hour);
+            logWriter.Write(":");
+            logWriter.Write(now.Minute);
+            logWriter.Write(":");
+            logWriter.Write(now.Second);
+            logWriter.Write(" ");
+
             if (eid.Id != 0)
             {
                 logWriter.Write("{");

@@ -175,6 +175,19 @@ namespace SkyChain
             return v.First;
         }
 
+        public static implicit operator ValueTuple<int, string>(Field v)
+        {
+            string str = v.First;
+            if (string.IsNullOrEmpty(str))
+            {
+                return (0, null);
+            }
+            int pos = 0;
+            var a = str.ParseInt(ref pos);
+            var b = str.ParseString(ref pos);
+            return (a, b);
+        }
+
         public static implicit operator byte[](Field v)
         {
             byte[] buf = v.contentbuf;

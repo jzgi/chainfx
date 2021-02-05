@@ -83,10 +83,10 @@ namespace SkyChain.Chain
             s.Put(nameof(bal), bal);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
-            s.Put(nameof(ppeerid), ppeerid);
+            if (ppeerid == 0) s.PutNull(nameof(ppeerid)); else s.Put(nameof(ppeerid), ppeerid);
             s.Put(nameof(pacct), pacct);
             s.Put(nameof(pname), pname);
-            s.Put(nameof(npeerid), npeerid);
+            if (npeerid == 0) s.PutNull(nameof(npeerid)); else s.Put(nameof(npeerid), npeerid);
             s.Put(nameof(nacct), nacct);
             s.Put(nameof(nname), nname);
             s.Put(nameof(status), status);

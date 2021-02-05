@@ -13,9 +13,10 @@ namespace SkyChain.Chain
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(group: 1);
-                h.FORM_("uk-card uk-card-primary");
-                h._UL();
-                h._FORM();
+                
+                // h.FORM_("uk-card uk-card-primary");
+                // h._UL();
+                // h._FORM();
             });
         }
 
