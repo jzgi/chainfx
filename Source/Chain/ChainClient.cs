@@ -178,7 +178,7 @@ namespace SkyChain.Chain
             CONTENT_LENGTH = "Content-Length",
             AUTHORIZATION = "Authorization";
 
-        public async Task<short> RemoteForthAsync(Operational op)
+        public async Task<short> RemoteForthAsync(FlowOp op)
         {
             try
             {

@@ -3,43 +3,19 @@
 namespace SkyChain.Chain
 {
     /// <summary>
-    /// An operational record.
+    /// A workflow state or step data record.
     /// </summary>
-    public class Operational : IData, IDualKeyable<long, short>
+    public class FlowState : IData
     {
-        public static readonly Operational Empty = new Operational();
+        public static readonly FlowState Empty = new FlowState();
 
-        public const byte ID = 1, PRIVACY = 2;
-
-        public const short
-            STARTED = 0b000,
-            ABORTED = 0b001,
-            FORTH_IN = 0b010,
-            FORTH_OUT = 0b011,
-            BACK_IN = 0b100,
-            BACK_OUT = 0b101,
-            ENDED = 0b111;
-
-        // status
-        public static readonly Map<short, string> Statuses = new Map<short, string>
-        {
-            {STARTED, "开始"},
-            {ABORTED, "撤销"},
-            {FORTH_IN, "送入"},
-            {FORTH_OUT, "送出"},
-            {BACK_IN, "退来"},
-            {BACK_OUT, "退走"},
-            {ENDED, "结束"},
-        };
-
-        internal long job; // job + step is globally-unique op number
+        internal long job;
         internal short step;
         internal string acct;
         internal string name;
         internal string ldgr;
         internal string descr;
         internal decimal amt;
-        internal decimal bal;
         internal JObj doc;
         internal DateTime stated;
         internal short ppeerid;
@@ -48,9 +24,9 @@ namespace SkyChain.Chain
         internal short npeerid;
         internal string nacct;
         internal string nname;
-        internal short status;
+        internal DateTime stamp;
 
-        public void Read(ISource s, byte proj = 15)
+        public virtual void Read(ISource s, byte proj = 15)
         {
             s.Get(nameof(job), ref job);
             s.Get(nameof(step), ref step);
@@ -59,7 +35,6 @@ namespace SkyChain.Chain
             s.Get(nameof(ldgr), ref ldgr);
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(amt), ref amt);
-            s.Get(nameof(bal), ref bal);
             s.Get(nameof(doc), ref doc);
             s.Get(nameof(stated), ref stated);
             s.Get(nameof(ppeerid), ref ppeerid);
@@ -68,10 +43,10 @@ namespace SkyChain.Chain
             s.Get(nameof(npeerid), ref npeerid);
             s.Get(nameof(nacct), ref nacct);
             s.Get(nameof(nname), ref nname);
-            s.Get(nameof(status), ref status);
+            s.Get(nameof(stamp), ref stamp);
         }
 
-        public void Write(ISink s, byte proj = 15)
+        public virtual void Write(ISink s, byte proj = 15)
         {
             s.Put(nameof(job), job);
             s.Put(nameof(step), step);
@@ -80,16 +55,17 @@ namespace SkyChain.Chain
             s.Put(nameof(ldgr), ldgr);
             s.Put(nameof(descr), descr);
             s.Put(nameof(amt), amt);
-            s.Put(nameof(bal), bal);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
-            if (ppeerid == 0) s.PutNull(nameof(ppeerid)); else s.Put(nameof(ppeerid), ppeerid);
+            if (ppeerid == 0) s.PutNull(nameof(ppeerid));
+            else s.Put(nameof(ppeerid), ppeerid);
             s.Put(nameof(pacct), pacct);
             s.Put(nameof(pname), pname);
-            if (npeerid == 0) s.PutNull(nameof(npeerid)); else s.Put(nameof(npeerid), npeerid);
+            if (npeerid == 0) s.PutNull(nameof(npeerid));
+            else s.Put(nameof(npeerid), npeerid);
             s.Put(nameof(nacct), nacct);
             s.Put(nameof(nname), nname);
-            s.Put(nameof(status), status);
+            s.Put(nameof(stamp), stamp);
         }
 
         public long Job => job;
@@ -105,8 +81,6 @@ namespace SkyChain.Chain
         public string Descr => descr;
 
         public decimal Amt => amt;
-
-        public decimal Bal => bal;
 
         public JObj Doc => doc;
 
@@ -125,13 +99,5 @@ namespace SkyChain.Chain
         public string NextAcct => nacct;
 
         public string NextName => nname;
-
-        public short Status => status;
-
-        public bool IsPresent => (status & 0b001) == 0;
-
-        public long Key => job;
-
-        public (long, short) CompositeKey => (job, step);
     }
 }

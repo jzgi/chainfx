@@ -24,93 +24,65 @@ create unique index peers_local_idx
     on peers (local)
     where (local = true);
 
-create table blocks
-(
-    peerid smallint not null
-        constraint blocks_peerid_fk
-            references peers,
-    seq integer not null,
-    job bigint not null,
-    step smallint not null,
-    acct varchar(30) not null,
-    name varchar(10),
-    ldgr varchar(10) not null,
-    descr varchar(20),
-    amt money not null,
-    bal money not null,
-    doc jsonb,
-    stated timestamp(0) not null,
-    cs bigint,
-    blockcs bigint,
-    stamp timestamp(0),
-    constraint blocks_pk
-        primary key (peerid, seq)
-);
-
-alter table blocks owner to postgres;
-
-create unique index blocks_op_idx
-    on blocks (job, step);
-
-create index blocks_ldgr_idx
-    on blocks (acct, ldgr, seq);
-
-create table ops
+create table states
 (
     job bigint not null,
     step smallint not null,
     acct varchar(20) not null,
     name varchar(10) not null,
     ldgr varchar(10) not null,
-    status smallint default 0 not null,
     descr varchar(20),
     amt money not null,
     doc jsonb,
-    bal money,
     stated timestamp(0) not null,
-    ppeerid smallint,
+    ppeerid smallint
+        constraint ops_ppeerid_fk
+            references peers,
     pacct varchar(20),
     pname varchar(10),
-    npeerid smallint,
+    npeerid smallint
+        constraint ops_npeerid_fk
+            references peers,
     nacct varchar(20),
     nname varchar(10),
-    stamp timestamp(0),
-    constraint ops_pk
-        primary key (job, step)
+    stamp timestamp(0)
 );
 
-alter table ops owner to postgres;
+alter table states owner to postgres;
 
-create index ops_validate_idx
-    on ops (status, ldgr, step);
+create table blocks
+(
+    peerid smallint not null
+        constraint blocks_peerid_fk
+            references peers,
+    seq integer not null,
+    bal money not null,
+    cs bigint,
+    blockcs bigint,
+    constraint blocks_pk
+        primary key (peerid, seq)
+)
+    inherits (states);
 
-create function calc_bal_func() returns trigger
-    language plpgsql
-as $$
-DECLARE
-    m MONEY := 0;
-BEGIN
-
-    --     if NEW.amt IS NULL THEN
---         NEW.amt := 0::money;
---     end if;
-
-    m := (SELECT bal FROM chain.blocks WHERE peerid = NEW.peerid AND acct = NEW.acct AND ldgr = NEW.ldgr ORDER BY seq DESC LIMIT 1);
-    if m IS NULL THEN
-        NEW.bal := NEW.amt;
-    ELSE
-        NEW.bal := m + NEW.amt;
-    end if;
-    RETURN NEW;
-END
-$$;
-
-alter function calc_bal_func() owner to postgres;
+alter table blocks owner to postgres;
 
 create trigger blocks_trig
     before insert
     on blocks
     for each row
-    when (new.bal = 0::money OR new.bal IS NULL)
-execute procedure calc_bal_func();
+execute procedure public.calc_bal_func();
+
+create table ops
+(
+    status smallint default 0 not null,
+    constraint ops_pk
+        primary key (job, step),
+    constraint ops_ppeerid_fk
+        foreign key (ppeerid) references peers,
+    constraint ops_npeerid_fk
+        foreign key (npeerid) references peers
+)
+    inherits (states);
+
+alter table ops owner to postgres;
 

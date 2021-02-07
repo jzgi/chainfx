@@ -88,7 +88,7 @@ namespace SkyChain.Chain
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                        dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.ops WHERE status = ").T(FlowOp.STATUS_ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
                         var arr = await dc.QueryAsync<Archival>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
@@ -137,7 +137,7 @@ namespace SkyChain.Chain
 
                         // delete operationals
                         //
-                        dc.Sql("DELETE FROM chain.ops WHERE status = ").T(Operational.ENDED).T(" AND job = @1 AND step = @2");
+                        dc.Sql("DELETE FROM chain.ops WHERE status = ").T(FlowOp.STATUS_ENDED).T(" AND job = @1 AND step = @2");
                         for (int i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];

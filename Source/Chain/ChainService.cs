@@ -96,7 +96,7 @@ namespace SkyChain.Chain
 
             var doc = await wc.ReadAsync<JObj>();
 
-            var o = new Operational()
+            var o = new FlowOp()
             {
                 job = job.Value,
                 step = step.Value,
@@ -107,10 +107,10 @@ namespace SkyChain.Chain
                 amt = amt ?? 0.00M,
                 doc = doc,
                 stated = DateTime.Now,
-                status = Operational.FORTH_IN
+                status = FlowOp.STATUS_FORTHIN
             };
             using var dc = NewDbContext();
-            dc.Sql("INSERT INTO chain.ops").colset(Operational.Empty, 0)._VALUES_(Operational.Empty, 0);
+            dc.Sql("INSERT INTO chain.ops").colset(FlowOp.Empty, 0)._VALUES_(FlowOp.Empty, 0);
             await dc.ExecuteAsync(p => o.Write(p));
 
             wc.Give(201); // created
@@ -141,7 +141,7 @@ namespace SkyChain.Chain
 
             var doc = await wc.ReadAsync<JObj>();
 
-            var o = new Operational()
+            var o = new FlowOp()
             {
                 job = job.Value,
                 step = step.Value,
@@ -152,10 +152,10 @@ namespace SkyChain.Chain
                 amt = amt ?? 0.00M,
                 doc = doc,
                 stated = DateTime.Now,
-                status = Operational.FORTH_IN
+                status = FlowOp.STATUS_FORTHIN
             };
             using var dc = NewDbContext();
-            dc.Sql("INSERT INTO chain.ops").colset(Operational.Empty, 0)._VALUES_(Operational.Empty, 0);
+            dc.Sql("INSERT INTO chain.ops").colset(FlowOp.Empty, 0)._VALUES_(FlowOp.Empty, 0);
             await dc.ExecuteAsync(p => o.Write(p));
 
             wc.Give(201); // created
@@ -183,7 +183,7 @@ namespace SkyChain.Chain
             try
             {
                 using var dc = NewDbContext();
-                dc.Sql("UPDATE chain.ops SET status = ").T(Operational.ABORTED).T(" WHERE status = ").T(Operational.FORTH_OUT).T(" AND job = @1 AND step = @2 AND acct = @3");
+                dc.Sql("UPDATE chain.ops SET status = ").T(FlowOp.STATUS_ABORTED).T(" WHERE status = ").T(FlowOp.STATUS_FORTHOUT).T(" AND job = @1 AND step = @2 AND acct = @3");
                 if (await dc.ExecuteAsync(p => p.Set(job.Value).Set(step.Value).Set(acct)) == 1)
                 {
                     wc.Give(200);
@@ -222,7 +222,7 @@ namespace SkyChain.Chain
             try
             {
                 using var dc = NewDbContext();
-                dc.Sql("UPDATE chain.ops SET status = ").T(Operational.ENDED).T(" WHERE status = ").T(Operational.FORTH_OUT).T(" AND job = @1 AND step = @2 AND acct = @3 RETURNING ppeerid, pacct");
+                dc.Sql("UPDATE chain.ops SET status = ").T(FlowOp.STATUS_ENDED).T(" WHERE status = ").T(FlowOp.STATUS_FORTHOUT).T(" AND job = @1 AND step = @2 AND acct = @3 RETURNING ppeerid, pacct");
                 var res = await dc.ExecuteAsync(p => p.Set(job.Value).Set(step.Value).Set(acct));
                 dc.Let(out short ppeerid);
                 dc.Let(out string pacct);
@@ -230,7 +230,7 @@ namespace SkyChain.Chain
                 // recursively call job ending for this peer
                 if (step > 1 && pacct != null)
                 {
-                    await dc.JobEndAsync(job.Value, (short) (step.Value - 1), null);
+                    await dc.FlowEndAsync(job.Value, (short) (step.Value - 1), null);
                 }
 
                 if (res == 1)
