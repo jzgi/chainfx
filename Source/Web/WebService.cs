@@ -112,18 +112,20 @@ namespace SkyChain.Web
             }
         }
 
+        const int STATIC_MAX_AGE = 3600 * 12;
+
         public void GiveStaticFile(string filename, string ext, WebContext wc)
         {
             if (!StaticContent.TryGetType(ext, out var ctyp))
             {
-                wc.Give(415); // unsupported media type
+                wc.Give(415, shared: true, maxage: STATIC_MAX_AGE); // unsupported media type
                 return;
             }
 
             string path = Path.Join(Name, filename);
             if (!File.Exists(path))
             {
-                wc.Give(404); // not found
+                wc.Give(404, shared: true, maxage: STATIC_MAX_AGE); // not found
                 return;
             }
 
@@ -159,7 +161,7 @@ namespace SkyChain.Web
                 Modified = modified,
                 GZip = gzip
             };
-            wc.Give(200, cnt, shared: true, maxage: 60 * 15);
+            wc.Give(200, cnt, shared: true, maxage: STATIC_MAX_AGE);
         }
 
 

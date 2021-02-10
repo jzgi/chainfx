@@ -1320,7 +1320,10 @@ namespace SkyChain.Web
                 Add(' ');
                 Add(css);
             }
-
+            if (circle)
+            {
+                Add("\" style=\"max-width: 180px");
+            }
             Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
@@ -2238,7 +2241,7 @@ namespace SkyChain.Web
             Add("\">");
             if (toggle)
             {
-                Add("<span style=\"position: absolute; left: 0.75rem\"><input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\"></span>");
+                Add("<span style=\"position: absolute; left: 0.25rem\"><input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\"></span>");
             }
             return this;
         }
@@ -2249,7 +2252,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PICK<K>(K varkey, string label = null, bool toolbar = false)
+        public HtmlContent PICK<K>(K varkey, string label = null, bool toolbar = false, bool required = false)
         {
             Add("<label>");
             Add("<input");
@@ -2259,7 +2262,12 @@ namespace SkyChain.Web
             }
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(varkey);
-            Add("\" onchange=\"checkToggle(this);\">");
+            Add("\" onchange=\"checkToggle(this);\"");
+            if (required)
+            {
+                Add(" required");
+            }
+            Add(">&nbsp;");
             Add(label);
             Add("</label>");
             return this;
@@ -3188,7 +3196,7 @@ namespace SkyChain.Web
             LABEL(label);
             if (tip != null)
             {
-                Add("<label class=\"uk-flex uk-input uk-flex-middle\">");
+                Add("<label class=\"uk-flex uk-width-1-1 uk-flex-middle\">");
             }
 
             Add("<input type=\"checkbox\" class=\"uk-checkbox");

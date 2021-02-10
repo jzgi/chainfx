@@ -251,7 +251,7 @@ namespace SkyChain.Web
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12)
+        public static void GivePane(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12, string title = null)
         {
             var h = new HtmlContent(true, 8 * 1024)
             {
@@ -262,6 +262,12 @@ namespace SkyChain.Web
             h.Add("<html>");
 
             h.Add("<head>");
+            if (title != null)
+            {
+                h.Add("<title>");
+                h.Add(title);
+                h.Add("</title>");
+            }
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");

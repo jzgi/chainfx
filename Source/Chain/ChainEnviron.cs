@@ -88,8 +88,8 @@ namespace SkyChain.Chain
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.ops WHERE status = ").T(FlowOp.STATUS_ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<Archival>();
+                        dc.Sql("SELECT ").collst(FlowState.Empty).T(" FROM chain.ops WHERE status = ").T(FlowOp.STATUS_ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                        var arr = await dc.QueryAsync<FlowState>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
                             continue; // go for delay
@@ -108,7 +108,7 @@ namespace SkyChain.Chain
                         // insert archivals
                         //
                         long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3, @4");
+                        dc.Sql("INSERT INTO chain.blocks ").colset(FlowState.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(FlowState.Empty, extra: "@1, @2, @3, @4");
                         for (short i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];

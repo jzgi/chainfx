@@ -423,7 +423,7 @@ namespace SkyChain.Web
 
         public void SetHeaderAbsent(string name, string v)
         {
-            IHeaderDictionary headers = fResponse.Headers;
+            var headers = fResponse.Headers;
             if (!headers.TryGetValue(name, out _))
             {
                 headers.Add(name, new StringValues(v));
@@ -477,9 +477,9 @@ namespace SkyChain.Web
         public bool? Shared { get; internal set; }
 
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
-        public short MaxAge { get; internal set; }
+        public int MaxAge { get; internal set; }
 
-        public void Give(int code, IContent cnt = null, bool? shared = null, short maxage = 12)
+        public void Give(int code, IContent cnt = null, bool? shared = null, int maxage = 12)
         {
             StatusCode = code;
             Content = cnt;
@@ -487,34 +487,37 @@ namespace SkyChain.Web
             MaxAge = maxage;
         }
 
-        public void Give(int code, string text, bool? shared = null, short maxage = 12)
+        public void Give(int code, string text, bool? shared = null, int maxage = 12)
         {
             var cnt = new TextContent(true, 1024);
             cnt.Add(text);
+
             StatusCode = code;
             Content = cnt;
             Shared = shared;
             MaxAge = maxage;
         }
 
-        public void Give(int code, IData obj, byte proj = 0x0f, bool? shared = null, short maxAge = 12)
+        public void Give(int code, IData obj, byte proj = 0x0f, bool? shared = null, int maxage = 12)
         {
             var cnt = new JsonContent(true, 8192);
             cnt.Put(null, obj, proj);
+
             StatusCode = code;
             Content = cnt;
             Shared = shared;
-            MaxAge = maxAge;
+            MaxAge = maxage;
         }
 
-        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, short maxAge = 12) where D : IData
+        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, int maxage = 12) where D : IData
         {
             var cnt = new JsonContent(true, 8192);
             cnt.Put(null, arr, proj);
+
             StatusCode = code;
             Content = cnt;
             Shared = shared;
-            MaxAge = maxAge;
+            MaxAge = maxage;
         }
 
         internal async Task SendAsync()
