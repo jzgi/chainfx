@@ -15,14 +15,14 @@ create table peers
     uri varchar(50),
     created timestamp(0),
     status smallint default 0 not null,
-    local boolean
+    native boolean default false not null
 );
 
 alter table peers owner to postgres;
 
 create unique index peers_local_idx
-    on peers (local)
-    where (local = true);
+    on peers (native)
+    where (native = true);
 
 create table states
 (
@@ -85,4 +85,27 @@ create table ops
     inherits (states);
 
 alter table ops owner to postgres;
+
+create function calc_bal_func() returns trigger
+    language plpgsql
+as $$
+DECLARE
+    m MONEY := 0;
+BEGIN
+
+    --     if NEW.amt IS NULL THEN
+--         NEW.amt := 0::money;
+--     end if;
+
+    m := (SELECT bal FROM chain.blocks WHERE peerid = NEW.peerid AND acct = NEW.acct AND ldgr = NEW.ldgr ORDER BY seq DESC LIMIT 1);
+    if m IS NULL THEN
+        NEW.bal := NEW.amt;
+    ELSE
+        NEW.bal := m + NEW.amt;
+    end if;
+    RETURN NEW;
+END
+$$;
+
+alter function calc_bal_func() owner to postgres;
 

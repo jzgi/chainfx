@@ -22,11 +22,11 @@ namespace SkyChain.Chain
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
             {0, null},
-            {NORMAL, "正常"},
-            {NETWORK_ERROR, "网络错误"},
-            {DATA_ERROR, "数据错误"},
-            {PEER_ERROR, "对伴错误"},
-            {INTERNAL_ERROR, "内部错误"},
+            {NORMAL, "normal"},
+            {NETWORK_ERROR, "network error"},
+            {DATA_ERROR, "data error"},
+            {PEER_ERROR, "peer error"},
+            {INTERNAL_ERROR, "internal error"},
         };
 
         // when a chain connector

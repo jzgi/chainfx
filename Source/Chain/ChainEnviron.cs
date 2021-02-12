@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Threading;
+using System.Threading.Tasks;
 using SkyChain.Db;
 
 namespace SkyChain.Chain
@@ -24,49 +25,60 @@ namespace SkyChain.Chain
 
         public static Map<short, ChainClient> Clients => clients;
 
+
+        internal async Task ReloadNative(DbContext dc)
+        {
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
+            info = await dc.QueryTopAsync<Peer>();
+        }
+
         /// <summary>
         /// Sets up and start blockchain on this peer node.
         /// </summary>
-        public static void StartChain()
-        {
-            // all connected peers
-            InitializePeers();
-
-            // the archiver thead
-            archiver = new Thread(Archive);
-            archiver.Start();
-
-            // the poller thead
-            if (clients.Count > 0)
-            {
-                importer = new Thread(Import);
-                // poller.Start();
-            }
-        }
-
-
-        static void InitializePeers()
+        public static async Task StartChainAsync()
         {
             // clear up data maps
             clients.Clear();
 
-            // load and init peer clients
-            using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
-            var arr = dc.Query<Peer>();
-            if (arr == null) return;
-            foreach (var o in arr)
+            //load this node peer
+            using (var dc = NewDbContext())
             {
-                if (o.Local)
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
+                info = await dc.QueryTopAsync<Peer>();
+                // get current blockid
+                if (info != null)
                 {
-                    info = o;
-                }
-                else
-                {
-                    var cli = new ChainClient(o);
-                    clients.Add(cli);
+                    await dc.QueryTopAsync("SELECT seq FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(info.Id));
+                    dc.Let(out info.blockid);
                 }
             }
+
+            // start the archiver thead
+            archiver = new Thread(Archive);
+            archiver.Start();
+
+            // load foreign peer connectors
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = FALSE");
+                var arr = await dc.QueryAsync<Peer>();
+                if (arr != null)
+                {
+                    foreach (var o in arr)
+                    {
+                        var cli = new ChainClient(o);
+                        clients.Add(cli);
+
+                        // init current block id
+                        await dc.QueryTopAsync("SELECT seq FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(o.Id));
+                        dc.Let(out o.blockid);
+                    }
+                }
+            }
+
+            // start the importer thead
+            importer = new Thread(Import);
+            importer.Start();
         }
 
 
@@ -78,7 +90,7 @@ namespace SkyChain.Chain
         {
             int blockid = 0;
             long blockcs = 0;
-            while (true)
+            while (info != null && info.IsRunning)
             {
                 Thread.Sleep(90 * 1000); // 90 seconds interval
 
@@ -162,10 +174,14 @@ namespace SkyChain.Chain
                 Cycle:
                 var outer = true;
                 Thread.Sleep(60 * 1000); // 60 seconds delay
+                
                 for (int i = 0; i < clients.Count; i++) // LOOP
                 {
-                    int busy = 0;
                     var cli = clients.ValueAt(i);
+
+                    if (!cli.Info.IsRunning) continue;
+
+                    int busy = 0;
                     var code = cli.TryReap(out var arr);
                     if (code == 200)
                     {

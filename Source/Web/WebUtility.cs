@@ -54,7 +54,7 @@ namespace SkyChain.Web
             var wrk = wc.Work;
             var subwrks = wrk.Works;
             // render tabs
-            h.Add("<ul class=\"uk-tab uk-margin-remove\" uk-tab>");
+            h.Add("<ul class=\"uk-tab\" uk-tab>");
             h.Add("<li class=\"uk-active\"><a href=\"#\">");
             h.Add(wrk.Label);
             h.Add("</a></li>");
@@ -78,7 +78,7 @@ namespace SkyChain.Web
 
             h.Add("</ul>");
             // tabs content
-            h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 40px); height: -webkit-calc(100% - 40px);\">");
+            h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 42px); height: -webkit-calc(100% - 42px);\">");
             // the first panel
             h.Add("<li class=\"uk-active\" style=\"height: 100%\">");
             h.Add("<iframe src=\"?inner=true\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
