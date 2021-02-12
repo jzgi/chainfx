@@ -19,7 +19,11 @@ namespace SkyChain.Chain
         // periodic polling and importing of foreign blocks 
         static Thread importer;
 
-        public static Peer Info => info;
+        public static Peer Info
+        {
+            get => info;
+            internal set => info = value;
+        }
 
         public static ChainClient GetChainClient(short peerid) => clients[peerid];
 
@@ -32,6 +36,7 @@ namespace SkyChain.Chain
             info = await dc.QueryTopAsync<Peer>();
         }
 
+       
         /// <summary>
         /// Sets up and start blockchain on this peer node.
         /// </summary>
@@ -48,8 +53,7 @@ namespace SkyChain.Chain
                 // get current blockid
                 if (info != null)
                 {
-                    await dc.QueryTopAsync("SELECT seq FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(info.Id));
-                    dc.Let(out info.blockid);
+                    await info.RetrieveBlockIdAsync(dc);
                 }
             }
 
@@ -70,8 +74,7 @@ namespace SkyChain.Chain
                         clients.Add(cli);
 
                         // init current block id
-                        await dc.QueryTopAsync("SELECT seq FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(o.Id));
-                        dc.Let(out o.blockid);
+                        await o.RetrieveBlockIdAsync(dc);
                     }
                 }
             }
@@ -174,7 +177,7 @@ namespace SkyChain.Chain
                 Cycle:
                 var outer = true;
                 Thread.Sleep(60 * 1000); // 60 seconds delay
-                
+
                 for (int i = 0; i < clients.Count; i++) // LOOP
                 {
                     var cli = clients.ValueAt(i);

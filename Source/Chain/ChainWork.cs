@@ -7,12 +7,15 @@ namespace SkyChain.Chain
     [Ui("&#128160;")]
     public class ChainWork : WebWork
     {
-        [Ui("Native"), Tool(Anchor)]
-        public virtual async Task @default(WebContext wc)
+        protected internal override void OnCreate()
         {
-            using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-            var o = await dc.QueryTopAsync<Peer>();
+            CreateVarWork<ChainVarWork>();
+        }
+
+        [Ui("Native"), Tool(Anchor)]
+        public virtual void @default(WebContext wc)
+        {
+            var o = ChainEnviron.Info;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
@@ -20,66 +23,78 @@ namespace SkyChain.Chain
                 h.UL_("uk-card-body");
                 if (o != null)
                 {
-                    h.LI_().FIELD("Peer ID", o.id)._LI();
+                    h.LI_().FIELD("Peer ID", o.Id)._LI();
                     h.LI_().FIELD("Name", o.Name)._LI();
                     h.LI_().FIELD("URI", o.Uri)._LI();
+                    h.LI_().FIELD("Status", Peer.Statuses[o.status])._LI();
+                    h.LI_().FIELD("Block #", o.CurrentBlockId)._LI();
                 }
                 h._UL();
-                h.FOOTER_("uk-card-footer uk-flex-center").TOOL(nameof(setg), css: "uk-button-secondary")._FOOTER();
+                h.FOOTER_("uk-card-footer uk-flex-center").TOOL(nameof(mod), css: "uk-button-secondary")._FOOTER();
                 h._FORM();
             });
         }
 
         [Ui("Foreign", group: 2), Tool(Anchor)]
-        public async Task foreign(WebContext wc)
+        public void foreign(WebContext wc)
         {
-            using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = FALSE");
-            var arr = await dc.QueryAsync<Peer>();
+            var arr = ChainEnviron.Clients;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR();
-                h.BOARD(ChainEnviron.Clients, ety =>
+                h.BOARD(arr, ety =>
                 {
                     var cli = ety.Value;
+                    var o = cli.Info;
 
-                    h.HEADER_("uk-card-header");
-                    h.T(cli.Info.name);
-                    h._HEADER();
-
-                    h.SECTION_("uk-card-body");
-
-                    h._SECTION();
+                    h.HEADER_("uk-card-header").T(o.name)._HEADER();
+                    h.UL_("uk-card-body");
+                    if (o != null)
+                    {
+                        h.LI_().FIELD("Peer ID", o.Id)._LI();
+                        h.LI_().FIELD("Name", o.Name)._LI();
+                        h.LI_().FIELD("URI", o.Uri)._LI();
+                        h.LI_().FIELD("Status", Peer.Statuses[o.status])._LI();
+                        h.LI_().FIELD("Block #", o.CurrentBlockId)._LI();
+                    }
+                    h._UL();
+                    h.FOOTER_("uk-card-footer uk-flex-center").VARTOOL(o.id, nameof(mod))._FOOTER();
                 });
             });
         }
 
-        [Ui("Setting", group: 1), Tool(ButtonShow)]
-        public async Task setg(WebContext wc)
+        [Ui("Modify", group: 1), Tool(ButtonOpen)]
+        public async Task mod(WebContext wc)
         {
+            var o = ChainEnviron.Info ?? new Peer
+            {
+                native = true,
+            };
+
             if (wc.IsGet)
             {
-                var o = new Peer { };
                 wc.GivePane(200, h =>
                 {
-                    const string css = "uk-width-small";
-                    h.FORM_().FIELDSUL_("Attributes");
-                    h.LI_().LABEL("ID", css).NUMBER(null, nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
-                    h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().LABEL("Address", css).URL(null, nameof(o.uri), o.uri, max: 20, required: true)._LI();
-                    h._FIELDSUL()._FORM();
+                    h.FORM_().FIELDSUL_("Peer Info");
+                    h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
+                    h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
+                    h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
+                    h.LI_().SELECT("Status", nameof(o.status), o.status, Peer.Statuses)._LI();
+                    h._FIELDSUL().BOTTOM_BUTTON("Save", nameof(mod))._FORM();
                 });
             }
             else // POST
             {
-                var o = await wc.ReadObjectAsync<Peer>();
+                o = await wc.ReadObjectAsync(inst: o);
                 using var dc = NewDbContext();
-                dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
+                dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o).T(" ON CONFLICT (native) WHERE native = TRUE DO UPDATE SET ").setlst(o);
                 await dc.ExecuteAsync(p => o.Write(p));
-                
-                // adjust in-memory model
-                // ChainEnviron.ReloadNative();
-                
+
+                if (ChainEnviron.Info == null)
+                {
+                    ChainEnviron.Info = o;
+                }
+
                 wc.GivePane(200); // close dialog
             }
         }
@@ -87,29 +102,33 @@ namespace SkyChain.Chain
         [Ui("✛ New", group: 2), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
+            var o = new Peer
+            {
+                native = false,
+            };
             if (wc.IsGet)
             {
-                var o = new Peer { };
                 wc.GivePane(200, h =>
                 {
-                    const string css = "uk-width-small";
-                    h.FORM_().FIELDSUL_("Attributes");
-                    h.LI_().LABEL("ID", css).NUMBER(null, nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
-                    h.LI_().LABEL("Name", css).TEXT(null, nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().LABEL("Address", css).URL(null, nameof(o.uri), o.uri, max: 20, required: true)._LI();
+                    h.FORM_().FIELDSUL_("Peer Info");
+                    h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
+                    h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
+                    h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
+                    h.LI_().SELECT("Status", nameof(o.status), o.status, Peer.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }
             else // POST
             {
-                var o = await wc.ReadObjectAsync<Peer>();
+                o = await wc.ReadObjectAsync(inst: o);
                 using var dc = NewDbContext();
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
                 await dc.ExecuteAsync(p => o.Write(p));
-                
-                // reflect in-memory model
-                
-                
+
+                var cli = new ChainClient(o);
+                await o.RetrieveBlockIdAsync(dc);
+                ChainEnviron.Clients.Add(cli);
+
                 wc.GivePane(200); // close dialog
             }
         }

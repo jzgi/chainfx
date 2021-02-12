@@ -1102,54 +1102,52 @@ namespace SkyChain.Web
         public HtmlContent FIELD<V>(string label, V p)
         {
             LABEL(label);
-            Add("<p class=\"uk-width-1-1\">");
+            Add("<span class=\"uk-input\">");
             AddPrimitive(p);
-            Add("</p>");
+            Add("</span>");
             return this;
         }
 
         public HtmlContent FIELD2<V, X>(string label, V p, X x)
         {
             LABEL(label);
-            Add("<p class=\"uk-width-1-1\">");
+            Add("<span class=\"uk-input\">");
             AddPrimitive(p);
             Add("&nbsp;");
             AddPrimitive(x);
-            Add("</p>");
+            Add("</span>");
             return this;
         }
 
         public HtmlContent FIELD(string label, decimal p, bool currency = false)
         {
             LABEL(label);
-            Add("<p>");
+            Add("<span class=\"uk-input\">");
             if (currency)
             {
                 Add('￥');
             }
-
             Add(p);
-            Add("</p>");
+            Add("</span>");
             return this;
         }
 
         public HtmlContent FIELD(string label, bool v)
         {
             LABEL(label);
-            Add("<p>");
+            Add("<span class=\"uk-input\">");
             if (v)
             {
                 Add("&checkmark;");
             }
-
-            Add("</p>");
+            Add("</span>");
             return this;
         }
 
         public HtmlContent FIELD<K, V>(string label, K[] keys, Map<K, V> map)
         {
             LABEL(label);
-            Add("<p>");
+            Add("<span class=\"uk-input\">");
             if (keys != null)
             {
                 for (int i = 0; i < keys.Length; i++)
@@ -1160,8 +1158,7 @@ namespace SkyChain.Web
                     Add(val.ToString());
                 }
             }
-
-            Add("</p>");
+            Add("</span>");
             return this;
         }
 

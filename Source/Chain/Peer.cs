@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using SkyChain.Db;
 
 namespace SkyChain.Chain
 {
@@ -8,13 +10,13 @@ namespace SkyChain.Chain
         public static readonly Peer Empty = new Peer();
 
         public const short
-            STATUS_VOID = 0,
+            STATUS_STOPPED = 0,
             STATUS_RUNNING = 1;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STATUS_VOID, "停止"},
-            {STATUS_RUNNING, "运行"}
+            {STATUS_STOPPED, "STOPPED"},
+            {STATUS_RUNNING, "RUNNING"}
         };
 
         internal short id;
@@ -67,5 +69,20 @@ namespace SkyChain.Chain
         public bool IsRunning => status == STATUS_RUNNING;
 
         public int CurrentBlockId => blockid;
+
+        internal async Task RetrieveBlockIdAsync(DbContext dc)
+        {
+            if (id > 0)
+            {
+                await dc.QueryTopAsync("SELECT seq FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
+                dc.Let(out long seq);
+                if (seq > 0)
+                {
+                    var (bid, _) = ChainUtility.ResolveSeq(seq);
+
+                    blockid = bid;
+                }
+            }
+        }
     }
 }
