@@ -2,6 +2,12 @@
 {
     public class Chains
     {
+        public const string
+            LDGR_AGRMT = "AGRMT",
+            LDGR_EXP = "EXP",
+            LDGR_PRL = "PRL",
+            ACCT_SYS = "SYS";
+
         public const string X_FROM = "X-From";
 
         public const string X_PEER_ID = "X-Peer-ID";

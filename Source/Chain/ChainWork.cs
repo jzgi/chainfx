@@ -99,7 +99,7 @@ namespace SkyChain.Chain
             }
         }
 
-        [Ui("✛ New", group: 2), Tool(ButtonShow)]
+        [Ui("⊹ New", group: 2), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             var o = new Peer
@@ -126,7 +126,7 @@ namespace SkyChain.Chain
                 await dc.ExecuteAsync(p => o.Write(p));
 
                 var cli = new ChainClient(o);
-                await o.RetrieveBlockIdAsync(dc);
+                await o.PeekLastBlockAsync(dc);
                 ChainEnviron.Clients.Add(cli);
 
                 wc.GivePane(200); // close dialog

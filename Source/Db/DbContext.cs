@@ -153,6 +153,20 @@ namespace SkyChain.Db
             return reader.Read();
         }
 
+        private DateTime moment;
+
+        public DateTime Moment
+        {
+            get
+            {
+                if (moment == default)
+                {
+                    moment = DateTime.Now;
+                }
+                return moment;
+            }
+        }
+
         public DbSql Sql(string str)
         {
             if (builder == null)
@@ -2276,6 +2290,11 @@ namespace SkyChain.Db
             return this;
         }
 
+        public IParameters SetMoment()
+        {
+            Set(Moment);
+            return this;
+        }
         //
         // digest
         //

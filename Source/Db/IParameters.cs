@@ -82,5 +82,7 @@ namespace SkyChain.Db
         IParameters SetForIn(DateTime[] v);
 
         IParameters SetForIn(string[] v);
+        
+        IParameters SetMoment();
     }
 }

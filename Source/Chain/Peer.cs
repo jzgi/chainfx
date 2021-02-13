@@ -27,7 +27,8 @@ namespace SkyChain.Chain
         internal short status;
 
         // current block number
-        [NonSerialized] internal int blockid;
+        internal volatile int blockid;
+        internal long blockcs;
 
         public void Read(ISource s, byte proj = 15)
         {
@@ -70,17 +71,19 @@ namespace SkyChain.Chain
 
         public int CurrentBlockId => blockid;
 
-        internal async Task RetrieveBlockIdAsync(DbContext dc)
+        internal async Task PeekLastBlockAsync(DbContext dc)
         {
             if (id > 0)
             {
-                await dc.QueryTopAsync("SELECT seq FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
+                await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
                 dc.Let(out long seq);
+                dc.Let(out long bcs);
                 if (seq > 0)
                 {
                     var (bid, _) = ChainUtility.ResolveSeq(seq);
 
                     blockid = bid;
+                    blockcs = bcs;
                 }
             }
         }

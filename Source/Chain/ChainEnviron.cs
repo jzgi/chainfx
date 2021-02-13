@@ -36,7 +36,7 @@ namespace SkyChain.Chain
             info = await dc.QueryTopAsync<Peer>();
         }
 
-       
+
         /// <summary>
         /// Sets up and start blockchain on this peer node.
         /// </summary>
@@ -53,7 +53,7 @@ namespace SkyChain.Chain
                 // get current blockid
                 if (info != null)
                 {
-                    await info.RetrieveBlockIdAsync(dc);
+                    await info.PeekLastBlockAsync(dc);
                 }
             }
 
@@ -74,7 +74,7 @@ namespace SkyChain.Chain
                         clients.Add(cli);
 
                         // init current block id
-                        await o.RetrieveBlockIdAsync(dc);
+                        await o.PeekLastBlockAsync(dc);
                     }
                 }
             }
@@ -91,8 +91,6 @@ namespace SkyChain.Chain
 
         static async void Archive(object state)
         {
-            int blockid = 0;
-            long blockcs = 0;
             while (info != null && info.IsRunning)
             {
                 Thread.Sleep(90 * 1000); // 90 seconds interval
@@ -110,15 +108,12 @@ namespace SkyChain.Chain
                             continue; // go for delay
                         }
 
-                        // resolve new block id
-                        if (blockid == 0 && await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1"))
+                        // resolve last block
+                        if (info.blockid == 0)
                         {
-                            dc.Let(out long seq); // last seq
-                            dc.Let(out blockcs);
-                            var (bid, _) = ChainUtility.ResolveSeq(seq);
-                            blockid = bid;
+                            await info.PeekLastBlockAsync(dc);
                         }
-                        blockid++;
+                        info.IncrementBlockId();
 
                         // insert archivals
                         //
@@ -133,15 +128,15 @@ namespace SkyChain.Chain
                             o.Write(p);
                             p.Digest = false;
                             CryptoUtility.Digest(p.Checksum, ref bchk);
-                            p.Set(info.id).Set(ChainUtility.WeaveSeq(blockid, i)).Set(p.Checksum); // set primary and checksum
+                            p.Set(info.id).Set(ChainUtility.WeaveSeq(info.blockid, i)).Set(p.Checksum); // set primary and checksum
                             // set block-wise digest
                             if (i == 0) // begin of block 
                             {
-                                p.Set(blockcs);
+                                p.Set(info.blockcs);
                             }
                             else if (i == arr.Length - 1) // end of block
                             {
-                                p.Set(blockcs = bchk); // assign & set
+                                p.Set(info.blockcs = bchk); // assign & set
                             }
                             else
                             {

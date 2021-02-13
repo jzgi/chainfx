@@ -20,7 +20,7 @@ create table peers
 
 alter table peers owner to postgres;
 
-create unique index peers_local_idx
+create unique index peers_native_idx
     on peers (native)
     where (native = true);
 
@@ -66,12 +66,6 @@ create table blocks
 
 alter table blocks owner to postgres;
 
-create trigger blocks_trig
-    before insert
-    on blocks
-    for each row
-execute procedure public.calc_bal_func();
-
 create table ops
 (
     status smallint default 0 not null,
@@ -108,4 +102,10 @@ END
 $$;
 
 alter function calc_bal_func() owner to postgres;
+
+create trigger blocks_trig
+    before insert
+    on blocks
+    for each row
+execute procedure calc_bal_func();
 
