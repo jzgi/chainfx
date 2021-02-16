@@ -2,13 +2,12 @@ using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using SkyChain.Db;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class ChainEnviron : DbEnviron
     {
-        static Peer info;
+        static ChainPeer info;
 
         // a bundle of connected peers
         static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
@@ -19,7 +18,7 @@ namespace SkyChain.Chain
         // periodic polling and importing of foreign blocks 
         static Thread importer;
 
-        public static Peer Info
+        public static ChainPeer Info
         {
             get => info;
             internal set => info = value;
@@ -32,8 +31,8 @@ namespace SkyChain.Chain
 
         internal async Task ReloadNative(DbContext dc)
         {
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-            info = await dc.QueryTopAsync<Peer>();
+            dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers WHERE native = TRUE");
+            info = await dc.QueryTopAsync<ChainPeer>();
         }
 
 
@@ -48,8 +47,8 @@ namespace SkyChain.Chain
             //load this node peer
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-                info = await dc.QueryTopAsync<Peer>();
+                dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers WHERE native = TRUE");
+                info = await dc.QueryTopAsync<ChainPeer>();
                 // get current blockid
                 if (info != null)
                 {
@@ -64,8 +63,8 @@ namespace SkyChain.Chain
             // load foreign peer connectors
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = FALSE");
-                var arr = await dc.QueryAsync<Peer>();
+                dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers WHERE native = FALSE");
+                var arr = await dc.QueryAsync<ChainPeer>();
                 if (arr != null)
                 {
                     foreach (var o in arr)
@@ -157,7 +156,7 @@ namespace SkyChain.Chain
                     catch (Exception e)
                     {
                         dc.Rollback();
-                        Framework.ERR(e.Message);
+                        ServerEnviron.ERR(e.Message);
                         return; // quit the loop
                     }
                 }
@@ -192,7 +191,7 @@ namespace SkyChain.Chain
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.blocks ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
+                                dc.Sql("INSERT INTO chain.blocks ").colset(FlowAr.Empty, extra: "peerid, cs, blockcs")._VALUES_(FlowAr.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;

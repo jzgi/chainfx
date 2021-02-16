@@ -3,7 +3,7 @@
     /// <summary>
     /// A classifier that realizes graph-based mechine learning.
     /// </summary>
-    public class DbGraph<P, R> where P : struct, IPath<P> where R : struct, IResult<R>
+    public class MlGraph<P, R> where P : struct, IFeature<P> where R : struct, IOutcome<R>
     {
         //
         // key & value mapping
@@ -15,7 +15,7 @@
         int count;
 
 
-        public DbGraph(int capacity)
+        public MlGraph(int capacity)
         {
             // find a least power of 2 that is greater than or equal to capacity
             int num = 1024;

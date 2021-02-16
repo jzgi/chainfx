@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Db
 {
     /// <summary>
     /// A workflow operational state or step.

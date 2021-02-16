@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     [Ui("&#128160;")]
     public class ChainWork : WebWork
@@ -26,7 +26,7 @@ namespace SkyChain.Chain
                     h.LI_().FIELD("Peer ID", o.Id)._LI();
                     h.LI_().FIELD("Name", o.Name)._LI();
                     h.LI_().FIELD("URI", o.Uri)._LI();
-                    h.LI_().FIELD("Status", Peer.Statuses[o.status])._LI();
+                    h.LI_().FIELD("Status", ChainPeer.Statuses[o.status])._LI();
                     h.LI_().FIELD("Block #", o.CurrentBlockId)._LI();
                 }
                 h._UL();
@@ -54,7 +54,7 @@ namespace SkyChain.Chain
                         h.LI_().FIELD("Peer ID", o.Id)._LI();
                         h.LI_().FIELD("Name", o.Name)._LI();
                         h.LI_().FIELD("URI", o.Uri)._LI();
-                        h.LI_().FIELD("Status", Peer.Statuses[o.status])._LI();
+                        h.LI_().FIELD("Status", ChainPeer.Statuses[o.status])._LI();
                         h.LI_().FIELD("Block #", o.CurrentBlockId)._LI();
                     }
                     h._UL();
@@ -66,7 +66,7 @@ namespace SkyChain.Chain
         [Ui("Modify", group: 1), Tool(ButtonOpen)]
         public async Task mod(WebContext wc)
         {
-            var o = ChainEnviron.Info ?? new Peer
+            var o = ChainEnviron.Info ?? new ChainPeer
             {
                 native = true,
             };
@@ -79,7 +79,7 @@ namespace SkyChain.Chain
                     h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("Status", nameof(o.status), o.status, Peer.Statuses)._LI();
+                    h.LI_().SELECT("Status", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("Save", nameof(mod))._FORM();
                 });
             }
@@ -102,7 +102,7 @@ namespace SkyChain.Chain
         [Ui("⊹ New", group: 2), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
-            var o = new Peer
+            var o = new ChainPeer
             {
                 native = false,
             };
@@ -114,7 +114,7 @@ namespace SkyChain.Chain
                     h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("Status", nameof(o.status), o.status, Peer.Statuses)._LI();
+                    h.LI_().SELECT("Status", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

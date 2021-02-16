@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using SkyChain.Web;
-using static SkyChain.Chain.ChainUtility;
-using static SkyChain.Chain.Chains;
+using static SkyChain.Db.ChainUtility;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
     /// A web service that realizes API for inter-peer communication. 
@@ -31,8 +30,8 @@ namespace SkyChain.Chain
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Archival.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<Archival>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
+            dc.Sql("SELECT ").collst(FlowAr.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<FlowAr>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {

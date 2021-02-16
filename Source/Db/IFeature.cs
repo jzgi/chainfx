@@ -1,6 +1,6 @@
 ﻿namespace SkyChain.Db
 {
-    public interface IPath<out P> : IData where P : struct, IPath<P>
+    public interface IFeature<out P> : IData where P : struct, IFeature<P>
     {
         public P Derive(int ordinal);
     }

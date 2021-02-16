@@ -1,11 +1,11 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Db
 {
     /// <summary>
     /// An archival state in a block.
     /// </summary>
-    public class Archival : FlowState, IKeyable<long>
+    public class FlowAr : FlowState, IKeyable<long>
     {
-        public new static readonly Archival Empty = new Archival();
+        public new static readonly FlowAr Empty = new FlowAr();
 
         public const byte PACKING = 0x10;
 
@@ -32,7 +32,7 @@
         public override void Write(ISink s, byte proj = 15)
         {
             base.Write(s, proj);
-            
+
             if ((proj & PACKING) == PACKING)
             {
                 s.Put(nameof(peerid), peerid);
@@ -44,5 +44,7 @@
         }
 
         public long Key => seq;
+
+        public decimal Bal => bal;
     }
 }

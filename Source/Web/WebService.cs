@@ -46,8 +46,8 @@ namespace SkyChain.Web
             // create the embedded server instance
             var opts = new KestrelServerOptions();
             var factory = new LoggerFactory();
-            factory.AddProvider(Framework.Logger);
-            server = new KestrelServer(Options.Create(opts), Framework.TransportFactory, factory);
+            factory.AddProvider(ServerEnviron.Logger);
+            server = new KestrelServer(Options.Create(opts), ServerEnviron.TransportFactory, factory);
         }
 
         internal string Address

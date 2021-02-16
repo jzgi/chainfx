@@ -19,7 +19,7 @@ namespace SkyChain.Db
         {
             if (dbsource == null)
             {
-                throw new FrameworkException("missing 'db' in app.json");
+                throw new ServerException("missing 'db' in app.json");
             }
 
             return dbsource.NewDbContext(level);

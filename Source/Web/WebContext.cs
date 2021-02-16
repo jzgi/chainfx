@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
-using SkyChain.Chain;
 using static SkyChain.DataUtility;
 using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
@@ -190,10 +189,6 @@ namespace SkyChain.Web
                 Query.Add(name, value);
             }
         }
-
-        short? cfrom;
-
-        public short? XFrom => cfrom = HeaderShort(Chains.X_FROM);
 
         //
         // HEADER

@@ -1,12 +1,37 @@
 using System;
 using System.Threading.Tasks;
-using SkyChain.Db;
-using static SkyChain.Chain.ChainEnviron;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public static class ChainUtility
     {
+        public const string
+            LDGR_AGRMT = "AGRMT",
+            LDGR_EXP = "EXP",
+            LDGR_PRL = "PRL",
+            ACCT_SYS = "SYS";
+
+        public const string X_FROM = "X-From";
+
+        public const string X_PEER_ID = "X-Peer-ID";
+
+        public const string X_BLOCK_ID = "X-Block-ID";
+
+        public const string X_JOB = "X-Job";
+
+        public const string X_STEP = "X-Step";
+
+        public const string X_ACCT = "X-Account";
+
+        public const string X_NAME = "X-Name";
+
+        public const string X_LDGR = "X-Ledger";
+
+        public const string X_DESCR = "X-Description";
+
+        public const string X_AMT = "X-Amount";
+
+
         public const int BLOCK_CAPACITY = 1000;
 
         internal static (int, short) ResolveSeq(long seq)
@@ -22,10 +47,10 @@ namespace SkyChain.Chain
         }
 
 
-        public static Peer[] AllPeers(this DbContext dc)
+        public static ChainPeer[] AllPeers(this DbContext dc)
         {
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
-            return dc.Query<Peer>();
+            dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers");
+            return dc.Query<ChainPeer>();
         }
 
         /// <summary>
@@ -37,19 +62,19 @@ namespace SkyChain.Chain
             return await dc.QueryAsync<FlowState>(p => p.Set(job));
         }
 
-        public static async Task<FlowState> RetrieveAsync(this DbContext dc, string acct, string ldgr)
+        public static async Task<FlowAr> RetrieveTopAsync(this DbContext dc, string acct, string ldgr, short step)
         {
-            dc.Sql("SELECT ").collst(FlowState.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 ORDER BY seq DESC LIMIT 1");
-            return await dc.QueryTopAsync<FlowState>(p => p.Set(acct).Set(ldgr));
+            dc.Sql("SELECT ").collst(FlowAr.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 AND step = @3 ORDER BY seq DESC LIMIT 1");
+            return await dc.QueryTopAsync<FlowAr>(p => p.Set(acct).Set(ldgr).Set(step));
         }
 
         /// <summary>
         /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<FlowState[]> RetrieveAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
+        public static async Task<FlowAr[]> RetrieveAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
         {
-            dc.Sql("SELECT ").collst(FlowState.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
-            return await dc.QueryAsync<FlowState>(p => p.Set(Info.id).Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
+            dc.Sql("SELECT ").collst(FlowAr.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
+            return await dc.QueryAsync<FlowAr>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
         }
 
         public static async Task<FlowOp[]> GrabAsync(this DbContext dc, string acct, string ldgr, short step, short status = -1)
@@ -85,7 +110,7 @@ namespace SkyChain.Chain
             // job number is unique
             await dc.QueryTopAsync("SELECT nextval('chain.jobseq')");
             dc.Let(out int jobseq);
-            long job = ((long) Info.id << 32) + jobseq;
+            long job = ((long) ChainEnviron.Info.id << 32) + jobseq;
 
             // insert
             var op = new FlowOp()
@@ -137,7 +162,7 @@ namespace SkyChain.Chain
             };
             if (npeerid > 0) // remote call
             {
-                var cli = GetChainClient(op.ppeerid);
+                var cli = ChainEnviron.GetChainClient(op.ppeerid);
                 var status = await cli.RemoteForthAsync(op);
                 if (status != 201 && status != 200)
                 {
@@ -174,7 +199,7 @@ namespace SkyChain.Chain
             }
             else // remote call
             {
-                var cli = GetChainClient(ppeerid);
+                var cli = ChainEnviron.GetChainClient(ppeerid);
                 var status = await cli.RemoteBackAsync(job, step);
                 if (status != 201)
                 {
@@ -199,7 +224,7 @@ namespace SkyChain.Chain
                 dc.Let(out string pacct);
                 if (ppeerid > 0)
                 {
-                    var cli = GetChainClient(ppeerid);
+                    var cli = ChainEnviron.GetChainClient(ppeerid);
                     await cli.RemoteEndAsync(job, (short) (curstep - 1));
                 }
                 else

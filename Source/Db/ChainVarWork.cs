@@ -2,7 +2,7 @@
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class ChainVarWork : WebWork
     {
@@ -21,7 +21,7 @@ namespace SkyChain.Chain
                     h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("Status", nameof(o.status), o.status, Peer.Statuses)._LI();
+                    h.LI_().SELECT("Status", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("Save", nameof(mod))._FORM();
                 });
             }

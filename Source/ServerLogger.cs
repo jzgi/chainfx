@@ -5,12 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace SkyChain
 {
-    public class FrameworkLogger : ILoggerProvider, ILogger
+    public class ServerLogger : ILoggerProvider, ILogger
     {
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        internal FrameworkLogger(string file)
+        internal ServerLogger(string file)
         {
             // init the file-based logger
             var stream = new FileStream(file, FileMode.Append, FileAccess.Write);

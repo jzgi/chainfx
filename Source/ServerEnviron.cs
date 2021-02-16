@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Chain;
+using SkyChain.Db;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -18,7 +18,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Framework : ChainEnviron
+    public class ServerEnviron : ChainEnviron
     {
         public const string APP_JSON = "app.json";
 
@@ -44,14 +44,14 @@ namespace SkyChain
         public static JObj webcfg, dbcfg, extcfg; // various config parts
 
 
-        static FrameworkLogger logger;
+        static ServerLogger logger;
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
 
         public static uint[] PrivateKey => privatekey;
 
-        public static FrameworkLogger Logger => logger;
+        public static ServerLogger Logger => logger;
 
         /// <summary>
         /// Load & process the configuration file.
@@ -71,7 +71,7 @@ namespace SkyChain
 
             // setup logger first
             string logf = DateTime.Now.ToString("yyyyMM") + ".log";
-            logger = new FrameworkLogger(logf)
+            logger = new ServerLogger(logf)
             {
                 Level = logging
             };
@@ -91,13 +91,13 @@ namespace SkyChain
         {
             if (webcfg == null)
             {
-                throw new FrameworkException("Missing 'web' in config");
+                throw new ServerException("Missing 'web' in config");
             }
 
             string addr = webcfg[name];
             if (addr == null)
             {
-                throw new FrameworkException("missing web '" + name + "' in config");
+                throw new ServerException("missing web '" + name + "' in config");
             }
 
             // create service

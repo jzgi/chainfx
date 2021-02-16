@@ -3,7 +3,6 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using SkyChain.Chain;
 using SkyChain.Db;
 
 namespace SkyChain.Web
@@ -325,17 +324,6 @@ namespace SkyChain.Web
         {
             if (Authorize != null)
             {
-                // check if trusted peer
-                var fr = wc.XFrom; // check header
-                if (fr.HasValue && Service is ChainService)
-                {
-                    var cli = ChainEnviron.GetChainClient(fr.Value);
-                    if (cli.IsRemoteAddr(wc.RemoteAddr))
-                    {
-                        return true;
-                    }
-                }
-
                 return Authorize.Do(wc);
             }
 
@@ -451,27 +439,27 @@ namespace SkyChain.Web
 
         public static void TRC(string msg, Exception ex = null)
         {
-            Framework.TRC(msg, ex);
+            ServerEnviron.TRC(msg, ex);
         }
 
         public static void DBG(string msg, Exception ex = null)
         {
-            Framework.DBG(msg, ex);
+            ServerEnviron.DBG(msg, ex);
         }
 
         public static void INF(string msg, Exception ex = null)
         {
-            Framework.INF(msg, ex);
+            ServerEnviron.INF(msg, ex);
         }
 
         public static void WAR(string msg, Exception ex = null)
         {
-            Framework.WAR(msg, ex);
+            ServerEnviron.WAR(msg, ex);
         }
 
         public static void ERR(string msg, Exception ex = null)
         {
-            Framework.ERR(msg, ex);
+            ServerEnviron.ERR(msg, ex);
         }
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
