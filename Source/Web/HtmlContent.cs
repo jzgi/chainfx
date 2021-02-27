@@ -1766,6 +1766,29 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent ACCORDIONUL_(string css = "uk-card-default", bool collapse = false, bool multiple = true)
+        {
+            Add("<ul uk-accordion=\"");
+            if (collapse)
+            {
+                Add("collapsible: false;");
+            }
+            if (multiple)
+            {
+                Add("multiple: true");
+            }
+            Add("\" multiple: true\" class=\"");
+            Add(css);
+            Add("\">");
+            return this;
+        }
+
+        public HtmlContent _ACCORDIONUL()
+        {
+            Add("</ul>");
+            return this;
+        }
+
         public HtmlContent ACCORDION<M>(M[] arr, Action<M> item, string ul = null, string li = "uk-card-default")
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");

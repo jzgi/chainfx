@@ -3,9 +3,9 @@
     /// <summary>
     /// An archival state in a block.
     /// </summary>
-    public class FlowAr : FlowState, IKeyable<long>
+    public class ChainState : FlowState, IKeyable<long>
     {
-        public new static readonly FlowAr Empty = new FlowAr();
+        public new static readonly ChainState Empty = new ChainState();
 
         public const byte PACKING = 0x10;
 

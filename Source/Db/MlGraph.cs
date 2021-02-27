@@ -5,6 +5,10 @@
     /// </summary>
     public class MlGraph<P, R> where P : struct, IFeature<P> where R : struct, IOutcome<R>
     {
+        private MlNode[] nodes;
+        
+        
+        
         //
         // key & value mapping
 

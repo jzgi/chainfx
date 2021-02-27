@@ -36,7 +36,7 @@ namespace SkyChain.Db
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        Task<(short, FlowAr[])> polltsk;
+        Task<(short, ChainState[])> polltsk;
 
         // the status showing what is happening 
         short status;
@@ -58,6 +58,7 @@ namespace SkyChain.Db
             }
             catch (Exception e)
             {
+                ServerEnviron.WAR(e.Message);
             }
             Timeout = TimeSpan.FromSeconds(REQUEST_TIMEOUT);
         }
@@ -71,7 +72,7 @@ namespace SkyChain.Db
         ///
         /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
         /// 
-        public short TryReap(out FlowAr[] block)
+        public short TryReap(out ChainState[] block)
         {
             block = null;
             if (polltsk == null)
@@ -143,7 +144,7 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, FlowAr[])> RemotePollAsync(int blockid)
+        async Task<(short, ChainState[])> RemotePollAsync(int blockid)
         {
             try
             {
@@ -164,7 +165,7 @@ namespace SkyChain.Db
 
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var dat = arr.ToArray<FlowAr>();
+                var dat = arr.ToArray<ChainState>();
                 return (200, dat);
             }
             catch

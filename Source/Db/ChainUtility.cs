@@ -62,19 +62,19 @@ namespace SkyChain.Db
             return await dc.QueryAsync<FlowState>(p => p.Set(job));
         }
 
-        public static async Task<FlowAr> RetrieveTopAsync(this DbContext dc, string acct, string ldgr, short step)
+        public static async Task<ChainState> RetrieveTopAsync(this DbContext dc, string acct, string ldgr, short step)
         {
-            dc.Sql("SELECT ").collst(FlowAr.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 AND step = @3 ORDER BY seq DESC LIMIT 1");
-            return await dc.QueryTopAsync<FlowAr>(p => p.Set(acct).Set(ldgr).Set(step));
+            dc.Sql("SELECT ").collst(ChainState.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ldgr = @2 AND step = @3 ORDER BY seq DESC LIMIT 1");
+            return await dc.QueryTopAsync<ChainState>(p => p.Set(acct).Set(ldgr).Set(step));
         }
 
         /// <summary>
         /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<FlowAr[]> RetrieveAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
+        public static async Task<ChainState[]> RetrieveAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
         {
-            dc.Sql("SELECT ").collst(FlowAr.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
-            return await dc.QueryAsync<FlowAr>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
+            dc.Sql("SELECT ").collst(ChainState.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
+            return await dc.QueryAsync<ChainState>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
         }
 
         public static async Task<FlowOp[]> GrabAsync(this DbContext dc, string acct, string ldgr, short step, short status = -1)

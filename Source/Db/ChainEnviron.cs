@@ -191,7 +191,7 @@ namespace SkyChain.Db
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.blocks ").colset(FlowAr.Empty, extra: "peerid, cs, blockcs")._VALUES_(FlowAr.Empty, extra: "@1, @2, @3");
+                                dc.Sql("INSERT INTO chain.blocks ").colset(ChainState.Empty, extra: "peerid, cs, blockcs")._VALUES_(ChainState.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;
@@ -237,7 +237,7 @@ namespace SkyChain.Db
                         }
                         catch (Exception e)
                         {
-                            cli.SetInternalError(null);
+                            cli.SetInternalError(e.Message);
                         }
                     }
 

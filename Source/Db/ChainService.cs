@@ -30,8 +30,8 @@ namespace SkyChain.Db
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(FlowAr.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<FlowAr>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
+            dc.Sql("SELECT ").collst(ChainState.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<ChainState>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
@@ -195,6 +195,7 @@ namespace SkyChain.Db
             }
             catch (Exception e)
             {
+                WAR(e.Message);
                 wc.Give(500);
             }
         }
@@ -244,6 +245,7 @@ namespace SkyChain.Db
             }
             catch (Exception e)
             {
+                WAR(e.Message);
                 wc.Give(500);
             }
         }
