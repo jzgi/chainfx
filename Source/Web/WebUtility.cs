@@ -34,7 +34,7 @@ namespace SkyChain.Web
             };
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html style=\"height:100%;\">");
+            h.Add("<html lang=\"zh-CN\" style=\"height:100%;\">");
 
             h.Add("<head>");
             h.Add("<title>");
@@ -81,7 +81,7 @@ namespace SkyChain.Web
             h.Add("<ul class=\"uk-switcher\" style=\"height: calc(100% - 42px); height: -webkit-calc(100% - 42px);\">");
             // the first panel
             h.Add("<li class=\"uk-active\" style=\"height: 100%\">");
-            h.Add("<iframe src=\"?inner=true\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
+            h.Add("<iframe src=\"?inner=true\" title=\"main content\" frameborder=\"0\" style=\"width: 100%; height: 100%;\"></iframe>");
             h.Add("</li>");
             // the sub-level panels
             for (int i = 0; i < subwrks?.Count; i++)
@@ -99,7 +99,7 @@ namespace SkyChain.Web
 
                 h.Add("<li style=\"height: 100%\"><iframe id=\"");
                 h.Add(sub.Key);
-                h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
+                h.Add("/\" title=\"main content\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");
             }
 
             h.Add(" </ul>");
@@ -216,7 +216,7 @@ namespace SkyChain.Web
             };
 
             h.Add("<!DOCTYPE html>");
-            h.Add("<html>");
+            h.Add("<html lang=\"zh-CN\">");
 
             h.Add("<head>");
             h.Add("<title>");
@@ -299,6 +299,16 @@ namespace SkyChain.Web
             wc.Give(status, h, shared, maxage);
         }
 
+        public static void GiveSnippet(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12, string title = null)
+        {
+            var h = new HtmlContent(true, 8 * 1024)
+            {
+                Web = wc
+            };
+            main?.Invoke(h);
+
+            wc.Give(status, h, shared, maxage);
+        }
 
         public static string GetValue(this HttpHeaders headers, string name)
         {

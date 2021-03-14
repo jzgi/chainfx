@@ -4,7 +4,7 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Db
 {
-    [Ui("&#128160;")]
+    [Ui("&#128160; 联盟")]
     public class ChainWork : WebWork
     {
         protected internal override void OnCreate()
@@ -12,7 +12,7 @@ namespace SkyChain.Db
             CreateVarWork<ChainVarWork>();
         }
 
-        [Ui("Native"), Tool(Anchor)]
+        [Ui("本埠"), Tool(Anchor)]
         public virtual void @default(WebContext wc)
         {
             var o = ChainEnviron.Info;
@@ -23,11 +23,11 @@ namespace SkyChain.Db
                 h.UL_("uk-card-body");
                 if (o != null)
                 {
-                    h.LI_().FIELD("Peer ID", o.Id)._LI();
-                    h.LI_().FIELD("Name", o.Name)._LI();
-                    h.LI_().FIELD("URI", o.Uri)._LI();
-                    h.LI_().FIELD("Status", ChainPeer.Statuses[o.status])._LI();
-                    h.LI_().FIELD("Block #", o.CurrentBlockId)._LI();
+                    h.LI_().FIELD("节点编号", o.Id)._LI();
+                    h.LI_().FIELD("名称", o.Name)._LI();
+                    h.LI_().FIELD("连接地址", o.Uri)._LI();
+                    h.LI_().FIELD("状态", ChainPeer.Statuses[o.status])._LI();
+                    h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                 }
                 h._UL();
                 h.FOOTER_("uk-card-footer uk-flex-center").TOOL(nameof(mod), css: "uk-button-secondary")._FOOTER();
@@ -35,7 +35,7 @@ namespace SkyChain.Db
             });
         }
 
-        [Ui("Foreign", group: 2), Tool(Anchor)]
+        [Ui("外埠", group: 2), Tool(Anchor)]
         public void foreign(WebContext wc)
         {
             var arr = ChainEnviron.Clients;
@@ -51,11 +51,11 @@ namespace SkyChain.Db
                     h.UL_("uk-card-body");
                     if (o != null)
                     {
-                        h.LI_().FIELD("Peer ID", o.Id)._LI();
-                        h.LI_().FIELD("Name", o.Name)._LI();
-                        h.LI_().FIELD("URI", o.Uri)._LI();
-                        h.LI_().FIELD("Status", ChainPeer.Statuses[o.status])._LI();
-                        h.LI_().FIELD("Block #", o.CurrentBlockId)._LI();
+                        h.LI_().FIELD("节点编号", o.Id)._LI();
+                        h.LI_().FIELD("名称", o.Name)._LI();
+                        h.LI_().FIELD("连接地址", o.Uri)._LI();
+                        h.LI_().FIELD("状态", ChainPeer.Statuses[o.status])._LI();
+                        h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                     }
                     h._UL();
                     h.FOOTER_("uk-card-footer uk-flex-center").VARTOOL(o.id, nameof(mod))._FOOTER();
@@ -63,24 +63,23 @@ namespace SkyChain.Db
             });
         }
 
-        [Ui("Modify", group: 1), Tool(ButtonOpen)]
+        [Ui("修改", group: 1), Tool(ButtonShow)]
         public async Task mod(WebContext wc)
         {
             var o = ChainEnviron.Info ?? new ChainPeer
             {
                 native = true,
             };
-
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
                 {
-                    h.FORM_().FIELDSUL_("Peer Info");
-                    h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
-                    h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("Status", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
-                    h._FIELDSUL().BOTTOM_BUTTON("Save", nameof(mod))._FORM();
+                    h.FORM_().FIELDSUL_("节点信息");
+                    h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
+                    h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
+                    h.LI_().URL("连接地址", nameof(o.uri), o.uri, max: 30, required: true)._LI();
+                    h.LI_().SELECT("状态", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
+                    h._FIELDSUL()._FORM();
                 });
             }
             else // POST
@@ -99,7 +98,7 @@ namespace SkyChain.Db
             }
         }
 
-        [Ui("⊹ New", group: 2), Tool(ButtonShow)]
+        [Ui("✛ 新建", group: 2), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             var o = new ChainPeer
@@ -110,11 +109,11 @@ namespace SkyChain.Db
             {
                 wc.GivePane(200, h =>
                 {
-                    h.FORM_().FIELDSUL_("Peer Info");
-                    h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
-                    h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("Status", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
+                    h.FORM_().FIELDSUL_("节点信息");
+                    h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
+                    h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
+                    h.LI_().URL("连接地址", nameof(o.uri), o.uri, max: 30, required: true)._LI();
+                    h.LI_().SELECT("状态", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

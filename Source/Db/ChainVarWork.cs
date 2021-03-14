@@ -6,23 +6,21 @@ namespace SkyChain.Db
 {
     public class ChainVarWork : WebWork
     {
-        [Ui("Modify", group: 1), Tool(ButtonOpen)]
+        [Ui("修改", group: 1), Tool(ButtonOpen)]
         public async Task mod(WebContext wc)
         {
             short id = wc[0];
-
             var o = ChainEnviron.Clients[id]?.Info;
-
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
                 {
-                    h.FORM_().FIELDSUL_("Peer Info");
-                    h.LI_().NUMBER("ID", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
-                    h.LI_().TEXT("Name", nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().URL("Url", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("Status", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
-                    h._FIELDSUL().BOTTOM_BUTTON("Save", nameof(mod))._FORM();
+                    h.FORM_().FIELDSUL_("节点信息");
+                    h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
+                    h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
+                    h.LI_().URL("连接地址", nameof(o.uri), o.uri, max: 30, required: true)._LI();
+                    h.LI_().SELECT("状态", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
+                    h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(mod))._FORM();
                 });
             }
             else // POST

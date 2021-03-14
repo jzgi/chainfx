@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 
 namespace SkyChain
 {
-    public class ServerLogger : ILoggerProvider, ILogger
+    public class ServerLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
     {
         // opened writer on the log file
         readonly StreamWriter logWriter;
@@ -20,7 +21,12 @@ namespace SkyChain
             };
         }
 
+        public void AddProvider(ILoggerProvider provider)
+        {
+        }
+
         public int Level { get; internal set; } = 3;
+
 
         //
         // LOGGING

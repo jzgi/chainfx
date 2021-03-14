@@ -17,7 +17,7 @@ namespace SkyChain.Web
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.
     /// </summary>
-    public abstract class WebService : WebWork, IHttpApplication<HttpContext>
+    public abstract class WebService : WebWork, IHttpApplication<HttpContext>, IServiceProvider
     {
         //
         // http implementation
@@ -26,6 +26,8 @@ namespace SkyChain.Web
 
         // the embedded HTTP server
         readonly KestrelServer server;
+
+        // readonly LoggerFactory factory;
 
         // shared cache of recent responses
         readonly ConcurrentDictionary<string, Resp> shared;
@@ -39,15 +41,38 @@ namespace SkyChain.Web
             Directory = "/";
             Pathing = "/";
 
+            // factory = new LoggerFactory(new[] {ServerEnviron.logger});
+
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
             shared = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
 
             // create the embedded server instance
-            var opts = new KestrelServerOptions();
-            var factory = new LoggerFactory();
-            factory.AddProvider(ServerEnviron.Logger);
-            server = new KestrelServer(Options.Create(opts), ServerEnviron.TransportFactory, factory);
+            var opts = new KestrelServerOptions
+            {
+                ApplicationServices = this
+            };
+            // var cert = ServerEnviron.BuildSelfSignedCertificate("jx.skyiah.com", "skyiah.com", "Skyiah", "Gs721004");
+            // opts.ConfigureHttpsDefaults(https =>
+            // {
+            //     // https.ServerCertificate = cert; 
+            //     
+            // });
+
+            server = new KestrelServer(Options.Create(opts), ServerEnviron.TransportFactory, ServerEnviron.logger);
+        }
+
+        public object GetService(Type serviceType)
+        {
+            if (serviceType == typeof(ILogger<KestrelServer>))
+            {
+                return ServerEnviron.logger;
+            }
+            if (serviceType == typeof(ILoggerFactory))
+            {
+                return ServerEnviron.logger;
+            }
+            return null;
         }
 
         internal string Address
@@ -112,7 +137,7 @@ namespace SkyChain.Web
             }
         }
 
-        const int STATIC_MAX_AGE = 3600 * 12;
+        const int STATIC_MAX_AGE = 3600 * 48;
 
         public void GiveStaticFile(string filename, string ext, WebContext wc)
         {

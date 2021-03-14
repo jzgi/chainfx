@@ -58,7 +58,7 @@ namespace SkyChain.Db
             }
             catch (Exception e)
             {
-                ServerEnviron.WAR(e.Message);
+                // ServerEnviron.WAR(e.Message);
             }
             Timeout = TimeSpan.FromSeconds(REQUEST_TIMEOUT);
         }

@@ -14,8 +14,8 @@ namespace SkyChain.Db
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STATUS_STOPPED, "STOPPED"},
-            {STATUS_RUNNING, "RUNNING"}
+            {STATUS_STOPPED, "已停止"},
+            {STATUS_RUNNING, "运行中"}
         };
 
         internal short id;

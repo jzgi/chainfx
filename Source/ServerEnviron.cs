@@ -44,7 +44,7 @@ namespace SkyChain
         public static JObj webcfg, dbcfg, extcfg; // various config parts
 
 
-        static ServerLogger logger;
+        internal static ServerLogger logger;
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
@@ -85,6 +85,11 @@ namespace SkyChain
             webcfg = cfg["web"];
 
             extcfg = cfg["ext"];
+
+            // create cert
+            // var cert = BuildSelfSignedCertificate("144000.tv", "47.100.96.253", "144000.tv", "721004");
+            // var bytes = cert.Export(X509ContentType.Pfx);
+            // File.WriteAllBytes("samp/$cert.pfx", bytes);
         }
 
         public static T CreateService<T>(string name) where T : WebService, new()
@@ -210,26 +215,25 @@ namespace SkyChain
         public static X509Certificate2 BuildSelfSignedCertificate(string dns, string ipaddr, string issuer, string password)
         {
             var sanb = new SubjectAlternativeNameBuilder();
-            sanb.AddIpAddress(IPAddress.Parse(ipaddr));
+            // sanb.AddIpAddress(IPAddress.Parse(ipaddr));
             sanb.AddDnsName(dns);
 
             var subject = new X500DistinguishedName($"CN={issuer}");
 
-            using (var rsa = RSA.Create(2048))
-            {
-                var request = new CertificateRequest(subject, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            using var rsa = RSA.Create(2048);
 
-                request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
+            var request = new CertificateRequest(subject, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-                request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, false));
+            request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
 
-                request.CertificateExtensions.Add(sanb.Build());
+            request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, false));
 
-                var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
-                certificate.FriendlyName = issuer;
+            request.CertificateExtensions.Add(sanb.Build());
 
-                return new X509Certificate2(certificate.Export(X509ContentType.Pfx, password), password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
-            }
+            var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
+            certificate.FriendlyName = issuer;
+
+            return new X509Certificate2(certificate.Export(X509ContentType.Pfx, password), password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
         }
     }
 }
