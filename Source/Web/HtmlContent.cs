@@ -288,9 +288,12 @@ namespace SkyChain.Web
 
         public HtmlContent MARK<V>(V v)
         {
-            Add("<mark>");
-            AddPrimitive(v);
-            Add("</mark>");
+            if (v != null)
+            {
+                Add("<mark>");
+                AddPrimitive(v);
+                Add("</mark>");
+            }
             return this;
         }
 
@@ -763,6 +766,26 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent SMALL<V>(V v)
+        {
+            Add("<small>");
+            AddPrimitive(v);
+            Add("</small>");
+            return this;
+        }
+
+        public HtmlContent SMALL_()
+        {
+            Add("<small>");
+            return this;
+        }
+
+        public HtmlContent _SMALL()
+        {
+            Add("</small>");
+            return this;
+        }
+
         public HtmlContent P<V>(V v, string css = null)
         {
             Add("<p");
@@ -772,7 +795,6 @@ namespace SkyChain.Web
                 Add(css);
                 Add("\"");
             }
-
             Add(">");
             AddPrimitive(v);
             Add("</p>");
@@ -938,16 +960,25 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent ARTICLE_(string css = null)
+        public HtmlContent ARTICLE_(string css = null, bool grid = false)
         {
             Add("<article");
-            if (css != null)
+            if (grid)
+            {
+                Add(" uk-grid class=\"uk-child-width-expand@s uk-child-width-expand@m");
+                if (css != null)
+                {
+                    Add(' ');
+                    Add(css);
+                }
+                Add("\"");
+            }
+            else if (css != null)
             {
                 Add(" class=\"");
                 Add(css);
                 Add("\"");
             }
-
             Add(">");
             return this;
         }
@@ -1239,7 +1270,7 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            AddPrimitive(a);
+            PutKey(a);
             Add("\"");
             if (end)
             {
@@ -1258,8 +1289,8 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            AddPrimitive(a);
-            AddPrimitive(b);
+            PutKey(a);
+            PutKey(b);
             Add("\"");
             if (end)
             {
@@ -1278,9 +1309,31 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            AddPrimitive(a);
-            AddPrimitive(b);
-            AddPrimitive(c);
+            PutKey(a);
+            PutKey(b);
+            PutKey(c);
+            Add("\"");
+            if (end)
+            {
+                Add(">");
+            }
+            return this;
+        }
+
+        public HtmlContent A_HREF_<A, B, C, D>(A a, B b, C c, D d, bool end = false, string css = null)
+        {
+            Add("<a");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(" href=\"");
+            PutKey(a);
+            PutKey(b);
+            PutKey(c);
+            PutKey(d);
             Add("\"");
             if (end)
             {
@@ -1301,7 +1354,7 @@ namespace SkyChain.Web
         {
             Add(" onclick=\"");
             AddEsc(a);
-            AddPrimitive(b);
+            PutKey(b);
             Add("\">");
             return this;
         }
@@ -1310,8 +1363,8 @@ namespace SkyChain.Web
         {
             Add(" onclick=\"");
             AddEsc(a);
-            AddPrimitive(b);
-            AddPrimitive(c);
+            PutKey(b);
+            PutKey(c);
             Add("\">");
             return this;
         }
@@ -1351,7 +1404,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC(string a, string css = null, bool circle = false)
+        public HtmlContent PIC(string a, bool circle = false, string css = null)
         {
             PIC_(css, circle);
             AddEsc(a);
@@ -1359,21 +1412,21 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC<B>(string a, B b, string css = null, bool circle = false)
+        public HtmlContent PIC<B>(string a, B b, bool circle = false, string css = null)
         {
             PIC_(css, circle);
             AddEsc(a);
-            AddPrimitive(b);
+            PutKey(b);
             _PIC();
             return this;
         }
 
-        public HtmlContent PIC<B, C>(string a, B b, C c, string css = null, bool circle = false)
+        public HtmlContent PIC<B, C>(string a, B b, C c, bool circle = false, string css = null)
         {
             PIC_(css, circle);
             AddEsc(a);
-            AddPrimitive(b);
-            AddPrimitive(c);
+            PutKey(b);
+            PutKey(c);
             _PIC();
             return this;
         }
@@ -1606,7 +1659,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent BUTTON_(string action, int subscript = -1, bool post = true, string css = null)
+        public HtmlContent BUTTON_(string action, int subscript = -1, bool post = true, string onclick = null, bool chk = false, string css = null)
         {
             Add("<button type=\"button\" class=\"uk-button ");
             Add(css);
@@ -1622,7 +1675,18 @@ namespace SkyChain.Web
                 Add('-');
                 Add(subscript);
             }
-            Add("\" onclick=\"btnSubmit(this,true);\">");
+            Add("\" onclick=\"");
+            if (onclick != null)
+            {
+                Add(onclick);
+                Add("; ");
+            }
+            Add("btnSubmit(this");
+            if (chk)
+            {
+                Add(", true");
+            }
+            Add(");\">");
             return this;
         }
 
@@ -1632,18 +1696,18 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string css = "uk-button-default")
+        public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, string css = "uk-button-default")
         {
-            BUTTON_(action, subscript, post, css);
+            BUTTON_(action, subscript, post, onclick, chk, css);
             AddEsc(caption);
             _BUTTON();
             return this;
         }
 
-        public HtmlContent BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string css = "uk-button-default")
+        public HtmlContent BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, string css = "uk-button-default")
         {
             BOTTOMBAR_();
-            BUTTON_(action, subscript, post, css);
+            BUTTON_(action, subscript, post, onclick, chk, css);
             AddEsc(caption);
             _BUTTON();
             _BOTTOMBAR();
@@ -1709,7 +1773,7 @@ namespace SkyChain.Web
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    M obj = arr[i];
+                    var obj = arr[i];
                     Add("<li class=\"uk-flex");
                     if (li != null)
                     {
@@ -1891,6 +1955,23 @@ namespace SkyChain.Web
 
         public HtmlContent _TABLE()
         {
+            Add("</table>");
+            return this;
+        }
+
+        public HtmlContent TABLE(Action tbody, Action thead = null)
+        {
+            Add("<div class=\"uk-overflow-auto\">");
+            Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
+            if (thead != null)
+            {
+                Add("<thead>");
+                thead();
+                Add("</thead>");
+            }
+            Add("<tbody>");
+            tbody();
+            Add("</tbody>");
             Add("</table>");
             Add("</div>");
             return this;
@@ -2297,7 +2378,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PICK<K>(K varkey, string label = null, bool toolbar = false, bool only = false, string css = null)
+        public HtmlContent PICK<K>(K varkey, string label = null, bool toolbar = false, bool only = false, short follow = 0, string css = null)
         {
             Add("<label");
             if (css != null)
@@ -2316,10 +2397,10 @@ namespace SkyChain.Web
             Add("\" onchange=\"checkToggle(this");
             if (only)
             {
-                Add(", true");
+                Add(", true, ");
+                Add(follow);
             }
-            Add(");\"");
-            Add(">&nbsp;");
+            Add(");\">&nbsp;");
             Add(label);
             Add("</label>");
             return this;
@@ -2360,7 +2441,7 @@ namespace SkyChain.Web
                     if (g == actgrp || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
-                        PutVarTool(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, "uk-button-secondary");
+                        PutVarTool(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, null);
                     }
                 }
             }
@@ -2373,7 +2454,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = "uk-button-primary")
+        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
         {
             // locate the proper work
             var w = Web.Work;
@@ -2387,7 +2468,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = "uk-button-secondary")
+        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
         {
             // get the var work
             var vw = Web.Work.VarWork;
@@ -2431,7 +2512,7 @@ namespace SkyChain.Web
             else if (k is int intv) Add(intv);
             else if (k is long longv) Add(longv);
             else if (k is string strv) Add(strv);
-            else if (k is DateTime dtv) Add(dtv);
+            else if (k is DateTime dtv) Add(dtv, 3, 0);
             else if (k is ValueTuple<short, short> ss)
             {
                 Add(ss.Item1);
@@ -2522,7 +2603,7 @@ namespace SkyChain.Web
             else
             {
                 Add("<button class=\"uk-button ");
-                Add(css ?? "uk-button-default");
+                Add(css ?? "uk-button-primary");
                 if (cap?.Length == 1)
                 {
                     Add(" uk-width-micro");
@@ -2637,7 +2718,7 @@ namespace SkyChain.Web
             else
             {
                 Add("<button  class=\"uk-button ");
-                Add(css ?? "uk-button-default");
+                Add(css ?? "uk-button-secondary");
                 if (cap?.Length == 1)
                 {
                     Add(" uk-width-micro");
@@ -2738,7 +2819,7 @@ namespace SkyChain.Web
 
         public HtmlContent HIDDENS<V>(string name, V[] vals)
         {
-            for (int i = 0; i < vals.Length; i++)
+            for (int i = 0; i < vals?.Length; i++)
             {
                 Add("<input type=\"hidden\" name=\"");
                 Add(name);
@@ -3253,11 +3334,16 @@ namespace SkyChain.Web
             LABEL(label);
             if (tip != null)
             {
-                Add("<label class=\"uk-flex uk-width-1-1 uk-flex-middle\">");
+                Add("<label class=\"uk-flex uk-flex-middle\">");
+                if (css != null)
+                {
+                    Add(' ');
+                    Add(css);
+                }
             }
 
             Add("<input type=\"checkbox\" class=\"uk-checkbox");
-            if (css != null)
+            if (tip == null && css != null)
             {
                 Add(' ');
                 Add(css);
@@ -3635,7 +3721,7 @@ namespace SkyChain.Web
         public HtmlContent OPTION_<T>(T v, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
-            AddPrimitive(v);
+            PutKey(v);
             Add("\"");
             if (selected) Add(" selected");
             if (!enabled) Add(" disabled");
@@ -3829,7 +3915,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent OUTPUT(string name, decimal v, string label = null)
+        public HtmlContent OUTPUT_CNY(string label, string name, decimal v)
         {
             if (label != null)
             {
@@ -3837,10 +3923,9 @@ namespace SkyChain.Web
                 Add(label);
                 Add("</label>");
             }
-
-            Add("<output class=\"uk-output\" name=\"");
+            Add("￥<output name=\"");
             Add(name);
-            Add("\">￥");
+            Add("\">");
             Add(v);
             Add("</output>");
             return this;

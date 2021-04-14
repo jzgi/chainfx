@@ -7,7 +7,7 @@ namespace SkyChain.Db
     public class ChainVarWork : WebWork
     {
         [Ui("修改", group: 1), Tool(ButtonOpen)]
-        public async Task mod(WebContext wc)
+        public virtual async Task upd(WebContext wc)
         {
             short id = wc[0];
             var o = ChainEnviron.Clients[id]?.Info;
@@ -20,7 +20,7 @@ namespace SkyChain.Db
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.uri), o.uri, max: 30, required: true)._LI();
                     h.LI_().SELECT("状态", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
-                    h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(mod))._FORM();
+                    h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });
             }
             else // POST

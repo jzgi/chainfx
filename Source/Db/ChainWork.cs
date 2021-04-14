@@ -4,7 +4,7 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Db
 {
-    [Ui("&#128160; 联盟")]
+    [Ui("联盟链")]
     public class ChainWork : WebWork
     {
         protected internal override void OnCreate()
@@ -12,13 +12,13 @@ namespace SkyChain.Db
             CreateVarWork<ChainVarWork>();
         }
 
-        [Ui("本埠"), Tool(Anchor)]
+        [Ui("本节点"), Tool(Anchor)]
         public virtual void @default(WebContext wc)
         {
             var o = ChainEnviron.Info;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR();
+                h.TOOLBAR(caption: "本节点属性");
                 h.FORM_("uk-card uk-card-primary");
                 h.UL_("uk-card-body");
                 if (o != null)
@@ -30,18 +30,18 @@ namespace SkyChain.Db
                     h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                 }
                 h._UL();
-                h.FOOTER_("uk-card-footer uk-flex-center").TOOL(nameof(mod), css: "uk-button-secondary")._FOOTER();
+                h.FOOTER_("uk-card-footer uk-flex-center").TOOL(nameof(upd), css: "uk-button-secondary")._FOOTER();
                 h._FORM();
             });
         }
 
-        [Ui("外埠", group: 2), Tool(Anchor)]
-        public void foreign(WebContext wc)
+        [Ui("外节点", group: 2), Tool(Anchor)]
+        public virtual void foreign(WebContext wc)
         {
             var arr = ChainEnviron.Clients;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR();
+                h.TOOLBAR(caption: "外节点管理");
                 h.BOARD(arr, ety =>
                 {
                     var cli = ety.Value;
@@ -58,13 +58,13 @@ namespace SkyChain.Db
                         h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                     }
                     h._UL();
-                    h.FOOTER_("uk-card-footer uk-flex-center").VARTOOL(o.id, nameof(mod))._FOOTER();
+                    h.FOOTER_("uk-card-footer uk-flex-center").VARTOOL(o.id, nameof(upd))._FOOTER();
                 });
             });
         }
 
         [Ui("修改", group: 1), Tool(ButtonShow)]
-        public async Task mod(WebContext wc)
+        public virtual async Task upd(WebContext wc)
         {
             var o = ChainEnviron.Info ?? new ChainPeer
             {
@@ -98,8 +98,8 @@ namespace SkyChain.Db
             }
         }
 
-        [Ui("✛ 新建", group: 2), Tool(ButtonShow)]
-        public async Task @new(WebContext wc)
+        [Ui("✚ 新建", group: 2), Tool(ButtonShow)]
+        public virtual async Task @new(WebContext wc)
         {
             var o = new ChainPeer
             {

@@ -77,6 +77,17 @@ namespace SkyChain.Web
             return str;
         }
 
+        public static implicit operator DateTime(WebSeg seg)
+        {
+            string str = seg.key;
+            if (string.IsNullOrEmpty(str)) return (DateTime) seg.accessor;
+            if (DateTime.TryParse(str, out var v))
+            {
+                return v;
+            }
+            return default;
+        }
+
         public static implicit operator ValueTuple<string, string>(WebSeg seg)
         {
             string str = seg.key;

@@ -40,7 +40,7 @@ namespace SkyChain.Web
             h.Add("<title>");
             h.Add(title);
             h.Add("</title>");
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">");
             h.Add("<link rel=\"shortcut icon\" href=\"/favicon.ico\" />");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -134,7 +134,7 @@ namespace SkyChain.Web
             h.Add("<title>");
             h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
@@ -230,7 +230,7 @@ namespace SkyChain.Web
                 h.Add("\">");
             }
 
-            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
             h.Add("<script src=\"/uikit.min.js\"></script>");
