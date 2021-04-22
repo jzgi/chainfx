@@ -16,8 +16,8 @@ namespace SkyChain.Db
         public async Task onpoll(WebContext wc)
         {
             // veriify consistency of peer numbering
-            var peerid = ChainEnviron.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            var pid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != pid)
             {
                 wc.Give(409); // conflict
             }
@@ -30,8 +30,8 @@ namespace SkyChain.Db
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(ChainState.Empty, 0xff).T(" FROM chain.blocks WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<ChainState>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
+            dc.Sql("SELECT ").collst(ChainState.Empty, 0xff).T(" FROM chain.blocks WHERE pid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<ChainState>(p => p.Set(pid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
@@ -72,8 +72,8 @@ namespace SkyChain.Db
         public async Task onforth(WebContext wc)
         {
             // veriify consistency of peer numbering
-            var peerid = ChainEnviron.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            var pid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != pid)
             {
                 wc.Give(409); // conflict
                 return;
@@ -118,8 +118,8 @@ namespace SkyChain.Db
         public async Task onback(WebContext wc)
         {
             // veriify consistency of peer numbering
-            var peerid = ChainEnviron.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            var pid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != pid)
             {
                 wc.Give(409); // conflict
             }
@@ -163,8 +163,8 @@ namespace SkyChain.Db
         public async Task onabort(WebContext wc)
         {
             // veriify consistency of peer numbering
-            var peerid = ChainEnviron.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            var pid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != pid)
             {
                 wc.Give(409); // conflict
             }
@@ -203,8 +203,8 @@ namespace SkyChain.Db
         public async Task onend(WebContext wc)
         {
             // veriify consistency of peer numbering
-            var peerid = ChainEnviron.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            var pid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != pid)
             {
                 wc.Give(409); // conflict
             }
@@ -222,9 +222,9 @@ namespace SkyChain.Db
             try
             {
                 using var dc = NewDbContext();
-                dc.Sql("UPDATE chain.ops SET status = ").T(FlowOp.STATUS_ENDED).T(" WHERE status = ").T(FlowOp.STATUS_FORTHOUT).T(" AND job = @1 AND step = @2 AND acct = @3 RETURNING ppeerid, pacct");
+                dc.Sql("UPDATE chain.ops SET status = ").T(FlowOp.STATUS_ENDED).T(" WHERE status = ").T(FlowOp.STATUS_FORTHOUT).T(" AND job = @1 AND step = @2 AND acct = @3 RETURNING ppid, pacct");
                 var res = await dc.ExecuteAsync(p => p.Set(job.Value).Set(step.Value).Set(acct));
-                dc.Let(out short ppeerid);
+                dc.Let(out short ppid);
                 dc.Let(out string pacct);
 
                 // recursively call job ending for this peer

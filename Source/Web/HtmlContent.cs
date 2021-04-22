@@ -1999,7 +1999,7 @@ namespace SkyChain.Web
 
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(key);
-            Add("\" onchange=\"checkToggle(this);\" required");
+            Add("\" onchange=\"checkToggle(this);\"");
             if (disabled)
             {
                 Add(" disabled");
@@ -2687,8 +2687,12 @@ namespace SkyChain.Web
 
             if (tool.IsAnchorTag)
             {
-                Add("<a class=\"uk-button ");
-                Add(css ?? "uk-button-link");
+                Add("<a class=\"uk-button uk-button-link");
+                if (css != null)
+                {
+                    Add(' ');
+                    Add(css);
+                }
                 if (act == Web.Action) // if current action
                 {
                     Add(" uk-active");

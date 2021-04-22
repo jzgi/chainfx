@@ -5,9 +5,9 @@ namespace SkyChain.Db
     /// <summary>
     /// A workflow state or step data record.
     /// </summary>
-    public class FlowState : IData
+    public class _State : IData
     {
-        public static readonly FlowState Empty = new FlowState();
+        public static readonly _State Empty = new _State();
 
         internal long job;
         internal short step;
@@ -18,10 +18,10 @@ namespace SkyChain.Db
         internal decimal amt;
         internal JObj doc;
         internal DateTime stated;
-        internal short ppeerid;
+        internal short ppid;
         internal string pacct;
         internal string pname;
-        internal short npeerid;
+        internal short npid;
         internal string nacct;
         internal string nname;
         internal DateTime stamp;
@@ -37,10 +37,10 @@ namespace SkyChain.Db
             s.Get(nameof(amt), ref amt);
             s.Get(nameof(doc), ref doc);
             s.Get(nameof(stated), ref stated);
-            s.Get(nameof(ppeerid), ref ppeerid);
+            s.Get(nameof(ppid), ref ppid);
             s.Get(nameof(pacct), ref pacct);
             s.Get(nameof(pname), ref pname);
-            s.Get(nameof(npeerid), ref npeerid);
+            s.Get(nameof(npid), ref npid);
             s.Get(nameof(nacct), ref nacct);
             s.Get(nameof(nname), ref nname);
             s.Get(nameof(stamp), ref stamp);
@@ -57,12 +57,12 @@ namespace SkyChain.Db
             s.Put(nameof(amt), amt);
             s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
-            if (ppeerid == 0) s.PutNull(nameof(ppeerid));
-            else s.Put(nameof(ppeerid), ppeerid);
+            if (ppid == 0) s.PutNull(nameof(ppid));
+            else s.Put(nameof(ppid), ppid);
             s.Put(nameof(pacct), pacct);
             s.Put(nameof(pname), pname);
-            if (npeerid == 0) s.PutNull(nameof(npeerid));
-            else s.Put(nameof(npeerid), npeerid);
+            if (npid == 0) s.PutNull(nameof(npid));
+            else s.Put(nameof(npid), npid);
             s.Put(nameof(nacct), nacct);
             s.Put(nameof(nname), nname);
             s.Put(nameof(stamp), stamp);
@@ -86,15 +86,15 @@ namespace SkyChain.Db
 
         public DateTime Stated => stated;
 
-        public bool IsLocal => ppeerid == 0;
+        public bool IsLocal => ppid == 0;
 
-        public short PrevPeerId => ppeerid;
+        public short PrevPeerId => ppid;
 
         public string PrevAcct => pacct;
 
         public string PrevName => pname;
 
-        public short NextPeerId => npeerid;
+        public short NextPeerId => npid;
 
         public string NextAcct => nacct;
 

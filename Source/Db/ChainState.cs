@@ -3,13 +3,13 @@
     /// <summary>
     /// An archival state in a block.
     /// </summary>
-    public class ChainState : FlowState, IKeyable<long>
+    public class ChainState : _State, IKeyable<long>
     {
         public new static readonly ChainState Empty = new ChainState();
 
         public const byte PACKING = 0x10;
 
-        internal short peerid;
+        internal short pid;
         internal long seq;
         internal decimal bal;
         internal long cs;
@@ -21,7 +21,7 @@
 
             if ((proj & PACKING) == PACKING)
             {
-                s.Get(nameof(peerid), ref peerid);
+                s.Get(nameof(pid), ref pid);
                 s.Get(nameof(seq), ref seq);
                 s.Get(nameof(bal), ref bal);
                 s.Get(nameof(cs), ref cs);
@@ -35,7 +35,7 @@
 
             if ((proj & PACKING) == PACKING)
             {
-                s.Put(nameof(peerid), peerid);
+                s.Put(nameof(pid), pid);
                 s.Put(nameof(seq), seq);
                 s.Put(nameof(bal), bal);
                 s.Put(nameof(cs), cs);

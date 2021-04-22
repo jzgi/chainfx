@@ -74,7 +74,7 @@ namespace SkyChain.Db
         {
             if (id > 0)
             {
-                await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.blocks WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
+                await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.blocks WHERE pid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
                 dc.Let(out long seq);
                 dc.Let(out long bcs);
                 if (seq > 0)

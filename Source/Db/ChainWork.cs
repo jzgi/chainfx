@@ -98,7 +98,7 @@ namespace SkyChain.Db
             }
         }
 
-        [Ui("✚ 新建", group: 2), Tool(ButtonShow)]
+        [Ui("新建", group: 2), Tool(ButtonShow)]
         public virtual async Task @new(WebContext wc)
         {
             var o = new ChainPeer

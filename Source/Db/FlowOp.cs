@@ -3,7 +3,7 @@
     /// <summary>
     /// A workflow operational state or step.
     /// </summary>
-    public class FlowOp : FlowState, IDualKeyable<long, short>
+    public class FlowOp : _State, IDualKeyable<long, short>
     {
         public new static readonly FlowOp Empty = new FlowOp();
 

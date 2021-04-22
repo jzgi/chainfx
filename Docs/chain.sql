@@ -24,7 +24,7 @@ create unique index peers_native_idx
     on peers (native)
     where (native = true);
 
-create table states
+create table _states
 (
     job bigint not null,
     step smallint not null,
@@ -35,12 +35,12 @@ create table states
     amt money not null,
     doc jsonb,
     stated timestamp(0) not null,
-    ppeerid smallint
+    ppid smallint
         constraint ops_ppeerid_fk
             references peers,
     pacct varchar(20),
     pname varchar(10),
-    npeerid smallint
+    npid smallint
         constraint ops_npeerid_fk
             references peers,
     nacct varchar(20),
@@ -48,11 +48,11 @@ create table states
     stamp timestamp(0)
 );
 
-alter table states owner to postgres;
+alter table _states owner to postgres;
 
 create table blocks
 (
-    peerid smallint not null
+    pid smallint not null
         constraint blocks_peerid_fk
             references peers,
     seq integer not null,
@@ -60,9 +60,9 @@ create table blocks
     cs bigint,
     blockcs bigint,
     constraint blocks_pk
-        primary key (peerid, seq)
+        primary key (pid, seq)
 )
-    inherits (states);
+    inherits (_states);
 
 alter table blocks owner to postgres;
 
@@ -72,11 +72,11 @@ create table ops
     constraint ops_pk
         primary key (job, step),
     constraint ops_ppeerid_fk
-        foreign key (ppeerid) references peers,
+        foreign key (ppid) references peers,
     constraint ops_npeerid_fk
-        foreign key (npeerid) references peers
+        foreign key (npid) references peers
 )
-    inherits (states);
+    inherits (_states);
 
 alter table ops owner to postgres;
 
@@ -91,7 +91,7 @@ BEGIN
 --         NEW.amt := 0::money;
 --     end if;
 
-    m := (SELECT bal FROM chain.blocks WHERE peerid = NEW.peerid AND acct = NEW.acct AND ldgr = NEW.ldgr ORDER BY seq DESC LIMIT 1);
+    m := (SELECT bal FROM chain.blocks WHERE pid = NEW.pid AND acct = NEW.acct AND ldgr = NEW.ldgr ORDER BY seq DESC LIMIT 1);
     if m IS NULL THEN
         NEW.bal := NEW.amt;
     ELSE

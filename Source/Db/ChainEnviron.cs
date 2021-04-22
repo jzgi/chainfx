@@ -24,7 +24,7 @@ namespace SkyChain.Db
             internal set => info = value;
         }
 
-        public static ChainClient GetChainClient(short peerid) => clients[peerid];
+        public static ChainClient GetChainClient(short pid) => clients[pid];
 
         public static Map<short, ChainClient> Clients => clients;
 
@@ -100,8 +100,8 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(FlowState.Empty).T(" FROM chain.ops WHERE status = ").T(FlowOp.STATUS_ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<FlowState>();
+                        dc.Sql("SELECT ").collst(_State.Empty).T(" FROM chain.ops WHERE status = ").T(FlowOp.STATUS_ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                        var arr = await dc.QueryAsync<_State>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
                             continue; // go for delay
@@ -117,7 +117,7 @@ namespace SkyChain.Db
                         // insert archivals
                         //
                         long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.blocks ").colset(FlowState.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(FlowState.Empty, extra: "@1, @2, @3, @4");
+                        dc.Sql("INSERT INTO chain.blocks ").colset(_State.Empty, extra: "pid, seq, cs, blockcs")._VALUES_(_State.Empty, extra: "@1, @2, @3, @4");
                         for (short i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];
@@ -191,7 +191,7 @@ namespace SkyChain.Db
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.blocks ").colset(ChainState.Empty, extra: "peerid, cs, blockcs")._VALUES_(ChainState.Empty, extra: "@1, @2, @3");
+                                dc.Sql("INSERT INTO chain.blocks ").colset(ChainState.Empty, extra: "pid, cs, blockcs")._VALUES_(ChainState.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;

@@ -56,10 +56,10 @@ namespace SkyChain.Db
         /// <summary>
         /// To retrieve all archived steps for the specified job, might across peers.
         /// </summary>
-        public static async Task<FlowState[]> RetrieveAsync(this DbContext dc, long job)
+        public static async Task<_State[]> RetrieveAsync(this DbContext dc, long job)
         {
-            dc.Sql("SELECT ").collst(FlowState.Empty).T(" FROM chain.blocks WHERE job = @1 ORDER BY step");
-            return await dc.QueryAsync<FlowState>(p => p.Set(job));
+            dc.Sql("SELECT ").collst(_State.Empty).T(" FROM chain.blocks WHERE job = @1 ORDER BY step");
+            return await dc.QueryAsync<_State>(p => p.Set(job));
         }
 
         public static async Task<ChainState> RetrieveTopAsync(this DbContext dc, string acct, string ldgr, short step)
@@ -73,12 +73,20 @@ namespace SkyChain.Db
         /// </summary>
         public static async Task<ChainState[]> RetrieveAsync(this DbContext dc, string acct, string ldgr, short step, int limit = 20, int page = 0)
         {
-            dc.Sql("SELECT ").collst(ChainState.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
+            if (acct == null)
+            {
+                return null;
+            }
+            dc.Sql("SELECT ").collst(ChainState.Empty).T(" FROM chain.blocks WHERE pid = @1 AND acct = @2 AND ldgr = @3 AND step = @4 ORDER BY seq DESC LIMIT @5 OFFSET @5 * @6");
             return await dc.QueryAsync<ChainState>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(ldgr).Set(step).Set(limit).Set(page));
         }
 
         public static async Task<FlowOp[]> GrabAsync(this DbContext dc, string acct, string ldgr, short step, short status = -1)
         {
+            if (acct == null)
+            {
+                return null;
+            }
             dc.Sql("SELECT ").collst(FlowOp.Empty).T(" FROM chain.ops WHERE acct = @1 AND ldgr = @2 AND step = @3").T(" AND status = @4", status > -1).T(" ORDER BY job DESC");
             return await dc.QueryAsync<FlowOp>(p => p.Set(acct).Set(ldgr).Set(step).Set(status));
         }
@@ -135,11 +143,11 @@ namespace SkyChain.Db
         /// <summary>
         /// To push a jpb one step forward by either creating or reactivating a next step.
         /// </summary>
-        public static async Task FlowForthAsync(this DbContext dc, long job, short curstep, string acct_safe, short npeerid, string nacct, string nname, string descr = null, decimal amt = 0.0M, JObj doc = null)
+        public static async Task FlowForthAsync(this DbContext dc, long job, short curstep, string acct_safe, short npid, string nacct, string nname, string descr = null, decimal amt = 0.0M, JObj doc = null)
         {
             // update current step's status
-            dc.Sql("UPDATE chain.ops SET status = ").T(FlowOp.STATUS_FORTHOUT).T(", npeerid = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 AND acct = @6 RETURNING acct, name, ldgr");
-            await dc.QueryTopAsync(p => { p.SetOrNull(npeerid).Set(nacct).Set(nname).Set(job).Set(curstep).Set(acct_safe); });
+            dc.Sql("UPDATE chain.ops SET status = ").T(FlowOp.STATUS_FORTHOUT).T(", npid = @1, nacct = @2, nname = @3 WHERE job = @4 AND step = @5 AND acct = @6 RETURNING acct, name, ldgr");
+            await dc.QueryTopAsync(p => { p.SetOrNull(npid).Set(nacct).Set(nname).Set(job).Set(curstep).Set(acct_safe); });
             dc.Let(out string acct);
             dc.Let(out string name);
             dc.Let(out string ldgr);
@@ -160,9 +168,9 @@ namespace SkyChain.Db
                 pname = name,
                 status = FlowOp.STATUS_FORTHIN
             };
-            if (npeerid > 0) // remote call
+            if (npid > 0) // remote call
             {
-                var cli = ChainEnviron.GetChainClient(op.ppeerid);
+                var cli = ChainEnviron.GetChainClient(op.ppid);
                 var status = await cli.RemoteForthAsync(op);
                 if (status != 201 && status != 200)
                 {
@@ -186,20 +194,20 @@ namespace SkyChain.Db
         /// <exception cref="ChainException"></exception>
         public static async Task FlowBackAsync(this DbContext dc, long job, short step)
         {
-            if (!await dc.QueryTopAsync("SELECT step, ppeerid FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
+            if (!await dc.QueryTopAsync("SELECT step, ppid FROM chain.ops WHERE job = @1 ORDER BY step DESC", p => p.Set(job)))
             {
                 throw new ChainException();
             }
             dc.Let(out step);
-            dc.Let(out short ppeerid);
-            if (ppeerid == 0) // this node
+            dc.Let(out short ppid);
+            if (ppid == 0) // this node
             {
                 dc.Sql("UPDATE chain.ops SET ").colset(FlowOp.Empty)._VALUES_(FlowOp.Empty);
                 await dc.ExecuteAsync(p => p.Set(job));
             }
             else // remote call
             {
-                var cli = ChainEnviron.GetChainClient(ppeerid);
+                var cli = ChainEnviron.GetChainClient(ppid);
                 var status = await cli.RemoteBackAsync(job, step);
                 if (status != 201)
                 {
@@ -218,13 +226,13 @@ namespace SkyChain.Db
             if (curstep > 1)
             {
                 // locate the end op
-                dc.Sql("SELECT ppeerid, pacct FROM chain.ops WHERE job = @1 AND step = @2");
+                dc.Sql("SELECT ppid, pacct FROM chain.ops WHERE job = @1 AND step = @2");
                 await dc.QueryTopAsync(p => p.Set(job).Set(curstep));
-                dc.Let(out short ppeerid);
+                dc.Let(out short ppid);
                 dc.Let(out string pacct);
-                if (ppeerid > 0)
+                if (ppid > 0)
                 {
-                    var cli = ChainEnviron.GetChainClient(ppeerid);
+                    var cli = ChainEnviron.GetChainClient(ppid);
                     await cli.RemoteEndAsync(job, (short) (curstep - 1));
                 }
                 else
