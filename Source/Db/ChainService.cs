@@ -44,11 +44,9 @@ namespace SkyChain.Db
                     j.Put(nameof(o.step), o.step);
                     j.Put(nameof(o.acct), o.acct);
                     j.Put(nameof(o.name), o.name);
-                    j.Put(nameof(o.ldgr), o.ldgr);
                     j.Put(nameof(o.descr), o.descr);
                     j.Put(nameof(o.amt), o.amt);
                     j.Put(nameof(o.bal), o.bal);
-                    j.Put(nameof(o.doc), o.doc);
                     j.Put(nameof(o.stated), o.stated);
                     j.Put(nameof(o.stamp), o.stamp);
                     j.Put(nameof(o.cs), o.cs);
@@ -84,7 +82,6 @@ namespace SkyChain.Db
             var step = wc.HeaderShort(X_STEP);
             var acct = wc.Header(X_ACCT);
             var name = wc.Header(X_NAME);
-            var ldgr = wc.Header(X_LDGR);
             var descr = wc.Header(X_AMT);
             var amt = wc.HeaderDecimal(X_AMT);
             if (job == null || step == null || acct == null)
@@ -93,18 +90,14 @@ namespace SkyChain.Db
                 return;
             }
 
-            var doc = await wc.ReadAsync<JObj>();
-
             var o = new FlowOp()
             {
                 job = job.Value,
                 step = step.Value,
                 acct = acct,
                 name = name,
-                ldgr = ldgr,
                 descr = descr,
                 amt = amt ?? 0.00M,
-                doc = doc,
                 stated = DateTime.Now,
                 status = FlowOp.STATUS_FORTHIN
             };
@@ -129,7 +122,6 @@ namespace SkyChain.Db
             var step = wc.HeaderShort(X_STEP);
             var acct = wc.Header(X_ACCT);
             var name = wc.Header(X_NAME);
-            var ldgr = wc.Header(X_LDGR);
             var descr = wc.Header(X_AMT);
             var amt = wc.HeaderDecimal(X_AMT);
             if (job == null || step == null || acct == null)
@@ -138,18 +130,14 @@ namespace SkyChain.Db
                 return;
             }
 
-            var doc = await wc.ReadAsync<JObj>();
-
             var o = new FlowOp()
             {
                 job = job.Value,
                 step = step.Value,
                 acct = acct,
                 name = name,
-                ldgr = ldgr,
                 descr = descr,
                 amt = amt ?? 0.00M,
-                doc = doc,
                 stated = DateTime.Now,
                 status = FlowOp.STATUS_FORTHIN
             };

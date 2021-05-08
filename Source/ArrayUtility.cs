@@ -42,7 +42,7 @@ namespace SkyChain
 
             int len = arr.Length;
             int vlen = v.Length;
-            E[] alloc = new E[len + vlen];
+            var alloc = new E[len + vlen];
             Array.Copy(arr, alloc, len);
             Array.Copy(v, 0, alloc, len, vlen);
             return alloc;
@@ -83,7 +83,7 @@ namespace SkyChain
             int count = lst.Count;
             if (count > 0)
             {
-                E[] alloc = new E[len + count];
+                var alloc = new E[len + count];
                 Array.Copy(arr, alloc, len);
                 // copy new elements
                 for (int i = 0; i < count; i++)
@@ -101,28 +101,28 @@ namespace SkyChain
         {
             if (arr == null) return null;
 
-            int index = -1;
+            int idx = -1;
             for (int i = 0; i < arr.Length; i++)
             {
                 if (arr[i].Equals(v))
                 {
-                    index = i;
+                    idx = i;
                     break;
                 }
             }
-            if (index == -1) return arr;
+            if (idx == -1) return arr;
 
             int nlen = arr.Length - 1;
 
             if (nlen == 0) return null;
             var alloc = new E[nlen];
-            if (index > 0)
+            if (idx > 0)
             {
-                Array.Copy(arr, 0, alloc, 0, index);
+                Array.Copy(arr, 0, alloc, 0, idx);
             }
-            if (index < nlen)
+            if (idx < nlen)
             {
-                Array.Copy(arr, index + 1, alloc, index, nlen - index);
+                Array.Copy(arr, idx + 1, alloc, idx, nlen - idx);
             }
             return alloc;
         }
@@ -137,10 +137,10 @@ namespace SkyChain
 
             for (int i = 0; i < len; i++)
             {
-                E e = arr[i];
+                var e = arr[i];
                 if (cond(e))
                 {
-                    E[] alloc = new E[len - 1];
+                    var alloc = new E[len - 1];
                     Array.Copy(arr, 0, alloc, 0, i);
                     int next = i + 1;
                     Array.Copy(arr, next, alloc, i, len - next);
@@ -154,10 +154,28 @@ namespace SkyChain
         public static E[] RemovedOf<E>(this E[] arr, E[] cond)
         {
             var lst = new List<E>(arr);
-            lst.RemoveAll(e =>
-                cond.IndexOf(e) != -1
-            );
+            lst.RemoveAll(e => cond.IndexOf(e) != -1);
             return lst.ToArray();
+        }
+
+        public static E[] ReplaceOf<E>(this E[] arr, E old, E @new)
+        {
+            if (arr == null) return null;
+
+            int idx = -1;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i].Equals(old))
+                {
+                    idx = i;
+                    break;
+                }
+            }
+            if (idx == -1) return arr;
+
+            arr[idx] = @new;
+
+            return arr;
         }
 
 

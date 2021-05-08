@@ -398,13 +398,13 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(short v, bool cond = true, bool right = true)
+        public HtmlContent TD(short v, bool when = true, bool right = true)
         {
             Add("<td style=\"text-align: ");
             Add(right ? "right" : "center");
             Add("\">");
 
-            if (cond)
+            if (when)
             {
                 Add(v);
             }
@@ -413,13 +413,13 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(int v, bool cond = true, bool right = true)
+        public HtmlContent TD(int v, bool when = true, bool right = true)
         {
             Add("<td style=\"text-align: ");
             Add(right ? "right" : "center");
             Add("\">");
 
-            if (cond)
+            if (when)
             {
                 Add(v);
             }
@@ -428,13 +428,13 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(long v, bool cond = true, bool right = true)
+        public HtmlContent TD(long v, bool when = true, bool right = true)
         {
             Add("<td style=\"text-align: ");
             Add(right ? "right" : "center");
             Add("\">");
 
-            if (cond)
+            if (when)
             {
                 Add(v);
             }
@@ -443,10 +443,10 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(decimal v, bool currency = false, bool cond = true)
+        public HtmlContent TD(decimal v, bool currency = false, bool when = true)
         {
             Add("<td style=\"text-align: right\">");
-            if (cond)
+            if (when)
             {
                 if (currency)
                 {
@@ -468,10 +468,17 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(string v, bool cond = true)
+        public HtmlContent TD(string v, string css = null, bool when = true)
         {
-            Add("<td>");
-            if (cond)
+            Add("<td");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add('>');
+            if (when)
             {
                 AddEsc(v);
             }
@@ -1378,15 +1385,11 @@ namespace SkyChain.Web
 
         public HtmlContent PIC_(string css = null, bool circle = false)
         {
-            Add("<div class=\"uk-margin-auto-vertical");
+            Add("<div class=\"");
             if (css != null)
             {
                 Add(' ');
                 Add(css);
-            }
-            if (circle)
-            {
-                Add("\" style=\"max-width: 180px");
             }
             Add("\"><img style=\"width: 100%\"");
             if (circle)
@@ -1404,7 +1407,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC(string a, bool circle = false, string css = null)
+        public HtmlContent PIC(string a, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
             AddEsc(a);
@@ -1412,7 +1415,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC<B>(string a, B b, bool circle = false, string css = null)
+        public HtmlContent PIC<B>(string a, B b, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
             AddEsc(a);
@@ -1421,7 +1424,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC<B, C>(string a, B b, C c, bool circle = false, string css = null)
+        public HtmlContent PIC<B, C>(string a, B b, C c, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
             AddEsc(a);
@@ -1538,7 +1541,7 @@ namespace SkyChain.Web
 
         public HtmlContent SUBNAV(string[] items, string uri, int subscript)
         {
-            Add("<ul class=\"uk-subnav uk-subnav-pill\" uk-sticky>");
+            Add("<ul class=\"uk-subnav\">");
             for (int i = 0; i < items.Length; i++)
             {
                 Add("<li");
@@ -2563,7 +2566,7 @@ namespace SkyChain.Web
             }
         }
 
-        void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, bool inner = false, string css = null)
+        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, bool inner = false, string css = null)
         {
             // check action's availability
             //
@@ -2834,7 +2837,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TEXT(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, bool list = false)
+        public HtmlContent TEXT(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, string[] datalst = null)
         {
             LABEL(label);
             Add("<input type=\"text\" class=\"uk-input\" name=\"");
@@ -2872,13 +2875,28 @@ namespace SkyChain.Web
 
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
-            if (list)
+            if (datalst != null)
             {
-                Add(" list=\"");
+                Add(" list=\"for-");
                 Add(name);
-                Add("-list\"");
+                Add("\"");
             }
             Add(">");
+
+            if (datalst != null)
+            {
+                Add("<datalist id=\"for-");
+                Add(name);
+                Add("\">");
+                for (int i = 0; i < datalst.Length; i++)
+                {
+                    string dat = datalst[i];
+                    Add("<option value=\"");
+                    Add(dat);
+                    Add("\">");
+                }
+                Add("</datalist>");
+            }
             return this;
         }
 

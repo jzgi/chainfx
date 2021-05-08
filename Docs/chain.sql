@@ -30,18 +30,16 @@ create table _states
     step smallint not null,
     acct varchar(20) not null,
     name varchar(10) not null,
-    ldgr varchar(10) not null,
     descr varchar(20),
     amt money not null,
-    doc jsonb,
     stated timestamp(0) not null,
     ppid smallint
-        constraint ops_ppeerid_fk
+        constraint ops_ppid_fk
             references peers,
     pacct varchar(20),
     pname varchar(10),
     npid smallint
-        constraint ops_npeerid_fk
+        constraint ops_npid_fk
             references peers,
     nacct varchar(20),
     nname varchar(10),
@@ -87,11 +85,7 @@ DECLARE
     m MONEY := 0;
 BEGIN
 
-    --     if NEW.amt IS NULL THEN
---         NEW.amt := 0::money;
---     end if;
-
-    m := (SELECT bal FROM chain.blocks WHERE pid = NEW.pid AND acct = NEW.acct AND ldgr = NEW.ldgr ORDER BY seq DESC LIMIT 1);
+    m := (SELECT bal FROM chain.blocks WHERE pid = NEW.pid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
     if m IS NULL THEN
         NEW.bal := NEW.amt;
     ELSE

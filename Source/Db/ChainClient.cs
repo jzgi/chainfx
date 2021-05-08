@@ -192,24 +192,6 @@ namespace SkyChain.Db
                 req.Headers.TryAddWithoutValidation(X_STEP, op.step.ToString());
                 req.Headers.TryAddWithoutValidation(X_ACCT, op.acct);
                 req.Headers.TryAddWithoutValidation(X_NAME, op.name);
-                req.Headers.TryAddWithoutValidation(X_LDGR, op.ldgr);
-
-                // document as content
-                if (op.doc != null)
-                {
-                    var cnt = new JsonContent(true, 4096);
-                    try
-                    {
-                        cnt.PutFromSource(op.doc);
-                        req.Content = cnt;
-                        req.Headers.TryAddWithoutValidation(CONTENT_TYPE, cnt.Type);
-                        req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, cnt.Count.ToString());
-                    }
-                    catch
-                    {
-                        cnt.Clear();
-                    }
-                }
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)

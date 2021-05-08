@@ -13,10 +13,8 @@ namespace SkyChain.Db
         internal short step;
         internal string acct;
         internal string name;
-        internal string ldgr;
         internal string descr;
         internal decimal amt;
-        internal JObj doc;
         internal DateTime stated;
         internal short ppid;
         internal string pacct;
@@ -32,10 +30,8 @@ namespace SkyChain.Db
             s.Get(nameof(step), ref step);
             s.Get(nameof(acct), ref acct);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(ldgr), ref ldgr);
             s.Get(nameof(descr), ref descr);
             s.Get(nameof(amt), ref amt);
-            s.Get(nameof(doc), ref doc);
             s.Get(nameof(stated), ref stated);
             s.Get(nameof(ppid), ref ppid);
             s.Get(nameof(pacct), ref pacct);
@@ -52,10 +48,8 @@ namespace SkyChain.Db
             s.Put(nameof(step), step);
             s.Put(nameof(acct), acct);
             s.Put(nameof(name), name);
-            s.Put(nameof(ldgr), ldgr);
             s.Put(nameof(descr), descr);
             s.Put(nameof(amt), amt);
-            s.Put(nameof(doc), doc);
             s.Put(nameof(stated), stated);
             if (ppid == 0) s.PutNull(nameof(ppid));
             else s.Put(nameof(ppid), ppid);
@@ -76,13 +70,9 @@ namespace SkyChain.Db
 
         public string Name => name;
 
-        public string Ldgr => ldgr;
-
         public string Descr => descr;
 
         public decimal Amt => amt;
-
-        public JObj Doc => doc;
 
         public DateTime Stated => stated;
 
