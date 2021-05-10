@@ -36,7 +36,7 @@ namespace SkyChain.Db
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        Task<(short, ChainState[])> polltsk;
+        Task<(short, ChainArch[])> polltsk;
 
         // the status showing what is happening 
         short status;
@@ -72,7 +72,7 @@ namespace SkyChain.Db
         ///
         /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
         /// 
-        public short TryReap(out ChainState[] block)
+        public short TryReap(out ChainArch[] block)
         {
             block = null;
             if (polltsk == null)
@@ -144,7 +144,7 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, ChainState[])> RemotePollAsync(int blockid)
+        async Task<(short, ChainArch[])> RemotePollAsync(int blockid)
         {
             try
             {
@@ -165,7 +165,7 @@ namespace SkyChain.Db
 
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var dat = arr.ToArray<ChainState>();
+                var dat = arr.ToArray<ChainArch>();
                 return (200, dat);
             }
             catch
@@ -179,111 +179,5 @@ namespace SkyChain.Db
             CONTENT_TYPE = "Content-Type",
             CONTENT_LENGTH = "Content-Length",
             AUTHORIZATION = "Authorization";
-
-        public async Task<short> RemoteForthAsync(FlowOp op)
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Post, "/onforth");
-
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_JOB, op.job.ToString());
-                req.Headers.TryAddWithoutValidation(X_STEP, op.step.ToString());
-                req.Headers.TryAddWithoutValidation(X_ACCT, op.acct);
-                req.Headers.TryAddWithoutValidation(X_NAME, op.name);
-
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    return (short) rsp.StatusCode;
-                }
-
-                return (short) rsp.StatusCode;
-            }
-            catch
-            {
-                status = NETWORK_ERROR;
-                return 0;
-            }
-        }
-
-        public async Task<short> RemoteBackAsync(long job, short step)
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Post, "/onback");
-
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(X_STEP, step.ToString());
-
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    return (short) rsp.StatusCode;
-                }
-
-                return (short) rsp.StatusCode;
-            }
-            catch
-            {
-                status = NETWORK_ERROR;
-                return 0;
-            }
-        }
-
-        public async Task<short> RemoteAbortAsync(long job, short step)
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Post, "/onabort");
-
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(X_STEP, step.ToString());
-
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    return (short) rsp.StatusCode;
-                }
-
-                return (short) rsp.StatusCode;
-            }
-            catch
-            {
-                status = NETWORK_ERROR;
-                return 0;
-            }
-        }
-
-        public async Task<short> RemoteEndAsync(long job, short step)
-        {
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onend");
-
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_JOB, job.ToString());
-                req.Headers.TryAddWithoutValidation(X_STEP, step.ToString());
-
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
-                {
-                    return (short) rsp.StatusCode;
-                }
-
-                return (short) rsp.StatusCode;
-            }
-            catch
-            {
-                status = NETWORK_ERROR;
-                return 0;
-            }
-        }
     }
 }

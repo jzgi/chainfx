@@ -3,9 +3,9 @@
     /// <summary>
     /// A workflow operational state or step.
     /// </summary>
-    public class FlowOp : _State, IDualKeyable<long, short>
+    public class ChainOp : _State
     {
-        public new static readonly FlowOp Empty = new FlowOp();
+        public new static readonly ChainOp Empty = new ChainOp();
 
         public const byte ID = 1, PRIVACY = 2;
 
@@ -47,9 +47,5 @@
         public short Status => status;
 
         public bool IsPresent => (status & 0b001) == 0;
-
-        public long Key => job;
-
-        public (long, short) CompositeKey => (job, step);
     }
 }

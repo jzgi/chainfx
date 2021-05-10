@@ -85,7 +85,7 @@ DECLARE
     m MONEY := 0;
 BEGIN
 
-    m := (SELECT bal FROM chain.blocks WHERE pid = NEW.pid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
+    m := (SELECT bal FROM chain.archives WHERE peerid = NEW.pid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
     if m IS NULL THEN
         NEW.bal := NEW.amt;
     ELSE

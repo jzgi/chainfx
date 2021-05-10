@@ -3,16 +3,20 @@
     /// <summary>
     /// An archival state in a block.
     /// </summary>
-    public class ChainState : _State, IKeyable<long>
+    public class ChainArch : _State, IKeyable<long>
     {
-        public new static readonly ChainState Empty = new ChainState();
+        public new static readonly ChainArch Empty = new ChainArch();
 
         public const byte PACKING = 0x10;
 
-        internal short pid;
+        internal short peerid;
+
         internal long seq;
+
         internal decimal bal;
+
         internal long cs;
+
         internal long blockcs;
 
         public override void Read(ISource s, byte proj = 15)
@@ -21,7 +25,7 @@
 
             if ((proj & PACKING) == PACKING)
             {
-                s.Get(nameof(pid), ref pid);
+                s.Get(nameof(peerid), ref peerid);
                 s.Get(nameof(seq), ref seq);
                 s.Get(nameof(bal), ref bal);
                 s.Get(nameof(cs), ref cs);
@@ -35,7 +39,7 @@
 
             if ((proj & PACKING) == PACKING)
             {
-                s.Put(nameof(pid), pid);
+                s.Put(nameof(peerid), peerid);
                 s.Put(nameof(seq), seq);
                 s.Put(nameof(bal), bal);
                 s.Put(nameof(cs), cs);
