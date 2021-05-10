@@ -91,7 +91,7 @@ namespace SkyChain.Db
         {
             while (info != null && info.IsRunning)
             {
-                Thread.Sleep(90 * 1000); // 90 seconds interval
+                Thread.Sleep(300 * 1000); // 5 minutes interval
 
                 // archiving cycle 
                 Cycle:
@@ -99,7 +99,7 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(_State.Empty).T(" FROM chain.ops_vw WHERE status = ").T(ChainOp.STATUS_ENDED).T(" ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
+                        dc.Sql("SELECT ").collst(_State.Empty).T(" FROM chain.ops_vw ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
                         var arr = await dc.QueryAsync<_State>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
@@ -169,7 +169,7 @@ namespace SkyChain.Db
             {
                 Cycle:
                 var outer = true;
-                Thread.Sleep(60 * 1000); // 60 seconds delay
+                Thread.Sleep(300 * 1000); // 60 minutes delay
 
                 for (int i = 0; i < clients.Count; i++) // LOOP
                 {

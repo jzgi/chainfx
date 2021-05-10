@@ -2,10 +2,6 @@ create schema chain;
 
 alter schema chain owner to postgres;
 
-create sequence jobseq;
-
-alter sequence jobseq owner to postgres;
-
 create table peers
 (
     id smallint not null
@@ -26,57 +22,46 @@ create unique index peers_native_idx
 
 create table _states
 (
-    job bigint not null,
-    step smallint not null,
     acct varchar(20) not null,
     name varchar(10) not null,
-    descr varchar(20),
+    tip varchar(20),
     amt money not null,
-    stated timestamp(0) not null,
-    ppid smallint
-        constraint ops_ppid_fk
-            references peers,
-    pacct varchar(20),
-    pname varchar(10),
-    npid smallint
-        constraint ops_npid_fk
-            references peers,
-    nacct varchar(20),
-    nname varchar(10),
     stamp timestamp(0)
 );
 
 alter table _states owner to postgres;
 
-create table blocks
+create table archives
 (
-    pid smallint not null
-        constraint blocks_peerid_fk
+    peerid smallint not null
+        constraint archives_peerid_fk
             references peers,
     seq integer not null,
     bal money not null,
     cs bigint,
     blockcs bigint,
-    constraint blocks_pk
-        primary key (pid, seq)
+    constraint archives_pk
+        primary key (peerid, seq)
 )
     inherits (_states);
 
-alter table blocks owner to postgres;
+alter table archives owner to postgres;
 
-create table ops
-(
-    status smallint default 0 not null,
-    constraint ops_pk
-        primary key (job, step),
-    constraint ops_ppeerid_fk
-        foreign key (ppid) references peers,
-    constraint ops_npeerid_fk
-        foreign key (npid) references peers
-)
-    inherits (_states);
+create view ops_vw(acct, name, tip, amt, stamp) as
+SELECT j.uacct AS acct,
+       j.uname AS name,
+       l.tip,
+       j.amt,
+       j.acted AS stamp
+FROM lotjns j,
+     lots l
+WHERE j.lotid =
+      l.id
+  AND j.status =
+      3
+ORDER BY l.id;
 
-alter table ops owner to postgres;
+alter table ops_vw owner to postgres;
 
 create function calc_bal_func() returns trigger
     language plpgsql
@@ -85,7 +70,7 @@ DECLARE
     m MONEY := 0;
 BEGIN
 
-    m := (SELECT bal FROM chain.archives WHERE peerid = NEW.pid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
+    m := (SELECT bal FROM chain.archives WHERE peerid = NEW.peerid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
     if m IS NULL THEN
         NEW.bal := NEW.amt;
     ELSE
@@ -97,9 +82,17 @@ $$;
 
 alter function calc_bal_func() owner to postgres;
 
-create trigger blocks_trig
+create trigger archives_trig
     before insert
-    on blocks
+    on archives
     for each row
 execute procedure calc_bal_func();
+
+create function ops_archived(p1 integer) returns void
+    language sql
+as $$
+UPDATE public.lotjns SET status = 2 WHERE status = 1
+$$;
+
+alter function ops_archived(integer) owner to postgres;
 

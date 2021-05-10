@@ -35,13 +35,13 @@ namespace SkyChain.Db
             });
         }
 
-        [Ui("外节点", group: 2), Tool(Anchor)]
-        public virtual void foreign(WebContext wc)
+        [Ui("友节点", group: 2), Tool(Anchor)]
+        public virtual void friend(WebContext wc)
         {
             var arr = ChainEnviron.Clients;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(caption: "外节点管理");
+                h.TOOLBAR(caption: "友节点管理");
                 h.BOARD(arr, ety =>
                 {
                     var cli = ety.Value;
