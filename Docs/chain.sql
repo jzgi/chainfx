@@ -2,9 +2,9 @@ create schema chain;
 
 alter schema chain owner to postgres;
 
-create sequence quetx_id_seq;
+create sequence ques_id_seq;
 
-alter sequence quetx_id_seq owner to postgres;
+alter sequence ques_id_seq owner to postgres;
 
 create table peers
 (
@@ -51,8 +51,8 @@ create table archivals
 
 alter table archivals owner to postgres;
 
-create view quetxs_vw(id, acct, name, tip, amt, stamp) as
-SELECT j.txid    AS id,
+create view ques_vw(id, acct, name, tip, amt, stamp) as
+SELECT j.queid   AS id,
        j.uacct   AS acct,
        j.uname   AS name,
        l.tip,
@@ -66,7 +66,7 @@ WHERE j.lotid =
       3
 ORDER BY l.id;
 
-alter table quetxs_vw owner to postgres;
+alter table ques_vw owner to postgres;
 
 create function calc_bal_func() returns trigger
     language plpgsql
@@ -93,11 +93,11 @@ create trigger archivals_trig
     for each row
 execute procedure calc_bal_func();
 
-create function deque_func(integer) returns void
+create function deques_func(integer) returns void
     language sql
 as $$
-UPDATE public.lotjns SET status = 4 WHERE status = 3 AND txid <= $1
+UPDATE public.lotjns SET status = 4 WHERE status = 3 AND queid <= $1
 $$;
 
-alter function deque_func(integer) owner to postgres;
+alter function deques_func(integer) owner to postgres;
 

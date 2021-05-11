@@ -3,9 +3,9 @@
     /// <summary>
     /// A queued transaction record before being archived.
     /// </summary>
-    public class Quetx : _State, IKeyable<int>
+    public class Que : _State, IKeyable<int>
     {
-        public new static readonly Quetx Empty = new Quetx();
+        public new static readonly Que Empty = new Que();
 
         internal int id;
 

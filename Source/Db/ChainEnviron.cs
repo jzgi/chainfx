@@ -99,8 +99,8 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(Quetx.Empty).T(" FROM chain.quetxs_vw LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<Quetx>();
+                        dc.Sql("SELECT ").collst(Que.Empty).T(" FROM chain.ques_vw LIMIT ").T(MAX_BLOCK_SIZE);
+                        var arr = await dc.QueryAsync<Que>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
                             continue; // go for delay
@@ -143,10 +143,10 @@ namespace SkyChain.Db
                             await dc.SimpleExecuteAsync();
                         }
 
-                        // delete from queue
+                        // remove from queue
                         //
                         var lastid = arr[^1].id;
-                        dc.Sql("SELECT chain.deque_func(@1)");
+                        dc.Sql("SELECT chain.deques_func(@1)");
                         await dc.ExecuteAsync(p => p.Set(lastid));
                     }
                     catch (Exception e)

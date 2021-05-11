@@ -4,21 +4,19 @@ namespace SkyChain.Db
 {
     public static class ChainUtility
     {
-        public const string ACCT_SYS = "SYS";
-
         public const string X_FROM = "X-From";
 
         public const string X_PEER_ID = "X-Peer-ID";
 
         public const string X_BLOCK_ID = "X-Block-ID";
 
-        public const string X_ACCT = "X-Account";
+        public const string X_ACCOUNT = "X-Account";
 
         public const string X_NAME = "X-Name";
 
         public const string X_TIP = "X-Tip";
 
-        public const string X_AMT = "X-Amount";
+        public const string X_AMOUNT = "X-Amount";
 
 
         public const int BLOCK_CAPACITY = 1000;
@@ -60,14 +58,14 @@ namespace SkyChain.Db
             return await dc.QueryAsync<Archival>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
         }
 
-        public static async Task<Quetx[]> GetQuetxAsync(this DbContext dc, string acct)
+        public static async Task<Que[]> GetQuesAsync(this DbContext dc, string acct)
         {
             if (acct == null)
             {
                 return null;
             }
-            dc.Sql("SELECT ").collst(Quetx.Empty).T(" FROM chain.quetxs_vw WHERE acct = @1 ORDER BY id");
-            return await dc.QueryAsync<Quetx>(p => p.Set(acct));
+            dc.Sql("SELECT ").collst(Que.Empty).T(" FROM chain.ques_vw WHERE acct = @1");
+            return await dc.QueryAsync<Que>(p => p.Set(acct));
         }
     }
 }
