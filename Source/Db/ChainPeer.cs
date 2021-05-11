@@ -19,15 +19,15 @@ namespace SkyChain.Db
         };
 
         internal short id;
-        
+
         internal string name;
-        
+
         internal string uri; // remote address
-        
+
         internal DateTime created;
-        
+
         internal bool native;
-        
+
         internal short status;
 
         // current block number
@@ -79,7 +79,7 @@ namespace SkyChain.Db
         {
             if (id > 0)
             {
-                await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.archives WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
+                await dc.QueryTopAsync("SELECT seq, blockcs FROM chain.archivals WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(Id));
                 dc.Let(out long seq);
                 dc.Let(out long bcs);
                 if (seq > 0)

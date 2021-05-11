@@ -3,9 +3,9 @@
     /// <summary>
     /// An archival state in a block.
     /// </summary>
-    public class ChainArch : _State, IKeyable<long>
+    public class Archival : _State, IKeyable<long>
     {
-        public new static readonly ChainArch Empty = new ChainArch();
+        public new static readonly Archival Empty = new Archival();
 
         public const byte PACKING = 0x10;
 

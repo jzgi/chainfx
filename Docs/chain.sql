@@ -2,6 +2,10 @@ create schema chain;
 
 alter schema chain owner to postgres;
 
+create sequence quetx_id_seq;
+
+alter sequence quetx_id_seq owner to postgres;
+
 create table peers
 (
     id smallint not null
@@ -31,28 +35,29 @@ create table _states
 
 alter table _states owner to postgres;
 
-create table archives
+create table archivals
 (
     peerid smallint not null
-        constraint archives_peerid_fk
+        constraint archivals_peerid_fk
             references peers,
     seq integer not null,
     bal money not null,
     cs bigint,
     blockcs bigint,
-    constraint archives_pk
+    constraint archivals_pk
         primary key (peerid, seq)
 )
     inherits (_states);
 
-alter table archives owner to postgres;
+alter table archivals owner to postgres;
 
-create view ops_vw(acct, name, tip, amt, stamp) as
-SELECT j.uacct AS acct,
-       j.uname AS name,
+create view quetxs_vw(id, acct, name, tip, amt, stamp) as
+SELECT j.txid    AS id,
+       j.uacct   AS acct,
+       j.uname   AS name,
        l.tip,
        j.amt,
-       j.acted AS stamp
+       j.granted AS stamp
 FROM lotjns j,
      lots l
 WHERE j.lotid =
@@ -61,7 +66,7 @@ WHERE j.lotid =
       3
 ORDER BY l.id;
 
-alter table ops_vw owner to postgres;
+alter table quetxs_vw owner to postgres;
 
 create function calc_bal_func() returns trigger
     language plpgsql
@@ -70,7 +75,7 @@ DECLARE
     m MONEY := 0;
 BEGIN
 
-    m := (SELECT bal FROM chain.archives WHERE peerid = NEW.peerid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
+    m := (SELECT bal FROM chain.archivals WHERE peerid = NEW.peerid AND acct = NEW.acct ORDER BY seq DESC LIMIT 1);
     if m IS NULL THEN
         NEW.bal := NEW.amt;
     ELSE
@@ -82,17 +87,17 @@ $$;
 
 alter function calc_bal_func() owner to postgres;
 
-create trigger archives_trig
+create trigger archivals_trig
     before insert
-    on archives
+    on archivals
     for each row
 execute procedure calc_bal_func();
 
-create function ops_archived(p1 integer) returns void
+create function deque_func(integer) returns void
     language sql
 as $$
-UPDATE public.lotjns SET status = 2 WHERE status = 1
+UPDATE public.lotjns SET status = 4 WHERE status = 3 AND txid <= $1
 $$;
 
-alter function ops_archived(integer) owner to postgres;
+alter function deque_func(integer) owner to postgres;
 

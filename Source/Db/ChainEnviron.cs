@@ -12,7 +12,7 @@ namespace SkyChain.Db
         // a bundle of connected peers
         static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
 
-        // validates ops and archives demostic blocks 
+        // validates and archives transactions 
         static Thread archiver;
 
         // periodic polling and importing of foreign blocks 
@@ -99,8 +99,8 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(_State.Empty).T(" FROM chain.ops_vw ORDER BY stamp LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<_State>();
+                        dc.Sql("SELECT ").collst(Quetx.Empty).T(" FROM chain.quetxs_vw LIMIT ").T(MAX_BLOCK_SIZE);
+                        var arr = await dc.QueryAsync<Quetx>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
                             continue; // go for delay
@@ -116,7 +116,7 @@ namespace SkyChain.Db
                         // insert archivals
                         //
                         long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.archives ").colset(_State.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_State.Empty, extra: "@1, @2, @3, @4");
+                        dc.Sql("INSERT INTO chain.archivals ").colset(_State.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_State.Empty, extra: "@1, @2, @3, @4");
                         for (short i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];
@@ -143,14 +143,11 @@ namespace SkyChain.Db
                             await dc.SimpleExecuteAsync();
                         }
 
-                        // delete operationals
+                        // delete from queue
                         //
-                        dc.Sql("CALL ops_archived()");
-                        for (int i = 0; i < arr.Length; i++)
-                        {
-                            var o = arr[i];
-                            await dc.ExecuteAsync();
-                        }
+                        var lastid = arr[^1].id;
+                        dc.Sql("SELECT chain.deque_func(@1)");
+                        await dc.ExecuteAsync(p => p.Set(lastid));
                     }
                     catch (Exception e)
                     {
@@ -190,7 +187,7 @@ namespace SkyChain.Db
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.blocks ").colset(ChainArch.Empty, extra: "pid, cs, blockcs")._VALUES_(ChainArch.Empty, extra: "@1, @2, @3");
+                                dc.Sql("INSERT INTO chain.archivals ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;

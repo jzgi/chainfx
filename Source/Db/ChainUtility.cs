@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 
 namespace SkyChain.Db
@@ -36,39 +35,39 @@ namespace SkyChain.Db
             return (long) blockid * BLOCK_CAPACITY + idx;
         }
 
-        public static ChainPeer[] AllPeers(this DbContext dc)
+        public static async Task<ChainPeer[]> GetPeersAsync(this DbContext dc)
         {
             dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers");
-            return dc.Query<ChainPeer>();
+            return await dc.QueryAsync<ChainPeer>();
         }
 
-        public static async Task<ChainArch> GetArchTopAsync(this DbContext dc, string acct)
+        public static async Task<Archival> GetArchivalAsync(this DbContext dc, string acct)
         {
-            dc.Sql("SELECT ").collst(ChainArch.Empty).T(" FROM chain.blocks WHERE acct = @1 AND ORDER BY seq DESC LIMIT 1");
-            return await dc.QueryTopAsync<ChainArch>(p => p.Set(acct));
+            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archivals WHERE acct = @1 AND ORDER BY seq DESC LIMIT 1");
+            return await dc.QueryTopAsync<Archival>(p => p.Set(acct));
         }
 
         /// <summary>
         /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<ChainArch[]> GetArchAsync(this DbContext dc, string acct, int limit = 20, int page = 0)
+        public static async Task<Archival[]> GetArchivalsAsync(this DbContext dc, string acct, int limit = 20, int page = 0)
         {
             if (acct == null)
             {
                 return null;
             }
-            dc.Sql("SELECT ").collst(ChainArch.Empty).T(" FROM chain.blocks WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
-            return await dc.QueryAsync<ChainArch>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
+            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archivals WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
+            return await dc.QueryAsync<Archival>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
         }
 
-        public static async Task<ChainOp[]> GetOpAsync(this DbContext dc, string acct)
+        public static async Task<Quetx[]> GetQuetxAsync(this DbContext dc, string acct)
         {
             if (acct == null)
             {
                 return null;
             }
-            dc.Sql("SELECT ").collst(ChainOp.Empty).T(" FROM chain.ops_vw WHERE acct = @1 ORDER BY stamp");
-            return await dc.QueryAsync<ChainOp>(p => p.Set(acct));
+            dc.Sql("SELECT ").collst(Quetx.Empty).T(" FROM chain.quetxs_vw WHERE acct = @1 ORDER BY id");
+            return await dc.QueryAsync<Quetx>(p => p.Set(acct));
         }
     }
 }

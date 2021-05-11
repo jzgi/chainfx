@@ -1100,9 +1100,16 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent DT_()
+        public HtmlContent DT_(string css = null)
         {
-            Add("<dt>");
+            Add("<dt");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
             return this;
         }
 
