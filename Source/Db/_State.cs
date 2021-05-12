@@ -44,5 +44,7 @@ namespace SkyChain.Db
         public string Tip => tip;
 
         public decimal Amt => amt;
+
+        public DateTime Stamp => stamp;
     }
 }

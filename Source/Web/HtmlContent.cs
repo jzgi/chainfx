@@ -1539,9 +1539,9 @@ namespace SkyChain.Web
                 Add("</h4>");
             }
 
-            Add("<p>");
+            Add("<div>");
             Add(p);
-            Add("</p>");
+            Add("</div>");
             _ALERT();
             return this;
         }
