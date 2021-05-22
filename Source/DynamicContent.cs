@@ -501,7 +501,7 @@ namespace SkyChain
 
             if (time >= 1)
             {
-                Add(' '); // a space for separation
+                if (date > 0) Add(' '); // a space for separation
                 Add(SEX[v.Hour]);
             }
 

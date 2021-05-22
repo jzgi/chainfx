@@ -1158,27 +1158,27 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent FIELD<V>(string label, V p)
+        public HtmlContent FIELD<V>(string label, V v)
         {
             LABEL(label);
             Add("<span class=\"uk-input\">");
-            AddPrimitive(p);
+            AddPrimitive(v);
             Add("</span>");
             return this;
         }
 
-        public HtmlContent FIELD2<V, X>(string label, V p, X x)
+        public HtmlContent FIELD2<V, X>(string label, V v, X x)
         {
             LABEL(label);
             Add("<span class=\"uk-input\">");
-            AddPrimitive(p);
+            AddPrimitive(v);
             Add("&nbsp;");
             AddPrimitive(x);
             Add("</span>");
             return this;
         }
 
-        public HtmlContent FIELD(string label, decimal p, bool currency = false)
+        public HtmlContent FIELD(string label, decimal v, bool currency = false)
         {
             LABEL(label);
             Add("<span class=\"uk-input\">");
@@ -1186,7 +1186,7 @@ namespace SkyChain.Web
             {
                 Add('￥');
             }
-            Add(p);
+            Add(v);
             Add("</span>");
             return this;
         }
@@ -1223,17 +1223,16 @@ namespace SkyChain.Web
 
         public HtmlContent CNY(decimal v, bool em = false, bool s = false)
         {
-            Add('￥');
             if (em)
             {
                 Add("<em>");
             }
+            Add('￥');
 
             if (s)
             {
                 Add("<s>");
             }
-
             Add(v);
             if (s)
             {
@@ -3135,8 +3134,8 @@ namespace SkyChain.Web
             Add("<input type=\"datetime-local\" class=\"uk-input uk-width-1-1\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(val);
-            Add("\"");
+            Add(val, 3, 0);
+            Add("T08:00\"");
 
             if (max != default)
             {

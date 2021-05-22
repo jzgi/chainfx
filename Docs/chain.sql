@@ -56,7 +56,7 @@ SELECT j.queid   AS id,
        j.uacct   AS acct,
        j.uname   AS name,
        l.tip,
-       j.amt,
+       j.tbamt   AS amt,
        j.granted AS stamp
 FROM lotjns j,
      lots l
