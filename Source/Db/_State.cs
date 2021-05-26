@@ -9,6 +9,8 @@ namespace SkyChain.Db
     {
         public static readonly _State Empty = new _State();
 
+        public const byte ID = 1, LATER = 2;
+
         internal string acct;
 
         internal string name;

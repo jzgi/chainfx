@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class ChainPeer : IData, IKeyable<short>
+    public class Peer : IData, IKeyable<short>
     {
-        public static readonly ChainPeer Empty = new ChainPeer();
+        public static readonly Peer Empty = new Peer();
 
         public const short
             STATUS_STOPPED = 0,

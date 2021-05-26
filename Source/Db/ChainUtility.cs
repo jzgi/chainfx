@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace SkyChain.Db
@@ -33,10 +34,26 @@ namespace SkyChain.Db
             return (long) blockid * BLOCK_CAPACITY + idx;
         }
 
-        public static async Task<ChainPeer[]> GetPeersAsync(this DbContext dc)
+        public static async Task<long> RecordAsync(this DbContext dc, string acct, string name, string tip, decimal amt)
         {
-            dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers");
-            return await dc.QueryAsync<ChainPeer>();
+            // insert
+            var obj = new Queuel()
+            {
+                acct = acct,
+                name = name,
+                tip = tip,
+                amt = amt,
+                stamp = DateTime.Now,
+                status = 0,
+            };
+            dc.Sql("INSERT INTO chain.journals ").colset(obj, 0)._VALUES_(obj, 0).T(" RETURNING id");
+            return (int) await dc.ScalarAsync(p => obj.Write(p));
+        }
+
+        public static async Task<Peer[]> GetPeersAsync(this DbContext dc)
+        {
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
+            return await dc.QueryAsync<Peer>();
         }
 
         public static async Task<Archival> GetArchivalAsync(this DbContext dc, string acct)
@@ -58,14 +75,14 @@ namespace SkyChain.Db
             return await dc.QueryAsync<Archival>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
         }
 
-        public static async Task<Que[]> GetQuesAsync(this DbContext dc, string acct)
+        public static async Task<Queuel[]> GetQueuelsAsync(this DbContext dc, string acct)
         {
             if (acct == null)
             {
                 return null;
             }
-            dc.Sql("SELECT ").collst(Que.Empty).T(" FROM chain.ques_vw WHERE acct = @1");
-            return await dc.QueryAsync<Que>(p => p.Set(acct));
+            dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.ques_vw WHERE acct = @1");
+            return await dc.QueryAsync<Queuel>(p => p.Set(acct));
         }
     }
 }

@@ -3369,7 +3369,7 @@ namespace SkyChain.Web
                     Add(css);
                 }
             }
-
+            Add("<div class=\"uk-input\">");
             Add("<input type=\"checkbox\" class=\"uk-checkbox");
             if (tip == null && css != null)
             {
@@ -3385,6 +3385,7 @@ namespace SkyChain.Web
             if (required) Add("\" required=\"required\"");
             if (disabled) Add("\" disabled=\"disabled\"");
             Add(">");
+            Add("</div>");
             if (tip != null)
             {
                 Add("&nbsp;");

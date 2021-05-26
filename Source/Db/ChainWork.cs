@@ -26,7 +26,7 @@ namespace SkyChain.Db
                     h.LI_().FIELD("节点编号", o.Id)._LI();
                     h.LI_().FIELD("名称", o.Name)._LI();
                     h.LI_().FIELD("连接地址", o.Uri)._LI();
-                    h.LI_().FIELD("状态", ChainPeer.Statuses[o.status])._LI();
+                    h.LI_().FIELD("状态", Peer.Statuses[o.status])._LI();
                     h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                 }
                 h._UL();
@@ -54,7 +54,7 @@ namespace SkyChain.Db
                         h.LI_().FIELD("节点编号", o.Id)._LI();
                         h.LI_().FIELD("名称", o.Name)._LI();
                         h.LI_().FIELD("连接地址", o.Uri)._LI();
-                        h.LI_().FIELD("状态", ChainPeer.Statuses[o.status])._LI();
+                        h.LI_().FIELD("状态", Peer.Statuses[o.status])._LI();
                         h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                     }
                     h._UL();
@@ -66,7 +66,7 @@ namespace SkyChain.Db
         [Ui("修改", group: 1), Tool(ButtonShow)]
         public virtual async Task upd(WebContext wc)
         {
-            var o = ChainEnviron.Info ?? new ChainPeer
+            var o = ChainEnviron.Info ?? new Peer
             {
                 native = true,
             };
@@ -78,7 +78,7 @@ namespace SkyChain.Db
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
+                    h.LI_().SELECT("状态", nameof(o.status), o.status, Peer.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }
@@ -101,7 +101,7 @@ namespace SkyChain.Db
         [Ui("新建", group: 2), Tool(ButtonShow)]
         public virtual async Task @new(WebContext wc)
         {
-            var o = new ChainPeer
+            var o = new Peer
             {
                 native = false,
             };
@@ -113,7 +113,7 @@ namespace SkyChain.Db
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.uri), o.uri, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.status), o.status, ChainPeer.Statuses)._LI();
+                    h.LI_().SELECT("状态", nameof(o.status), o.status, Peer.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

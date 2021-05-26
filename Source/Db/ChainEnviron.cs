@@ -7,7 +7,7 @@ namespace SkyChain.Db
 {
     public class ChainEnviron : DbEnviron
     {
-        static ChainPeer info;
+        static Peer info;
 
         // a bundle of connected peers
         static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
@@ -18,7 +18,7 @@ namespace SkyChain.Db
         // periodic polling and importing of foreign blocks 
         static Thread importer;
 
-        public static ChainPeer Info
+        public static Peer Info
         {
             get => info;
             internal set => info = value;
@@ -30,8 +30,8 @@ namespace SkyChain.Db
 
         internal async Task ReloadNative(DbContext dc)
         {
-            dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-            info = await dc.QueryTopAsync<ChainPeer>();
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
+            info = await dc.QueryTopAsync<Peer>();
         }
 
 
@@ -46,8 +46,8 @@ namespace SkyChain.Db
             //load this node peer
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-                info = await dc.QueryTopAsync<ChainPeer>();
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
+                info = await dc.QueryTopAsync<Peer>();
                 // get current blockid
                 if (info != null)
                 {
@@ -62,8 +62,8 @@ namespace SkyChain.Db
             // load foreign peer connectors
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(ChainPeer.Empty).T(" FROM chain.peers WHERE native = FALSE");
-                var arr = await dc.QueryAsync<ChainPeer>();
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = FALSE");
+                var arr = await dc.QueryAsync<Peer>();
                 if (arr != null)
                 {
                     foreach (var o in arr)
@@ -99,8 +99,8 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(Que.Empty).T(" FROM chain.ques_vw LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<Que>();
+                        dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.queuels LIMIT ").T(MAX_BLOCK_SIZE);
+                        var arr = await dc.QueryAsync<Queuel>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
                             continue; // go for delay
@@ -146,7 +146,7 @@ namespace SkyChain.Db
                         // remove from queue
                         //
                         var lastid = arr[^1].id;
-                        dc.Sql("SELECT chain.deques_func(@1)");
+                        dc.Sql("DELETE FROM chain.queuels WHERE id <= @1");
                         await dc.ExecuteAsync(p => p.Set(lastid));
                     }
                     catch (Exception e)

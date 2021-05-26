@@ -2,10 +2,6 @@ create schema chain;
 
 alter schema chain owner to postgres;
 
-create sequence ques_id_seq;
-
-alter sequence ques_id_seq owner to postgres;
-
 create table peers
 (
     id smallint not null
@@ -37,11 +33,11 @@ alter table _states owner to postgres;
 
 create table archivals
 (
+    bal money not null,
     peerid smallint not null
         constraint archivals_peerid_fk
             references peers,
     seq integer not null,
-    bal money not null,
     cs bigint,
     blockcs bigint,
     constraint archivals_pk
@@ -51,22 +47,16 @@ create table archivals
 
 alter table archivals owner to postgres;
 
-create view ques_vw(id, acct, name, tip, amt, stamp) as
-SELECT j.queid   AS id,
-       j.uacct   AS acct,
-       j.uname   AS name,
-       l.tip,
-       j.tbamt   AS amt,
-       j.granted AS stamp
-FROM lotjns j,
-     lots l
-WHERE j.lotid =
-      l.id
-  AND j.status =
-      3
-ORDER BY l.id;
+create table queuels
+(
+    id serial not null
+        constraint queuels_pk
+            primary key,
+    status smallint default 0 not null
+)
+    inherits (_states);
 
-alter table ques_vw owner to postgres;
+alter table queuels owner to postgres;
 
 create function calc_bal_func() returns trigger
     language plpgsql
@@ -93,11 +83,4 @@ create trigger archivals_trig
     for each row
 execute procedure calc_bal_func();
 
-create function deques_func(integer) returns void
-    language sql
-as $$
-UPDATE public.lotjns SET status = 4 WHERE status = 3 AND queid <= $1
-$$;
-
-alter function deques_func(integer) owner to postgres;
 

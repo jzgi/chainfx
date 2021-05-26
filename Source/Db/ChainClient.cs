@@ -31,7 +31,7 @@ namespace SkyChain.Db
         };
 
         // when a chain connector
-        readonly ChainPeer info;
+        readonly Peer info;
 
         // acceptable remote addresses
         readonly IPAddress[] addrs;
@@ -47,7 +47,7 @@ namespace SkyChain.Db
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainClient(ChainPeer info, ChainClientHandler handler = null) : base(handler ?? new ChainClientHandler())
+        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(handler ?? new ChainClientHandler())
         {
             this.info = info;
             var baseuri = info.uri;
@@ -65,7 +65,7 @@ namespace SkyChain.Db
 
         public short Key => info.id;
 
-        public ChainPeer Info => info;
+        public Peer Info => info;
 
         public string Err => err;
 
