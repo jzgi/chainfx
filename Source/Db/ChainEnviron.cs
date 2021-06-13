@@ -91,15 +91,15 @@ namespace SkyChain.Db
         {
             while (info != null && info.IsRunning)
             {
-                Thread.Sleep(300 * 1000); // 5 minutes interval
+                Thread.Sleep(60 * 1000);
 
-                // archiving cycle 
+                // archiving journal entries 
                 Cycle:
                 using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.queuels LIMIT ").T(MAX_BLOCK_SIZE);
+                        dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.queuels ORDER BY id LIMIT ").T(MAX_BLOCK_SIZE);
                         var arr = await dc.QueryAsync<Queuel>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
@@ -166,7 +166,8 @@ namespace SkyChain.Db
             {
                 Cycle:
                 var outer = true;
-                Thread.Sleep(300 * 1000); // 60 minutes delay
+
+                Thread.Sleep(60 * 1000);
 
                 for (int i = 0; i < clients.Count; i++) // LOOP
                 {

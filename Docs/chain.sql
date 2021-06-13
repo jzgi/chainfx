@@ -83,4 +83,3 @@ create trigger archivals_trig
     for each row
 execute procedure calc_bal_func();
 
-

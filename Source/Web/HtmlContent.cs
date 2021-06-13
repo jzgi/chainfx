@@ -286,20 +286,20 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent MARK<V>(V v)
+        public HtmlContent SUB<V>(V v)
         {
             if (v != null)
             {
-                Add("<mark>");
+                Add("<sub>");
                 AddPrimitive(v);
-                Add("</mark>");
+                Add("</sub>");
             }
             return this;
         }
 
-        public HtmlContent MARK_(string css = null)
+        public HtmlContent SUB_(string css = null)
         {
-            Add("<mark");
+            Add("<sub");
             if (css != null)
             {
                 Add(" class=\"");
@@ -311,9 +311,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent _MARK()
+        public HtmlContent _SUB()
         {
-            Add("</mark>");
+            Add("</sub>");
             return this;
         }
 
@@ -551,7 +551,7 @@ namespace SkyChain.Web
         {
             if (rowform != null)
             {
-                Add("<td style=\"text-align: right\">");
+                Add("<td style=\"width: 1px\">");
                 Add("<form class=\"uk-button-group\">");
                 rowform();
                 Add("</form>");
@@ -1668,7 +1668,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent BUTTON_(string action, int subscript = -1, bool post = true, string onclick = null, bool chk = false, string css = null)
+        public HtmlContent BUTTON_(string action, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = null)
         {
             Add("<button type=\"button\" class=\"uk-button ");
             Add(css);
@@ -1695,7 +1695,12 @@ namespace SkyChain.Web
             {
                 Add(", true");
             }
-            Add(");\">");
+            Add(");\"");
+            if (disabled)
+            {
+                Add(" disabled");
+            }
+            Add(">");
             return this;
         }
 
@@ -1705,18 +1710,18 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, string css = "uk-button-default")
+        public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = "uk-button-default")
         {
-            BUTTON_(action, subscript, post, onclick, chk, css);
+            BUTTON_(action, subscript, post, onclick, chk, disabled, css);
             AddEsc(caption);
             _BUTTON();
             return this;
         }
 
-        public HtmlContent BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, string css = "uk-button-default")
+        public HtmlContent BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = "uk-button-default")
         {
             BOTTOMBAR_();
-            BUTTON_(action, subscript, post, onclick, chk, css);
+            BUTTON_(action, subscript, post, onclick, chk, disabled, css);
             AddEsc(caption);
             _BUTTON();
             _BOTTOMBAR();
@@ -1957,7 +1962,7 @@ namespace SkyChain.Web
 
         public HtmlContent TABLE_()
         {
-            Add("<div class=\"uk-overflow-auto\">");
+            // Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             return this;
         }
@@ -3369,7 +3374,10 @@ namespace SkyChain.Web
                     Add(css);
                 }
             }
-            Add("<div class=\"uk-input\">");
+            if (tip == null)
+            {
+                Add("<div class=\"uk-input\">");
+            }
             Add("<input type=\"checkbox\" class=\"uk-checkbox");
             if (tip == null && css != null)
             {
@@ -3385,7 +3393,10 @@ namespace SkyChain.Web
             if (required) Add("\" required=\"required\"");
             if (disabled) Add("\" disabled=\"disabled\"");
             Add(">");
-            Add("</div>");
+            if (tip == null)
+            {
+                Add("</div>");
+            }
             if (tip != null)
             {
                 Add("&nbsp;");

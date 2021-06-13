@@ -52,6 +52,19 @@ namespace SkyChain
             "TRC: ", "DBG: ", "INF: ", "WAR: ", "ERR: ", "CRL: ", "NON: "
         };
 
+        void WritePart(char pre, int v)
+        {
+            if (pre > 0)
+            {
+                logWriter.Write(pre);
+            }
+            if (v < 10)
+            {
+                logWriter.Write('0');
+            }
+            logWriter.Write(v);
+        }
+
         public void Log<T>(LogLevel level, EventId eid, T state, Exception except, Func<T, Exception, string> formatter)
         {
             if (!IsEnabled(level))
@@ -63,13 +76,11 @@ namespace SkyChain
 
             var now = DateTime.Now;
 
-            logWriter.Write(now.Day);
-            logWriter.Write(" ");
-            logWriter.Write(now.Hour);
-            logWriter.Write(":");
-            logWriter.Write(now.Minute);
-            logWriter.Write(":");
-            logWriter.Write(now.Second);
+            WritePart((char) 0, now.Day);
+            WritePart(' ', now.Hour);
+            WritePart(':', now.Minute);
+            WritePart(':', now.Second);
+
             logWriter.Write(" ");
 
             if (eid.Id != 0)
