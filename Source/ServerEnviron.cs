@@ -27,9 +27,6 @@ namespace SkyChain
 
         internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
-        //
-        // configuration processing
-        //
 
         // logging level
         static int logging;
@@ -38,58 +35,68 @@ namespace SkyChain
 
         static uint[] privatekey;
 
-        static string certpasswd;
+        static string certpass;
 
         public static JObj webcfg, dbcfg, extcfg; // various config parts
 
+        static X509Certificate2 cert;
 
-        internal static ServerLogger logger;
+        static ServerLogger logger;
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
 
-        public static uint[] PrivateKey => privatekey;
-
-        public static ServerLogger Logger => logger;
-
         /// <summary>
-        /// Load & process the configuration file.
+        /// Load the configuration file and initialize the server environment.
         /// </summary>
-        public static void Configure(string file = "app.json")
+        public static void LoadConfig(string file = APP_JSON)
         {
-            // load configuration
-            //
+            // load the config file
             var bytes = File.ReadAllBytes(file);
             var parser = new JsonParser(bytes, bytes.Length);
             var cfg = (JObj) parser.Parse();
 
+            // setup logger
             logging = cfg[nameof(logging)];
-            crypto = cfg[nameof(crypto)];
-            privatekey = CryptoUtility.HexToKey(crypto);
-            certpasswd = cfg[nameof(certpasswd)];
-
-            // setup logger first
-            string logf = DateTime.Now.ToString("yyyyMM") + ".log";
-            logger = new ServerLogger(logf)
+            var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
+            logger = new ServerLogger(logfile)
             {
                 Level = logging
             };
+
+            // security settings
+            crypto = cfg[nameof(crypto)];
+            privatekey = CryptoUtility.HexToKey(crypto);
+            certpass = cfg[nameof(certpass)];
+
+            // create cert
+            try
+            {
+                cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX));
+            }
+            catch (Exception e)
+            {
+                WAR(e.Message);
+            }
+
+            // subsections
+            //
 
             dbcfg = cfg["db"];
             if (dbcfg != null) // setup the db source
             {
                 ConfigureDb(dbcfg);
             }
-
             webcfg = cfg["web"];
-
             extcfg = cfg["ext"];
-
-            // create cert
-            // var cert = BuildSelfSignedCertificate("144000.tv", "47.100.96.253", "144000.tv", "721004");
-            // var bytes = cert.Export(X509ContentType.Pfx);
-            // File.WriteAllBytes("samp/$cert.pfx", bytes);
         }
+
+        public static uint[] PrivateKey => privatekey;
+
+        public static ServerLogger Logger => logger;
+
+        public static X509Certificate2 Cert => cert;
+
 
         public static T CreateService<T>(string name) where T : WebService, new()
         {

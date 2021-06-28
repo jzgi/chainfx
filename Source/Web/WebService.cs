@@ -27,8 +27,6 @@ namespace SkyChain.Web
         // the embedded HTTP server
         readonly KestrelServer server;
 
-        // readonly LoggerFactory factory;
-
         // shared cache of recent responses
         readonly ConcurrentDictionary<string, Resp> shared;
 
@@ -41,8 +39,6 @@ namespace SkyChain.Web
             Directory = "/";
             Pathing = "/";
 
-            // factory = new LoggerFactory(new[] {ServerEnviron.logger});
-
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
             shared = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
@@ -52,25 +48,22 @@ namespace SkyChain.Web
             {
                 ApplicationServices = this
             };
-            // var cert = ServerEnviron.BuildSelfSignedCertificate("jx.skyiah.com", "skyiah.com", "Skyiah", "Gs721004");
-            // opts.ConfigureHttpsDefaults(https =>
-            // {
-            //     // https.ServerCertificate = cert; 
-            //     
-            // });
+            opts.ConfigureHttpsDefaults(
+                https => https.ServerCertificate = ServerEnviron.Cert
+            );
 
-            server = new KestrelServer(Options.Create(opts), ServerEnviron.TransportFactory, ServerEnviron.logger);
+            server = new KestrelServer(Options.Create(opts), ServerEnviron.TransportFactory, ServerEnviron.Logger);
         }
 
         public object GetService(Type serviceType)
         {
             if (serviceType == typeof(ILogger<KestrelServer>))
             {
-                return ServerEnviron.logger;
+                return ServerEnviron.Logger;
             }
             if (serviceType == typeof(ILoggerFactory))
             {
-                return ServerEnviron.logger;
+                return ServerEnviron.Logger;
             }
             return null;
         }
@@ -94,7 +87,7 @@ namespace SkyChain.Web
         {
             var wc = (WebContext) context;
 
-            string path = wc.Path;
+            var path = wc.Path;
 
             // determine it is static file
             try
@@ -214,7 +207,7 @@ namespace SkyChain.Web
         {
             wc.GivePage(200, h =>
             {
-                h.DIV_("uk-top-bar").T(Name).T(" API Reference")._DIV();
+                h.DIV_("uk-top-bar").H3(" API Reference")._DIV();
                 h.DIV_("uk-top-placeholder")._DIV();
 
                 Describe(h);
