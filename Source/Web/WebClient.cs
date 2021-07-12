@@ -15,17 +15,12 @@ namespace SkyChain.Web
             CONTENT_LENGTH = "Content-Length",
             AUTHORIZATION = "Authorization";
 
-        // remote or referenced shard 
-        readonly string baseuri;
-
         /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
-        public WebClient(string baseuri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
+        public WebClient(string baseUri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
         {
-            this.baseuri = baseuri;
-
-            BaseAddress = new Uri(baseuri);
+            BaseAddress = new Uri(baseUri);
             Timeout = TimeSpan.FromSeconds(7);
         }
 

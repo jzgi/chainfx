@@ -90,19 +90,19 @@ namespace SkyChain
                 logWriter.Write("} ");
             }
 
-            if (formatter != null) // custom format
+            // if (formatter != null) // custom format
+            // {
+            //     var msg = formatter(state, except);
+            //     logWriter.WriteLine(msg);
+            // }
+            // else // fixed format
+            // {
+            logWriter.WriteLine(state.ToString());
+            if (except != null)
             {
-                var msg = formatter(state, except);
-                logWriter.WriteLine(msg);
+                logWriter.WriteLine(except.StackTrace);
             }
-            else // fixed format
-            {
-                logWriter.WriteLine(state.ToString());
-                if (except != null)
-                {
-                    logWriter.WriteLine(except.StackTrace);
-                }
-            }
+            // }
         }
 
         // end of a logger scope

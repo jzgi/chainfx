@@ -1,8 +1,8 @@
-﻿using System.Net.Http;
+﻿using SkyChain.Web;
 
 namespace SkyChain.Db
 {
-    public class ChainClientHandler : HttpClientHandler
+    public class ChainClientHandler : WebClientHandler
     {
         // chain-specific handling
     }

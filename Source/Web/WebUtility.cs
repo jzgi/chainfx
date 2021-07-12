@@ -208,7 +208,7 @@ namespace SkyChain.Web
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, short status, Action<HtmlContent> main, bool? shared = null, short maxage = 12, string title = null, short refresh = 0)
+        public static void GivePage(this WebContext wc, short status, Action<HtmlContent> main, bool? shared = null, short maxage = 12, string title = null, bool manifest = false)
         {
             var h = new HtmlContent(true, 32 * 1024)
             {
@@ -223,11 +223,9 @@ namespace SkyChain.Web
             h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
             h.Add("<link rel=\"shortcut icon\" href=\"/favicon.ico\" />");
-            if (refresh > 0) // auto refresh of the page
+            if (manifest)
             {
-                h.Add("<meta http-equiv=\"refresh\" content=\"");
-                h.Add(refresh);
-                h.Add("\">");
+                h.Add("<link rel=\"manifest\" href=\"manifest.json\" />");
             }
 
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">");

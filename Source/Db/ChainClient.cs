@@ -3,13 +3,14 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using static SkyChain.Db.ChainUtility;
+using WebClient = SkyChain.Web.WebClient;
 
 namespace SkyChain.Db
 {
     /// <summary>
     /// A chain client connector to a specific remote peer..
     /// </summary>
-    public class ChainClient : HttpClient, IKeyable<short>
+    public class ChainClient : WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -36,7 +37,7 @@ namespace SkyChain.Db
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        Task<(short, Archival[])> polltsk;
+        Task<(short, Archivel[])> polltsk;
 
         // the status showing what is happening 
         short status;
@@ -47,11 +48,9 @@ namespace SkyChain.Db
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(handler ?? new ChainClientHandler())
+        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(info.uri, handler ?? new ChainClientHandler())
         {
             this.info = info;
-            var baseuri = info.uri;
-            BaseAddress = new Uri(baseuri);
             try
             {
                 addrs = Dns.GetHostAddresses(BaseAddress.Host);
@@ -72,7 +71,7 @@ namespace SkyChain.Db
         ///
         /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
         /// 
-        public short TryReap(out Archival[] block)
+        public short TryReap(out Archivel[] block)
         {
             block = null;
             if (polltsk == null)
@@ -144,7 +143,7 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, Archival[])> RemotePollAsync(int blockid)
+        async Task<(short, Archivel[])> RemotePollAsync(int blockid)
         {
             try
             {
@@ -165,7 +164,7 @@ namespace SkyChain.Db
 
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var dat = arr.ToArray<Archival>();
+                var dat = arr.ToArray<Archivel>();
                 return (200, dat);
             }
             catch

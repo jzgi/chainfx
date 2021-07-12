@@ -72,7 +72,7 @@ namespace SkyChain
             // create cert
             try
             {
-                cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX));
+                cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX), certpass);
             }
             catch (Exception e)
             {
@@ -108,7 +108,7 @@ namespace SkyChain
             string addr = webcfg[name];
             if (addr == null)
             {
-                throw new ServerException("missing web '" + name + "' in config");
+                throw new ServerException("Missing web '" + name + "' in config");
             }
 
             // create service

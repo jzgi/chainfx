@@ -3,7 +3,7 @@
     /// <summary>
     /// A queued journal entry.
     /// </summary>
-    public class Queuel : _State, IKeyable<int>
+    public class Queuel : _Ety, IKeyable<int>
     {
         public new static readonly Queuel Empty = new Queuel();
 

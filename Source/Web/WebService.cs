@@ -4,11 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -48,9 +50,13 @@ namespace SkyChain.Web
             {
                 ApplicationServices = this
             };
-            opts.ConfigureHttpsDefaults(
-                https => https.ServerCertificate = ServerEnviron.Cert
-            );
+
+            if (ServerEnviron.Cert != null)
+            {
+                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = ServerEnviron.Cert);
+
+                INF("cert is set");
+            }
 
             server = new KestrelServer(Options.Create(opts), ServerEnviron.TransportFactory, ServerEnviron.Logger);
         }
@@ -75,7 +81,8 @@ namespace SkyChain.Web
             set
             {
                 address = value;
-                server.Features.Get<IServerAddressesFeature>().Addresses.Add(address);
+                var feat = server.Features.Get<IServerAddressesFeature>();
+                feat.Addresses.Add(address);
             }
         }
 

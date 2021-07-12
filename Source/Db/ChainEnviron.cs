@@ -17,6 +17,8 @@ namespace SkyChain.Db
 
         // periodic polling and importing of foreign blocks 
         static Thread importer;
+        
+        static readonly Map<(short, short), ChainRule> rules = new Map<(short, short), ChainRule>(16);
 
         public static Peer Info
         {
@@ -99,7 +101,7 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.queuels ORDER BY id LIMIT ").T(MAX_BLOCK_SIZE);
+                        dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.queue ORDER BY id LIMIT ").T(MAX_BLOCK_SIZE);
                         var arr = await dc.QueryAsync<Queuel>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
@@ -116,7 +118,7 @@ namespace SkyChain.Db
                         // insert archivals
                         //
                         long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.archivals ").colset(_State.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_State.Empty, extra: "@1, @2, @3, @4");
+                        dc.Sql("INSERT INTO chain.archive ").colset(_Ety.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_Ety.Empty, extra: "@1, @2, @3, @4");
                         for (short i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];
@@ -146,7 +148,7 @@ namespace SkyChain.Db
                         // remove from queue
                         //
                         var lastid = arr[^1].id;
-                        dc.Sql("DELETE FROM chain.queuels WHERE id <= @1");
+                        dc.Sql("DELETE FROM chain.queue WHERE id <= @1");
                         await dc.ExecuteAsync(p => p.Set(lastid));
                     }
                     catch (Exception e)
@@ -188,7 +190,7 @@ namespace SkyChain.Db
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.archivals ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
+                                dc.Sql("INSERT INTO chain.archive ").colset(Archivel.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archivel.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;

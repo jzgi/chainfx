@@ -29,8 +29,8 @@ namespace SkyChain.Db
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Archival.Empty, 0xff).T(" FROM chain.archivals WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<Archival>(p => p.Set(pid).Set(WeaveSeq(blockid.Value, 0)));
+            dc.Sql("SELECT ").collst(Archivel.Empty, 0xff).T(" FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<Archivel>(p => p.Set(pid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
@@ -41,7 +41,7 @@ namespace SkyChain.Db
                     j.Put(nameof(o.seq), o.seq);
                     j.Put(nameof(o.acct), o.acct);
                     j.Put(nameof(o.name), o.name);
-                    j.Put(nameof(o.tip), o.tip);
+                    j.Put(nameof(o.remark), o.remark);
                     j.Put(nameof(o.amt), o.amt);
                     j.Put(nameof(o.bal), o.bal);
                     j.Put(nameof(o.stamp), o.stamp);
