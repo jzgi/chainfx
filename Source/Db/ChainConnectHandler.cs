@@ -2,7 +2,7 @@
 
 namespace SkyChain.Db
 {
-    public class ChainClientHandler : WebClientHandler
+    public class ChainConnectHandler : WebConnectHandler
     {
         // chain-specific handling
     }

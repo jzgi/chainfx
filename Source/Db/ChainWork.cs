@@ -124,7 +124,7 @@ namespace SkyChain.Db
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                var cli = new ChainClient(o);
+                var cli = new ChainConnect(o);
                 await o.PeekLastBlockAsync(dc);
                 ChainEnviron.Clients.Add(cli);
 

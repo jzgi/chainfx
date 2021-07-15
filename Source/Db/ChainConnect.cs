@@ -2,15 +2,15 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SkyChain.Web;
 using static SkyChain.Db.ChainUtility;
-using WebClient = SkyChain.Web.WebClient;
 
 namespace SkyChain.Db
 {
     /// <summary>
     /// A chain client connector to a specific remote peer..
     /// </summary>
-    public class ChainClient : WebClient, IKeyable<short>
+    public class ChainConnect : WebConnect, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -48,7 +48,7 @@ namespace SkyChain.Db
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(info.uri, handler ?? new ChainClientHandler())
+        internal ChainConnect(Peer info, ChainConnectHandler handler = null) : base(info.uri, handler ?? new ChainConnectHandler())
         {
             this.info = info;
             try

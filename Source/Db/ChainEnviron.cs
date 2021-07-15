@@ -10,15 +10,15 @@ namespace SkyChain.Db
         static Peer info;
 
         // a bundle of connected peers
-        static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
+        static readonly Map<short, ChainConnect> clients = new Map<short, ChainConnect>(32);
 
         // validates and archives transactions 
         static Thread archiver;
 
         // periodic polling and importing of foreign blocks 
         static Thread importer;
-        
-        static readonly Map<(short, short), ChainRule> rules = new Map<(short, short), ChainRule>(16);
+
+        static readonly Map<(short, short), ChainValidator> rules = new Map<(short, short), ChainValidator>(16);
 
         public static Peer Info
         {
@@ -26,9 +26,26 @@ namespace SkyChain.Db
             internal set => info = value;
         }
 
-        public static ChainClient GetChainClient(short pid) => clients[pid];
+        public static ChainConnect GetChainClient(short pid) => clients[pid];
 
-        public static Map<short, ChainClient> Clients => clients;
+        ChainContext context;
+
+        public static Map<short, ChainConnect> Clients => clients;
+
+        /// <summary>
+        /// Creates a chain rule that regulates validity of transaction.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <typeparam name="R"></typeparam>
+        public void CreateRule<R>(short a, short b) where R : ChainValidator, new()
+        {
+            var r = new R
+            {
+                code = (a, b)
+            };
+            rules.Add(r);
+        }
 
         internal async Task ReloadNative(DbContext dc)
         {
@@ -70,7 +87,7 @@ namespace SkyChain.Db
                 {
                     foreach (var o in arr)
                     {
-                        var cli = new ChainClient(o);
+                        var cli = new ChainConnect(o);
                         clients.Add(cli);
 
                         // init current block id
