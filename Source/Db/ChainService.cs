@@ -5,7 +5,7 @@ using static SkyChain.Db.ChainUtility;
 namespace SkyChain.Db
 {
     /// <summary>
-    /// A web service that realizes API for inter-peer communication. 
+    /// A web service that realizes inter-peer communication. 
     /// </summary>
     public class ChainService : WebService
     {
@@ -14,14 +14,14 @@ namespace SkyChain.Db
         /// </summary>
         public async Task onpoll(WebContext wc)
         {
-            // veriify consistency of peer numbering
-            var pid = ChainEnviron.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != pid)
+            // veriify 
+            var peerid = ChainEnviron.Info.id;
+            if (wc.HeaderShort(X_PEER_ID) != peerid)
             {
                 wc.Give(409); // conflict
             }
 
-            var blockid = wc.HeaderInt(X_BLOCK_ID); // desired block id
+            var blockid = wc.HeaderInt(X_BLOCK_ID); // asked block id
             if (!blockid.HasValue)
             {
                 wc.Give(400); // bad request
@@ -30,7 +30,7 @@ namespace SkyChain.Db
 
             using var dc = NewDbContext();
             dc.Sql("SELECT ").collst(Archivel.Empty, 0xff).T(" FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<Archivel>(p => p.Set(pid).Set(WeaveSeq(blockid.Value, 0)));
+            var arr = await dc.QueryAsync<Archivel>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {

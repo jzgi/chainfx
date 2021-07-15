@@ -22,7 +22,7 @@ namespace SkyChain.Db
 
         internal string name;
 
-        internal string uri; // remote address
+        internal string domain; // remote address
 
         internal DateTime created;
 
@@ -30,15 +30,18 @@ namespace SkyChain.Db
 
         internal short status;
 
+        //
         // current block number
+        
         internal volatile int blockid;
+        
         internal long blockcs;
 
         public void Read(ISource s, byte proj = 15)
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(name), ref name);
-            s.Get(nameof(uri), ref uri);
+            s.Get(nameof(domain), ref domain);
             s.Get(nameof(created), ref created);
             s.Get(nameof(native), ref native);
             s.Get(nameof(status), ref status);
@@ -48,7 +51,7 @@ namespace SkyChain.Db
         {
             s.Put(nameof(id), id);
             s.Put(nameof(name), name);
-            s.Put(nameof(uri), uri);
+            s.Put(nameof(domain), domain);
             s.Put(nameof(created), created);
             s.Put(nameof(native), native);
             s.Put(nameof(status), status);
@@ -65,7 +68,7 @@ namespace SkyChain.Db
 
         public string Name => name;
 
-        public string Uri => uri;
+        public string Domain => domain;
 
         public DateTime Created => created;
 

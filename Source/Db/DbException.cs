@@ -3,7 +3,7 @@ using System;
 namespace SkyChain.Db
 {
     ///
-    /// Thrown to indicate an error during a database operation.
+    /// Thrown to indicate an error during database operation.
     ///
     public class DbException : Exception
     {

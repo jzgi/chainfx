@@ -15,7 +15,7 @@ namespace SkyChain.Db
 
         public const string X_NAME = "X-Name";
 
-        public const string X_TIP = "X-Tip";
+        public const string X_REMARK = "X-Remark";
 
         public const string X_AMOUNT = "X-Amount";
 
@@ -34,7 +34,7 @@ namespace SkyChain.Db
             return (long) blockid * BLOCK_CAPACITY + idx;
         }
 
-        public static async Task<long> RecordAsync(this DbContext dc, string acct, string name, string tip, decimal amt)
+        public static async Task<long> EnterAsync(this DbContext dc, string acct, string name, string tip, decimal amt)
         {
             // insert
             var obj = new Queuel()
@@ -46,7 +46,7 @@ namespace SkyChain.Db
                 stamp = DateTime.Now,
                 status = 0,
             };
-            dc.Sql("INSERT INTO chain.journals ").colset(obj, 0)._VALUES_(obj, 0).T(" RETURNING id");
+            dc.Sql("INSERT INTO chain.queue ").colset(obj, 0)._VALUES_(obj, 0).T(" RETURNING id");
             return (int) await dc.ScalarAsync(p => obj.Write(p));
         }
 
@@ -56,7 +56,7 @@ namespace SkyChain.Db
             return await dc.QueryAsync<Peer>();
         }
 
-        public static async Task<Archivel> GetLastAsync(this DbContext dc, short typ, string acct)
+        public static async Task<Archivel> GetArchiveAsync(this DbContext dc, short typ, string acct)
         {
             dc.Sql("SELECT ").collst(Archivel.Empty).T(" FROM chain.archive WHERE typ = @1 AND acct = @1 ORDER BY seq DESC LIMIT 1");
             return await dc.QueryTopAsync<Archivel>(p => p.Set(typ).Set(acct));
@@ -65,7 +65,7 @@ namespace SkyChain.Db
         /// <summary>
         /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<Archivel[]> GetArchivedAsync(this DbContext dc, short typ, string acct, int limit = 20, int page = 0)
+        public static async Task<Archivel[]> SeekArchiveAsync(this DbContext dc, short typ, string acct, int limit = 20, int page = 0)
         {
             if (acct == null)
             {

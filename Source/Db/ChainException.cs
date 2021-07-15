@@ -3,7 +3,7 @@ using System;
 namespace SkyChain.Db
 {
     ///
-    /// Thrown to indicate a chain-related error.
+    /// Thrown to indicate a blockchain related error.
     ///
     public class ChainException : Exception
     {

@@ -8,7 +8,7 @@ using static SkyChain.Db.ChainUtility;
 namespace SkyChain.Db
 {
     /// <summary>
-    /// A chain client connector to a specific remote peer..
+    /// A client connector to a specific remote peer..
     /// </summary>
     public class ChainConnect : WebConnect, IKeyable<short>
     {
@@ -48,7 +48,7 @@ namespace SkyChain.Db
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainConnect(Peer info, ChainConnectHandler handler = null) : base(info.uri, handler ?? new ChainConnectHandler())
+        internal ChainConnect(Peer info, ChainConnectHandler handler = null) : base(info.domain, handler ?? new ChainConnectHandler())
         {
             this.info = info;
             try

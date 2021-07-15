@@ -9,16 +9,17 @@ namespace SkyChain.Db
     {
         static Peer info;
 
-        // a bundle of connected peers
-        static readonly Map<short, ChainConnect> clients = new Map<short, ChainConnect>(32);
+        // connectors to remote peers 
+        static readonly Map<short, ChainConnect> connects = new Map<short, ChainConnect>(32);
 
-        // validates and archives transactions 
+        // validates & archives transactions 
         static Thread archiver;
 
-        // periodic polling and importing of foreign blocks 
+        // polls and imports foreign blocks 
         static Thread importer;
 
-        static readonly Map<(short, short), ChainValidator> rules = new Map<(short, short), ChainValidator>(16);
+        // registered validators for specific transactions  
+        static readonly Map<(short, short), ChainValidator> validators = new Map<(short, short), ChainValidator>(32);
 
         public static Peer Info
         {
@@ -26,31 +27,25 @@ namespace SkyChain.Db
             internal set => info = value;
         }
 
-        public static ChainConnect GetChainClient(short pid) => clients[pid];
+        public static ChainConnect GetConnect(short peerid) => connects[peerid];
 
         ChainContext context;
 
-        public static Map<short, ChainConnect> Clients => clients;
+        public static Map<short, ChainConnect> Connects => connects;
 
         /// <summary>
         /// Creates a chain rule that regulates validity of transaction.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        /// <typeparam name="R"></typeparam>
-        public void CreateRule<R>(short a, short b) where R : ChainValidator, new()
+        /// <typeparam name="V"></typeparam>
+        public void MakeValidator<V>(short a, short b) where V : ChainValidator, new()
         {
-            var r = new R
+            var v = new V
             {
                 code = (a, b)
             };
-            rules.Add(r);
-        }
-
-        internal async Task ReloadNative(DbContext dc)
-        {
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-            info = await dc.QueryTopAsync<Peer>();
+            validators.Add(v);
         }
 
 
@@ -60,7 +55,7 @@ namespace SkyChain.Db
         public static async Task StartChainAsync()
         {
             // clear up data maps
-            clients.Clear();
+            connects.Clear();
 
             //load this node peer
             using (var dc = NewDbContext())
@@ -88,7 +83,7 @@ namespace SkyChain.Db
                     foreach (var o in arr)
                     {
                         var cli = new ChainConnect(o);
-                        clients.Add(cli);
+                        connects.Add(cli);
 
                         // init current block id
                         await o.PeekLastBlockAsync(dc);
@@ -188,9 +183,9 @@ namespace SkyChain.Db
 
                 Thread.Sleep(60 * 1000);
 
-                for (int i = 0; i < clients.Count; i++) // LOOP
+                for (int i = 0; i < connects.Count; i++) // LOOP
                 {
-                    var cli = clients.ValueAt(i);
+                    var cli = connects.ValueAt(i);
 
                     if (!cli.Info.IsRunning) continue;
 

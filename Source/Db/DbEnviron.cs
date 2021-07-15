@@ -25,69 +25,58 @@ namespace SkyChain.Db
             return dbsource.NewDbContext(level);
         }
 
+        //
+        // Object Cache API
+        //
 
-        const int MAX_HOLDS = 32;
+        const int MAX_CELLS = 32;
 
-        static Cache[] holds;
+        static Cell[] registry;
 
         static int size;
 
-        static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
-
-
-        internal static void ConfigureDb(JObj db_cfg)
+        internal static void ConfigureDb(JObj dbcfg)
         {
-            dbsource = new DbSource(db_cfg);
+            dbsource = new DbSource(dbcfg);
         }
 
-
-        public static void Register(object value, byte flag = 0)
+        public static void Register<V>(Func<DbContext, V> fetcher, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holds == null)
+            if (registry == null)
             {
-                holds = new Cache[MAX_HOLDS];
+                registry = new Cell[MAX_CELLS];
             }
 
-            holds[size++] = new Cache(value, flag);
+            registry[size++] = new Cell(typeof(V), fetcher, maxage, flag);
         }
 
-        public static void Register<V>(Func<DbContext, V> fetch, int maxage = 60, byte flag = 0) where V : class
+        public static void Register<V>(Func<DbContext, Task<V>> fetcher, int maxage = 60, byte flag = 0) where V : class
         {
-            if (holds == null)
+            if (registry == null)
             {
-                holds = new Cache[MAX_HOLDS];
+                registry = new Cell[MAX_CELLS];
             }
 
-            holds[size++] = new Cache(typeof(V), fetch, maxage, flag);
-        }
-
-        public static void Register<V>(Func<DbContext, Task<V>> fetchAsync, int maxage = 60, byte flag = 0) where V : class
-        {
-            if (holds == null)
-            {
-                holds = new Cache[MAX_HOLDS];
-            }
-
-            holds[size++] = new Cache(typeof(V), fetchAsync, maxage, flag);
+            registry[size++] = new Cell(typeof(V), fetcher, maxage, flag);
         }
 
         /// <summary>
-        /// Search for typed object in this scope and settle all dependencies. 
+        /// To obtain a specified cached object..
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The class must be matched</typeparam>
         /// <returns>the result object or null</returns>
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            if (holds != null)
+            if (registry != null)
             {
-                for (int i = 0; i < size; i++)
+                for (var i = 0; i < size; i++)
                 {
-                    var c = holds[i];
-                    if (c.Flag == 0 || (c.Flag & flag) > 0)
+                    var cell = registry[i];
+                    if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
-                        if (!c.IsAsync && typeof(T).IsAssignableFrom(c.Typ))
+                        if (!cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
                         {
-                            return c.GetValue() as T;
+                            return cell.GetValue() as T;
                         }
                     }
                 }
@@ -96,13 +85,19 @@ namespace SkyChain.Db
             return null;
         }
 
+        /// <summary>
+        /// To obtain a specified cached object asynchromously.
+        /// </summary>
+        /// <param name="flag"></param>
+        /// <typeparam name="T">The class must be matched</typeparam>
+        /// <returns></returns>
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (holds != null)
+            if (registry != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cell = holds[i];
+                    var cell = registry[i];
                     if (cell.Flag == 0 || (cell.Flag & flag) > 0)
                     {
                         if (cell.IsAsync && typeof(T).IsAssignableFrom(cell.Typ))
@@ -120,13 +115,17 @@ namespace SkyChain.Db
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Cache
+        class Cell
         {
             readonly Type typ;
 
-            readonly Func<DbContext, object> fetch;
+            readonly Func<DbContext, object> fetcher;
 
-            readonly Func<DbContext, Task<object>> fetchAsync;
+            static readonly ReaderWriterLockSlim @lock = new ReaderWriterLockSlim();
+
+            readonly Func<DbContext, Task<object>> fetcherA;
+
+            static readonly SemaphoreSlim lockA = new SemaphoreSlim(1, 1);
 
             readonly int maxage; //in seconds
 
@@ -137,24 +136,17 @@ namespace SkyChain.Db
 
             readonly byte flag;
 
-            internal Cache(object value, byte flag)
-            {
-                this.typ = value.GetType();
-                this.value = value;
-                this.flag = flag;
-            }
-
-            internal Cache(Type typ, Func<DbContext, object> fetch, int maxage, byte flag)
+            internal Cell(Type typ, Func<DbContext, object> fetcher, int maxage, byte flag)
             {
                 this.typ = typ;
                 this.flag = flag;
-                if (fetch is Func<DbContext, Task<object>> fetch2)
+                if (fetcher is Func<DbContext, Task<object>> func)
                 {
-                    this.fetchAsync = fetch2;
+                    this.fetcherA = func;
                 }
                 else
                 {
-                    this.fetch = fetch;
+                    this.fetcher = fetcher;
                 }
 
                 this.maxage = maxage;
@@ -164,11 +156,11 @@ namespace SkyChain.Db
 
             public byte Flag => flag;
 
-            public bool IsAsync => fetchAsync != null;
+            public bool IsAsync => fetcherA != null;
 
             public object GetValue()
             {
-                if (fetch == null) // simple object
+                if (fetcher == null) // simple object
                 {
                     return value;
                 }
@@ -182,7 +174,7 @@ namespace SkyChain.Db
                         try
                         {
                             using var dc = NewDbContext();
-                            value = fetch(dc);
+                            value = fetcher(dc);
                             expiry = ptick + maxage * 1000;
                         }
                         finally
@@ -200,17 +192,25 @@ namespace SkyChain.Db
 
             public async Task<object> GetValueAsync()
             {
-                if (fetchAsync == null) // simple object
+                if (fetcherA == null) // simple object
                 {
                     return value;
                 }
-                int lexpiry = this.expiry;
-                int ticks = Environment.TickCount;
-                if (ticks >= lexpiry)
+                await lockA.WaitAsync();
+                try
                 {
-                    using var dc = NewDbContext();
-                    value = await fetchAsync(dc);
-                    expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                    int lexpiry = this.expiry;
+                    int ticks = Environment.TickCount;
+                    if (ticks >= lexpiry)
+                    {
+                        using var dc = NewDbContext();
+                        value = await fetcherA(dc);
+                        expiry = (Environment.TickCount & int.MaxValue) + maxage * 1000;
+                    }
+                }
+                finally
+                {
+                    lockA.Release();
                 }
 
                 return value;
