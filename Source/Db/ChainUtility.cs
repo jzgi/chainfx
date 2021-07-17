@@ -37,7 +37,7 @@ namespace SkyChain.Db
         public static async Task<long> EnterAsync(this DbContext dc, string acct, string name, string tip, decimal amt)
         {
             // insert
-            var obj = new Queuel()
+            var obj = new QueueRow()
             {
                 acct = acct,
                 name = name,
@@ -56,33 +56,33 @@ namespace SkyChain.Db
             return await dc.QueryAsync<Peer>();
         }
 
-        public static async Task<Archivel> GetArchiveAsync(this DbContext dc, short typ, string acct)
+        public static async Task<ArchiveRow> GetArchiveAsync(this DbContext dc, short typ, string acct)
         {
-            dc.Sql("SELECT ").collst(Archivel.Empty).T(" FROM chain.archive WHERE typ = @1 AND acct = @1 ORDER BY seq DESC LIMIT 1");
-            return await dc.QueryTopAsync<Archivel>(p => p.Set(typ).Set(acct));
+            dc.Sql("SELECT ").collst(ArchiveRow.Empty).T(" FROM chain.archive WHERE typ = @1 AND acct = @1 ORDER BY seq DESC LIMIT 1");
+            return await dc.QueryTopAsync<ArchiveRow>(p => p.Set(typ).Set(acct));
         }
 
         /// <summary>
-        /// To retrieve a page of archived records for the specified account & ledger. It may across peers.
+        /// To retrieve a page of archive records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<Archivel[]> SeekArchiveAsync(this DbContext dc, short typ, string acct, int limit = 20, int page = 0)
+        public static async Task<ArchiveRow[]> SeekArchiveAsync(this DbContext dc, short typ, string acct, int limit = 20, int page = 0)
         {
             if (acct == null)
             {
                 return null;
             }
-            dc.Sql("SELECT ").collst(Archivel.Empty).T(" FROM chain.archive WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
-            return await dc.QueryAsync<Archivel>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
+            dc.Sql("SELECT ").collst(ArchiveRow.Empty).T(" FROM chain.archive WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
+            return await dc.QueryAsync<ArchiveRow>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
         }
 
-        public static async Task<Queuel[]> SeekQueueAsync(this DbContext dc, string acct)
+        public static async Task<QueueRow[]> SeekQueueAsync(this DbContext dc, string acct)
         {
             if (acct == null)
             {
                 return null;
             }
-            dc.Sql("SELECT ").collst(Queuel.Empty).T(" FROM chain.ques_vw WHERE acct = @1");
-            return await dc.QueryAsync<Queuel>(p => p.Set(acct));
+            dc.Sql("SELECT ").collst(QueueRow.Empty).T(" FROM chain.ques_vw WHERE acct = @1");
+            return await dc.QueryAsync<QueueRow>(p => p.Set(acct));
         }
     }
 }

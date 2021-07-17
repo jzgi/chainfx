@@ -1,11 +1,11 @@
 ﻿namespace SkyChain.Db
 {
     /// <summary>
-    /// A queued journal entry.
+    /// A queued journal data row.
     /// </summary>
-    public class Queuel : _Ety, IKeyable<int>
+    public class QueueRow : _Row, IKeyable<int>
     {
-        public new static readonly Queuel Empty = new Queuel();
+        public new static readonly QueueRow Empty = new QueueRow();
 
         internal int id;
 

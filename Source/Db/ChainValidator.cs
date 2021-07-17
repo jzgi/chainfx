@@ -1,13 +1,13 @@
 ﻿namespace SkyChain.Db
 {
-    public abstract class ChainValidator : IKeyable<(short, short)>
+    public abstract class ChainValidator : IKeyable<short>
     {
-        public (short, short) code { get; set; }
+        public short typ { get; set; }
 
-        protected abstract void Validate(Queuel[] tran);
+        protected abstract void Validate(_Row[] tran);
 
         public ChainContext ChainCtx { get; set; }
 
-        public (short, short) Key => code;
+        public short Key => typ;
     }
 }

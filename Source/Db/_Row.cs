@@ -5,9 +5,9 @@ namespace SkyChain.Db
     /// <summary>
     /// An abstract account entry or record.
     /// </summary>
-    public class _Ety : IData
+    public class _Row : IData
     {
-        public static readonly _Ety Empty = new _Ety();
+        public static readonly _Row Empty = new _Row();
 
         public const byte ID = 1, LATER = 2;
 
@@ -15,7 +15,7 @@ namespace SkyChain.Db
         internal long txn;
 
         // typ pf ledger
-        internal short typ;
+        internal short typid;
 
         internal string acct;
 
@@ -34,7 +34,7 @@ namespace SkyChain.Db
         public virtual void Read(ISource s, byte proj = 15)
         {
             s.Get(nameof(txn), ref txn);
-            s.Get(nameof(typ), ref typ);
+            s.Get(nameof(typid), ref typid);
             s.Get(nameof(acct), ref acct);
             s.Get(nameof(name), ref name);
             s.Get(nameof(remark), ref remark);
@@ -46,7 +46,7 @@ namespace SkyChain.Db
         public virtual void Write(ISink s, byte proj = 15)
         {
             s.Put(nameof(txn), txn);
-            s.Put(nameof(typ), typ);
+            s.Put(nameof(typid), typid);
             s.Put(nameof(acct), acct);
             s.Put(nameof(name), name);
             s.Put(nameof(remark), remark);

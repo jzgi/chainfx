@@ -37,7 +37,7 @@ namespace SkyChain.Db
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        Task<(short, Archivel[])> polltsk;
+        Task<(short, ArchiveRow[])> polltsk;
 
         // the status showing what is happening 
         short status;
@@ -71,7 +71,7 @@ namespace SkyChain.Db
         ///
         /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
         /// 
-        public short TryReap(out Archivel[] block)
+        public short TryReap(out ArchiveRow[] block)
         {
             block = null;
             if (polltsk == null)
@@ -143,7 +143,7 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, Archivel[])> RemotePollAsync(int blockid)
+        async Task<(short, ArchiveRow[])> RemotePollAsync(int blockid)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace SkyChain.Db
 
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var dat = arr.ToArray<Archivel>();
+                var dat = arr.ToArray<ArchiveRow>();
                 return (200, dat);
             }
             catch
