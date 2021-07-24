@@ -9,6 +9,22 @@ namespace SkyChain.Db
     /// </summary>
     public class ChainService : WebService
     {
+        public async Task onsql(WebContext wc)
+        {
+            if (wc.IsGet)
+            {
+                var f = wc.Query;
+                string sql = f[nameof(sql)];
+                
+            } 
+            else // POST
+            {
+                var f = await wc.ReadAsync<JObj>();
+                string sql = f[nameof(sql)];
+            }
+            
+        }
+
         /// <summary>
         /// Try to return a block of data.
         /// </summary>
@@ -29,8 +45,8 @@ namespace SkyChain.Db
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(ArchiveRow.Empty, 0xff).T(" FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<ArchiveRow>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
+            dc.Sql("SELECT ").collst(Archival.Empty, 0xff).T(" FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<Archival>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {

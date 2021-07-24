@@ -12,14 +12,11 @@ namespace SkyChain.Db
         // connectors to remote peers 
         static readonly Map<short, ChainConnect> connects = new Map<short, ChainConnect>(32);
 
-        // validates & archives transactions 
-        static Thread committer;
-
         // polls and imports foreign blocks 
         static Thread importer;
 
         // registered validators for specific transactions  
-        static readonly Map<short, ChainValidator> validators = new Map<short, ChainValidator>(32);
+        static readonly Map<short, ChainLogic> logics = new Map<short, ChainLogic>(32);
 
         public static Peer Info
         {
@@ -29,22 +26,21 @@ namespace SkyChain.Db
 
         public static ChainConnect GetConnect(short peerid) => connects[peerid];
 
-        ChainContext context;
 
         public static Map<short, ChainConnect> Connects => connects;
 
         /// <summary>
-        /// Creates a chain rule that regulates validity of transaction.
+        /// Creates a chain logic that demetermines behaviors for transactions.
         /// </summary>
         /// <param name="typ"></param>
-        /// <typeparam name="V"></typeparam>
-        public static void CreateChainValidator<V>(short typ) where V : ChainValidator, new()
+        /// <typeparam name="L"></typeparam>
+        public static void MakeChainLogic<L>(short typ) where L : ChainLogic, new()
         {
-            var v = new V
+            var v = new L
             {
                 typ = typ
             };
-            validators.Add(v);
+            logics.Add(v);
         }
 
 
@@ -68,11 +64,7 @@ namespace SkyChain.Db
                 }
             }
 
-            // start the archiver thead
-            committer = new Thread(Commit);
-            committer.Start();
-
-            // load foreign peer connectors
+            // load remote connectors
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = FALSE");
@@ -112,8 +104,8 @@ namespace SkyChain.Db
                 {
                     try
                     {
-                        dc.Sql("SELECT ").collst(QueueRow.Empty).T(" FROM chain.queue ORDER BY id LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<QueueRow>();
+                        dc.Sql("SELECT ").collst(OperativeRow.Empty).T(" FROM chain.queue ORDER BY id LIMIT ").T(MAX_BLOCK_SIZE);
+                        var arr = await dc.QueryAsync<OperativeRow>();
                         if (arr == null || arr.Length < MIN_BLOCK_SIZE)
                         {
                             continue; // go for delay
@@ -129,7 +121,7 @@ namespace SkyChain.Db
                         // insert archivals
                         //
                         long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.archive ").colset(_Row.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_Row.Empty, extra: "@1, @2, @3, @4");
+                        dc.Sql("INSERT INTO chain.archive ").colset(_Ety.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_Ety.Empty, extra: "@1, @2, @3, @4");
                         for (short i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];
@@ -201,7 +193,7 @@ namespace SkyChain.Db
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.archive ").colset(ArchiveRow.Empty, extra: "peerid, cs, blockcs")._VALUES_(ArchiveRow.Empty, extra: "@1, @2, @3");
+                                dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;

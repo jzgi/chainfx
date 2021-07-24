@@ -9,7 +9,7 @@ namespace SkyChain.Db
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
     /// </summary>
-    public sealed class DbContext : ISource, IParameters, IDisposable
+    public class DbContext : ISource, IParameters, IDisposable
     {
         static readonly string[] PARAMS =
         {

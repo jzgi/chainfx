@@ -3,9 +3,9 @@
     /// <summary>
     /// An archived record in a block.
     /// </summary>
-    public class ArchiveRow : _Row, IKeyable<long>
+    public class Archival : _Ety, IKeyable<long>
     {
-        public new static readonly ArchiveRow Empty = new ArchiveRow();
+        public new static readonly Archival Empty = new Archival();
 
         public const byte PACKING = 0x10;
 

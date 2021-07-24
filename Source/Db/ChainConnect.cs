@@ -37,7 +37,7 @@ namespace SkyChain.Db
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        Task<(short, ArchiveRow[])> polltsk;
+        Task<(short, Archival[])> polltsk;
 
         // the status showing what is happening 
         short status;
@@ -71,7 +71,7 @@ namespace SkyChain.Db
         ///
         /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
         /// 
-        public short TryReap(out ArchiveRow[] block)
+        public short TryReap(out Archival[] block)
         {
             block = null;
             if (polltsk == null)
@@ -143,12 +143,12 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, ArchiveRow[])> RemotePollAsync(int blockid)
+        async Task<(short, Archival[])> RemotePollAsync(int blockid)
         {
             try
             {
                 // request
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onpoll");
+                var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
@@ -164,7 +164,7 @@ namespace SkyChain.Db
 
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var dat = arr.ToArray<ArchiveRow>();
+                var dat = arr.ToArray<Archival>();
                 return (200, dat);
             }
             catch
@@ -178,5 +178,79 @@ namespace SkyChain.Db
             CONTENT_TYPE = "Content-Type",
             CONTENT_LENGTH = "Content-Length",
             AUTHORIZATION = "Authorization";
+
+
+        public async Task<(short, D[])> QueryAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData, new()
+        {
+            try
+            {
+                // request
+                var req = new HttpRequestMessage(HttpMethod.Get, "/onsql");
+
+                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
+
+                // convert sql, parameters, prepare into form-encoding
+                var content = new FormContent(false, 16);
+
+                req.Content = content;
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
+
+                // response
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return ((short) rsp.StatusCode, null);
+                }
+                var hdrs = rsp.Content.Headers;
+
+                var bytea = await rsp.Content.ReadAsByteArrayAsync();
+                var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
+                var lst = new ValueList<D>(32);
+                var d = arr.ToArray<D>();
+
+                return (200, d);
+            }
+            catch
+            {
+                status = NETWORK_ERROR;
+                return (0, null);
+            }
+        }
+
+        public async Task<(short, int)> ExecuteAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData
+        {
+            try
+            {
+                // request
+                var req = new HttpRequestMessage(HttpMethod.Get, "/onsql");
+
+                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
+
+                // convert sql, parameters, prepare into form-encoding
+                var content = new FormContent(false, 16);
+
+                req.Content = content;
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
+
+                // response
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return ((short) rsp.StatusCode, 1);
+                }
+                var hdrs = rsp.Content.Headers;
+
+                return (200, 1);
+            }
+            catch
+            {
+                status = NETWORK_ERROR;
+                return (0, 1);
+            }
+        }
     }
 }
