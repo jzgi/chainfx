@@ -8,7 +8,7 @@ namespace SkyChain.Db
     /// <summary>
     /// A object holder in registry.
     /// </summary>
-    class DbCache
+    internal class DbCache
     {
         readonly Type typ;
 

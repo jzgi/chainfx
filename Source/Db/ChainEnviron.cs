@@ -15,7 +15,7 @@ namespace SkyChain.Db
         // polls and imports foreign blocks 
         static Thread importer;
 
-        // registered validators for specific transactions  
+        // logics that determine in-peer and inter-peer transactions' behaviors  
         static readonly Map<short, ChainLogic> logics = new Map<short, ChainLogic>(32);
 
         public static Peer Info
@@ -29,12 +29,23 @@ namespace SkyChain.Db
 
         public static Map<short, ChainConnect> Connects => connects;
 
+        public static ChainContext NewChainContext(IsolationLevel? level = null)
+        {
+            if (dbsource == null)
+            {
+                throw new ServerException("missing 'db' in app.json");
+            }
+
+            return dbsource.NewChainContext(level);
+        }
+
+
         /// <summary>
         /// Creates a chain logic that demetermines behaviors for transactions.
         /// </summary>
         /// <param name="typ"></param>
         /// <typeparam name="L"></typeparam>
-        public static void MakeChainLogic<L>(short typ) where L : ChainLogic, new()
+        public static void CreateLogic<L>(short typ) where L : ChainLogic, new()
         {
             var v = new L
             {

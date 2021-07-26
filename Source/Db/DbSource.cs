@@ -59,5 +59,25 @@ namespace SkyChain.Db
 
             return dc;
         }
+
+        public ChainContext NewChainContext(IsolationLevel? level = null)
+        {
+            if (ChainEnviron.Info == null)
+            {
+                throw new ChainException("missing local peer info");
+            }
+            
+            var cc = new ChainContext(this)
+            {
+                info = ChainEnviron.Info
+            };
+            
+            if (level != null)
+            {
+                cc.Begin(level.Value);
+            }
+
+            return cc;
+        }
     }
 }

@@ -180,6 +180,12 @@ namespace SkyChain.Db
             AUTHORIZATION = "Authorization";
 
 
+        public async Task<(short, D)> QueryTopAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData, new()
+        {
+            D d = default;
+            return (0, d);
+        }
+
         public async Task<(short, D[])> QueryAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData, new()
         {
             try
