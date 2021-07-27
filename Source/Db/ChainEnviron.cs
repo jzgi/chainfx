@@ -11,7 +11,7 @@ namespace SkyChain.Db
         static Peer info;
 
         // connectors to remote peers 
-        static readonly Map<short, ChainConnect> connects = new Map<short, ChainConnect>(32);
+        static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
 
         // polls and imports foreign blocks 
         static Thread importer;
@@ -40,10 +40,10 @@ namespace SkyChain.Db
         }
 
 
-        public static ChainConnect GetConnect(short peerid) => connects[peerid];
+        public static ChainClient GetClient(short peerid) => clients[peerid];
 
 
-        public static Map<short, ChainConnect> Connects => connects;
+        public static Map<short, ChainClient> Clients => clients;
 
         public static ChainContext NewChainContext(IsolationLevel? level = null)
         {
@@ -77,7 +77,7 @@ namespace SkyChain.Db
         public static async Task StartChainAsync()
         {
             // clear up data maps
-            connects.Clear();
+            clients.Clear();
 
             //load this node peer
             using (var dc = NewDbContext())
@@ -100,8 +100,8 @@ namespace SkyChain.Db
                 {
                     foreach (var o in arr)
                     {
-                        var conn = new ChainConnect(o);
-                        connects.Add(conn);
+                        var conn = new ChainClient(o);
+                        clients.Add(conn);
 
                         // init current block id
                         await o.PeekLastBlockAsync(dc);
@@ -201,9 +201,9 @@ namespace SkyChain.Db
 
                 Thread.Sleep(60 * 1000);
 
-                for (int i = 0; i < connects.Count; i++) // LOOP
+                for (int i = 0; i < clients.Count; i++) // LOOP
                 {
-                    var cli = connects.ValueAt(i);
+                    var cli = clients.ValueAt(i);
 
                     if (!cli.Info.IsRunning) continue;
 

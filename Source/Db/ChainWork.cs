@@ -38,7 +38,7 @@ namespace SkyChain.Db
         [Ui("友节点", group: 2), Tool(Anchor)]
         public virtual void friend(WebContext wc)
         {
-            var arr = ChainEnviron.Connects;
+            var arr = ChainEnviron.Clients;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(caption: "友节点管理");
@@ -124,9 +124,9 @@ namespace SkyChain.Db
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                var cli = new ChainConnect(o);
+                var cli = new ChainClient(o);
                 await o.PeekLastBlockAsync(dc);
-                ChainEnviron.Connects.Add(cli);
+                ChainEnviron.Clients.Add(cli);
 
                 wc.GivePane(200); // close dialog
             }

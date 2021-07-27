@@ -37,7 +37,7 @@ namespace SkyChain.Db
             }
             else
             {
-                var conn = ChainEnviron.GetConnect(peerid);
+                var conn = ChainEnviron.GetClient(peerid);
                 if (conn != null)
                 {
                     var (code, v) = await conn.QueryTopAsync<D>(sql, p, prepare);
@@ -59,7 +59,7 @@ namespace SkyChain.Db
             }
             else
             {
-                var conn = ChainEnviron.GetConnect(peerid);
+                var conn = ChainEnviron.GetClient(peerid);
                 if (conn != null)
                 {
                     var (code, v) = await conn.QueryAsync<D>(sql, p, prepare);

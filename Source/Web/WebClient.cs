@@ -8,7 +8,7 @@ namespace SkyChain.Web
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class WebConnect : HttpClient
+    public class WebClient : HttpClient
     {
         const string
             CONTENT_TYPE = "Content-Type",
@@ -18,7 +18,7 @@ namespace SkyChain.Web
         /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
-        public WebConnect(string baseUri, WebConnectHandler handler = null) : base(handler ?? new WebConnectHandler())
+        public WebClient(string baseUri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
         {
             BaseAddress = new Uri(baseUri);
             Timeout = TimeSpan.FromSeconds(7);

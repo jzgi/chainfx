@@ -2,7 +2,7 @@
 
 namespace SkyChain.Web
 {
-    public class WebConnectHandler : HttpClientHandler
+    public class WebClientHandler : HttpClientHandler
     {
         // custom handling logic
     }

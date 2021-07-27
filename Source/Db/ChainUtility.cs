@@ -96,7 +96,7 @@ namespace SkyChain.Db
                 }
                 else
                 {
-                    var conn = ChainEnviron.GetConnect(peerid);
+                    var conn = ChainEnviron.GetClient(peerid);
                 }
             }
             return null;
