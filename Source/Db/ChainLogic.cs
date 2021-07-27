@@ -1,19 +1,20 @@
-﻿namespace SkyChain.Db
+﻿using System.Threading.Tasks;
+
+namespace SkyChain.Db
 {
     public class ChainLogic : IKeyable<short>
     {
+        // declared ops 
+        readonly Map<string, ChainOp> ops = new Map<string, ChainOp>(32);
+
         public short typ;
-
-        long txn;
-
-
-        private _Ety[] rows;
 
         public ChainLogic(short typ)
         {
             this.typ = typ;
         }
 
+        public ChainOp GetOp(string name) => ops[name];
 
         public bool OnValidate(_Ety[] row)
         {
@@ -38,10 +39,26 @@
             return this;
         }
 
-        public ChainLogic Txn(long txn)
+
+        public async Task<bool> check(ChainContext cc)
         {
-            this.txn = txn;
-            return this;
+            var args = cc.In;
+            string acct = args[nameof(acct)];
+            decimal amt = args[nameof(amt)];
+
+            if (await cc.QueryTopAsync("SELECT amt FROM chain.archivals WHERE typ = @1 AND acct = @2 ORDER BY txn DESC LIMIT 1"))
+            {
+                cc.Let(out decimal lastamt);
+                return lastamt > amt;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void save(ChainContext cc)
+        {
         }
 
         public ChainLogic Row(string acct, string name, string remark, decimal amt)

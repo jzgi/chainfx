@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,11 +19,26 @@ namespace SkyChain.Db
         // logics that determine in-peer and inter-peer transactions' behaviors  
         static readonly Map<short, ChainLogic> logics = new Map<short, ChainLogic>(32);
 
+
+        public static ChainLogic GetLogic(short typ) => logics[typ];
+
         public static Peer Info
         {
             get => info;
             internal set => info = value;
         }
+
+
+        //
+        // transaction id generator
+
+        static int lastId = 0;
+
+        static int generateId()
+        {
+            return Interlocked.Increment(ref lastId);
+        }
+
 
         public static ChainConnect GetConnect(short peerid) => connects[peerid];
 
@@ -84,8 +100,8 @@ namespace SkyChain.Db
                 {
                     foreach (var o in arr)
                     {
-                        var cli = new ChainConnect(o);
-                        connects.Add(cli);
+                        var conn = new ChainConnect(o);
+                        connects.Add(conn);
 
                         // init current block id
                         await o.PeekLastBlockAsync(dc);
@@ -268,6 +284,33 @@ namespace SkyChain.Db
                     outer = false;
                 }
             } // outer
+        }
+
+
+        //
+        // SUB CONTEXT
+        //
+
+        static readonly ConcurrentDictionary<long, ChainContext> slavectxs = new ConcurrentDictionary<long, ChainContext>();
+
+
+        internal static ChainContext AcquireSlaveContext(long id, IsolationLevel level)
+        {
+            if (id > 0)
+            {
+                var ctx = slavectxs[id];
+                return ctx;
+            }
+            else
+            {
+                var ctx = NewChainContext(level);
+                slavectxs.TryAdd(id, ctx);
+                return ctx;
+            }
+        }
+
+        static void Clean()
+        {
         }
     }
 }

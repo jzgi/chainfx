@@ -5,16 +5,23 @@ namespace SkyChain.Db
 {
     public class ChainContext : DbContext
     {
-        internal Peer info;
-
-        short id;
-
-        JObj sqlpack;
-
-        bool remotg;
+        // whether a master context
+        bool master;
 
         short remoteid;
 
+        short id;
+
+        // slave context id list
+        ValueList<short> slaves;
+
+        internal Peer local;
+
+        internal Peer remote;
+
+        public JObj In { get; set; }
+
+        public JObj Out;
 
         internal ChainContext(DbSource src) : base(src)
         {
@@ -23,7 +30,7 @@ namespace SkyChain.Db
 
         public async Task<D> QueryTopAsync<D>(short peerid, string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
-            if (peerid == 0 || peerid == info.id)
+            if (peerid == 0 || peerid == local.id)
             {
                 // local
                 return await QueryTopAsync<D>(sql, p, proj, prepare);
@@ -42,9 +49,10 @@ namespace SkyChain.Db
                 }
             }
         }
+
         public async Task<D[]> QueryAsync<D>(short peerid, string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
         {
-            if (peerid == 0 || peerid == info.id)
+            if (peerid == 0 || peerid == local.id)
             {
                 // local
                 return await QueryAsync<D>(sql, p, proj, prepare);

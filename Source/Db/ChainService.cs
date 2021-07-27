@@ -1,3 +1,4 @@
+using System.Data;
 using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Db.ChainUtility;
@@ -9,20 +10,27 @@ namespace SkyChain.Db
     /// </summary>
     public class ChainService : WebService
     {
-        public async Task onsql(WebContext wc)
+        public async Task<bool> onop(WebContext wc)
         {
-            if (wc.IsGet)
+            long id = 0;
+            IsolationLevel level = 0;
+
+            short typ = 0;
+            var f = await wc.ReadAsync<JObj>();
+            string op = f[nameof(op)];
+
+            var lgc = ChainEnviron.GetLogic(typ);
+            var o = lgc.GetOp(op);
+
+            var ctx = ChainEnviron.AcquireSlaveContext(id, level);
+            if (o.IsAsync)
             {
-                var f = wc.Query;
-                string sql = f[nameof(sql)];
-                
-            } 
-            else // POST
-            {
-                var f = await wc.ReadAsync<JObj>();
-                string sql = f[nameof(sql)];
+                return await o.DoAsync(ctx);
             }
-            
+            else
+            {
+                return o.Do(ctx);
+            }
         }
 
         /// <summary>

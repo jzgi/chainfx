@@ -28,7 +28,7 @@ namespace SkyChain.Web
         // RPC
         //
 
-        public async Task<(short, M)> GetAsync<M>(string uri, string authstring = null) where M : class, ISource
+        public async Task<(short, S)> GetAsync<S>(string uri, string authstring = null) where S : class, ISource
         {
             try
             {
@@ -42,7 +42,7 @@ namespace SkyChain.Web
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
-                    var model = (M) ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+                    var model = (S) ParseContent(ctyp, bytea, bytea.Length, typeof(S));
                     return ((short) rsp.StatusCode, model);
                 }
                 return ((short) rsp.StatusCode, default);
@@ -134,7 +134,7 @@ namespace SkyChain.Web
             }
         }
 
-        public async Task<(short, M)> PostAsync<M>(string uri, IContent content, string authstring = null) where M : class, ISource
+        public async Task<(short, S)> PostAsync<S>(string uri, IContent content, string authstring = null) where S : class, ISource
         {
             try
             {
@@ -156,7 +156,7 @@ namespace SkyChain.Web
                 else
                 {
                     var bytes = await rsp.Content.ReadAsByteArrayAsync();
-                    var src = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
+                    var src = ParseContent(ctyp, bytes, bytes.Length, typeof(S)) as S;
                     return ((short) rsp.StatusCode, src);
                 }
             }

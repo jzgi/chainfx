@@ -69,7 +69,7 @@ namespace SkyChain.Db
             
             var cc = new ChainContext(this)
             {
-                info = ChainEnviron.Info
+                local = ChainEnviron.Info
             };
             
             if (level != null)
