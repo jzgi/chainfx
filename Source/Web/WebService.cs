@@ -4,15 +4,14 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SkyChain.Source.Web;
 
 namespace SkyChain.Web
 {
@@ -30,7 +29,7 @@ namespace SkyChain.Web
         readonly KestrelServer server;
 
         // shared cache of recent responses
-        readonly ConcurrentDictionary<string, Resp> shared;
+        readonly ConcurrentDictionary<string, WebHold> cache;
 
         // the response cache cleaner thread
         Thread cleaner;
@@ -43,7 +42,7 @@ namespace SkyChain.Web
 
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            shared = new ConcurrentDictionary<string, Resp>(factor * 4, 1024);
+            cache = new ConcurrentDictionary<string, WebHold>(factor * 4, 1024);
 
             // create the embedded server instance
             var opts = new KestrelServerOptions
@@ -228,7 +227,7 @@ namespace SkyChain.Web
             Console.WriteLine("[" + Name + "] started at " + address);
 
             // create and start the cleaner thread
-            if (shared != null)
+            if (cache != null)
             {
                 cleaner = new Thread(() =>
                 {
@@ -239,11 +238,11 @@ namespace SkyChain.Web
 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
-                        foreach (var resp in shared)
+                        foreach (var resp in cache)
                         {
                             if (!resp.Value.TryClean(now))
                             {
-                                shared.TryRemove(resp.Key, out _);
+                                cache.TryRemove(resp.Key, out _);
                             }
                         }
                     }
@@ -273,10 +272,10 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (!wc.IsInCache && wc.Shared == true && Resp.IsCacheable(wc.StatusCode))
+                if (!wc.IsInCache && wc.Shared == true && WebHold.IsCacheable(wc.StatusCode))
                 {
-                    var resp = new Resp(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    shared.AddOrUpdate(wc.Uri, resp, (k, old) => resp.MergeWith(old));
+                    var resp = new WebHold(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
+                    cache.AddOrUpdate(wc.Uri, resp, (key, old) => old);
                     wc.IsInCache = true;
                 }
             }
@@ -286,107 +285,13 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (shared.TryGetValue(wc.Uri, out var resp))
+                if (cache.TryGetValue(wc.Uri, out var resp))
                 {
                     return resp.TryGive(wc, Environment.TickCount);
                 }
             }
 
             return false;
-        }
-
-
-        /// <summary>
-        /// A prior response for caching that might be cleared but not removed, for better reusability. 
-        /// </summary>
-        public class Resp
-        {
-            // response status, 0 means cleared, otherwise one of the cacheable status
-            int code;
-
-            // can be set to null
-            IContent content;
-
-            // maxage in seconds
-            int maxage;
-
-            // time ticks when entered or cleared
-            int stamp;
-
-            int hits;
-
-            internal Resp(int code, IContent content, int maxage, int stamp)
-            {
-                this.code = code;
-                this.content = content;
-                this.maxage = maxage;
-                this.stamp = stamp;
-            }
-
-            /// <summary>
-            ///  RFC 7231 cacheable status codes.
-            /// </summary>
-            public static bool IsCacheable(int code)
-            {
-                return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
-            }
-
-            public int Hits => hits;
-
-            public bool IsCleared => code == 0;
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="now"></param>
-            /// <returns>false to indicate a removal of the entry</returns>
-            internal bool TryClean(int now)
-            {
-                lock (this)
-                {
-                    int pass = now - (stamp + maxage * 1000);
-
-                    if (code == 0) return pass < 900 * 1000; // 15 minutes
-
-                    if (pass >= 0) // to clear this reply
-                    {
-                        code = 0; // set to cleared
-                        content = null; // NOTE: the buffer won't return to the pool
-                        maxage = 0;
-                        stamp = now; // time being cleared
-                    }
-
-                    return true;
-                }
-            }
-
-            internal bool TryGive(WebContext wc, int now)
-            {
-                lock (this)
-                {
-                    if (code == 0)
-                    {
-                        return false;
-                    }
-
-                    short remain = (short) (((stamp + maxage * 1000) - now) / 1000); // remaining in seconds
-                    if (remain > 0)
-                    {
-                        wc.IsInCache = true;
-                        wc.Give(code, content, true, remain);
-                        Interlocked.Increment(ref hits);
-                        return true;
-                    }
-
-                    return false;
-                }
-            }
-
-            internal Resp MergeWith(Resp old)
-            {
-                Interlocked.Add(ref hits, old.Hits);
-                return this;
-            }
         }
     }
 }

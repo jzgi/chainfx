@@ -6,9 +6,9 @@ using SkyChain.Db;
 namespace SkyChain.Db
 {
     /// <summary>
-    /// A object holder in registry.
+    /// An entry of object cache.
     /// </summary>
-    internal class DbCache
+    internal class DbHold
     {
         readonly Type typ;
 
@@ -29,7 +29,7 @@ namespace SkyChain.Db
 
         readonly byte flag;
 
-        internal DbCache(Type typ, Func<DbContext, object> fetcher, int maxage, byte flag)
+        internal DbHold(Type typ, Func<DbContext, object> fetcher, int maxage, byte flag)
         {
             this.typ = typ;
             this.flag = flag;

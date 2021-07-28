@@ -180,13 +180,7 @@ namespace SkyChain.Db
             AUTHORIZATION = "Authorization";
 
 
-        public async Task<(short, D)> QueryTopAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData, new()
-        {
-            D d = default;
-            return (0, d);
-        }
-
-        public async Task<(short, D[])> QueryAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData, new()
+        internal async Task<(short, int)> RemoteCallAsync<D>(long ctxid, short txtyp, string procedure, DynamicContent content) where D : IData, new()
         {
             try
             {
@@ -195,48 +189,6 @@ namespace SkyChain.Db
 
                 req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
-
-                // convert sql, parameters, prepare into form-encoding
-                var content = new FormContent(false, 16);
-
-                req.Content = content;
-                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);
-                req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
-
-                // response
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.StatusCode != HttpStatusCode.OK)
-                {
-                    return ((short) rsp.StatusCode, null);
-                }
-                var hdrs = rsp.Content.Headers;
-
-                var bytea = await rsp.Content.ReadAsByteArrayAsync();
-                var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var lst = new ValueList<D>(32);
-                var d = arr.ToArray<D>();
-
-                return (200, d);
-            }
-            catch
-            {
-                status = NETWORK_ERROR;
-                return (0, null);
-            }
-        }
-
-        public async Task<(short, int)> ExecuteAsync<D>(string sql, Action<IParameters> p = null, bool prepare = true) where D : IData
-        {
-            try
-            {
-                // request
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onsql");
-
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
-
-                // convert sql, parameters, prepare into form-encoding
-                var content = new FormContent(false, 16);
 
                 req.Content = content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);

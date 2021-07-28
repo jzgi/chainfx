@@ -65,7 +65,7 @@ namespace SkyChain.Db
         {
             var v = new L
             {
-                typ = typ
+                trantyp = typ
             };
             logics.Add(v);
         }

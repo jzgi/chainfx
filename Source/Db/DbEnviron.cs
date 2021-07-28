@@ -25,12 +25,12 @@ namespace SkyChain.Db
         }
 
         //
-        // Object Cache API
+        // Db Cache API
         //
 
-        const int MAX_CELLS = 32;
+        const int MAX_HOLDS = 32;
 
-        static DbCache[] caches;
+        static DbHold[] cache;
 
         static int size;
 
@@ -39,24 +39,24 @@ namespace SkyChain.Db
             dbsource = new DbSource(dbcfg);
         }
 
-        public static void CreateCache<V>(Func<DbContext, V> fetcher, int maxage = 60, byte flag = 0) where V : class
+        public static void Register<V>(Func<DbContext, V> fetcher, int maxage = 60, byte flag = 0) where V : class
         {
-            if (caches == null)
+            if (cache == null)
             {
-                caches = new DbCache[MAX_CELLS];
+                cache = new DbHold[MAX_HOLDS];
             }
 
-            caches[size++] = new DbCache(typeof(V), fetcher, maxage, flag);
+            cache[size++] = new DbHold(typeof(V), fetcher, maxage, flag);
         }
 
-        public static void CreateCache<V>(Func<DbContext, Task<V>> fetcher, int maxage = 60, byte flag = 0) where V : class
+        public static void Register<V>(Func<DbContext, Task<V>> fetcher, int maxage = 60, byte flag = 0) where V : class
         {
-            if (caches == null)
+            if (cache == null)
             {
-                caches = new DbCache[MAX_CELLS];
+                cache = new DbHold[MAX_HOLDS];
             }
 
-            caches[size++] = new DbCache(typeof(V), fetcher, maxage, flag);
+            cache[size++] = new DbHold(typeof(V), fetcher, maxage, flag);
         }
 
         /// <summary>
@@ -66,16 +66,16 @@ namespace SkyChain.Db
         /// <returns>the result object or null</returns>
         public static T Obtain<T>(byte flag = 0) where T : class
         {
-            if (caches != null)
+            if (cache != null)
             {
                 for (var i = 0; i < size; i++)
                 {
-                    var cache = caches[i];
-                    if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                    var hold = cache[i];
+                    if (hold.Flag == 0 || (hold.Flag & flag) > 0)
                     {
-                        if (!cache.IsAsync && typeof(T).IsAssignableFrom(cache.Typ))
+                        if (!hold.IsAsync && typeof(T).IsAssignableFrom(hold.Typ))
                         {
-                            return cache.GetValue() as T;
+                            return hold.GetValue() as T;
                         }
                     }
                 }
@@ -92,16 +92,16 @@ namespace SkyChain.Db
         /// <returns></returns>
         public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
         {
-            if (caches != null)
+            if (cache != null)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    var cache = caches[i];
-                    if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                    var hold = cache[i];
+                    if (hold.Flag == 0 || (hold.Flag & flag) > 0)
                     {
-                        if (cache.IsAsync && typeof(T).IsAssignableFrom(cache.Typ))
+                        if (hold.IsAsync && typeof(T).IsAssignableFrom(hold.Typ))
                         {
-                            return await cache.GetValueAsync() as T;
+                            return await hold.GetValueAsync() as T;
                         }
                     }
                 }

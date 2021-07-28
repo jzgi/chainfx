@@ -12,6 +12,8 @@ namespace SkyChain.Db
 
         short id;
 
+        short txtyp;
+
         // slave context id list
         ValueList<short> slaves;
 
@@ -28,48 +30,42 @@ namespace SkyChain.Db
         }
 
 
-        public async Task<D> QueryTopAsync<D>(short peerid, string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<bool> OperateAsync<D>(short peerid, string op, Action<IParameters> p = null, byte proj = 0x0f) where D : IData, new()
         {
-            if (peerid == 0 || peerid == local.id)
+            if (peerid == 0 || peerid == local.id) // call in- place
             {
                 // local
-                return await QueryTopAsync<D>(sql, p, proj, prepare);
-            }
-            else
-            {
-                var conn = ChainEnviron.GetClient(peerid);
-                if (conn != null)
-                {
-                    var (code, v) = await conn.QueryTopAsync<D>(sql, p, prepare);
-                    return v;
-                }
-                else
-                {
-                    throw new ChainException("");
-                }
-            }
-        }
+                var lgc = ChainEnviron.GetLogic(txtyp);
+                var o = lgc.GetOperation(op);
 
-        public async Task<D[]> QueryAsync<D>(short peerid, string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
-        {
-            if (peerid == 0 || peerid == local.id)
-            {
-                // local
-                return await QueryAsync<D>(sql, p, proj, prepare);
+                // call
+                if (o.IsAsync)
+                {
+                    await o.DoAsync(this);
+                }
+                else
+                {
+                    o.Do(this);
+                }
             }
-            else
+            else // call remote
             {
                 var conn = ChainEnviron.GetClient(peerid);
                 if (conn != null)
                 {
-                    var (code, v) = await conn.QueryAsync<D>(sql, p, prepare);
-                    return v;
+                    // args
+                    var cnt = new JsonContent(true, 1024);
+                    cnt.Put(null, In);
+
+                    // remote call
+                    var (code, v) = await conn.RemoteCallAsync<D>(id, txtyp, op, cnt);
                 }
                 else
                 {
                     throw new ChainException("");
                 }
             }
+            return false;
         }
     }
 }

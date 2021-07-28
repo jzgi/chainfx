@@ -20,7 +20,7 @@ namespace SkyChain.Db
             string op = f[nameof(op)];
 
             var lgc = ChainEnviron.GetLogic(typ);
-            var o = lgc.GetOp(op);
+            var o = lgc.GetOperation(op);
 
             var ctx = ChainEnviron.AcquireSlaveContext(id, level);
             if (o.IsAsync)

@@ -62,7 +62,7 @@ namespace SkyChain.Web
             foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 // verify the return type
-                Type ret = mi.ReturnType;
+                var ret = mi.ReturnType;
                 bool async;
                 if (ret == typeof(Task)) async = true;
                 else if (ret == typeof(void)) async = false;

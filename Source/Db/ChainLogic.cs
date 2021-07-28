@@ -1,42 +1,59 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class ChainLogic : IKeyable<short>
+    public abstract class ChainLogic : IKeyable<short>
     {
-        // declared ops 
-        readonly Map<string, ChainOp> ops = new Map<string, ChainOp>(32);
+        public short trantyp;
 
-        public short typ;
+        // declared operations 
+        readonly Map<string, ChainOperation> operations = new Map<string, ChainOperation>(32);
 
-        public ChainLogic(short typ)
+        protected ChainLogic(short trantyp)
         {
-            this.typ = typ;
+            this.trantyp = trantyp;
+
+            // gather actions
+            foreach (var mi in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                // return task or void
+                var ret = mi.ReturnType;
+                bool async;
+                if (ret == typeof(Task<bool>))
+                {
+                    async = true;
+                }
+                else if (ret == typeof(bool))
+                {
+                    async = false;
+                }
+                else
+                {
+                    continue;
+                }
+
+                // signature filtering
+                var pis = mi.GetParameters();
+                ChainOperation op;
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(ChainContext))
+                {
+                    op = new ChainOperation(this, mi, async);
+                }
+                else
+                {
+                    continue;
+                }
+
+                operations.Add(op);
+            }
         }
 
-        public ChainOp GetOp(string name) => ops[name];
+        public ChainOperation GetOperation(string name) => operations[name];
 
         public bool OnValidate(_Ety[] row)
         {
             return false;
-        }
-
-
-        public bool OnStart(_Ety row)
-        {
-            return false;
-        }
-
-        public bool OnEnd(_Ety row)
-        {
-            return false;
-        }
-
-
-        public ChainLogic Typ(short typ)
-        {
-            this.typ = typ;
-            return this;
         }
 
 
@@ -57,15 +74,16 @@ namespace SkyChain.Db
             }
         }
 
-        public void save(ChainContext cc)
+        public bool save(ChainContext cc)
         {
+            return false;
         }
 
         public ChainLogic Row(string acct, string name, string remark, decimal amt)
         {
             var r = new _Ety()
             {
-                typ = this.typ,
+                typ = this.trantyp,
                 acct = acct,
                 name = name,
                 remark = remark,
@@ -79,7 +97,7 @@ namespace SkyChain.Db
         {
             var r = new _Ety()
             {
-                typ = this.typ,
+                typ = this.trantyp,
                 acct = acct,
                 name = name,
                 remark = remark,
@@ -89,6 +107,6 @@ namespace SkyChain.Db
             return this;
         }
 
-        public short Key => typ;
+        public short Key => trantyp;
     }
 }

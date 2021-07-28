@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class ChainOp
+    public class ChainOperation : IKeyable<string>
     {
         // the governing logic
         readonly ChainLogic logic;
@@ -23,7 +23,7 @@ namespace SkyChain.Db
         readonly Func<ChainContext, bool> @do;
         readonly Func<ChainContext, Task<bool>> doAsync;
 
-        internal ChainOp(ChainLogic logic, MethodInfo mi, bool async)
+        internal ChainOperation(ChainLogic logic, MethodInfo mi, bool async)
         {
             this.logic = logic;
             this.name = mi.Name == "default" ? string.Empty : mi.Name;
