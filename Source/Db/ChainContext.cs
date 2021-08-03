@@ -6,7 +6,7 @@ namespace SkyChain.Db
     public class ChainContext : DbContext
     {
         // whether a master context
-        bool master;
+        public bool Master { get; set; }
 
         short remoteid;
 
@@ -30,7 +30,7 @@ namespace SkyChain.Db
         }
 
 
-        public async Task<bool> OperateAsync<D>(short peerid, string op, Action<IParameters> p = null, byte proj = 0x0f) where D : IData, new()
+        public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, byte proj = 0x0f)
         {
             if (peerid == 0 || peerid == local.id) // call in- place
             {
@@ -58,7 +58,7 @@ namespace SkyChain.Db
                     cnt.Put(null, In);
 
                     // remote call
-                    var (code, v) = await conn.RemoteCallAsync<D>(id, txtyp, op, cnt);
+                    var (code, v) = await conn.CallAsync(id, txtyp, op, cnt);
                 }
                 else
                 {

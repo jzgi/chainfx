@@ -52,20 +52,19 @@ namespace SkyChain.Db
                 throw new ServerException("missing 'db' in app.json");
             }
 
-            return dbsource.NewChainContext(level);
+            return dbsource.NewChainContext(true, level);
         }
 
 
         /// <summary>
         /// Creates a chain logic that demetermines behaviors for transactions.
         /// </summary>
-        /// <param name="typ"></param>
+        /// <param name="txtyp"></param>
         /// <typeparam name="L"></typeparam>
-        public static void CreateLogic<L>(short typ) where L : ChainLogic, new()
+        public static void MakeLogic<L>(short txtyp) where L : ChainLogic, new()
         {
             var v = new L
             {
-                trantyp = typ
             };
             logics.Add(v);
         }
@@ -294,7 +293,7 @@ namespace SkyChain.Db
         static readonly ConcurrentDictionary<long, ChainContext> slavectxs = new ConcurrentDictionary<long, ChainContext>();
 
 
-        internal static ChainContext AcquireSlaveContext(long id, IsolationLevel level)
+        internal static ChainContext AcquireSlave(long id, IsolationLevel level)
         {
             if (id > 0)
             {

@@ -153,7 +153,7 @@ namespace SkyChain.Web
         }
 
 
-        protected internal virtual void OnCreate()
+        protected internal virtual void OnMake()
         {
         }
 
@@ -175,7 +175,7 @@ namespace SkyChain.Web
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T CreateVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T MakeVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             var wrk = new T
             {
@@ -195,7 +195,7 @@ namespace SkyChain.Web
 
             varwork = wrk;
 
-            wrk.OnCreate();
+            wrk.OnMake();
             return wrk;
         }
 
@@ -217,7 +217,7 @@ namespace SkyChain.Web
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T CreateWork<T>(string name, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T MakeWork<T>(string name, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             if (works == null)
             {
@@ -242,7 +242,7 @@ namespace SkyChain.Web
 
             works.Add(wrk);
 
-            wrk.OnCreate();
+            wrk.OnMake();
             return wrk;
         }
 
@@ -467,14 +467,14 @@ namespace SkyChain.Web
             return DbEnviron.NewDbContext(level);
         }
 
-        public static T Obtain<T>(byte flag = 0) where T : class
+        public static T Fetch<T>(byte flag = 0) where T : class
         {
-            return DbEnviron.Obtain<T>(flag);
+            return DbEnviron.Fetch<T>(flag);
         }
 
-        public static async Task<T> ObtainAsync<T>(byte flag = 0) where T : class
+        public static async Task<T> FetchAsync<T>(byte flag = 0) where T : class
         {
-            return await DbEnviron.ObtainAsync<T>(flag);
+            return await DbEnviron.FetchAsync<T>(flag);
         }
 
 

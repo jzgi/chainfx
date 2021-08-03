@@ -97,7 +97,7 @@ namespace SkyChain
         public static X509Certificate2 Cert => cert;
 
 
-        public static T CreateService<T>(string name) where T : WebService, new()
+        public static T MakeService<T>(string name) where T : WebService, new()
         {
             if (webcfg == null)
             {
@@ -118,7 +118,7 @@ namespace SkyChain
             };
             services.Add(name, svc);
 
-            svc.OnCreate();
+            svc.OnMake();
             return svc;
         }
 

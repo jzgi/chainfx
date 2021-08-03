@@ -29,7 +29,7 @@ namespace SkyChain.Web
         readonly KestrelServer server;
 
         // shared cache of recent responses
-        readonly ConcurrentDictionary<string, WebHold> cache;
+        readonly ConcurrentDictionary<string, WebHold> holds;
 
         // the response cache cleaner thread
         Thread cleaner;
@@ -42,7 +42,7 @@ namespace SkyChain.Web
 
             // create the response cache
             int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            cache = new ConcurrentDictionary<string, WebHold>(factor * 4, 1024);
+            holds = new ConcurrentDictionary<string, WebHold>(factor * 4, 1024);
 
             // create the embedded server instance
             var opts = new KestrelServerOptions
@@ -227,7 +227,7 @@ namespace SkyChain.Web
             Console.WriteLine("[" + Name + "] started at " + address);
 
             // create and start the cleaner thread
-            if (cache != null)
+            if (holds != null)
             {
                 cleaner = new Thread(() =>
                 {
@@ -238,11 +238,11 @@ namespace SkyChain.Web
 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
-                        foreach (var resp in cache)
+                        foreach (var resp in holds)
                         {
                             if (!resp.Value.TryClean(now))
                             {
-                                cache.TryRemove(resp.Key, out _);
+                                holds.TryRemove(resp.Key, out _);
                             }
                         }
                     }
@@ -275,7 +275,7 @@ namespace SkyChain.Web
                 if (!wc.IsInCache && wc.Shared == true && WebHold.IsCacheable(wc.StatusCode))
                 {
                     var resp = new WebHold(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    cache.AddOrUpdate(wc.Uri, resp, (key, old) => old);
+                    holds.AddOrUpdate(wc.Uri, resp, (key, old) => old);
                     wc.IsInCache = true;
                 }
             }
@@ -285,7 +285,7 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (cache.TryGetValue(wc.Uri, out var resp))
+                if (holds.TryGetValue(wc.Uri, out var resp))
                 {
                     return resp.TryGive(wc, Environment.TickCount);
                 }

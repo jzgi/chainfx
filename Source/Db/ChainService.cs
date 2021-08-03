@@ -22,7 +22,7 @@ namespace SkyChain.Db
             var lgc = ChainEnviron.GetLogic(typ);
             var o = lgc.GetOperation(op);
 
-            var ctx = ChainEnviron.AcquireSlaveContext(id, level);
+            var ctx = ChainEnviron.AcquireSlave(id, level);
             if (o.IsAsync)
             {
                 return await o.DoAsync(ctx);

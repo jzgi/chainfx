@@ -4,12 +4,12 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Db
 {
-    [Ui("联盟链")]
+    [Ui("联盟")]
     public class ChainWork : WebWork
     {
-        protected internal override void OnCreate()
+        protected internal override void OnMake()
         {
-            CreateVarWork<ChainVarWork>();
+            MakeVarWork<ChainVarWork>();
         }
 
         [Ui("本节点"), Tool(Anchor)]

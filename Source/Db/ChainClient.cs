@@ -134,7 +134,7 @@ namespace SkyChain.Db
                 // schedule to execute
                 if (polltsk == null || polltsk.IsCompleted)
                 {
-                    (polltsk = RemotePollAsync(blockid)).Start();
+                    (polltsk = PollAsync(blockid)).Start();
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, Archival[])> RemotePollAsync(int blockid)
+        async Task<(short, Archival[])> PollAsync(int blockid)
         {
             try
             {
@@ -180,12 +180,20 @@ namespace SkyChain.Db
             AUTHORIZATION = "Authorization";
 
 
-        internal async Task<(short, int)> RemoteCallAsync<D>(long ctxid, short txtyp, string procedure, DynamicContent content) where D : IData, new()
+        /// <summary>
+        /// To call an operation which is on the remote peer.
+        /// </summary>
+        /// <param name="ctxid"></param>
+        /// <param name="txtyp"></param>
+        /// <param name="op"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        internal async Task<(int status, bool ok)> CallAsync(long ctxid, short txtyp, string op, DynamicContent content)
         {
             try
             {
                 // request
-                var req = new HttpRequestMessage(HttpMethod.Get, "/onsql");
+                var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
@@ -198,16 +206,16 @@ namespace SkyChain.Db
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode != HttpStatusCode.OK)
                 {
-                    return ((short) rsp.StatusCode, 1);
+                    return ((short) rsp.StatusCode, false);
                 }
                 var hdrs = rsp.Content.Headers;
 
-                return (200, 1);
+                return (200, false);
             }
             catch
             {
                 status = NETWORK_ERROR;
-                return (0, 1);
+                return (0, false);
             }
         }
     }

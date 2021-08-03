@@ -6,19 +6,20 @@ namespace SkyChain.Db
 {
     public class ChainOperation : IKeyable<string>
     {
-        // the governing logic
+        // the declaring logic
         readonly ChainLogic logic;
 
+        // coding name
         readonly string name;
 
-        // relative path
-        readonly string relative;
+        // description
+        readonly string tip;
 
         readonly bool async;
 
         readonly VerAttribute ver;
 
-        // 4 possible forms of the action method
+        // forms of the operation method
         //
         readonly Func<ChainContext, bool> @do;
         readonly Func<ChainContext, Task<bool>> doAsync;
@@ -26,8 +27,8 @@ namespace SkyChain.Db
         internal ChainOperation(ChainLogic logic, MethodInfo mi, bool async)
         {
             this.logic = logic;
-            this.name = mi.Name == "default" ? string.Empty : mi.Name;
-            this.relative = name == string.Empty ? "./" : name;
+            this.name =  mi.Name;
+            this.tip = name == string.Empty ? "./" : name;
             this.async = async;
 
             ver = (VerAttribute) mi.GetCustomAttribute(typeof(VerAttribute), true);
@@ -53,7 +54,7 @@ namespace SkyChain.Db
 
         public string Key => name;
 
-        public string Relative => relative;
+        public string Tip => tip;
 
         public bool IsAsync => async;
 

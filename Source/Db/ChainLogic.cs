@@ -5,14 +5,15 @@ namespace SkyChain.Db
 {
     public abstract class ChainLogic : IKeyable<short>
     {
-        public short trantyp;
+        // transaction type
+        readonly short txtyp;
 
         // declared operations 
         readonly Map<string, ChainOperation> operations = new Map<string, ChainOperation>(32);
 
-        protected ChainLogic(short trantyp)
+        protected ChainLogic(short txtyp)
         {
-            this.trantyp = trantyp;
+            this.txtyp = txtyp;
 
             // gather actions
             foreach (var mi in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -83,7 +84,7 @@ namespace SkyChain.Db
         {
             var r = new _Ety()
             {
-                typ = this.trantyp,
+                typ = this.txtyp,
                 acct = acct,
                 name = name,
                 remark = remark,
@@ -97,7 +98,7 @@ namespace SkyChain.Db
         {
             var r = new _Ety()
             {
-                typ = this.trantyp,
+                typ = this.txtyp,
                 acct = acct,
                 name = name,
                 remark = remark,
@@ -107,6 +108,6 @@ namespace SkyChain.Db
             return this;
         }
 
-        public short Key => trantyp;
+        public short Key => txtyp;
     }
 }
