@@ -5,7 +5,7 @@ namespace SkyChain.Source.Web
     /// <summary>
     /// An entry of cached response, that might be cleared but not removed 
     /// </summary>
-    public class WebHold
+    public class WebCache
     {
         // cacheable response status, or 0 means cleared
         int code;
@@ -19,7 +19,7 @@ namespace SkyChain.Source.Web
         // time ticks when entered or cleared
         int stamp;
 
-        internal WebHold(int code, IContent content, int maxage, int stamp)
+        internal WebCache(int code, IContent content, int maxage, int stamp)
         {
             this.code = code;
             this.content = content;

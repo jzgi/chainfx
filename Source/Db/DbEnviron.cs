@@ -29,65 +29,55 @@ namespace SkyChain.Db
         // Db Cache API
         //
 
-        const int MAX_HOLDS = 32;
+        static List<DbCache> objcaches;
 
-        static List<DbHold> simples;
+        static List<DbCache> dictcaches;
 
-        static List<DbHold> complexes;
-
-        static int size;
 
         internal static void ConfigureDb(JObj dbcfg)
         {
             dbsource = new DbSource(dbcfg);
         }
 
-        public static void SetCache<V>(Func<DbContext, V> fetcher, int maxage = 60, byte flag = 0) where V : class
+        public static void MakeCache<T>(Func<DbContext, T> fetcher, int maxage = 60, byte flag = 0) where T : class
         {
-            if (simples == null)
+            if (objcaches == null)
             {
-                simples = new List<DbHold>(16);
+                objcaches = new List<DbCache>(16);
             }
-            simples.Add(new DbSimpleHold<V>(typeof(V), maxage, flag)
-            {
-                Fetcher = fetcher
-            });
+            objcaches.Add(new DbCache<T>(typeof(T), fetcher, maxage, flag));
         }
 
-        public static void SetCache<V>(Func<DbContext, Task<V>> fetcherAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void MakeCache<T>(Func<DbContext, Task<T>> fetcher, int maxage = 60, byte flag = 0) where T : class
         {
-            if (simples == null)
+            if (objcaches == null)
             {
-                simples = new List<DbHold>(16);
+                objcaches = new List<DbCache>(16);
             }
-            simples.Add(new DbSimpleHold<V>(typeof(V), maxage, flag)
-            {
-                FetcherAsync = fetcherAsync
-            });
+            objcaches.Add(new DbCache<T>(typeof(T), fetcher, maxage, flag));
         }
 
-        public static void SetCache<K, V>(Func<DbContext, (K, V)> fetcher, int maxage = 60, byte flag = 0) where V : class
+
+        // public static void MakeCache<T>(Func<DbContext, Task<T>> fetcher, int maxage = 60, byte flag = 0) where T : class
+        // {
+        // }
+
+        public static void MakeCache<D, T>(Func<DbContext, D, T> fetcher, int maxage = 60, byte flag = 0) where T : class
         {
-            if (complexes == null)
+            if (dictcaches == null)
             {
-                complexes = new List<DbHold>();
+                dictcaches = new List<DbCache>();
             }
-            complexes.Add(new DbComplexHold<K, V>(typeof(V), maxage, flag)
-            {
-                Fetcher = fetcher
-            });
+            dictcaches.Add(new DbCache<D, T>(typeof(T), fetcher, maxage, flag));
         }
 
-        public static void SetCache<K, V>(Func<DbContext, Task<(K, V)>> fetcherAsync, int maxage = 60, byte flag = 0) where V : class
+        public static void MakeCache<D, T>(Func<DbContext, D, Task<T>> fetcher, int maxage = 60, byte flag = 0) where T : class
         {
-            if (complexes == null)
+            if (dictcaches == null)
             {
-                complexes = new List<DbHold>();
+                dictcaches = new List<DbCache>();
             }
-            complexes.Add(new DbComplexHold<K, V>(typeof(V), maxage, flag)
-            {
-                FetcherAsync = fetcherAsync
-            });
+            dictcaches.Add(new DbCache<D, T>(typeof(T), fetcher, maxage, flag));
         }
 
 
@@ -98,17 +88,17 @@ namespace SkyChain.Db
         /// <returns>the result object or null</returns>
         public static T Fetch<T>(byte flag = 0) where T : class
         {
-            if (simples != null)
+            if (objcaches == null)
             {
-                for (var i = 0; i < size; i++)
+                return null;
+            }
+            foreach (var cache in objcaches)
+            {
+                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
-                    var hold = simples[i];
-                    if (hold.Flag == 0 || (hold.Flag & flag) > 0)
+                    if (!cache.IsAsync && typeof(T).IsAssignableFrom(cache.Typ))
                     {
-                        if (!hold.IsAsync && typeof(T).IsAssignableFrom(hold.Typ))
-                        {
-                            return ((DbSimpleHold<T>) hold).GetValue();
-                        }
+                        return ((DbCache<T>) cache).GetValue();
                     }
                 }
             }
@@ -120,21 +110,21 @@ namespace SkyChain.Db
         /// To obtain a specified cached object asynchromously.
         /// </summary>
         /// <param name="flag"></param>
-        /// <typeparam name="V">The class must be matched</typeparam>
+        /// <typeparam name="T">The class must be matched</typeparam>
         /// <returns></returns>
-        public static async Task<V> FetchAsync<V>(byte flag = 0) where V : class
+        public static async Task<T> FetchAsync<T>(byte flag = 0) where T : class
         {
-            if (simples != null)
+            if (objcaches == null)
             {
-                for (int i = 0; i < size; i++)
+                return null;
+            }
+            foreach (var cache in objcaches)
+            {
+                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
-                    var hold = simples[i];
-                    if (hold.Flag == 0 || (hold.Flag & flag) > 0)
+                    if (cache.IsAsync && typeof(T).IsAssignableFrom(cache.Typ))
                     {
-                        if (hold.IsAsync && typeof(V).IsAssignableFrom(hold.Typ))
-                        {
-                            return await ((DbSimpleHold<V>) hold).GetValueAsync();
-                        }
+                        return await ((DbCache<T>) cache).GetValueAsync();
                     }
                 }
             }
@@ -142,23 +132,42 @@ namespace SkyChain.Db
             return null;
         }
 
-        public static T Fetch<K, T>(K key, byte flag = 0) where T : class
+        public static T Fetch<D, T>(D discr, byte flag = 0) where T : class
         {
-            if (simples != null)
+            if (dictcaches == null)
             {
-                for (var i = 0; i < size; i++)
+                return null;
+            }
+            foreach (var cache in dictcaches)
+            {
+                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
-                    var hold = complexes[i];
-                    if (hold.Flag == 0 || (hold.Flag & flag) > 0)
+                    if (!cache.IsAsync && typeof(T).IsAssignableFrom(cache.Typ))
                     {
-                        if (!hold.IsAsync && typeof(T).IsAssignableFrom(hold.Typ))
-                        {
-                            return ((DbComplexHold<K, T>) hold).GetValue(key);
-                        }
+                        return ((DbCache<D, T>) cache).GetValue(discr);
                     }
                 }
             }
 
+            return null;
+        }
+
+        public static async Task<T> FetchAsync<D, T>(D discr, byte flag = 0) where T : class
+        {
+            if (dictcaches == null)
+            {
+                return null;
+            }
+            foreach (var cache in dictcaches)
+            {
+                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                {
+                    if (cache.IsAsync && typeof(T).IsAssignableFrom(cache.Typ))
+                    {
+                        return await ((DbCache<D, T>) cache).GetValueAsync(discr);
+                    }
+                }
+            }
             return null;
         }
     }

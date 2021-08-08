@@ -97,7 +97,7 @@ namespace SkyChain
         public static X509Certificate2 Cert => cert;
 
 
-        public static T MakeService<T>(string name) where T : WebService, new()
+        public static T MakeWebService<T>(string name) where T : WebService, new()
         {
             if (webcfg == null)
             {

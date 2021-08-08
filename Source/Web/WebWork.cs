@@ -46,6 +46,9 @@ namespace SkyChain.Web
 
         // post-action operation
         public AfterAttribute After { get; internal set; }
+        
+        public object State { get; internal set; }
+
 
         // to obtain a string key from a data object.
         protected WebWork()
@@ -208,16 +211,13 @@ namespace SkyChain.Web
         ///     name="authenticate">
         /// </param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
-        /// <param
-        ///     name="before">
-        /// </param>
-        /// <param
-        ///     name="after">
-        /// </param>
+        /// <param     name="before"> </param>
+        /// <param     name="after"> </param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T MakeWork<T>(string name, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T MakeWork<T>(string name, object state = null, 
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             if (works == null)
             {
@@ -233,6 +233,7 @@ namespace SkyChain.Web
                 IsVar = false,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Pathing = Pathing + name + "/",
+                State = state
             };
             if (ui != null) wrk.Ui = ui;
             if (authenticate != null) wrk.Authenticate = authenticate;
@@ -475,6 +476,16 @@ namespace SkyChain.Web
         public static async Task<T> FetchAsync<T>(byte flag = 0) where T : class
         {
             return await DbEnviron.FetchAsync<T>(flag);
+        }
+
+        public static T Fetch<D, T>(D discr, byte flag = 0) where T : class
+        {
+            return DbEnviron.Fetch<D, T>(discr, flag);
+        }
+
+        public static async Task<T> FetchAsync<D, T>(D discr, byte flag = 0) where T : class
+        {
+            return await DbEnviron.FetchAsync<D, T>(discr, flag);
         }
 
 

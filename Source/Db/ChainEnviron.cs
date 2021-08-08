@@ -61,7 +61,7 @@ namespace SkyChain.Db
         /// </summary>
         /// <param name="txtyp"></param>
         /// <typeparam name="L"></typeparam>
-        public static void MakeLogic<L>(short txtyp) where L : ChainLogic, new()
+        public static void MakeChainLogic<L>(short txtyp) where L : ChainLogic, new()
         {
             var v = new L
             {
