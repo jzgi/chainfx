@@ -69,13 +69,16 @@ namespace SkyChain
             certpass = cfg[nameof(certpass)];
 
             // create cert
-            try
+            if (certpass != null)
             {
-                cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX), certpass);
-            }
-            catch (Exception e)
-            {
-                WAR(e.Message);
+                try
+                {
+                    cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX), certpass);
+                }
+                catch (Exception e)
+                {
+                    WAR(e.Message);
+                }
             }
 
             // subsections

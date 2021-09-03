@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure;
 using SkyChain.Db;
 
 namespace SkyChain.Web
@@ -46,8 +47,8 @@ namespace SkyChain.Web
 
         // post-action operation
         public AfterAttribute After { get; internal set; }
-        
-        public object State { get; internal set; }
+
+        public object State { get; set; }
 
 
         // to obtain a string key from a data object.
@@ -164,6 +165,9 @@ namespace SkyChain.Web
         /// Create and add a variable-key subwork.
         /// </summary>
         /// <param name="accessor">to resolve key from the principal object</param>
+        /// <param
+        ///     name="state">
+        /// </param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param
         ///     name="authenticate">
@@ -178,7 +182,8 @@ namespace SkyChain.Web
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T MakeVarWork<T>(Func<IData, object> accessor = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T MakeVarWork<T>(Func<IData, object> accessor = null, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             var wrk = new T
             {
@@ -189,6 +194,7 @@ namespace SkyChain.Web
                 Directory = (Parent == null) ? VARDIR : Path.Combine(Parent.Directory, VARDIR),
                 Pathing = Pathing + (accessor == null ? VARPATHING : string.Empty) + "/",
                 Accessor = accessor,
+                State = state
             };
             if (ui != null) wrk.Ui = ui;
             if (authenticate != null) wrk.Authenticate = authenticate;
@@ -206,6 +212,9 @@ namespace SkyChain.Web
         /// Create and add a fixed-key subwork.
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
+        /// <param
+        ///     name="state">
+        /// </param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param
         ///     name="authenticate">
@@ -216,7 +225,7 @@ namespace SkyChain.Web
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T MakeWork<T>(string name, object state = null, 
+        protected T MakeWork<T>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             if (works == null)
@@ -468,24 +477,34 @@ namespace SkyChain.Web
             return DbEnviron.NewDbContext(level);
         }
 
-        public static T Fetch<T>(byte flag = 0) where T : class
+        public static Map<K, V> Fetch<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return DbEnviron.Fetch<T>(flag);
+            return DbEnviron.Obtain<K, V>(flag);
         }
 
-        public static async Task<T> FetchAsync<T>(byte flag = 0) where T : class
+        public static async Task<Map<K, V>> FetchAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return await DbEnviron.FetchAsync<T>(flag);
+            return await DbEnviron.ObtainAsync<K, V>(flag);
         }
 
-        public static T Fetch<D, T>(D discr, byte flag = 0) where T : class
+        public static V FetchValue<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return DbEnviron.Fetch<D, T>(discr, flag);
+            return DbEnviron.ObtainValue<K, V>(key, flag);
         }
 
-        public static async Task<T> FetchAsync<D, T>(D discr, byte flag = 0) where T : class
+        public static async Task<V> FetchValueAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return await DbEnviron.FetchAsync<D, T>(discr, flag);
+            return await DbEnviron.ObtainValueAsync<K, V>(key, flag);
+        }
+
+        public static Map<K, V> FetchSub<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
+        {
+            return DbEnviron.ObtainSub<D, K, V>(discr, flag);
+        }
+
+        public static async Task<Map<K, V>> FetchSubAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
+        {
+            return await DbEnviron.ObtainSubAsync<D, K, V>(discr, flag);
         }
 
 

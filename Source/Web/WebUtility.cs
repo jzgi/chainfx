@@ -204,7 +204,6 @@ namespace SkyChain.Web
             wc.Give(status, h, shared, maxage);
         }
 
-
         /// <summary>
         /// Gives a frame page.
         /// </summary>

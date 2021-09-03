@@ -1569,6 +1569,31 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent SUBNAV<K, V>(Map<K, V> map, string uri, int subscript)
+        {
+            Add("<ul class=\"uk-subnav\">");
+            for (int i = 0; i < map.Count; i++)
+            {
+                var obj = map.ValueAt(i);
+                Add("<li");
+                if (i == subscript)
+                {
+                    Add(" class=\"uk-active\"");
+                }
+
+                Add("><a href=\"");
+                Add(uri);
+                Add('-');
+                Add(i);
+                Add("\">");
+                Add(obj.ToString());
+                Add("</a></li>");
+            }
+
+            Add("</ul>");
+            return this;
+        }
+
         public HtmlContent FORM_(string css = null, string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null)
         {
             Add("<form class=\"");
@@ -2498,6 +2523,38 @@ namespace SkyChain.Web
 
             return this;
         }
+
+        public void OPLIST(byte group = 0)
+        {
+            var wc = Web;
+            var wrk = wc.Work;
+            var subwrks = wrk.Works;
+            // render tabs
+            UL_("uk-card uk-card-body uk-list uk-list-divider");
+            for (int i = 0; i < subwrks?.Count; i++)
+            {
+                var sub = subwrks.ValueAt(i);
+                if (sub.Group != 0 && (sub.Group & group) != sub.Group)
+                {
+                    continue;
+                }
+
+                if (sub.Ui == null || !sub.DoAuthorize(wc))
+                {
+                    continue;
+                }
+
+                LI_();
+                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-flex uk-button-link uk-width-1-1\" target=\"feature\">");
+                T("<span class=\"uk-width-micro\" uk-icon=\"").T(sub.Label).T("\"></span>").SP();
+                Add(sub.Label);
+                Add("<span class=\"uk-margin-auto-left\" uk-icon=\"chevron-right\"></span></a>");
+                _LI();
+            }
+
+            _UL();
+        }
+
 
         public HtmlContent CROPPIE(short wid, short hei, string caption, bool large = false)
         {
@@ -3789,7 +3846,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, bool required = true, sbyte size = 0, bool rtl = false, bool refresh = false, Func<K, V, bool> filter = null)
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Func<K, V, bool> filter = null)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opt != null)

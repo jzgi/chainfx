@@ -68,6 +68,8 @@ namespace SkyChain.Db
 
         public string Name => name;
 
+        public short Status => status;
+
         public string Domain => domain;
 
         public DateTime Created => created;

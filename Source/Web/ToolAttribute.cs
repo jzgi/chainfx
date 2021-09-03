@@ -28,7 +28,7 @@ namespace SkyChain.Web
 
         readonly bool access;
 
-        public ToolAttribute(Modal modal, Appear appear = Appear.Full, bool access = true)
+        public ToolAttribute(Modal modal, Appear appear = Appear.Large, bool access = true)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;

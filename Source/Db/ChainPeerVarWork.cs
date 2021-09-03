@@ -4,7 +4,7 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Db
 {
-    public class ChainVarWork : WebWork
+    public class ChainPeerVarWork : WebWork
     {
         [Ui("修改", group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)
