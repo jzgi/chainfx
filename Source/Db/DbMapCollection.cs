@@ -229,27 +229,22 @@ namespace SkyChain.Db
         }
     }
 
-    internal class DbValueCollection<K, V> : DbCache
+    internal class DbCollection<K, V> : DbCache
     {
         readonly bool async;
 
-        // either of two types
-        readonly IDisposable @lock;
-
         readonly ConcurrentDictionary<K, V> cached = new ConcurrentDictionary<K, V>();
 
-        internal DbValueCollection(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag)
+        internal DbCollection(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = false;
-            @lock = new ReaderWriterLockSlim();
         }
 
-        internal DbValueCollection(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag)
+        internal DbCollection(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = true;
-            @lock = new SemaphoreSlim(1, 1);
         }
 
         public override bool IsAsync => async;
@@ -261,37 +256,26 @@ namespace SkyChain.Db
             {
                 throw new DbException("Missing fetcher for " + Typ);
             }
-            var slim = (ReaderWriterLockSlim) @lock;
-            slim.EnterUpgradeableReadLock();
-            try
+            var tick = Environment.TickCount & int.MaxValue; // positive tick
+            V value;
+            if (tick >= expiry) // if re-fetch
             {
-                var tick = Environment.TickCount & int.MaxValue; // positive tick
-                V value;
-                if (tick >= expiry) // if re-fetch
-                {
-                    slim.EnterWriteLock();
-                    try
-                    {
-                        using var dc = DbEnviron.NewDbContext();
-                        value = func(dc, key);
-                        cached.TryAdd(key, value); // re-cache
-                        expiry = tick + MaxAge * 1000;
-                    }
-                    finally
-                    {
-                        slim.ExitWriteLock();
-                    }
-                }
-                else
-                {
-                    cached.TryGetValue(key, out value);
-                }
-                return value;
+                using var dc = DbEnviron.NewDbContext();
+                value = func(dc, key);
+                cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
+                expiry = tick + MaxAge * 1000;
             }
-            finally
+            else
             {
-                slim.ExitUpgradeableReadLock();
+                if (!cached.TryGetValue(key, out value))
+                {
+                    using var dc = DbEnviron.NewDbContext();
+                    value = func(dc, key);
+                    cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
+                    expiry = tick + MaxAge * 1000;
+                }
             }
+            return value;
         }
 
         public async Task<V> GetAsync(K key)
@@ -300,29 +284,20 @@ namespace SkyChain.Db
             {
                 throw new DbException("Missing fetcher for " + Typ);
             }
-            var slim = (SemaphoreSlim) @lock;
-            await slim.WaitAsync();
-            try
+            var ticks = Environment.TickCount & int.MaxValue; // positive tick
+            V value;
+            if (ticks >= expiry) // if re-fetch
             {
-                var ticks = Environment.TickCount & int.MaxValue; // positive tick
-                V value;
-                if (ticks >= expiry) // if re-fetch
-                {
-                    using var dc = DbEnviron.NewDbContext();
-                    value = await func(dc, key);
-                    cached.TryAdd(key, value); // re-cache
-                    expiry = ticks + MaxAge * 1000;
-                }
-                else
-                {
-                    cached.TryGetValue(key, out value);
-                }
-                return value;
+                using var dc = DbEnviron.NewDbContext();
+                value = await func(dc, key);
+                cached.TryAdd(key, value); // re-cache
+                expiry = ticks + MaxAge * 1000;
             }
-            finally
+            else
             {
-                slim.Release();
+                cached.TryGetValue(key, out value);
             }
+            return value;
         }
     }
 

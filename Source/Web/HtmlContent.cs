@@ -1161,7 +1161,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD<V>(string label, V v)
         {
             LABEL(label);
-            Add("<span class=\"uk-input\">");
+            Add("<span>");
             AddPrimitive(v);
             Add("</span>");
             return this;
@@ -1170,7 +1170,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD2<V, X>(string label, V v, X x)
         {
             LABEL(label);
-            Add("<span class=\"uk-input\">");
+            Add("<span>");
             AddPrimitive(v);
             Add("&nbsp;");
             AddPrimitive(x);
@@ -1181,7 +1181,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD(string label, decimal v, bool currency = false)
         {
             LABEL(label);
-            Add("<span class=\"uk-input\">");
+            Add("<span>");
             if (currency)
             {
                 Add('￥');
@@ -1194,7 +1194,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD(string label, bool v)
         {
             LABEL(label);
-            Add("<span class=\"uk-input\">");
+            Add("<span>");
             if (v)
             {
                 Add("&checkmark;");
@@ -1206,7 +1206,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD<K, V>(string label, K[] keys, Map<K, V> map)
         {
             LABEL(label);
-            Add("<span class=\"uk-input\">");
+            Add("<span>");
             if (keys != null)
             {
                 for (int i = 0; i < keys.Length; i++)
@@ -1671,7 +1671,7 @@ namespace SkyChain.Web
                 Add("</legend>");
             }
 
-            Add("<ul>");
+            Add("<ul class=\"uk-list uk-list-divider\">");
             return this;
         }
 
@@ -2331,7 +2331,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool refresh = true, bool top = true)
+        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool top = true)
         {
             byte ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2339,6 +2339,7 @@ namespace SkyChain.Web
             Add(top ? "uk-top-bar" : "uk-bottom-bar");
             Add("\">");
             Add("<span class=\"uk-button-group\">");
+
             if (toggle)
             {
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
@@ -2374,11 +2375,6 @@ namespace SkyChain.Web
                 Add("<input name=\"rangekey\" type=\"hidden\" value=\"");
                 Add(rangekey);
                 Add("\">");
-            }
-
-            if (refresh)
-            {
-                Add("<a class=\"uk-icon-button\" href=\"javascript: location.reload(false);\" uk-icon=\"refresh\"></a>");
             }
 
             Add("</span>");
@@ -2530,7 +2526,7 @@ namespace SkyChain.Web
             var wrk = wc.Work;
             var subwrks = wrk.Works;
             // render tabs
-            UL_("uk-card uk-card-body uk-list uk-list-divider");
+            UL_("uk-card- uk-card-primary uk-card-body uk-list uk-list-divider");
             for (int i = 0; i < subwrks?.Count; i++)
             {
                 var sub = subwrks.ValueAt(i);
@@ -2544,12 +2540,19 @@ namespace SkyChain.Web
                     continue;
                 }
 
-                LI_();
-                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-flex uk-button-link uk-width-1-1\" target=\"feature\">");
-                T("<span class=\"uk-width-micro\" uk-icon=\"").T(sub.Label).T("\"></span>").SP();
+                var rest = i % 2;
+                if (rest == 0)
+                {
+                    LI_();
+                }
+                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-flex uk-button-link uk-width-1-2\");\">");
+                T("<span class=\"uk-width-micro\" uk-icon=\"").T(sub.Icon).T("\"></span>").SP();
                 Add(sub.Label);
                 Add("<span class=\"uk-margin-auto-left\" uk-icon=\"chevron-right\"></span></a>");
-                _LI();
+                if (rest == 1)
+                {
+                    _LI();
+                }
             }
 
             _UL();
@@ -3871,6 +3874,10 @@ namespace SkyChain.Web
                     }
                     else
                     {
+                        if (!required && i == 0)
+                        {
+                            Add("<option value=\"\"></option>");
+                        }
                         var key = e.Key;
                         Add("<option value=\"");
                         AddPrimitive(key);
@@ -3902,6 +3909,10 @@ namespace SkyChain.Web
                 {
                     for (int i = 0; i < opt.Count; i++)
                     {
+                        if (!required && i == 0)
+                        {
+                            Add("<option value=\"\"></option>");
+                        }
                         var e = opt.EntryAt(i);
                         var key = e.Key;
                         Add("<option value=\"");
@@ -3939,6 +3950,10 @@ namespace SkyChain.Web
                 {
                     for (int i = 0; i < opt.Length; i++)
                     {
+                        if (!required && i == 0)
+                        {
+                            Add("<option value=\"\"></option>");
+                        }
                         var e = opt[i];
                         Add("<option value=\"");
                         AddPrimitive(e);
@@ -3961,6 +3976,10 @@ namespace SkyChain.Web
             {
                 for (int i = 0; i < opt.Length; i++)
                 {
+                    if (!required && i == 0)
+                    {
+                        Add("<option value=\"\"></option>");
+                    }
                     var e = opt[i];
                     Add("<option value=\"");
                     Add(e);
