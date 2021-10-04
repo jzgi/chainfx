@@ -1538,9 +1538,9 @@ namespace SkyChain.Web
                 Add("</h4>");
             }
 
-            Add("<div>");
+            Add("<p>");
             Add(p);
-            Add("</div>");
+            Add("</p>");
             _ALERT();
             return this;
         }
@@ -2340,13 +2340,19 @@ namespace SkyChain.Web
             Add("\">");
             Add("<span class=\"uk-button-group\">");
 
+            bool inner = Web.Query[nameof(inner)];
+
+            if (inner)
+            {
+                Add("<a class=\"uk-icon-button\" href=\"javascript: closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
+            }
+
             if (toggle)
             {
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
             }
 
             var acts = Web.Work.Tooled;
-            bool inner = Web.Query[nameof(inner)];
             if (acts != null)
             {
                 for (int i = 0; i < acts.Length; i++)
@@ -2520,7 +2526,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public void OPLIST(byte group = 0)
+        public void TASKUL(byte group = 0)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -2545,8 +2551,8 @@ namespace SkyChain.Web
                 {
                     LI_();
                 }
-                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-flex uk-button-link uk-width-1-2\");\">");
-                T("<span class=\"uk-width-micro\" uk-icon=\"").T(sub.Icon).T("\"></span>").SP();
+                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-flex uk-button-link uk-width-1-2\" onclick=\"return dialog(this,8,false,4,'');\">");
+                T("<span class=\"uk-width-micro uk-flex uk-flex-center\" uk-icon=\"").T(sub.Tip).T("\"></span>");
                 Add(sub.Label);
                 Add("<span class=\"uk-margin-auto-left\" uk-icon=\"chevron-right\"></span></a>");
                 if (rest == 1)
@@ -3874,7 +3880,7 @@ namespace SkyChain.Web
                     }
                     else
                     {
-                        if (!required && i == 0)
+                        if (!required && !refresh && i == 0)
                         {
                             Add("<option value=\"\"></option>");
                         }

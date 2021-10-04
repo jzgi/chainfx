@@ -3,7 +3,6 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure;
 using SkyChain.Db;
 
 namespace SkyChain.Web
@@ -108,8 +107,6 @@ namespace SkyChain.Web
         public string Label => Ui?.Label;
 
         public string Tip => Ui?.Tip;
-
-        public string Icon => Ui?.Icon;
 
         public byte Group => Ui?.Group ?? 0;
 
@@ -451,62 +448,62 @@ namespace SkyChain.Web
 
         public static void TRC(string msg, Exception ex = null)
         {
-            ServerEnviron.TRC(msg, ex);
+            ServerEnv.TRC(msg, ex);
         }
 
         public static void DBG(string msg, Exception ex = null)
         {
-            ServerEnviron.DBG(msg, ex);
+            ServerEnv.DBG(msg, ex);
         }
 
         public static void INF(string msg, Exception ex = null)
         {
-            ServerEnviron.INF(msg, ex);
+            ServerEnv.INF(msg, ex);
         }
 
         public static void WAR(string msg, Exception ex = null)
         {
-            ServerEnviron.WAR(msg, ex);
+            ServerEnv.WAR(msg, ex);
         }
 
         public static void ERR(string msg, Exception ex = null)
         {
-            ServerEnviron.ERR(msg, ex);
+            ServerEnv.ERR(msg, ex);
         }
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return DbEnviron.NewDbContext(level);
+            return DbEnv.NewDbContext(level);
         }
 
         public static Map<K, V> ObtainMap<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return DbEnviron.ObtainMap<K, V>(flag);
+            return DbEnv.ObtainMap<K, V>(flag);
         }
 
         public static async Task<Map<K, V>> ObtainMapAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return await DbEnviron.ObtainMapAsync<K, V>(flag);
+            return await DbEnv.ObtainMapAsync<K, V>(flag);
         }
 
         public static V Obtain<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return DbEnviron.Obtain<K, V>(key, flag);
+            return DbEnv.Obtain<K, V>(key, flag);
         }
 
         public static async Task<V> ObtainAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return await DbEnviron.ObtainAsync<K, V>(key, flag);
+            return await DbEnv.ObtainAsync<K, V>(key, flag);
         }
 
         public static Map<K, V> ObtainSub<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return DbEnviron.ObtainSub<D, K, V>(discr, flag);
+            return DbEnv.ObtainSub<D, K, V>(discr, flag);
         }
 
         public static async Task<Map<K, V>> ObtainSubAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return await DbEnviron.ObtainSubAsync<D, K, V>(discr, flag);
+            return await DbEnv.ObtainSubAsync<D, K, V>(discr, flag);
         }
 
 

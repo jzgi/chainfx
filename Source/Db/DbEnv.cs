@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class DbEnviron
+    public class DbEnv
     {
         protected static DbSource dbsource;
 
@@ -31,9 +31,9 @@ namespace SkyChain.Db
 
         static List<DbCache> maps;
 
-        static List<DbCache> valuecolls;
+        static List<DbCache> valuesets;
 
-        static List<DbCache> mapcolls;
+        static List<DbCache> mapsets;
 
         internal static void ConfigureDb(JObj dbcfg)
         {
@@ -46,25 +46,16 @@ namespace SkyChain.Db
             {
                 maps = new List<DbCache>(16);
             }
-            maps.Add(new DbMapEx<K, V>(fetcher, typeof(V), maxage, flag));
-        }
-
-        public static void CacheMap<K, V, D>(Func<DbContext, Map<K, V>> fetcher, Func<V, D> discr = null, int maxage = 60, byte flag = 0) where K : IComparable<K> where D : IComparable<D>
-        {
-            if (maps == null)
-            {
-                maps = new List<DbCache>(16);
-            }
-            maps.Add(new DbMap<K, V, D>(fetcher, discr, typeof(V), maxage, flag));
+            maps.Add(new DbMap<K, V>(fetcher, typeof(V), maxage, flag));
         }
 
         public static void Cache<K, V>(Func<DbContext, K, V> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (valuecolls == null)
+            if (valuesets == null)
             {
-                valuecolls = new List<DbCache>(16);
+                valuesets = new List<DbCache>(16);
             }
-            valuecolls.Add(new DbCollection<K, V>(fetcher, typeof(V), maxage, flag));
+            valuesets.Add(new DbValueSet<K, V>(fetcher, typeof(V), maxage, flag));
         }
 
         // public static void CacheValue<K, V>(Func<DbContext, K, Task<V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
@@ -79,20 +70,20 @@ namespace SkyChain.Db
 
         public static void CacheSub<S, K, V>(Func<DbContext, S, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (mapcolls == null)
+            if (mapsets == null)
             {
-                mapcolls = new List<DbCache>();
+                mapsets = new List<DbCache>();
             }
-            mapcolls.Add(new DbMapCollection<S, K, V>(fetcher, typeof(V), maxage, flag));
+            mapsets.Add(new DbMapSet<S, K, V>(fetcher, typeof(V), maxage, flag));
         }
 
         public static void CacheSub<S, K, V>(Func<DbContext, S, Task<Map<K, V>>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (mapcolls == null)
+            if (mapsets == null)
             {
-                mapcolls = new List<DbCache>();
+                mapsets = new List<DbCache>();
             }
-            mapcolls.Add(new DbMapCollection<S, K, V>(fetcher, typeof(V), maxage, flag));
+            mapsets.Add(new DbMapSet<S, K, V>(fetcher, typeof(V), maxage, flag));
         }
 
         public static Map<K, V> ObtainMap<K, V>(byte flag = 0) where K : IComparable<K>
@@ -107,7 +98,7 @@ namespace SkyChain.Db
                 {
                     if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
                     {
-                        return ((DbMapEx<K, V>) cache).Get();
+                        return ((DbMap<K, V>) cache).Get();
                     }
                 }
             }
@@ -126,44 +117,7 @@ namespace SkyChain.Db
                 {
                     if (cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
                     {
-                        return await ((DbMapEx<K, V>) cache).GetAsync();
-                    }
-                }
-            }
-            return null;
-        }
-
-        public static Lot<D, V> ObtainLot<K, V, D>(byte flag = 0) where K : IComparable<K> where D : IComparable<D>
-        {
-            if (maps != null)
-            {
-                foreach (var cache in maps)
-                {
-                    if (cache.Flag == 0 || (cache.Flag & flag) > 0)
-                    {
-                        if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
-                        {
-                            return ((DbMap<K, V, D>) cache).GetSort();
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        public static async Task<Lot<D, V>> ObtainLotAsync<K, V, D>(byte flag = 0) where K : IComparable<K> where D : IComparable<D>
-        {
-            if (maps == null)
-            {
-                return null;
-            }
-            foreach (var cache in maps)
-            {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
-                {
-                    if (cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
-                    {
-                        return await ((DbMap<K, V, D>) cache).GetLotAsync();
+                        return await ((DbMap<K, V>) cache).GetAsync();
                     }
                 }
             }
@@ -172,17 +126,17 @@ namespace SkyChain.Db
 
         public static V Obtain<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            if (valuecolls == null)
+            if (valuesets == null)
             {
                 return default;
             }
-            foreach (var cache in valuecolls)
+            foreach (var cache in valuesets)
             {
                 if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
                     if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
                     {
-                        return ((DbCollection<K, V>) cache).Get(key);
+                        return ((DbValueSet<K, V>) cache).Get(key);
                     }
                 }
             }
@@ -191,17 +145,17 @@ namespace SkyChain.Db
 
         public static async Task<V> ObtainAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            if (valuecolls == null)
+            if (valuesets == null)
             {
                 return default;
             }
-            foreach (var cache in valuecolls)
+            foreach (var cache in valuesets)
             {
                 if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
                     if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
                     {
-                        return await ((DbCollection<K, V>) cache).GetAsync(key);
+                        return await ((DbValueSet<K, V>) cache).GetAsync(key);
                     }
                 }
             }
@@ -211,17 +165,17 @@ namespace SkyChain.Db
 
         public static Map<K, V> ObtainSub<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            if (mapcolls == null)
+            if (mapsets == null)
             {
                 return null;
             }
-            foreach (var cache in mapcolls)
+            foreach (var cache in mapsets)
             {
                 if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
                     if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
                     {
-                        return ((DbMapCollection<D, K, V>) cache).Get(discr);
+                        return ((DbMapSet<D, K, V>) cache).Get(discr);
                     }
                 }
             }
@@ -230,17 +184,17 @@ namespace SkyChain.Db
 
         public static async Task<Map<K, V>> ObtainSubAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            if (mapcolls == null)
+            if (mapsets == null)
             {
                 return null;
             }
-            foreach (var cache in mapcolls)
+            foreach (var cache in mapsets)
             {
                 if (cache.Flag == 0 || (cache.Flag & flag) > 0)
                 {
                     if (cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
                     {
-                        return await ((DbMapCollection<D, K, V>) cache).GetAsync(discr);
+                        return await ((DbMapSet<D, K, V>) cache).GetAsync(discr);
                     }
                 }
             }

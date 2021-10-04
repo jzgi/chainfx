@@ -39,11 +39,11 @@ namespace SkyChain.Db
             // insert
             var obj = new OperativeRow()
             {
-                acct = acct,
-                name = name,
-                remark = tip,
-                amt = amt,
-                stamp = DateTime.Now,
+                // cs = acct,
+                // blockcs = name,
+                // remark = tip,
+                // amt = amt,
+                // stamp = DateTime.Now,
                 status = 0,
             };
             dc.Sql("INSERT INTO chain.queue ").colset(obj, 0)._VALUES_(obj, 0).T(" RETURNING id");
@@ -56,24 +56,24 @@ namespace SkyChain.Db
             return await dc.QueryAsync<Peer>();
         }
 
-        public static async Task<Archival> GetArchiveAsync(this DbContext dc, short typ, string acct)
-        {
-            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archive WHERE typ = @1 AND acct = @1 ORDER BY seq DESC LIMIT 1");
-            return await dc.QueryTopAsync<Archival>(p => p.Set(typ).Set(acct));
-        }
+        // public static async Task<Archival> GetArchiveAsync(this DbContext dc, short typ, string acct)
+        // {
+        //     dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archive WHERE typ = @1 AND acct = @1 ORDER BY seq DESC LIMIT 1");
+        //     return await dc.QueryTopAsync<Archival>(p => p.Set(typ).Set(acct));
+        // }
 
         /// <summary>
         /// To retrieve a page of archive records for the specified account & ledger. It may across peers.
         /// </summary>
-        public static async Task<Archival[]> SeekArchiveAsync(this DbContext dc, short typ, string acct, int limit = 20, int page = 0)
-        {
-            if (acct == null)
-            {
-                return null;
-            }
-            dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archive WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
-            return await dc.QueryAsync<Archival>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
-        }
+        // public static async Task<Archival[]> SeekArchiveAsync(this DbContext dc, short typ, string acct, int limit = 20, int page = 0)
+        // {
+        //     if (acct == null)
+        //     {
+        //         return null;
+        //     }
+        //     dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archive WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
+        //     return await dc.QueryAsync<Archival>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
+        // }
 
         public static async Task<OperativeRow[]> SeekQueueAsync(this DbContext dc, string acct)
         {
@@ -90,13 +90,13 @@ namespace SkyChain.Db
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || ChainEnviron.Info.id == peerid) // local
+                if (peerid == 0 || ChainEnv.Info.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = ChainEnviron.GetClient(peerid);
+                    var conn = ChainEnv.GetClient(peerid);
                 }
             }
             return null;

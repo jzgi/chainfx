@@ -15,14 +15,12 @@ namespace SkyChain.Db
             long id = 0;
             IsolationLevel level = 0;
 
-            short typ = 0;
             var f = await wc.ReadAsync<JObj>();
             string op = f[nameof(op)];
 
-            var lgc = ChainEnviron.GetLogic(typ);
-            var o = lgc.GetOperation(op);
+            var o = ServerEnv.Application.GetAction(op);
 
-            var ctx = ChainEnviron.AcquireSlave(id, level);
+            var ctx = ChainEnv.AcquireSlave(id, level);
             if (o.IsAsync)
             {
                 return await o.DoAsync(ctx);
@@ -39,7 +37,7 @@ namespace SkyChain.Db
         public async Task onpoll(WebContext wc)
         {
             // veriify 
-            var peerid = ChainEnviron.Info.id;
+            var peerid = ChainEnv.Info.id;
             if (wc.HeaderShort(X_PEER_ID) != peerid)
             {
                 wc.Give(409); // conflict
@@ -53,8 +51,8 @@ namespace SkyChain.Db
             }
 
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Archival.Empty, 0xff).T(" FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<Archival>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
+            dc.Sql("SELECT * FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
+            var arr = await dc.QueryAsync<_Arch>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
@@ -62,15 +60,15 @@ namespace SkyChain.Db
                 foreach (var o in arr)
                 {
                     j.OBJ_();
-                    j.Put(nameof(o.seq), o.seq);
-                    j.Put(nameof(o.acct), o.acct);
-                    j.Put(nameof(o.name), o.name);
-                    j.Put(nameof(o.remark), o.remark);
-                    j.Put(nameof(o.amt), o.amt);
-                    j.Put(nameof(o.bal), o.bal);
-                    j.Put(nameof(o.stamp), o.stamp);
-                    j.Put(nameof(o.cs), o.cs);
-                    j.Put(nameof(o.blockcs), o.blockcs);
+                    // j.Put(nameof(o.seq), o.seq);
+                    // j.Put(nameof(o.acct), o.acct);
+                    // j.Put(nameof(o.name), o.name);
+                    // j.Put(nameof(o.remark), o.remark);
+                    // j.Put(nameof(o.amt), o.amt);
+                    // j.Put(nameof(o.bal), o.bal);
+                    // j.Put(nameof(o.stamp), o.stamp);
+                    // j.Put(nameof(o.cs), o.cs);
+                    // j.Put(nameof(o.blockcs), o.blockcs);
                     j._OBJ();
                 }
                 j._ARR();

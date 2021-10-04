@@ -47,7 +47,7 @@ namespace SkyChain.Db
     /// <summary>
     /// A single cached object.
     /// </summary>
-    internal class DbMapEx<K, V> : DbCache where K : IComparable<K>
+    internal class DbMap<K, V> : DbCache where K : IComparable<K>
     {
         readonly bool async;
 
@@ -56,14 +56,14 @@ namespace SkyChain.Db
 
         protected Map<K, V> cached;
 
-        internal DbMapEx(Func<DbContext, Map<K, V>> fetcher, Type typ, int maxage, byte flag)
+        internal DbMap(Func<DbContext, Map<K, V>> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = false;
             @lock = new ReaderWriterLockSlim();
         }
 
-        internal DbMapEx(Func<DbContext, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag)
+        internal DbMap(Func<DbContext, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = true;
@@ -72,10 +72,6 @@ namespace SkyChain.Db
 
         public override bool IsAsync => async;
 
-
-        protected virtual void OnLoad()
-        {
-        }
 
         public Map<K, V> Get()
         {
@@ -93,9 +89,8 @@ namespace SkyChain.Db
                     slim.EnterWriteLock();
                     try
                     {
-                        using var dc = DbEnviron.NewDbContext();
+                        using var dc = DbEnv.NewDbContext();
                         cached = func(dc);
-                        OnLoad();
                         expiry = tick + MaxAge * 1000;
                     }
                     finally
@@ -124,9 +119,8 @@ namespace SkyChain.Db
                 var ticks = Environment.TickCount & int.MaxValue; // positive tick
                 if (ticks >= expiry) // if re-fetch
                 {
-                    using var dc = DbEnviron.NewDbContext();
+                    using var dc = DbEnv.NewDbContext();
                     cached = await fa(dc);
-                    OnLoad();
                     expiry = ticks + MaxAge * 1000;
                 }
             }
@@ -139,109 +133,20 @@ namespace SkyChain.Db
         }
     }
 
-    /// <summary>
-    /// A single cached object.
-    /// </summary>
-    internal class DbMap<K, V, D> : DbMapEx<K, V> where K : IComparable<K> where D : IComparable<D>
-    {
-        readonly Lot<D, V> sorted;
 
-        internal DbMap(Func<DbContext, Map<K, V>> fetcher, Func<V, D> discr, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
-        {
-            sorted = new Lot<D, V>(discr);
-        }
-
-        internal DbMap(Func<DbContext, Task<Map<K, V>>> fetcher, Func<V, D> discr, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
-        {
-            sorted = new Lot<D, V>(discr);
-        }
-
-        protected override void OnLoad()
-        {
-            // reset
-            sorted.Clear();
-
-            // from loaded map
-            sorted.Absorb(cached);
-        }
-
-        public Lot<D, V> GetSort()
-        {
-            if (!(fetcher is Func<DbContext, Map<K, V>> func)) // simple object
-            {
-                throw new DbException("Missing fetcher for " + Typ);
-            }
-            var slim = (ReaderWriterLockSlim) @lock;
-            slim.EnterUpgradeableReadLock();
-            try
-            {
-                var tick = Environment.TickCount & int.MaxValue; // positive tick
-                if (tick >= expiry) // if re-fetch
-                {
-                    slim.EnterWriteLock();
-                    try
-                    {
-                        using var dc = DbEnviron.NewDbContext();
-                        cached = func(dc);
-                        OnLoad();
-                        expiry = tick + MaxAge * 1000;
-                    }
-                    finally
-                    {
-                        slim.ExitWriteLock();
-                    }
-                }
-                return sorted;
-            }
-            finally
-            {
-                slim.ExitUpgradeableReadLock();
-            }
-        }
-
-        public async Task<Lot<D, V>> GetLotAsync()
-        {
-            if (!(fetcher is Func<DbContext, Task<Map<K, V>>> func)) // simple object
-            {
-                throw new DbException("Missing fetcher for " + Typ);
-            }
-            var slim = (SemaphoreSlim) @lock;
-            await slim.WaitAsync();
-            try
-            {
-                var ticks = Environment.TickCount & int.MaxValue; // positive tick
-                if (ticks >= expiry) // if re-fetch
-                {
-                    using var dc = DbEnviron.NewDbContext();
-                    cached = await func(dc);
-                    OnLoad();
-                    expiry = ticks + MaxAge * 1000;
-                }
-            }
-            finally
-            {
-                slim.Release();
-            }
-
-            return sorted;
-        }
-    }
-
-    internal class DbCollection<K, V> : DbCache
+    internal class DbValueSet<K, V> : DbCache
     {
         readonly bool async;
 
         readonly ConcurrentDictionary<K, V> cached = new ConcurrentDictionary<K, V>();
 
-        internal DbCollection(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag)
+        internal DbValueSet(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = false;
         }
 
-        internal DbCollection(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag)
+        internal DbValueSet(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = true;
@@ -260,7 +165,7 @@ namespace SkyChain.Db
             V value;
             if (tick >= expiry) // if re-fetch
             {
-                using var dc = DbEnviron.NewDbContext();
+                using var dc = DbEnv.NewDbContext();
                 value = func(dc, key);
                 cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
                 expiry = tick + MaxAge * 1000;
@@ -269,7 +174,7 @@ namespace SkyChain.Db
             {
                 if (!cached.TryGetValue(key, out value))
                 {
-                    using var dc = DbEnviron.NewDbContext();
+                    using var dc = DbEnv.NewDbContext();
                     value = func(dc, key);
                     cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
                     expiry = tick + MaxAge * 1000;
@@ -288,7 +193,7 @@ namespace SkyChain.Db
             V value;
             if (ticks >= expiry) // if re-fetch
             {
-                using var dc = DbEnviron.NewDbContext();
+                using var dc = DbEnv.NewDbContext();
                 value = await func(dc, key);
                 cached.TryAdd(key, value); // re-cache
                 expiry = ticks + MaxAge * 1000;
@@ -307,7 +212,7 @@ namespace SkyChain.Db
     /// <typeparam name="S">the sub key</typeparam>
     /// <typeparam name="K"> </typeparam>
     /// <typeparam name="V">the cached object</typeparam>
-    internal class DbMapCollection<S, K, V> : DbCache
+    internal class DbMapSet<S, K, V> : DbCache
     {
         readonly bool async;
 
@@ -316,14 +221,14 @@ namespace SkyChain.Db
 
         readonly ConcurrentDictionary<S, Map<K, V>> cached = new ConcurrentDictionary<S, Map<K, V>>();
 
-        internal DbMapCollection(Func<DbContext, S, Map<K, V>> fetcher, Type typ, int maxage, byte flag)
+        internal DbMapSet(Func<DbContext, S, Map<K, V>> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = false;
             @lock = new ReaderWriterLockSlim();
         }
 
-        internal DbMapCollection(Func<DbContext, S, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag)
+        internal DbMapSet(Func<DbContext, S, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag)
             : base(fetcher, typ, maxage, flag)
         {
             async = true;
@@ -351,7 +256,7 @@ namespace SkyChain.Db
                     slim.EnterWriteLock();
                     try
                     {
-                        using var dc = DbEnviron.NewDbContext();
+                        using var dc = DbEnv.NewDbContext();
                         value = func(dc, subkey);
                         cached.TryAdd(subkey, value);
                         // adjust expiry time
@@ -389,7 +294,7 @@ namespace SkyChain.Db
                 Map<K, V> value;
                 if (ticks >= expiry) // if re-fetch
                 {
-                    using var dc = DbEnviron.NewDbContext();
+                    using var dc = DbEnv.NewDbContext();
                     value = await func(dc, subkey);
 
                     // adjust expiry time

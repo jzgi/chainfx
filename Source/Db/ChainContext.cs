@@ -35,22 +35,10 @@ namespace SkyChain.Db
             if (peerid == 0 || peerid == local.id) // call in- place
             {
                 // local
-                var lgc = ChainEnviron.GetLogic(txtyp);
-                var o = lgc.GetOperation(op);
-
-                // call
-                if (o.IsAsync)
-                {
-                    await o.DoAsync(this);
-                }
-                else
-                {
-                    o.Do(this);
-                }
             }
             else // call remote
             {
-                var conn = ChainEnviron.GetClient(peerid);
+                var conn = ChainEnv.GetClient(peerid);
                 if (conn != null)
                 {
                     // args

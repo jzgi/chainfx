@@ -1,13 +1,13 @@
-﻿using System;
+﻿﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class ChainOperation : IKeyable<string>
+    public class ChainOp : IKeyable<string>
     {
         // the declaring logic
-        readonly ChainLogic logic;
+        readonly ChainEnv env;
 
         // coding name
         readonly string name;
@@ -24,9 +24,9 @@ namespace SkyChain.Db
         readonly Func<ChainContext, bool> @do;
         readonly Func<ChainContext, Task<bool>> doAsync;
 
-        internal ChainOperation(ChainLogic logic, MethodInfo mi, bool async)
+        internal ChainOp(ChainEnv logic, MethodInfo mi, bool async)
         {
-            this.logic = logic;
+            this.env = logic;
             this.name =  mi.Name;
             this.tip = name == string.Empty ? "./" : name;
             this.async = async;
@@ -44,7 +44,7 @@ namespace SkyChain.Db
             }
         }
 
-        public ChainLogic Logic => logic;
+        public ChainEnv Logic => env;
 
         public Func<ChainContext, bool> Do => @do;
 

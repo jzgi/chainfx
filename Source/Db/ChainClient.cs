@@ -37,7 +37,7 @@ namespace SkyChain.Db
         // acceptable remote addresses
         readonly IPAddress[] addrs;
 
-        Task<(short, Archival[])> polltsk;
+        Task<(short, JArr)> polltsk;
 
         // the status showing what is happening 
         short status;
@@ -71,7 +71,7 @@ namespace SkyChain.Db
         ///
         /// <returns>0) void, 1) remoting, 200) ok, 204) no content, 500) server error</returns>
         /// 
-        public short TryReap(out Archival[] block)
+        public short TryReap(out JArr block)
         {
             block = null;
             if (polltsk == null)
@@ -134,7 +134,7 @@ namespace SkyChain.Db
                 // schedule to execute
                 if (polltsk == null || polltsk.IsCompleted)
                 {
-                    (polltsk = PollAsync(blockid)).Start();
+                    // (polltsk = PollAsync(blockid)).Start();
                 }
             }
         }
@@ -143,14 +143,14 @@ namespace SkyChain.Db
         // RPC
         //
 
-        async Task<(short, Archival[])> PollAsync(int blockid)
+        async Task<(short, JArr)> PollAsync(int blockid)
         {
             try
             {
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnv.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
@@ -164,8 +164,7 @@ namespace SkyChain.Db
 
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 var arr = (JArr) new JsonParser(bytea, bytea.Length).Parse();
-                var dat = arr.ToArray<Archival>();
-                return (200, dat);
+                return (200, arr);
             }
             catch
             {
@@ -195,7 +194,7 @@ namespace SkyChain.Db
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnviron.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnv.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
 
                 req.Content = content;

@@ -4,7 +4,7 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Db
 {
-    public abstract class ChainWork : WebWork
+    public abstract class ChainMgtWork : WebWork
     {
         protected internal override void OnMake()
         {
@@ -13,12 +13,12 @@ namespace SkyChain.Db
 
         public virtual void @default(WebContext wc)
         {
-            var o = ChainEnviron.Info;
+            var o = ChainEnv.Info;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(caption: "本节点属性");
-                h.FORM_("uk-card uk-card-primary");
-                h.UL_("uk-card-body");
+
+                h.UL_("uk-card uk-card-primary uk-card-body");
                 if (o != null)
                 {
                     h.LI_().FIELD("节点编号", o.Id)._LI();
@@ -28,17 +28,15 @@ namespace SkyChain.Db
                     h.LI_().FIELD("当前区块", o.CurrentBlockId)._LI();
                 }
                 h._UL();
-                h._FORM();
 
-                h.FORM_().OPLIST();
-                h._FORM();
+                h.TASKUL();
             });
         }
 
         [Ui("节点设置"), Tool(ButtonShow)]
         public virtual async Task setg(WebContext wc)
         {
-            var o = ChainEnviron.Info ?? new Peer
+            var o = ChainEnv.Info ?? new Peer
             {
                 native = true,
             };
@@ -61,9 +59,9 @@ namespace SkyChain.Db
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o).T(" ON CONFLICT (native) WHERE native = TRUE DO UPDATE SET ").setlst(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                if (ChainEnviron.Info == null)
+                if (ChainEnv.Info == null)
                 {
-                    ChainEnviron.Info = o;
+                    ChainEnv.Info = o;
                 }
 
                 wc.GivePane(200); // close dialog

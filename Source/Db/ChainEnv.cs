@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Concurrent;
 using System.Data;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class ChainEnviron : DbEnviron
+    public class ChainEnv : DbEnv
     {
         static Peer info;
+
+        // tables whose rows are archivable   
+        static readonly Map<short, ChainTable> tables = new Map<short, ChainTable>(8);
 
         // connectors to remote peers 
         static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
@@ -16,11 +20,6 @@ namespace SkyChain.Db
         // polls and imports foreign blocks 
         static Thread importer;
 
-        // logics that determine in-peer and inter-peer transactions' behaviors  
-        static readonly Map<short, ChainLogic> logics = new Map<short, ChainLogic>(32);
-
-
-        public static ChainLogic GetLogic(short typ) => logics[typ];
 
         public static Peer Info
         {
@@ -42,7 +41,6 @@ namespace SkyChain.Db
 
         public static ChainClient GetClient(short peerid) => clients[peerid];
 
-
         public static Map<short, ChainClient> Clients => clients;
 
         public static ChainContext NewChainContext(IsolationLevel? level = null)
@@ -57,27 +55,18 @@ namespace SkyChain.Db
 
 
         /// <summary>
-        /// Creates a chain logic that demetermines behaviors for transactions.
-        /// </summary>
-        /// <param name="txtyp"></param>
-        /// <typeparam name="L"></typeparam>
-        public static void MakeChainLogic<L>(short txtyp) where L : ChainLogic, new()
-        {
-            var v = new L
-            {
-            };
-            logics.Add(v);
-        }
-
-
-        /// <summary>
         /// Sets up and start blockchain on this peer node.
         /// </summary>
-        public static async Task StartChainAsync()
+        static ChainEnv()
         {
             // clear up data maps
             clients.Clear();
 
+            Do();
+        }
+
+        static async void Do()
+        {
             //load this node peer
             using (var dc = NewDbContext())
             {
@@ -114,6 +103,73 @@ namespace SkyChain.Db
         }
 
 
+        //
+        
+        
+        // declared operations 
+        readonly Map<string, ChainOp> actions = new Map<string, ChainOp>(32);
+
+        protected ChainEnv()
+        {
+
+            // gather actions
+            foreach (var mi in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                // return task or void
+                var ret = mi.ReturnType;
+                bool async;
+                if (ret == typeof(Task<bool>))
+                {
+                    async = true;
+                }
+                else if (ret == typeof(bool))
+                {
+                    async = false;
+                }
+                else
+                {
+                    continue;
+                }
+
+                // signature filtering
+                var pis = mi.GetParameters();
+                ChainOp op;
+                if (pis.Length == 1 && pis[0].ParameterType == typeof(ChainContext))
+                {
+                    op = new ChainOp(this, mi, async);
+                }
+                else
+                {
+                    continue;
+                }
+
+                actions.Add(op);
+            }
+        }
+
+        public ChainOp GetAction(string name) => actions[name];
+
+        public bool OnValidate(_Arch[] row)
+        {
+            return false;
+        }
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //
+        
+        
+        
+        
         const int MAX_BLOCK_SIZE = 64;
 
         const int MIN_BLOCK_SIZE = 8;
@@ -147,7 +203,7 @@ namespace SkyChain.Db
                         // insert archivals
                         //
                         long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.archive ").colset(_Ety.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_Ety.Empty, extra: "@1, @2, @3, @4");
+                        dc.Sql("INSERT INTO chain.archive ").colset(_Arch.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_Arch.Empty, extra: "@1, @2, @3, @4");
                         for (short i = 0; i < arr.Length; i++)
                         {
                             var o = arr[i];
@@ -183,7 +239,7 @@ namespace SkyChain.Db
                     catch (Exception e)
                     {
                         dc.Rollback();
-                        ServerEnviron.ERR(e.Message);
+                        ServerEnv.ERR(e.Message);
                         return; // quit the loop
                     }
                 }
@@ -214,46 +270,46 @@ namespace SkyChain.Db
                         {
                             using var dc = NewDbContext(IsolationLevel.ReadCommitted);
                             long bchk = 0; // block checksum
-                            for (short k = 0; k < arr.Length; k++)
+                            for (short k = 0; k < arr.Count; k++)
                             {
                                 var o = arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
+                                // dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
                                 // direct parameter setting
                                 var p = dc.ReCommand();
                                 p.Digest = true;
-                                o.Write(p);
+                                // o.Write(p);
                                 p.Digest = false;
 
                                 // validate record-wise checksum
-                                if (o.cs != p.Checksum)
-                                {
-                                    cli.SetDataError(o.seq);
-                                    break;
-                                }
+                                // if (o.cs != p.Checksum)
+                                // {
+                                //     cli.SetDataError(o.seq);
+                                //     break;
+                                // }
 
                                 CryptoUtility.Digest(p.Checksum, ref bchk);
                                 p.Set(p.Checksum); // set primary and checksum
                                 // block-wise digest
                                 if (i == 0) // begin of block 
                                 {
-                                    if (o.blockcs != bchk) // compare with previous block
-                                    {
-                                        cli.SetDataError("");
-                                        break;
-                                    }
+                                    // if (o.blockcs != bchk) // compare with previous block
+                                    // {
+                                    //     cli.SetDataError("");
+                                    //     break;
+                                    // }
 
                                     p.Set(bchk);
                                 }
-                                else if (i == arr.Length - 1) // end of block
+                                else if (i == arr.Count - 1) // end of block
                                 {
                                     // validate block check
-                                    if (bchk != o.blockcs)
-                                    {
-                                        cli.SetDataError("");
-                                    }
-                                    p.Set(bchk = o.blockcs); // assign & set
+                                    // if (bchk != o.blockcs)
+                                    // {
+                                    //     cli.SetDataError("");
+                                    // }
+                                    // p.Set(bchk = o.blockcs); // assign & set
                                 }
                                 else
                                 {
@@ -290,20 +346,20 @@ namespace SkyChain.Db
         // SUB CONTEXT
         //
 
-        static readonly ConcurrentDictionary<long, ChainContext> slavectxs = new ConcurrentDictionary<long, ChainContext>();
+        static readonly ConcurrentDictionary<long, ChainContext> slaves = new ConcurrentDictionary<long, ChainContext>();
 
 
         internal static ChainContext AcquireSlave(long id, IsolationLevel level)
         {
             if (id > 0)
             {
-                var ctx = slavectxs[id];
+                var ctx = slaves[id];
                 return ctx;
             }
             else
             {
                 var ctx = NewChainContext(level);
-                slavectxs.TryAdd(id, ctx);
+                slaves.TryAdd(id, ctx);
                 return ctx;
             }
         }

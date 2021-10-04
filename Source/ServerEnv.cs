@@ -16,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class ServerEnviron : ChainEnviron
+    public class ServerEnv : ChainEnv
     {
         public const string APP_JSON = "app.json";
 
@@ -48,10 +48,10 @@ namespace SkyChain
         /// <summary>
         /// Load the configuration file and initialize the server environment.
         /// </summary>
-        public static void LoadConfig(string file = APP_JSON)
+        static ServerEnv()
         {
             // load the config file
-            var bytes = File.ReadAllBytes(file);
+            var bytes = File.ReadAllBytes(APP_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
             var cfg = (JObj) parser.Parse();
 
@@ -93,6 +93,8 @@ namespace SkyChain
             extcfg = cfg["ext"];
         }
 
+        public static ServerEnv Application { get; protected set; }
+
         public static uint[] PrivateKey => privatekey;
 
         public static ServerLogger Logger => logger;
@@ -100,7 +102,7 @@ namespace SkyChain
         public static X509Certificate2 Cert => cert;
 
 
-        public static T MakeWebService<T>(string name) where T : WebService, new()
+        public static T CreateWebService<T>(string name) where T : WebService, new()
         {
             if (webcfg == null)
             {

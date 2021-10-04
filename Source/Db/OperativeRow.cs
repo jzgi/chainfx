@@ -3,7 +3,7 @@
     /// <summary>
     /// An operative data row.
     /// </summary>
-    public class OperativeRow : _Ety, IKeyable<int>
+    public class OperativeRow : _Arch, IKeyable<int>
     {
         public new static readonly OperativeRow Empty = new OperativeRow();
 
