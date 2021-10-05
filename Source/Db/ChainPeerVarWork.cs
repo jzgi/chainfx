@@ -10,7 +10,7 @@ namespace SkyChain.Db
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
-            var o = ChainEnv.GetClient(id)?.Info;
+            var o = Chain.GetClient(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>

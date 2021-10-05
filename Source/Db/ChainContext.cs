@@ -38,7 +38,7 @@ namespace SkyChain.Db
             }
             else // call remote
             {
-                var conn = ChainEnv.GetClient(peerid);
+                var conn = Chain.GetClient(peerid);
                 if (conn != null)
                 {
                     // args

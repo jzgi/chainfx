@@ -7,7 +7,7 @@ namespace SkyChain.Db
     public class ChainOp : IKeyable<string>
     {
         // the declaring logic
-        readonly ChainEnv env;
+        readonly ChainBot bean;
 
         // coding name
         readonly string name;
@@ -24,9 +24,9 @@ namespace SkyChain.Db
         readonly Func<ChainContext, bool> @do;
         readonly Func<ChainContext, Task<bool>> doAsync;
 
-        internal ChainOp(ChainEnv logic, MethodInfo mi, bool async)
+        internal ChainOp(ChainBot logic, MethodInfo mi, bool async)
         {
-            this.env = logic;
+            this.bean = logic;
             this.name =  mi.Name;
             this.tip = name == string.Empty ? "./" : name;
             this.async = async;
@@ -44,7 +44,7 @@ namespace SkyChain.Db
             }
         }
 
-        public ChainEnv Logic => env;
+        public ChainBot Logic => bean;
 
         public Func<ChainContext, bool> Do => @do;
 

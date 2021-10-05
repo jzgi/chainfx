@@ -62,14 +62,14 @@ namespace SkyChain.Db
 
         public ChainContext NewChainContext(bool master, IsolationLevel? level = null)
         {
-            if (ChainEnv.Info == null)
+            if (Chain.Info == null)
             {
                 throw new ChainException("missing local peer info");
             }
 
             var cc = new ChainContext(this)
             {
-                local = ChainEnv.Info,
+                local = Chain.Info,
                 Master = master
             };
 

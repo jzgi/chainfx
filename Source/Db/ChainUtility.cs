@@ -90,13 +90,13 @@ namespace SkyChain.Db
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || ChainEnv.Info.id == peerid) // local
+                if (peerid == 0 || Chain.Info.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = ChainEnv.GetClient(peerid);
+                    var conn = Chain.GetClient(peerid);
                 }
             }
             return null;

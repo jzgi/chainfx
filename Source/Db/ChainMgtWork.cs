@@ -13,7 +13,7 @@ namespace SkyChain.Db
 
         public virtual void @default(WebContext wc)
         {
-            var o = ChainEnv.Info;
+            var o = Chain.Info;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(caption: "本节点属性");
@@ -36,7 +36,7 @@ namespace SkyChain.Db
         [Ui("节点设置"), Tool(ButtonShow)]
         public virtual async Task setg(WebContext wc)
         {
-            var o = ChainEnv.Info ?? new Peer
+            var o = Chain.Info ?? new Peer
             {
                 native = true,
             };
@@ -59,9 +59,9 @@ namespace SkyChain.Db
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o).T(" ON CONFLICT (native) WHERE native = TRUE DO UPDATE SET ").setlst(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                if (ChainEnv.Info == null)
+                if (Chain.Info == null)
                 {
-                    ChainEnv.Info = o;
+                    Chain.Info = o;
                 }
 
                 wc.GivePane(200); // close dialog

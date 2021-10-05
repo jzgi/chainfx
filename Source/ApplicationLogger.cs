@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace SkyChain
 {
-    public class ServerLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
+    public class ApplicationLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
     {
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        internal ServerLogger(string file)
+        internal ApplicationLogger(string file)
         {
             // init the file-based logger
             var stream = new FileStream(file, FileMode.Append, FileAccess.Write);

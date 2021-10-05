@@ -13,7 +13,7 @@ namespace SkyChain.Db
 
         public void @default(WebContext wc)
         {
-            var arr = ChainEnv.Clients;
+            var arr = Chain.Clients;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(caption: "友节点管理");
@@ -67,7 +67,7 @@ namespace SkyChain.Db
 
                 var cli = new ChainClient(o);
                 await o.PeekLastBlockAsync(dc);
-                ChainEnv.Clients.Add(cli);
+                Chain.Clients.Add(cli);
 
                 wc.GivePane(200); // close dialog
             }

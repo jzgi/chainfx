@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class ChainEnv : DbEnv
+    public class Chain : Db
     {
         static Peer info;
 
@@ -21,19 +21,24 @@ namespace SkyChain.Db
         static Thread importer;
 
 
+        internal static void InitializeChain(JObj chaincfg)
+        {
+        }
+
         public static Peer Info
         {
             get => info;
             internal set => info = value;
         }
 
+        public static ChainBot Bean { get; protected set; }
 
         //
         // transaction id generator
 
         static int lastId = 0;
 
-        static int generateId()
+        public static int AutoInc()
         {
             return Interlocked.Increment(ref lastId);
         }
@@ -45,44 +50,21 @@ namespace SkyChain.Db
 
         public static ChainContext NewChainContext(IsolationLevel? level = null)
         {
-            if (dbsource == null)
+            if (DbSource == null)
             {
-                throw new ServerException("missing 'db' in app.json");
+                throw new ApplicationException("missing 'db' in app.json");
             }
 
-            return dbsource.NewChainContext(true, level);
+            return DbSource.NewChainContext(true, level);
         }
 
-
-        /// <summary>
-        /// Sets up and start blockchain on this peer node.
-        /// </summary>
-        static ChainEnv()
-        {
-            // clear up data maps
-            clients.Clear();
-
-            Do();
-        }
 
         static async void Do()
         {
-            //load this node peer
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = TRUE");
-                info = await dc.QueryTopAsync<Peer>();
-                // get current blockid
-                if (info != null)
-                {
-                    await info.PeekLastBlockAsync(dc);
-                }
-            }
-
             // load remote connectors
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers WHERE native = FALSE");
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
                 var arr = await dc.QueryAsync<Peer>();
                 if (arr != null)
                 {
@@ -92,7 +74,7 @@ namespace SkyChain.Db
                         clients.Add(conn);
 
                         // init current block id
-                        await o.PeekLastBlockAsync(dc);
+                        // await o.PeekLastBlockAsync(dc);
                     }
                 }
             }
@@ -102,150 +84,23 @@ namespace SkyChain.Db
             importer.Start();
         }
 
-
         //
-        
-        
+        // instance scope
+        //
+
         // declared operations 
-        readonly Map<string, ChainOp> actions = new Map<string, ChainOp>(32);
-
-        protected ChainEnv()
-        {
-
-            // gather actions
-            foreach (var mi in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                // return task or void
-                var ret = mi.ReturnType;
-                bool async;
-                if (ret == typeof(Task<bool>))
-                {
-                    async = true;
-                }
-                else if (ret == typeof(bool))
-                {
-                    async = false;
-                }
-                else
-                {
-                    continue;
-                }
-
-                // signature filtering
-                var pis = mi.GetParameters();
-                ChainOp op;
-                if (pis.Length == 1 && pis[0].ParameterType == typeof(ChainContext))
-                {
-                    op = new ChainOp(this, mi, async);
-                }
-                else
-                {
-                    continue;
-                }
-
-                actions.Add(op);
-            }
-        }
-
-        public ChainOp GetAction(string name) => actions[name];
-
-        public bool OnValidate(_Arch[] row)
-        {
-            return false;
-        }
+        readonly Map<string, ChainOp> ops = new Map<string, ChainOp>(32);
 
 
+        public ChainOp GetAction(string name) => ops[name];
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         //
-        
-        
-        
-        
+
+
         const int MAX_BLOCK_SIZE = 64;
 
         const int MIN_BLOCK_SIZE = 8;
-
-        static async void Commit(object state)
-        {
-            while (info != null && info.IsRunning)
-            {
-                Thread.Sleep(60 * 1000);
-
-                // archiving journal entries 
-                Cycle:
-                using (var dc = NewDbContext(IsolationLevel.ReadCommitted))
-                {
-                    try
-                    {
-                        dc.Sql("SELECT ").collst(OperativeRow.Empty).T(" FROM chain.queue ORDER BY id LIMIT ").T(MAX_BLOCK_SIZE);
-                        var arr = await dc.QueryAsync<OperativeRow>();
-                        if (arr == null || arr.Length < MIN_BLOCK_SIZE)
-                        {
-                            continue; // go for delay
-                        }
-
-                        // resolve last block
-                        if (info.blockid == 0)
-                        {
-                            await info.PeekLastBlockAsync(dc);
-                        }
-                        info.IncrementBlockId();
-
-                        // insert archivals
-                        //
-                        long bchk = 0; // current block checksum
-                        dc.Sql("INSERT INTO chain.archive ").colset(_Arch.Empty, extra: "peerid, seq, cs, blockcs")._VALUES_(_Arch.Empty, extra: "@1, @2, @3, @4");
-                        for (short i = 0; i < arr.Length; i++)
-                        {
-                            var o = arr[i];
-                            // set parameters
-                            var p = dc.ReCommand();
-                            p.Digest = true;
-                            o.Write(p);
-                            p.Digest = false;
-                            CryptoUtility.Digest(p.Checksum, ref bchk);
-                            p.Set(info.id).Set(ChainUtility.WeaveSeq(info.blockid, i)).Set(p.Checksum); // set primary and checksum
-                            // set block-wise digest
-                            if (i == 0) // begin of block 
-                            {
-                                p.Set(info.blockcs);
-                            }
-                            else if (i == arr.Length - 1) // end of block
-                            {
-                                p.Set(info.blockcs = bchk); // assign & set
-                            }
-                            else
-                            {
-                                p.SetNull();
-                            }
-                            await dc.SimpleExecuteAsync();
-                        }
-
-                        // remove from queue
-                        //
-                        var lastid = arr[^1].id;
-                        dc.Sql("DELETE FROM chain.queue WHERE id <= @1");
-                        await dc.ExecuteAsync(p => p.Set(lastid));
-                    }
-                    catch (Exception e)
-                    {
-                        dc.Rollback();
-                        ServerEnv.ERR(e.Message);
-                        return; // quit the loop
-                    }
-                }
-                goto Cycle;
-            }
-        }
 
         static async void Import(object state)
         {

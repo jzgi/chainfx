@@ -5,13 +5,9 @@ using System.Threading.Tasks;
 
 namespace SkyChain.Db
 {
-    public class DbEnv
+    public class Db
     {
-        protected static DbSource dbsource;
-
-        //
-        // db-object cache
-        //
+        static DbSource dbsource;
 
         public static DbSource DbSource => dbsource;
 
@@ -19,14 +15,14 @@ namespace SkyChain.Db
         {
             if (dbsource == null)
             {
-                throw new ServerException("missing 'db' in app.json");
+                throw new ApplicationException("missing 'db' in json");
             }
 
             return dbsource.NewDbContext(level);
         }
 
         //
-        // Db Cache API
+        // db-object cache
         //
 
         static List<DbCache> maps;
@@ -35,7 +31,7 @@ namespace SkyChain.Db
 
         static List<DbCache> mapsets;
 
-        internal static void ConfigureDb(JObj dbcfg)
+        internal static void InitializeDb(JObj dbcfg)
         {
             dbsource = new DbSource(dbcfg);
         }

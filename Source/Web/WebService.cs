@@ -50,25 +50,25 @@ namespace SkyChain.Web
                 ApplicationServices = this
             };
 
-            if (ServerEnv.Cert != null)
+            if (Application.Cert != null)
             {
-                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = ServerEnv.Cert);
+                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Application.Cert);
 
                 INF("cert is set");
             }
 
-            server = new KestrelServer(Options.Create(opts), ServerEnv.TransportFactory, ServerEnv.Logger);
+            server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
         }
 
         public object GetService(Type serviceType)
         {
             if (serviceType == typeof(ILogger<KestrelServer>))
             {
-                return ServerEnv.Logger;
+                return Application.Logger;
             }
             if (serviceType == typeof(ILoggerFactory))
             {
-                return ServerEnv.Logger;
+                return Application.Logger;
             }
             return null;
         }

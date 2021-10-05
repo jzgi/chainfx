@@ -16,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class ServerEnv : ChainEnv
+    public class Application : Chain
     {
         public const string APP_JSON = "app.json";
 
@@ -36,19 +36,20 @@ namespace SkyChain
 
         static string certpass;
 
-        public static JObj webcfg, dbcfg, extcfg; // various config parts
+        // layered configurations
+        public static readonly JObj dbcfg, chaincfg, webcfg, extcfg;
 
-        static X509Certificate2 cert;
+        static readonly X509Certificate2 cert;
 
-        static ServerLogger logger;
+        static readonly ApplicationLogger logger;
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
 
         /// <summary>
-        /// Load the configuration file and initialize the server environment.
+        /// Load the configuration file and initialize the environments.
         /// </summary>
-        static ServerEnv()
+        static Application()
         {
             // load the config file
             var bytes = File.ReadAllBytes(APP_JSON);
@@ -58,7 +59,7 @@ namespace SkyChain
             // setup logger
             logging = cfg[nameof(logging)];
             var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
-            logger = new ServerLogger(logfile)
+            logger = new ApplicationLogger(logfile)
             {
                 Level = logging
             };
@@ -81,38 +82,53 @@ namespace SkyChain
                 }
             }
 
-            // subsections
+            // init layers
             //
 
             dbcfg = cfg["db"];
-            if (dbcfg != null) // setup the db source
+            if (dbcfg != null)
             {
-                ConfigureDb(dbcfg);
+                InitializeDb(dbcfg);
             }
+
+            chaincfg = cfg["chain"];
+            if (chaincfg != null)
+            {
+                InitializeChain(chaincfg);
+            }
+
             webcfg = cfg["web"];
+            if (webcfg != null)
+            {
+                InitializeWeb(webcfg);
+            }
+
             extcfg = cfg["ext"];
         }
 
-        public static ServerEnv Application { get; protected set; }
+        internal static void InitializeWeb(JObj webcfg)
+        {
+        }
+
 
         public static uint[] PrivateKey => privatekey;
 
-        public static ServerLogger Logger => logger;
+        public static ApplicationLogger Logger => logger;
 
         public static X509Certificate2 Cert => cert;
 
 
-        public static T CreateWebService<T>(string name) where T : WebService, new()
+        public static T MakeService<T>(string name) where T : WebService, new()
         {
             if (webcfg == null)
             {
-                throw new ServerException("Missing 'web' in config");
+                throw new ApplicationException("Missing 'web' in config");
             }
 
             string addr = webcfg[name];
             if (addr == null)
             {
-                throw new ServerException("Missing web '" + name + "' in config");
+                throw new ApplicationException("Missing web '" + name + "' in config");
             }
 
             // create service
@@ -179,7 +195,7 @@ namespace SkyChain
         /// <summary>
         /// Runs a number of web services and then block until shutdown.
         /// </summary>
-        public static async Task StartWebAsync()
+        public static async Task StartAsync()
         {
             var exitevt = new ManualResetEventSlim(false);
 

@@ -18,9 +18,9 @@ namespace SkyChain.Db
             var f = await wc.ReadAsync<JObj>();
             string op = f[nameof(op)];
 
-            var o = ServerEnv.Application.GetAction(op);
+            var o = Application.Bean.GetOp(op);
 
-            var ctx = ChainEnv.AcquireSlave(id, level);
+            var ctx = Chain.AcquireSlave(id, level);
             if (o.IsAsync)
             {
                 return await o.DoAsync(ctx);
@@ -37,7 +37,7 @@ namespace SkyChain.Db
         public async Task onpoll(WebContext wc)
         {
             // veriify 
-            var peerid = ChainEnv.Info.id;
+            var peerid = Chain.Info.id;
             if (wc.HeaderShort(X_PEER_ID) != peerid)
             {
                 wc.Give(409); // conflict

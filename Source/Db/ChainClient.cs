@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -45,6 +46,9 @@ namespace SkyChain.Db
         string err;
 
 
+        readonly ConcurrentDictionary<long, ChainContext> slaves = new ConcurrentDictionary<long, ChainContext>();
+
+
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
@@ -61,6 +65,7 @@ namespace SkyChain.Db
             }
             Timeout = TimeSpan.FromSeconds(REQUEST_TIMEOUT);
         }
+
 
         public short Key => info.id;
 
@@ -150,7 +155,7 @@ namespace SkyChain.Db
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnv.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
@@ -194,7 +199,7 @@ namespace SkyChain.Db
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainEnv.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
 
                 req.Content = content;
