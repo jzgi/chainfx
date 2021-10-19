@@ -18,7 +18,7 @@ namespace SkyChain.Db
             var f = await wc.ReadAsync<JObj>();
             string op = f[nameof(op)];
 
-            var o = Application.Bean.GetOp(op);
+            var o = Application.Bot.GetOp(op);
 
             var ctx = Chain.AcquireSlave(id, level);
             if (o.IsAsync)

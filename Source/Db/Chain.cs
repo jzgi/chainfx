@@ -31,7 +31,7 @@ namespace SkyChain.Db
             internal set => info = value;
         }
 
-        public static ChainBot Bean { get; protected set; }
+        public static ChainBot Bot { get; protected set; }
 
         //
         // transaction id generator
