@@ -9,52 +9,69 @@ namespace SkyChain.Db
         public static readonly Peer Empty = new Peer();
 
         public const short
-            STATUS_STOPPED = 0,
-            STATUS_RUNNING = 1;
+            STA_DISABLED = 0,
+            STA_SHOWED = 1,
+            STA_ENABLED = 2,
+            STA_PREFERED = 3;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STATUS_STOPPED, "已停止"},
-            {STATUS_RUNNING, "运行中"}
+            {STA_DISABLED, "禁用"},
+            {STA_SHOWED, "展示"},
+            {STA_ENABLED, "可用"},
+            {STA_PREFERED, "优先"},
         };
 
-        internal short id;
+        // the specialized extensible discriminator
+        internal short typ;
 
+        // object status
+        internal short status;
+
+        // readable name
         internal string name;
 
-        internal string domain; // remote address
+        // desctiprive text
+        internal string tip;
 
         internal DateTime created;
 
-        internal bool native;
+        // persona who created or lastly modified
+        internal string creator;
 
-        internal short status;
+        internal short id;
+
+        internal string uri; // remote address
 
         //
         // current block number
-        
+
         internal volatile int blockid;
-        
+
         internal long blockcs;
 
         public void Read(ISource s, byte proj = 15)
         {
-            s.Get(nameof(id), ref id);
-            s.Get(nameof(name), ref name);
-            s.Get(nameof(domain), ref domain);
-            s.Get(nameof(created), ref created);
-            s.Get(nameof(native), ref native);
+            s.Get(nameof(typ), ref typ);
             s.Get(nameof(status), ref status);
+            s.Get(nameof(name), ref name);
+            s.Get(nameof(tip), ref tip);
+            s.Get(nameof(created), ref created);
+            s.Get(nameof(creator), ref creator);
+            s.Get(nameof(id), ref id);
+            s.Get(nameof(uri), ref uri);
         }
 
         public void Write(ISink s, byte proj = 15)
         {
-            s.Put(nameof(id), id);
-            s.Put(nameof(name), name);
-            s.Put(nameof(domain), domain);
-            s.Put(nameof(created), created);
-            s.Put(nameof(native), native);
+            s.Put(nameof(typ), typ);
             s.Put(nameof(status), status);
+            s.Put(nameof(name), name);
+            s.Put(nameof(tip), tip);
+            s.Put(nameof(created), created);
+            s.Put(nameof(creator), creator);
+            s.Put(nameof(id), id);
+            s.Put(nameof(uri), uri);
         }
 
         internal void IncrementBlockId()
@@ -70,13 +87,11 @@ namespace SkyChain.Db
 
         public short Status => status;
 
-        public string Domain => domain;
+        public string Uri => uri;
 
         public DateTime Created => created;
 
-        public bool Native => native;
-
-        public bool IsRunning => status == STATUS_RUNNING;
+        public bool IsRunning => status == STA_ENABLED;
 
         public int CurrentBlockId => blockid;
 

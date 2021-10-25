@@ -11,7 +11,7 @@ namespace SkyChain.Db
     /// <summary>
     /// A client connector to a specific remote peer..
     /// </summary>
-    public class ChainClient : WebClient, IKeyable<short>
+    public class ChainClient : Web.WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -52,7 +52,7 @@ namespace SkyChain.Db
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(info.domain, handler ?? new ChainClientHandler())
+        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(info.uri, handler ?? new ChainClientHandler())
         {
             this.info = info;
             try

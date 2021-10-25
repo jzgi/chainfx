@@ -34,22 +34,6 @@ namespace SkyChain.Db
             return (long) blockid * BLOCK_CAPACITY + idx;
         }
 
-        public static async Task<long> EnterAsync(this DbContext dc, string acct, string name, string tip, decimal amt)
-        {
-            // insert
-            var obj = new OperativeRow()
-            {
-                // cs = acct,
-                // blockcs = name,
-                // remark = tip,
-                // amt = amt,
-                // stamp = DateTime.Now,
-                status = 0,
-            };
-            dc.Sql("INSERT INTO chain.queue ").colset(obj, 0)._VALUES_(obj, 0).T(" RETURNING id");
-            return (int) await dc.ScalarAsync(p => obj.Write(p));
-        }
-
         public static async Task<Peer[]> GetPeersAsync(this DbContext dc)
         {
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
@@ -74,16 +58,6 @@ namespace SkyChain.Db
         //     dc.Sql("SELECT ").collst(Archival.Empty).T(" FROM chain.archive WHERE peerid = @1 AND acct = @2 ORDER BY seq DESC LIMIT @4 OFFSET @3 * @4");
         //     return await dc.QueryAsync<Archival>(p => p.Set(ChainEnviron.Info.id).Set(acct).Set(limit).Set(page));
         // }
-
-        public static async Task<OperativeRow[]> SeekQueueAsync(this DbContext dc, string acct)
-        {
-            if (acct == null)
-            {
-                return null;
-            }
-            dc.Sql("SELECT ").collst(OperativeRow.Empty).T(" FROM chain.ques_vw WHERE acct = @1");
-            return await dc.QueryAsync<OperativeRow>(p => p.Set(acct));
-        }
 
         // remote sql
         public static async Task<D[]> PeerQueryAsync<D>(this DbContext db, short peerid, string sql, Action<IParameters> p = null, bool prepare = true) where D : IData

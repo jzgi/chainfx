@@ -17,6 +17,7 @@
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
         <AssemblyVersion>4.1</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RootNamespace>SkyChain</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>

@@ -52,7 +52,7 @@ namespace SkyChain.Db
 
             using var dc = NewDbContext();
             dc.Sql("SELECT * FROM chain.archive WHERE peerid = @1 AND seq >= @2 AND seq < @2 + 1000 ORDER BY seq");
-            var arr = await dc.QueryAsync<_Arch>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
+            var arr = await dc.QueryAsync<Archival_>(p => p.Set(peerid).Set(WeaveSeq(blockid.Value, 0)));
             var j = new JsonContent(true, 1024 * 256);
             try
             {
