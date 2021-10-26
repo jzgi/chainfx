@@ -1,8 +1,9 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using SkyChain;
 using SkyChain.Web;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class ChainTable
     {
@@ -18,7 +19,7 @@ namespace SkyChain.Db
         readonly string check_option;
 
 
-        readonly Map<string, DbField> columns = new Map<string, DbField>(64);
+        readonly Map<string, DbColumn> columns = new Map<string, DbColumn>(64);
 
         internal ChainTable(DbContext s)
         {
@@ -41,9 +42,9 @@ namespace SkyChain.Db
 
         public uint Oid => oid;
 
-        internal void AddColumn(DbField field)
+        internal void AddColumn(DbColumn column)
         {
-            columns.Add(field);
+            columns.Add(column);
         }
 
         public bool Identifiable => false;

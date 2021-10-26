@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class ChainContext : DbContext
     {

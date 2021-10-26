@@ -3,7 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using SkyChain.Db;
+using SkyChain.Chain;
 
 namespace SkyChain.Web
 {
@@ -473,37 +473,37 @@ namespace SkyChain.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Db.Db.NewDbContext(level);
+            return Chain.Chain.NewDbContext(level);
         }
 
         public static Map<K, V> ObtainMap<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return Db.Db.ObtainMap<K, V>(flag);
+            return Chain.Chain.ObtainMap<K, V>(flag);
         }
 
         public static async Task<Map<K, V>> ObtainMapAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return await Db.Db.ObtainMapAsync<K, V>(flag);
+            return await Chain.Chain.ObtainMapAsync<K, V>(flag);
         }
 
         public static V Obtain<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return Db.Db.Obtain<K, V>(key, flag);
+            return Chain.Chain.Obtain<K, V>(key, flag);
         }
 
         public static async Task<V> ObtainAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return await Db.Db.ObtainAsync<K, V>(key, flag);
+            return await Chain.Chain.ObtainAsync<K, V>(key, flag);
         }
 
         public static Map<K, V> ObtainSub<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return Db.Db.ObtainSub<D, K, V>(discr, flag);
+            return Chain.Chain.ObtainSub<D, K, V>(discr, flag);
         }
 
         public static async Task<Map<K, V>> ObtainSubAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return await Db.Db.ObtainSubAsync<D, K, V>(discr, flag);
+            return await Chain.Chain.ObtainSubAsync<D, K, V>(discr, flag);
         }
 
 

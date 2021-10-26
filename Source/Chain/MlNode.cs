@@ -1,4 +1,6 @@
-﻿namespace SkyChain.Db
+﻿using SkyChain;
+
+namespace SkyChain.Chain
 {
     public class MlNode : IData, IKeyable<short>
     {

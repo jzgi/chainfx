@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Db
+﻿namespace SkyChain.Chain
 {
     /// <summary>
     /// An abstract archival entry.

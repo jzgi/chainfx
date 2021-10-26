@@ -1,7 +1,8 @@
 using System;
 using System.Globalization;
+using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

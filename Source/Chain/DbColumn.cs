@@ -1,9 +1,11 @@
-﻿namespace SkyChain.Db
+﻿using SkyChain;
+
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A database column or argument field. 
     /// </summary>
-    public class DbField : IKeyable<string>
+    public class DbColumn : IKeyable<string>
     {
         readonly DbTyp type;
 
@@ -18,7 +20,7 @@
         readonly bool notnull;
 
 
-        internal DbField(DbContext s)
+        internal DbColumn(DbContext s)
         {
             s.Get(nameof(name), ref name);
 
@@ -31,7 +33,7 @@
             type = DbTyp.GetBaseType(typoid);
         }
 
-        public DbField(char mode, string name, uint typoid, bool def)
+        public DbColumn(char mode, string name, uint typoid, bool def)
         {
             this.mode = mode;
             this.name = name;

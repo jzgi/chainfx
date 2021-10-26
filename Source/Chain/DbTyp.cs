@@ -1,6 +1,7 @@
 ﻿using System;
+using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class DbTyp : IKeyable<uint>
     {
@@ -288,7 +289,7 @@ namespace SkyChain.Db
         internal readonly uint arrayoid;
 
         // columns if this is a composite type
-        readonly Map<string, DbField> columns = new Map<string, DbField>(64);
+        readonly Map<string, DbColumn> columns = new Map<string, DbColumn>(64);
 
 
         internal DbTyp(uint oid, string name, uint arrayoid = 0)
@@ -298,9 +299,9 @@ namespace SkyChain.Db
             this.arrayoid = arrayoid;
         }
 
-        internal void AddColumn(DbField field)
+        internal void AddColumn(DbColumn column)
         {
-            columns.Add(field);
+            columns.Add(column);
         }
 
         public DbTyp ElementType { get; internal set; }

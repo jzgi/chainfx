@@ -1,4 +1,6 @@
-﻿namespace SkyChain.Db
+﻿using SkyChain;
+
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A globally-or-locally scoped data record

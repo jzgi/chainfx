@@ -1,9 +1,10 @@
 using System.Data;
 using System.Threading.Tasks;
+using SkyChain;
 using SkyChain.Web;
-using static SkyChain.Db.ChainUtility;
+using static SkyChain.Chain.ChainUtility;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A web service that realizes inter-peer communication. 

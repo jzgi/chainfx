@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Db
+﻿namespace SkyChain.Chain
 {
     /// <summary>
     /// A classifier that realizes graph-based mechine learning.

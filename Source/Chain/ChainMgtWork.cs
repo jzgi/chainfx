@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public abstract class ChainMgtWork : WebWork
     {

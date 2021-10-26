@@ -3,8 +3,9 @@ using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
+using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.

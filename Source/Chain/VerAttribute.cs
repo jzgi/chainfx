@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// Mark version of chain operations.

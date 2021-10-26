@@ -3,15 +3,17 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static SkyChain.Db.ChainUtility;
+using SkyChain;
+using SkyChain.Web;
+using static SkyChain.Chain.ChainUtility;
 using WebClient = SkyChain.Web.WebClient;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A client connector to a specific remote peer..
     /// </summary>
-    public class ChainClient : Web.WebClient, IKeyable<short>
+    public class ChainClient : WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Db;
+using SkyChain.Chain;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -16,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Application : Chain
+    public class Application : Chain.Chain
     {
         public const string APP_JSON = "app.json";
 
@@ -88,7 +88,7 @@ namespace SkyChain
             dbcfg = cfg["db"];
             if (dbcfg != null)
             {
-                InitializeDb(dbcfg);
+                InitializeChain(dbcfg);
             }
 
             chaincfg = cfg["chain"];

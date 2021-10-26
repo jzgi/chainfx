@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
+using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A contained set of actions runnable localy and remotely .
