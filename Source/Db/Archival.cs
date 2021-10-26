@@ -3,9 +3,9 @@
     /// <summary>
     /// An abstract archival entry.
     /// </summary>
-    public class Archival_ : IData
+    public class Archival : IData
     {
-        public static readonly Archival_ Empty = new Archival_();
+        public static readonly Archival Empty = new Archival();
 
         // globally unique transaction number
         internal int seq_;
@@ -14,7 +14,7 @@
 
         // for remote transaction
         internal int peerid_;
-        internal int coid_;
+        internal int orgid_;
 
         public virtual void Read(ISource s, byte proj = 15)
         {
@@ -22,7 +22,7 @@
             s.Get(nameof(cs_), ref cs_);
             s.Get(nameof(blockcs_), ref blockcs_);
             s.Get(nameof(peerid_), ref peerid_);
-            s.Get(nameof(coid_), ref coid_);
+            s.Get(nameof(orgid_), ref orgid_);
         }
 
         public virtual void Write(ISink s, byte proj = 15)
@@ -31,7 +31,7 @@
             s.Put(nameof(cs_), cs_);
             s.Put(nameof(blockcs_), blockcs_);
             s.Put(nameof(peerid_), peerid_);
-            s.Put(nameof(coid_), coid_);
+            s.Put(nameof(orgid_), orgid_);
         }
 
         public int Seq => seq_;
