@@ -1,16 +1,15 @@
 ﻿using System;
-using SkyChain;
 
 namespace SkyChain.Chain
 {
-    public class DbTyp : IKeyable<uint>
+    public class DbType : IKeyable<uint>
     {
         // system base types
         //
 
-        static readonly Map<uint, DbTyp> BASE = new Map<uint, DbTyp>()
+        static readonly Map<uint, DbType> BASE = new Map<uint, DbType>()
         {
-            new DbTyp(16, "BOOL")
+            new DbType(16, "BOOL")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -19,7 +18,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(18, "CHAR")
+            new DbType(18, "CHAR")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -28,7 +27,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(21, "SMALLINT")
+            new DbType(21, "SMALLINT")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -37,7 +36,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(23, "INT")
+            new DbType(23, "INT")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -46,7 +45,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(20, "BIGINT")
+            new DbType(20, "BIGINT")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -55,7 +54,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(790, "MONEY")
+            new DbType(790, "MONEY")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -64,7 +63,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(700, "FLOAT")
+            new DbType(700, "FLOAT")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -73,7 +72,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(701, "DOUBLE")
+            new DbType(701, "DOUBLE")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -82,7 +81,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1700, "NUMERIC")
+            new DbType(1700, "NUMERIC")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -91,7 +90,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1082, "DATE")
+            new DbType(1082, "DATE")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -100,7 +99,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1083, "TIME")
+            new DbType(1083, "TIME")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -109,7 +108,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1114, "TIMESTAMP")
+            new DbType(1114, "TIMESTAMP")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -118,7 +117,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1184, "TIMESTAMPTZ")
+            new DbType(1184, "TIMESTAMPTZ")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -127,7 +126,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1266, "TIMETZ")
+            new DbType(1266, "TIMETZ")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -136,7 +135,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(2950, "UUID")
+            new DbType(2950, "UUID")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -145,7 +144,7 @@ namespace SkyChain.Chain
                     // snk.Put(name, v);
                 }
             },
-            new DbTyp(1043, "VARCHAR")
+            new DbType(1043, "VARCHAR")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -154,7 +153,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(25, "TEXT")
+            new DbType(25, "TEXT")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -163,7 +162,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(114, "JSON")
+            new DbType(114, "JSON")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -172,7 +171,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(142, "XML")
+            new DbType(142, "XML")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -181,7 +180,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(3802, "JSONB")
+            new DbType(3802, "JSONB")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -190,7 +189,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(17, "BYTEA")
+            new DbType(17, "BYTEA")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -199,7 +198,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1000, "BOOL[]")
+            new DbType(1000, "BOOL[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -208,7 +207,7 @@ namespace SkyChain.Chain
                     // snk.Put(name, v);
                 }
             },
-            new DbTyp(1002, "CHAR[]")
+            new DbType(1002, "CHAR[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -217,7 +216,7 @@ namespace SkyChain.Chain
                     // snk.Put(name, v);
                 }
             },
-            new DbTyp(1005, "SMALLINT[]")
+            new DbType(1005, "SMALLINT[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -226,7 +225,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1007, "INT[]")
+            new DbType(1007, "INT[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -235,7 +234,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1016, "BIGINT[]")
+            new DbType(1016, "BIGINT[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -244,7 +243,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(791, "MONEY[]")
+            new DbType(791, "MONEY[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -253,7 +252,7 @@ namespace SkyChain.Chain
                     snk.Put(name, v);
                 }
             },
-            new DbTyp(1021, "FLOAT[]")
+            new DbType(1021, "FLOAT[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -262,7 +261,7 @@ namespace SkyChain.Chain
                     // snk.Put(name, v);
                 }
             },
-            new DbTyp(1022, "DOUBLE[]")
+            new DbType(1022, "DOUBLE[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -271,7 +270,7 @@ namespace SkyChain.Chain
                     // snk.Put(name, v);
                 }
             },
-            new DbTyp(1015, "VARCHAR[]")
+            new DbType(1015, "VARCHAR[]")
             {
                 Converter = (name, src, snk) =>
                 {
@@ -292,7 +291,7 @@ namespace SkyChain.Chain
         readonly Map<string, DbColumn> columns = new Map<string, DbColumn>(64);
 
 
-        internal DbTyp(uint oid, string name, uint arrayoid = 0)
+        internal DbType(uint oid, string name, uint arrayoid = 0)
         {
             this.oid = oid;
             this.name = name;
@@ -304,7 +303,7 @@ namespace SkyChain.Chain
             columns.Add(column);
         }
 
-        public DbTyp ElementType { get; internal set; }
+        public DbType ElementType { get; internal set; }
 
         public Action<string, ISource, ISink> Converter { get; internal set; }
 
@@ -312,6 +311,6 @@ namespace SkyChain.Chain
 
         public string Name => name;
 
-        public static DbTyp GetBaseType(uint oid) => BASE[oid];
+        public static DbType GetBaseType(uint oid) => BASE[oid];
     }
 }

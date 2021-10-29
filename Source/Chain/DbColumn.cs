@@ -1,13 +1,11 @@
-﻿using SkyChain;
-
-namespace SkyChain.Chain
+﻿namespace SkyChain.Chain
 {
     /// <summary>
-    /// A database column or argument field. 
+    /// The descriptor for a database column. 
     /// </summary>
     public class DbColumn : IKeyable<string>
     {
-        readonly DbTyp type;
+        readonly DbType type;
 
         readonly string name;
 
@@ -30,7 +28,7 @@ namespace SkyChain.Chain
 
             s.Get(nameof(notnull), ref notnull);
 
-            type = DbTyp.GetBaseType(typoid);
+            type = DbType.GetBaseType(typoid);
         }
 
         public DbColumn(char mode, string name, uint typoid, bool def)
@@ -40,14 +38,14 @@ namespace SkyChain.Chain
             this.typoid = typoid;
             this.def = def;
 
-            type = DbTyp.GetBaseType(typoid);
+            type = DbType.GetBaseType(typoid);
         }
 
         public string Key => name;
 
         public string Name => name;
 
-        public DbTyp Type => type;
+        public DbType Type => type;
 
         public void Convert(ISource src, ISink snk)
         {

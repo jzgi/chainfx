@@ -1,11 +1,10 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
-using SkyChain;
 using SkyChain.Web;
 
 namespace SkyChain.Chain
 {
-    public class ChainTable
+    internal class DbTable : IData, IKeyable<string>
     {
         /// <summary>
         /// The database source that governs this view set.
@@ -14,31 +13,24 @@ namespace SkyChain.Chain
 
         readonly uint oid;
 
-        readonly string name;
+        string table_name;
 
         readonly string check_option;
 
 
         readonly Map<string, DbColumn> columns = new Map<string, DbColumn>(64);
 
-        internal ChainTable(DbContext s)
+
+        public void Read(ISource s, byte proj = 15)
         {
-            s.Get(nameof(oid), ref oid);
-            s.Get(nameof(name), ref name);
-
-            const string BEGIN = "current_setting('";
-            const string END = "'";
-            int p = 0;
-
-            s.Get(nameof(check_option), ref check_option);
-
-            bool pk = false;
-            bool updatable = false;
-            bool insertable = false;
-            s.Get(nameof(pk), ref pk);
-            s.Get(nameof(updatable), ref updatable);
-            s.Get(nameof(insertable), ref insertable);
+            s.Get(nameof(table_name), ref table_name);
         }
+
+        public void Write(ISink s, byte proj = 15)
+        {
+        }
+
+        public string Key => table_name;
 
         public uint Oid => oid;
 

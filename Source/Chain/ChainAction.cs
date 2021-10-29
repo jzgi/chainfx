@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
  namespace SkyChain.Chain
 {
-    public class ChainOp : IKeyable<string>
+    public class ChainAction : IKeyable<string>
     {
         // the declaring logic
         readonly ChainBot bean;
@@ -25,7 +25,7 @@ using System.Threading.Tasks;
         readonly Func<ChainContext, bool> @do;
         readonly Func<ChainContext, Task<bool>> doAsync;
 
-        internal ChainOp(ChainBot logic, MethodInfo mi, bool async)
+        internal ChainAction(ChainBot logic, MethodInfo mi, bool async)
         {
             this.bean = logic;
             this.name =  mi.Name;

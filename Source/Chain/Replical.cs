@@ -1,11 +1,9 @@
-﻿using SkyChain;
-
-namespace SkyChain.Chain
+﻿namespace SkyChain.Chain
 {
     /// <summary>
     /// A globally-or-locally scoped data record
     /// </summary>
-    public class Scopal : IData
+    public class Replical : IData
     {
         public const byte ID = 1, LATER = 2;
 

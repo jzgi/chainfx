@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Chain;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -37,7 +36,7 @@ namespace SkyChain
         static string certpass;
 
         // layered configurations
-        public static readonly JObj dbcfg, chaincfg, webcfg, extcfg;
+        public static readonly JObj chaincfg, webcfg, extcfg;
 
         static readonly X509Certificate2 cert;
 
@@ -84,12 +83,6 @@ namespace SkyChain
 
             // init layers
             //
-
-            dbcfg = cfg["db"];
-            if (dbcfg != null)
-            {
-                InitializeChain(dbcfg);
-            }
 
             chaincfg = cfg["chain"];
             if (chaincfg != null)

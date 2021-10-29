@@ -5,8 +5,6 @@
     /// </summary>
     public class Archival : IData
     {
-        public static readonly Archival Empty = new Archival();
-
         // globally unique transaction number
         internal int seq_;
         internal long cs_;
@@ -41,5 +39,7 @@
         public long Blockcs => blockcs_;
 
         public int PeerId => peerid_;
+        
+        public int OrgId => orgid_;
     }
 }

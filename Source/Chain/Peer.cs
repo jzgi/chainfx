@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SkyChain;
 
 namespace SkyChain.Chain
 {
@@ -42,7 +41,7 @@ namespace SkyChain.Chain
 
         internal short id;
 
-        internal string uri; // remote address
+        internal string uri; // remote uri
 
         //
         // current block number
@@ -50,6 +49,15 @@ namespace SkyChain.Chain
         internal volatile int blockid;
 
         internal long blockcs;
+
+        public Peer()
+        {
+        }
+
+        public Peer(JObj s)
+        {
+            Read(s);
+        }
 
         public void Read(ISource s, byte proj = 15)
         {
@@ -85,6 +93,8 @@ namespace SkyChain.Chain
         public short Id => id;
 
         public string Name => name;
+
+        public string Tip => tip;
 
         public short Status => status;
 

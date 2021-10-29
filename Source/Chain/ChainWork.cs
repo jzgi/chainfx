@@ -4,14 +4,15 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Chain
 {
-    public abstract class ChainMgtWork : WebWork
+    [Ui("联盟链管理")]
+    public class ChainWork : WebWork
     {
         protected internal override void OnMake()
         {
-            MakeVarWork<ChainMgtVarWork>();
+            MakeVarWork<ChainVarWork>();
         }
 
-        public virtual void @default(WebContext wc)
+        public void @default(WebContext wc)
         {
             var o = Chain.Info;
             wc.GivePage(200, h =>
@@ -34,7 +35,7 @@ namespace SkyChain.Chain
         }
 
         [Ui("本埠设置"), Tool(ButtonShow)]
-        public virtual async Task setg(WebContext wc)
+        public async Task setg(WebContext wc)
         {
             var o = Chain.Info ?? new Peer
             {
@@ -58,17 +59,12 @@ namespace SkyChain.Chain
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o).T(" ON CONFLICT (native) WHERE native = TRUE DO UPDATE SET ").setlst(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                if (Chain.Info == null)
-                {
-                    Chain.Info = o;
-                }
-
                 wc.GivePane(200); // close dialog
             }
         }
 
         [Ui("联盟管理"), Tool(ButtonShow)]
-        public virtual async Task fed(WebContext wc)
+        public async Task fed(WebContext wc)
         {
             var arr = Chain.Clients;
             wc.GivePage(200, h =>

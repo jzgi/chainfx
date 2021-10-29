@@ -10,7 +10,7 @@ namespace SkyChain.Chain
     public abstract class ChainBot
     {
         // declared operations 
-        readonly Map<string, ChainOp> ops = new Map<string, ChainOp>(32);
+        readonly Map<string, ChainAction> ops = new Map<string, ChainAction>(32);
 
         protected ChainBot()
         {
@@ -35,20 +35,20 @@ namespace SkyChain.Chain
 
                 // signature filtering
                 var pis = mi.GetParameters();
-                ChainOp op;
+                ChainAction action;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(ChainContext))
                 {
-                    op = new ChainOp(this, mi, async);
+                    action = new ChainAction(this, mi, async);
                 }
                 else
                 {
                     continue;
                 }
 
-                ops.Add(op);
+                ops.Add(action);
             }
         }
 
-        public ChainOp GetOp(string name) => ops[name];
+        public ChainAction GetOp(string name) => ops[name];
     }
 }

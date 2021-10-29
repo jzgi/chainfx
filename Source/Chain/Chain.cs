@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using SkyChain;
-using ApplicationException = SkyChain.ApplicationException;
 
 namespace SkyChain.Chain
 {
@@ -17,9 +15,9 @@ namespace SkyChain.Chain
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            if (dbsource == null)
+            if (dbsource == null) // check on-the-fly
             {
-                throw new ApplicationException("missing 'db' in json");
+                throw new ApplicationException("missing 'chain' in json");
             }
 
             return dbsource.NewDbContext(level);
@@ -199,26 +197,68 @@ namespace SkyChain.Chain
 
         static Peer info;
 
-        // tables whose rows are archivable   
-        static readonly Map<short, ChainTable> tables = new Map<short, ChainTable>(8);
+        // chainable table structures   
+        static readonly Map<string, DbTable> tables = new Map<string, DbTable>(16);
 
         // connectors to remote peers 
-        static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(32);
-
-        // polls and imports foreign blocks 
-        static Thread importer;
+        static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(16);
 
 
         internal static void InitializeChain(JObj chaincfg)
         {
             dbsource = new DbSource(chaincfg);
+
+            // partial peer info
+            info = new Peer(chaincfg);
+
+            // scan chain tables
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
+                var arr = dc.Query<DbTable>();
+                if (arr != null)
+                {
+                    foreach (var o in arr)
+                    {
+                        if (!o.Key.EndsWith('_')) continue;
+
+                        // select pg_get_serial_sequence('buys','id');
+
+                        // dc.Sql("SELECT * FROM information_schema.sequences WHERE sequence_schema = 'public' AND sequence_name = ''");
+                        // var conn = new DbColumn(null);
+                        // o.Add(conn);
+
+                        // dc.Sql("SELECT * FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
+
+                        // init current block id
+                        // await o.PeekLastBlockAsync(dc);
+                    }
+                }
+            }
+
+
+            // setup remote connectors
+            //
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
+                var arr = dc.Query<Peer>();
+                if (arr != null)
+                {
+                    foreach (var o in arr)
+                    {
+                        var conn = new ChainClient(o);
+                        clients.Add(conn);
+
+                        // init current block id
+                        // await o.PeekLastBlockAsync(dc);
+                    }
+                }
+            }
         }
 
-        public static Peer Info
-        {
-            get => info;
-            internal set => info = value;
-        }
+
+        public static Peer Info => info;
 
         public static ChainBot Bot { get; protected set; }
 
@@ -241,47 +281,22 @@ namespace SkyChain.Chain
         {
             if (DbSource == null)
             {
-                throw new ApplicationException("missing 'db' in app.json");
+                throw new ApplicationException("missing 'chain' in app.json");
             }
 
             return DbSource.NewChainContext(true, level);
         }
 
 
-        static async void Do()
-        {
-            // load remote connectors
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
-                var arr = await dc.QueryAsync<Peer>();
-                if (arr != null)
-                {
-                    foreach (var o in arr)
-                    {
-                        var conn = new ChainClient(o);
-                        clients.Add(conn);
-
-                        // init current block id
-                        // await o.PeekLastBlockAsync(dc);
-                    }
-                }
-            }
-
-            // start the importer thead
-            importer = new Thread(Import);
-            importer.Start();
-        }
-
         //
         // instance scope
         //
 
         // declared operations 
-        readonly Map<string, ChainOp> ops = new Map<string, ChainOp>(32);
+        readonly Map<string, ChainAction> ops = new Map<string, ChainAction>(32);
 
 
-        public ChainOp GetAction(string name) => ops[name];
+        public ChainAction GetAction(string name) => ops[name];
 
 
         //
