@@ -8,7 +8,7 @@ using System.Threading.Tasks;
     public class ChainAction : IKeyable<string>
     {
         // the declaring logic
-        readonly ChainBot bean;
+        readonly ChainDrive bean;
 
         // coding name
         readonly string name;
@@ -25,9 +25,9 @@ using System.Threading.Tasks;
         readonly Func<ChainContext, bool> @do;
         readonly Func<ChainContext, Task<bool>> doAsync;
 
-        internal ChainAction(ChainBot logic, MethodInfo mi, bool async)
+        internal ChainAction(ChainDrive drive, MethodInfo mi, bool async)
         {
-            this.bean = logic;
+            this.bean = drive;
             this.name =  mi.Name;
             this.tip = name == string.Empty ? "./" : name;
             this.async = async;
@@ -37,15 +37,15 @@ using System.Threading.Tasks;
             // create a doer delegate
             if (async)
             {
-                doAsync = (Func<ChainContext, Task<bool>>) mi.CreateDelegate(typeof(Func<ChainContext, Task<bool>>), logic);
+                doAsync = (Func<ChainContext, Task<bool>>) mi.CreateDelegate(typeof(Func<ChainContext, Task<bool>>), drive);
             }
             else
             {
-                @do = (Func<ChainContext, bool>) mi.CreateDelegate(typeof(Func<ChainContext, bool>), logic);
+                @do = (Func<ChainContext, bool>) mi.CreateDelegate(typeof(Func<ChainContext, bool>), drive);
             }
         }
 
-        public ChainBot Logic => bean;
+        public ChainDrive Drive => bean;
 
         public Func<ChainContext, bool> Do => @do;
 

@@ -260,7 +260,7 @@ namespace SkyChain.Chain
 
         public static Peer Info => info;
 
-        public static ChainBot Bot { get; protected set; }
+        public static ChainDrive Drive { get; protected set; }
 
         //
         // transaction id generator

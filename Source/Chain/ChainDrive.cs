@@ -7,12 +7,12 @@ namespace SkyChain.Chain
     /// <summary>
     /// A contained set of actions runnable localy and remotely .
     /// </summary>
-    public abstract class ChainBot
+    public abstract class ChainDrive
     {
         // declared operations 
         readonly Map<string, ChainAction> ops = new Map<string, ChainAction>(32);
 
-        protected ChainBot()
+        protected ChainDrive()
         {
             // gather actions
             foreach (var mi in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
