@@ -1,4 +1,5 @@
 ﻿using System;
+using SkyChain.Source.Web;
 
 namespace SkyChain.Web
 {
@@ -7,12 +8,13 @@ namespace SkyChain.Web
     /// </summary>
     public struct WebSeg
     {
-        // as uri segment
+        // as in uri segment
         readonly string key;
 
-        // state object get from principal
+        // state object resolved by principal
         readonly object accessor;
 
+        // corresponding work object
         readonly WebWork work;
 
         internal WebSeg(WebWork work, string key, object accessor)
@@ -28,7 +30,9 @@ namespace SkyChain.Web
 
         public object Accessor => accessor;
 
-        public bool IsImplicit => key.Length == 0;
+        public bool IsImplicit => string.IsNullOrEmpty(key);
+
+        public T As<T>() where T : class => accessor as T;
 
         //
         // CONVERSION
@@ -36,7 +40,7 @@ namespace SkyChain.Web
 
         public static implicit operator short(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str)) return (short) seg.accessor;
             if (short.TryParse(str, out var v))
             {
@@ -47,7 +51,7 @@ namespace SkyChain.Web
 
         public static implicit operator int(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str)) return (int) seg.accessor;
             if (int.TryParse(str, out var v))
             {
@@ -58,7 +62,7 @@ namespace SkyChain.Web
 
         public static implicit operator long(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str)) return (long) seg.accessor;
             if (long.TryParse(str, out var v))
             {
@@ -69,7 +73,7 @@ namespace SkyChain.Web
 
         public static implicit operator string(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (string) seg.accessor;
@@ -79,7 +83,7 @@ namespace SkyChain.Web
 
         public static implicit operator DateTime(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str)) return (DateTime) seg.accessor;
             if (DateTime.TryParse(str, out var v))
             {
@@ -90,7 +94,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<string, string>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (null, null);
@@ -103,7 +107,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<string, short>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (null, 0);
@@ -116,7 +120,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<string, int>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (null, 0);
@@ -129,7 +133,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<string, long>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (null, 0);
@@ -142,7 +146,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<short, string>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, null);
@@ -155,7 +159,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<short, short>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -168,7 +172,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<short, int>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -181,7 +185,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<short, long>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0L);
@@ -194,7 +198,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<int, string>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, null);
@@ -207,7 +211,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<int, short>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -220,7 +224,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<int, int>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -233,7 +237,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<int, long>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -246,7 +250,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<long, string>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, null);
@@ -259,7 +263,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<long, short>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -272,7 +276,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<long, int>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -285,7 +289,7 @@ namespace SkyChain.Web
 
         public static implicit operator ValueTuple<long, long>(WebSeg seg)
         {
-            string str = seg.key;
+            var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
                 return (0, 0);
@@ -294,6 +298,11 @@ namespace SkyChain.Web
             var a = str.ParseLong(ref pos);
             var b = str.ParseLong(ref pos);
             return (a, b);
+        }
+
+        public static IForkable ToKindable(WebSeg seg)
+        {
+            return (IForkable) seg.accessor;
         }
 
         public static implicit operator string[](WebSeg seg)

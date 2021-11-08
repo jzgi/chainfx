@@ -6,7 +6,7 @@ namespace SkyChain.Chain
 {
     public class ChainVarWork : WebWork
     {
-        [Ui("修改", group: 1), Tool(ButtonOpen)]
+        [Ui("修改", @group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
@@ -38,7 +38,7 @@ namespace SkyChain.Chain
             }
         }
 
-        [Ui("修改", group: 1), Tool(ButtonOpen)]
+        [Ui("修改", @group: 1), Tool(ButtonOpen)]
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];

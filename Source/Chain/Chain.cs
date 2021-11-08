@@ -51,16 +51,6 @@ namespace SkyChain.Chain
             valuesets.Add(new DbValueSet<K, V>(fetcher, typeof(V), maxage, flag));
         }
 
-        // public static void CacheValue<K, V>(Func<DbContext, K, Task<V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
-        // {
-        //     if (valuecolls == null)
-        //     {
-        //         valuecolls = new List<DbCache>(16);
-        //     }
-        //     valuecolls.Add(new DbValueCollection<K, V>(fetcher, typeof(V), maxage, flag));
-        // }
-        //
-
         public static void CacheSub<S, K, V>(Func<DbContext, S, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
             if (mapsets == null)

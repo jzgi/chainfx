@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using SkyChain.Chain;
+using SkyChain.Source.Web;
 
 namespace SkyChain.Web
 {
@@ -164,20 +165,12 @@ namespace SkyChain.Web
         /// Create and add a variable-key subwork.
         /// </summary>
         /// <param name="accessor">to resolve key from the principal object</param>
-        /// <param
-        ///     name="state">
-        /// </param>
+        /// <param name="state"> </param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param
-        ///     name="authenticate">
-        /// </param>
+        /// <param name="authenticate"></param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
-        /// <param
-        ///     name="before">
-        /// </param>
-        /// <param
-        ///     name="after">
-        /// </param>
+        /// <param name="before"></param>
+        /// <param name="after"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
@@ -211,16 +204,12 @@ namespace SkyChain.Web
         /// Create and add a fixed-key subwork.
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
-        /// <param
-        ///     name="state">
-        /// </param>
+        /// <param name="state"></param>
         /// <param name="ui">to override class-wise UI attribute</param>
-        /// <param
-        ///     name="authenticate">
-        /// </param>
+        /// <param name="authenticate"></param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
-        /// <param     name="before"> </param>
-        /// <param     name="after"> </param>
+        /// <param name="before"></param>
+        /// <param name="after"></param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
@@ -253,6 +242,83 @@ namespace SkyChain.Web
 
             wrk.OnMake();
             return wrk;
+        }
+
+        protected void MakeWork<T1, T2>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+        }
+
+        protected void MakeWork<T1, T2, T3>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+        }
+
+        protected void MakeWork<T1, T2, T3, T4>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
+        }
+
+        protected void MakeWork<T1, T2, T3, T4, T5>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
+        }
+
+        protected void MakeWork<T1, T2, T3, T4, T5, T6>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T6>(name, state, ui, authenticate, authorize, before, after);
+        }
+
+        protected void MakeWork<T1, T2, T3, T4, T5, T6, T7>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new() where T7 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T6>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T7>(name, state, ui, authenticate, authorize, before, after);
+        }
+
+        protected void MakeWork<T1, T2, T3, T4, T5, T6, T7, T8>(string name, object state = null,
+            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
+            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new() where T7 : WebWork, new() where T8 : WebWork, new()
+        {
+            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T6>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T7>(name, state, ui, authenticate, authorize, before, after);
+            MakeWork<T8>(name, state, ui, authenticate, authorize, before, after);
         }
 
         protected void Describe(XmlContent xc)
@@ -339,6 +405,38 @@ namespace SkyChain.Web
             return true;
         }
 
+
+        WebWork GetSubWork(WebContext wc, string key)
+        {
+            if (works == null)
+            {
+                return null;
+            }
+            var ety = works.EntryOf(key);
+            var siz = ety.Size;
+            if (siz < 1)
+            {
+                return null;
+            }
+            if (siz == 1)
+            {
+                return ety.Value;
+            }
+            if (wc[0].Accessor is IForkable forkable)
+            {
+                short frk = forkable.Fork;
+                for (var i = 0; i < siz; i++)
+                {
+                    var wrk = ety[i];
+                    if (frk == wrk.Ui?.Fork)
+                    {
+                        return wrk;
+                    }
+                }
+            }
+            return null;
+        }
+
         internal async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
@@ -407,7 +505,8 @@ namespace SkyChain.Web
             else // sub works
             {
                 string key = rsc.Substring(0, slash);
-                if (works != null && works.TryGetValue(key, out var wrk)) // if child
+                var wrk = GetSubWork(wc, key);
+                if (wrk != null) // if child
                 {
                     // do necessary authentication before entering
                     if (wc.Principal == null && !await wrk.DoAuthenticate(wc)) return;
@@ -421,17 +520,17 @@ namespace SkyChain.Web
                     if (wc.Principal == null && !await varwork.DoAuthenticate(wc)) return;
 
                     var prin = wc.Principal;
-                    object acc = null;
+                    object accessor = null;
                     if (key.Length == 0) // resolve accessor
                     {
                         if (prin == null) throw AuthReq;
-                        if ((acc = varwork.GetAccessor(prin)) == null)
+                        if ((accessor = varwork.GetAccessor(prin)) == null)
                         {
                             throw AccessorReq;
                         }
                     }
 
-                    wc.AppendSeg(varwork, key, acc);
+                    wc.AppendSeg(varwork, key, accessor);
                     await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                 }
             }
