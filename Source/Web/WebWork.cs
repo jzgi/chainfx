@@ -149,11 +149,11 @@ namespace SkyChain.Web
         }
 
         // to resolve from the principal object.
-        public Func<IData, object> Accessor { get; internal set; }
+        public Func<IData, string, object> Accessor { get; internal set; }
 
-        public object GetAccessor(IData prin)
+        public object GetAccessor(IData prin, string key)
         {
-            return Accessor?.Invoke(prin);
+            return Accessor?.Invoke(prin, key);
         }
 
 
@@ -174,7 +174,7 @@ namespace SkyChain.Web
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T MakeVarWork<T>(Func<IData, object> accessor = null, object state = null,
+        protected T MakeVarWork<T>(Func<IData, string, object> accessor = null, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             var wrk = new T
@@ -406,7 +406,7 @@ namespace SkyChain.Web
         }
 
 
-        WebWork GetSubWork(WebContext wc, string key)
+        internal WebWork GetSubWork(WebContext wc, string key)
         {
             if (works == null)
             {
@@ -424,11 +424,42 @@ namespace SkyChain.Web
             }
             if (wc[0].Accessor is IForkable forkable)
             {
-                short frk = forkable.Fork;
+                short frk = forkable.Forkie;
                 for (var i = 0; i < siz; i++)
                 {
                     var wrk = ety[i];
-                    if (frk == wrk.Ui?.Fork)
+                    if (frk == wrk.Ui?.Forkie)
+                    {
+                        return wrk;
+                    }
+                }
+            }
+            return null;
+        }
+
+        internal WebWork GetSubWork(WebContext wc, int idx)
+        {
+            if (works == null)
+            {
+                return null;
+            }
+            var ety = works.EntryAt(idx);
+            var siz = ety.Size;
+            if (siz < 1)
+            {
+                return null;
+            }
+            if (siz == 1)
+            {
+                return ety.Value;
+            }
+            if (wc[0].Accessor is IForkable forkable)
+            {
+                short frk = forkable.Forkie;
+                for (var i = 0; i < siz; i++)
+                {
+                    var wrk = ety[i];
+                    if (frk == wrk.Ui?.Forkie)
                     {
                         return wrk;
                     }
@@ -520,16 +551,21 @@ namespace SkyChain.Web
                     if (wc.Principal == null && !await varwork.DoAuthenticate(wc)) return;
 
                     var prin = wc.Principal;
-                    object accessor = null;
-                    if (key.Length == 0) // resolve accessor
+                    object accessor;
+                    if (key.Length == 0)
                     {
                         if (prin == null) throw AuthReq;
-                        if ((accessor = varwork.GetAccessor(prin)) == null)
+                        accessor = varwork.GetAccessor(prin, null);
+                        if (accessor == null)
                         {
                             throw AccessorReq;
                         }
                     }
-
+                    else
+                    {
+                        accessor = varwork.GetAccessor(prin, key);
+                    }
+                    // append the segment
                     wc.AppendSeg(varwork, key, accessor);
                     await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
                 }

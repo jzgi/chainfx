@@ -1197,7 +1197,7 @@ namespace SkyChain.Web
             Add("<span>");
             if (v)
             {
-                Add("&checkmark;");
+                Add("✔️");
             }
             Add("</span>");
             return this;
@@ -1569,25 +1569,32 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SUBNAV<K, V>(Map<K, V> map, string uri, int subscript)
+        public HtmlContent SUBNAV<V>(Map<short, V> map, string uri, int subscript, Func<short, V, bool> filter = null)
         {
             Add("<ul class=\"uk-subnav\">");
+            int count = 0;
             for (int i = 0; i < map.Count; i++)
             {
-                var obj = map.ValueAt(i);
+                var ety = map.EntryAt(i);
+                var k = ety.Key;
+                var v = ety.Value;
+                if (filter != null && !filter(k, v))
+                {
+                    continue;
+                }
                 Add("<li");
-                if (i == subscript)
+                if (k == subscript || count == 0 && subscript == 0)
                 {
                     Add(" class=\"uk-active\"");
                 }
-
                 Add("><a href=\"");
                 Add(uri);
                 Add('-');
-                Add(i);
+                Add(k);
                 Add("\">");
-                Add(obj.ToString());
+                Add(v.ToString());
                 Add("</a></li>");
+                count++;
             }
 
             Add("</ul>");
@@ -2215,7 +2222,7 @@ namespace SkyChain.Web
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    M obj = arr[i];
+                    var obj = arr[i];
                     Add("<div>");
                     Add("<form class=\"uk-card");
                     if (css != null)
@@ -2234,9 +2241,15 @@ namespace SkyChain.Web
             Add("</div>");
         }
 
-        public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-default")
+        public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, int min = 1, string css = "uk-card-default")
         {
-            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            Add("<main uk-grid class=\"uk-child-width-1-");
+            Add(min);
+            Add("@s uk-child-width-1-");
+            Add(min * 2 - 2);
+            Add("@m uk-child-width-1-");
+            Add(min * 3 - 3);
+            Add("@l\">");
             if (map != null)
             {
                 for (int i = 0; i < map.Count; i++)
@@ -2530,12 +2543,15 @@ namespace SkyChain.Web
         {
             var wc = Web;
             var wrk = wc.Work;
-            var subwrks = wrk.Works;
             // render tabs
             UL_("uk-card- uk-card-primary uk-card-body uk-list uk-list-divider");
-            for (int i = 0; i < subwrks?.Count; i++)
+            for (int i = 0; i < wrk.Works?.Count; i++)
             {
-                var sub = subwrks.ValueAt(i);
+                var sub = wrk.GetSubWork(wc, i);
+                if (sub == null)
+                {
+                    continue;
+                }
                 if (sub.Group != 0 && (sub.Group & group) != sub.Group)
                 {
                     continue;

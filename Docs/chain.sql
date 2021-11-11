@@ -76,10 +76,10 @@ create table events
     stamp timestamp(0)
 );
 
-alter table events owner to postgres;
+alter table posts owner to postgres;
 
 create index events_acctstamp_idx
-    on events (acct asc, stamp desc);
+    on posts (acct asc, stamp desc);
 
 create function calc_bal_func() returns trigger
     language plpgsql
