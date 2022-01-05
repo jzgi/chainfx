@@ -14,7 +14,7 @@ namespace SkyChain.Web
 
         readonly byte group;
 
-        readonly short forkie;
+        readonly short fork;
 
         /// <summary>
         ///  To specify user interface-related attributes.
@@ -22,13 +22,13 @@ namespace SkyChain.Web
         /// <param name="label">The label text for the target work or action. It can be Unicode symbols or HTML entities</param>
         /// <param name="tip">A short description of the functionality</param>
         /// <param name="group"></param>
-        /// <param name="forkie"></param>
-        public UiAttribute(string label = null, string tip = null, byte group = 0, short forkie = 0)
+        /// <param name="fork"></param>
+        public UiAttribute(string label = null, string tip = null, byte group = 0, short fork = 0)
         {
             this.label = label;
             this.tip = tip;
             this.group = group;
-            this.forkie = forkie;
+            this.fork = fork;
         }
 
         public string Label => label;
@@ -40,6 +40,6 @@ namespace SkyChain.Web
         /// </summary>
         public byte Group => group;
 
-        public short Forkie => forkie;
+        public short Fork => fork;
     }
 }

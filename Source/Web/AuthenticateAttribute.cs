@@ -7,7 +7,7 @@ namespace SkyChain.Web
     /// <summary>
     /// To determine principal identity based on current web context. The interaction with user, however, is not included.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public abstract class AuthenticateAttribute : Attribute
     {
         readonly bool async;
@@ -36,7 +36,7 @@ namespace SkyChain.Web
         public virtual Task<bool> DoAsync(WebContext wc) => throw new NotImplementedException();
 
 
-        public static string EncryptPrincipal<P>(P prin, byte proj) where P : IData
+        public static string EncryptPrincipal<P>(P prin, short proj) where P : IData
         {
             var cnt = new JsonContent(true, 4096);
             try
@@ -70,7 +70,7 @@ namespace SkyChain.Web
                 }
 
                 // construct a principal object
-                P prin = new P();
+                var prin = new P();
                 prin.Read(jo, 0xff);
                 return prin;
             }

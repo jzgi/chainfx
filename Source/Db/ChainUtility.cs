@@ -2,13 +2,13 @@ using System;
 using System.Threading.Tasks;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public static class ChainUtility
     {
         public const string X_FROM = "X-From";
 
-        public const string X_PEER_ID = "X-Peer-ID";
+        public const string X_CRYPTO = "X-Peer-ID";
 
         public const string X_BLOCK_ID = "X-Block-ID";
 
@@ -16,9 +16,9 @@ namespace SkyChain.Chain
 
         public const string X_NAME = "X-Name";
 
-        public const string X_REMARK = "X-Remark";
+        public const string X_DUTY = "X-Duty";
 
-        public const string X_AMOUNT = "X-Amount";
+        public const string X_OP = "X-Op";
 
 
         public const int BLOCK_CAPACITY = 1000;

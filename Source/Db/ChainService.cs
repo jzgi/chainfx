@@ -1,27 +1,31 @@
 using System.Data;
 using System.Threading.Tasks;
-using SkyChain;
 using SkyChain.Web;
-using static SkyChain.Chain.ChainUtility;
+using static SkyChain.Db.ChainUtility;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
     /// A web service that realizes inter-peer communication. 
     /// </summary>
     public class ChainService : WebService
     {
-        public async Task<bool> onop(WebContext wc)
+        public async Task<bool> oncall(WebContext wc)
         {
-            long id = 0;
-            IsolationLevel level = 0;
+            // resolve peer id
+            string crypto = wc.Header(X_CRYPTO);
+            short peerid = 0;
+
+            // get param
+            string duty = wc.Header(X_DUTY);
+            string op = wc.Header(X_OP);
 
             var f = await wc.ReadAsync<JObj>();
-            string op = f[nameof(op)];
 
-            var o = Application.Drive.GetOp(op);
+            var dut = Chain.GetDuty(duty);
+            var o = dut.GetOp(op);
 
-            var ctx = Chain.AcquireSlave(id, level);
+            var ctx = Chain.NewChainContext(IsolationLevel.ReadUncommitted, peerid);
             if (o.IsAsync)
             {
                 return await o.DoAsync(ctx);
@@ -39,7 +43,7 @@ namespace SkyChain.Chain
         {
             // veriify 
             var peerid = Chain.Info.id;
-            if (wc.HeaderShort(X_PEER_ID) != peerid)
+            if (wc.HeaderShort(X_CRYPTO) != peerid)
             {
                 wc.Give(409); // conflict
             }

@@ -73,7 +73,7 @@ namespace SkyChain.Web
             segs[level++] = new WebSeg(work, key, accessor);
         }
 
-        public WebSeg this[int position] => position <= 0 ? segs[level + position - 1] : default;
+        public WebSeg this[int pos] => pos <= 0 ? segs[level + pos - 1] : default;
 
         public WebSeg this[Type typ]
         {
@@ -338,7 +338,7 @@ namespace SkyChain.Web
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(byte proj = 0x0f, D inst = default) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(short proj = 0x0fff, D instance = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -364,16 +364,16 @@ namespace SkyChain.Web
                 return default;
             }
 
-            if (inst == null)
+            if (instance == null)
             {
-                inst = new D();
+                instance = new D();
             }
 
-            inst.Read(src, proj);
-            return inst;
+            instance.Read(src, proj);
+            return instance;
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(byte proj = 0x0f) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(short proj = 0x0fff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -493,7 +493,7 @@ namespace SkyChain.Web
             MaxAge = maxage;
         }
 
-        public void Give(int code, IData obj, byte proj = 0x0f, bool? shared = null, int maxage = 12)
+        public void Give(int code, IData obj, short proj = 0x0fff, bool? shared = null, int maxage = 12)
         {
             var cnt = new JsonContent(true, 8192);
             cnt.Put(null, obj, proj);
@@ -504,7 +504,7 @@ namespace SkyChain.Web
             MaxAge = maxage;
         }
 
-        public void Give<D>(short code, D[] arr, byte proj = 0x0f, bool? shared = null, int maxage = 12) where D : IData
+        public void Give<D>(short code, D[] arr, short proj = 0x0fff, bool? shared = null, int maxage = 12) where D : IData
         {
             var cnt = new JsonContent(true, 8192);
             cnt.Put(null, arr, proj);

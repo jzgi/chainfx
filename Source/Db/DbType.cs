@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class DbType : IKeyable<uint>
     {

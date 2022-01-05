@@ -5,10 +5,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using SkyChain;
 using SkyChain.Web;
-using static SkyChain.Chain.ChainUtility;
+using static SkyChain.Db.ChainUtility;
 using WebClient = SkyChain.Web.WebClient;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
     /// A client connector to a specific remote peer..
@@ -158,7 +158,7 @@ namespace SkyChain.Chain
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_CRYPTO, info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
                 // response
@@ -202,7 +202,7 @@ namespace SkyChain.Chain
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_PEER_ID, info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_CRYPTO, info.id.ToString());
 
                 req.Content = content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);

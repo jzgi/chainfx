@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using SkyChain.Db;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -15,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Application : Chain.Chain
+    public class Application : Chain
     {
         public const string APP_JSON = "app.json";
 
@@ -55,7 +56,7 @@ namespace SkyChain
             var parser = new JsonParser(bytes, bytes.Length);
             var cfg = (JObj) parser.Parse();
 
-            // setup logger
+            // file-based logger
             logging = cfg[nameof(logging)];
             var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new ApplicationLogger(logfile)

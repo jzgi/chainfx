@@ -5,7 +5,7 @@ using Npgsql;
 using NpgsqlTypes;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
@@ -250,7 +250,7 @@ namespace SkyChain.Chain
             return reader.Read();
         }
 
-        public D QueryTop<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (QueryTop(p, prepare))
             {
@@ -259,7 +259,7 @@ namespace SkyChain.Chain
             return default;
         }
 
-        public D QueryTop<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (QueryTop(sql, p, prepare))
             {
@@ -268,7 +268,7 @@ namespace SkyChain.Chain
             return default;
         }
 
-        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (await QueryTopAsync(p, prepare))
             {
@@ -277,7 +277,7 @@ namespace SkyChain.Chain
             return default;
         }
 
-        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (await QueryTopAsync(sql, p, prepare))
             {
@@ -354,7 +354,7 @@ namespace SkyChain.Chain
             return reader.HasRows;
         }
 
-        public D[] Query<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
@@ -364,7 +364,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public D[] Query<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
@@ -373,7 +373,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
@@ -382,7 +382,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
@@ -392,7 +392,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public Map<K, D> Query<K, D>(Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
@@ -401,7 +401,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
@@ -410,7 +410,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
@@ -419,7 +419,7 @@ namespace SkyChain.Chain
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, byte proj = 0x0f, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
@@ -591,14 +591,14 @@ namespace SkyChain.Chain
         // RESULTSET
         //
 
-        public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
+        public D ToObject<D>(short proj = 0x0fff) where D : IData, new()
         {
             var obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0x0fff) where D : IData, new()
         {
             var lst = new ValueList<D>(32);
             while (Next())
@@ -610,7 +610,7 @@ namespace SkyChain.Chain
             return lst.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short proj = 0x0fff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
         {
             if (map == null)
             {
@@ -889,7 +889,7 @@ namespace SkyChain.Chain
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new()
         {
             try
             {
@@ -1118,7 +1118,7 @@ namespace SkyChain.Chain
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new()
         {
             try
             {
@@ -1482,7 +1482,7 @@ namespace SkyChain.Chain
             return v;
         }
 
-        public D Let<D>(out D v, byte proj = 0x0f) where D : IData, new()
+        public D Let<D>(out D v, short proj = 0x0fff) where D : IData, new()
         {
             v = default;
             try
@@ -1504,7 +1504,7 @@ namespace SkyChain.Chain
             return v;
         }
 
-        public D[] Let<D>(out D[] v, byte proj = 0x0f) where D : IData, new()
+        public D[] Let<D>(out D[] v, short proj = 0x0fff) where D : IData, new()
         {
             v = null;
             try
@@ -1730,14 +1730,21 @@ namespace SkyChain.Chain
 
         public void Put(string name, DateTime v)
         {
-            bool notime = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
-            command.Parameters.Add(new NpgsqlParameter<DateTime>(name, notime ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
+            if (v == default)
             {
-                TypedValue = v
-            });
-            if (Digest)
+                command.Parameters.AddWithValue(name, DBNull.Value);
+            }
+            else
             {
-                Check(v, !notime);
+                bool notime = v.Hour == 0 && v.Minute == 0 && v.Second == 0 && v.Millisecond == 0;
+                command.Parameters.Add(new NpgsqlParameter<DateTime>(name, notime ? NpgsqlDbType.Date : NpgsqlDbType.Timestamp)
+                {
+                    TypedValue = v
+                });
+                if (Digest)
+                {
+                    Check(v, !notime);
+                }
             }
         }
 
@@ -1981,7 +1988,7 @@ namespace SkyChain.Chain
             }
         }
 
-        public void Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, short proj = 0x0fff)
         {
             if (v == null)
             {
@@ -2004,7 +2011,7 @@ namespace SkyChain.Chain
             }
         }
 
-        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
         {
             if (v == null)
             {
@@ -2234,13 +2241,13 @@ namespace SkyChain.Chain
             return this;
         }
 
-        public IParameters Set(IData v, byte proj = 0x0f)
+        public IParameters Set(IData v, short proj = 0x0fff)
         {
             Put(PARAMS[paramidx++], v, proj);
             return this;
         }
 
-        public IParameters Set<D>(D[] v, byte proj = 0x0f) where D : IData
+        public IParameters Set<D>(D[] v, short proj = 0x0fff) where D : IData
         {
             Put(PARAMS[paramidx++], v, proj);
             return this;

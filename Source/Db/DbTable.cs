@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     internal class DbTable : IData, IKeyable<string>
     {
@@ -21,12 +21,12 @@ namespace SkyChain.Chain
         readonly Map<string, DbColumn> columns = new Map<string, DbColumn>(64);
 
 
-        public void Read(ISource s, byte proj = 15)
+        public void Read(ISource s, short proj = 0x0fff)
         {
             s.Get(nameof(table_name), ref table_name);
         }
 
-        public void Write(ISink s, byte proj = 15)
+        public void Write(ISink s, short proj = 0x0fff)
         {
         }
 

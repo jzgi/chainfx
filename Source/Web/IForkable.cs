@@ -2,6 +2,6 @@
 {
     public interface IForkable
     {
-        short Forkie { get; }
+        short Fork { get; }
     }
 }

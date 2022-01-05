@@ -1,6 +1,6 @@
 ﻿using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public interface IOutcome<in R> : IData where R : struct, IOutcome<R>
     {

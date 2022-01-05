@@ -1,19 +1,23 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
-using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
-    /// A contained set of actions runnable localy and remotely .
+    /// A contained logic set runnable both locally and remotely .
     /// </summary>
-    public abstract class ChainDrive
+    public abstract class ChainDuty
     {
-        // declared operations 
-        readonly Map<string, ChainAction> ops = new Map<string, ChainAction>(32);
+        readonly VerAttribute ver;
 
-        protected ChainDrive()
+        // declared operations 
+        readonly Map<string, ChainOp> ops = new Map<string, ChainOp>(32);
+
+
+        protected ChainDuty()
         {
+            ver = (VerAttribute) GetType().GetCustomAttribute(typeof(VerAttribute), true);
+
             // gather actions
             foreach (var mi in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -35,20 +39,22 @@ namespace SkyChain.Chain
 
                 // signature filtering
                 var pis = mi.GetParameters();
-                ChainAction action;
+                ChainOp op;
                 if (pis.Length == 1 && pis[0].ParameterType == typeof(ChainContext))
                 {
-                    action = new ChainAction(this, mi, async);
+                    op = new ChainOp(this, mi, async);
                 }
                 else
                 {
                     continue;
                 }
 
-                ops.Add(action);
+                ops.Add(op);
             }
         }
 
-        public ChainAction GetOp(string name) => ops[name];
+        public VerAttribute Ver => ver;
+
+        public ChainOp GetOp(string name) => ops[name];
     }
 }

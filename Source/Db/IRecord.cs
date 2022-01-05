@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Db
 {
     public interface IRecord
     {

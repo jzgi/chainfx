@@ -1,18 +1,18 @@
 ﻿using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
-    public class MlNode : IData, IKeyable<short>
+    public class DbNode : IData, IKeyable<short>
     {
         short id;
 
         int bias;
 
-        MlNode[] @in;
+        DbNode[] @in;
 
         decimal[] weights; // incoming connections
 
-        MlNode[] @out;
+        DbNode[] @out;
 
 
         public bool Top => @in == null;
@@ -27,11 +27,11 @@ namespace SkyChain.Chain
         {
         }
 
-        public void Read(ISource s, byte proj = 15)
+        public void Read(ISource s, short proj = 0x0fff)
         {
         }
 
-        public void Write(ISink s, byte proj = 15)
+        public void Write(ISink s, short proj = 0x0fff)
         {
         }
 

@@ -196,7 +196,7 @@ namespace SkyChain
             throw new NotImplementedException();
         }
 
-        public void Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, short proj = 0x0fff)
         {
             Part(name);
             if (v == null)
@@ -211,7 +211,7 @@ namespace SkyChain
             }
         }
 
-        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
         {
             Part(name);
             if (v == null)

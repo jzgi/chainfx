@@ -2,7 +2,7 @@ using System.Data;
 using System.Text;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class DbSource : IKeyable<string>
     {

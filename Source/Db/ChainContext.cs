@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class ChainContext : DbContext
     {
@@ -31,7 +31,7 @@ namespace SkyChain.Chain
         }
 
 
-        public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, byte proj = 0x0f)
+        public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0x0fff)
         {
             if (peerid == 0 || peerid == local.id) // call in- place
             {

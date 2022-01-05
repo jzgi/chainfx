@@ -2,7 +2,7 @@
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class ChainVarWork : WebWork
     {
@@ -25,7 +25,7 @@ namespace SkyChain.Chain
             }
             else // POST
             {
-                o = await wc.ReadObjectAsync(inst: o);
+                o = await wc.ReadObjectAsync(instance: o);
                 using var dc = NewDbContext();
                 dc.Sql("UPDATE chain.peers")._SET_(o).T(" WHERE id = @1");
                 await dc.ExecuteAsync(p =>
@@ -57,7 +57,7 @@ namespace SkyChain.Chain
             }
             else // POST
             {
-                o = await wc.ReadObjectAsync(inst: o);
+                o = await wc.ReadObjectAsync(instance: o);
                 using var dc = NewDbContext();
                 dc.Sql("UPDATE chain.peers")._SET_(o).T(" WHERE id = @1");
                 await dc.ExecuteAsync(p =>

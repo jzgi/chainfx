@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class Peer : IData, IKeyable<short>
     {
@@ -59,7 +59,7 @@ namespace SkyChain.Chain
             Read(s);
         }
 
-        public void Read(ISource s, byte proj = 15)
+        public void Read(ISource s, short proj = 0x0fff)
         {
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(status), ref status);
@@ -71,7 +71,7 @@ namespace SkyChain.Chain
             s.Get(nameof(uri), ref uri);
         }
 
-        public void Write(ISink s, byte proj = 15)
+        public void Write(ISink s, short proj = 0x0fff)
         {
             s.Put(nameof(typ), typ);
             s.Put(nameof(status), status);

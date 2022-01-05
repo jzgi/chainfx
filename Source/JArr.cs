@@ -133,7 +133,7 @@ namespace SkyChain
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new()
         {
             JObj jo = elements[cur];
             return jo != null && jo.Get(name, ref v, proj);
@@ -173,7 +173,7 @@ namespace SkyChain
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new()
         {
             JObj jo = elements[cur];
             return jo != null && jo.Get(name, ref v);
@@ -183,14 +183,14 @@ namespace SkyChain
         // ENTIRITY
         //
 
-        public D ToObject<D>(byte proj = 0x0f) where D : IData, new()
+        public D ToObject<D>(short proj = 0x0fff) where D : IData, new()
         {
             var obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(byte proj = 0x0f) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0x0fff) where D : IData, new()
         {
             var arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
@@ -203,7 +203,7 @@ namespace SkyChain
             return arr;
         }
 
-        public Map<K, D> ToMap<K, D>(byte proj = 0x0f, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short proj = 0x0fff, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
             var map = new Map<K, D>();
             for (int i = 0; i < count; i++)

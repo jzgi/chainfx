@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     ///
     /// Thrown to indicate a blockchain related error.

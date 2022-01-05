@@ -1,13 +1,11 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Db
 {
     /// <summary>
     /// A classifier that realizes graph-based mechine learning.
     /// </summary>
-    public class MlGraph<P, R> where P : struct, IFeature<P> where R : struct, IOutcome<R>
+    public class DbGraph<P, R> where P : struct, IFeature<P> where R : struct, IOutcome<R>
     {
-        private MlNode[] nodes;
-        
-        
+        private DbNode[] nodes;
         
         //
         // key & value mapping
@@ -19,7 +17,7 @@
         int count;
 
 
-        public MlGraph(int capacity)
+        public DbGraph(int capacity)
         {
             // find a least power of 2 that is greater than or equal to capacity
             int num = 1024;

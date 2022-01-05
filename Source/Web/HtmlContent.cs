@@ -2215,9 +2215,19 @@ namespace SkyChain.Web
             Add("</main>");
         }
 
-        public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default")
+        public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default", int width = 1)
         {
-            Add("<div uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l uk-child-width-1-4@xl uk-child-width-1-5@xxl\">");
+            Add("<div uk-grid class=\"uk-child-width-1-");
+            Add(width++);
+            Add(" uk-child-width-1-");
+            Add(width++);
+            Add("@s uk-child-width-1-");
+            Add(width++);
+            Add("@m uk-child-width-1-");
+            Add(width++);
+            Add("@l uk-child-width-1-");
+            Add(width);
+            Add("@xl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
@@ -2344,6 +2354,19 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent TOPBAR_()
+        {
+            Add("<form class=\"uk-top-bar uk-flex\">");
+            return this;
+        }
+
+        public HtmlContent _TOPBAR()
+        {
+            Add("</form>");
+            Add("<div class=\"uk-top-placeholder\"></div>");
+            return this;
+        }
+
         public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool top = true)
         {
             byte ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
@@ -2353,9 +2376,9 @@ namespace SkyChain.Web
             Add("\">");
             Add("<span class=\"uk-button-group\">");
 
-            bool inner = Web.Query[nameof(inner)];
+            bool astack = Web.Query[nameof(astack)];
 
-            if (inner)
+            if (astack)
             {
                 Add("<a class=\"uk-icon-button\" href=\"javascript: closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
             }
@@ -2376,7 +2399,7 @@ namespace SkyChain.Web
                     if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, inner: inner, css: "uk-button-primary");
+                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
@@ -2539,15 +2562,16 @@ namespace SkyChain.Web
             return this;
         }
 
-        public void TASKUL(byte group = 0)
+        public void TASKLIST(byte group = 0)
         {
             var wc = Web;
             var wrk = wc.Work;
             // render tabs
-            UL_("uk-card- uk-card-primary uk-card-body uk-list uk-list-divider");
+            FORM_("uk-card- uk-card-primary");
+            UL_("uk-card-body uk-list uk-list-divider");
             for (int i = 0; i < wrk.Works?.Count; i++)
             {
-                var sub = wrk.GetSubWork(wc, i);
+                var sub = wrk.ResolveWork(wc, i);
                 if (sub == null)
                 {
                     continue;
@@ -2562,22 +2586,17 @@ namespace SkyChain.Web
                     continue;
                 }
 
-                var rest = i % 2;
-                if (rest == 0)
-                {
-                    LI_();
-                }
-                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-flex uk-button-link uk-width-1-2\" onclick=\"return dialog(this,8,false,4,'');\">");
-                T("<span class=\"uk-width-micro uk-flex uk-flex-center\" uk-icon=\"").T(sub.Tip).T("\"></span>");
+                LI_();
+                T("<a href=\"").T(sub.Key).T("/?astack=true\" class=\"uk-flex uk-width-1-1 uk-button-link\" onclick=\"return dialog(this,8,false,4,'');\">");
+                T("<label class=\"uk-label\" uk-icon=\"").T(sub.Tip).T("\"></label>");
+                Add("<span class=\"uk-width-expand\">");
                 Add(sub.Label);
-                Add("<span class=\"uk-margin-auto-left\" uk-icon=\"chevron-right\"></span></a>");
-                if (rest == 1)
-                {
-                    _LI();
-                }
+                Add("</span>");
+                Add("<span uk-icon=\"chevron-right\"></span></a>");
+                _LI();
             }
-
             _UL();
+            _FORM();
         }
 
 
@@ -2659,7 +2678,7 @@ namespace SkyChain.Web
             }
         }
 
-        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, bool inner = false, string css = null)
+        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, bool astack = false, string css = null)
         {
             // check action's availability
             //
@@ -2690,9 +2709,9 @@ namespace SkyChain.Web
                     Add('-');
                     Add(subscript);
                 }
-                if (inner)
+                if (astack)
                 {
-                    Add("?inner=true");
+                    Add("?astack=true");
                 }
                 Add("\"");
             }
@@ -2777,13 +2796,17 @@ namespace SkyChain.Web
         {
             // check action's availability
             //
-            string cap = caption ?? act.Label;
-            bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web));
+            var cap = caption ?? act.Label;
+            var ok = enabled && (Web.Principal == null || act.DoAuthorize(Web));
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
             {
                 Add("<a class=\"uk-button uk-button-link");
+                if (cap?.Length == 1)
+                {
+                    Add("uk-width-micro");
+                }
                 if (css != null)
                 {
                     Add(' ');

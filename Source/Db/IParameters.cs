@@ -1,7 +1,7 @@
 ﻿using System;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
     /// To set SQL parameters.  
@@ -70,9 +70,9 @@ namespace SkyChain.Chain
 
         IParameters Set(JArr v);
 
-        IParameters Set(IData v, byte proj = 0x0f);
+        IParameters Set(IData v, short proj = 0x0fff);
 
-        IParameters Set<D>(D[] v, byte proj = 0x0f) where D : IData;
+        IParameters Set<D>(D[] v, short proj = 0x0fff) where D : IData;
 
         IParameters SetForIn(short[] v);
 

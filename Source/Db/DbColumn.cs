@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Db
 {
     /// <summary>
     /// The descriptor for a database column. 

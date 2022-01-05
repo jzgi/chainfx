@@ -2,29 +2,28 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     internal abstract class DbCache
     {
-        // typ to seek for
+        // the actual type cached (and to seek for)
         readonly Type typ;
 
         // bitwise matcher
-        readonly byte flag;
+        readonly short flag;
 
         // in seconds
         readonly int maxage;
 
-        // either of two forms
+        // either of the two forms
         protected readonly Delegate fetcher;
 
         // tick count,   
         protected int expiry;
 
 
-        protected DbCache(Delegate fetcher, Type typ, int maxage, byte flag)
+        protected DbCache(Delegate fetcher, Type typ, int maxage, short flag)
         {
             this.fetcher = fetcher;
             this.typ = typ;
@@ -41,14 +40,14 @@ namespace SkyChain.Chain
 
         public int MaxAge => maxage;
 
-        public byte Flag => flag;
+        public short Flag => flag;
     }
 
 
     /// <summary>
-    /// A single cached object.
+    /// A single whole map.
     /// </summary>
-    internal class DbMap<K, V> : DbCache where K : IComparable<K>
+    internal class DbCache<K, V> : DbCache where K : IComparable<K>
     {
         readonly bool async;
 
@@ -57,15 +56,13 @@ namespace SkyChain.Chain
 
         protected Map<K, V> cached;
 
-        internal DbMap(Func<DbContext, Map<K, V>> fetcher, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
+        internal DbCache(Func<DbContext, Map<K, V>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = false;
             @lock = new ReaderWriterLockSlim();
         }
 
-        internal DbMap(Func<DbContext, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
+        internal DbCache(Func<DbContext, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = true;
             @lock = new SemaphoreSlim(1, 1);
@@ -78,7 +75,7 @@ namespace SkyChain.Chain
         {
             if (!(fetcher is Func<DbContext, Map<K, V>> func)) // simple object
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("missing fetcher for " + Typ);
             }
             var slim = (ReaderWriterLockSlim) @lock;
             slim.EnterUpgradeableReadLock();
@@ -135,20 +132,18 @@ namespace SkyChain.Chain
     }
 
 
-    internal class DbValueSet<K, V> : DbCache
+    internal class DbObjectCache<K, V> : DbCache
     {
         readonly bool async;
 
         readonly ConcurrentDictionary<K, V> cached = new ConcurrentDictionary<K, V>();
 
-        internal DbValueSet(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
+        internal DbObjectCache(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = false;
         }
 
-        internal DbValueSet(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
+        internal DbObjectCache(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = true;
         }
@@ -160,7 +155,7 @@ namespace SkyChain.Chain
         {
             if (!(fetcher is Func<DbContext, K, V> func)) // simple object
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("missing fetcher for " + Typ);
             }
             var tick = Environment.TickCount & int.MaxValue; // positive tick
             V value;
@@ -208,29 +203,27 @@ namespace SkyChain.Chain
     }
 
     /// <summary>
-    /// A subbed or segmented cache..
+    /// A segmented cache of maps.
     /// </summary>
-    /// <typeparam name="S">the sub key</typeparam>
+    /// <typeparam name="M">the key of sub map</typeparam>
     /// <typeparam name="K"> </typeparam>
     /// <typeparam name="V">the cached object</typeparam>
-    internal class DbMapSet<S, K, V> : DbCache
+    internal class DbMapCache<M, K, V> : DbCache
     {
         readonly bool async;
 
         // either of two types
         readonly IDisposable @lock;
 
-        readonly ConcurrentDictionary<S, Map<K, V>> cached = new ConcurrentDictionary<S, Map<K, V>>();
+        readonly ConcurrentDictionary<M, Map<K, V>> cached = new ConcurrentDictionary<M, Map<K, V>>();
 
-        internal DbMapSet(Func<DbContext, S, Map<K, V>> fetcher, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
+        internal DbMapCache(Func<DbContext, M, Map<K, V>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = false;
             @lock = new ReaderWriterLockSlim();
         }
 
-        internal DbMapSet(Func<DbContext, S, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag)
-            : base(fetcher, typ, maxage, flag)
+        internal DbMapCache(Func<DbContext, M, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = true;
             @lock = new SemaphoreSlim(1, 1);
@@ -239,11 +232,11 @@ namespace SkyChain.Chain
         public override bool IsAsync => async;
 
 
-        public Map<K, V> Get(S subkey)
+        public Map<K, V> Get(M mkey)
         {
-            if (!(fetcher is Func<DbContext, S, Map<K, V>> func)) // simple object
+            if (!(fetcher is Func<DbContext, M, Map<K, V>> func)) // simple object
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("missing fetcher for " + Typ);
             }
 
             var slim = (ReaderWriterLockSlim) @lock;
@@ -258,8 +251,8 @@ namespace SkyChain.Chain
                     try
                     {
                         using var dc = Chain.NewDbContext();
-                        value = func(dc, subkey);
-                        cached.TryAdd(subkey, value);
+                        value = func(dc, mkey);
+                        cached.TryAdd(mkey, value);
                         // adjust expiry time
                         expiry = ticks + MaxAge * 1000;
                     }
@@ -270,7 +263,7 @@ namespace SkyChain.Chain
                 }
                 else
                 {
-                    cached.TryGetValue(subkey, out value);
+                    cached.TryGetValue(mkey, out value);
                 }
                 return value;
             }
@@ -280,11 +273,11 @@ namespace SkyChain.Chain
             }
         }
 
-        public async Task<Map<K, V>> GetAsync(S subkey)
+        public async Task<Map<K, V>> GetAsync(M subkey)
         {
-            if (!(fetcher is Func<DbContext, S, Task<Map<K, V>>> func)) // simple object
+            if (!(fetcher is Func<DbContext, M, Task<Map<K, V>>> func)) // simple object
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("missing fetcher for " + Typ);
             }
 
             var slim = (SemaphoreSlim) @lock;

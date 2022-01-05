@@ -39,13 +39,13 @@ namespace SkyChain
 
         bool Get(string name, ref JArr v);
 
-        bool Get<D>(string name, ref D v, byte proj = 0x0f) where D : IData, new();
+        bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new();
 
-        bool Get<D>(string name, ref D[] v, byte proj = 0x0f) where D : IData, new();
+        bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new();
 
-        D ToObject<D>(byte proj = 0x0f) where D : IData, new();
+        D ToObject<D>(short proj = 0x0fff) where D : IData, new();
 
-        D[] ToArray<D>(byte proj = 0x0f) where D : IData, new();
+        D[] ToArray<D>(short proj = 0x0fff) where D : IData, new();
 
         /// <summary>
         /// If this input source contains multiple data records.

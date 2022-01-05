@@ -458,7 +458,7 @@ namespace SkyChain
             }
         }
 
-        public void Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, short proj = 0x0fff)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -482,7 +482,7 @@ namespace SkyChain
             }
         }
 
-        internal void PutToken(IData v, byte proj = 0x0f)
+        internal void PutToken(IData v, short proj = 0x0fff)
         {
             counts[level]++;
 
@@ -496,7 +496,7 @@ namespace SkyChain
             level--; // exit
         }
 
-        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -523,7 +523,7 @@ namespace SkyChain
             }
         }
 
-        public void Put<D>(string name, List<D> v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, List<D> v, short proj = 0x0fff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)

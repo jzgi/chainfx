@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.
@@ -428,7 +428,7 @@ namespace SkyChain.Chain
         }
 
 
-        public DbSql setlst(IData obj, byte proj = 0x0f)
+        public DbSql setlst(IData obj, short proj = 0x0fff)
         {
             ctx = CtxSetList;
             ordinal = 1;
@@ -436,7 +436,7 @@ namespace SkyChain.Chain
             return this;
         }
 
-        public DbSql collst(IData obj, byte proj = 0x0f, string alias = null)
+        public DbSql collst(IData obj, short proj = 0x0fff, string alias = null)
         {
             ctx = CtxColumnList;
             ordinal = 1;
@@ -449,7 +449,7 @@ namespace SkyChain.Chain
             return this;
         }
 
-        public DbSql paramlst(IData obj, byte proj = 0x0f)
+        public DbSql paramlst(IData obj, short proj = 0x0fff)
         {
             ctx = CtxParamList;
             ordinal = 1;
@@ -457,7 +457,7 @@ namespace SkyChain.Chain
             return this;
         }
 
-        public DbSql colset(IData obj, byte proj = 0x0f, string extra = null)
+        public DbSql colset(IData obj, short proj = 0x0fff, string extra = null)
         {
             Add('(');
             collst(obj, proj);
@@ -490,7 +490,7 @@ namespace SkyChain.Chain
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, byte proj = 0x0f, string extra = null)
+        public DbSql _VALUES_(IData obj, short proj = 0x0fff, string extra = null)
         {
             Add(" VALUES (");
             paramlst(obj, proj);
@@ -504,7 +504,7 @@ namespace SkyChain.Chain
             return this;
         }
 
-        public DbSql _SET_(IData obj, byte proj = 0x0f, string extra = null)
+        public DbSql _SET_(IData obj, short proj = 0x0fff, string extra = null)
         {
             Add(" SET ");
             setlst(obj, proj);
@@ -941,7 +941,7 @@ namespace SkyChain.Chain
             }
         }
 
-        public void Put(string name, IData v, byte proj = 0x0f)
+        public void Put(string name, IData v, short proj = 0x0fff)
         {
             if (name != null)
             {
@@ -956,7 +956,7 @@ namespace SkyChain.Chain
             }
         }
 
-        public void Put<D>(string name, D[] v, byte proj = 0x0f) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
         {
             Build(name);
         }

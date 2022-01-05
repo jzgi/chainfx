@@ -5,8 +5,8 @@
     /// </summary>
     public interface IData
     {
-        void Read(ISource s, byte proj = 0x0f);
+        void Read(ISource s, short proj = 0x0fff);
 
-        void Write(ISink s, byte proj = 0x0f);
+        void Write(ISink s, short proj = 0x0fff);
     }
 }

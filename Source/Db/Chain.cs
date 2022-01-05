@@ -5,10 +5,14 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Chain
+namespace SkyChain.Db
 {
     public class Chain
     {
+        //
+        // source and caches
+        //
+
         static DbSource dbsource;
 
         public static DbSource DbSource => dbsource;
@@ -23,122 +27,118 @@ namespace SkyChain.Chain
             return dbsource.NewDbContext(level);
         }
 
-        //
-        // db-object cache
-        //
+        static List<DbCache> caches;
 
-        static List<DbCache> maps;
+        static List<DbCache> objectcaches;
 
-        static List<DbCache> valuesets;
+        static List<DbCache> mapcaches;
 
-        static List<DbCache> mapsets;
-
-        public static void CacheMap<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void Cache<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (maps == null)
+            if (caches == null)
             {
-                maps = new List<DbCache>(16);
+                caches = new List<DbCache>(16);
             }
-            maps.Add(new DbMap<K, V>(fetcher, typeof(V), maxage, flag));
+            caches.Add(new DbCache<K, V>(fetcher, typeof(V), maxage, flag));
         }
 
-        public static void Cache<K, V>(Func<DbContext, K, V> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void CacheObject<K, V>(Func<DbContext, K, V> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (valuesets == null)
+            if (objectcaches == null)
             {
-                valuesets = new List<DbCache>(16);
+                objectcaches = new List<DbCache>(16);
             }
-            valuesets.Add(new DbValueSet<K, V>(fetcher, typeof(V), maxage, flag));
+            objectcaches.Add(new DbObjectCache<K, V>(fetcher, typeof(V), maxage, flag));
         }
 
-        public static void CacheSub<S, K, V>(Func<DbContext, S, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void CacheMap<S, K, V>(Func<DbContext, S, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (mapsets == null)
+            if (mapcaches == null)
             {
-                mapsets = new List<DbCache>();
+                mapcaches = new List<DbCache>(8);
             }
-            mapsets.Add(new DbMapSet<S, K, V>(fetcher, typeof(V), maxage, flag));
+            mapcaches.Add(new DbMapCache<S, K, V>(fetcher, typeof(V), maxage, flag));
         }
 
-        public static void CacheSub<S, K, V>(Func<DbContext, S, Task<Map<K, V>>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void CacheMap<S, K, V>(Func<DbContext, S, Task<Map<K, V>>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (mapsets == null)
+            if (mapcaches == null)
             {
-                mapsets = new List<DbCache>();
+                mapcaches = new List<DbCache>();
             }
-            mapsets.Add(new DbMapSet<S, K, V>(fetcher, typeof(V), maxage, flag));
+            mapcaches.Add(new DbMapCache<S, K, V>(fetcher, typeof(V), maxage, flag));
         }
 
-        public static Map<K, V> ObtainMap<K, V>(byte flag = 0) where K : IComparable<K>
+        public static Map<K, V> Grab<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            if (maps == null)
+            if (caches == null)
             {
                 return null;
             }
-            foreach (var cache in maps)
+            foreach (var ca in caches)
             {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
+                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbMap<K, V>) cache).Get();
+                        return ((DbCache<K, V>) ca).Get();
                     }
                 }
             }
             return null;
         }
 
-        public static async Task<Map<K, V>> ObtainMapAsync<K, V>(byte flag = 0) where K : IComparable<K>
+        public static async Task<Map<K, V>> GrabAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            if (maps == null)
+            if (caches == null)
             {
                 return null;
             }
-            foreach (var cache in maps)
+            foreach (var ca in caches)
             {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
+                    if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbMap<K, V>) cache).GetAsync();
+                        return await ((DbCache<K, V>) ca).GetAsync();
                     }
                 }
             }
             return null;
         }
 
-        public static V Obtain<K, V>(K key, byte flag = 0) where K : IComparable<K>
+        public static V GrabObject<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            if (valuesets == null)
+            if (objectcaches == null)
             {
                 return default;
             }
-            foreach (var cache in valuesets)
+            foreach (var ca in objectcaches)
             {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
+                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbValueSet<K, V>) cache).Get(key);
+                        return ((DbObjectCache<K, V>) ca).Get(key);
                     }
                 }
             }
             return default;
         }
 
-        public static async Task<V> ObtainAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
+        public static async Task<V> GrabObjectAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            if (valuesets == null)
+            if (objectcaches == null)
             {
                 return default;
             }
-            foreach (var cache in valuesets)
+            foreach (var ca in objectcaches)
             {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
+                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbValueSet<K, V>) cache).GetAsync(key);
+                        return await ((DbObjectCache<K, V>) ca).GetAsync(key);
                     }
                 }
             }
@@ -146,43 +146,47 @@ namespace SkyChain.Chain
         }
 
 
-        public static Map<K, V> ObtainSub<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
+        public static Map<K, V> GrabMap<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            if (mapsets == null)
+            if (mapcaches == null)
             {
                 return null;
             }
-            foreach (var cache in mapsets)
+            foreach (var ca in mapcaches)
             {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (!cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
+                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbMapSet<D, K, V>) cache).Get(discr);
+                        return ((DbMapCache<D, K, V>) ca).Get(discr);
                     }
                 }
             }
             return null;
         }
 
-        public static async Task<Map<K, V>> ObtainSubAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
+        public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            if (mapsets == null)
+            if (mapcaches == null)
             {
                 return null;
             }
-            foreach (var cache in mapsets)
+            foreach (var ca in mapcaches)
             {
-                if (cache.Flag == 0 || (cache.Flag & flag) > 0)
+                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (cache.IsAsync && typeof(V).IsAssignableFrom(cache.Typ))
+                    if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbMapSet<D, K, V>) cache).GetAsync(discr);
+                        return await ((DbMapCache<D, K, V>) ca).GetAsync(discr);
                     }
                 }
             }
             return null;
         }
+
+        //
+        // inter-peer
+        //
 
 
         static Peer info;
@@ -250,8 +254,6 @@ namespace SkyChain.Chain
 
         public static Peer Info => info;
 
-        public static ChainDrive Drive { get; protected set; }
-
         //
         // transaction id generator
 
@@ -267,7 +269,7 @@ namespace SkyChain.Chain
 
         public static Map<short, ChainClient> Clients => clients;
 
-        public static ChainContext NewChainContext(IsolationLevel? level = null)
+        public static ChainContext NewChainContext(IsolationLevel? level = null, short peerid = 0)
         {
             if (DbSource == null)
             {
@@ -281,12 +283,6 @@ namespace SkyChain.Chain
         //
         // instance scope
         //
-
-        // declared operations 
-        readonly Map<string, ChainAction> ops = new Map<string, ChainAction>(32);
-
-
-        public ChainAction GetAction(string name) => ops[name];
 
 
         //
@@ -392,28 +388,21 @@ namespace SkyChain.Chain
 
 
         //
-        // SUB CONTEXT
+        // chain ops
         //
 
-        static readonly ConcurrentDictionary<long, ChainContext> slaves = new ConcurrentDictionary<long, ChainContext>();
+        static readonly Map<string, ChainDuty> duties = new Map<string, ChainDuty>(8);
 
-
-        internal static ChainContext AcquireSlave(long id, IsolationLevel level)
+        public static void MakeDuty<D>(string name) where D : ChainDuty, new()
         {
-            if (id > 0)
-            {
-                var ctx = slaves[id];
-                return ctx;
-            }
-            else
-            {
-                var ctx = NewChainContext(level);
-                slaves.TryAdd(id, ctx);
-                return ctx;
-            }
+            var dut = new D();
+            duties.Add(name, dut);
         }
 
-        static void Clean()
+        public static ChainDuty GetDuty(string name) => duties[name];
+
+
+        public static void Call(short peerid, string duty, string op)
         {
         }
     }
