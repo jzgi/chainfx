@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Db;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -16,7 +15,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Application : Chain
+    public class Application : Chain.Chain
     {
         public const string APP_JSON = "app.json";
 
@@ -27,14 +26,8 @@ namespace SkyChain
         internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
 
-        // logging level
-        static int logging;
+        static readonly uint[] privatekey;
 
-        static string crypto;
-
-        static uint[] privatekey;
-
-        static string certpass;
 
         // layered configurations
         public static readonly JObj chaincfg, webcfg, extcfg;
@@ -57,7 +50,7 @@ namespace SkyChain
             var cfg = (JObj) parser.Parse();
 
             // file-based logger
-            logging = cfg[nameof(logging)];
+            int logging = cfg[nameof(logging)];
             var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new ApplicationLogger(logfile)
             {
@@ -65,9 +58,9 @@ namespace SkyChain
             };
 
             // security settings
-            crypto = cfg[nameof(crypto)];
+            string crypto = cfg[nameof(crypto)];
             privatekey = CryptoUtility.HexToKey(crypto);
-            certpass = cfg[nameof(certpass)];
+            string certpass = cfg[nameof(certpass)];
 
             // create cert
             if (certpass != null)
@@ -102,6 +95,7 @@ namespace SkyChain
 
         internal static void InitializeWeb(JObj webcfg)
         {
+            //
         }
 
 
@@ -116,13 +110,13 @@ namespace SkyChain
         {
             if (webcfg == null)
             {
-                throw new ApplicationException("Missing 'web' in config");
+                throw new ApplicationException("missing 'web' in config");
             }
 
             string addr = webcfg[name];
             if (addr == null)
             {
-                throw new ApplicationException("Missing web '" + name + "' in config");
+                throw new ApplicationException("missing web '" + name + "' in config");
             }
 
             // create service

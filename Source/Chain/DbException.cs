@@ -1,14 +1,14 @@
 using System;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
-    ///
+    /// <summary>
     /// Thrown to indicate an error during database operation.
-    ///
+    /// </summary>
     public class DbException : Exception
     {
         /// <summary>
-        /// The error code.
+        /// The returned error code.
         /// </summary>
         public int Code { get; internal set; }
 

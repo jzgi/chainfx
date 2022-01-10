@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class Peer : IData, IKeyable<short>
     {
@@ -22,6 +22,8 @@ namespace SkyChain.Db
             {STA_PREFERED, "优先"},
         };
 
+        internal short id;
+
         // the specialized extensible discriminator
         internal short typ;
 
@@ -39,9 +41,9 @@ namespace SkyChain.Db
         // persona who created or lastly modified
         internal string creator;
 
-        internal short id;
+        internal string domain; // remote uri
 
-        internal string uri; // remote uri
+        internal bool secure; // remote uri
 
         //
         // current block number
@@ -61,26 +63,28 @@ namespace SkyChain.Db
 
         public void Read(ISource s, short proj = 0x0fff)
         {
+            s.Get(nameof(id), ref id);
             s.Get(nameof(typ), ref typ);
             s.Get(nameof(status), ref status);
             s.Get(nameof(name), ref name);
             s.Get(nameof(tip), ref tip);
             s.Get(nameof(created), ref created);
             s.Get(nameof(creator), ref creator);
-            s.Get(nameof(id), ref id);
-            s.Get(nameof(uri), ref uri);
+            s.Get(nameof(domain), ref domain);
+            s.Get(nameof(secure), ref secure);
         }
 
         public void Write(ISink s, short proj = 0x0fff)
         {
+            s.Put(nameof(id), id);
             s.Put(nameof(typ), typ);
             s.Put(nameof(status), status);
             s.Put(nameof(name), name);
             s.Put(nameof(tip), tip);
             s.Put(nameof(created), created);
             s.Put(nameof(creator), creator);
-            s.Put(nameof(id), id);
-            s.Put(nameof(uri), uri);
+            s.Put(nameof(domain), domain);
+            s.Put(nameof(secure), secure);
         }
 
         internal void IncrementBlockId()
@@ -98,7 +102,7 @@ namespace SkyChain.Db
 
         public short Status => status;
 
-        public string Uri => uri;
+        public string Domain => domain;
 
         public DateTime Created => created;
 

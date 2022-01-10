@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public static class ChainUtility
     {

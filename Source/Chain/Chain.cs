@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using SkyChain.Web;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class Chain
     {
@@ -189,60 +189,72 @@ namespace SkyChain.Db
         //
 
 
+        // local info
         static Peer info;
 
         // chainable table structures   
-        static readonly Map<string, DbTable> tables = new Map<string, DbTable>(16);
+        static readonly Map<string, ChainTable> tables = new Map<string, ChainTable>(16);
 
         // connectors to remote peers 
         static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(16);
 
 
-        internal static void InitializeChain(JObj chaincfg)
+        internal static async Task InitializeChain(JObj chaincfg)
         {
             dbsource = new DbSource(chaincfg);
 
-            // partial peer info
+            // load local info
             info = new Peer(chaincfg);
 
-            // scan chain tables
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
-                var arr = dc.Query<DbTable>();
-                if (arr != null)
-                {
-                    foreach (var o in arr)
-                    {
-                        if (!o.Key.EndsWith('_')) continue;
-
-                        // select pg_get_serial_sequence('buys','id');
-
-                        // dc.Sql("SELECT * FROM information_schema.sequences WHERE sequence_schema = 'public' AND sequence_name = ''");
-                        // var conn = new DbColumn(null);
-                        // o.Add(conn);
-
-                        // dc.Sql("SELECT * FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
-
-                        // init current block id
-                        // await o.PeekLastBlockAsync(dc);
-                    }
-                }
-            }
-
-
-            // setup remote connectors
+            // setup chainables
             //
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
-                var arr = dc.Query<Peer>();
+                // tables
+                await dc.QueryAsync("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
+                while (dc.Next())
+                {
+                    dc.Let(out string table_name);
+                    if (table_name.EndsWith('_') && table_name != "peers_")
+                    {
+                        tables.Add(new ChainTable(table_name));
+                    }
+                }
+                // columns for each
+                for (int i = 0; i < tables.Count; i++)
+                {
+                    var tbl = tables.ValueAt(i);
+                    dc.Sql("SELECT ").collst(ChainColumn.Empty).T(" FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
+                    await dc.QueryAsync(p => p.Set(tbl.Key));
+                    while (dc.Next())
+                    {
+                        dc.Let(out string datatype);
+                        ChainColumn conn = datatype switch
+                        {
+                            "smallint" => new SmallintColumn(),
+                            "int" => new IntColumn(),
+                        };
+                        conn.Read(dc);
+                        // tables.Add(conn);
+                    }
+
+                    // init current block id
+                    // await o.PeekLastBlockAsync(dc);
+                }
+            }
+
+            // setup remotes
+            //
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_");
+                var arr = await dc.QueryAsync<Peer>();
                 if (arr != null)
                 {
-                    foreach (var o in arr)
+                    foreach (var peer in arr)
                     {
-                        var conn = new ChainClient(o);
-                        clients.Add(conn);
+                        var cli = new ChainClient(peer);
+                        clients.Add(cli);
 
                         // init current block id
                         // await o.PeekLastBlockAsync(dc);
@@ -276,7 +288,18 @@ namespace SkyChain.Db
                 throw new ApplicationException("missing 'chain' in app.json");
             }
 
-            return DbSource.NewChainContext(true, level);
+            var cli = (peerid > 0) ? clients[peerid] : null;
+            return DbSource.NewChainContext(level, cli);
+        }
+
+        public static ChainContext NewChainContext(IsolationLevel? level = null, WebContext wc = null)
+        {
+            if (DbSource == null)
+            {
+                throw new ApplicationException("missing 'chain' in app.json");
+            }
+
+            return DbSource.NewChainContext(true, level, wc);
         }
 
 
@@ -284,126 +307,8 @@ namespace SkyChain.Db
         // instance scope
         //
 
-
-        //
-
-
         const int MAX_BLOCK_SIZE = 64;
 
         const int MIN_BLOCK_SIZE = 8;
-
-        static async void Import(object state)
-        {
-            while (true)
-            {
-                Cycle:
-                var outer = true;
-
-                Thread.Sleep(60 * 1000);
-
-                for (int i = 0; i < clients.Count; i++) // LOOP
-                {
-                    var cli = clients.ValueAt(i);
-
-                    if (!cli.Info.IsRunning) continue;
-
-                    int busy = 0;
-                    var code = cli.TryReap(out var arr);
-                    if (code == 200)
-                    {
-                        try
-                        {
-                            using var dc = NewDbContext(IsolationLevel.ReadCommitted);
-                            long bchk = 0; // block checksum
-                            for (short k = 0; k < arr.Count; k++)
-                            {
-                                var o = arr[k];
-
-                                // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                // dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
-                                // direct parameter setting
-                                var p = dc.ReCommand();
-                                p.Digest = true;
-                                // o.Write(p);
-                                p.Digest = false;
-
-                                // validate record-wise checksum
-                                // if (o.cs != p.Checksum)
-                                // {
-                                //     cli.SetDataError(o.seq);
-                                //     break;
-                                // }
-
-                                CryptoUtility.Digest(p.Checksum, ref bchk);
-                                p.Set(p.Checksum); // set primary and checksum
-                                // block-wise digest
-                                if (i == 0) // begin of block 
-                                {
-                                    // if (o.blockcs != bchk) // compare with previous block
-                                    // {
-                                    //     cli.SetDataError("");
-                                    //     break;
-                                    // }
-
-                                    p.Set(bchk);
-                                }
-                                else if (i == arr.Count - 1) // end of block
-                                {
-                                    // validate block check
-                                    // if (bchk != o.blockcs)
-                                    // {
-                                    //     cli.SetDataError("");
-                                    // }
-                                    // p.Set(bchk = o.blockcs); // assign & set
-                                }
-                                else
-                                {
-                                    p.SetNull();
-                                }
-
-                                await dc.SimpleExecuteAsync();
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            cli.SetInternalError(e.Message);
-                        }
-                    }
-
-                    if (code == 200 || (outer && (code == 0 || code == 204)))
-                    {
-                        cli.ScheduleRemotePoll(0);
-                        busy++;
-                    }
-
-                    //
-                    if (busy == 0) // to outer for delay
-                    {
-                        break;
-                    }
-                    outer = false;
-                }
-            } // outer
-        }
-
-
-        //
-        // chain ops
-        //
-
-        static readonly Map<string, ChainDuty> duties = new Map<string, ChainDuty>(8);
-
-        public static void MakeDuty<D>(string name) where D : ChainDuty, new()
-        {
-            var dut = new D();
-            duties.Add(name, dut);
-        }
-
-        public static ChainDuty GetDuty(string name) => duties[name];
-
-
-        public static void Call(short peerid, string duty, string op)
-        {
-        }
     }
 }

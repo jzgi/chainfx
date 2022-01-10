@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     internal abstract class DbCache
     {
@@ -45,7 +45,7 @@ namespace SkyChain.Db
 
 
     /// <summary>
-    /// A single whole map.
+    /// A cache for single whole map.
     /// </summary>
     internal class DbCache<K, V> : DbCache where K : IComparable<K>
     {
@@ -132,6 +132,9 @@ namespace SkyChain.Db
     }
 
 
+    /// <summary>
+    /// A cache for multiple objects.
+    /// </summary>
     internal class DbObjectCache<K, V> : DbCache
     {
         readonly bool async;
@@ -203,11 +206,8 @@ namespace SkyChain.Db
     }
 
     /// <summary>
-    /// A segmented cache of maps.
+    /// A cache for multiple maps identified by their keys.
     /// </summary>
-    /// <typeparam name="M">the key of sub map</typeparam>
-    /// <typeparam name="K"> </typeparam>
-    /// <typeparam name="V">the cached object</typeparam>
     internal class DbMapCache<M, K, V> : DbCache
     {
         readonly bool async;

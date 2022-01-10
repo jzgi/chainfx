@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SkyChain;
-using SkyChain.Web;
-using static SkyChain.Db.ChainUtility;
+using static SkyChain.Chain.ChainUtility;
 using WebClient = SkyChain.Web.WebClient;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A client connector to a specific remote peer..
@@ -35,7 +32,7 @@ namespace SkyChain.Db
         };
 
         // when a chain connector
-        readonly Peer info;
+        readonly Peer peer;
 
         // acceptable remote addresses
         readonly IPAddress[] addrs;
@@ -48,15 +45,12 @@ namespace SkyChain.Db
         string err;
 
 
-        readonly ConcurrentDictionary<long, ChainContext> slaves = new ConcurrentDictionary<long, ChainContext>();
-
-
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainClient(Peer info, ChainClientHandler handler = null) : base(info.uri, handler ?? new ChainClientHandler())
+        internal ChainClient(Peer peer, ChainClientHandler handler = null) : base(peer.domain, handler ?? new ChainClientHandler())
         {
-            this.info = info;
+            this.peer = peer;
             try
             {
                 addrs = Dns.GetHostAddresses(BaseAddress.Host);
@@ -69,9 +63,9 @@ namespace SkyChain.Db
         }
 
 
-        public short Key => info.id;
+        public short Key => peer.id;
 
-        public Peer Info => info;
+        public Peer Info => peer;
 
         public string Err => err;
 
@@ -158,7 +152,7 @@ namespace SkyChain.Db
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_CRYPTO, info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
                 // response
@@ -202,7 +196,7 @@ namespace SkyChain.Db
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_CRYPTO, info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 req.Content = content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);

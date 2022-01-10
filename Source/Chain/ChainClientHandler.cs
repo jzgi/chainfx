@@ -1,6 +1,6 @@
 ﻿using SkyChain.Web;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class ChainClientHandler : WebClientHandler
     {

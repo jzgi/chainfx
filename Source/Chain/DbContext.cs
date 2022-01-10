@@ -5,7 +5,7 @@ using Npgsql;
 using NpgsqlTypes;
 using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
@@ -24,7 +24,7 @@ namespace SkyChain.Db
             "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31", "v32"
         };
 
-        readonly DbSource source;
+        readonly DbSource _dbsource;
 
         readonly NpgsqlConnection connection;
 
@@ -44,18 +44,18 @@ namespace SkyChain.Db
         // current parameter index
         int paramidx;
 
-        internal DbContext(DbSource src)
+        internal DbContext(DbSource dbsource)
         {
-            source = src;
+            this._dbsource = dbsource;
 
-            connection = new NpgsqlConnection(src.ConnectionString);
+            connection = new NpgsqlConnection(dbsource.ConnectionString);
             command = new NpgsqlCommand
             {
                 Connection = connection
             };
         }
 
-        public DbSource Source => source;
+        public DbSource Dbsource => _dbsource;
 
         public bool IsMultiple => multiple;
 

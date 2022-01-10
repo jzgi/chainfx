@@ -1,8 +1,8 @@
 using System.Data;
 using System.Text;
-using SkyChain;
+using SkyChain.Web;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class DbSource : IKeyable<string>
     {
@@ -61,17 +61,32 @@ namespace SkyChain.Db
             return dc;
         }
 
-        public ChainContext NewChainContext(bool master, IsolationLevel? level = null)
+        public ChainContext NewChainContext(IsolationLevel? level = null, ChainClient cli = null)
         {
             if (Chain.Info == null)
             {
-                throw new ChainException("missing local peer info");
+                throw new ChainException("missing 'chain' in app.json");
             }
 
-            var cc = new ChainContext(this)
+            var cc = new ChainContext(this, cli);
+            if (level != null)
+            {
+                cc.Begin(level.Value);
+            }
+
+            return cc;
+        }
+
+        public ChainContext NewChainContext(bool master, IsolationLevel? level = null, WebContext wc = null)
+        {
+            if (Chain.Info == null)
+            {
+                throw new ChainException("missing 'chain' in app.json");
+            }
+
+            var cc = new ChainContext(this, null)
             {
                 local = Chain.Info,
-                Master = master
             };
 
             if (level != null)

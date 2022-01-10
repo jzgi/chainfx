@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SkyChain;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
     public class ChainContext : DbContext
     {
-        // whether a master context
-        public bool Master { get; set; }
-
-        short remoteid;
-
         short id;
 
-        short txtyp;
-
-        // slave context id list
-        ValueList<short> slaves;
+        readonly ChainClient client;
 
         internal Peer local;
 
@@ -26,8 +17,9 @@ namespace SkyChain.Db
 
         public JObj Out;
 
-        internal ChainContext(DbSource src) : base(src)
+        internal ChainContext(DbSource dbsource, ChainClient client) : base(dbsource)
         {
+            this.client = client;
         }
 
 
@@ -47,7 +39,7 @@ namespace SkyChain.Db
                     cnt.Put(null, In);
 
                     // remote call
-                    var (code, v) = await conn.CallAsync(id, txtyp, op, cnt);
+                    var (code, v) = await conn.CallAsync(id, 0, op, cnt);
                 }
                 else
                 {

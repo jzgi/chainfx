@@ -1,14 +1,14 @@
 using System;
 
-namespace SkyChain.Db
+namespace SkyChain.Chain
 {
-    ///
+    /// <summary>
     /// Thrown to indicate a blockchain related error.
-    ///
+    /// </summary>
     public class ChainException : Exception
     {
         /// <summary>
-        /// The status code.
+        /// The returned status code.
         /// </summary>
         public int Code { get; internal set; }
 
@@ -16,11 +16,11 @@ namespace SkyChain.Db
         {
         }
 
-        public ChainException(string msg) : base(msg)
+        public ChainException(string message) : base(message)
         {
         }
 
-        public ChainException(string msg, Exception inner) : base(msg, inner)
+        public ChainException(string message, Exception inner) : base(message, inner)
         {
         }
     }
