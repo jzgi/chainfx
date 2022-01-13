@@ -395,11 +395,11 @@ namespace SkyChain.Web
             return true;
         }
 
-        public bool DoAuthorize(WebContext wc)
+        public bool DoAuthorize(WebContext wc, bool mock)
         {
             if (Authorize != null)
             {
-                return Authorize.Do(wc);
+                return Authorize.Do(wc, mock);
             }
 
             return true;
@@ -475,9 +475,9 @@ namespace SkyChain.Web
         {
             wc.Work = this;
 
-            if (!DoAuthorize(wc))
+            if (!DoAuthorize(wc, false))
             {
-                throw new WebException("Do authorize failure: " + Name) {Code = wc.Principal == null ? 401 : 403};
+                throw new WebException("authorize failed: " + Name) {Code = wc.Principal == null ? 401 : 403};
             }
 
             int slash = rsc.IndexOf('/');
@@ -511,7 +511,7 @@ namespace SkyChain.Web
 
                 wc.Action = act;
 
-                if (!act.DoAuthorize(wc))
+                if (!act.DoAuthorize(wc, false))
                 {
                     throw new WebException("Do authorize failure: " + act.Name) {Code = wc.Principal == null ? 401 : 403};
                 }
@@ -614,9 +614,9 @@ namespace SkyChain.Web
             return Chain.Chain.NewDbContext(level);
         }
 
-        public static DbContext NewChainContext(IsolationLevel? level = null, WebContext wc = null)
+        public static DbContext NewChainContext(WebContext wc, IsolationLevel? level = null)
         {
-            return Chain.Chain.NewChainContext(level, wc);
+            return Chain.Chain.NewChainContext(wc);
         }
 
         public static Map<K, V> Grab<K, V>(byte flag = 0) where K : IComparable<K>

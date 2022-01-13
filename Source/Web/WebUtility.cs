@@ -66,7 +66,7 @@ namespace SkyChain.Web
                     continue;
                 }
 
-                if (sub.Ui == null || !sub.DoAuthorize(wc))
+                if (sub.Ui == null || !sub.DoAuthorize(wc, true))
                 {
                     continue;
                 }
@@ -92,7 +92,7 @@ namespace SkyChain.Web
                     continue;
                 }
 
-                if (sub.Ui == null || !sub.DoAuthorize(wc))
+                if (sub.Ui == null || !sub.DoAuthorize(wc, true))
                 {
                     continue;
                 }
@@ -163,7 +163,10 @@ namespace SkyChain.Web
                 for (int i = 0; i < subs.Count; i++)
                 {
                     var sub = subs.ValueAt(i);
-                    if (!sub.DoAuthorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc, true))
+                    {
+                        continue;
+                    }
                     h.Add("<li><a href=\"#\">");
                     h.Add(sub.Label);
                     h.Add("</a></li>");
@@ -187,7 +190,10 @@ namespace SkyChain.Web
                 for (int i = 0; i < subs.Count; i++)
                 {
                     var sub = subs.ValueAt(i);
-                    if (!sub.DoAuthorize(wc)) continue;
+                    if (!sub.DoAuthorize(wc, true))
+                    {
+                        continue;
+                    }
                     h.Add("<li style=\"height: 100%\"><iframe src=\"");
                     h.Add(sub.Key);
                     h.Add("/\" frameborder=\"0\" style=\"width:100%; height:100%;\"></iframe></li>");

@@ -136,18 +136,11 @@ namespace SkyChain.Web
 
         public TagAttribute[] Tags => tags;
 
-        public bool DoAuthorize(WebContext wc)
+        public bool DoAuthorize(WebContext wc, bool mock)
         {
             if (Authorize != null)
             {
-                // check if trusted peer
-                // todo check ip instead
-                // if (wc.CallerSign != null && wc.CallerSign == Framework.sign)
-                // {
-                //     return true; // trusted without further check
-                // }
-
-                return Authorize.Do(wc);
+                return Authorize.Do(wc, mock);
             }
 
             return true;

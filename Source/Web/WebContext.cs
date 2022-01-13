@@ -58,6 +58,10 @@ namespace SkyChain.Web
         ///
         public IData Principal { get; set; }
 
+        public string Party { get; set; }
+
+        public string Role { get; set; }
+
         // levels of keys along the URI path
         WebSeg[] segs;
 

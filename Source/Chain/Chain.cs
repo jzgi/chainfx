@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Npgsql;
 using SkyChain.Web;
 
 namespace SkyChain.Chain
@@ -195,7 +196,7 @@ namespace SkyChain.Chain
         // chainable table structures   
         static readonly Map<string, ChainTable> tables = new Map<string, ChainTable>(16);
 
-        // connectors to remote peers 
+        // remote connectors 
         static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(16);
 
 
@@ -241,6 +242,9 @@ namespace SkyChain.Chain
                     // init current block id
                     // await o.PeekLastBlockAsync(dc);
                 }
+
+                // type mapping
+                NpgsqlConnection.GlobalTypeMapper.MapComposite<ChainStep>("chain_step_type");
             }
 
             // setup remotes
@@ -281,25 +285,14 @@ namespace SkyChain.Chain
 
         public static Map<short, ChainClient> Clients => clients;
 
-        public static ChainContext NewChainContext(IsolationLevel? level = null, short peerid = 0)
+        public static ChainContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
         {
             if (DbSource == null)
             {
                 throw new ApplicationException("missing 'chain' in app.json");
             }
 
-            var cli = (peerid > 0) ? clients[peerid] : null;
-            return DbSource.NewChainContext(level, cli);
-        }
-
-        public static ChainContext NewChainContext(IsolationLevel? level = null, WebContext wc = null)
-        {
-            if (DbSource == null)
-            {
-                throw new ApplicationException("missing 'chain' in app.json");
-            }
-
-            return DbSource.NewChainContext(true, level, wc);
+            return DbSource.NewChainContext(wc, peerid, level);
         }
 
 

@@ -8,6 +8,6 @@ namespace SkyChain.Web
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
     public abstract class AuthorizeAttribute : Attribute
     {
-        public abstract bool Do(WebContext wc);
+        public abstract bool Do(WebContext wc, bool mock);
     }
 }

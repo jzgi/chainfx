@@ -61,30 +61,15 @@ namespace SkyChain.Chain
             return dc;
         }
 
-        public ChainContext NewChainContext(IsolationLevel? level = null, ChainClient cli = null)
+        public ChainContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
         {
             if (Chain.Info == null)
             {
                 throw new ChainException("missing 'chain' in app.json");
             }
 
-            var cc = new ChainContext(this, cli);
-            if (level != null)
-            {
-                cc.Begin(level.Value);
-            }
-
-            return cc;
-        }
-
-        public ChainContext NewChainContext(bool master, IsolationLevel? level = null, WebContext wc = null)
-        {
-            if (Chain.Info == null)
-            {
-                throw new ChainException("missing 'chain' in app.json");
-            }
-
-            var cc = new ChainContext(this, null)
+            var cli = Chain.GetClient(peerid);
+            var cc = new ChainContext(this, wc, cli)
             {
                 local = Chain.Info,
             };

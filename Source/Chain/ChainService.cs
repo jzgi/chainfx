@@ -1,4 +1,3 @@
-using System.Data;
 using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Chain.ChainUtility;
@@ -18,7 +17,7 @@ namespace SkyChain.Chain
 
             var f = await wc.ReadAsync<JObj>();
 
-            var ctx = Chain.NewChainContext(IsolationLevel.ReadUncommitted, wc);
+            // var ctx = Chain.NewChainContext(IsolationLevel.ReadUncommitted, wc);
             // if (o.IsAsync)
             // {
             //     return await o.DoAsync(ctx);

@@ -2581,7 +2581,7 @@ namespace SkyChain.Web
                     continue;
                 }
 
-                if (sub.Ui == null || !sub.DoAuthorize(wc))
+                if (sub.Ui == null || !sub.DoAuthorize(wc, true))
                 {
                     continue;
                 }
@@ -2683,7 +2683,7 @@ namespace SkyChain.Web
             // check action's availability
             //
             string cap = caption ?? act.Label;
-            bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web));
+            bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
@@ -2797,7 +2797,7 @@ namespace SkyChain.Web
             // check action's availability
             //
             var cap = caption ?? act.Label;
-            var ok = enabled && (Web.Principal == null || act.DoAuthorize(Web));
+            var ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag)

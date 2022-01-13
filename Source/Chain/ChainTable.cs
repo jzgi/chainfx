@@ -16,7 +16,9 @@ namespace SkyChain.Chain
 
         ChainColumn coid_;
 
-        ChainColumn ender_; // arhive or abort
+        ChainColumn trace_;
+
+        ChainColumn phase_;
 
         ChainColumn seq_;
 
