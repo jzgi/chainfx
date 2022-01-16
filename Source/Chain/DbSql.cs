@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using SkyChain;
 
 namespace SkyChain.Chain
 {
@@ -959,6 +958,11 @@ namespace SkyChain.Chain
         public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
         {
             Build(name);
+        }
+
+        public void Put(string name, Act[] v, short proj = 4095)
+        {
+            throw new NotImplementedException();
         }
 
         public void PutFromSource(ISource s)

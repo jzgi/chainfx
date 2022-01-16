@@ -4,7 +4,7 @@ using static SkyChain.Web.Modal;
 
 namespace SkyChain.Chain
 {
-    [Ui("［平台］联盟链管理")]
+    [Ui("平台－联盟链管理")]
     public class ChainWork : WebWork
     {
         protected internal override void OnMake()

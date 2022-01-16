@@ -3,7 +3,6 @@ using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
-using SkyChain;
 
 namespace SkyChain.Chain
 {
@@ -1146,7 +1145,22 @@ namespace SkyChain.Chain
             return false;
         }
 
-
+        public bool Get(string name, ref Act[] v, short proj = 0x0fff)
+        {
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetFieldValue<Act[]>(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
         //
         // LET
         //
@@ -2032,6 +2046,11 @@ namespace SkyChain.Chain
                     Check(str);
                 }
             }
+        }
+
+        public void Put(string name, Act[] v, short proj = 4095)
+        {
+            throw new NotImplementedException();
         }
 
         public void PutFromSource(ISource s)

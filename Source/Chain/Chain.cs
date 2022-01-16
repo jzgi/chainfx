@@ -244,7 +244,7 @@ namespace SkyChain.Chain
                 }
 
                 // type mapping
-                NpgsqlConnection.GlobalTypeMapper.MapComposite<ChainStep>("chain_step_type");
+                NpgsqlConnection.GlobalTypeMapper.MapComposite<Act>("chain_step_type");
             }
 
             // setup remotes

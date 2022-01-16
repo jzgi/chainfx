@@ -1,4 +1,5 @@
 using System;
+using SkyChain.Chain;
 
 namespace SkyChain
 {
@@ -182,6 +183,10 @@ namespace SkyChain
             throw new NotImplementedException();
         }
 
+        public bool Get(string name, ref Act[] v, short proj = 4095)
+        {
+            throw new NotImplementedException();
+        }
 
         //
         // ENTITY

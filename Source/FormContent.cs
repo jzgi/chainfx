@@ -319,6 +319,11 @@ namespace SkyChain
         {
         }
 
+        public void Put(string name, Act[] v, short proj = 4095)
+        {
+            throw new NotImplementedException();
+        }
+
         public void PutFromSource(ISource s)
         {
             throw new NotImplementedException();

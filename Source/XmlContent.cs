@@ -7,7 +7,9 @@ namespace SkyChain
     /// </summary>
     public class XmlContent : DynamicContent, ISink
     {
-        public XmlContent(bool octet, int capacity) : base(octet, capacity) {}
+        public XmlContent(bool octet, int capacity) : base(octet, capacity)
+        {
+        }
 
         public override string Type { get; set; } = "application/xml";
 
@@ -376,6 +378,11 @@ namespace SkyChain
 
         public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
         {
+        }
+
+        public void Put(string name, Act[] v, short proj = 4095)
+        {
+            throw new NotImplementedException();
         }
 
         public void PutFromSource(ISource s)
