@@ -12,7 +12,7 @@ namespace SkyChain.Web
 
         readonly string tip;
 
-        readonly byte group;
+        readonly short group;
 
         readonly short fork;
 
@@ -23,7 +23,7 @@ namespace SkyChain.Web
         /// <param name="tip">A short description of the functionality</param>
         /// <param name="group"></param>
         /// <param name="fork"></param>
-        public UiAttribute(string label = null, string tip = null, byte group = 0, short fork = 0)
+        public UiAttribute(string label = null, string tip = null, short group = 0, short fork = 0)
         {
             this.label = label;
             this.tip = tip;
@@ -38,7 +38,7 @@ namespace SkyChain.Web
         /// <summary>
         /// A number that determines grouping of functions.
         /// </summary>
-        public byte Group => group;
+        public short Group => group;
 
         public short Fork => fork;
     }

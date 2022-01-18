@@ -77,9 +77,9 @@ namespace SkyChain.Web
         }
 
 
-        public HtmlContent T(char v, bool cond = true)
+        public HtmlContent T(char v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -87,9 +87,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(bool v, bool cond = true)
+        public HtmlContent T(bool v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -97,9 +97,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(short v, bool cond = true)
+        public HtmlContent T(short v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -107,9 +107,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(int v, bool cond = true)
+        public HtmlContent T(int v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -117,9 +117,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(long v, bool cond = true)
+        public HtmlContent T(long v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -133,9 +133,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(decimal v, bool cond = true)
+        public HtmlContent T(decimal v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -143,9 +143,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(double v, bool cond = true)
+        public HtmlContent T(double v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -153,9 +153,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(string v, bool cond = true)
+        public HtmlContent T(string v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v);
             }
@@ -163,9 +163,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TT(string v, bool cond = true)
+        public HtmlContent TT(string v, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 AddEsc(v);
             }
@@ -173,9 +173,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(string v, int offset, int len, bool cond = true)
+        public HtmlContent T(string v, int offset, int len, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 Add(v, offset, len);
             }
@@ -183,9 +183,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TT(string v, int offset, int len, bool cond = true)
+        public HtmlContent TT(string v, int offset, int len, bool @if = true)
         {
-            if (cond)
+            if (@if)
             {
                 AddEsc(v, offset, len);
             }
@@ -193,9 +193,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent T(string[] v, bool cond = true)
+        public HtmlContent T(string[] v, bool @if = true)
         {
-            if (cond && v != null)
+            if (@if && v != null)
             {
                 for (int i = 0; i < v.Length; i++)
                 {
@@ -207,9 +207,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TT(string[] v, bool cond = true)
+        public HtmlContent TT(string[] v, bool @if = true)
         {
-            if (cond && v != null)
+            if (@if && v != null)
             {
                 for (int i = 0; i < v.Length; i++)
                 {
@@ -221,7 +221,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent S2<V>(V v, bool cond = true)
+        public HtmlContent S<V>(V v, bool cond = true)
         {
             if (cond)
             {
@@ -229,6 +229,7 @@ namespace SkyChain.Web
             }
 
             AddPrimitive(v);
+
             if (cond)
             {
                 Add("</s>");
@@ -237,16 +238,19 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent S2<V, X>(V v, X x, bool cond = true)
+        public HtmlContent S2<A, B>(A a, B b, bool cond = true)
         {
             if (cond)
             {
                 Add("<s>");
             }
 
-            AddPrimitive(v);
+            AddPrimitive(a);
+
             Add("&nbsp;");
-            AddPrimitive(x);
+
+            AddPrimitive(b);
+
             if (cond)
             {
                 Add("</s>");
@@ -356,6 +360,7 @@ namespace SkyChain.Web
         public HtmlContent TH(string caption = null)
         {
             Add("<th>");
+
             if (caption != null)
             {
                 Add(caption);
@@ -368,6 +373,7 @@ namespace SkyChain.Web
         public HtmlContent TH_(string css = null)
         {
             Add("<th");
+
             if (css != null)
             {
                 Add(" class=\"");
@@ -389,6 +395,7 @@ namespace SkyChain.Web
         public HtmlContent TD(bool v)
         {
             Add("<td style=\"text-align: center\">");
+
             if (v)
             {
                 Add("&radic;");
@@ -398,13 +405,16 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(short v, bool when = true, bool right = true)
+        public HtmlContent TD(short v, bool right = true, bool @if = true)
         {
-            Add("<td style=\"text-align: ");
-            Add(right ? "right" : "center");
-            Add("\">");
+            Add("<td");
+            if (right)
+            {
+                Add(" style=\"text-align: right\"");
+            }
+            Add(">");
 
-            if (when)
+            if (@if)
             {
                 Add(v);
             }
@@ -413,13 +423,16 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(int v, bool when = true, bool right = true)
+        public HtmlContent TD(int v, bool right = true, bool @if = true)
         {
-            Add("<td style=\"text-align: ");
-            Add(right ? "right" : "center");
-            Add("\">");
+            Add("<td");
+            if (right)
+            {
+                Add(" style=\"text-align: right\"");
+            }
+            Add(">");
 
-            if (when)
+            if (@if)
             {
                 Add(v);
             }
@@ -428,13 +441,16 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(long v, bool when = true, bool right = true)
+        public HtmlContent TD(long v, bool right = true, bool @if = true)
         {
-            Add("<td style=\"text-align: ");
-            Add(right ? "right" : "center");
-            Add("\">");
+            Add("<td");
+            if (right)
+            {
+                Add(" style=\"text-align: right\"");
+            }
+            Add(">");
 
-            if (when)
+            if (@if)
             {
                 Add(v);
             }
@@ -443,10 +459,10 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(decimal v, bool currency = false, bool when = true)
+        public HtmlContent TD(decimal v, bool currency = false, bool @if = true)
         {
             Add("<td style=\"text-align: right\">");
-            if (when)
+            if (@if)
             {
                 if (currency)
                 {
@@ -468,17 +484,11 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD(string v, string css = null, bool when = true)
+        public HtmlContent TD(string v, bool @if = true)
         {
-            Add("<td");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add('>');
-            if (when)
+            Add("<td>");
+
+            if (@if)
             {
                 AddEsc(v);
             }
@@ -487,7 +497,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TD2<V, X>(V v, X x, string css = null)
+        public HtmlContent TD2<A, B>(A a, B b, string css = null)
         {
             Add("<td");
             if (css != null)
@@ -496,11 +506,14 @@ namespace SkyChain.Web
                 Add(css);
                 Add("\"");
             }
-
             Add('>');
-            AddPrimitive(v);
+
+            AddPrimitive(a);
+
             Add("&nbsp;");
-            AddPrimitive(x);
+
+            AddPrimitive(b);
+
             Add("</td>");
             return this;
         }
@@ -508,6 +521,7 @@ namespace SkyChain.Web
         public HtmlContent TD(string[] v)
         {
             Add("<td>");
+
             if (v != null)
             {
                 for (int i = 0; i < v.Length; i++)
@@ -544,6 +558,14 @@ namespace SkyChain.Web
         public HtmlContent _TD()
         {
             Add("</td>");
+            return this;
+        }
+
+        public HtmlContent TDAVAR<K>(K key, string caption)
+        {
+            TD_();
+            AVAR(key, caption);
+            _TD();
             return this;
         }
 
@@ -1161,7 +1183,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD<V>(string label, V v)
         {
             LABEL(label);
-            Add("<span>");
+            Add("<span class=\"uk-input\">");
             AddPrimitive(v);
             Add("</span>");
             return this;
@@ -1170,7 +1192,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD2<V, X>(string label, V v, X x)
         {
             LABEL(label);
-            Add("<span>");
+            Add("<span class=\"uk-input\">");
             AddPrimitive(v);
             Add("&nbsp;");
             AddPrimitive(x);
@@ -1181,7 +1203,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD(string label, decimal v, bool currency = false)
         {
             LABEL(label);
-            Add("<span>");
+            Add("<span class=\"uk-input\">");
             if (currency)
             {
                 Add('￥');
@@ -1194,7 +1216,7 @@ namespace SkyChain.Web
         public HtmlContent FIELD(string label, bool v)
         {
             LABEL(label);
-            Add("<span>");
+            Add("<span class=\"uk-input\">");
             if (v)
             {
                 Add("✔️");
@@ -1206,15 +1228,18 @@ namespace SkyChain.Web
         public HtmlContent FIELD<K, V>(string label, K[] keys, Map<K, V> map)
         {
             LABEL(label);
-            Add("<span>");
+            Add("<span class=\"uk-input\">");
             if (keys != null)
             {
                 for (int i = 0; i < keys.Length; i++)
                 {
-                    var key = keys[i];
-                    var val = map[key];
-                    if (i > 0) Add("&nbsp;");
-                    Add(val.ToString());
+                    var k = keys[i];
+                    var v = map[k];
+                    if (i > 0)
+                    {
+                        Add("&nbsp;");
+                    }
+                    Add(v.ToString());
                 }
             }
             Add("</span>");
@@ -1247,7 +1272,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_CLOSEUP(string caption)
+        public HtmlContent ACLOSEUP(string caption)
         {
             Add("<a href=\"#\" onclick=\"closeUp(false); return false;\"");
             Add(" class=\"uk-button uk-button-default uk-border-rounded\"");
@@ -1257,7 +1282,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_GOTO(string caption, string href = null, string css = null)
+        public HtmlContent AGOTO(string caption, string href = null, string css = null)
         {
             Add("<a target=\"_parent\" href=\"");
             Add(href);
@@ -1273,7 +1298,26 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<A>(A a, bool end = false, string css = null)
+        public HtmlContent AVAR<K>(K key, string caption)
+        {
+            var vw = Web.Work.VarWork;
+            if (vw?.Default != null)
+            {
+                Add("<a class=\"uk-button uk-button-link");
+                Add("\" href=\"");
+                PutKey(key);
+                Add("/\" onclick=\"return dialog(this,4,false,3,'');\">");
+                Add(caption);
+                Add("</a>");
+            }
+            else
+            {
+                Add(caption);
+            }
+            return this;
+        }
+
+        public HtmlContent A_<A>(A href, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1283,7 +1327,7 @@ namespace SkyChain.Web
                 Add("\"");
             }
             Add(" href=\"");
-            PutKey(a);
+            PutKey(href);
             Add("\"");
             if (end)
             {
@@ -1292,7 +1336,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<A, B>(A a, B b, bool end = false, string css = null)
+        public HtmlContent A_<A, B>(A a, B b, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1303,6 +1347,7 @@ namespace SkyChain.Web
             }
             Add(" href=\"");
             PutKey(a);
+            Add('/');
             PutKey(b);
             Add("\"");
             if (end)
@@ -1312,7 +1357,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent A_HREF_<A, B, C>(A a, B b, C c, bool end = false, string css = null)
+        public HtmlContent A_<A, B, C>(A a, B b, C c, bool end = false, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1323,7 +1368,9 @@ namespace SkyChain.Web
             }
             Add(" href=\"");
             PutKey(a);
+            Add('/');
             PutKey(b);
+            Add('/');
             PutKey(c);
             Add("\"");
             if (end)
@@ -1332,62 +1379,13 @@ namespace SkyChain.Web
             }
             return this;
         }
-
-        public HtmlContent A_HREF_<A, B, C, D>(A a, B b, C c, D d, bool end = false, string css = null)
-        {
-            Add("<a");
-            if (css != null)
-            {
-                Add(" class=\"");
-                Add(css);
-                Add("\"");
-            }
-            Add(" href=\"");
-            PutKey(a);
-            PutKey(b);
-            PutKey(c);
-            PutKey(d);
-            Add("\"");
-            if (end)
-            {
-                Add(">");
-            }
-            return this;
-        }
-
-        public HtmlContent _ONCLICK_(string a)
-        {
-            Add(" onclick=\"");
-            AddEsc(a);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _ONCLICK_<B>(string a, B b)
-        {
-            Add(" onclick=\"");
-            AddEsc(a);
-            PutKey(b);
-            Add("\">");
-            return this;
-        }
-
-        public HtmlContent _ONCLICK_<B, C>(string a, B b, C c)
-        {
-            Add(" onclick=\"");
-            AddEsc(a);
-            PutKey(b);
-            PutKey(c);
-            Add("\">");
-            return this;
-        }
-
 
         public HtmlContent _A()
         {
             Add("</a>");
             return this;
         }
+
 
         public HtmlContent PIC_(string css = null, bool circle = false)
         {
@@ -1413,28 +1411,31 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent PIC(string a, bool circle = false, string css = "uk-margin-auto-vertical")
+        public HtmlContent PIC<A>(A a, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
-            AddEsc(a);
+            PutKey(a);
             _PIC();
             return this;
         }
 
-        public HtmlContent PIC<B>(string a, B b, bool circle = false, string css = "uk-margin-auto-vertical")
+        public HtmlContent PIC<A, B>(A a, B b, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
-            AddEsc(a);
+            PutKey(a);
+            Add('/');
             PutKey(b);
             _PIC();
             return this;
         }
 
-        public HtmlContent PIC<B, C>(string a, B b, C c, bool circle = false, string css = "uk-margin-auto-vertical")
+        public HtmlContent PIC<A, B, C>(A a, B b, C c, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
-            AddEsc(a);
+            PutKey(a);
+            Add('/');
             PutKey(b);
+            Add('/');
             PutKey(c);
             _PIC();
             return this;
@@ -2308,17 +2309,22 @@ namespace SkyChain.Web
             Add("</main>");
         }
 
-        void OnClickDialog(byte mode, bool pick, Appear size, string tip)
+        public HtmlContent _DIALOG_(int mode, bool pick, Appear appear, string tip = null)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
             Add(",");
             Add(pick);
             Add(",");
-            Add((byte) size);
+            Add((short) appear);
             Add(",'");
-            Add(tip);
+            if (tip != null)
+            {
+                Add(tip);
+            }
             Add("');\"");
+
+            return this;
         }
 
         public HtmlContent TABBEDBAR(bool group = true)
@@ -2369,7 +2375,7 @@ namespace SkyChain.Web
 
         public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool top = true)
         {
-            byte ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
+            var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(top ? "uk-top-bar" : "uk-bottom-bar");
@@ -2483,7 +2489,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent VARTOOLS<K>(K varkey, int subscript = -1, string pick = null, string css = null, bool nav = true)
+        public HtmlContent TOOLGROUPVAR<K>(K varkey, int subscript = -1, string pick = null, string css = null, bool nav = true)
         {
             if (nav)
             {
@@ -2507,7 +2513,7 @@ namespace SkyChain.Web
             }
 
             // output button group
-            byte actgrp = Web.Action.Group;
+            var actgrp = Web.Action.Group;
             var acts = vw?.Tooled;
             if (acts != null)
             {
@@ -2518,7 +2524,7 @@ namespace SkyChain.Web
                     if (g == actgrp || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
-                        PutVarTool(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, null);
+                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, null);
                     }
                 }
             }
@@ -2545,7 +2551,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent VARTOOL<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
+        public HtmlContent TOOLVAR<K>(K varkey, string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
         {
             // get the var work
             var vw = Web.Work.VarWork;
@@ -2555,7 +2561,7 @@ namespace SkyChain.Web
                 var toola = tool ?? act?.Tool;
                 if (toola != null)
                 {
-                    PutVarTool(act, toola, varkey, subscript, caption, tip, enabled, css);
+                    PutToolVar(act, toola, varkey, subscript, caption, tip, enabled, css);
                 }
             }
 
@@ -2754,28 +2760,28 @@ namespace SkyChain.Web
                 Add(tip ?? act.Label);
                 Add("');\"");
             }
-            else if (tool.HasPrompt)
-            {
-                OnClickDialog(2, tool.MustPick, tool.Size, tip);
-            }
-            else if (tool.HasShow)
-            {
-                OnClickDialog(4, tool.MustPick, tool.Size, tip);
-            }
-            else if (tool.HasOpen)
-            {
-                OnClickDialog(8, tool.MustPick, tool.Size, tip);
-            }
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return by"); // prefix to avoid js naming conflict
                 Add(act.Name);
                 Add("(this);\"");
             }
+            else if (tool.HasPrompt)
+            {
+                _DIALOG_(2, tool.MustPick, tool.Appear, tip);
+            }
+            else if (tool.HasShow)
+            {
+                _DIALOG_(4, tool.MustPick, tool.Appear, tip);
+            }
+            else if (tool.HasOpen)
+            {
+                _DIALOG_(8, tool.MustPick, tool.Appear, tip);
+            }
             else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add((byte) tool.Size);
+                Add((byte) tool.Appear);
                 Add(",'");
                 Add(tip);
                 Add("');\"");
@@ -2792,7 +2798,7 @@ namespace SkyChain.Web
             Add(tool.IsAnchorTag ? "</a>" : "</button>");
         }
 
-        void PutVarTool<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, string tip = null, bool enabled = true, string css = null)
+        void PutToolVar<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, string tip = null, bool enabled = true, string css = null)
         {
             // check action's availability
             //
@@ -2883,15 +2889,15 @@ namespace SkyChain.Web
             }
             else if (tool.HasPrompt)
             {
-                OnClickDialog(2, tool.MustPick, tool.Size, tip);
+                _DIALOG_(2, tool.MustPick, tool.Appear, tip);
             }
             else if (tool.HasShow)
             {
-                OnClickDialog(4, tool.MustPick, tool.Size, tip);
+                _DIALOG_(4, tool.MustPick, tool.Appear, tip);
             }
             else if (tool.HasOpen)
             {
-                OnClickDialog(8, tool.MustPick, tool.Size, tip);
+                _DIALOG_(8, tool.MustPick, tool.Appear, tip);
             }
             else if (tool.HasScript)
             {
@@ -2902,7 +2908,7 @@ namespace SkyChain.Web
             else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add((byte) tool.Size);
+                Add((byte) tool.Appear);
                 Add(",'");
                 Add(tip);
                 Add("');\"");

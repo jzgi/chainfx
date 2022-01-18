@@ -38,7 +38,9 @@ namespace SkyChain.Web
             this.access = access;
         }
 
-        public Appear Size => appear;
+        public int Mode => mode;
+
+        public Appear Appear => appear;
 
         public bool IsAnchorTag => element == 0x1000;
 

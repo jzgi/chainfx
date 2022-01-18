@@ -126,7 +126,7 @@ namespace SkyChain.Web
 
         public string Tip => ui?.Tip;
 
-        public byte Group => ui?.Group ?? 0;
+        public short Group => ui?.Group ?? 0;
 
         public AuthenticateAttribute Authenticate => authenticate;
 

@@ -1,6 +1,6 @@
 namespace SkyChain.Web
 {
-    public enum Appear : byte
+    public enum Appear : short
     {
         Half = 1,
 

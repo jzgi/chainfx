@@ -109,7 +109,7 @@ namespace SkyChain.Web
 
         public string Tip => Ui?.Tip;
 
-        public byte Group => Ui?.Group ?? 0;
+        public short Group => Ui?.Group ?? 0;
 
         readonly Type type;
 
