@@ -1347,7 +1347,6 @@ namespace SkyChain.Web
             }
             Add(" href=\"");
             PutKey(a);
-            Add('/');
             PutKey(b);
             Add("\"");
             if (end)
@@ -1368,9 +1367,7 @@ namespace SkyChain.Web
             }
             Add(" href=\"");
             PutKey(a);
-            Add('/');
             PutKey(b);
-            Add('/');
             PutKey(c);
             Add("\"");
             if (end)
@@ -1423,7 +1420,6 @@ namespace SkyChain.Web
         {
             PIC_(css, circle);
             PutKey(a);
-            Add('/');
             PutKey(b);
             _PIC();
             return this;
@@ -1433,9 +1429,7 @@ namespace SkyChain.Web
         {
             PIC_(css, circle);
             PutKey(a);
-            Add('/');
             PutKey(b);
-            Add('/');
             PutKey(c);
             _PIC();
             return this;
