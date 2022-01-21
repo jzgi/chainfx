@@ -442,7 +442,7 @@ namespace SkyChain.Web
 
         public void SetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/")
         {
-            StringBuilder sb = new StringBuilder(name).Append('=').Append(value);
+            var sb = new StringBuilder(name).Append('=').Append(value);
             if (maxage > 0)
             {
                 sb.Append("; Max-Age=").Append(maxage);

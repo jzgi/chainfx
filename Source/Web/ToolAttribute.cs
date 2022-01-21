@@ -26,17 +26,16 @@ namespace SkyChain.Web
 
         readonly Appear appear;
 
-        readonly bool access;
-
-        public ToolAttribute(Modal modal, Appear appear = Appear.Large, bool access = true)
+        public ToolAttribute(Modal modal, Appear appear = Appear.Large)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0300;
             this.appear = appear;
-            this.access = access;
         }
+
+        public Modal Modal => modal;
 
         public int Mode => mode;
 

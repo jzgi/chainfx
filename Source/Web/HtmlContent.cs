@@ -1377,6 +1377,27 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent ADIALOG__<A, B, C>(A a, B b, C c, int mode, bool pick, Appear appear, string tip = null, string css = null)
+        {
+            Add("<a");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(" href=\"");
+            PutKey(a);
+            PutKey(b);
+            PutKey(c);
+            Add("\"");
+
+            _DIALOG_(mode, pick, appear, tip);
+
+            Add(">");
+            return this;
+        }
+
         public HtmlContent _A()
         {
             Add("</a>");
@@ -2356,13 +2377,13 @@ namespace SkyChain.Web
 
         public HtmlContent TOPBAR_()
         {
-            Add("<form class=\"uk-top-bar uk-flex\">");
+            Add("<nav class=\"uk-top-bar uk-flex\">");
             return this;
         }
 
         public HtmlContent _TOPBAR()
         {
-            Add("</form>");
+            Add("</nav>");
             Add("<div class=\"uk-top-placeholder\"></div>");
             return this;
         }
