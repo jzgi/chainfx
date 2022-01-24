@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

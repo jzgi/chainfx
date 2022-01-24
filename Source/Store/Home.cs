@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Npgsql;
 using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
-    public class Chain
+    public class Home
     {
         //
         // source and caches
@@ -22,7 +22,7 @@ namespace SkyChain.Chain
         {
             if (dbsource == null) // check on-the-fly
             {
-                throw new ApplicationException("missing 'chain' in json");
+                throw new DbException("missing 'store' in json");
             }
 
             return dbsource.NewDbContext(level);
@@ -194,50 +194,50 @@ namespace SkyChain.Chain
         static Peer info;
 
         // chainable table structures   
-        static readonly Map<string, ChainTable> tables = new Map<string, ChainTable>(16);
+        static readonly Map<string, FedTable> tables = new Map<string, FedTable>(16);
 
         // remote connectors 
-        static readonly Map<short, ChainClient> clients = new Map<short, ChainClient>(16);
+        static readonly Map<short, FedClient> clients = new Map<short, FedClient>(16);
 
 
-        internal static async Task InitializeChain(JObj chaincfg)
+        internal static void InitializeStore(JObj storecfg)
         {
-            dbsource = new DbSource(chaincfg);
+            dbsource = new DbSource(storecfg);
 
             // load local info
-            info = new Peer(chaincfg);
+            info = new Peer(storecfg);
 
             // setup chainables
             //
             using (var dc = NewDbContext())
             {
                 // tables
-                await dc.QueryAsync("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
+                dc.Query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
                 while (dc.Next())
                 {
                     dc.Let(out string table_name);
                     if (table_name.EndsWith('_') && table_name != "peers_")
                     {
-                        tables.Add(new ChainTable(table_name));
+                        tables.Add(new FedTable(table_name));
                     }
                 }
                 // columns for each
                 for (int i = 0; i < tables.Count; i++)
                 {
                     var tbl = tables.ValueAt(i);
-                    dc.Sql("SELECT ").collst(ChainColumn.Empty).T(" FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
-                    await dc.QueryAsync(p => p.Set(tbl.Key));
-                    while (dc.Next())
-                    {
-                        dc.Let(out string datatype);
-                        ChainColumn conn = datatype switch
-                        {
-                            "smallint" => new SmallintColumn(),
-                            "int" => new IntColumn(),
-                        };
-                        conn.Read(dc);
-                        // tables.Add(conn);
-                    }
+                    dc.Sql("SELECT data_type, column_name, column_default, is_nullable, character_maximum_length FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
+                    dc.Query(p => p.Set(tbl.Key));
+                    // while (dc.Next())
+                    // {
+                    //     dc.Let(out string datatype);
+                    //     FedColumn conn = datatype switch
+                    //     {
+                    //         "smallint" => new SmallintColumn(),
+                    //         "int" => new IntColumn(),
+                    //     };
+                    //     conn.Read(dc);
+                    //     // tables.Add(conn);
+                    // }
 
                     // init current block id
                     // await o.PeekLastBlockAsync(dc);
@@ -252,12 +252,12 @@ namespace SkyChain.Chain
             using (var dc = NewDbContext())
             {
                 dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_");
-                var arr = await dc.QueryAsync<Peer>();
+                var arr = dc.Query<Peer>();
                 if (arr != null)
                 {
                     foreach (var peer in arr)
                     {
-                        var cli = new ChainClient(peer);
+                        var cli = new FedClient(peer);
                         clients.Add(cli);
 
                         // init current block id
@@ -281,11 +281,11 @@ namespace SkyChain.Chain
         }
 
 
-        public static ChainClient GetClient(short peerid) => clients[peerid];
+        public static FedClient GetClient(short peerid) => clients[peerid];
 
-        public static Map<short, ChainClient> Clients => clients;
+        public static Map<short, FedClient> Clients => clients;
 
-        public static ChainContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
+        public static FedContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
         {
             if (DbSource == null)
             {

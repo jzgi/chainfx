@@ -2,15 +2,15 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static SkyChain.Chain.ChainUtility;
+using static SkyChain.Store.FedUtility;
 using WebClient = SkyChain.Web.WebClient;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     /// <summary>
     /// A client connector to a specific remote peer..
     /// </summary>
-    public class ChainClient : WebClient, IKeyable<short>
+    public class FedClient : WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -48,7 +48,7 @@ namespace SkyChain.Chain
         /// <summary>
         /// To construct a chain client. 
         /// </summary>
-        internal ChainClient(Peer peer, ChainClientHandler handler = null) : base(peer.domain, handler ?? new ChainClientHandler())
+        internal FedClient(Peer peer, FedClientHandler handler = null) : base(peer.domain, handler ?? new FedClientHandler())
         {
             this.peer = peer;
             try
@@ -151,7 +151,7 @@ namespace SkyChain.Chain
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Home.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
@@ -195,7 +195,7 @@ namespace SkyChain.Chain
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Chain.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Home.Info.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 req.Content = content;

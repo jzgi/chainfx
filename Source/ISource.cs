@@ -1,5 +1,4 @@
 ﻿using System;
-using SkyChain.Chain;
 
 namespace SkyChain
 {
@@ -43,8 +42,6 @@ namespace SkyChain
         bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new();
 
         bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new();
-
-        bool Get(string name, ref Act[] v, short proj = 0x0fff);
 
         D ToObject<D>(short proj = 0x0fff) where D : IData, new();
 

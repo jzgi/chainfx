@@ -1,12 +1,11 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Store
 {
     /// <summary>
     /// The descriptor for a database column. 
     /// </summary>
-    public abstract class ChainColumn : IData, IKeyable<string>
+    public abstract class FedColumn : IData, IKeyable<string>
     {
-        public static readonly ChainColumn Empty = new IntColumn();
-        
+       
         string column_name;
 
         string column_default;
@@ -37,14 +36,14 @@
         public abstract void Convert(ISource src, ISink snk);
     }
 
-    public class SmallintColumn : ChainColumn
+    public class SmallintColumn : FedColumn
     {
         public override void Convert(ISource src, ISink snk)
         {
         }
     }
 
-    public class IntColumn : ChainColumn
+    public class IntColumn : FedColumn
     {
         public override void Convert(ISource src, ISink snk)
         {

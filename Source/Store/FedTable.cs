@@ -2,31 +2,31 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
-    internal class ChainTable : IKeyable<string>
+    internal class FedTable : IKeyable<string>
     {
         readonly string table_name;
 
-        readonly Map<string, ChainColumn> customs = new Map<string, ChainColumn>(16);
+        readonly Map<string, FedColumn> customs = new Map<string, FedColumn>(16);
 
-        ChainColumn peer_;
+        FedColumn peer_;
 
-        ChainColumn id_;
+        FedColumn id_;
 
-        ChainColumn coid_;
+        FedColumn coid_;
 
-        ChainColumn trace_;
+        FedColumn trace_;
 
-        ChainColumn phase_;
+        FedColumn phase_;
 
-        ChainColumn seq_;
+        FedColumn seq_;
 
-        ChainColumn cs_;
+        FedColumn cs_;
 
-        ChainColumn blockcs_;
+        FedColumn blockcs_;
 
-        public ChainTable(string table_name)
+        public FedTable(string table_name)
         {
             this.table_name = table_name;
         }
@@ -34,7 +34,7 @@ namespace SkyChain.Chain
         public string Key => table_name;
 
 
-        internal void AddColumn(ChainColumn col)
+        internal void AddColumn(FedColumn col)
         {
             customs.Add(col);
         }

@@ -49,8 +49,6 @@ namespace SkyChain
 
         void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData;
 
-        void Put(string name, Act[] v, short proj = 0x0fff);
-
         void PutFromSource(ISource s);
     }
 }

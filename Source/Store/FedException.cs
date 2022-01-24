@@ -1,26 +1,26 @@
 using System;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     /// <summary>
     /// Thrown to indicate a blockchain related error.
     /// </summary>
-    public class ChainException : Exception
+    public class FedException : Exception
     {
         /// <summary>
         /// The returned status code.
         /// </summary>
         public int Code { get; internal set; }
 
-        public ChainException()
+        public FedException()
         {
         }
 
-        public ChainException(string message) : base(message)
+        public FedException(string message) : base(message)
         {
         }
 
-        public ChainException(string message, Exception inner) : base(message, inner)
+        public FedException(string message, Exception inner) : base(message, inner)
         {
         }
     }

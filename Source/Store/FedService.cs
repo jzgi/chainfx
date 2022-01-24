@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
-using static SkyChain.Chain.ChainUtility;
+using static SkyChain.Store.FedUtility;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     /// <summary>
     /// A web service that realizes inter-peer communication. 
     /// </summary>
-    public class ChainService : WebService
+    public class FedService : WebService
     {
         public async Task oncall(WebContext wc)
         {
@@ -34,7 +34,7 @@ namespace SkyChain.Chain
         public async Task onpoll(WebContext wc)
         {
             // veriify 
-            var peerid = Chain.Info.id;
+            var peerid = Home.Info.id;
             if (wc.HeaderShort(X_CRYPTO) != peerid)
             {
                 wc.Give(409); // conflict
@@ -78,32 +78,32 @@ namespace SkyChain.Chain
             // wc.Give(200, j);
         }
 
-        protected bool NEW(ChainContext cc, string table)
+        protected bool NEW(FedContext cc, string table)
         {
             return false;
         }
 
-        protected bool MOD(ChainContext cc, string table)
+        protected bool MOD(FedContext cc, string table)
         {
             return false;
         }
 
-        protected bool FRO(ChainContext cc, string table)
+        protected bool FRO(FedContext cc, string table)
         {
             return false;
         }
 
-        protected bool BAK(ChainContext cc, string table)
+        protected bool BAK(FedContext cc, string table)
         {
             return false;
         }
 
-        protected bool ABT(ChainContext cc, string table)
+        protected bool ABT(FedContext cc, string table)
         {
             return false;
         }
 
-        protected bool COM(ChainContext cc, string table)
+        protected bool COM(FedContext cc, string table)
         {
             return false;
         }

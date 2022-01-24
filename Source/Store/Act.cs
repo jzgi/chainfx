@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SkyChain
+namespace SkyChain.Store
 {
-    public struct Act
+    public struct Act : IData
     {
         string user { get; set; }
 
@@ -13,5 +13,13 @@ namespace SkyChain
         string op { get; set; }
 
         private DateTime stamp { get; set; }
+
+        public void Read(ISource s, short proj = 4095)
+        {
+        }
+
+        public void Write(ISink s, short proj = 4095)
+        {
+        }
     }
 }

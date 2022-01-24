@@ -523,11 +523,6 @@ namespace SkyChain
             }
         }
 
-        public void Put(string name, Act[] v, short proj = 4095)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Put<D>(string name, List<D> v, short proj = 0x0fff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');

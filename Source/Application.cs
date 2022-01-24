@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using SkyChain.Store;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -15,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The application scope that holds global states.
     /// </summary>
-    public class Application : Chain.Chain
+    public class Application : Home
     {
         public const string APP_JSON = "app.json";
 
@@ -30,7 +31,7 @@ namespace SkyChain
 
 
         // layered configurations
-        public static readonly JObj chaincfg, webcfg, extcfg;
+        public static readonly JObj storecfg, webcfg, extcfg;
 
         static readonly X509Certificate2 cert;
 
@@ -78,10 +79,10 @@ namespace SkyChain
             // init layers
             //
 
-            chaincfg = cfg["chain"];
-            if (chaincfg != null)
+            storecfg = cfg["store"];
+            if (storecfg != null)
             {
-                InitializeChain(chaincfg);
+                InitializeStore(storecfg);
             }
 
             webcfg = cfg["web"];

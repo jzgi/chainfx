@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     public class Peer : IData, IKeyable<short>
     {
@@ -119,7 +119,7 @@ namespace SkyChain.Chain
                 dc.Let(out long bcs);
                 if (seq > 0)
                 {
-                    var (bid, _) = ChainUtility.ResolveSeq(seq);
+                    var (bid, _) = FedUtility.ResolveSeq(seq);
 
                     blockid = bid;
                     blockcs = bcs;

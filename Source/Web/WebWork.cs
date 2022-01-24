@@ -3,7 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using SkyChain.Chain;
+using SkyChain.Store;
 using SkyChain.Source.Web;
 
 namespace SkyChain.Web
@@ -611,42 +611,42 @@ namespace SkyChain.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Chain.Chain.NewDbContext(level);
+            return Store.Home.NewDbContext(level);
         }
 
         public static DbContext NewChainContext(WebContext wc, IsolationLevel? level = null)
         {
-            return Chain.Chain.NewChainContext(wc);
+            return Store.Home.NewChainContext(wc);
         }
 
         public static Map<K, V> Grab<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return Chain.Chain.Grab<K, V>(flag);
+            return Store.Home.Grab<K, V>(flag);
         }
 
         public static async Task<Map<K, V>> GrabAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return await Chain.Chain.GrabAsync<K, V>(flag);
+            return await Store.Home.GrabAsync<K, V>(flag);
         }
 
         public static V GrabObject<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return Chain.Chain.GrabObject<K, V>(key, flag);
+            return Store.Home.GrabObject<K, V>(key, flag);
         }
 
         public static async Task<V> GrabObjectAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return await Chain.Chain.GrabObjectAsync<K, V>(key, flag);
+            return await Store.Home.GrabObjectAsync<K, V>(key, flag);
         }
 
         public static Map<K, V> GrabMap<S, K, V>(S discr, byte flag = 0) where K : IComparable<K>
         {
-            return Chain.Chain.GrabMap<S, K, V>(discr, flag);
+            return Store.Home.GrabMap<S, K, V>(discr, flag);
         }
 
         public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return await Chain.Chain.GrabMapAsync<D, K, V>(discr, flag);
+            return await Store.Home.GrabMapAsync<D, K, V>(discr, flag);
         }
 
 

@@ -2,19 +2,19 @@ using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     [Ui("平台｜联盟链管理")]
-    public class ChainWork : WebWork
+    public class FedWork : WebWork
     {
         protected internal override void OnMake()
         {
-            MakeVarWork<ChainVarWork>();
+            MakeVarWork<FedVarWork>();
         }
 
         public void @default(WebContext wc)
         {
-            var arr = Chain.Clients;
+            var arr = Home.Clients;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(caption: "盟友管理");
@@ -65,9 +65,9 @@ namespace SkyChain.Chain
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                var cli = new ChainClient(o);
+                var cli = new FedClient(o);
                 await o.PeekLastBlockAsync(dc);
-                Chain.Clients.Add(cli);
+                Home.Clients.Add(cli);
 
                 wc.GivePane(200); // close dialog
             }

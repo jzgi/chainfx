@@ -1377,7 +1377,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent ADIALOG__<A, B, C>(A a, B b, C c, int mode, bool pick, Appear appear, string tip = null, string css = null)
+        public HtmlContent ADIALOG_<A, B, C>(A a, B b, C c, int mode, bool pick, Appear appear, string tip = null, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1588,8 +1588,9 @@ namespace SkyChain.Web
         public HtmlContent SUBNAV<V>(Map<short, V> map, string uri, int subscript, Func<short, V, bool> filter = null)
         {
             Add("<ul class=\"uk-subnav\">");
-            int count = 0;
-            for (int i = 0; i < map.Count; i++)
+            int num = 0;
+            var count = map.Count;
+            for (int i = 0; i < count; i++)
             {
                 var ety = map.EntryAt(i);
                 var k = ety.Key;
@@ -1599,7 +1600,7 @@ namespace SkyChain.Web
                     continue;
                 }
                 Add("<li");
-                if (k == subscript || count == 0 && subscript == 0)
+                if (k == subscript || num == 0 && subscript == 0)
                 {
                     Add(" class=\"uk-active\"");
                 }
@@ -1610,7 +1611,7 @@ namespace SkyChain.Web
                 Add("\">");
                 Add(v.ToString());
                 Add("</a></li>");
-                count++;
+                num++;
             }
 
             Add("</ul>");

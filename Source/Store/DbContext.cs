@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
@@ -1124,18 +1124,7 @@ namespace SkyChain.Chain
                 int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
-                    string str = reader.GetString(ord);
-                    var parser = new JsonParser(str);
-                    var ja = (JArr) parser.Parse();
-                    int len = ja.Count;
-                    v = new D[len];
-                    for (int i = 0; i < len; i++)
-                    {
-                        JObj jo = ja[i];
-                        D obj = new D();
-                        obj.Read(jo, proj);
-                        v[i] = obj;
-                    }
+                    v = reader.GetFieldValue<D[]>(ord);
                     return true;
                 }
             }
@@ -1145,22 +1134,6 @@ namespace SkyChain.Chain
             return false;
         }
 
-        public bool Get(string name, ref Act[] v, short proj = 0x0fff)
-        {
-            try
-            {
-                int ord = reader.GetOrdinal(name);
-                if (!reader.IsDBNull(ord))
-                {
-                    v = reader.GetFieldValue<Act[]>(ord);
-                    return true;
-                }
-            }
-            catch
-            {
-            }
-            return false;
-        }
         //
         // LET
         //
@@ -2046,11 +2019,6 @@ namespace SkyChain.Chain
                     Check(str);
                 }
             }
-        }
-
-        public void Put(string name, Act[] v, short proj = 4095)
-        {
-            throw new NotImplementedException();
         }
 
         public void PutFromSource(ISource s)

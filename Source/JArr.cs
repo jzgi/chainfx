@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using SkyChain.Chain;
 
 namespace SkyChain
 {
@@ -180,10 +179,6 @@ namespace SkyChain
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref Act[] v, short proj = 4095)
-        {
-            throw new NotImplementedException();
-        }
         //
         // ENTIRITY
         //

@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Store
 {
-    public class ChainContext : DbContext
+    public class FedContext : DbContext
     {
         readonly WebContext wc;
 
-        readonly ChainClient client;
+        readonly FedClient client;
 
         internal Peer local;
 
@@ -16,7 +16,7 @@ namespace SkyChain.Chain
 
         public JObj Out;
 
-        internal ChainContext(DbSource dbsource, WebContext wc, ChainClient client) : base(dbsource)
+        internal FedContext(DbSource dbsource, WebContext wc, FedClient client) : base(dbsource)
         {
             this.wc = wc;
             this.client = client;
@@ -50,7 +50,7 @@ namespace SkyChain.Chain
             }
             else // call remote
             {
-                var conn = Chain.GetClient(peerid);
+                var conn = Home.GetClient(peerid);
                 if (conn != null)
                 {
                     // args
@@ -62,7 +62,7 @@ namespace SkyChain.Chain
                 }
                 else
                 {
-                    throw new ChainException("");
+                    throw new FedException("");
                 }
             }
             return false;

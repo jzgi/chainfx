@@ -1,5 +1,4 @@
 using System;
-using SkyChain.Chain;
 
 namespace SkyChain
 {
@@ -296,11 +295,6 @@ namespace SkyChain
             }
 
             return false;
-        }
-
-        public bool Get(string name, ref Act[] v, short proj = 4095)
-        {
-            throw new NotImplementedException();
         }
 
         public D ToObject<D>(short proj = 0x0fff) where D : IData, new()
