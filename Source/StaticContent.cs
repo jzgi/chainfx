@@ -1525,27 +1525,27 @@ namespace SkyChain
         };
 
         // the byte buffer
-        readonly byte[] _bytes;
+        readonly byte[] bytes;
 
         // fixed length
-        readonly int _length;
+        readonly int length;
 
 
         public StaticContent(byte[] bytes)
         {
-            _bytes = bytes;
-            _length = bytes.Length;
+            this.bytes = bytes;
+            length = bytes.Length;
         }
 
         public string Key { get; set; }
 
         public string Type { get; set; }
 
-        public byte[] Buffer => _bytes;
+        public byte[] Buffer => bytes;
 
-        public int Count => _length;
+        public int Count => length;
 
-        public DateTime? Modified { get; set; }
+        public DateTime? Adapted { get; set; }
 
         public string ETag => null;
 
@@ -1553,12 +1553,12 @@ namespace SkyChain
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            return stream.WriteAsync(_bytes, 0, _length);
+            return stream.WriteAsync(bytes, 0, length);
         }
 
         protected override bool TryComputeLength(out long length)
         {
-            length = _length;
+            length = this.length;
             return true;
         }
 

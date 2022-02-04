@@ -553,13 +553,13 @@ namespace SkyChain.Web
             {
                 var since = HeaderDateTime("If-Modified-Since");
                 Debug.Assert(sta != null);
-                if (since != null && sta.Modified <= since)
+                if (since != null && sta.Adapted <= since)
                 {
                     StatusCode = 304; // not modified
                     return;
                 }
 
-                var last = sta.Modified;
+                var last = sta.Adapted;
                 if (last != null)
                 {
                     SetHeader("Last-Modified", TextUtility.FormatUtcDate(last.Value));

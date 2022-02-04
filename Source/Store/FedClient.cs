@@ -31,7 +31,7 @@ namespace SkyChain.Store
             {INTERNAL_ERROR, "internal error"},
         };
 
-        // when a chain connector
+        // when a fed connector
         readonly Peer peer;
 
         // acceptable remote addresses
@@ -46,7 +46,7 @@ namespace SkyChain.Store
 
 
         /// <summary>
-        /// To construct a chain client. 
+        /// To construct a federation client. 
         /// </summary>
         internal FedClient(Peer peer, FedClientHandler handler = null) : base(peer.domain, handler ?? new FedClientHandler())
         {

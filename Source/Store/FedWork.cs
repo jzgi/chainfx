@@ -7,9 +7,9 @@ namespace SkyChain.Store
     [Ui("平台｜联盟链管理")]
     public class FedWork : WebWork
     {
-        protected internal override void OnMake()
+        protected internal override void OnCreate()
         {
-            MakeVarWork<FedVarWork>();
+            CreateVarWork<FedVarWork>();
         }
 
         public void @default(WebContext wc)

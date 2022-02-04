@@ -157,7 +157,7 @@ namespace SkyChain.Web
         }
 
 
-        protected internal virtual void OnMake()
+        protected internal virtual void OnCreate()
         {
         }
 
@@ -174,7 +174,7 @@ namespace SkyChain.Web
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T MakeVarWork<T>(Func<IData, string, object> accessor = null, object state = null,
+        protected T CreateVarWork<T>(Func<IData, string, object> accessor = null, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             var wrk = new T
@@ -196,7 +196,7 @@ namespace SkyChain.Web
 
             varwork = wrk;
 
-            wrk.OnMake();
+            wrk.OnCreate();
             return wrk;
         }
 
@@ -213,7 +213,7 @@ namespace SkyChain.Web
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T MakeWork<T>(string name, object state = null,
+        protected T CreateWork<T>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
             if (works == null)
@@ -240,85 +240,85 @@ namespace SkyChain.Web
 
             works.Add(wrk);
 
-            wrk.OnMake();
+            wrk.OnCreate();
             return wrk;
         }
 
-        protected void MakeWork<T1, T2>(string name, object state = null,
+        protected void CreateWork<T1, T2>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
         }
 
-        protected void MakeWork<T1, T2, T3>(string name, object state = null,
+        protected void CreateWork<T1, T2, T3>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
         }
 
-        protected void MakeWork<T1, T2, T3, T4>(string name, object state = null,
+        protected void CreateWork<T1, T2, T3, T4>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
         }
 
-        protected void MakeWork<T1, T2, T3, T4, T5>(string name, object state = null,
+        protected void CreateWork<T1, T2, T3, T4, T5>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
         }
 
-        protected void MakeWork<T1, T2, T3, T4, T5, T6>(string name, object state = null,
+        protected void CreateWork<T1, T2, T3, T4, T5, T6>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T6>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T6>(name, state, ui, authenticate, authorize, before, after);
         }
 
-        protected void MakeWork<T1, T2, T3, T4, T5, T6, T7>(string name, object state = null,
+        protected void CreateWork<T1, T2, T3, T4, T5, T6, T7>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new() where T7 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T6>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T7>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T6>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T7>(name, state, ui, authenticate, authorize, before, after);
         }
 
-        protected void MakeWork<T1, T2, T3, T4, T5, T6, T7, T8>(string name, object state = null,
+        protected void CreateWork<T1, T2, T3, T4, T5, T6, T7, T8>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
             where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new() where T7 : WebWork, new() where T8 : WebWork, new()
         {
-            MakeWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T5>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T6>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T7>(name, state, ui, authenticate, authorize, before, after);
-            MakeWork<T8>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T6>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T7>(name, state, ui, authenticate, authorize, before, after);
+            CreateWork<T8>(name, state, ui, authenticate, authorize, before, after);
         }
 
         protected void Describe(XmlContent xc)

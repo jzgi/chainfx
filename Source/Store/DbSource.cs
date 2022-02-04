@@ -65,7 +65,7 @@ namespace SkyChain.Store
         {
             if (Home.Info == null)
             {
-                throw new FedException("missing 'chain' in app.json");
+                throw new FedException("missing 'store' in app.json");
             }
 
             var cli = Home.GetClient(peerid);

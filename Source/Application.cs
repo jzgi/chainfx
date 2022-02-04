@@ -31,11 +31,12 @@ namespace SkyChain
 
 
         // layered configurations
-        public static readonly JObj storecfg, webcfg, extcfg;
+        public static readonly JObj appcfg, extcfg;
 
         static readonly X509Certificate2 cert;
 
         static readonly ApplicationLogger logger;
+
 
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
@@ -45,13 +46,13 @@ namespace SkyChain
         /// </summary>
         static Application()
         {
-            // load the config file
+            // load app config
             var bytes = File.ReadAllBytes(APP_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
-            var cfg = (JObj) parser.Parse();
+            appcfg = (JObj) parser.Parse();
 
             // file-based logger
-            int logging = cfg[nameof(logging)];
+            int logging = appcfg[nameof(logging)];
             var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new ApplicationLogger(logfile)
             {
@@ -59,9 +60,9 @@ namespace SkyChain
             };
 
             // security settings
-            string crypto = cfg[nameof(crypto)];
+            string crypto = appcfg[nameof(crypto)];
             privatekey = CryptoUtility.HexToKey(crypto);
-            string certpass = cfg[nameof(certpass)];
+            string certpass = appcfg[nameof(certpass)];
 
             // create cert
             if (certpass != null)
@@ -76,27 +77,15 @@ namespace SkyChain
                 }
             }
 
-            // init layers
+            // init store
             //
-
-            storecfg = cfg["store"];
+            JObj storecfg = appcfg["store"];
             if (storecfg != null)
             {
                 InitializeStore(storecfg);
             }
 
-            webcfg = cfg["web"];
-            if (webcfg != null)
-            {
-                InitializeWeb(webcfg);
-            }
-
-            extcfg = cfg["ext"];
-        }
-
-        internal static void InitializeWeb(JObj webcfg)
-        {
-            //
+            extcfg = appcfg["ext"];
         }
 
 
@@ -107,28 +96,46 @@ namespace SkyChain
         public static X509Certificate2 Cert => cert;
 
 
-        public static T MakeService<T>(string name) where T : WebService, new()
+        public static S CreateService<S>(string name) where S : WebService, new()
         {
-            if (webcfg == null)
+            if (appcfg == null)
             {
-                throw new ApplicationException("missing 'web' in config");
+                throw new ApplicationException("missing app.json");
             }
 
-            string addr = webcfg[name];
-            if (addr == null)
+            // web config
+            //
+
+            var prop = "web-" + name;
+            var webcfg = (JObj) appcfg[prop];
+
+            // address (required)
+            string address = webcfg[nameof(address)];
+            if (address == null)
             {
-                throw new ApplicationException("missing web '" + name + "' in config");
+                throw new ApplicationException("missing '" + prop + "' in app.json");
             }
 
-            // create service
-            var svc = new T
+            // optional
+
+            bool cache = webcfg[nameof(cache)];
+
+            string forward = webcfg[nameof(forward)];
+
+            short poll = webcfg[nameof(poll)];
+
+            // create service (properties in order)
+            var svc = new S
             {
                 Name = name,
-                Address = addr
+                Address = address,
+                Cache = cache,
+                Forward = forward,
+                Poll = poll
             };
             services.Add(name, svc);
 
-            svc.OnMake();
+            svc.OnCreate();
             return svc;
         }
 

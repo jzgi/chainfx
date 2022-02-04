@@ -5,7 +5,7 @@ namespace SkyChain.Web
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
     /// </summary>
-    public class HtmlContent : FormContent
+    public class HtmlContent : DynamicContent
     {
         public WebContext Web { get; set; }
 

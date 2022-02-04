@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SkyChain.Source.Web;
 
 namespace SkyChain.Web
 {
@@ -20,18 +19,35 @@ namespace SkyChain.Web
     /// </summary>
     public abstract class WebService : WebWork, IHttpApplication<HttpContext>, IServiceProvider
     {
+        static readonly int CONCURRENCY = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
+
         //
         // http implementation
 
         string address;
 
+        bool cache;
+
+        string forward;
+
+        short poll;
+
         // the embedded HTTP server
         readonly KestrelServer server;
 
-        // shared cache of recent responses
-        readonly ConcurrentDictionary<string, WebCache> shared;
+        // as proxy
+        WebClient client;
 
-        // the response cache cleaner thread
+        // stacked entries to be polled
+        ConcurrentDictionary<int, WebPollie> stacked;
+
+        // the poller thread
+        Thread poller;
+
+        // shared cache of responses
+        ConcurrentDictionary<string, WebCachie> shared;
+
+        // the cache cleaner thread
         Thread cleaner;
 
         protected WebService()
@@ -39,10 +55,6 @@ namespace SkyChain.Web
             Service = this;
             Directory = "/";
             Pathing = "/";
-
-            // create the response cache
-            int factor = (int) Math.Log(Environment.ProcessorCount, 2) + 1;
-            shared = new ConcurrentDictionary<string, WebCache>(factor * 4, 1024);
 
             // create the embedded server instance
             var opts = new KestrelServerOptions
@@ -76,13 +88,109 @@ namespace SkyChain.Web
         internal string Address
         {
             get => address;
-            // set server addr
-            set
+            set // set server addr
             {
                 address = value;
                 var feat = server.Features.Get<IServerAddressesFeature>();
                 feat.Addresses.Add(address);
             }
+        }
+
+        public bool Cache
+        {
+            get => cache;
+            internal set
+            {
+                cache = value;
+                if (cache)
+                {
+                    // create the response cache
+                    shared = new ConcurrentDictionary<string, WebCachie>(CONCURRENCY, 1024);
+                }
+            }
+        }
+
+        public string Forward
+        {
+            get => forward;
+            internal set
+            {
+                forward = value;
+                if (forward != null)
+                {
+                    client = new WebClient(forward);
+                }
+            }
+        }
+
+        public short Poll
+        {
+            get => poll;
+            internal set
+            {
+                poll = value;
+                if (forward == null || poll > 0)
+                {
+                    stacked = new ConcurrentDictionary<int, WebPollie>(CONCURRENCY, 1024);
+                }
+            }
+        }
+
+        internal async Task StartAsync(CancellationToken token)
+        {
+            await server.StartAsync(this, token);
+
+            Console.WriteLine("[" + Name + "] started at " + address);
+
+            // create & start the cleaner thread
+            if (shared != null)
+            {
+                cleaner = new Thread(() =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        // cleaning cycle
+                        Thread.Sleep(1000 * 12); // every 12 seconds 
+
+                        // loop to clear or remove each expired items
+                        int now = Environment.TickCount;
+                        foreach (var resp in shared)
+                        {
+                            if (!resp.Value.TryClean(now))
+                            {
+                                shared.TryRemove(resp.Key, out _);
+                            }
+                        }
+                    }
+                });
+                cleaner.Start();
+            }
+
+            // create & start the poller thread
+            if (poll > 0)
+            {
+                poller = new Thread(() =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        // polling cycle
+                        Thread.Sleep(1000 * poll);
+
+                        // loop to clear or remove each expired items
+                        int now = Environment.TickCount;
+                    }
+                });
+                poller.Start();
+            }
+        }
+
+        internal async Task StopAsync(CancellationToken token)
+        {
+            await server.StopAsync(token);
+
+            // close logger
+            //            logWriter.Flush();
+            //            logWriter.Dispose();
         }
 
 
@@ -182,7 +290,7 @@ namespace SkyChain.Web
             {
                 Key = filename,
                 Type = ctyp,
-                Modified = modified,
+                Adapted = modified,
                 GZip = gzip
             };
             wc.Give(200, cnt, shared: true, maxage: STATIC_MAX_AGE);
@@ -220,46 +328,6 @@ namespace SkyChain.Web
             });
         }
 
-        internal async Task StartAsync(CancellationToken token)
-        {
-            await server.StartAsync(this, token);
-
-            Console.WriteLine("[" + Name + "] started at " + address);
-
-            // create and start the cleaner thread
-            if (shared != null)
-            {
-                cleaner = new Thread(() =>
-                {
-                    while (!token.IsCancellationRequested)
-                    {
-                        // cleaning cycle
-                        Thread.Sleep(1000 * 12); // every 12 seconds 
-
-                        // loop to clear or remove each expired items
-                        int now = Environment.TickCount;
-                        foreach (var resp in shared)
-                        {
-                            if (!resp.Value.TryClean(now))
-                            {
-                                shared.TryRemove(resp.Key, out _);
-                            }
-                        }
-                    }
-                });
-                cleaner.Start();
-            }
-        }
-
-        internal async Task StopAsync(CancellationToken token)
-        {
-            await server.StopAsync(token);
-
-            // close logger
-            //            logWriter.Flush();
-            //            logWriter.Dispose();
-        }
-
         public void Close()
         {
             server.Dispose();
@@ -272,9 +340,9 @@ namespace SkyChain.Web
         {
             if (wc.IsGet)
             {
-                if (!wc.IsInCache && wc.Shared == true && WebCache.IsCacheable(wc.StatusCode))
+                if (!wc.IsInCache && wc.Shared == true && WebCachie.IsCacheable(wc.StatusCode))
                 {
-                    var resp = new WebCache(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
+                    var resp = new WebCachie(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
                     shared.AddOrUpdate(wc.Uri, resp, (key, old) => old);
                     wc.IsInCache = true;
                 }

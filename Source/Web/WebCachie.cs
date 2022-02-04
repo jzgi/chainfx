@@ -1,11 +1,11 @@
 ﻿using SkyChain.Web;
 
-namespace SkyChain.Source.Web
+namespace SkyChain.Web
 {
     /// <summary>
-    /// An entry of cached response, that might be cleared but not removed 
+    /// An entry of cached web response, that might be cleared but not removed 
     /// </summary>
-    public class WebCache
+    public class WebCachie
     {
         // cacheable response status, or 0 means cleared
         int code;
@@ -13,13 +13,15 @@ namespace SkyChain.Source.Web
         // can be set to null
         IContent content;
 
+        private byte[] bytes;
+
         // maxage in seconds
         int maxage;
 
         // time ticks when entered or cleared
         int stamp;
 
-        internal WebCache(int code, IContent content, int maxage, int stamp)
+        internal WebCachie(int code, IContent content, int maxage, int stamp)
         {
             this.code = code;
             this.content = content;
