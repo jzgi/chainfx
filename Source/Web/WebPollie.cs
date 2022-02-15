@@ -1,7 +1,17 @@
 ﻿namespace SkyChain.Web
 {
-    public class WebPollie : JArr
+    public class WebPollie
     {
-        private int stamp;
+        public const int MAX = 32;
+
+        readonly string[] array = new string[MAX];
+
+        int head;
+
+        int tail;
+
+        int count;
+
+        internal int Tick { get; set; }
     }
 }

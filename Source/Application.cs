@@ -109,11 +109,16 @@ namespace SkyChain
             var prop = "web-" + name;
             var webcfg = (JObj) appcfg[prop];
 
+            if (webcfg == null)
+            {
+                throw new ApplicationException("missing '" + prop + "' in app.json");
+            }
+
             // address (required)
             string address = webcfg[nameof(address)];
             if (address == null)
             {
-                throw new ApplicationException("missing '" + prop + "' in app.json");
+                throw new ApplicationException("missing 'address' in app.json");
             }
 
             // optional

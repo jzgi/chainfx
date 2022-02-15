@@ -15,7 +15,7 @@ namespace SkyChain
 
         int ordinal = -1;
 
-        public FormContent(bool octet, int capacity) : base(octet, capacity)
+        public FormContent(bool bytel, int capacity) : base(bytel, capacity)
         {
         }
 
@@ -311,11 +311,11 @@ namespace SkyChain
             throw new NotImplementedException();
         }
 
-        public void Put(string name, IData v, short proj = 0x0fff)
+        public void Put(string name, IData v, short proj = 0xff)
         {
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
         {
         }
 

@@ -17,7 +17,7 @@ namespace SkyChain.Store
             var arr = Home.Clients;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(caption: "盟友管理");
+                h.TOOLBAR(tip: "盟友管理");
                 h.BOARD(arr, ety =>
                 {
                     var cli = ety.Value;

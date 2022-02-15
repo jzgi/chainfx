@@ -1,84 +1,94 @@
-﻿using SkyChain.Web;
-
-namespace SkyChain.Web
+﻿namespace SkyChain.Web
 {
     /// <summary>
-    /// An entry of cached web response, that might be cleared but not removed 
+    /// An entry of cached web resource, that might be emptied but not removed 
     /// </summary>
-    public class WebCachie
+    public class WebCachie : IContent
     {
-        // cacheable response status, or 0 means cleared
-        int code;
+        // an impl of content
+        //
+        string type; // content type
 
-        // can be set to null
-        IContent content;
+        byte[] buffer; // content byte array
 
-        private byte[] bytes;
+        string etag;
 
-        // maxage in seconds
-        int maxage;
 
-        // time ticks when entered or cleared
-        int stamp;
-
-        internal WebCachie(int code, IContent content, int maxage, int stamp)
+        internal WebCachie(IContent cnt)
         {
-            this.code = code;
-            this.content = content;
-            this.maxage = maxage;
-            this.stamp = stamp;
+            this.type = cnt.Type;
+            if (cnt is DynamicContent dyn)
+            {
+                this.buffer = dyn.ToByteArray();
+            }
+            else
+            {
+                this.buffer = cnt.Buffer;
+            }
+            this.etag = cnt.ETag;
         }
 
-        /// <summary>
-        /// RFC 7231 cacheable status codes.
-        /// </summary>
-        public static bool IsCacheable(int code)
-        {
-            return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
-        }
+        public string Type => type;
 
-        public bool IsCleared => code == 0;
+        public byte[] Buffer => buffer;
+
+        public int Count => buffer.Length;
+
+        public string ETag => etag;
+
+        /// cacheable response status, 0 means emptied
+        public int Code { get; internal set; }
+
+        /// time ticks when entered or emptied
+        public int Tick { get; internal set; }
+
+        /// maxage in seconds
+        public int MaxAge { get; internal set; }
+
+        public bool IsEmptied => Code == 0;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="now"></param>
+        /// <param name="nowtick"></param>
         /// <returns>false to indicate a removal of the entry</returns>
-        internal bool TryClean(int now)
+        internal bool TryClean(int nowtick)
         {
             lock (this)
             {
-                int pass = now - (stamp + maxage * 1000);
+                int pass = nowtick - (Tick + MaxAge * 1000);
 
-                if (code == 0) return pass < 900 * 1000; // 15 minutes
+                if (Code == 0) return pass < 900 * 1000; // 15 minutes
 
                 if (pass >= 0) // to clear this reply
                 {
-                    code = 0; // set to cleared
+                    Code = 0; // set to cleared
                     // note: buffer won't return to pool
-                    content = null;
-                    maxage = 0;
-                    stamp = now; // time being cleared
+                    buffer = null;
+                    MaxAge = 0;
+                    Tick = nowtick; // time being cleared
                 }
 
                 return true;
             }
         }
 
-        internal bool TryGive(WebContext wc, int now)
+        internal bool TryGiveBy(WebContext wc, int now)
         {
             lock (this)
             {
-                if (code == 0)
+                if (Code == 0)
                 {
                     return false;
                 }
 
-                short remain = (short) (((stamp + maxage * 1000) - now) / 1000); // remaining in seconds
+                var remain = (short) (((Tick + MaxAge * 1000) - now) / 1000); // remaining in seconds
                 if (remain > 0)
                 {
-                    wc.IsInCache = true;
-                    wc.Give(code, content, true, remain);
+                    short age = (short) ((now - Tick) / 1000); // age in seconds
+                    wc.SetHeader("Age", age);
+                    // set for response
+                    wc.Give(Code, this, true, MaxAge);
                     return true;
                 }
 

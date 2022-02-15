@@ -42,7 +42,7 @@ namespace SkyChain.Store
         {
         }
 
-        public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0x0fff)
+        public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0xff)
         {
             if (peerid == 0 || peerid == local.id) // call in- place
             {

@@ -89,9 +89,9 @@ namespace SkyChain
         // byte-wise etag checksum, for char-based output only
         long checksum;
 
-        protected DynamicContent(bool octet, int capacity)
+        protected DynamicContent(bool bytel, int capacity)
         {
-            if (octet)
+            if (bytel)
             {
                 bytebuf = BorrowByteArray(capacity);
             }
@@ -524,6 +524,17 @@ namespace SkyChain
             }
         }
 
+        internal byte[] ToByteArray()
+        {
+            if (count == 0)
+            {
+                return null;
+            }
+            var ret = new byte[count];
+            Array.Copy(bytebuf, ret, count);
+            return ret;
+        }
+
         //
         // CLIENT CONTENT
         //
@@ -606,12 +617,12 @@ namespace SkyChain
         // pool of chararray
         static readonly Stack<char>[] capool =
         {
-            new Stack<char>(1024 * 1, factor * 8),
             new Stack<char>(1024 * 2, factor * 8),
-            new Stack<char>(1024 * 4, factor * 4),
+            new Stack<char>(1024 * 4, factor * 8),
             new Stack<char>(1024 * 8, factor * 4),
-            new Stack<char>(1024 * 32, factor * 2),
-            new Stack<char>(1024 * 64, factor * 2)
+            new Stack<char>(1024 * 32, factor * 4),
+            new Stack<char>(1024 * 64, factor * 2),
+            new Stack<char>(1024 * 128, factor * 2),
         };
 
         public static char[] BorrowCharArray(int size)

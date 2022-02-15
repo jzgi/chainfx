@@ -70,9 +70,9 @@ namespace SkyChain.Store
 
         IParameters Set(JArr v);
 
-        IParameters Set(IData v, short proj = 0x0fff);
+        IParameters Set(IData v, short proj = 0xff);
 
-        IParameters Set<D>(D[] v, short proj = 0x0fff) where D : IData;
+        IParameters Set<D>(D[] v, short proj = 0xff) where D : IData;
 
         IParameters SetForIn(short[] v);
 

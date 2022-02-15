@@ -7,7 +7,7 @@ namespace SkyChain
     /// </summary>
     public class XmlContent : DynamicContent, ISink
     {
-        public XmlContent(bool octet, int capacity) : base(octet, capacity)
+        public XmlContent(bool bytel, int capacity) : base(bytel, capacity)
         {
         }
 
@@ -372,11 +372,11 @@ namespace SkyChain
         {
         }
 
-        public void Put(string name, IData v, short proj = 0x0fff)
+        public void Put(string name, IData v, short proj = 0xff)
         {
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
         {
         }
 

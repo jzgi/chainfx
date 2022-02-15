@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using SkyChain.Store;
-using SkyChain.Source.Web;
 
 namespace SkyChain.Web
 {
@@ -136,6 +135,8 @@ namespace SkyChain.Web
         public Map<string, WebWork> Works => works;
 
         public WebWork VarWork => varwork;
+
+        public bool HasVarWork => varwork != null;
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
@@ -611,42 +612,42 @@ namespace SkyChain.Web
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Store.Home.NewDbContext(level);
+            return Home.NewDbContext(level);
         }
 
         public static DbContext NewChainContext(WebContext wc, IsolationLevel? level = null)
         {
-            return Store.Home.NewChainContext(wc);
+            return Home.NewChainContext(wc);
         }
 
         public static Map<K, V> Grab<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return Store.Home.Grab<K, V>(flag);
+            return Home.Grab<K, V>(flag);
         }
 
         public static async Task<Map<K, V>> GrabAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return await Store.Home.GrabAsync<K, V>(flag);
+            return await Home.GrabAsync<K, V>(flag);
         }
 
         public static V GrabObject<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return Store.Home.GrabObject<K, V>(key, flag);
+            return Home.GrabObject<K, V>(key, flag);
         }
 
         public static async Task<V> GrabObjectAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return await Store.Home.GrabObjectAsync<K, V>(key, flag);
+            return await Home.GrabObjectAsync<K, V>(key, flag);
         }
 
         public static Map<K, V> GrabMap<S, K, V>(S discr, byte flag = 0) where K : IComparable<K>
         {
-            return Store.Home.GrabMap<S, K, V>(discr, flag);
+            return Home.GrabMap<S, K, V>(discr, flag);
         }
 
         public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return await Store.Home.GrabMapAsync<D, K, V>(discr, flag);
+            return await Home.GrabMapAsync<D, K, V>(discr, flag);
         }
 
 

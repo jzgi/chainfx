@@ -78,19 +78,19 @@ namespace SkyChain
             return null;
         }
 
-        public static D StringToObject<D>(string v, short proj = 0x0fff) where D : IData, new()
+        public static D StringToObject<D>(string v, short proj = 0xff) where D : IData, new()
         {
             JObj jo = (JObj) new JsonParser(v).Parse();
             return jo.ToObject<D>(proj);
         }
 
-        public static D[] StringToArray<D>(string v, short proj = 0x0fff) where D : IData, new()
+        public static D[] StringToArray<D>(string v, short proj = 0xff) where D : IData, new()
         {
             JArr ja = (JArr) new JsonParser(v).Parse();
             return ja.ToArray<D>(proj);
         }
 
-        public static string ToString<D>(D v, short proj = 0x0fff) where D : IData
+        public static string ToString<D>(D v, short proj = 0xff) where D : IData
         {
             var cnt = new JsonContent(false, 4 * 1024);
             try
@@ -104,7 +104,7 @@ namespace SkyChain
             }
         }
 
-        public static string ToString<D>(D[] v, short proj = 0x0fff) where D : IData
+        public static string ToString<D>(D[] v, short proj = 0xff) where D : IData
         {
             var cnt = new JsonContent(false, 4 * 1024);
             try
@@ -118,7 +118,7 @@ namespace SkyChain
             }
         }
 
-        public static string ToString<D>(List<D> v, short proj = 0x0fff) where D : IData
+        public static string ToString<D>(List<D> v, short proj = 0xff) where D : IData
         {
             var cnt = new JsonContent(false, 4 * 1024);
             try
@@ -160,7 +160,7 @@ namespace SkyChain
             return null;
         }
 
-        public static D FileToObject<D>(string file, short proj = 0x0fff) where D : IData, new()
+        public static D FileToObject<D>(string file, short proj = 0xff) where D : IData, new()
         {
             try
             {
@@ -179,7 +179,7 @@ namespace SkyChain
             return default;
         }
 
-        public static D[] FileToArray<D>(string file, short proj = 0x0fff) where D : IData, new()
+        public static D[] FileToArray<D>(string file, short proj = 0xff) where D : IData, new()
         {
             try
             {
@@ -198,7 +198,7 @@ namespace SkyChain
             return null;
         }
 
-        public static Map<K, D> FileToMap<K, D>(string file, short proj = 0x0fff, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public static Map<K, D> FileToMap<K, D>(string file, short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
         {
             try
             {

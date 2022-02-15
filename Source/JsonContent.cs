@@ -16,7 +16,7 @@ namespace SkyChain
         // current level
         int level;
 
-        public JsonContent(bool octet, int capacity) : base(octet, capacity)
+        public JsonContent(bool bytel, int capacity) : base(bytel, capacity)
         {
             counts = new int[MAX_LEVELS];
             level = 0;
@@ -458,7 +458,7 @@ namespace SkyChain
             }
         }
 
-        public void Put(string name, IData v, short proj = 0x0fff)
+        public void Put(string name, IData v, short proj = 0xff)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -482,7 +482,7 @@ namespace SkyChain
             }
         }
 
-        internal void PutToken(IData v, short proj = 0x0fff)
+        internal void PutToken(IData v, short proj = 0xff)
         {
             counts[level]++;
 
@@ -496,7 +496,7 @@ namespace SkyChain
             level--; // exit
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -523,7 +523,7 @@ namespace SkyChain
             }
         }
 
-        public void Put<D>(string name, List<D> v, short proj = 0x0fff) where D : IData
+        public void Put<D>(string name, List<D> v, short proj = 0xff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)

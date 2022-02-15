@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Source.Web
+﻿namespace SkyChain.Web
 {
     public interface IForkable
     {

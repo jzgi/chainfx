@@ -156,7 +156,7 @@ namespace SkyChain.Web
 
         public string UserAgent => Header("User-Agent");
 
-        public IPAddress RemoteAddr => connection.RemoteIpAddress;
+        public IPAddress RemoteIpAddress => connection.RemoteIpAddress;
 
         public bool IsWeChat => UserAgent?.Contains("MicroMessenger/") ?? false;
 
@@ -179,7 +179,7 @@ namespace SkyChain.Web
 
         public Form Query => query ??= new FormParser(QueryStr).Parse();
 
-        public void AddParam(string name, string value)
+        public void AddQueryPair(string name, string value)
         {
             string q = fRequest.QueryString;
             if (string.IsNullOrEmpty(q))
@@ -342,7 +342,7 @@ namespace SkyChain.Web
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(short proj = 0x0fff, D instance = default) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(short proj = 0xff, D instance = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -377,7 +377,7 @@ namespace SkyChain.Web
             return instance;
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(short proj = 0x0fff) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(short proj = 0xff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -431,7 +431,7 @@ namespace SkyChain.Web
 
         public void SetHeader(string name, DateTime v)
         {
-            string str = TextUtility.FormatUtcDate(v);
+            var str = TextUtility.FormatUtcDate(v);
             fResponse.Headers.Add(name, new StringValues(str));
         }
 
@@ -462,7 +462,8 @@ namespace SkyChain.Web
             SetHeader("Set-Cookie", sb.ToString());
         }
 
-        public bool IsInCache { get; internal set; }
+        //
+        // RESPONSE
 
         public int StatusCode
         {
@@ -478,43 +479,31 @@ namespace SkyChain.Web
         /// the cached response is to be considered stale after its age is greater than the specified number of seconds.
         public int MaxAge { get; internal set; }
 
-        public void Give(int code, IContent cnt = null, bool? shared = null, int maxage = 12)
+        /// <summary>
+        /// RFC 7231 cacheable status codes.
+        /// </summary>
+        public bool IsCacheable()
         {
-            StatusCode = code;
-            Content = cnt;
+            var code = StatusCode;
+            return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
+        }
+
+        public void Give(int status, IContent content = null, bool? shared = null, int maxage = 12)
+        {
+            StatusCode = status;
+            Content = content;
             Shared = shared;
             MaxAge = maxage;
         }
 
-        public void Give(int code, string text, bool? shared = null, int maxage = 12)
+        public void Give(int status, string text, bool? shared = null, int maxage = 12)
         {
-            var cnt = new TextContent(true, 1024);
-            cnt.Add(text);
+            var content = new TextContent(true, 1024);
 
-            StatusCode = code;
-            Content = cnt;
-            Shared = shared;
-            MaxAge = maxage;
-        }
+            content.Add(text);
 
-        public void Give(int code, IData obj, short proj = 0x0fff, bool? shared = null, int maxage = 12)
-        {
-            var cnt = new JsonContent(true, 8192);
-            cnt.Put(null, obj, proj);
-
-            StatusCode = code;
-            Content = cnt;
-            Shared = shared;
-            MaxAge = maxage;
-        }
-
-        public void Give<D>(short code, D[] arr, short proj = 0x0fff, bool? shared = null, int maxage = 12) where D : IData
-        {
-            var cnt = new JsonContent(true, 8192);
-            cnt.Put(null, arr, proj);
-
-            StatusCode = code;
-            Content = cnt;
+            StatusCode = status;
+            Content = content;
             Shared = shared;
             MaxAge = maxage;
         }
@@ -527,7 +516,7 @@ namespace SkyChain.Web
             // cache control header
             if (Shared.HasValue)
             {
-                string hv = (Shared.Value ? "public" : "private") + ", max-age=" + MaxAge;
+                var hv = (Shared.Value ? "public" : "private") + ", max-age=" + MaxAge;
                 SetHeader("Cache-Control", hv);
             }
 
@@ -535,10 +524,10 @@ namespace SkyChain.Web
             if (Content == null) return;
 
             // deal with not modified situations by etag
-            string etag = Content.ETag;
+            var etag = Content.ETag;
             if (etag != null)
             {
-                string inm = Header("If-None-Match");
+                var inm = Header("If-None-Match");
                 if (etag == inm)
                 {
                     StatusCode = 304; // not modified
@@ -577,17 +566,15 @@ namespace SkyChain.Web
             await fResponse.Body.WriteAsync(Content.Buffer, 0, Content.Count);
         }
 
-        // on context closing
+        /// <summary>
+        /// Called on context closing 
+        /// </summary>
         public void Close()
         {
-            // pool returning
-            if (!IsInCache)
+            if (Content is DynamicContent dyn)
             {
-                if (Content is DynamicContent dyn)
-                {
-                    dyn.Dispose();
-                    dyn.Clear();
-                }
+                dyn.Dispose();
+                dyn.Clear();
             }
         }
     }

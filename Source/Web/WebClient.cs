@@ -53,7 +53,7 @@ namespace SkyChain.Web
             }
         }
 
-        public async Task<(short, D)> GetObjectAsync<D>(string uri, short proj = 0x0fff, string authstring = null) where D : IData, new()
+        public async Task<(short, D)> GetObjectAsync<D>(string uri, short proj = 0xff, string authstring = null) where D : IData, new()
         {
             try
             {
@@ -80,7 +80,7 @@ namespace SkyChain.Web
             }
         }
 
-        public async Task<(short, D[])> GetArrayAsync<D>(string uri, short proj = 0x0fff, string authstring = null) where D : IData, new()
+        public async Task<(short, D[])> GetArrayAsync<D>(string uri, short proj = 0xff, string authstring = null) where D : IData, new()
         {
             try
             {

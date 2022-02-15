@@ -257,7 +257,7 @@ namespace SkyChain
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
         {
             if (TryGetValue(name, out var mbr))
             {
@@ -274,7 +274,7 @@ namespace SkyChain
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
         {
             if (TryGetValue(name, out var mbr))
             {
@@ -297,14 +297,14 @@ namespace SkyChain
             return false;
         }
 
-        public D ToObject<D>(short proj = 0x0fff) where D : IData, new()
+        public D ToObject<D>(short proj = 0xff) where D : IData, new()
         {
             D obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0x0fff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

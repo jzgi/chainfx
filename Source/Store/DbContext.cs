@@ -249,7 +249,7 @@ namespace SkyChain.Store
             return reader.Read();
         }
 
-        public D QueryTop<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (QueryTop(p, prepare))
             {
@@ -258,7 +258,7 @@ namespace SkyChain.Store
             return default;
         }
 
-        public D QueryTop<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (QueryTop(sql, p, prepare))
             {
@@ -267,7 +267,7 @@ namespace SkyChain.Store
             return default;
         }
 
-        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryTopAsync(p, prepare))
             {
@@ -276,7 +276,7 @@ namespace SkyChain.Store
             return default;
         }
 
-        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryTopAsync(sql, p, prepare))
             {
@@ -353,7 +353,7 @@ namespace SkyChain.Store
             return reader.HasRows;
         }
 
-        public D[] Query<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
@@ -363,7 +363,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public D[] Query<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
@@ -372,7 +372,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
@@ -381,7 +381,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
@@ -391,7 +391,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
@@ -400,7 +400,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
@@ -409,7 +409,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
@@ -418,7 +418,7 @@ namespace SkyChain.Store
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short proj = 0x0fff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
@@ -590,14 +590,14 @@ namespace SkyChain.Store
         // RESULTSET
         //
 
-        public D ToObject<D>(short proj = 0x0fff) where D : IData, new()
+        public D ToObject<D>(short proj = 0xff) where D : IData, new()
         {
             var obj = new D();
             obj.Read(this, proj);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0x0fff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
         {
             var lst = new ValueList<D>(32);
             while (Next())
@@ -609,7 +609,7 @@ namespace SkyChain.Store
             return lst.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(short proj = 0x0fff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short proj = 0xff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
         {
             if (map == null)
             {
@@ -888,7 +888,7 @@ namespace SkyChain.Store
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
         {
             try
             {
@@ -1117,7 +1117,7 @@ namespace SkyChain.Store
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
         {
             try
             {
@@ -1469,7 +1469,7 @@ namespace SkyChain.Store
             return v;
         }
 
-        public D Let<D>(out D v, short proj = 0x0fff) where D : IData, new()
+        public D Let<D>(out D v, short proj = 0xff) where D : IData, new()
         {
             v = default;
             try
@@ -1491,7 +1491,7 @@ namespace SkyChain.Store
             return v;
         }
 
-        public D[] Let<D>(out D[] v, short proj = 0x0fff) where D : IData, new()
+        public D[] Let<D>(out D[] v, short proj = 0xff) where D : IData, new()
         {
             v = null;
             try
@@ -1975,7 +1975,7 @@ namespace SkyChain.Store
             }
         }
 
-        public void Put(string name, IData v, short proj = 0x0fff)
+        public void Put(string name, IData v, short proj = 0xff)
         {
             if (v == null)
             {
@@ -1998,7 +1998,7 @@ namespace SkyChain.Store
             }
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
         {
             if (v == null)
             {
@@ -2228,13 +2228,13 @@ namespace SkyChain.Store
             return this;
         }
 
-        public IParameters Set(IData v, short proj = 0x0fff)
+        public IParameters Set(IData v, short proj = 0xff)
         {
             Put(PARAMS[paramidx++], v, proj);
             return this;
         }
 
-        public IParameters Set<D>(D[] v, short proj = 0x0fff) where D : IData
+        public IParameters Set<D>(D[] v, short proj = 0xff) where D : IData
         {
             Put(PARAMS[paramidx++], v, proj);
             return this;

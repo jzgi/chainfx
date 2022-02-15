@@ -172,12 +172,12 @@ namespace SkyChain
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0x0fff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0x0fff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
@@ -186,12 +186,12 @@ namespace SkyChain
         // ENTITY
         //
 
-        public D ToObject<D>(short proj = 0x0fff) where D : IData, new()
+        public D ToObject<D>(short proj = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D[] ToArray<D>(short proj = 0x0fff) where D : IData, new()
+        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

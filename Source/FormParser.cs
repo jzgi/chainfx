@@ -44,7 +44,7 @@ namespace SkyChain
 
             if (p >= length - 1) return Empty;
 
-            Form frm = new Form(false);
+            var frm = new Form(false);
             for (;;)
             {
                 if (p >= length) return frm;

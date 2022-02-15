@@ -10,7 +10,7 @@ namespace SkyChain.Web
         public WebContext Web { get; set; }
 
 
-        public HtmlContent(bool octet, int capacity = 32 * 1024) : base(octet, capacity)
+        public HtmlContent(bool bytel, int capacity) : base(bytel, capacity)
         {
         }
 
@@ -2024,7 +2024,6 @@ namespace SkyChain.Web
 
         public HtmlContent TABLE(Action tbody, Action thead = null)
         {
-            Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             if (thead != null)
             {
@@ -2036,7 +2035,6 @@ namespace SkyChain.Web
             tbody();
             Add("</tbody>");
             Add("</table>");
-            Add("</div>");
             return this;
         }
 
@@ -2086,19 +2084,8 @@ namespace SkyChain.Web
         }
 
 
-        public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, short height = 0, string caption = null)
+        public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, string caption = null)
         {
-            Add("<div ");
-            if (height > 0)
-            {
-                Add("style=\"overflow-y: scroll; height: ");
-                Add(height);
-                Add("px;\">");
-            }
-            else
-            {
-                Add("class=\"uk-overflow-auto\">");
-            }
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
             if (caption != null)
             {
@@ -2120,22 +2107,10 @@ namespace SkyChain.Web
                 Add("</tbody>");
             }
             Add("</table>");
-            Add("</div>");
         }
 
-        public void TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, short height = 0, string caption = null)
+        public void TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, string caption = null)
         {
-            Add("<div ");
-            if (height > 0)
-            {
-                Add("style=\"overflow-y: scroll; height: ");
-                Add(height);
-                Add("px;\">");
-            }
-            else
-            {
-                Add("class=\"uk-overflow-auto\">");
-            }
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
             if (caption != null)
             {
@@ -2158,7 +2133,6 @@ namespace SkyChain.Web
                 Add("</tbody>");
             }
             Add("</table>");
-            Add("</div>");
         }
 
         public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-default")
@@ -2389,7 +2363,7 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string caption = null, string rangekey = null, bool top = true)
+        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string tip = null, bool top = true)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2428,17 +2402,108 @@ namespace SkyChain.Web
 
             Add("</span>");
 
-            Add("<span class=\"uk-flex uk-flex-middle\">");
-            if (caption != null)
+            Add("<span class=\"uk-label\">");
+            if (tip != null)
             {
-                Add(caption);
+                Add(tip);
             }
 
-            if (rangekey != null)
+            Add("</span>");
+
+            Add("</form>");
+            Add("<div class=\"");
+            Add(top ? "uk-top-placeholder" : "uk-bottom-placeholder");
+            Add("\"></div>");
+            return this;
+        }
+
+        public HtmlContent TOOLBAR<V>(int subscript, Map<short, V> opts = null, Func<short, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null, bool top = true)
+        {
+            var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
+
+            Add("<form id=\"tool-bar-form\" class=\"");
+            Add(top ? "uk-top-bar" : "uk-bottom-bar");
+            Add("\">");
+            Add("<span class=\"uk-button-group\">");
+
+            bool astack = Web.Query[nameof(astack)];
+
+            if (astack)
             {
-                Add("<input name=\"rangekey\" type=\"hidden\" value=\"");
-                Add(rangekey);
-                Add("\">");
+                Add("<a class=\"uk-icon-button\" href=\"javascript: closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
+            }
+
+            if (toggle)
+            {
+                Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
+            }
+
+            if (opts != null)
+            {
+                Add("<select class=\"uk-select\" onchange=\"location = subscriptUri(location.href, this.value);\">");
+                var grpopen = false;
+                for (int i = 0; i < opts.Count; i++)
+                {
+                    var e = opts.EntryAt(i);
+                    var key = e.key;
+                    var val = e.value;
+                    if (filter != null && !filter(key, val)) continue;
+                    if (e.IsHead)
+                    {
+                        if (grpopen)
+                        {
+                            Add("</optgroup>");
+                            grpopen = false;
+                        }
+
+                        Add("<optgroup label=\"");
+                        AddPrimitive(val.ToString());
+                        Add("\">");
+                        grpopen = true;
+                    }
+                    else
+                    {
+                        Add("<option value=\"");
+                        AddPrimitive(key);
+                        Add("\"");
+                        if (key == subscript) Add(" selected");
+                        Add(">");
+                        AddPrimitive(e.Value.ToString());
+                        Add("</option>");
+                    }
+                }
+
+                if (grpopen)
+                {
+                    Add("</optgroup>");
+                    grpopen = false;
+                }
+
+                Add("</select>");
+            }
+
+            var acts = Web.Work.Tooled;
+            if (acts != null)
+            {
+                for (int i = 0; i < acts.Length; i++)
+                {
+                    var act = acts[i];
+                    int g = act.Group;
+                    var tool = act.Tool;
+                    if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
+                    {
+                        // provide the state about current anchor as subscript 
+                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, astack: astack, css: "uk-button-primary");
+                    }
+                }
+            }
+
+            Add("</span>");
+
+            Add("<span class=\"uk-label\">");
+            if (tip != null)
+            {
+                Add(tip);
             }
 
             Add("</span>");
@@ -3846,7 +3911,7 @@ namespace SkyChain.Web
 
             if (refresh)
             {
-                Add(" onchange=\"location = location.href.split('?')[0] + '?' + serialize(this.form);\"");
+                Add(" onchange=\"var a = location.href.split('?'); b = serialize(this.form); location = a[0] + '?' + b + (a.length == 1 ?  '' : '&' + a[1]);\"");
             }
 
             Add(">");
@@ -3916,15 +3981,15 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opt, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false, Func<K, V, bool> filter = null)
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
-            if (opt != null)
+            if (opts != null)
             {
                 bool grpopen = false;
-                for (int i = 0; i < opt.Count; i++)
+                for (int i = 0; i < opts.Count; i++)
                 {
-                    var e = opt.EntryAt(i);
+                    var e = opts.EntryAt(i);
                     if (filter != null && !filter(e.key, e.Value)) continue;
                     if (e.IsHead)
                     {
@@ -3967,9 +4032,9 @@ namespace SkyChain.Web
         }
 
 
-        public HtmlContent SELECT<K, V>(string label, string name, K[] v, Map<K, V> opt, bool required = true, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opt, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0)
         {
-            SELECT_(label, name, true, required, size, refresh);
+            SELECT_(label, name, true, required, size);
             if (opt != null)
             {
                 lock (opt)
@@ -3982,6 +4047,8 @@ namespace SkyChain.Web
                         }
                         var e = opt.EntryAt(i);
                         var key = e.Key;
+                        var val = e.value;
+                        if (filter != null && !filter(key, val)) continue;
                         Add("<option value=\"");
                         if (key is short shortv)
                         {
@@ -3997,7 +4064,7 @@ namespace SkyChain.Web
                         }
 
                         Add("\"");
-                        if (v.Contains(key)) Add(" selected");
+                        if (vs.Contains(key)) Add(" selected");
                         Add(">");
                         AddPrimitive(e.Value);
                         Add("</option>");
@@ -4008,9 +4075,9 @@ namespace SkyChain.Web
             return this;
         }
 
-        public HtmlContent SELECT<V>(string label, string name, V v, V[] opt, bool required = true, sbyte size = 0, bool refresh = false)
+        public HtmlContent SELECT<V>(string label, string name, V v, V[] opt, bool required = true, sbyte size = 0)
         {
-            SELECT_(label, name, false, required, size, refresh);
+            SELECT_(label, name, false, required, size);
             if (opt != null)
             {
                 lock (opt)

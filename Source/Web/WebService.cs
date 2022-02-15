@@ -136,11 +136,20 @@ namespace SkyChain.Web
             }
         }
 
+        public bool IsProxy => forward != null;
+
+        public bool IsProxyPlus => forward != null && poll > 0;
+
         internal async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);
 
             Console.WriteLine("[" + Name + "] started at " + address);
+
+            if (forward != null)
+            {
+                Console.WriteLine("as a proxy to [" + forward + "]" + address);
+            }
 
             // create & start the cleaner thread
             if (shared != null)
@@ -154,11 +163,11 @@ namespace SkyChain.Web
 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
-                        foreach (var resp in shared)
+                        foreach (var ca in shared)
                         {
-                            if (!resp.Value.TryClean(now))
+                            if (!ca.Value.TryClean(now))
                             {
-                                shared.TryRemove(resp.Key, out _);
+                                shared.TryRemove(ca.Key, out _);
                             }
                         }
                     }
@@ -178,6 +187,7 @@ namespace SkyChain.Web
 
                         // loop to clear or remove each expired items
                         int now = Environment.TickCount;
+                        // client.GetArrayAsync<>()
                     }
                 });
                 poller.Start();
@@ -187,10 +197,6 @@ namespace SkyChain.Web
         internal async Task StopAsync(CancellationToken token)
         {
             await server.StopAsync(token);
-
-            // close logger
-            //            logWriter.Flush();
-            //            logWriter.Dispose();
         }
 
 
@@ -207,9 +213,8 @@ namespace SkyChain.Web
             try
             {
                 int dot = path.LastIndexOf('.');
-                if (dot != -1)
+                if (dot != -1) // file content from cache or file system
                 {
-                    // try to give file content from cache or file system
                     if (!TryGiveFromCache(wc))
                     {
                         GiveStaticFile(path, path.Substring(dot), wc);
@@ -286,14 +291,14 @@ namespace SkyChain.Web
                 }
             }
 
-            var cnt = new StaticContent(bytes)
+            var content = new StaticContent(bytes)
             {
                 Key = filename,
                 Type = ctyp,
                 Adapted = modified,
                 GZip = gzip
             };
-            wc.Give(200, cnt, shared: true, maxage: STATIC_MAX_AGE);
+            wc.Give(200, content, shared: true, maxage: STATIC_MAX_AGE);
         }
 
 
@@ -338,28 +343,79 @@ namespace SkyChain.Web
 
         internal void TryAddForCache(WebContext wc)
         {
-            if (wc.IsGet)
+            if (shared != null && wc.IsGet)
             {
-                if (!wc.IsInCache && wc.Shared == true && WebCachie.IsCacheable(wc.StatusCode))
+                if (wc.Shared == true && wc.IsCacheable())
                 {
-                    var resp = new WebCachie(wc.StatusCode, wc.Content, wc.MaxAge, Environment.TickCount);
-                    shared.AddOrUpdate(wc.Uri, resp, (key, old) => old);
-                    wc.IsInCache = true;
+                    var ca = new WebCachie(wc.Content)
+                    {
+                        Code = wc.StatusCode,
+                        MaxAge = wc.MaxAge,
+                        Tick = Environment.TickCount
+                    };
+                    shared.AddOrUpdate(wc.Uri, ca, (key, old) => old);
                 }
             }
         }
 
         internal bool TryGiveFromCache(WebContext wc)
         {
-            if (wc.IsGet)
+            if (shared != null && wc.IsGet)
             {
-                if (shared.TryGetValue(wc.Uri, out var resp))
+                if (shared.TryGetValue(wc.Uri, out var ca))
                 {
-                    return resp.TryGive(wc, Environment.TickCount);
+                    return ca.TryGiveBy(wc, Environment.TickCount);
                 }
             }
 
             return false;
+        }
+
+
+        //
+        // poll
+        //
+
+        /// <summary>
+        /// Requested by polling from user-agent or a proxy.
+        /// </summary>
+        /// <param name="wc"></param>
+        /// <param name="key"></param>
+        public void onpoll(WebContext wc, int key)
+        {
+            stacked.TryGetValue(key, out var v);
+
+            string[] strs = null;
+            var jc = new JsonContent(true, 16 * 1024);
+            jc.Put(null, strs);
+
+            wc.Give(200, jc, null, 0);
+        }
+
+
+        public void AddNotif(int key, string v)
+        {
+            var wp = stacked.GetOrAdd(key, (x) => new WebPollie());
+        }
+
+        public void DumpAllStacked()
+        {
+            // stacked.TryAdd();
+            var jc = new JsonContent(true, 16);
+
+            jc.OBJ_();
+
+            foreach (var pair in stacked)
+            {
+                var key = pair.Key;
+                var v = pair.Value;
+
+                string[] arr = null;
+
+                jc.Put(key.ToString(), arr);
+            }
+
+            jc._OBJ();
         }
     }
 }

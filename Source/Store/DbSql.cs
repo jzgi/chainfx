@@ -427,7 +427,7 @@ namespace SkyChain.Store
         }
 
 
-        public DbSql setlst(IData obj, short proj = 0x0fff)
+        public DbSql setlst(IData obj, short proj = 0xff)
         {
             ctx = CtxSetList;
             ordinal = 1;
@@ -435,7 +435,7 @@ namespace SkyChain.Store
             return this;
         }
 
-        public DbSql collst(IData obj, short proj = 0x0fff, string alias = null)
+        public DbSql collst(IData obj, short proj = 0xff, string alias = null)
         {
             ctx = CtxColumnList;
             ordinal = 1;
@@ -448,7 +448,7 @@ namespace SkyChain.Store
             return this;
         }
 
-        public DbSql paramlst(IData obj, short proj = 0x0fff)
+        public DbSql paramlst(IData obj, short proj = 0xff)
         {
             ctx = CtxParamList;
             ordinal = 1;
@@ -456,7 +456,7 @@ namespace SkyChain.Store
             return this;
         }
 
-        public DbSql colset(IData obj, short proj = 0x0fff, string extra = null)
+        public DbSql colset(IData obj, short proj = 0xff, string extra = null)
         {
             Add('(');
             collst(obj, proj);
@@ -489,7 +489,7 @@ namespace SkyChain.Store
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, short proj = 0x0fff, string extra = null)
+        public DbSql _VALUES_(IData obj, short proj = 0xff, string extra = null)
         {
             Add(" VALUES (");
             paramlst(obj, proj);
@@ -503,7 +503,7 @@ namespace SkyChain.Store
             return this;
         }
 
-        public DbSql _SET_(IData obj, short proj = 0x0fff, string extra = null)
+        public DbSql _SET_(IData obj, short proj = 0xff, string extra = null)
         {
             Add(" SET ");
             setlst(obj, proj);
@@ -940,7 +940,7 @@ namespace SkyChain.Store
             }
         }
 
-        public void Put(string name, IData v, short proj = 0x0fff)
+        public void Put(string name, IData v, short proj = 0xff)
         {
             if (name != null)
             {
@@ -955,7 +955,7 @@ namespace SkyChain.Store
             }
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0x0fff) where D : IData
+        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
         {
             Build(name);
         }

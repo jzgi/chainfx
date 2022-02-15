@@ -56,7 +56,7 @@ namespace SkyChain
         {
             v = v.ToUniversalTime();
 
-            StringBuilder gmt = new StringBuilder();
+            var gmt = new StringBuilder();
             gmt.Append(DOW[(int) v.DayOfWeek]);
             gmt.Append(", ");
 
