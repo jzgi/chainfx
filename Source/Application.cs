@@ -27,8 +27,9 @@ namespace SkyChain
         internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
 
-        static readonly uint[] privatekey;
+        static readonly uint[] _famkey;
 
+        static readonly uint[] _fedkey;
 
         // layered configurations
         public static readonly JObj appcfg, extcfg;
@@ -59,17 +60,20 @@ namespace SkyChain
                 Level = logging
             };
 
-            // security settings
-            string crypto = appcfg[nameof(crypto)];
-            privatekey = CryptoUtility.HexToKey(crypto);
-            string certpass = appcfg[nameof(certpass)];
+            // security
+            //
+            string famkey = appcfg[nameof(famkey)]; // family key
+            _famkey = CryptoUtility.HexToKey(famkey);
 
-            // create cert
-            if (certpass != null)
+            string fedkey = appcfg[nameof(fedkey)]; // federal key
+            _fedkey = CryptoUtility.HexToKey(fedkey);
+
+            string certpasswd = appcfg[nameof(certpasswd)]; // X509 certificate
+            if (certpasswd != null)
             {
                 try
                 {
-                    cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX), certpass);
+                    cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX), certpasswd);
                 }
                 catch (Exception e)
                 {
@@ -77,19 +81,20 @@ namespace SkyChain
                 }
             }
 
-            // init store
-            //
-            JObj storecfg = appcfg["store"];
-            if (storecfg != null)
+            // store
+            JObj store = appcfg[nameof(store)];
+            if (store != null)
             {
-                InitializeStore(storecfg);
+                InitializeStore(store);
             }
 
             extcfg = appcfg["ext"];
         }
 
 
-        public static uint[] PrivateKey => privatekey;
+        public static uint[] FamilyKey => _famkey;
+
+        public static uint[] FedKey => _fedkey;
 
         public static ApplicationLogger Logger => logger;
 
@@ -145,6 +150,51 @@ namespace SkyChain
         }
 
 
+        /// <summary>
+        /// Runs a number of web services and then block until shutdown.
+        /// </summary>
+        public static async Task StartAsync()
+        {
+            var exitevt = new ManualResetEventSlim(false);
+
+            // start all services
+            //
+            for (int i = 0; i < services.Count; i++)
+            {
+                var svc = services.ValueAt(i);
+                await svc.StartAsync(Canceller.Token);
+            }
+
+            // handle SIGTERM and CTRL_C 
+            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            {
+                Canceller.Cancel(false);
+                exitevt.Set(); // release the Main thread
+            };
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                Canceller.Cancel(false);
+                exitevt.Set(); // release the Main thread
+                // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
+                eventArgs.Cancel = true;
+            };
+            Console.WriteLine("CTRL + C to shut down");
+
+            Lifetime.NotifyStarted();
+
+            // wait on the reset event
+            exitevt.Wait(Canceller.Token);
+
+            Lifetime.StopApplication();
+
+            for (int i = 0; i < services.Count; i++)
+            {
+                var svc = services.ValueAt(i);
+                await svc.StopAsync(Canceller.Token);
+            }
+
+            Lifetime.NotifyStopped();
+        }
         //
         // logging methods
         //
@@ -191,52 +241,5 @@ namespace SkyChain
 
 
         static readonly CancellationTokenSource Canceller = new CancellationTokenSource();
-
-
-        /// <summary>
-        /// Runs a number of web services and then block until shutdown.
-        /// </summary>
-        public static async Task StartAsync()
-        {
-            var exitevt = new ManualResetEventSlim(false);
-
-            // start all services
-            //
-            for (int i = 0; i < services.Count; i++)
-            {
-                var svc = services.ValueAt(i);
-                await svc.StartAsync(Canceller.Token);
-            }
-
-            // handle SIGTERM and CTRL_C 
-            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
-            {
-                Canceller.Cancel(false);
-                exitevt.Set(); // release the Main thread
-            };
-            Console.CancelKeyPress += (sender, eventArgs) =>
-            {
-                Canceller.Cancel(false);
-                exitevt.Set(); // release the Main thread
-                // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
-                eventArgs.Cancel = true;
-            };
-            Console.WriteLine("CTRL + C to shut down");
-
-            Lifetime.NotifyStarted();
-
-            // wait on the reset event
-            exitevt.Wait(Canceller.Token);
-
-            Lifetime.StopApplication();
-
-            for (int i = 0; i < services.Count; i++)
-            {
-                var svc = services.ValueAt(i);
-                await svc.StopAsync(Canceller.Token);
-            }
-
-            Lifetime.NotifyStopped();
-        }
     }
 }

@@ -17,7 +17,7 @@
         bool notnull;
 
 
-        public void Read(ISource s, short proj = 4095)
+        public void Read(ISource s, short mask = 0xff)
         {
             s.Get(nameof(column_name), ref column_name);
             s.Get(nameof(is_nullable), ref is_nullable);
@@ -25,7 +25,7 @@
             s.Get(nameof(notnull), ref notnull);
         }
 
-        public void Write(ISink s, short proj = 4095)
+        public void Write(ISink s, short mask = 0xff)
         {
         }
 

@@ -14,11 +14,11 @@ namespace SkyChain.Store
 
         private DateTime stamp { get; set; }
 
-        public void Read(ISource s, short proj = 4095)
+        public void Read(ISource s, short mask = 0xff)
         {
         }
 
-        public void Write(ISink s, short proj = 4095)
+        public void Write(ISink s, short mask = 0xff)
         {
         }
     }

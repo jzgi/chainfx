@@ -61,7 +61,7 @@ namespace SkyChain.Store
             Read(s);
         }
 
-        public void Read(ISource s, short proj = 0xff)
+        public void Read(ISource s, short mask = 0xff)
         {
             s.Get(nameof(id), ref id);
             s.Get(nameof(typ), ref typ);
@@ -74,7 +74,7 @@ namespace SkyChain.Store
             s.Get(nameof(secure), ref secure);
         }
 
-        public void Write(ISink s, short proj = 0xff)
+        public void Write(ISink s, short mask = 0xff)
         {
             s.Put(nameof(id), id);
             s.Put(nameof(typ), typ);

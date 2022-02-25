@@ -194,10 +194,10 @@ namespace SkyChain.Store
         static Peer info;
 
         // farm tables   
-        static readonly Map<string, FarmTable> farmtables = new Map<string, FarmTable>(16);
+        static readonly Map<string, FamTable> famtables = new Map<string, FamTable>(16);
 
-        // server farm connectors
-        private static FarmClient farmclient;
+        // server farm / family connector
+        private static FamClient famclient;
 
         // federation tables   
         static readonly Map<string, FedTable> fedtables = new Map<string, FedTable>(16);

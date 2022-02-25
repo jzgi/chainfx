@@ -8,9 +8,9 @@ using WebClient = SkyChain.Web.WebClient;
 namespace SkyChain.Store
 {
     /// <summary>
-    /// A client connector that connects to main server in the same farm.
+    /// A client connector that connects to main server in the same family or farm.
     /// </summary>
-    public class FarmClient : WebClient, IKeyable<short>
+    public class FamClient : WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -48,7 +48,7 @@ namespace SkyChain.Store
         /// <summary>
         /// To construct a federation client. 
         /// </summary>
-        internal FarmClient(Peer peer, FedClientHandler handler = null) : base(peer.domain, handler ?? new FedClientHandler())
+        internal FamClient(Peer peer, FedClientHandler handler = null) : base(peer.domain, handler ?? new FedClientHandler())
         {
             this.peer = peer;
             try

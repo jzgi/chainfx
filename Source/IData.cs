@@ -5,8 +5,8 @@
     /// </summary>
     public interface IData
     {
-        void Read(ISource s, short proj = 0xff);
+        void Read(ISource s, short mask = 0xff);
 
-        void Write(ISink s, short proj = 0xff);
+        void Write(ISink s, short mask = 0xff);
     }
 }

@@ -4,7 +4,7 @@ using SkyChain.Web;
 
 namespace SkyChain.Store
 {
-    internal class FarmTable : IKeyable<string>
+    internal class FamTable : IKeyable<string>
     {
         readonly string table_name;
 
@@ -26,7 +26,7 @@ namespace SkyChain.Store
 
         DbColumn blockcs_;
 
-        public FarmTable(string table_name)
+        public FamTable(string table_name)
         {
             this.table_name = table_name;
         }
