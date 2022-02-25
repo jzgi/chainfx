@@ -186,18 +186,24 @@ namespace SkyChain.Store
         }
 
         //
-        // inter-peer
+        // data
         //
 
 
-        // local info
+        // local store peerinfo
         static Peer info;
 
-        // chainable table structures   
-        static readonly Map<string, FedTable> tables = new Map<string, FedTable>(16);
+        // farm tables   
+        static readonly Map<string, FarmTable> farmtables = new Map<string, FarmTable>(16);
 
-        // remote connectors 
-        static readonly Map<short, FedClient> clients = new Map<short, FedClient>(16);
+        // server farm connectors
+        private static FarmClient farmclient;
+
+        // federation tables   
+        static readonly Map<string, FedTable> fedtables = new Map<string, FedTable>(16);
+
+        // federation connectors 
+        static readonly Map<short, FedClient> fedclients = new Map<short, FedClient>(16);
 
 
         internal static void InitializeStore(JObj storecfg)
@@ -216,15 +222,15 @@ namespace SkyChain.Store
                 while (dc.Next())
                 {
                     dc.Let(out string table_name);
-                    if (table_name.EndsWith('_') && table_name != "peers_")
+                    if (table_name.EndsWith('_') && table_name != "peers")
                     {
-                        tables.Add(new FedTable(table_name));
+                        fedtables.Add(new FedTable(table_name));
                     }
                 }
                 // columns for each
-                for (int i = 0; i < tables.Count; i++)
+                for (int i = 0; i < fedtables.Count; i++)
                 {
-                    var tbl = tables.ValueAt(i);
+                    var tbl = fedtables.ValueAt(i);
                     dc.Sql("SELECT data_type, column_name, column_default, is_nullable, character_maximum_length FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
                     dc.Query(p => p.Set(tbl.Key));
                     // while (dc.Next())
@@ -251,14 +257,14 @@ namespace SkyChain.Store
             //
             using (var dc = NewDbContext())
             {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_");
+                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers");
                 var arr = dc.Query<Peer>();
                 if (arr != null)
                 {
                     foreach (var peer in arr)
                     {
                         var cli = new FedClient(peer);
-                        clients.Add(cli);
+                        fedclients.Add(cli);
 
                         // init current block id
                         // await o.PeekLastBlockAsync(dc);
@@ -281,9 +287,9 @@ namespace SkyChain.Store
         }
 
 
-        public static FedClient GetClient(short peerid) => clients[peerid];
+        public static FedClient GetClient(short peerid) => fedclients[peerid];
 
-        public static Map<short, FedClient> Clients => clients;
+        public static Map<short, FedClient> Clients => fedclients;
 
         public static FedContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
         {

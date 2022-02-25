@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SkyChain.Store;
 
 namespace SkyChain.Web
 {
@@ -19,7 +20,7 @@ namespace SkyChain.Web
     /// </summary>
     public abstract class WebService : WebWork, IHttpApplication<HttpContext>, IServiceProvider
     {
-        static readonly int CONCURRENCY = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
+        static readonly int ConcurrencyLevel = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
 
         //
         // http implementation
@@ -50,6 +51,10 @@ namespace SkyChain.Web
         // the cache cleaner thread
         Thread cleaner;
 
+        // networked sites
+        ConcurrentDictionary<string, Peer> netted;
+
+
         protected WebService()
         {
             Service = this;
@@ -72,6 +77,7 @@ namespace SkyChain.Web
             server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
         }
 
+        // IServiceProvider
         public object GetService(Type serviceType)
         {
             if (serviceType == typeof(ILogger<KestrelServer>))
@@ -84,6 +90,9 @@ namespace SkyChain.Web
             }
             return null;
         }
+
+        public ConcurrentDictionary<string, Peer> Netted => netted;
+
 
         internal string Address
         {
@@ -105,7 +114,7 @@ namespace SkyChain.Web
                 if (cache)
                 {
                     // create the response cache
-                    shared = new ConcurrentDictionary<string, WebCachie>(CONCURRENCY, 1024);
+                    shared = new ConcurrentDictionary<string, WebCachie>(ConcurrencyLevel, 1024);
                 }
             }
         }
@@ -131,7 +140,7 @@ namespace SkyChain.Web
                 poll = value;
                 if (forward == null || poll > 0)
                 {
-                    stacked = new ConcurrentDictionary<int, WebPollie>(CONCURRENCY, 1024);
+                    stacked = new ConcurrentDictionary<int, WebPollie>(ConcurrencyLevel, 1024);
                 }
             }
         }
@@ -212,20 +221,27 @@ namespace SkyChain.Web
             // determine it is static file
             try
             {
-                int dot = path.LastIndexOf('.');
-                if (dot != -1) // file content from cache or file system
+                if (path.EndsWith('*'))
                 {
-                    if (!TryGiveFromCache(wc))
-                    {
-                        GiveStaticFile(path, path.Substring(dot), wc);
-                        TryAddForCache(wc);
-                    }
+                    @enum(wc);
                 }
                 else
                 {
-                    if (await DoAuthenticate(wc))
+                    var dot = path.LastIndexOf('.');
+                    if (dot != -1) // file content from cache or file system
                     {
-                        await HandleAsync(path.Substring(1), wc);
+                        if (!TryGiveFromCache(wc))
+                        {
+                            GiveStaticFile(path, path.Substring(dot), wc);
+                            TryAddForCache(wc);
+                        }
+                    }
+                    else
+                    {
+                        if (await DoAuthenticate(wc))
+                        {
+                            await HandleAsync(path.Substring(1), wc);
+                        }
                     }
                 }
             }
@@ -319,20 +335,6 @@ namespace SkyChain.Web
             ((WebContext) context).Close();
         }
 
-        /// <summary>
-        /// To generate API reference documentation for this service.
-        /// </summary>
-        public void @ref(WebContext wc)
-        {
-            wc.GivePage(200, h =>
-            {
-                h.DIV_("uk-top-bar").H3(" API Reference")._DIV();
-                h.DIV_("uk-top-placeholder")._DIV();
-
-                Describe(h);
-            });
-        }
-
         public void Close()
         {
             server.Dispose();
@@ -417,5 +419,42 @@ namespace SkyChain.Web
 
             jc._OBJ();
         }
+
+        #region Web Actions
+
+        /// <summary>
+        /// To generate API reference documentation for this service.
+        /// </summary>
+        public void @ref(WebContext wc)
+        {
+            wc.GivePage(200, h =>
+            {
+                h.DIV_("uk-top-bar").H3(" API Reference")._DIV();
+                h.DIV_("uk-top-placeholder")._DIV();
+
+                Describe(h);
+            });
+        }
+
+        /// <summary>
+        /// To handle a URI ended with * for redirect.
+        /// </summary>
+        public virtual void @enum(WebContext wc)
+        {
+            wc.GivePage(200, h =>
+            {
+                h.DIV_("uk-top-bar").H3(" API Reference")._DIV();
+                h.DIV_("uk-top-placeholder")._DIV();
+            });
+        }
+
+        /// <summary>
+        /// To handle a poll request and return sync data
+        /// </summary>
+        public virtual void @extern(WebContext wc)
+        {
+        }
+
+        #endregion
     }
 }

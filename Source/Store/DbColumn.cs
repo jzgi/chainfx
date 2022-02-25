@@ -3,7 +3,7 @@
     /// <summary>
     /// The descriptor for a database column. 
     /// </summary>
-    public abstract class FedColumn : IData, IKeyable<string>
+    public abstract class DbColumn : IData, IKeyable<string>
     {
        
         string column_name;
@@ -36,14 +36,14 @@
         public abstract void Convert(ISource src, ISink snk);
     }
 
-    public class SmallintColumn : FedColumn
+    public class SmallintColumn : DbColumn
     {
         public override void Convert(ISource src, ISink snk)
         {
         }
     }
 
-    public class IntColumn : FedColumn
+    public class IntColumn : DbColumn
     {
         public override void Convert(ISource src, ISink snk)
         {
