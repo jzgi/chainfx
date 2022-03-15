@@ -1,6 +1,6 @@
 ﻿using SkyChain.Web;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     public class FedClientHandler : WebClientHandler
     {

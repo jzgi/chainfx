@@ -3,7 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using SkyChain.Store;
+using SkyChain.Chain;
 
 namespace SkyChain.Web
 {
@@ -587,67 +587,67 @@ namespace SkyChain.Web
 
         public static void TRC(string msg, Exception ex = null)
         {
-            Application.TRC(msg, ex);
+            ApplicationBase.TRC(msg, ex);
         }
 
         public static void DBG(string msg, Exception ex = null)
         {
-            Application.DBG(msg, ex);
+            ApplicationBase.DBG(msg, ex);
         }
 
         public static void INF(string msg, Exception ex = null)
         {
-            Application.INF(msg, ex);
+            ApplicationBase.INF(msg, ex);
         }
 
         public static void WAR(string msg, Exception ex = null)
         {
-            Application.WAR(msg, ex);
+            ApplicationBase.WAR(msg, ex);
         }
 
         public static void ERR(string msg, Exception ex = null)
         {
-            Application.ERR(msg, ex);
+            ApplicationBase.ERR(msg, ex);
         }
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            return Home.NewDbContext(level);
+            return Chain.ChainBase.NewDbContext(level);
         }
 
         public static DbContext NewChainContext(WebContext wc, IsolationLevel? level = null)
         {
-            return Home.NewChainContext(wc);
+            return Chain.ChainBase.NewFedContext(wc);
         }
 
         public static Map<K, V> Grab<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return Home.Grab<K, V>(flag);
+            return Chain.ChainBase.Grab<K, V>(flag);
         }
 
         public static async Task<Map<K, V>> GrabAsync<K, V>(byte flag = 0) where K : IComparable<K>
         {
-            return await Home.GrabAsync<K, V>(flag);
+            return await Chain.ChainBase.GrabAsync<K, V>(flag);
         }
 
         public static V GrabObject<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return Home.GrabObject<K, V>(key, flag);
+            return Chain.ChainBase.GrabObject<K, V>(key, flag);
         }
 
         public static async Task<V> GrabObjectAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
         {
-            return await Home.GrabObjectAsync<K, V>(key, flag);
+            return await Chain.ChainBase.GrabObjectAsync<K, V>(key, flag);
         }
 
         public static Map<K, V> GrabMap<S, K, V>(S discr, byte flag = 0) where K : IComparable<K>
         {
-            return Home.GrabMap<S, K, V>(discr, flag);
+            return Chain.ChainBase.GrabMap<S, K, V>(discr, flag);
         }
 
         public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
         {
-            return await Home.GrabMapAsync<D, K, V>(discr, flag);
+            return await Chain.ChainBase.GrabMapAsync<D, K, V>(discr, flag);
         }
 
 

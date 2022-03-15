@@ -20,13 +20,13 @@ create table peers
     uri varchar(50)
 );
 
-alter table peers owner to postgres;
+alter table peers_ owner to postgres;
 
 create table bids_
 (
     peerid smallint
         constraint bids_peerid_fk
-            references peers
+            references peers_
 )
     inherits (public.bids_);
 

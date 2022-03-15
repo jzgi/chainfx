@@ -3,18 +3,74 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Npgsql;
 using SkyChain.Web;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
-    public class Home
+    /// <summary>
+    /// The static conceptual home of blockchain federal network. 
+    /// </summary>
+    public class ChainBase
     {
-        //
-        // source and caches
+        // db
         //
 
         static DbSource dbsource;
+
+        static List<DbCache> caches;
+
+        static List<DbCache> objectcaches;
+
+        static List<DbCache> mapcaches;
+
+
+        // connectivty
+        //
+
+        static Peer self;
+
+        static readonly Map<short, FedClient> clients = new Map<short, FedClient>(16);
+
+        static bool hub;
+
+
+        internal static void InitializeHome(JObj chaincfg)
+        {
+            // create db source
+            dbsource = new DbSource(chaincfg);
+
+            // create self peer info
+            self = new Peer(chaincfg)
+            {
+            };
+
+            // load peers & setup peer connectors
+            using var dc = NewDbContext();
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers");
+            var arr = dc.Query<Peer>();
+            if (arr != null)
+            {
+                int ties = 0;
+                foreach (var peer in arr)
+                {
+                    var cli = new FedClient(peer);
+                    clients.Add(cli);
+
+                    // init current block id
+                    // await o.PeekLastBlockAsync(dc);
+
+                    ties++;
+                }
+
+                if (ties >= 2)
+                {
+                    hub = true;
+                }
+            }
+        }
+
+
+        #region Db-Source-And-Cache
 
         public static DbSource DbSource => dbsource;
 
@@ -22,17 +78,11 @@ namespace SkyChain.Store
         {
             if (dbsource == null) // check on-the-fly
             {
-                throw new DbException("missing 'store' in json");
+                throw new DbException("missing 'chain' in app.json");
             }
 
             return dbsource.NewDbContext(level);
         }
-
-        static List<DbCache> caches;
-
-        static List<DbCache> objectcaches;
-
-        static List<DbCache> mapcaches;
 
         public static void Cache<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
@@ -185,96 +235,13 @@ namespace SkyChain.Store
             return null;
         }
 
-        //
-        // data
-        //
+        #endregion
 
+        #region Federal-Locality
 
-        // local store peerinfo
-        static Peer info;
+        public static Peer Self => self;
 
-        // farm tables   
-        static readonly Map<string, FamTable> famtables = new Map<string, FamTable>(16);
-
-        // server farm / family connector
-        private static FamClient famclient;
-
-        // federation tables   
-        static readonly Map<string, FedTable> fedtables = new Map<string, FedTable>(16);
-
-        // federation connectors 
-        static readonly Map<short, FedClient> fedclients = new Map<short, FedClient>(16);
-
-
-        internal static void InitializeStore(JObj storecfg)
-        {
-            dbsource = new DbSource(storecfg);
-
-            // load local info
-            info = new Peer(storecfg);
-
-            // setup chainables
-            //
-            using (var dc = NewDbContext())
-            {
-                // tables
-                dc.Query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'");
-                while (dc.Next())
-                {
-                    dc.Let(out string table_name);
-                    if (table_name.EndsWith('_') && table_name != "peers")
-                    {
-                        fedtables.Add(new FedTable(table_name));
-                    }
-                }
-                // columns for each
-                for (int i = 0; i < fedtables.Count; i++)
-                {
-                    var tbl = fedtables.ValueAt(i);
-                    dc.Sql("SELECT data_type, column_name, column_default, is_nullable, character_maximum_length FROM information_schema.columns WHERE table_schema = 'public' AND table_name = @1");
-                    dc.Query(p => p.Set(tbl.Key));
-                    // while (dc.Next())
-                    // {
-                    //     dc.Let(out string datatype);
-                    //     FedColumn conn = datatype switch
-                    //     {
-                    //         "smallint" => new SmallintColumn(),
-                    //         "int" => new IntColumn(),
-                    //     };
-                    //     conn.Read(dc);
-                    //     // tables.Add(conn);
-                    // }
-
-                    // init current block id
-                    // await o.PeekLastBlockAsync(dc);
-                }
-
-                // type mapping
-                NpgsqlConnection.GlobalTypeMapper.MapComposite<Act>("act_type");
-            }
-
-            // setup remotes
-            //
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers");
-                var arr = dc.Query<Peer>();
-                if (arr != null)
-                {
-                    foreach (var peer in arr)
-                    {
-                        var cli = new FedClient(peer);
-                        fedclients.Add(cli);
-
-                        // init current block id
-                        // await o.PeekLastBlockAsync(dc);
-                    }
-                }
-            }
-        }
-
-
-        public static Peer Info => info;
+        public static bool IsHub => hub;
 
         //
         // transaction id generator
@@ -287,11 +254,11 @@ namespace SkyChain.Store
         }
 
 
-        public static FedClient GetClient(short peerid) => fedclients[peerid];
+        public static FedClient GetClient(short peerid) => clients[peerid];
 
-        public static Map<short, FedClient> Clients => fedclients;
+        public static Map<short, FedClient> Clients => clients;
 
-        public static FedContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
+        public static FedContext NewFedContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
         {
             if (DbSource == null)
             {
@@ -301,6 +268,7 @@ namespace SkyChain.Store
             return DbSource.NewChainContext(wc, peerid, level);
         }
 
+        #endregion
 
         //
         // instance scope

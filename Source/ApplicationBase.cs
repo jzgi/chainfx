@@ -8,15 +8,15 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Store;
+using SkyChain.Chain;
 using SkyChain.Web;
 
 namespace SkyChain
 {
     /// <summary>
-    /// The application scope that holds global states.
+    /// The web application scope that holds global states.
     /// </summary>
-    public class Application : Home
+    public class ApplicationBase : ChainBase
     {
         public const string APP_JSON = "app.json";
 
@@ -32,7 +32,7 @@ namespace SkyChain
         static readonly uint[] _fedkey;
 
         // layered configurations
-        public static readonly JObj appcfg, extcfg;
+        public static readonly JObj app, ext;
 
         static readonly X509Certificate2 cert;
 
@@ -43,17 +43,17 @@ namespace SkyChain
 
 
         /// <summary>
-        /// Load the configuration file and initialize the environments.
+        /// Load the configuration and initialize.
         /// </summary>
-        static Application()
+        static ApplicationBase()
         {
             // load app config
             var bytes = File.ReadAllBytes(APP_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
-            appcfg = (JObj) parser.Parse();
+            app = (JObj) parser.Parse();
 
             // file-based logger
-            int logging = appcfg[nameof(logging)];
+            int logging = app[nameof(logging)];
             var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new ApplicationLogger(logfile)
             {
@@ -62,13 +62,13 @@ namespace SkyChain
 
             // security
             //
-            string famkey = appcfg[nameof(famkey)]; // family key
+            string famkey = app[nameof(famkey)]; // family key
             _famkey = CryptoUtility.HexToKey(famkey);
 
-            string fedkey = appcfg[nameof(fedkey)]; // federal key
-            _fedkey = CryptoUtility.HexToKey(fedkey);
+            // string fedkey = app[nameof(fedkey)]; // federal key
+            // _fedkey = CryptoUtility.HexToKey(fedkey);
 
-            string certpasswd = appcfg[nameof(certpasswd)]; // X509 certificate
+            string certpasswd = app[nameof(certpasswd)]; // X509 certificate
             if (certpasswd != null)
             {
                 try
@@ -82,17 +82,20 @@ namespace SkyChain
             }
 
             // store
-            JObj store = appcfg[nameof(store)];
-            if (store != null)
+            JObj chain = app[nameof(chain)];
+            if (chain != null)
             {
-                InitializeStore(store);
+                InitializeHome(chain);
             }
 
-            extcfg = appcfg["ext"];
+            ext = app[nameof(ext)];
         }
 
+        public static JObj App => app;
 
-        public static uint[] FamilyKey => _famkey;
+        public static JObj Ext => ext;
+
+        public static uint[] FamKey => _famkey;
 
         public static uint[] FedKey => _fedkey;
 
@@ -103,7 +106,7 @@ namespace SkyChain
 
         public static S CreateService<S>(string name) where S : WebService, new()
         {
-            if (appcfg == null)
+            if (app == null)
             {
                 throw new ApplicationException("missing app.json");
             }
@@ -112,7 +115,7 @@ namespace SkyChain
             //
 
             var prop = "web-" + name;
-            var webcfg = (JObj) appcfg[prop];
+            var webcfg = (JObj) app[prop];
 
             if (webcfg == null)
             {
@@ -238,7 +241,6 @@ namespace SkyChain
                 Logger.Log(LogLevel.Error, 0, msg, ex, null);
             }
         }
-
 
         static readonly CancellationTokenSource Canceller = new CancellationTokenSource();
     }

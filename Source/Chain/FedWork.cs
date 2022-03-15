@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
-    [Ui("平台｜联盟链管理")]
+    [Ui("平台间联盟管理", "social")]
     public class FedWork : WebWork
     {
         protected internal override void OnCreate()
@@ -14,10 +14,10 @@ namespace SkyChain.Store
 
         public void @default(WebContext wc)
         {
-            var arr = Home.Clients;
+            var arr = ChainBase.Clients;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(tip: "盟友管理");
+                h.TOOLBAR(tip: "平台间联盟管理");
                 h.BOARD(arr, ety =>
                 {
                     var cli = ety.Value;
@@ -67,7 +67,7 @@ namespace SkyChain.Store
 
                 var cli = new FedClient(o);
                 await o.PeekLastBlockAsync(dc);
-                Home.Clients.Add(cli);
+                ChainBase.Clients.Add(cli);
 
                 wc.GivePane(200); // close dialog
             }

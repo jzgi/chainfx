@@ -1404,6 +1404,20 @@ namespace SkyChain.Web
             return this;
         }
 
+        public HtmlContent ICON(string name, string css = null)
+        {
+            Add("<span uk-icon=\"");
+            Add(name);
+            Add("\"");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add("\"></span>");
+            return this;
+        }
 
         public HtmlContent PIC_(string css = null, bool circle = false)
         {
@@ -1549,9 +1563,9 @@ namespace SkyChain.Web
             ALERT_(css, close);
             if (head != null)
             {
-                Add("<h4>");
+                Add("<h3>");
                 Add(head);
-                Add("</h4>");
+                Add("</h3>");
             }
 
             Add("<p>");
@@ -2674,7 +2688,7 @@ namespace SkyChain.Web
                 }
 
                 LI_();
-                T("<a href=\"").T(sub.Key).T("/?astack=true\" class=\"uk-flex uk-width-1-1 uk-button-link\" onclick=\"return dialog(this,8,false,4,'');\">");
+                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-width-1-1 uk-button-link\" onclick=\"return dialog(this,8,false,4,'');\">");
                 T("<label class=\"uk-label\" uk-icon=\"").T(sub.Tip).T("\"></label>");
                 Add("<span class=\"uk-width-expand\">");
                 Add(sub.Label);
@@ -2710,6 +2724,8 @@ namespace SkyChain.Web
 
         void PutKey<K>(K k)
         {
+            if (k == null) return;
+
             if (k is short shortv) Add(shortv);
             else if (k is int intv) Add(intv);
             else if (k is long longv) Add(longv);
@@ -4032,93 +4048,87 @@ namespace SkyChain.Web
         }
 
 
-        public HtmlContent SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opt, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0)
+        public HtmlContent SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool multiple = true, bool required = true, sbyte size = 0)
         {
-            SELECT_(label, name, true, required, size);
-            if (opt != null)
+            SELECT_(label, name, multiple, required, size);
+            if (opts != null)
             {
-                lock (opt)
-                {
-                    for (int i = 0; i < opt.Count; i++)
-                    {
-                        if (!required && i == 0)
-                        {
-                            Add("<option value=\"\"></option>");
-                        }
-                        var e = opt.EntryAt(i);
-                        var key = e.Key;
-                        var val = e.value;
-                        if (filter != null && !filter(key, val)) continue;
-                        Add("<option value=\"");
-                        if (key is short shortv)
-                        {
-                            Add(shortv);
-                        }
-                        else if (key is int intv)
-                        {
-                            Add(intv);
-                        }
-                        else if (key is string strv)
-                        {
-                            Add(strv);
-                        }
-
-                        Add("\"");
-                        if (vs.Contains(key)) Add(" selected");
-                        Add(">");
-                        AddPrimitive(e.Value);
-                        Add("</option>");
-                    }
-                }
-            }
-            _SELECT();
-            return this;
-        }
-
-        public HtmlContent SELECT<V>(string label, string name, V v, V[] opt, bool required = true, sbyte size = 0)
-        {
-            SELECT_(label, name, false, required, size);
-            if (opt != null)
-            {
-                lock (opt)
-                {
-                    for (int i = 0; i < opt.Length; i++)
-                    {
-                        if (!required && i == 0)
-                        {
-                            Add("<option value=\"\"></option>");
-                        }
-                        var e = opt[i];
-                        Add("<option value=\"");
-                        AddPrimitive(e);
-                        Add("\"");
-                        if (e.Equals(v)) Add(" selected");
-                        Add(">");
-                        AddPrimitive(e);
-                        Add("</option>");
-                    }
-                }
-            }
-            _SELECT();
-            return this;
-        }
-
-        public HtmlContent SELECT(string label, string name, string[] v, string[] opt, bool required = false, sbyte size = 0, bool refresh = false)
-        {
-            SELECT_(label, name, true, required, size, refresh);
-            if (opt != null)
-            {
-                for (int i = 0; i < opt.Length; i++)
+                for (int i = 0; i < opts.Count; i++)
                 {
                     if (!required && i == 0)
                     {
                         Add("<option value=\"\"></option>");
                     }
-                    var e = opt[i];
+                    var e = opts.EntryAt(i);
+                    var key = e.Key;
+                    var val = e.value;
+                    if (filter != null && !filter(key, val)) continue;
+                    Add("<option value=\"");
+                    if (key is short shortv)
+                    {
+                        Add(shortv);
+                    }
+                    else if (key is int intv)
+                    {
+                        Add(intv);
+                    }
+                    else if (key is string strv)
+                    {
+                        Add(strv);
+                    }
+
+                    Add("\"");
+                    if (vs.Contains(key)) Add(" selected");
+                    Add(">");
+                    AddPrimitive(e.Value);
+                    Add("</option>");
+                }
+            }
+            _SELECT();
+            return this;
+        }
+
+        public HtmlContent SELECT<V>(string label, string name, V v, V[] opts, bool required = true, sbyte size = 0)
+        {
+            SELECT_(label, name, false, required, size);
+            if (opts != null)
+            {
+                for (int i = 0; i < opts.Length; i++)
+                {
+                    if (!required && i == 0)
+                    {
+                        Add("<option value=\"\"></option>");
+                    }
+                    var e = opts[i];
+                    Add("<option value=\"");
+                    AddPrimitive(e);
+                    Add("\"");
+                    if (e.Equals(v)) Add(" selected");
+                    Add(">");
+                    AddPrimitive(e);
+                    Add("</option>");
+                }
+            }
+            _SELECT();
+            return this;
+        }
+
+        public HtmlContent SELECT(string label, string name, string[] vs, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
+        {
+            SELECT_(label, name, true, required, size, refresh);
+            if (opts != null)
+            {
+                for (int i = 0; i < opts.Length; i++)
+                {
+                    if (!required && i == 0)
+                    {
+                        Add("<option value=\"\"></option>");
+                    }
+                    var e = opts[i];
                     Add("<option value=\"");
                     Add(e);
                     Add("\"");
-                    if (v.Contains(e)) Add(" selected");
+                    if (vs.Contains(e)) Add(" selected");
                     Add(">");
                     Add(e);
                     Add("</option>");

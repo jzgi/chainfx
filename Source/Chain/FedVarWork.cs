@@ -2,7 +2,7 @@
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     public class FedVarWork : WebWork
     {
@@ -10,7 +10,7 @@ namespace SkyChain.Store
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
-            var o = Home.GetClient(id)?.Info;
+            var o = ChainBase.GetClient(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -27,7 +27,7 @@ namespace SkyChain.Store
             {
                 o = await wc.ReadObjectAsync(instance: o);
                 using var dc = NewDbContext();
-                dc.Sql("UPDATE chain.peers")._SET_(o).T(" WHERE id = @1");
+                dc.Sql("UPDATE peers")._SET_(o).T(" WHERE id = @1");
                 await dc.ExecuteAsync(p =>
                 {
                     o.Write(p);
@@ -42,7 +42,7 @@ namespace SkyChain.Store
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];
-            var o = Home.GetClient(id)?.Info;
+            var o = ChainBase.GetClient(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -59,7 +59,7 @@ namespace SkyChain.Store
             {
                 o = await wc.ReadObjectAsync(instance: o);
                 using var dc = NewDbContext();
-                dc.Sql("UPDATE chain.peers")._SET_(o).T(" WHERE id = @1");
+                dc.Sql("UPDATE peers")._SET_(o).T(" WHERE id = @1");
                 await dc.ExecuteAsync(p =>
                 {
                     o.Write(p);

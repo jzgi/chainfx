@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.
@@ -958,11 +958,6 @@ namespace SkyChain.Store
         public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
         {
             Build(name);
-        }
-
-        public void Put(string name, Act[] v, short proj = 4095)
-        {
-            throw new NotImplementedException();
         }
 
         public void PutFromSource(ISource s)

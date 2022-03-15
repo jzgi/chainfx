@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     public class Peer : IData, IKeyable<short>
     {
@@ -13,6 +13,10 @@ namespace SkyChain.Store
             STA_SHOWED = 1,
             STA_ENABLED = 2,
             STA_PREFERED = 3;
+
+        public const short
+            TYP_HUB = 1,
+            TYP_NODE = 2;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -45,6 +49,10 @@ namespace SkyChain.Store
 
         internal bool secure; // remote uri
 
+        internal bool replica; // peer data redundency
+
+        internal string fedkey;
+
         //
         // current block number
 
@@ -72,6 +80,7 @@ namespace SkyChain.Store
             s.Get(nameof(creator), ref creator);
             s.Get(nameof(domain), ref domain);
             s.Get(nameof(secure), ref secure);
+            s.Get(nameof(fedkey), ref fedkey);
         }
 
         public void Write(ISink s, short mask = 0xff)
@@ -85,6 +94,7 @@ namespace SkyChain.Store
             s.Put(nameof(creator), creator);
             s.Put(nameof(domain), domain);
             s.Put(nameof(secure), secure);
+            s.Put(nameof(fedkey), fedkey);
         }
 
         internal void IncrementBlockId()

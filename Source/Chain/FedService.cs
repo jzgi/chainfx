@@ -1,13 +1,14 @@
+using System;
 using System.Threading.Tasks;
 using SkyChain.Web;
-using static SkyChain.Store.FedUtility;
+using static SkyChain.Chain.FedUtility;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A web service that realizes inter-peer communication. 
     /// </summary>
-    public class FedService : WebService
+    public class FedService : WebService, INodeService
     {
         public async Task oncall(WebContext wc)
         {
@@ -28,13 +29,66 @@ namespace SkyChain.Store
             // }
         }
 
-        /// <summary>
-        /// Try to return a block of data.
-        /// </summary>
-        public async Task onpoll(WebContext wc)
+        protected bool NEW(FedContext cc, string table)
+        {
+            return false;
+        }
+
+        protected bool MOD(FedContext cc, string table)
+        {
+            return false;
+        }
+
+        protected bool FRO(FedContext cc, string table)
+        {
+            return false;
+        }
+
+        protected bool BAK(FedContext cc, string table)
+        {
+            return false;
+        }
+
+        protected bool ABT(FedContext cc, string table)
+        {
+            return false;
+        }
+
+        protected bool COM(FedContext cc, string table)
+        {
+            return false;
+        }
+
+
+        public void onask(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void onaccept(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void onquit(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void onapprovequit(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ontransfer(WebContext wc)
+        {
+            throw new NotImplementedException();
+        }
+
+        void INodeService.onpoll(WebContext wc)
         {
             // veriify 
-            var peerid = Home.Info.id;
+            var peerid = ChainBase.Self.id;
             if (wc.HeaderShort(X_CRYPTO) != peerid)
             {
                 wc.Give(409); // conflict
@@ -78,34 +132,9 @@ namespace SkyChain.Store
             // wc.Give(200, j);
         }
 
-        protected bool NEW(FedContext cc, string table)
+        public void discover(WebContext wc)
         {
-            return false;
-        }
-
-        protected bool MOD(FedContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool FRO(FedContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool BAK(FedContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool ABT(FedContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool COM(FedContext cc, string table)
-        {
-            return false;
+            throw new NotImplementedException();
         }
     }
 }

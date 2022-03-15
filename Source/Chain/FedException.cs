@@ -1,9 +1,9 @@
 using System;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     /// <summary>
-    /// Thrown to indicate a blockchain related error.
+    /// Thrown to indicate a blockchain federal network related error.
     /// </summary>
     public class FedException : Exception
     {
@@ -16,11 +16,11 @@ namespace SkyChain.Store
         {
         }
 
-        public FedException(string message) : base(message)
+        public FedException(string msg) : base(msg)
         {
         }
 
-        public FedException(string message, Exception inner) : base(message, inner)
+        public FedException(string msg, Exception inner) : base(msg, inner)
         {
         }
     }

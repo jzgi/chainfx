@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     public class FedContext : DbContext
     {
@@ -50,7 +50,7 @@ namespace SkyChain.Store
             }
             else // call remote
             {
-                var conn = Home.GetClient(peerid);
+                var conn = ChainBase.GetClient(peerid);
                 if (conn != null)
                 {
                     // args

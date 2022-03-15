@@ -2,15 +2,15 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static SkyChain.Store.FedUtility;
+using static SkyChain.Chain.FedUtility;
 using WebClient = SkyChain.Web.WebClient;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     /// <summary>
     /// A client connector to a specific remote peer..
     /// </summary>
-    public class FedClient : WebClient, IKeyable<short>
+    public class FedClient : WebClient, IKeyable<short>, INodeClient
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -151,7 +151,7 @@ namespace SkyChain.Store
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Home.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, ChainBase.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
@@ -195,7 +195,7 @@ namespace SkyChain.Store
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Home.Info.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, ChainBase.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 req.Content = content;
@@ -217,6 +217,42 @@ namespace SkyChain.Store
                 status = NETWORK_ERROR;
                 return (0, false);
             }
+        }
+
+
+        public void Ask()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ApproveAsk()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Quit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ApproveQuit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Transfer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Poll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Discover()
+        {
+            throw new NotImplementedException();
         }
     }
 }

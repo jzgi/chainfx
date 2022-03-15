@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace SkyChain.Store
+namespace SkyChain.Chain
 {
     public static class FedUtility
     {
@@ -64,13 +64,13 @@ namespace SkyChain.Store
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || Home.Info.id == peerid) // local
+                if (peerid == 0 || ChainBase.Self.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = Home.GetClient(peerid);
+                    var conn = ChainBase.GetClient(peerid);
                 }
             }
             return null;
