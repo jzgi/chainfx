@@ -1,12 +1,13 @@
 # Introduction  
 
-SkyChain is a decentralized Web & data framework, with built-in federated blockchain implementation and support for IoT.
+SkyChain (品链) is a cloud blockchain framework for building decentralized supply chain solutions and metaverse systems
 
 SkyChain's characteristics:
 
-* A federated blockchain implementation
-* Can share both data and workflow among peers, using certain consensus
-* Rapid development of dapp cloud and edge, with IoT support
+* Interoperable through open standards such as HTTP/1.1, OAuth 2.1, JWT
+* A built-in federated blockchain engine that powers distributed ledger of formal credit system such as carbon credits
+* A mesh topology of peer network that is free to associate & dessociate and easy to configure, as well as programmatic access through API
+* Support rapid development of workflow-oriented decentralized apps 
 
 <pre>
 dotnet add package SkyChain --version 4.1.0
