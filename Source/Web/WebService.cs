@@ -67,9 +67,9 @@ namespace SkyChain.Web
                 ApplicationServices = this
             };
 
-            if (Application.Cert != null)
+            if (Application.Certificate != null)
             {
-                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Application.Cert);
+                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Application.Certificate);
 
                 INF("cert is set");
             }

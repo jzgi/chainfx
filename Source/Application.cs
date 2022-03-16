@@ -16,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The web application scope that holds global states.
     /// </summary>
-    public abstract class Application : Nodal.Home
+    public abstract class Application : Home
     {
         public const string APP_JSON = "app.json";
 
@@ -27,9 +27,7 @@ namespace SkyChain
         internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
 
-        static readonly uint[] _famkey;
-
-        static readonly uint[] _fedkey;
+        static readonly uint[] cryptokey;
 
         // layered configurations
         public static readonly JObj app, ext;
@@ -62,8 +60,8 @@ namespace SkyChain
 
             // security
             //
-            string famkey = app[nameof(famkey)]; // family key
-            _famkey = CryptoUtility.HexToKey(famkey);
+            string crypto = app[nameof(crypto)];
+            cryptokey = CryptoUtility.HexToKey(crypto);
 
             // string fedkey = app[nameof(fedkey)]; // federal key
             // _fedkey = CryptoUtility.HexToKey(fedkey);
@@ -82,10 +80,10 @@ namespace SkyChain
             }
 
             // store
-            JObj chain = app[nameof(chain)];
-            if (chain != null)
+            JObj home = app[nameof(home)];
+            if (home != null)
             {
-                InitializeChainBase(chain);
+                InitializeHome(home);
             }
 
             ext = app[nameof(ext)];
@@ -95,13 +93,11 @@ namespace SkyChain
 
         public static JObj Ext => ext;
 
-        public static uint[] FamKey => _famkey;
-
-        public static uint[] FedKey => _fedkey;
+        public static uint[] CryptoKey => cryptokey;
 
         public static ApplicationLogger Logger => logger;
 
-        public static X509Certificate2 Cert => cert;
+        public static X509Certificate2 Certificate => cert;
 
 
         public static S CreateService<S>(string name) where S : WebService, new()

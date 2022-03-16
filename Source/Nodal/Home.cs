@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SkyChain.Nodal
 {
     /// <summary>
-    /// The static environment for being a node of a federated blockchain network. 
+    /// The static home environment for data store and being a node of the federated blockchain network. 
     /// </summary>
     public abstract class Home
     {
@@ -16,11 +16,11 @@ namespace SkyChain.Nodal
 
         static DbSource dbSource;
 
-        static List<DbCache> caches;
+        static List<DbCache> caches; // an entire map (standard)
 
-        static List<DbCache> objectCaches;
+        static List<DbCache> objectCaches; // once an object a time
 
-        static List<DbCache> mapCaches;
+        static List<DbCache> mapCaches; // many a map
 
 
         // connectivty
@@ -28,18 +28,24 @@ namespace SkyChain.Nodal
 
         static Peer self;
 
-        static readonly Map<short, NodeClient> nodeClients = new Map<short, NodeClient>(16);
+        static readonly Map<short, NodeClient> connectors = new Map<short, NodeClient>(32);
 
         static bool hub;
 
 
-        internal static void InitializeChainBase(JObj chaincfg)
+        // imports foreign blocks 
+        //
+
+        static Thread replicator;
+
+
+        internal static void InitializeHome(JObj homecfg)
         {
             // create db source
-            dbSource = new DbSource(chaincfg);
+            dbSource = new DbSource(homecfg);
 
             // create self peer info
-            self = new Peer(chaincfg)
+            self = new Peer(homecfg)
             {
             };
 
@@ -54,7 +60,7 @@ namespace SkyChain.Nodal
                 {
                     var cli = new NodeClient(peer);
 
-                    nodeClients.Add(cli);
+                    connectors.Add(cli);
 
                     // init current block id
                     // await o.PeekLastBlockAsync(dc);
@@ -67,6 +73,14 @@ namespace SkyChain.Nodal
                     hub = true;
                 }
             }
+
+
+            // start the replicator thead
+            replicator = new Thread(Replicate)
+            {
+                Name = "Replicator"
+            };
+            replicator.Start();
         }
 
 
@@ -78,7 +92,7 @@ namespace SkyChain.Nodal
         {
             if (dbSource == null) // check on-the-fly
             {
-                throw new DbException("missing 'chain' in app.json");
+                throw new DbException("missing 'home' in app.json");
             }
 
             return dbSource.NewDbContext(level);
@@ -237,7 +251,7 @@ namespace SkyChain.Nodal
 
         #endregion
 
-        #region Federal-Locality
+        #region Nodal-Of-Network
 
         public static Peer Self => self;
 
@@ -253,32 +267,16 @@ namespace SkyChain.Nodal
             return Interlocked.Increment(ref lastId);
         }
 
-        public static NodeClient GetConnector(short peerid) => nodeClients[peerid];
+        public static NodeClient GetConnector(short peerid) => connectors[peerid];
 
-        public static Map<short, NodeClient> Connectors => nodeClients;
-
-
-        public static async void NewFedRequest(Peer peer)
-        {
-            // create temporary fed connector
-            var cli = new NodeClient(peer);
-
-            var fc = NewNodeContext(peer.id);
-
-            // insert
-            fc.Sql("INSERT INTO peers_").colset(Peer.Empty)._VALUES_(Peer.Empty);
-            await fc.ExecuteAsync(p => peer.Write(p));
-
-            // remote req
-            // fc.
-        }
+        public static Map<short, NodeClient> Connectors => connectors;
 
 
         public static NodeContext NewNodeContext(short peerid = 0, IsolationLevel? level = null)
         {
             if (dbSource == null)
             {
-                throw new NodeException("missing 'chain' in app.json");
+                throw new NodeException("missing 'home' in app.json");
             }
 
             var cli = GetConnector(peerid);
@@ -298,11 +296,105 @@ namespace SkyChain.Nodal
         #endregion
 
         //
-        // instance scope
+        // replicate ledgers for remote peer
         //
 
         const int MAX_BLOCK_SIZE = 64;
 
         const int MIN_BLOCK_SIZE = 8;
+
+        static async void Replicate(object state)
+        {
+            while (true)
+            {
+                Cycle:
+                var outer = true;
+
+                Thread.Sleep(60 * 1000);
+
+                for (int i = 0; i < connectors.Count; i++) // LOOP
+                {
+                    var cli = connectors.ValueAt(i);
+
+                    if (!cli.Info.IsRunning) continue;
+
+                    int busy = 0;
+                    var code = cli.TryReap(out var arr);
+                    if (code == 200)
+                    {
+                        try
+                        {
+                            using var dc = NewDbContext(IsolationLevel.ReadCommitted);
+                            long bchk = 0; // block checksum
+                            for (short k = 0; k < arr.Count; k++)
+                            {
+                                var o = arr[k];
+
+                                // long seq = ChainUtility.WeaveSeq(blockid, i);
+                                // dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
+                                // direct parameter setting
+                                var p = dc.ReCommand();
+                                p.Digest = true;
+                                // o.Write(p);
+                                p.Digest = false;
+
+                                // validate record-wise checksum
+                                // if (o.cs != p.Checksum)
+                                // {
+                                //     cli.SetDataError(o.seq);
+                                //     break;
+                                // }
+
+                                CryptoUtility.Digest(p.Checksum, ref bchk);
+                                p.Set(p.Checksum); // set primary and checksum
+                                // block-wise digest
+                                if (i == 0) // begin of block 
+                                {
+                                    // if (o.blockcs != bchk) // compare with previous block
+                                    // {
+                                    //     cli.SetDataError("");
+                                    //     break;
+                                    // }
+
+                                    p.Set(bchk);
+                                }
+                                else if (i == arr.Count - 1) // end of block
+                                {
+                                    // validate block check
+                                    // if (bchk != o.blockcs)
+                                    // {
+                                    //     cli.SetDataError("");
+                                    // }
+                                    // p.Set(bchk = o.blockcs); // assign & set
+                                }
+                                else
+                                {
+                                    p.SetNull();
+                                }
+
+                                await dc.SimpleExecuteAsync();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            cli.SetInternalError(e.Message);
+                        }
+                    }
+
+                    if (code == 200 || (outer && (code == 0 || code == 204)))
+                    {
+                        cli.ScheduleRemotePoll(0);
+                        busy++;
+                    }
+
+                    //
+                    if (busy == 0) // to outer for delay
+                    {
+                        break;
+                    }
+                    outer = false;
+                }
+            } // outer
+        }
     }
 }

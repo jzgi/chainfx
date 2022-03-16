@@ -5,9 +5,9 @@ namespace SkyChain.Nodal
 {
     public class NodeContext : DbContext
     {
-        readonly NodeClient connector;
-
         internal Peer self;
+
+        readonly NodeClient connector;
 
         public JObj In { get; set; }
 
@@ -65,6 +65,16 @@ namespace SkyChain.Nodal
                 }
             }
             return false;
+        }
+
+        public async void Ask(Peer peer)
+        {
+            // insert
+            Sql("INSERT INTO peers_").colset(Peer.Empty)._VALUES_(Peer.Empty);
+            await ExecuteAsync(p => peer.Write(p));
+
+            // remote req
+            connector.Ask();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace SkyChain.Web
                 var buf = cnt.Buffer;
                 int count = cnt.Count;
 
-                Encrypt(buf, count, Application.FamKey);
+                Encrypt(buf, count, Application.CryptoKey);
                 return BytesToHex(buf, count);
             }
             finally
@@ -57,7 +57,7 @@ namespace SkyChain.Web
         public static P DecryptPrincipal<P>(string token) where P : IData, new()
         {
             var bytes = HexToBytes(token);
-            Decrypt(bytes, bytes.Length, Application.FamKey);
+            Decrypt(bytes, bytes.Length, Application.CryptoKey);
             // deserialize
             try
             {
