@@ -1,7 +1,7 @@
 ﻿using System;
 using SkyChain;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

@@ -2,19 +2,19 @@ using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
-    [Ui("平台间联盟管理", "social")]
-    public class FedWork : WebWork
+    [Ui("平台节点管理", "social")]
+    public class NodeWork : WebWork
     {
         protected internal override void OnCreate()
         {
-            CreateVarWork<FedVarWork>();
+            CreateVarWork<NodeVarWork>();
         }
 
         public void @default(WebContext wc)
         {
-            var arr = ChainBase.Clients;
+            var arr = Home.Connectors;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(tip: "平台间联盟管理");
@@ -65,9 +65,9 @@ namespace SkyChain.Chain
                 dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
                 await dc.ExecuteAsync(p => o.Write(p));
 
-                var cli = new FedClient(o);
+                var cli = new NodeClient(o);
                 await o.PeekLastBlockAsync(dc);
-                ChainBase.Clients.Add(cli);
+                Home.Connectors.Add(cli);
 
                 wc.GivePane(200); // close dialog
             }

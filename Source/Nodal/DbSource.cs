@@ -2,7 +2,7 @@ using System.Data;
 using System.Text;
 using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     public class DbSource : IKeyable<string>
     {
@@ -61,25 +61,5 @@ namespace SkyChain.Chain
             return dc;
         }
 
-        public FedContext NewChainContext(WebContext wc, short peerid = 0, IsolationLevel? level = null)
-        {
-            if (ChainBase.Self == null)
-            {
-                throw new FedException("missing 'store' in app.json");
-            }
-
-            var cli = ChainBase.GetClient(peerid);
-            var cc = new FedContext(this, wc, cli)
-            {
-                local = ChainBase.Self,
-            };
-
-            if (level != null)
-            {
-                cc.Begin(level.Value);
-            }
-
-            return cc;
-        }
     }
 }

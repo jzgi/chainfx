@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
-    public static class FedUtility
+    public static class NodeUtility
     {
         public const string X_FROM = "X-From";
 
@@ -64,13 +64,13 @@ namespace SkyChain.Chain
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || ChainBase.Self.id == peerid) // local
+                if (peerid == 0 || Home.Self.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = ChainBase.GetClient(peerid);
+                    var conn = Home.GetConnector(peerid);
                 }
             }
             return null;

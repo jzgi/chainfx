@@ -2,56 +2,40 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
-    public class Peer : IData, IKeyable<short>
+    public class Peer : Info, IKeyable<short>
     {
         public static readonly Peer Empty = new Peer();
 
+        // 
         public const short
-            STA_DISABLED = 0,
-            STA_SHOWED = 1,
-            STA_ENABLED = 2,
-            STA_PREFERED = 3;
+            TYP_NORM = 1,
+            TYP_REPLICA = 2;
 
         public const short
-            TYP_HUB = 1,
-            TYP_NODE = 2;
+            FED_SENT = 0,
+            FED_RECEIVED = 1,
+            FED_DENIED = 2,
+            FED_ACCEPTED = 3;
 
-        public static readonly Map<short, string> Statuses = new Map<short, string>
+        public static readonly Map<short, string> Feds = new Map<short, string>
         {
-            {STA_DISABLED, "禁用"},
-            {STA_SHOWED, "展示"},
-            {STA_ENABLED, "可用"},
-            {STA_PREFERED, "优先"},
+            {FED_SENT, "已请求"},
+            {FED_RECEIVED, "接收"},
+            {FED_DENIED, "已拒绝"},
+            {FED_ACCEPTED, "已接受"},
         };
 
         internal short id;
-
-        // the specialized extensible discriminator
-        internal short typ;
-
-        // object status
-        internal short status;
-
-        // readable name
-        internal string name;
-
-        // desctiprive text
-        internal string tip;
-
-        internal DateTime created;
-
-        // persona who created or lastly modified
-        internal string creator;
 
         internal string domain; // remote uri
 
         internal bool secure; // remote uri
 
-        internal bool replica; // peer data redundency
+        internal short fed;
 
-        internal string fedkey;
+        internal string secret;
 
         //
         // current block number
@@ -69,32 +53,27 @@ namespace SkyChain.Chain
             Read(s);
         }
 
-        public void Read(ISource s, short mask = 0xff)
+        public sealed override void Read(ISource s, short mask = 0xff)
         {
+            base.Read(s, mask);
+
             s.Get(nameof(id), ref id);
-            s.Get(nameof(typ), ref typ);
-            s.Get(nameof(status), ref status);
-            s.Get(nameof(name), ref name);
-            s.Get(nameof(tip), ref tip);
-            s.Get(nameof(created), ref created);
-            s.Get(nameof(creator), ref creator);
             s.Get(nameof(domain), ref domain);
             s.Get(nameof(secure), ref secure);
-            s.Get(nameof(fedkey), ref fedkey);
+            s.Get(nameof(fed), ref fed);
+            s.Get(nameof(secret), ref secret);
         }
 
-        public void Write(ISink s, short mask = 0xff)
+        public override void Write(ISink s, short mask = 0xff)
         {
+            base.Write(s, mask);
+
+
             s.Put(nameof(id), id);
-            s.Put(nameof(typ), typ);
-            s.Put(nameof(status), status);
-            s.Put(nameof(name), name);
-            s.Put(nameof(tip), tip);
-            s.Put(nameof(created), created);
-            s.Put(nameof(creator), creator);
             s.Put(nameof(domain), domain);
             s.Put(nameof(secure), secure);
-            s.Put(nameof(fedkey), fedkey);
+            s.Put(nameof(fed), fed);
+            s.Put(nameof(secret), secret);
         }
 
         internal void IncrementBlockId()
@@ -129,7 +108,7 @@ namespace SkyChain.Chain
                 dc.Let(out long bcs);
                 if (seq > 0)
                 {
-                    var (bid, _) = FedUtility.ResolveSeq(seq);
+                    var (bid, _) = NodeUtility.ResolveSeq(seq);
 
                     blockid = bid;
                     blockcs = bcs;

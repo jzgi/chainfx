@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SkyChain.Chain;
+using SkyChain.Nodal;
 
 namespace SkyChain.Web
 {
@@ -67,14 +67,14 @@ namespace SkyChain.Web
                 ApplicationServices = this
             };
 
-            if (ApplicationBase.Cert != null)
+            if (Application.Cert != null)
             {
-                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = ApplicationBase.Cert);
+                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Application.Cert);
 
                 INF("cert is set");
             }
 
-            server = new KestrelServer(Options.Create(opts), ApplicationBase.TransportFactory, ApplicationBase.Logger);
+            server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
         }
 
         // IServiceProvider
@@ -82,11 +82,11 @@ namespace SkyChain.Web
         {
             if (serviceType == typeof(ILogger<KestrelServer>))
             {
-                return ApplicationBase.Logger;
+                return Application.Logger;
             }
             if (serviceType == typeof(ILoggerFactory))
             {
-                return ApplicationBase.Logger;
+                return Application.Logger;
             }
             return null;
         }

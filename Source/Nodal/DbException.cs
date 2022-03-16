@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     /// <summary>
     /// Thrown to indicate an error during database operation.

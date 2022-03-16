@@ -2,15 +2,15 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static SkyChain.Chain.FedUtility;
+using static SkyChain.Nodal.NodeUtility;
 using WebClient = SkyChain.Web.WebClient;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     /// <summary>
     /// A client connector to a specific remote peer..
     /// </summary>
-    public class FedClient : WebClient, IKeyable<short>, INodeClient
+    public class NodeClient : WebClient, IKeyable<short>, INodeClient
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -48,7 +48,7 @@ namespace SkyChain.Chain
         /// <summary>
         /// To construct a federation client. 
         /// </summary>
-        internal FedClient(Peer peer, FedClientHandler handler = null) : base(peer.domain, handler ?? new FedClientHandler())
+        internal NodeClient(Peer peer, NodeClientHandler handler = null) : base(peer.domain, handler ?? new NodeClientHandler())
         {
             this.peer = peer;
             try
@@ -151,7 +151,7 @@ namespace SkyChain.Chain
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainBase.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Home.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
@@ -195,7 +195,7 @@ namespace SkyChain.Chain
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, ChainBase.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Home.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 req.Content = content;

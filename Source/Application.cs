@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Chain;
+using SkyChain.Nodal;
 using SkyChain.Web;
 
 namespace SkyChain
@@ -16,7 +16,7 @@ namespace SkyChain
     /// <summary>
     /// The web application scope that holds global states.
     /// </summary>
-    public class ApplicationBase : ChainBase
+    public abstract class Application : Nodal.Home
     {
         public const string APP_JSON = "app.json";
 
@@ -45,7 +45,7 @@ namespace SkyChain
         /// <summary>
         /// Load the configuration and initialize.
         /// </summary>
-        static ApplicationBase()
+        static Application()
         {
             // load app config
             var bytes = File.ReadAllBytes(APP_JSON);
@@ -85,7 +85,7 @@ namespace SkyChain
             JObj chain = app[nameof(chain)];
             if (chain != null)
             {
-                InitializeHome(chain);
+                InitializeChainBase(chain);
             }
 
             ext = app[nameof(ext)];

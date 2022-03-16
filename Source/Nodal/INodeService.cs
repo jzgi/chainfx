@@ -1,6 +1,6 @@
 ﻿using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     public interface INodeService
     {

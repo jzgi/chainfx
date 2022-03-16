@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     internal abstract class DbCache
     {
@@ -87,7 +87,7 @@ namespace SkyChain.Chain
                     slim.EnterWriteLock();
                     try
                     {
-                        using var dc = ChainBase.NewDbContext();
+                        using var dc = Home.NewDbContext();
                         cached = func(dc);
                         expiry = tick + MaxAge * 1000;
                     }
@@ -117,7 +117,7 @@ namespace SkyChain.Chain
                 var ticks = Environment.TickCount & int.MaxValue; // positive tick
                 if (ticks >= expiry) // if re-fetch
                 {
-                    using var dc = ChainBase.NewDbContext();
+                    using var dc = Home.NewDbContext();
                     cached = await fa(dc);
                     expiry = ticks + MaxAge * 1000;
                 }
@@ -164,7 +164,7 @@ namespace SkyChain.Chain
             V value;
             if (tick >= expiry) // if re-fetch
             {
-                using var dc = ChainBase.NewDbContext();
+                using var dc = Home.NewDbContext();
                 value = func(dc, key);
                 cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
                 expiry = tick + MaxAge * 1000;
@@ -173,7 +173,7 @@ namespace SkyChain.Chain
             {
                 if (!cached.TryGetValue(key, out value))
                 {
-                    using var dc = ChainBase.NewDbContext();
+                    using var dc = Home.NewDbContext();
                     value = func(dc, key);
                     cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
                     expiry = tick + MaxAge * 1000;
@@ -192,7 +192,7 @@ namespace SkyChain.Chain
             V value;
             if (ticks >= expiry) // if re-fetch
             {
-                using var dc = ChainBase.NewDbContext();
+                using var dc = Home.NewDbContext();
                 value = await func(dc, key);
                 cached.TryAdd(key, value); // re-cache
                 expiry = ticks + MaxAge * 1000;
@@ -250,7 +250,7 @@ namespace SkyChain.Chain
                     slim.EnterWriteLock();
                     try
                     {
-                        using var dc = ChainBase.NewDbContext();
+                        using var dc = Home.NewDbContext();
                         value = func(dc, mkey);
                         cached.TryAdd(mkey, value);
                         // adjust expiry time
@@ -288,7 +288,7 @@ namespace SkyChain.Chain
                 Map<K, V> value;
                 if (ticks >= expiry) // if re-fetch
                 {
-                    using var dc = ChainBase.NewDbContext();
+                    using var dc = Home.NewDbContext();
                     value = await func(dc, subkey);
 
                     // adjust expiry time

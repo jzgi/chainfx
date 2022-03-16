@@ -4,10 +4,10 @@ SkyChain (品链) is a cloud blockchain framework for building decentralized sup
 
 SkyChain's characteristics:
 
-* Interoperable through open standards such as HTTP/1.1, OAuth 2.1, JWT
-* A built-in federated blockchain engine that powers distributed ledger of formal credit system such as carbon credits
-* A mesh topology of peer network that is free to associate & dessociate and easy to configure, as well as programmatic access through API
-* Support rapid development of workflow-oriented decentralized apps 
+* Interoperable through open standards: HTTP/1.1, OAuth 2.1, and JWT
+* The built-in federated blockchain engine powers a distributed ledger, suitable for a formal credit solution like Carbon Credits or Time Bank
+* A mesh topology of peer network that is free to associate & dessociate and easy to configure, with programmatic node-to-node interoperability
+* Support rapid development of workflow-oriented decentralized Web apps 
 
 <pre>
 dotnet add package SkyChain --version 4.1.0

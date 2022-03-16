@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using SkyChain.Web;
-using static SkyChain.Chain.FedUtility;
+using static SkyChain.Nodal.NodeUtility;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
     /// <summary>
     /// A web service that realizes inter-peer communication. 
     /// </summary>
-    public class FedService : WebService, INodeService
+    public class NodeService : WebService, INodeService
     {
         public async Task oncall(WebContext wc)
         {
@@ -29,32 +29,32 @@ namespace SkyChain.Chain
             // }
         }
 
-        protected bool NEW(FedContext cc, string table)
+        protected bool NEW(NodeContext cc, string table)
         {
             return false;
         }
 
-        protected bool MOD(FedContext cc, string table)
+        protected bool MOD(NodeContext cc, string table)
         {
             return false;
         }
 
-        protected bool FRO(FedContext cc, string table)
+        protected bool FRO(NodeContext cc, string table)
         {
             return false;
         }
 
-        protected bool BAK(FedContext cc, string table)
+        protected bool BAK(NodeContext cc, string table)
         {
             return false;
         }
 
-        protected bool ABT(FedContext cc, string table)
+        protected bool ABT(NodeContext cc, string table)
         {
             return false;
         }
 
-        protected bool COM(FedContext cc, string table)
+        protected bool COM(NodeContext cc, string table)
         {
             return false;
         }
@@ -88,7 +88,7 @@ namespace SkyChain.Chain
         void INodeService.onpoll(WebContext wc)
         {
             // veriify 
-            var peerid = ChainBase.Self.id;
+            var peerid = Home.Self.id;
             if (wc.HeaderShort(X_CRYPTO) != peerid)
             {
                 wc.Give(409); // conflict

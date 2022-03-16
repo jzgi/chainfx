@@ -2,15 +2,15 @@
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
-    public class FedVarWork : WebWork
+    public class NodeVarWork : WebWork
     {
         [Ui("修改", @group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
-            var o = ChainBase.GetClient(id)?.Info;
+            var o = Home.GetConnector(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -42,7 +42,7 @@ namespace SkyChain.Chain
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];
-            var o = ChainBase.GetClient(id)?.Info;
+            var o = Home.GetConnector(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>

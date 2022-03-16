@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Chain
+﻿namespace SkyChain.Nodal
 {
     public interface INodeClient
     {

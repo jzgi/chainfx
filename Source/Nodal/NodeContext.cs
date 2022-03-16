@@ -1,34 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SkyChain.Web;
 
-namespace SkyChain.Chain
+namespace SkyChain.Nodal
 {
-    public class FedContext : DbContext
+    public class NodeContext : DbContext
     {
-        readonly WebContext wc;
+        readonly NodeClient connector;
 
-        readonly FedClient client;
-
-        internal Peer local;
+        internal Peer self;
 
         public JObj In { get; set; }
 
         public JObj Out;
 
-        internal FedContext(DbSource dbsource, WebContext wc, FedClient client) : base(dbsource)
+        internal NodeContext(DbSource dbSource, NodeClient connector) : base(dbSource)
         {
-            this.wc = wc;
-            this.client = client;
+            this.connector = connector;
         }
 
-        public bool IsRemote => client != null;
+        public bool IsRemote => connector != null;
 
         public async Task SetState(string table, long id, short state, bool seal = false)
         {
-            var org = wc.Party;
-            var user = wc.Principal.ToString();
-
             Sql("UPDATE ").T(table).T(" SET state = @1 WHERE id = @2");
             await QueryAsync(p => p.Set(state).Set(id));
 
@@ -42,15 +35,21 @@ namespace SkyChain.Chain
         {
         }
 
+        public async Task<bool> TieAsync()
+        {
+            return false;
+        }
+
+
         public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0xff)
         {
-            if (peerid == 0 || peerid == local.id) // call in- place
+            if (peerid == 0 || peerid == self.id) // call in- place
             {
                 // local
             }
             else // call remote
             {
-                var conn = ChainBase.GetClient(peerid);
+                var conn = Home.GetConnector(peerid);
                 if (conn != null)
                 {
                     // args
@@ -62,7 +61,7 @@ namespace SkyChain.Chain
                 }
                 else
                 {
-                    throw new FedException("");
+                    throw new NodeException("");
                 }
             }
             return false;
