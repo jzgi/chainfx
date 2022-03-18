@@ -1,8 +1,10 @@
-﻿namespace SkyChain.Nodal
+﻿using System.Threading.Tasks;
+
+namespace SkyChain.Nodal
 {
     public interface INodeClient
     {
-        void Ask();
+        Task<(int, NodeClientError)> InviteAsync(Peer peer);
 
         void ApproveAsk();
 
@@ -16,7 +18,7 @@
 
         //
         // blockchain credit
-        
+
         void Transfer();
 
         void Poll();

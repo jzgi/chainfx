@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Nodal.NodeUtility;
+using static SkyChain.Nodal.Home;
 
 namespace SkyChain.Nodal
 {
@@ -88,7 +89,7 @@ namespace SkyChain.Nodal
         void INodeService.onpoll(WebContext wc)
         {
             // veriify 
-            var peerid = Home.Self.id;
+            var peerid = Self.id;
             if (wc.HeaderShort(X_CRYPTO) != peerid)
             {
                 wc.Give(409); // conflict

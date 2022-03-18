@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain
+namespace SkyChain.Web
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

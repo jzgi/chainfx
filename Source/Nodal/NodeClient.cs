@@ -220,9 +220,38 @@ namespace SkyChain.Nodal
         }
 
 
-        public void Ask()
+        public async Task<(int, NodeClientError)> InviteAsync(Peer peer)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // request
+                var req = new HttpRequestMessage(HttpMethod.Get, "/oninvite");
+
+                req.Headers.TryAddWithoutValidation(X_FROM, Home.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
+
+                var jc = new JsonContent(true, 1024);
+                peer.Write(jc);
+
+                req.Content = jc;
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, jc.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, jc.Count.ToString());
+
+                // response
+                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                if (rsp.StatusCode != HttpStatusCode.OK)
+                {
+                    return ((int) rsp.StatusCode, 0);
+                }
+                var hdrs = rsp.Content.Headers;
+
+                return (200, 0);
+            }
+            catch
+            {
+                status = NETWORK_ERROR;
+                return (0, 0);
+            }
         }
 
         public void ApproveAsk()

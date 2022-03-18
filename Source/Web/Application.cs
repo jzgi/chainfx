@@ -9,9 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using SkyChain.Nodal;
-using SkyChain.Web;
 
-namespace SkyChain
+namespace SkyChain.Web
 {
     /// <summary>
     /// The web application scope that holds global states.

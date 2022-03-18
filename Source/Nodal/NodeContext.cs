@@ -67,14 +67,23 @@ namespace SkyChain.Nodal
             return false;
         }
 
-        public async void Ask(Peer peer)
+        public async void InviteAsync(Peer peer)
         {
-            // insert
+            // insert local record
             Sql("INSERT INTO peers_").colset(Peer.Empty)._VALUES_(Peer.Empty);
             await ExecuteAsync(p => peer.Write(p));
 
             // remote req
-            connector.Ask();
+            peer.id = Home.Self.id;
+            var (code, err) = await connector.InviteAsync(peer);
+        }
+
+        public async void AcceptAsync(Peer peer)
+        {
+        }
+
+        public async void TransferAsync(Peer peer)
+        {
         }
     }
 }

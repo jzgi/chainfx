@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
+using static SkyChain.Nodal.Home;
 
 namespace SkyChain.Nodal
 {
-    [Ui("平台联盟节点管理", "social")]
+    [Ui("平台联盟管理", "social")]
     public class NodalWork : WebWork
     {
         protected internal override void OnCreate()
@@ -17,7 +18,7 @@ namespace SkyChain.Nodal
             var arr = Home.Connectors;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(tip: "平台联盟节点管理");
+                h.TOOLBAR(tip: Label);
                 h.BOARD(arr, ety =>
                 {
                     var cli = ety.Value;
@@ -40,7 +41,7 @@ namespace SkyChain.Nodal
         }
 
 
-        [Ui("✚", "新建盟友"), Tool(ButtonShow)]
+        [Ui("✚", "添加联盟节点"), Tool(ButtonShow)]
         public async Task @new(WebContext wc)
         {
             var o = new Peer
@@ -61,14 +62,10 @@ namespace SkyChain.Nodal
             else // POST
             {
                 o = await wc.ReadObjectAsync(instance: o);
-                using var dc = NewDbContext();
-                dc.Sql("INSERT INTO chain.peers ").colset(o)._VALUES_(o);
-                await dc.ExecuteAsync(p => o.Write(p));
-
-                var cli = new NodeClient(o);
-                await o.PeekLastBlockAsync(dc);
-                Home.Connectors.Add(cli);
-
+                
+                using var nc = NewNodeContext();
+                nc.InviteAsync(o);
+                
                 wc.GivePane(200); // close dialog
             }
         }

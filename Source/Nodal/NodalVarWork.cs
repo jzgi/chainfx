@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SkyChain.Web;
 using static SkyChain.Web.Modal;
+using static SkyChain.Nodal.Home;
 
 namespace SkyChain.Nodal
 {
@@ -10,7 +11,7 @@ namespace SkyChain.Nodal
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
-            var o = Home.GetConnector(id)?.Info;
+            var o = GetConnector(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -42,7 +43,7 @@ namespace SkyChain.Nodal
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];
-            var o = Home.GetConnector(id)?.Info;
+            var o = GetConnector(id)?.Info;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>

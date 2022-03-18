@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 
-namespace SkyChain
+namespace SkyChain.Web
 {
     public class ApplicationLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
     {
