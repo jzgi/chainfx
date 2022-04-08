@@ -1,14 +1,14 @@
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// To analyze HTTP header.
     /// </summary>
-    public class Header : Text
+    public class HeaderText : Text
     {
         // start index of the value field
         int vstart;
 
-        public Header(int capacity = 256) : base(capacity)
+        public HeaderText(int capacity = 256) : base(capacity)
         {
         }
 
@@ -50,7 +50,7 @@ namespace SkyChain
             return c == ' ' || c == ',' || c == ';';
         }
 
-        public string SeekParam(string param)
+        public string SeekParameter(string param)
         {
             int len = param.Length;
 

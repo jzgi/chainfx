@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// A binary static content of certain mime type.
@@ -1539,7 +1539,7 @@ namespace SkyChain
 
         public string Key { get; set; }
 
-        public string Type { get; set; }
+        public string CType { get; set; }
 
         public byte[] Buffer => bytes;
 

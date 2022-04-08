@@ -1,9 +1,9 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static SkyChain.DataUtility;
+using static FabricQ.DataUtility;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
@@ -116,7 +116,7 @@ namespace SkyChain.Web
                     req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
                 }
                 req.Content = (HttpContent) content;
-                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return (short) rsp.StatusCode;
@@ -144,7 +144,7 @@ namespace SkyChain.Web
                     req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
                 }
                 req.Content = (HttpContent) content;
-                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);

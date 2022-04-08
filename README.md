@@ -1,6 +1,6 @@
 # Introduction  
 
-SkyChain (品链) is a cloud blockchain framework for building decentralized supply chain solutions and metaverse systems
+Fabric for Quality (FabricQ) (品链) is a cloud blockchain framework for building decentralized supply chain solutions and metaverse systems
 
 SkyChain's characteristics:
 
@@ -10,7 +10,7 @@ SkyChain's characteristics:
 * Support rapid development of workflow-oriented decentralized Web apps 
 
 <pre>
-dotnet add package SkyChain --version 4.1.0
+dotnet add package FabricQ --version 4.1.0
 </pre>
 
 # Dependencies

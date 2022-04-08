@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// A JSON object model.

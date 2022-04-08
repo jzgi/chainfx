@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using SkyChain.Web;
-using static SkyChain.Web.Modal;
-using static SkyChain.Nodal.Home;
+using FabricQ.Web;
+using static FabricQ.Web.Modal;
+using static FabricQ.Nodal.Home;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
-    public class NodalVarWork : WebWork
+    public class NodeVarWork : WebWork
     {
         [Ui("修改", @group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)

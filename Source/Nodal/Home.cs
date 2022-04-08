@@ -4,7 +4,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// The static home environment for data store and being a node of the federated blockchain network. 
@@ -84,7 +84,7 @@ namespace SkyChain.Nodal
         }
 
 
-        #region Db-Source-And-Cache
+        #region DB-AND-CACHE
 
         public static DbSource DbSource => dbSource;
 
@@ -134,7 +134,7 @@ namespace SkyChain.Nodal
             mapCaches.Add(new DbMapCache<S, K, V>(fetcher, typeof(V), maxage, flag));
         }
 
-        public static Map<K, V> Grab<K, V>(byte flag = 0) where K : IComparable<K>
+        public static Map<K, V> Grab<K, V>(short flag = 0) where K : IComparable<K>
         {
             if (caches == null)
             {
@@ -153,7 +153,7 @@ namespace SkyChain.Nodal
             return null;
         }
 
-        public static async Task<Map<K, V>> GrabAsync<K, V>(byte flag = 0) where K : IComparable<K>
+        public static async Task<Map<K, V>> GrabAsync<K, V>(short flag = 0) where K : IComparable<K>
         {
             if (caches == null)
             {
@@ -172,7 +172,7 @@ namespace SkyChain.Nodal
             return null;
         }
 
-        public static V GrabObject<K, V>(K key, byte flag = 0) where K : IComparable<K>
+        public static V GrabObject<K, V>(K key, short flag = 0) where K : IComparable<K>
         {
             if (objectCaches == null)
             {
@@ -191,7 +191,7 @@ namespace SkyChain.Nodal
             return default;
         }
 
-        public static async Task<V> GrabObjectAsync<K, V>(K key, byte flag = 0) where K : IComparable<K>
+        public static async Task<V> GrabObjectAsync<K, V>(K key, short flag = 0) where K : IComparable<K>
         {
             if (objectCaches == null)
             {
@@ -211,7 +211,7 @@ namespace SkyChain.Nodal
         }
 
 
-        public static Map<K, V> GrabMap<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
+        public static Map<K, V> GrabMap<D, K, V>(D discr, short flag = 0) where K : IComparable<K>
         {
             if (mapCaches == null)
             {
@@ -230,7 +230,7 @@ namespace SkyChain.Nodal
             return null;
         }
 
-        public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, byte flag = 0) where K : IComparable<K>
+        public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, short flag = 0) where K : IComparable<K>
         {
             if (mapCaches == null)
             {
@@ -251,7 +251,8 @@ namespace SkyChain.Nodal
 
         #endregion
 
-        #region Nodal-Of-Network
+
+        #region NODAL-NETWORK
 
         public static Peer Self => self;
 

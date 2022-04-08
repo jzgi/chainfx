@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// Represents an output sink that can be a dataset, a single data object, or only some of its data fields.

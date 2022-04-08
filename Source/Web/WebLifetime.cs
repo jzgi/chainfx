@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

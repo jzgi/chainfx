@@ -1,4 +1,4 @@
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// The enumeration of JSON member types.

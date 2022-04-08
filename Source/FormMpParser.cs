@@ -1,4 +1,4 @@
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// To parse multipart/form-data content, with the part Content-Length extension.
@@ -42,7 +42,7 @@ namespace SkyChain
             int length_ = this.length;
 
             // UTF-8 header builder
-            Header hdr = new Header(128);
+            HeaderText hdr = new HeaderText(128);
             Text text = new Text(128);
 
             // keep local for speed
@@ -84,8 +84,8 @@ namespace SkyChain
                     }
                     if (name == null && hdr.Check("Content-Disposition"))
                     {
-                        name = hdr.SeekParam("name");
-                        filename = hdr.SeekParam("filename");
+                        name = hdr.SeekParameter("name");
+                        filename = hdr.SeekParameter("filename");
                     }
                     else if (ctype == null && hdr.Check("Content-Type"))
                     {

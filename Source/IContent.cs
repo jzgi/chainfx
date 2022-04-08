@@ -1,4 +1,4 @@
-﻿namespace SkyChain
+﻿namespace FabricQ
 {
     /// <summary>
     /// Represents a binary web content. 
@@ -8,7 +8,7 @@
         ///
         /// The Internet Media Type (MIME) type, as the value of Content-Type header.
         ///
-        string Type { get; }
+        string CType { get; }
 
         ///
         /// The byte buffer that contains binary content. It can be null.

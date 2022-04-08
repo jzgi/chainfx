@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// A field in a form model.

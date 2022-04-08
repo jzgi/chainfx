@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace SkyChain
+namespace FabricQ
 {
     public static class DataUtility
     {

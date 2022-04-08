@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// Thrown to indicate a blockchain federal network related error.

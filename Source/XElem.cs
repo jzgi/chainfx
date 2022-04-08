@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// An XML element.

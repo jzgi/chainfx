@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 
@@ -11,7 +11,7 @@ namespace SkyChain
         {
         }
 
-        public override string Type { get; set; } = "application/xml";
+        public override string CType { get; set; } = "application/xml";
 
         void AddEsc(string v)
         {

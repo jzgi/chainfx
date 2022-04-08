@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// To indicate that a content parsing-related exception occured.

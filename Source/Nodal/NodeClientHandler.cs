@@ -1,6 +1,6 @@
-﻿using SkyChain.Web;
+﻿using FabricQ.Web;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     public class NodeClientHandler : WebClientHandler
     {

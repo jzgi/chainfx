@@ -4,14 +4,14 @@ using System.Text;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
-    public class ApplicationLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
+    public class FileLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
     {
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        internal ApplicationLogger(string file)
+        internal FileLogger(string file)
         {
             // init the file-based logger
             var stream = new FileStream(file, FileMode.Append, FileAccess.Write);

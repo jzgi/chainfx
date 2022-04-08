@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

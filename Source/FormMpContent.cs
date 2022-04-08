@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.
@@ -19,7 +19,7 @@ namespace SkyChain
             this.boundary = boundary;
         }
 
-        public override string Type { get; set; } = Mime;
+        public override string CType { get; set; } = Mime;
 
         //
         // SINK

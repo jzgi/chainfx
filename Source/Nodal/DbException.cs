@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// Thrown to indicate an error during database operation.

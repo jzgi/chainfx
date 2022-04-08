@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy

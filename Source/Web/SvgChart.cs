@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     public class SvgChart<S> : IResource where S : struct
     {

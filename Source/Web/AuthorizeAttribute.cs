@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// To implement principal authorization of access to the target resources.

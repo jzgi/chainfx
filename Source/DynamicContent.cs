@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Environment;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 
@@ -101,7 +101,7 @@ namespace SkyChain
             }
         }
 
-        public abstract string Type { get; set; }
+        public abstract string CType { get; set; }
 
         public byte[] Buffer => bytebuf;
 
@@ -551,7 +551,7 @@ namespace SkyChain
 
         public override string ToString()
         {
-            return charbuf == null ? Type : new string(charbuf, 0, count);
+            return charbuf == null ? CType : new string(charbuf, 0, count);
         }
 
 

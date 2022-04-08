@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
@@ -14,7 +14,7 @@ namespace SkyChain.Web
         {
         }
 
-        public override string Type { get; set; } = "text/html; charset=utf-8";
+        public override string CType { get; set; } = "text/html; charset=utf-8";
 
         public void AddEsc(string v)
         {

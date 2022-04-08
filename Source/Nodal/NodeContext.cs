@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
+    /// <summary>
+    /// An encapsulation of relevant resourced for domestic or cross-node transactions.
+    /// </summary>
     public class NodeContext : DbContext
     {
         internal Peer self;
 
+        // connector to remote note, can be null
         readonly NodeClient connector;
 
         public JObj In { get; set; }

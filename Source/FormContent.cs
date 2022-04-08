@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// To generate a urlencoded byte or char string.
@@ -19,7 +19,7 @@ namespace SkyChain
         {
         }
 
-        public override string Type { get; set; } = "application/x-www-form-urlencoded";
+        public override string CType { get; set; } = "application/x-www-form-urlencoded";
 
         void AddEsc(string v)
         {

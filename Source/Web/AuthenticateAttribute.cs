@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using static SkyChain.CryptoUtility;
+using static FabricQ.CryptoUtility;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// To determine principal identity based on current web context. The interaction with user, however, is not included.

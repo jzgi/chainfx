@@ -11,10 +11,9 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SkyChain.Nodal;
-using static SkyChain.Web.Application;
+using static FabricQ.Web.Application;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.
@@ -28,32 +27,31 @@ namespace SkyChain.Web
 
         string address;
 
-        bool cache;
-
-        string forward;
-
-        short poll;
-
-        // the embedded HTTP server
+        // the embedded HTTP engine
         readonly KestrelServer server;
 
-        // as proxy
-        WebClient client;
 
-        // stacked entries to be polled
-        ConcurrentDictionary<int, WebPollie> stacked;
+        // local shared cache or not
+        bool cache;
 
-        // the poller thread
-        Thread poller;
+        // shared cache of previous responses
+        ConcurrentDictionary<string, WebCacheEntry> shared;
 
-        // shared cache of responses
-        ConcurrentDictionary<string, WebCachie> shared;
-
-        // the cache cleaner thread
+        // the cache cleaner thread, can be null
         Thread cleaner;
 
-        // networked sites
-        ConcurrentDictionary<string, Peer> netted;
+
+        // outgoing web events 
+        ConcurrentDictionary<int, WebEventLot> outbox;
+
+        // interval for web event processing cycle, in seconds
+        short cycle;
+
+        // client connector to the origin service
+        WebClient connector;
+
+        // 
+        ConcurrentDictionary<string, WebEventLot> inbox;
 
 
         protected WebService()
@@ -92,10 +90,7 @@ namespace SkyChain.Web
             return null;
         }
 
-        public ConcurrentDictionary<string, Peer> Netted => netted;
-
-
-        internal string Address
+        public string Address
         {
             get => address;
             set // set server addr
@@ -115,51 +110,14 @@ namespace SkyChain.Web
                 if (cache)
                 {
                     // create the response cache
-                    shared = new ConcurrentDictionary<string, WebCachie>(ConcurrencyLevel, 1024);
+                    shared = new ConcurrentDictionary<string, WebCacheEntry>(ConcurrencyLevel, 1024);
                 }
             }
         }
 
-        public string Forward
-        {
-            get => forward;
-            internal set
-            {
-                forward = value;
-                if (forward != null)
-                {
-                    client = new WebClient(forward);
-                }
-            }
-        }
-
-        public short Poll
-        {
-            get => poll;
-            internal set
-            {
-                poll = value;
-                if (forward == null || poll > 0)
-                {
-                    stacked = new ConcurrentDictionary<int, WebPollie>(ConcurrencyLevel, 1024);
-                }
-            }
-        }
-
-        public bool IsProxy => forward != null;
-
-        public bool IsProxyPlus => forward != null && poll > 0;
-
-        internal async Task StartAsync(CancellationToken token)
+        protected internal virtual async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);
-
-            Console.WriteLine("[" + Name + "] started at " + address);
-
-            if (forward != null)
-            {
-                Console.WriteLine("as a proxy to [" + forward + "]" + address);
-            }
 
             // create & start the cleaner thread
             if (shared != null)
@@ -185,23 +143,7 @@ namespace SkyChain.Web
                 cleaner.Start();
             }
 
-            // create & start the poller thread
-            if (poll > 0)
-            {
-                poller = new Thread(() =>
-                {
-                    while (!token.IsCancellationRequested)
-                    {
-                        // polling cycle
-                        Thread.Sleep(1000 * poll);
-
-                        // loop to clear or remove each expired items
-                        int now = Environment.TickCount;
-                        // client.GetArrayAsync<>()
-                    }
-                });
-                poller.Start();
-            }
+            Console.WriteLine("[" + Name + "] started at " + address);
         }
 
         internal async Task StopAsync(CancellationToken token)
@@ -213,7 +155,7 @@ namespace SkyChain.Web
         /// <summary>
         /// To asynchronously process the request.
         /// </summary>
-        public async Task ProcessRequestAsync(HttpContext context)
+        public virtual async Task ProcessRequestAsync(HttpContext context)
         {
             var wc = (WebContext) context;
 
@@ -311,7 +253,7 @@ namespace SkyChain.Web
             var content = new StaticContent(bytes)
             {
                 Key = filename,
-                Type = ctyp,
+                CType = ctyp,
                 Adapted = modified,
                 GZip = gzip
             };
@@ -350,7 +292,7 @@ namespace SkyChain.Web
             {
                 if (wc.Shared == true && wc.IsCacheable())
                 {
-                    var ca = new WebCachie(wc.Content)
+                    var ca = new WebCacheEntry(wc.Content)
                     {
                         Code = wc.StatusCode,
                         MaxAge = wc.MaxAge,
@@ -375,22 +317,31 @@ namespace SkyChain.Web
         }
 
 
+        public virtual async Task ProcessEventAsync(IotContext context)
+        {
+        }
+
+
         //
         // poll
         //
 
-        /// <summary>
-        /// Requested by polling from user-agent or a proxy.
-        /// </summary>
-        /// <param name="wc"></param>
-        /// <param name="key"></param>
-        public void onpoll(WebContext wc, int key)
+        ///
+        /// Requested by polling from a proxy. respond with outgoing events
+        /// 
+        public void onswitch(WebContext wc, int key)
         {
-            stacked.TryGetValue(key, out var v);
+            // stacked.TryGetValue(key, out var v);
+
+            var t = wc.ReadAsync<Text>();
+            
+            
+            
+            // return outgoing
 
             string[] strs = null;
-            var jc = new JsonContent(true, 16 * 1024);
-            jc.Put(null, strs);
+            var jc = new TextContent(true, 16 * 1024);
+            // jc.Put(null, strs);
 
             wc.Give(200, jc, null, 0);
         }
@@ -398,7 +349,7 @@ namespace SkyChain.Web
 
         public void AddNotif(int key, string v)
         {
-            var wp = stacked.GetOrAdd(key, (x) => new WebPollie());
+            // var wp = stacked.GetOrAdd(key, (x) => new EventBag());
         }
 
         public void DumpAllStacked()
@@ -408,15 +359,15 @@ namespace SkyChain.Web
 
             jc.OBJ_();
 
-            foreach (var pair in stacked)
-            {
-                var key = pair.Key;
-                var v = pair.Value;
-
-                string[] arr = null;
-
-                jc.Put(key.ToString(), arr);
-            }
+            // foreach (var pair in stacked)
+            // {
+            //     var key = pair.Key;
+            //     var v = pair.Value;
+            //
+            //     string[] arr = null;
+            //
+            //     jc.Put(key.ToString(), arr);
+            // }
 
             jc._OBJ();
         }

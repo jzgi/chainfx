@@ -1,4 +1,4 @@
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     public enum Appear : short
     {

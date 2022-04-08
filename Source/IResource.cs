@@ -1,4 +1,4 @@
-﻿namespace SkyChain
+﻿namespace FabricQ
 {
     /// <summary>
     /// A provider that write its contents. 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// A data model for general unit of information.
@@ -38,14 +38,14 @@ namespace SkyChain
             EXTRA = 0x0100;
 
 
-        internal short typ;
-        internal short status;
-        internal string name;
-        internal string tip;
-        internal DateTime created;
-        internal string creator;
-        internal DateTime adapted;
-        internal string adapter;
+        public short typ;
+        public short status;
+        public string name;
+        public string tip;
+        public DateTime created;
+        public string creator;
+        public DateTime adapted;
+        public string adapter;
 
         public virtual void Read(ISource s, short proj = 0xff)
         {

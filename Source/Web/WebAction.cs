@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// The descriptor for an action method. 

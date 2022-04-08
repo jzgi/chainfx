@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.

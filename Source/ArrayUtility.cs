@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
     /// A set of commonly-used array operations.

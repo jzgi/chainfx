@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

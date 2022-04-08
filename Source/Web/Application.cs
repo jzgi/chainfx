@@ -3,14 +3,14 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+using FabricQ.Nodal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using SkyChain.Nodal;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// The web application scope that holds global states.
@@ -26,16 +26,19 @@ namespace SkyChain.Web
         internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
 
-        static readonly uint[] cryptokey;
+        static readonly uint[] cryptoKey;
 
-        // layered configurations
+        // config
         public static readonly JObj app, ext;
 
+        // X509 certificate
         static readonly X509Certificate2 cert;
 
-        static readonly ApplicationLogger logger;
+        // the global logger
+        static readonly FileLogger logger;
 
 
+        // registered services
         static readonly Map<string, WebService> services = new Map<string, WebService>(4);
 
 
@@ -52,7 +55,7 @@ namespace SkyChain.Web
             // file-based logger
             int logging = app[nameof(logging)];
             var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
-            logger = new ApplicationLogger(logfile)
+            logger = new FileLogger(logfile)
             {
                 Level = logging
             };
@@ -60,7 +63,7 @@ namespace SkyChain.Web
             // security
             //
             string crypto = app[nameof(crypto)];
-            cryptokey = CryptoUtility.HexToKey(crypto);
+            cryptoKey = CryptoUtility.HexToKey(crypto);
 
             // string fedkey = app[nameof(fedkey)]; // federal key
             // _fedkey = CryptoUtility.HexToKey(fedkey);
@@ -92,9 +95,9 @@ namespace SkyChain.Web
 
         public static JObj Ext => ext;
 
-        public static uint[] CryptoKey => cryptokey;
+        public static uint[] CryptoKey => cryptoKey;
 
-        public static ApplicationLogger Logger => logger;
+        public static FileLogger Logger => logger;
 
         public static X509Certificate2 Certificate => cert;
 
@@ -128,22 +131,28 @@ namespace SkyChain.Web
 
             bool cache = webcfg[nameof(cache)];
 
-            string forward = webcfg[nameof(forward)];
-
-            short poll = webcfg[nameof(poll)];
-
             // create service (properties in order)
             var svc = new S
             {
                 Name = name,
                 Address = address,
                 Cache = cache,
-                Forward = forward,
-                Poll = poll
             };
+            if (svc is ProxyService pry)
+            {
+                // forward uri
+                string forward = webcfg[nameof(forward)];
+                pry.Forward = forward;
+
+                // cycle internal
+                short cycle = webcfg[nameof(cycle)];
+                pry.Cycle = cycle;
+            }
             services.Add(name, svc);
 
+            // invoke on creatte
             svc.OnCreate();
+
             return svc;
         }
 

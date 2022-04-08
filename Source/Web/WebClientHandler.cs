@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     public class WebClientHandler : HttpClientHandler
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     public interface INodeClient
     {

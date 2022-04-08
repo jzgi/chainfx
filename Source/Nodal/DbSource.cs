@@ -1,8 +1,8 @@
 using System.Data;
 using System.Text;
-using SkyChain.Web;
+using FabricQ.Web;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     public class DbSource : IKeyable<string>
     {

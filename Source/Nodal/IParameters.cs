@@ -1,7 +1,7 @@
 ﻿using System;
-using SkyChain;
+using FabricQ;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

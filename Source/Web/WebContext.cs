@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
-using static SkyChain.DataUtility;
+using static FabricQ.DataUtility;
 using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     ///
     /// The encapsulation of a web request/response exchange context. It supports multiplexity occuring in SSE and WebSocket.
@@ -62,10 +62,10 @@ namespace SkyChain.Web
 
         public string Role { get; set; }
 
-        // levels of keys along the URI path
+        // segments along the URI path
         WebSeg[] segs;
 
-        int level; // actual number of segments
+        int seglevel; // actual number of segments
 
         internal void AppendSeg(WebWork work, string key, object accessor = null)
         {
@@ -74,16 +74,16 @@ namespace SkyChain.Web
                 segs = new WebSeg[8];
             }
 
-            segs[level++] = new WebSeg(work, key, accessor);
+            segs[seglevel++] = new WebSeg(work, key, accessor);
         }
 
-        public WebSeg this[int pos] => pos <= 0 ? segs[level + pos - 1] : default;
+        public WebSeg this[int pos] => pos <= 0 ? segs[seglevel + pos - 1] : default;
 
         public WebSeg this[Type typ]
         {
             get
             {
-                for (int i = level - 1; i >= 0; i--)
+                for (int i = seglevel - 1; i >= 0; i--)
                 {
                     var seg = segs[i];
                     if (seg.Work.IsOf(typ)) return seg;
@@ -97,7 +97,7 @@ namespace SkyChain.Web
         {
             get
             {
-                for (int i = level - 1; i >= 0; i--)
+                for (int i = seglevel - 1; i >= 0; i--)
                 {
                     var seg = segs[i];
                     if (seg.Work == work) return seg;
@@ -484,25 +484,25 @@ namespace SkyChain.Web
         /// </summary>
         public bool IsCacheable()
         {
-            var code = StatusCode;
-            return code == 200 || code == 203 || code == 204 || code == 206 || code == 300 || code == 301 || code == 404 || code == 405 || code == 410 || code == 414 || code == 501;
+            var sc = StatusCode;
+            return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 || sc == 405 || sc == 410 || sc == 414 || sc == 501;
         }
 
-        public void Give(int status, IContent content = null, bool? shared = null, int maxage = 12)
+        public void Give(int statusCode, IContent content = null, bool? shared = null, int maxage = 12)
         {
-            StatusCode = status;
+            StatusCode = statusCode;
             Content = content;
             Shared = shared;
             MaxAge = maxage;
         }
 
-        public void Give(int status, string text, bool? shared = null, int maxage = 12)
+        public void Give(int statusCode, string text, bool? shared = null, int maxage = 12)
         {
             var content = new TextContent(true, 1024);
 
             content.Add(text);
 
-            StatusCode = status;
+            StatusCode = statusCode;
             Content = content;
             Shared = shared;
             MaxAge = maxage;
@@ -562,7 +562,7 @@ namespace SkyChain.Web
 
             // send out the content async
             fResponse.Headers["Content-Length"] = Content.Count.ToString();
-            fResponse.Headers["Content-Type"] = Content.Type;
+            fResponse.Headers["Content-Type"] = Content.CType;
             await fResponse.Body.WriteAsync(Content.Buffer, 0, Content.Count);
         }
 

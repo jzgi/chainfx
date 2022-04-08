@@ -1,21 +1,21 @@
 using System.Threading.Tasks;
-using SkyChain.Web;
-using static SkyChain.Web.Modal;
-using static SkyChain.Nodal.Home;
+using FabricQ.Web;
+using static FabricQ.Web.Modal;
+using static FabricQ.Nodal.Home;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     [Ui("平台联盟管理", "social")]
-    public class NodalWork : WebWork
+    public class NodeWork : WebWork
     {
         protected internal override void OnCreate()
         {
-            CreateVarWork<NodalVarWork>();
+            CreateVarWork<NodeVarWork>();
         }
 
         public void @default(WebContext wc)
         {
-            var arr = Home.Connectors;
+            var arr = Connectors;
             wc.GivePage(200, h =>
             {
                 h.TOOLBAR(tip: Label);
@@ -62,10 +62,10 @@ namespace SkyChain.Nodal
             else // POST
             {
                 o = await wc.ReadObjectAsync(instance: o);
-                
+
                 using var nc = NewNodeContext();
                 nc.InviteAsync(o);
-                
+
                 wc.GivePane(200); // close dialog
             }
         }

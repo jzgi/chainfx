@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SkyChain
+namespace FabricQ
 {
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
@@ -22,7 +22,7 @@ namespace SkyChain
             level = 0;
         }
 
-        public override string Type { get; set; } = "application/json; charset=utf-8";
+        public override string CType { get; set; } = "application/json; charset=utf-8";
 
         void AddEsc(string v)
         {

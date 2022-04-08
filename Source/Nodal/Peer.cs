@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     public class Peer : Info, IKeyable<short>
     {

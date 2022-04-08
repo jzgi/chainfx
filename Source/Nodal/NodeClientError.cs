@@ -1,4 +1,4 @@
-﻿namespace SkyChain.Nodal
+﻿namespace FabricQ.Nodal
 {
     public enum NodeClientError
     {

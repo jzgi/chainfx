@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// To document a POST request to the target action.

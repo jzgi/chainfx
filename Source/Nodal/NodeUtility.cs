@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     public static class NodeUtility
     {

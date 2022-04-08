@@ -1,6 +1,6 @@
 using System;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// To specify a user interface tool(set) that works in a particular pattern.

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace SkyChain
+namespace FabricQ
 {
     public static class CryptoUtility
     {

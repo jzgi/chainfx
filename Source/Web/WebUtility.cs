@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace SkyChain.Web
+namespace FabricQ.Web
 {
     /// <summary>
     /// A global byte buffer pool.

@@ -2,15 +2,15 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static SkyChain.Nodal.NodeUtility;
-using WebClient = SkyChain.Web.WebClient;
+using static FabricQ.Nodal.NodeUtility;
+using WebClient = FabricQ.Web.WebClient;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// A client connector to a specific remote peer..
     /// </summary>
-    public class NodeClient : WebClient, IKeyable<short>, INodeClient
+    public class NodeClient : Web.WebClient, IKeyable<short>, INodeClient
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -199,7 +199,7 @@ namespace SkyChain.Nodal
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 req.Content = content;
-                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
 
                 // response
@@ -234,7 +234,7 @@ namespace SkyChain.Nodal
                 peer.Write(jc);
 
                 req.Content = jc;
-                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, jc.Type);
+                req.Headers.TryAddWithoutValidation(CONTENT_TYPE, jc.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, jc.Count.ToString());
 
                 // response

@@ -1,9 +1,9 @@
 using System;
 
-namespace SkyChain
+namespace FabricQ
 {
     /// <summary>
-    /// A text/plain model or comma-separate values (CSV). Also it can be used as a UTF-8 string builder.
+    /// A text/plain model or comma-separate (text/csv) lines and values (CSV). Also it can be used as a UTF-8 string builder.
     /// </summary>
     public class Text : ISource
     {
@@ -41,7 +41,7 @@ namespace SkyChain
             charbuf[count++] = c;
         }
 
-        // utf-8 decoding 
+        /// Utf-8 decoding 
         public void Accept(int b)
         {
             // process a byte

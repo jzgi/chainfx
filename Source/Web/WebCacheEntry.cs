@@ -1,48 +1,53 @@
-﻿namespace SkyChain.Web
+﻿namespace FabricQ.Web
 {
     /// <summary>
-    /// An entry of cached web resource, that might be emptied but not removed 
+    /// An entry of cached web resource, that might be emptied 
     /// </summary>
-    public class WebCachie : IContent
+    public class WebCacheEntry : IContent
     {
-        // an impl of content
-        //
-        string type; // content type
+        // content type
+        string ctype;
 
-        byte[] buffer; // content byte array
+        // fixed content byte array
+        byte[] array;
 
+        // etag
         string etag;
 
 
-        internal WebCachie(IContent cnt)
+        internal WebCacheEntry(IContent c)
         {
-            this.type = cnt.Type;
-            if (cnt is DynamicContent dyn)
+            ctype = c.CType;
+            if (c is DynamicContent dyn)
             {
-                this.buffer = dyn.ToByteArray();
+                array = dyn.ToByteArray();
             }
             else
             {
-                this.buffer = cnt.Buffer;
+                array = c.Buffer;
             }
-            this.etag = cnt.ETag;
+            etag = c.ETag;
         }
 
-        public string Type => type;
+        public string CType => ctype;
 
-        public byte[] Buffer => buffer;
+        public byte[] Buffer => array;
 
-        public int Count => buffer.Length;
+        public int Count => array.Length;
 
         public string ETag => etag;
 
+        /// <summary>
         /// cacheable response status, 0 means emptied
+        /// </summary>
         public int Code { get; internal set; }
 
         /// time ticks when entered or emptied
         public int Tick { get; internal set; }
 
+        /// <summary>
         /// maxage in seconds
+        /// </summary>
         public int MaxAge { get; internal set; }
 
         public bool IsEmptied => Code == 0;
@@ -64,7 +69,7 @@
                 {
                     Code = 0; // set to cleared
                     // note: buffer won't return to pool
-                    buffer = null;
+                    array = null;
                     MaxAge = 0;
                     Tick = nowtick; // time being cleared
                 }

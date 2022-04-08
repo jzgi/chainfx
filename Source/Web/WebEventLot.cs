@@ -1,6 +1,6 @@
-﻿namespace SkyChain.Web
+﻿namespace FabricQ.Web
 {
-    public class WebPollie
+    public class WebEventLot
     {
         public const int MAX = 32;
 

@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using SkyChain.Web;
-using static SkyChain.Nodal.NodeUtility;
-using static SkyChain.Nodal.Home;
+using FabricQ.Web;
+using static FabricQ.Nodal.NodeUtility;
+using static FabricQ.Nodal.Home;
 
-namespace SkyChain.Nodal
+namespace FabricQ.Nodal
 {
     /// <summary>
     /// A web service that realizes inter-peer communication. 
