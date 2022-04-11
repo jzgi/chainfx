@@ -1,9 +1,9 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static FabricQ.DataUtility;
+using static Chainly.DataUtility;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.

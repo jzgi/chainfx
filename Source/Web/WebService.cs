@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static FabricQ.Web.Application;
+using static Chainly.Web.Application;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.
@@ -70,7 +70,7 @@ namespace FabricQ.Web
             {
                 opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Certificate);
 
-                INF("cert is set");
+                Inf("cert is set");
             }
 
             server = new KestrelServer(Options.Create(opts), TransportFactory, Logger);
@@ -334,9 +334,8 @@ namespace FabricQ.Web
             // stacked.TryGetValue(key, out var v);
 
             var t = wc.ReadAsync<Text>();
-            
-            
-            
+
+
             // return outgoing
 
             string[] strs = null;

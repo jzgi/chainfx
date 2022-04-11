@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// To generate a plain/text string or CSV content. 

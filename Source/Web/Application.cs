@@ -3,19 +3,19 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using FabricQ.Nodal;
+using Chainly.Nodal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// The web application scope that holds global states.
     /// </summary>
-    public abstract class Application : Home
+    public abstract class Application : Nodal.Nodality
     {
         public const string APP_JSON = "app.json";
 
@@ -77,7 +77,7 @@ namespace FabricQ.Web
                 }
                 catch (Exception e)
                 {
-                    WAR(e.Message);
+                    War(e.Message);
                 }
             }
 
@@ -85,7 +85,7 @@ namespace FabricQ.Web
             JObj home = app[nameof(home)];
             if (home != null)
             {
-                InitializeHome(home);
+                InitializeNodality(home);
             }
 
             ext = app[nameof(ext)];
@@ -206,7 +206,7 @@ namespace FabricQ.Web
         // logging methods
         //
 
-        public static void TRC(string msg, Exception ex = null)
+        public static void Trc(string msg, Exception ex = null)
         {
             if (msg != null)
             {
@@ -214,7 +214,7 @@ namespace FabricQ.Web
             }
         }
 
-        public static void DBG(string msg, Exception ex = null)
+        public static void Dbg(string msg, Exception ex = null)
         {
             if (msg != null)
             {
@@ -222,7 +222,7 @@ namespace FabricQ.Web
             }
         }
 
-        public static void INF(string msg, Exception ex = null)
+        public static void Inf(string msg, Exception ex = null)
         {
             if (msg != null)
             {
@@ -230,7 +230,7 @@ namespace FabricQ.Web
             }
         }
 
-        public static void WAR(string msg, Exception ex = null)
+        public static void War(string msg, Exception ex = null)
         {
             if (msg != null)
             {
@@ -238,7 +238,7 @@ namespace FabricQ.Web
             }
         }
 
-        public static void ERR(string msg, Exception ex = null)
+        public static void Err(string msg, Exception ex = null)
         {
             if (msg != null)
             {

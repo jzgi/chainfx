@@ -1,15 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using FabricQ.Web;
-using static FabricQ.Nodal.NodeUtility;
-using static FabricQ.Nodal.Home;
+using Chainly.Web;
+using static Chainly.Nodal.NodalUtility;
+using static Chainly.Nodal.Nodality;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
-    /// A web service that realizes inter-peer communication. 
+    /// A web service that is called by node clients during  peer communication. 
     /// </summary>
-    public class NodeService : WebService, INodeService
+    public class NodalService : WebService
     {
         public async Task oncall(WebContext wc)
         {
@@ -30,32 +30,32 @@ namespace FabricQ.Nodal
             // }
         }
 
-        protected bool NEW(NodeContext cc, string table)
+        protected bool NEW(FlowContext cc, string table)
         {
             return false;
         }
 
-        protected bool MOD(NodeContext cc, string table)
+        protected bool MOD(FlowContext cc, string table)
         {
             return false;
         }
 
-        protected bool FRO(NodeContext cc, string table)
+        protected bool FRO(FlowContext cc, string table)
         {
             return false;
         }
 
-        protected bool BAK(NodeContext cc, string table)
+        protected bool BAK(FlowContext cc, string table)
         {
             return false;
         }
 
-        protected bool ABT(NodeContext cc, string table)
+        protected bool ABT(FlowContext cc, string table)
         {
             return false;
         }
 
-        protected bool COM(NodeContext cc, string table)
+        protected bool COM(FlowContext cc, string table)
         {
             return false;
         }
@@ -86,7 +86,7 @@ namespace FabricQ.Nodal
             throw new NotImplementedException();
         }
 
-        void INodeService.onpoll(WebContext wc)
+        void onpoll(WebContext wc)
         {
             // veriify 
             var peerid = Self.id;

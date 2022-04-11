@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A JSON array.
@@ -113,6 +113,11 @@ namespace FabricQ
         {
             JObj jo = elements[cur];
             return jo != null && jo.Get(name, ref v);
+        }
+
+        public bool Get(string name, ref Guid v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref string v)

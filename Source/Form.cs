@@ -1,7 +1,7 @@
 using System;
 
 // ReSharper disable once CheckNamespace
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
@@ -118,7 +118,6 @@ namespace FabricQ
                 v = fld;
                 return true;
             }
-
             return false;
         }
 
@@ -129,8 +128,12 @@ namespace FabricQ
                 v = fld;
                 return true;
             }
-
             return false;
+        }
+
+        public bool Get(string name, ref Guid v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref string v)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 

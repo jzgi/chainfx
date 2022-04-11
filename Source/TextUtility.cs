@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace FabricQ
+namespace Chainly
 {
     public static class TextUtility
     {

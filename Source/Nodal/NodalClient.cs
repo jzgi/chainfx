@@ -1,16 +1,17 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using static FabricQ.Nodal.NodeUtility;
-using WebClient = FabricQ.Web.WebClient;
+using static Chainly.Nodal.NodalUtility;
+using WebClient = Chainly.Web.WebClient;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
-    /// A client connector to a specific remote peer..
+    /// A client connector to the specific remote peer..
     /// </summary>
-    public class NodeClient : Web.WebClient, IKeyable<short>, INodeClient
+    public class NodalClient : Web.WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -21,7 +22,7 @@ namespace FabricQ.Nodal
             PEER_ERROR = 4,
             INTERNAL_ERROR = 5;
 
-        public static readonly Map<short, string> Statuses = new Map<short, string>
+        public static readonly Map<short, string> States = new Map<short, string>
         {
             {0, null},
             {NORMAL, "normal"},
@@ -31,7 +32,7 @@ namespace FabricQ.Nodal
             {INTERNAL_ERROR, "internal error"},
         };
 
-        // when a fed connector
+        // the remote peer
         readonly Peer peer;
 
         // acceptable remote addresses
@@ -39,16 +40,37 @@ namespace FabricQ.Nodal
 
         Task<(short, JArr)> polltsk;
 
-        // the status showing what is happening 
-        short status;
+        // the state of connectivity & operation
+        short state;
 
         string err;
+        internal volatile int blockid;
+        internal long blockcs;
+
+        internal async Task PeekLastBlockAsync(DbContext dc)
+        {
+            await dc.QueryTopAsync("SELECT seq, blockcs FROM ledgrs_ WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(peer.Id));
+            dc.Let(out long seq);
+            dc.Let(out long bcs);
+            if (seq > 0)
+            {
+                var (bid, _) = ResolveSeq(seq);
+
+                blockid = bid;
+                blockcs = bcs;
+            }
+        }
+
+        internal void IncrementBlockId()
+        {
+            Interlocked.Increment(ref blockid);
+        }
 
 
         /// <summary>
-        /// To construct a federation client. 
+        /// To construct a node client. 
         /// </summary>
-        internal NodeClient(Peer peer, NodeClientHandler handler = null) : base(peer.domain, handler ?? new NodeClientHandler())
+        internal NodalClient(Peer peer, NodalClientHandler handler = null) : base(peer.url, handler ?? new NodalClientHandler())
         {
             this.peer = peer;
             try
@@ -65,7 +87,7 @@ namespace FabricQ.Nodal
 
         public short Key => peer.id;
 
-        public Peer Info => peer;
+        public Peer Peer => peer;
 
         public string Err => err;
 
@@ -87,11 +109,11 @@ namespace FabricQ.Nodal
 
             if (code == 500)
             {
-                status = PEER_ERROR;
+                state = PEER_ERROR;
             }
             else if (code == 200 || code == 204)
             {
-                status = NORMAL;
+                state = NORMAL;
             }
 
             block = cnt;
@@ -112,25 +134,25 @@ namespace FabricQ.Nodal
 
         internal void SetDataError(string err)
         {
-            this.status = DATA_ERROR;
+            this.state = DATA_ERROR;
             this.err = err;
         }
 
         internal void SetDataError(long seq)
         {
-            this.status = DATA_ERROR;
+            this.state = DATA_ERROR;
             this.err = seq.ToString();
         }
 
         internal void SetInternalError(string seq)
         {
-            status = INTERNAL_ERROR;
+            state = INTERNAL_ERROR;
             // this.seq = seq;
         }
 
         public void ScheduleRemotePoll(int blockid)
         {
-            if (status != DATA_ERROR)
+            if (state != DATA_ERROR)
             {
                 // schedule to execute
                 if (polltsk == null || polltsk.IsCompleted)
@@ -151,7 +173,7 @@ namespace FabricQ.Nodal
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Post, "/onpoll");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Home.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Nodality.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_BLOCK_ID, blockid.ToString());
 
@@ -169,7 +191,7 @@ namespace FabricQ.Nodal
             }
             catch
             {
-                status = NETWORK_ERROR;
+                state = NETWORK_ERROR;
                 return (0, null);
             }
         }
@@ -195,7 +217,7 @@ namespace FabricQ.Nodal
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oncall");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Home.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Nodality.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 req.Content = content;
@@ -214,20 +236,20 @@ namespace FabricQ.Nodal
             }
             catch
             {
-                status = NETWORK_ERROR;
+                state = NETWORK_ERROR;
                 return (0, false);
             }
         }
 
 
-        public async Task<(int, NodeClientError)> InviteAsync(Peer peer)
+        public async Task<(int, NodalClientError)> InviteAsync(Peer peer)
         {
             try
             {
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/oninvite");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Home.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Nodality.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 var jc = new JsonContent(true, 1024);
@@ -249,9 +271,14 @@ namespace FabricQ.Nodal
             }
             catch
             {
-                status = NETWORK_ERROR;
+                state = NETWORK_ERROR;
                 return (0, 0);
             }
+        }
+
+
+        internal async Task AddTargetAccountAsync(string acct, short typ, int v)
+        {
         }
 
         public void ApproveAsk()

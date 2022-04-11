@@ -1,7 +1,7 @@
 ﻿using System;
-using FabricQ;
+using Chainly;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

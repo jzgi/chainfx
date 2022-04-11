@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// To parse multipart/form-data content, with the part Content-Length extension.

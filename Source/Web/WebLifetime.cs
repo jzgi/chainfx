@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

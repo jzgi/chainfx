@@ -3,9 +3,9 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using FabricQ.Nodal;
+using Chainly.Nodal;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.

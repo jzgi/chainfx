@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// To do filtering right after executing an action method.

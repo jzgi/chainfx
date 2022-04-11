@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// The descriptor for an action method. 

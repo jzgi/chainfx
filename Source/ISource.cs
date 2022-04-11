@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// Represents a provider or input source of dataset, a data object, or some of its data fields.
@@ -22,6 +22,8 @@ namespace FabricQ
         bool Get(string name, ref decimal v);
 
         bool Get(string name, ref DateTime v);
+
+        bool Get(string name, ref Guid v);
 
         bool Get(string name, ref string v);
 

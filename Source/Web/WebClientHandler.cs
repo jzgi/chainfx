@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     public class WebClientHandler : HttpClientHandler
     {

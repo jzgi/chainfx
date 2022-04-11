@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A binary static content of certain mime type.

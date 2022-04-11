@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A data model for general unit of information.

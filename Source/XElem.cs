@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// An XML element.
@@ -121,7 +121,6 @@ namespace FabricQ
                 v = attr.ToBool();
                 return true;
             }
-
             return false;
         }
 
@@ -132,7 +131,6 @@ namespace FabricQ
                 v = attr.ToChar();
                 return true;
             }
-
             return false;
         }
 
@@ -143,7 +141,6 @@ namespace FabricQ
                 v = attr.ToShort();
                 return true;
             }
-
             return false;
         }
 
@@ -154,7 +151,6 @@ namespace FabricQ
                 v = attr.ToInt();
                 return true;
             }
-
             return false;
         }
 
@@ -165,7 +161,6 @@ namespace FabricQ
                 v = attr.ToLong();
                 return true;
             }
-
             return false;
         }
 
@@ -176,7 +171,6 @@ namespace FabricQ
                 v = double.Parse(attr);
                 return true;
             }
-
             return false;
         }
 
@@ -187,7 +181,6 @@ namespace FabricQ
                 v = decimal.Parse(attr);
                 return true;
             }
-
             return false;
         }
 
@@ -198,8 +191,12 @@ namespace FabricQ
                 v = attr.ToDateTime();
                 return true;
             }
-
             return false;
+        }
+
+        public bool Get(string name, ref Guid v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref string v)
@@ -209,7 +206,6 @@ namespace FabricQ
                 v = attr;
                 return true;
             }
-
             return false;
         }
 

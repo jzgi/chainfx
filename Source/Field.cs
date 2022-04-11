@@ -1,6 +1,6 @@
 using System;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A field in a form model.

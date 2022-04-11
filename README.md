@@ -1,8 +1,8 @@
 # Introduction  
 
-Fabric for Quality (FabricQ) (品链) is a cloud blockchain framework for building decentralized supply chain solutions and metaverse systems
+Chainly (品链) is a cloud blockchain framework for building decentralized supply chain solutions and metaverse systems
 
-SkyChain's characteristics:
+Chainly's characteristics:
 
 * Interoperable through open standards: HTTP/1.1, OAuth 2.1, and JWT
 * The built-in federated blockchain engine powers a distributed ledger, suitable for a formal credit solution like Carbon Credits or Time Bank

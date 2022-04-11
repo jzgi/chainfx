@@ -1,6 +1,6 @@
 using System;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
     /// Thrown to indicate an error during database operation.

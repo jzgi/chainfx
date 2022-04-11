@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     public class SvgChart<S> : IResource where S : struct
     {

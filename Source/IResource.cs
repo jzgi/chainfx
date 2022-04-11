@@ -1,4 +1,4 @@
-﻿namespace FabricQ
+﻿namespace Chainly
 {
     /// <summary>
     /// A provider that write its contents. 

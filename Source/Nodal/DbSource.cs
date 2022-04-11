@@ -1,8 +1,6 @@
-using System.Data;
 using System.Text;
-using FabricQ.Web;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     public class DbSource : IKeyable<string>
     {
@@ -49,17 +47,5 @@ namespace FabricQ.Nodal
         public string Key => Name;
 
         public string ConnectionString => connstr;
-
-        public DbContext NewDbContext(IsolationLevel? level = null)
-        {
-            var dc = new DbContext(this);
-            if (level != null)
-            {
-                dc.Begin(level.Value);
-            }
-
-            return dc;
-        }
-
     }
 }

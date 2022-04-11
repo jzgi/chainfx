@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// To implement principal authorization of access to the target resources.

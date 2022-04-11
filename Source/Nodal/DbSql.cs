@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

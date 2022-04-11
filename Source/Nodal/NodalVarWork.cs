@@ -1,17 +1,17 @@
 ﻿using System.Threading.Tasks;
-using FabricQ.Web;
-using static FabricQ.Web.Modal;
-using static FabricQ.Nodal.Home;
+using Chainly.Web;
+using static Chainly.Web.Modal;
+using static Chainly.Nodal.Nodality;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
-    public class NodeVarWork : WebWork
+    public class NodalVarWork : WebWork
     {
         [Ui("修改", @group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
-            var o = GetConnector(id)?.Info;
+            var o = GetConnector(id)?.Peer;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -19,7 +19,7 @@ namespace FabricQ.Nodal
                     h.FORM_().FIELDSUL_("节点信息");
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().URL("连接地址", nameof(o.domain), o.domain, max: 30, required: true)._LI();
+                    h.LI_().URL("连接地址", nameof(o.url), o.url, max: 30, required: true)._LI();
                     h.LI_().SELECT("状态", nameof(o.status), o.status, Peer.Statuses)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });
@@ -43,7 +43,7 @@ namespace FabricQ.Nodal
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];
-            var o = GetConnector(id)?.Info;
+            var o = GetConnector(id)?.Peer;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -51,7 +51,7 @@ namespace FabricQ.Nodal
                     h.FORM_().FIELDSUL_("节点信息");
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
-                    h.LI_().URL("连接地址", nameof(o.domain), o.domain, max: 30, required: true)._LI();
+                    h.LI_().URL("连接地址", nameof(o.url), o.url, max: 30, required: true)._LI();
                     h.LI_().SELECT("状态", nameof(o.status), o.status, Peer.Statuses)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });

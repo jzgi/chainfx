@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// To parse application/x-www-form-urlencoded octets or a character string.

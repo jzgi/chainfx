@@ -1,35 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
-    /// An encapsulation of relevant resourced for domestic or cross-node transactions.
+    /// An encapsulation of relevant resources for domestic or inter-node transaction flows.
     /// </summary>
-    public class NodeContext : DbContext
+    public class FlowContext : DbContext
     {
-        internal Peer self;
+        // connector to remote peer, can be null when domestic
+        readonly NodalClient connector;
 
-        // connector to remote note, can be null
-        readonly NodeClient connector;
-
-        public JObj In { get; set; }
-
-        public JObj Out;
-
-        internal NodeContext(DbSource dbSource, NodeClient connector) : base(dbSource)
+        internal FlowContext(NodalClient connector)
         {
             this.connector = connector;
         }
 
-        public bool IsRemote => connector != null;
+        public bool IsDemostic => connector == null;
 
         public async Task SetState(string table, long id, short state, bool seal = false)
         {
             Sql("UPDATE ").T(table).T(" SET state = @1 WHERE id = @2");
             await QueryAsync(p => p.Set(state).Set(id));
 
-            if (IsRemote)
+            if (IsDemostic)
             {
                 // remote call to update corresponding record
             }
@@ -47,25 +41,25 @@ namespace FabricQ.Nodal
 
         public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0xff)
         {
+            var self = Nodality.Self;
             if (peerid == 0 || peerid == self.id) // call in- place
             {
                 // local
             }
             else // call remote
             {
-                var conn = Home.GetConnector(peerid);
+                var conn = Nodality.GetConnector(peerid);
                 if (conn != null)
                 {
                     // args
                     var cnt = new JsonContent(true, 1024);
-                    cnt.Put(null, In);
 
                     // remote call
                     var (code, v) = await conn.CallAsync(0, 0, op, cnt);
                 }
                 else
                 {
-                    throw new NodeException("");
+                    throw new NodalException("");
                 }
             }
             return false;
@@ -78,7 +72,7 @@ namespace FabricQ.Nodal
             await ExecuteAsync(p => peer.Write(p));
 
             // remote req
-            peer.id = Home.Self.id;
+            peer.id = Nodality.Self.id;
             var (code, err) = await connector.InviteAsync(peer);
         }
 
@@ -86,8 +80,21 @@ namespace FabricQ.Nodal
         {
         }
 
-        public async void TransferAsync(Peer peer)
+        public async Task TransferAsync(string srcAcct, int v, string targAcct)
         {
+            // deduct source account (always local)
+            Sql("INSERT ledgrs_ (seq, acct, name, v, bal, rpeerid, racct) VALUES () ");
+            await ExecuteAsync();
+
+            // target account
+            if (IsDemostic)
+            {
+                Sql("INSERT ledgrs_ (seq, acct, name, v, bal, rpeerid, racct) VALUES () ");
+            }
+            else // remote
+            {
+                await connector.AddTargetAccountAsync(targAcct, 0, 0);
+            }
         }
     }
 }

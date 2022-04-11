@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
-    /// An environment for database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
+    /// The working environment for a series of database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
     /// </summary>
     public class DbContext : ISource, IParameters, IDisposable
     {
@@ -22,8 +22,6 @@ namespace FabricQ.Nodal
             "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
             "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31", "v32"
         };
-
-        readonly DbSource _dbsource;
 
         readonly NpgsqlConnection connection;
 
@@ -43,18 +41,15 @@ namespace FabricQ.Nodal
         // current parameter index
         int paramidx;
 
-        internal DbContext(DbSource dbsource)
+        internal DbContext()
         {
-            this._dbsource = dbsource;
-
+            var dbsource = Nodality.DbSource;
             connection = new NpgsqlConnection(dbsource.ConnectionString);
             command = new NpgsqlCommand
             {
                 Connection = connection
             };
         }
-
-        public DbSource Dbsource => _dbsource;
 
         public bool IsMultiple => multiple;
 
@@ -801,6 +796,23 @@ namespace FabricQ.Nodal
                 if (!reader.IsDBNull(ord))
                 {
                     v = reader.GetDateTime(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref Guid v)
+        {
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetGuid(ord);
                     return true;
                 }
             }

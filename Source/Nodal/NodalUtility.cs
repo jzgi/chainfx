@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
-    public static class NodeUtility
+    public static class NodalUtility
     {
         public const string X_FROM = "X-From";
 
@@ -22,7 +22,7 @@ namespace FabricQ.Nodal
 
         public const int BLOCK_CAPACITY = 1000;
 
-        internal static (int, short) ResolveSeq(long seq)
+        internal static (int blockid, short idx) ResolveSeq(long seq)
         {
             var blockid = (int) (seq / BLOCK_CAPACITY);
             var idx = (short) (seq % BLOCK_CAPACITY);
@@ -64,13 +64,13 @@ namespace FabricQ.Nodal
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || Home.Self.id == peerid) // local
+                if (peerid == 0 || Nodality.Self.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = Home.GetConnector(peerid);
+                    var conn = Nodality.GetConnector(peerid);
                 }
             }
             return null;

@@ -5,19 +5,19 @@
         <Authors>skyiah</Authors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DebugType>portable</DebugType>
-        <PackageId>SkyChain</PackageId>
+        <PackageId>FabricQ</PackageId>
         <RuntimeFrameworkVersion>3.1</RuntimeFrameworkVersion>
         <Version>4.0.1</Version>
         <LangVersion>8</LangVersion>
-        <Company>Skyiah Technologies</Company>
-        <PackageProjectUrl>https://github.com/skyiah/skychain</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/skyiah/skychain</RepositoryUrl>
+        <Company>Jgz Institute for IT Research</Company>
+        <PackageProjectUrl>https://github.com/jzgi</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/jzgi</RepositoryUrl>
         <PackageVersion>4.1.0</PackageVersion>
-        <Title>SkyChain Framework</Title>
+        <Title>FabricQ Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
         <AssemblyVersion>4.1</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>SkyChain</RootNamespace>
+        <RootNamespace>FabricQ</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>

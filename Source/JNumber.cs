@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     ///
     /// Used to build a number during a parsing process.

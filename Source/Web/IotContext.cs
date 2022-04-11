@@ -1,4 +1,4 @@
-﻿namespace FabricQ.Web
+﻿namespace Chainly.Web
 {
     public class IotContext
     {

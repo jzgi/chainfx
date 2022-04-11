@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// The enumeration of JSON member types.

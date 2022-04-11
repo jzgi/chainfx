@@ -1,6 +1,6 @@
 using System;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A text/plain model or comma-separate (text/csv) lines and values (CSV). Also it can be used as a UTF-8 string builder.
@@ -123,6 +123,11 @@ namespace FabricQ
         }
 
         public bool Get(string name, ref DateTime v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get(string name, ref Guid v)
         {
             throw new NotImplementedException();
         }

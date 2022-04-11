@@ -1,4 +1,4 @@
-﻿namespace FabricQ
+﻿namespace Chainly
 {
     /// <summary>
     /// Represents a binary web content. 

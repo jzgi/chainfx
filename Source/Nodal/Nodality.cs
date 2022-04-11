@@ -4,12 +4,12 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FabricQ.Nodal
+namespace Chainly.Nodal
 {
     /// <summary>
-    /// The static home environment for data store and being a node of the federated blockchain network. 
+    /// The static environment for data store and being a node of the blockchain network. 
     /// </summary>
-    public abstract class Home
+    public abstract class Nodality
     {
         // db
         //
@@ -23,79 +23,80 @@ namespace FabricQ.Nodal
         static List<DbCache> mapCaches; // many a map
 
 
-        // connectivty
+        // peer connectivty
         //
 
         static Peer self;
 
-        static readonly Map<short, NodeClient> connectors = new Map<short, NodeClient>(32);
-
-        static bool hub;
+        // notice lock among element insertion and proxessing loopings
+        static readonly Map<short, NodalClient> connectors = new Map<short, NodalClient>(32);
 
 
         // imports foreign blocks 
         //
 
-        static Thread replicator;
+        // periodically pulling of blocks of remote ledger  records
+        static Thread puller;
 
 
-        internal static void InitializeHome(JObj homecfg)
+        internal static async Task InitializeNodality(JObj nodecfg)
         {
             // create db source
-            dbSource = new DbSource(homecfg);
+            dbSource = new DbSource(nodecfg);
 
             // create self peer info
-            self = new Peer(homecfg)
+            self = new Peer(nodecfg)
             {
             };
 
-            // load & setup peer connectors
+            // load  peer connectors
+            //
             using var dc = NewDbContext();
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE status >= 0");
-            var arr = dc.Query<Peer>();
+            var arr = await dc.QueryAsync<Peer>();
             if (arr != null)
             {
-                int ties = 0;
-                foreach (var peer in arr)
+                lock (connectors)
                 {
-                    var cli = new NodeClient(peer);
+                    foreach (var peer in arr)
+                    {
+                        var cli = new NodalClient(peer);
 
-                    connectors.Add(cli);
+                        connectors.Add(cli);
 
-                    // init current block id
-                    // await o.PeekLastBlockAsync(dc);
-
-                    ties++;
-                }
-
-                if (ties >= 2)
-                {
-                    hub = true;
+                        // init current block id
+                        // await o.PeekLastBlockAsync(dc);
+                    }
                 }
             }
 
-
-            // start the replicator thead
-            replicator = new Thread(Replicate)
+            // start the puller thead
+            puller = new Thread(Pull)
             {
-                Name = "Replicator"
+                Name = "Block Puller"
             };
-            replicator.Start();
+            puller.Start();
         }
 
 
-        #region DB-AND-CACHE
+        #region DB-API
 
         public static DbSource DbSource => dbSource;
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
         {
-            if (dbSource == null) // check on-the-fly
+            if (dbSource == null)
             {
-                throw new DbException("missing 'home' in app.json");
+                throw new DbException("missing 'nodal' in app.json");
             }
 
-            return dbSource.NewDbContext(level);
+            var dc = new DbContext();
+            if (level != null)
+            {
+                dc.Begin(level.Value);
+            }
+
+            return dc;
         }
 
         public static void Cache<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
@@ -252,11 +253,9 @@ namespace FabricQ.Nodal
         #endregion
 
 
-        #region NODAL-NETWORK
+        #region NODAL-API
 
         public static Peer Self => self;
-
-        public static bool IsHub => hub;
 
         //
         // transaction id generator
@@ -268,30 +267,29 @@ namespace FabricQ.Nodal
             return Interlocked.Increment(ref lastId);
         }
 
-        public static NodeClient GetConnector(short peerid) => connectors[peerid];
+        public static NodalClient GetConnector(short peerid) => connectors[peerid];
 
-        public static Map<short, NodeClient> Connectors => connectors;
+        public static Map<short, NodalClient> Connectors => connectors;
 
 
-        public static NodeContext NewNodeContext(short peerid = 0, IsolationLevel? level = null)
+        public static FlowContext NewFlowContext(short toPeerId = 0, IsolationLevel? level = IsolationLevel.ReadCommitted)
         {
             if (dbSource == null)
             {
-                throw new NodeException("missing 'home' in app.json");
+                throw new NodalException("missing 'nodal' in app.json");
             }
 
-            var cli = GetConnector(peerid);
-            var cc = new NodeContext(dbSource, cli)
+            var cli = toPeerId > 0 ? GetConnector(toPeerId) : null;
+            var fc = new FlowContext(cli)
             {
-                self = Self,
             };
 
             if (level != null)
             {
-                cc.Begin(level.Value);
+                fc.Begin(level.Value);
             }
 
-            return cc;
+            return fc;
         }
 
         #endregion
@@ -304,7 +302,7 @@ namespace FabricQ.Nodal
 
         const int MIN_BLOCK_SIZE = 8;
 
-        static async void Replicate(object state)
+        static async void Pull(object state)
         {
             while (true)
             {
@@ -317,7 +315,7 @@ namespace FabricQ.Nodal
                 {
                     var cli = connectors.ValueAt(i);
 
-                    if (!cli.Info.IsRunning) continue;
+                    if (!cli.Peer.IsRunning) continue;
 
                     int busy = 0;
                     var code = cli.TryReap(out var arr);

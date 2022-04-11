@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     ///
     /// Parse JSON into object model from either bytes or string.

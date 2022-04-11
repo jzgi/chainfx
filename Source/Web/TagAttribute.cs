@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

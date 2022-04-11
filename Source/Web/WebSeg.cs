@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy

@@ -1,6 +1,6 @@
 using System;
 
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// A JSON object model.
@@ -130,8 +130,12 @@ namespace FabricQ
                 v = mbr;
                 return true;
             }
-
             return false;
+        }
+
+        public bool Get(string name, ref Guid v)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Get(string name, ref string v)
@@ -141,7 +145,6 @@ namespace FabricQ
                 v = mbr;
                 return true;
             }
-
             return false;
         }
 

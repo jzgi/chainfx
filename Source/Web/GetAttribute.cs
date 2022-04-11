@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// To document a GET request to the target action.

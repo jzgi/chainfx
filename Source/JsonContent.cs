@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FabricQ
+namespace Chainly
 {
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.

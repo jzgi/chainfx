@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using static FabricQ.CryptoUtility;
+using static Chainly.CryptoUtility;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     /// <summary>
     /// To determine principal identity based on current web context. The interaction with user, however, is not included.

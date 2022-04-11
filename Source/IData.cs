@@ -1,4 +1,4 @@
-﻿namespace FabricQ
+﻿namespace Chainly
 {
     /// <summary>
     /// A data object that reads from input source and writes to output sink.

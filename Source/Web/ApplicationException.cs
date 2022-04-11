@@ -1,6 +1,6 @@
 using System;
 
-namespace FabricQ.Web
+namespace Chainly.Web
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

@@ -1,4 +1,4 @@
-namespace FabricQ
+namespace Chainly
 {
     /// <summary>
     /// To analyze HTTP header.
