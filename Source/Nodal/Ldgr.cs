@@ -4,11 +4,11 @@ using System.Threading;
 namespace Chainly.Nodal
 {
     /// <summary>
-    /// A ledger record of the distributed ledger system.
+    /// A ledger record in the distributed ledger system.
     /// </summary>
-    public class Ledgr : IData, IKeyable<int>
+    public class Ldgr : IData, IKeyable<int>
     {
-        public static readonly Ledgr Empty = new Ledgr();
+        public static readonly Ldgr Empty = new Ldgr();
 
         // 
         public const short
@@ -35,8 +35,8 @@ namespace Chainly.Nodal
 
         internal string name; // account name
 
-        internal DateTime created; 
-        internal string creator; 
+        internal DateTime created;
+        internal string creator;
 
         internal decimal amt;
 

@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 namespace Chainly.Nodal
 {
     /// <summary>
-    /// An encapsulation of relevant resources for domestic or inter-node transaction flows.
+    /// An encapsulation of relevant resources for domestic or inter-node ledger transaction.
     /// </summary>
-    public class FlowContext : DbContext
+    public class LdgrContext : DbContext
     {
         // connector to remote peer, can be null when domestic
-        readonly NodalClient connector;
+        readonly FedClient connector;
 
-        internal FlowContext(NodalClient connector)
+        internal LdgrContext(FedClient connector)
         {
             this.connector = connector;
         }
@@ -41,39 +41,28 @@ namespace Chainly.Nodal
 
         public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0xff)
         {
-            var self = Nodality.Self;
+            var self = Store.Self;
             if (peerid == 0 || peerid == self.id) // call in- place
             {
                 // local
             }
             else // call remote
             {
-                var conn = Nodality.GetConnector(peerid);
+                var conn = Store.GetConnector(peerid);
                 if (conn != null)
                 {
                     // args
                     var cnt = new JsonContent(true, 1024);
 
                     // remote call
-                    var (code, v) = await conn.CallAsync(0, 0, op, cnt);
+                    // var (code, v) = await conn.CallAsync(0, 0, op, cnt);
                 }
                 else
                 {
-                    throw new NodalException("");
+                    throw new LdgrException("");
                 }
             }
             return false;
-        }
-
-        public async void InviteAsync(Peer peer)
-        {
-            // insert local record
-            Sql("INSERT INTO peers_").colset(Peer.Empty)._VALUES_(Peer.Empty);
-            await ExecuteAsync(p => peer.Write(p));
-
-            // remote req
-            peer.id = Nodality.Self.id;
-            var (code, err) = await connector.InviteAsync(peer);
         }
 
         public async void AcceptAsync(Peer peer)
@@ -93,7 +82,7 @@ namespace Chainly.Nodal
             }
             else // remote
             {
-                await connector.AddTargetAccountAsync(targAcct, 0, 0);
+                await connector.TransferAsync(targAcct, 0, 0);
             }
         }
     }

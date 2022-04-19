@@ -43,7 +43,7 @@ namespace Chainly.Nodal
 
         internal DbContext()
         {
-            var dbsource = Nodality.DbSource;
+            var dbsource = Store.DbSource;
             connection = new NpgsqlConnection(dbsource.ConnectionString);
             command = new NpgsqlCommand
             {

@@ -2,16 +2,18 @@ using System;
 using System.Threading.Tasks;
 using Chainly.Web;
 using static Chainly.Nodal.NodalUtility;
-using static Chainly.Nodal.Nodality;
+using static Chainly.Nodal.Store;
 
 namespace Chainly.Nodal
 {
     /// <summary>
-    /// A web service that is called by node clients during  peer communication. 
+    /// Called from a counterpart client, to accomplish federated networking communications and operations.
     /// </summary>
-    public class NodalService : WebService
+    public abstract class FedService : WebService
     {
-        public async Task oncall(WebContext wc)
+        #region TIE-MGT
+
+        public async Task ontie(WebContext wc, int cmd)
         {
             // resolve peer id
             string crypto = wc.Header(X_CRYPTO);
@@ -30,61 +32,18 @@ namespace Chainly.Nodal
             // }
         }
 
-        protected bool NEW(FlowContext cc, string table)
-        {
-            return false;
-        }
+        #endregion
 
-        protected bool MOD(FlowContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool FRO(FlowContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool BAK(FlowContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool ABT(FlowContext cc, string table)
-        {
-            return false;
-        }
-
-        protected bool COM(FlowContext cc, string table)
-        {
-            return false;
-        }
-
-
-        public void onask(WebContext wc)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void onaccept(WebContext wc)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void onquit(WebContext wc)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void onapprovequit(WebContext wc)
-        {
-            throw new NotImplementedException();
-        }
+        #region LDGR-OP
 
         public void ontransfer(WebContext wc)
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region LDGR-REP
 
         void onpoll(WebContext wc)
         {
@@ -133,9 +92,20 @@ namespace Chainly.Nodal
             // wc.Give(200, j);
         }
 
-        public void discover(WebContext wc)
+        #endregion
+
+        #region DIR
+
+        public virtual void dir(WebContext wc)
         {
             throw new NotImplementedException();
         }
+
+        public virtual void rsc(WebContext wc, int rscid)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

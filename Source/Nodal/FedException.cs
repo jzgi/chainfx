@@ -3,24 +3,24 @@ using System;
 namespace Chainly.Nodal
 {
     /// <summary>
-    /// Thrown to indicate a blockchain federal network related error.
+    /// Thrown to indicate a federated networking error.
     /// </summary>
-    public class NodalException : Exception
+    public class FedException : Exception
     {
         /// <summary>
         /// The returned status code.
         /// </summary>
         public int Code { get; internal set; }
 
-        public NodalException()
+        public FedException()
         {
         }
 
-        public NodalException(string msg) : base(msg)
+        public FedException(string msg) : base(msg)
         {
         }
 
-        public NodalException(string msg, Exception inner) : base(msg, inner)
+        public FedException(string msg, Exception inner) : base(msg, inner)
         {
         }
     }

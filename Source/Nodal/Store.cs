@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 namespace Chainly.Nodal
 {
     /// <summary>
-    /// The static environment for data store and being a node of the blockchain network. 
+    /// The environment for the data store and the distributed ledger. 
     /// </summary>
-    public abstract class Nodality
+    public abstract class Store
     {
         // db
         //
@@ -28,24 +29,20 @@ namespace Chainly.Nodal
 
         static Peer self;
 
-        // notice lock among element insertion and proxessing loopings
-        static readonly Map<short, NodalClient> connectors = new Map<short, NodalClient>(32);
-
-
-        // imports foreign blocks 
-        //
+        // establised connectors
+        static readonly ConcurrentDictionary<short, FedClient> okayed = new ConcurrentDictionary<short, FedClient>();
 
         // periodically pulling of blocks of remote ledger  records
         static Thread puller;
 
 
-        internal static async Task InitializeNodality(JObj nodecfg)
+        internal static void InitializeStore(JObj storecfg)
         {
             // create db source
-            dbSource = new DbSource(nodecfg);
+            dbSource = new DbSource(storecfg);
 
             // create self peer info
-            self = new Peer(nodecfg)
+            self = new Peer(storecfg)
             {
             };
 
@@ -53,25 +50,22 @@ namespace Chainly.Nodal
             //
             using var dc = NewDbContext();
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE status >= 0");
-            var arr = await dc.QueryAsync<Peer>();
+            var arr = dc.Query<Peer>();
             if (arr != null)
             {
-                lock (connectors)
+                foreach (var peer in arr)
                 {
-                    foreach (var peer in arr)
-                    {
-                        var cli = new NodalClient(peer);
+                    var cli = new FedClient(peer);
 
-                        connectors.Add(cli);
+                    okayed.TryAdd(cli.Key, cli);
 
-                        // init current block id
-                        // await o.PeekLastBlockAsync(dc);
-                    }
+                    // init current block id
+                    // await o.PeekLastBlockAsync(dc);
                 }
             }
 
             // start the puller thead
-            puller = new Thread(Pull)
+            puller = new Thread(Replicate)
             {
                 Name = "Block Puller"
             };
@@ -87,7 +81,7 @@ namespace Chainly.Nodal
         {
             if (dbSource == null)
             {
-                throw new DbException("missing 'nodal' in app.json");
+                throw new DbException("missing 'store' in app.json");
             }
 
             var dc = new DbContext();
@@ -267,29 +261,48 @@ namespace Chainly.Nodal
             return Interlocked.Increment(ref lastId);
         }
 
-        public static NodalClient GetConnector(short peerid) => connectors[peerid];
+        public static FedClient GetConnector(short peerid) => okayed[peerid];
 
-        public static Map<short, NodalClient> Connectors => connectors;
+        public static ConcurrentDictionary<short, FedClient> Okayed => okayed;
 
 
-        public static FlowContext NewFlowContext(short toPeerId = 0, IsolationLevel? level = IsolationLevel.ReadCommitted)
+        public async Task AskAsync(Peer peer)
+        {
+            // validate peer
+
+            // insert locally
+            using (var dc = NewDbContext())
+            {
+                dc.Sql("INSERT INTO peers_").colset(Peer.Empty)._VALUES_(Peer.Empty);
+                await dc.ExecuteAsync(p => peer.Write(p));
+            }
+
+            var connector = new FedClient(peer);
+
+            // remote req
+            peer.id = Self.id;
+            var (code, err) = await connector.AskAsync(peer);
+        }
+
+
+        public static LdgrContext NewLdgrContext(short toPeerId = 0, IsolationLevel? level = IsolationLevel.ReadCommitted)
         {
             if (dbSource == null)
             {
-                throw new NodalException("missing 'nodal' in app.json");
+                throw new LdgrException("missing 'store' in app.json");
             }
 
             var cli = toPeerId > 0 ? GetConnector(toPeerId) : null;
-            var fc = new FlowContext(cli)
+            var lc = new LdgrContext(cli)
             {
             };
 
             if (level != null)
             {
-                fc.Begin(level.Value);
+                lc.Begin(level.Value);
             }
 
-            return fc;
+            return lc;
         }
 
         #endregion
@@ -302,7 +315,7 @@ namespace Chainly.Nodal
 
         const int MIN_BLOCK_SIZE = 8;
 
-        static async void Pull(object state)
+        static async void Replicate(object state)
         {
             while (true)
             {
@@ -311,23 +324,22 @@ namespace Chainly.Nodal
 
                 Thread.Sleep(60 * 1000);
 
-                for (int i = 0; i < connectors.Count; i++) // LOOP
+                foreach (var pair in okayed) // LOOP
                 {
-                    var cli = connectors.ValueAt(i);
-
+                    var cli = pair.Value;
                     if (!cli.Peer.IsRunning) continue;
 
                     int busy = 0;
-                    var code = cli.TryReap(out var arr);
+                    var code = await cli.ReplicateAsync();
                     if (code == 200)
                     {
                         try
                         {
                             using var dc = NewDbContext(IsolationLevel.ReadCommitted);
                             long bchk = 0; // block checksum
-                            for (short k = 0; k < arr.Count; k++)
+                            for (short k = 0; k < cli.arr.Length; k++)
                             {
-                                var o = arr[k];
+                                var o = cli.arr[k];
 
                                 // long seq = ChainUtility.WeaveSeq(blockid, i);
                                 // dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
@@ -347,42 +359,42 @@ namespace Chainly.Nodal
                                 CryptoUtility.Digest(p.Checksum, ref bchk);
                                 p.Set(p.Checksum); // set primary and checksum
                                 // block-wise digest
-                                if (i == 0) // begin of block 
-                                {
-                                    // if (o.blockcs != bchk) // compare with previous block
-                                    // {
-                                    //     cli.SetDataError("");
-                                    //     break;
-                                    // }
-
-                                    p.Set(bchk);
-                                }
-                                else if (i == arr.Count - 1) // end of block
-                                {
-                                    // validate block check
-                                    // if (bchk != o.blockcs)
-                                    // {
-                                    //     cli.SetDataError("");
-                                    // }
-                                    // p.Set(bchk = o.blockcs); // assign & set
-                                }
-                                else
-                                {
-                                    p.SetNull();
-                                }
+                                // if (i == 0) // begin of block 
+                                // {
+                                //     // if (o.blockcs != bchk) // compare with previous block
+                                //     // {
+                                //     //     cli.SetDataError("");
+                                //     //     break;
+                                //     // }
+                                //
+                                //     p.Set(bchk);
+                                // }
+                                // else if (i == arr.Count - 1) // end of block
+                                // {
+                                //     // validate block check
+                                //     // if (bchk != o.blockcs)
+                                //     // {
+                                //     //     cli.SetDataError("");
+                                //     // }
+                                //     // p.Set(bchk = o.blockcs); // assign & set
+                                // }
+                                // else
+                                // {
+                                //     p.SetNull();
+                                // }
 
                                 await dc.SimpleExecuteAsync();
                             }
                         }
                         catch (Exception e)
                         {
-                            cli.SetInternalError(e.Message);
+                            // cli.SetInternalError(e.Message);
                         }
                     }
 
                     if (code == 200 || (outer && (code == 0 || code == 204)))
                     {
-                        cli.ScheduleRemotePoll(0);
+                        // cli.ScheduleRemotePoll(0);
                         busy++;
                     }
 

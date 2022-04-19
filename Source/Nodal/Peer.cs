@@ -28,7 +28,7 @@ namespace Chainly.Nodal
         internal short id;
 
         // remote address
-        internal string url;
+        internal string weburl;
 
         internal string secret;
 
@@ -46,7 +46,7 @@ namespace Chainly.Nodal
             base.Read(s, mask);
 
             s.Get(nameof(id), ref id);
-            s.Get(nameof(url), ref url);
+            s.Get(nameof(weburl), ref weburl);
             s.Get(nameof(secret), ref secret);
         }
 
@@ -55,7 +55,7 @@ namespace Chainly.Nodal
             base.Write(s, mask);
 
             s.Put(nameof(id), id);
-            s.Put(nameof(url), url);
+            s.Put(nameof(weburl), weburl);
             s.Put(nameof(secret), secret);
         }
 
@@ -69,7 +69,7 @@ namespace Chainly.Nodal
 
         public short Status => status;
 
-        public string Url => url;
+        public string WebUrl => weburl;
 
         public DateTime Created => created;
 

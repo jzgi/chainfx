@@ -64,13 +64,13 @@ namespace Chainly.Nodal
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || Nodality.Self.id == peerid) // local
+                if (peerid == 0 || Store.Self.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = Nodality.GetConnector(peerid);
+                    var conn = Store.GetConnector(peerid);
                 }
             }
             return null;

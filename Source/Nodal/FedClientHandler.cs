@@ -2,7 +2,7 @@
 
 namespace Chainly.Nodal
 {
-    public class NodalClientHandler : WebClientHandler
+    public class FedClientHandler : WebClientHandler
     {
         // fed-specific handling
     }

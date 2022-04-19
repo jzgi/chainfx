@@ -15,7 +15,7 @@ namespace Chainly.Web
     /// <summary>
     /// The web application scope that holds global states.
     /// </summary>
-    public abstract class Application : Nodal.Nodality
+    public abstract class Application : Store
     {
         public const string APP_JSON = "app.json";
 
@@ -81,11 +81,11 @@ namespace Chainly.Web
                 }
             }
 
-            // store
-            JObj home = app[nameof(home)];
-            if (home != null)
+            // nodal cfg
+            JObj store = app[nameof(store)];
+            if (store != null)
             {
-                InitializeNodality(home);
+                InitializeStore(store);
             }
 
             ext = app[nameof(ext)];
@@ -121,10 +121,10 @@ namespace Chainly.Web
             }
 
             // address (required)
-            string address = webcfg[nameof(address)];
-            if (address == null)
+            string url = webcfg[nameof(url)];
+            if (url == null)
             {
-                throw new ApplicationException("missing 'address' in app.json");
+                throw new ApplicationException("missing 'url' in app.json");
             }
 
             // optional
@@ -135,7 +135,7 @@ namespace Chainly.Web
             var svc = new S
             {
                 Name = name,
-                Address = address,
+                Address = url,
                 Cache = cache,
             };
             if (svc is ProxyService pry)

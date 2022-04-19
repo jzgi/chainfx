@@ -2668,7 +2668,7 @@ namespace Chainly.Web
             var wc = Web;
             var wrk = wc.Work;
             // render tabs
-            FORM_("uk-card- uk-card-primary");
+            FORM_("uk-card- uk-card-default");
             UL_("uk-card-body uk-list uk-list-divider");
             for (int i = 0; i < wrk.Works?.Count; i++)
             {

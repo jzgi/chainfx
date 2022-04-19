@@ -1,6 +1,6 @@
 ﻿namespace Chainly.Nodal
 {
-    public enum NodalClientError
+    public enum FedClientError
     {
         
     }
