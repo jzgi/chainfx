@@ -1,4 +1,4 @@
-﻿namespace DoChain.Nodal
+﻿namespace CoChain.Nodal
 {
     public enum FedClientError
     {

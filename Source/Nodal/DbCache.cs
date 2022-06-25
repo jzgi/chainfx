@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     internal abstract class DbCache
     {

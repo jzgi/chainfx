@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     public class Peer : Info, IKeyable<short>
     {

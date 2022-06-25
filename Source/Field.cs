@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// A field in a form model.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// To implement principal authorization of access to the target resources.

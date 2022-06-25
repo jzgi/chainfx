@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// A JSON object model.

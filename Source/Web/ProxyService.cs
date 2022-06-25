@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// A web content proxy or/and web event broker.

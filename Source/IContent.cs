@@ -1,4 +1,4 @@
-﻿namespace DoChain
+﻿namespace CoChain
 {
     /// <summary>
     /// Represents a binary web content. 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// An encapsulation of relevant resources for domestic or inter-node ledger transaction.

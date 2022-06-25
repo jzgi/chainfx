@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// A global byte buffer pool.

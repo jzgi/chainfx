@@ -1,4 +1,4 @@
-﻿namespace DoChain
+﻿namespace CoChain
 {
     /// <summary>
     /// A provider that write its contents. 

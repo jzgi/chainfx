@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// To generate a plain/text string or CSV content. 

@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// Thrown to indicate an error during database operation.

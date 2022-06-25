@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     ///
     /// Used to build a number during a parsing process.

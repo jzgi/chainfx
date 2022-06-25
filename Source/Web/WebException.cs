@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

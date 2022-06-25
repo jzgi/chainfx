@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// To generate a urlencoded byte or char string.

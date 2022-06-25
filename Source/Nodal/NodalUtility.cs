@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     public static class NodalUtility
     {

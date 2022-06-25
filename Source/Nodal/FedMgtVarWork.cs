@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using DoChain.Web;
-using static DoChain.Web.Modal;
-using static DoChain.Nodal.Store;
+using CoChain.Web;
+using static CoChain.Web.Modal;
+using static CoChain.Nodal.Store;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     public class FedMgtVarWork : WebWork
     {

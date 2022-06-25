@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     public class WebClientHandler : HttpClientHandler
     {

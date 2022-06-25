@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// A data model that represents a general piece of information.

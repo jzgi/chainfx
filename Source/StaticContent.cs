@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// A binary static content of certain mime type.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy

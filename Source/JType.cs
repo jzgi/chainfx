@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// The enumeration of JSON member types.

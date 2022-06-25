@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// To document a GET request to the target action.

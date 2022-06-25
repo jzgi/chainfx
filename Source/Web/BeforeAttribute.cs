@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// To do filtering right before executing an action method.

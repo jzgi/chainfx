@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// A ledger record in the distributed ledger system.

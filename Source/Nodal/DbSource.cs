@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     public class DbSource : IKeyable<string>
     {

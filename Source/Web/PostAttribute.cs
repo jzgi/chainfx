@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// To document a POST request to the target action.

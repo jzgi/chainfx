@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// To document the response returned by the target action.

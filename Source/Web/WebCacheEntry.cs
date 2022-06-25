@@ -1,4 +1,4 @@
-﻿namespace DoChain.Web
+﻿namespace CoChain.Web
 {
     /// <summary>
     /// An entry of cached web resource, that might be emptied 

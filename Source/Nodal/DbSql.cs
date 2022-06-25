@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

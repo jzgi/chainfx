@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     ///
     /// Parse JSON into object model from either bytes or string.

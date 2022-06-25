@@ -1,4 +1,4 @@
-﻿namespace DoChain
+﻿namespace CoChain
 {
     public interface IGroupKeyable<K> : IKeyable<K>
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace DoChain
+namespace CoChain
 {
     public static class TextUtility
     {

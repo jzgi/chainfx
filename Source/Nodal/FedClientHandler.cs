@@ -1,6 +1,6 @@
-﻿using DoChain.Web;
+﻿using CoChain.Web;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     public class FedClientHandler : WebClientHandler
     {

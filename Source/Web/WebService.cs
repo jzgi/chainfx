@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static DoChain.Web.Application;
+using static CoChain.Web.Application;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.

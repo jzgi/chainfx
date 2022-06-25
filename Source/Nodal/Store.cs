@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Npgsql;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// The environment for the data store and the distributed ledger. 

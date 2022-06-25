@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// An XML parser structure that deals with well-formed XML documents.

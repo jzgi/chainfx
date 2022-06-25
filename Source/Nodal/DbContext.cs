@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// The working environment for a series of database operations. It provides strong-typed reads/writes and lightweight O/R mapping.

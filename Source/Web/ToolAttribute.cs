@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// To specify a user interface tool(set) that works in a particular pattern.

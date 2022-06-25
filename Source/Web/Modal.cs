@@ -1,4 +1,4 @@
-namespace DoChain.Web
+namespace CoChain.Web
 {
     public enum Modal
     {

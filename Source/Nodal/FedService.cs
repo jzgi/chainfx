@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using DoChain.Web;
-using static DoChain.Nodal.NodalUtility;
-using static DoChain.Nodal.Store;
+using CoChain.Web;
+using static CoChain.Nodal.NodalUtility;
+using static CoChain.Nodal.Store;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// Called from a counterpart client, to accomplish federated networking communications and operations.

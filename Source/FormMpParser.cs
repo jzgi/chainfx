@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// To parse multipart/form-data content, with the part Content-Length extension.

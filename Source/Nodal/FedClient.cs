@@ -3,10 +3,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using static DoChain.Nodal.NodalUtility;
-using WebClient = DoChain.Web.WebClient;
+using static CoChain.Nodal.NodalUtility;
+using WebClient = CoChain.Web.WebClient;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// A client connector to the specific federated peer.

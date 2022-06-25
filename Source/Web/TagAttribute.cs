@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

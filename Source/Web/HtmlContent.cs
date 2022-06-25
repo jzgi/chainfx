@@ -1,6 +1,6 @@
 using System;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.

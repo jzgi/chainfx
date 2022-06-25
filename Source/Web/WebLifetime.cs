@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

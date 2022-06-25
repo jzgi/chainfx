@@ -3,9 +3,9 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using DoChain.Nodal;
+using CoChain.Nodal;
 
-namespace DoChain.Web
+namespace CoChain.Web
 {
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.

@@ -1,7 +1,7 @@
 ﻿using System;
-using DoChain;
+using CoChain;
 
-namespace DoChain.Nodal
+namespace CoChain.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

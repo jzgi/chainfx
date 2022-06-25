@@ -1,4 +1,4 @@
-namespace DoChain
+namespace CoChain
 {
     /// <summary>
     /// To analyze HTTP header.
