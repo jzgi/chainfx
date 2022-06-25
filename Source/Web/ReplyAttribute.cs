@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// To document the response returned by the target action.

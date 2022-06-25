@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// The working environment for a series of database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
@@ -348,76 +348,76 @@ namespace Chainly.Nodal
             return reader.HasRows;
         }
 
-        public D[] Query<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
-                return ToArray<D>(proj);
+                return ToArray<D>(msk);
             }
 
             return null;
         }
 
-        public D[] Query<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public D[] Query<D>(string sql, Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
-                return ToArray<D>(proj);
+                return ToArray<D>(msk);
             }
             return null;
         }
 
-        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
-                return ToArray<D>(proj);
+                return ToArray<D>(msk);
             }
             return null;
         }
 
-        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public async Task<D[]> QueryAsync<D>(string sql, Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
-                return ToArray<D>(proj);
+                return ToArray<D>(msk);
             }
 
             return null;
         }
 
-        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(p, prepare))
             {
-                return ToMap(proj, keyer);
+                return ToMap(msk, keyer);
             }
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
-                return ToMap(proj, keyer);
+                return ToMap(msk, keyer);
             }
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
-                return ToMap(proj, keyer);
+                return ToMap(msk, keyer);
             }
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short proj = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
-                return ToMap(proj, keyer);
+                return ToMap(msk, keyer);
             }
             return null;
         }
@@ -585,20 +585,20 @@ namespace Chainly.Nodal
         // RESULTSET
         //
 
-        public D ToObject<D>(short proj = 0xff) where D : IData, new()
+        public D ToObject<D>(short msk = 0xff) where D : IData, new()
         {
             var obj = new D();
-            obj.Read(this, proj);
+            obj.Read(this, msk);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
+        public D[] ToArray<D>(short msk = 0xff) where D : IData, new()
         {
             var lst = new ValueList<D>(32);
             while (Next())
             {
                 var obj = new D();
-                obj.Read(this, proj);
+                obj.Read(this, msk);
                 lst.Add(obj);
             }
             return lst.ToArray();
@@ -900,7 +900,7 @@ namespace Chainly.Nodal
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new()
         {
             try
             {
@@ -911,7 +911,7 @@ namespace Chainly.Nodal
                     var p = new JsonParser(str);
                     var jo = (JObj) p.Parse();
                     v = new D();
-                    v.Read(jo, proj);
+                    v.Read(jo, msk);
                     return true;
                 }
             }
@@ -950,6 +950,25 @@ namespace Chainly.Nodal
                     string str = reader.GetString(ord);
                     var parser = new JsonParser(str);
                     v = (JArr) parser.Parse();
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        public bool Get(string name, ref XElem v)
+        {
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    string str = reader.GetString(ord);
+                    var parser = new XmlParser(str);
+                    v = parser.Parse();
                     return true;
                 }
             }
@@ -1129,7 +1148,7 @@ namespace Chainly.Nodal
             return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short msk = 0xff) where D : IData, new()
         {
             try
             {
@@ -1977,6 +1996,29 @@ namespace Chainly.Nodal
             {
                 var str = v.ToString();
                 command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
+                {
+                    Value = str
+                });
+                if (Digest)
+                {
+                    Check(str);
+                }
+            }
+        }
+
+        public void Put(string name, XElem v)
+        {
+            if (v == null)
+            {
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Xml)
+                {
+                    Value = DBNull.Value
+                });
+            }
+            else
+            {
+                var str = v.ToString();
+                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Xml)
                 {
                     Value = str
                 });

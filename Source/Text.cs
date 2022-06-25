@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// A text/plain model or comma-separate (text/csv) lines and values (CSV). Also it can be used as a UTF-8 string builder.
@@ -89,114 +89,119 @@ namespace Chainly
 
         public bool Get(string name, ref bool v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref char v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref short v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref int v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref long v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref double v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref decimal v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref DateTime v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref Guid v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref string v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref byte[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref short[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref int[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref long[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref string[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref JObj v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
+        public bool Get(string name, ref XElem v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new()
         {
-            throw new NotImplementedException();
+            return false;
+        }
+
+        public bool Get<D>(string name, ref D[] v, short msk = 0xff) where D : IData, new()
+        {
+            return false;
         }
 
         //
         // ENTITY
         //
 
-        public D ToObject<D>(short proj = 0xff) where D : IData, new()
+        public D ToObject<D>(short msk = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }
 
-        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
+        public D[] ToArray<D>(short msk = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

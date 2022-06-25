@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy

@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     public class FileLogger : ILoggerProvider, ILogger<KestrelServer>, ILoggerFactory
     {

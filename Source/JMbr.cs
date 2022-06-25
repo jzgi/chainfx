@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly
+namespace DoChain
 {
     ///
     /// A JSON member that is either a value, or a property if with name.

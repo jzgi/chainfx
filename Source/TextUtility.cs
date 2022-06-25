@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Chainly
+namespace DoChain
 {
     public static class TextUtility
     {

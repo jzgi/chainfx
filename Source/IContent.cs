@@ -1,4 +1,4 @@
-﻿namespace Chainly
+﻿namespace DoChain
 {
     /// <summary>
     /// Represents a binary web content. 

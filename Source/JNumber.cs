@@ -1,4 +1,4 @@
-namespace Chainly
+namespace DoChain
 {
     ///
     /// Used to build a number during a parsing process.

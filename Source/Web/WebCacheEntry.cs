@@ -1,4 +1,4 @@
-﻿namespace Chainly.Web
+﻿namespace DoChain.Web
 {
     /// <summary>
     /// An entry of cached web resource, that might be emptied 

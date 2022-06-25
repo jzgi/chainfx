@@ -3,9 +3,9 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using Chainly.Nodal;
+using DoChain.Nodal;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
@@ -107,6 +107,8 @@ namespace Chainly.Web
         public string Label => Ui?.Label;
 
         public string Tip => Ui?.Tip;
+
+        public string Icon => Ui?.Icon;
 
         public short Group => Ui?.Group ?? 0;
 

@@ -1,4 +1,4 @@
-﻿namespace Chainly
+﻿namespace DoChain
 {
     public interface IGroupKeyable<K> : IKeyable<K>
     {

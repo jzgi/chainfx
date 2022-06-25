@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// An XML element.
@@ -47,7 +47,7 @@ namespace Chainly
             attrs.Add(name, value);
         }
 
-        public void Add(XElem elem)
+        public void Add(XElem el)
         {
             if (children == null)
             {
@@ -58,13 +58,13 @@ namespace Chainly
                 int len = children.Length;
                 if (count >= len)
                 {
-                    XElem[] temp = children;
+                    var tmp = children;
                     children = new XElem[len * 4];
-                    Array.Copy(temp, 0, children, 0, len);
+                    Array.Copy(tmp, 0, children, 0, len);
                 }
             }
 
-            children[count++] = elem;
+            children[count++] = el;
         }
 
         public void Add(string tag, string text)
@@ -82,21 +82,11 @@ namespace Chainly
             {
                 for (int i = current; i < count; i++)
                 {
-                    XElem elem = children[i];
-                    if (elem.tag.Equals(name))
+                    var el = children[i];
+                    if (el.tag.Equals(name))
                     {
                         current = i;
-                        return elem;
-                    }
-                }
-
-                for (int i = 0; i < current; i++)
-                {
-                    XElem elem = children[i];
-                    if (elem.tag.Equals(name))
-                    {
-                        current = i;
-                        return elem;
+                        return el;
                     }
                 }
             }
@@ -211,32 +201,32 @@ namespace Chainly
 
         public bool Get(string name, ref ArraySegment<byte> v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref byte[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref short[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref int[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref long[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref string[] v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Get(string name, ref JObj v)
@@ -246,39 +236,43 @@ namespace Chainly
 
         public bool Get(string name, ref JArr v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
+        public bool Get(string name, ref XElem v)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public D ToObject<D>(short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short msk = 0xff) where D : IData, new()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
+        public D ToObject<D>(short msk = 0xff) where D : IData, new()
         {
-            throw new NotImplementedException();
+            return default;
+        }
+
+        public D[] ToArray<D>(short msk = 0xff) where D : IData, new()
+        {
+            return default;
         }
 
         public bool IsDataSet => false;
 
         public bool Next()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public void Write<C>(C cnt) where C : DynamicContent, ISink
         {
-            throw new NotImplementedException();
         }
 
         public IContent Dump()

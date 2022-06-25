@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// A field in a form model.

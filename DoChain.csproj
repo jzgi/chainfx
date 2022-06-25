@@ -2,10 +2,10 @@
     <PropertyGroup>
         <Description>Enterprise framework for DAPP</Description>
         <VersionPrefix>4.1</VersionPrefix>
-        <Authors>skyiah</Authors>
+        <Authors>JZG Institute for IT Research</Authors>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <DebugType>portable</DebugType>
-        <PackageId>FabricQ</PackageId>
+        <PackageId>Chainly</PackageId>
         <RuntimeFrameworkVersion>3.1</RuntimeFrameworkVersion>
         <Version>4.0.1</Version>
         <LangVersion>8</LangVersion>
@@ -13,11 +13,11 @@
         <PackageProjectUrl>https://github.com/jzgi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/jzgi</RepositoryUrl>
         <PackageVersion>4.1.0</PackageVersion>
-        <Title>FabricQ Framework</Title>
+        <Title>Chainly Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
         <AssemblyVersion>4.1</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>FabricQ</RootNamespace>
+        <RootNamespace>Chainly</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>

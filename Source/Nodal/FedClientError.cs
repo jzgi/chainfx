@@ -1,4 +1,4 @@
-﻿namespace Chainly.Nodal
+﻿namespace DoChain.Nodal
 {
     public enum FedClientError
     {

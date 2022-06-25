@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Chainly
+namespace DoChain
 {
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
@@ -456,6 +456,10 @@ namespace Chainly
                 Add(']');
                 level--; // exit
             }
+        }
+
+        public void Put(string name, XElem v)
+        {
         }
 
         public void Put(string name, IData v, short proj = 0xff)

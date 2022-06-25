@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
@@ -1189,13 +1189,20 @@ namespace Chainly.Web
             return this;
         }
 
-        public HtmlContent FIELD2<V, X>(string label, V v, X x)
+        public HtmlContent FIELD2<V, X>(string label, V v, X x, bool brace = false)
         {
             LABEL(label);
             Add("<span class=\"uk-input\">");
             AddPrimitive(v);
-            Add("&nbsp;");
+            if (brace)
+            {
+                Add("（");
+            }
             AddPrimitive(x);
+            if (brace)
+            {
+                Add("）");
+            }
             Add("</span>");
             return this;
         }
@@ -1225,7 +1232,7 @@ namespace Chainly.Web
             return this;
         }
 
-        public HtmlContent FIELD<K, V>(string label, K[] keys, Map<K, V> map)
+        public HtmlContent FIELDA<K, V>(string label, K[] keys, Map<K, V> map)
         {
             LABEL(label);
             Add("<span class=\"uk-input\">");
@@ -1237,7 +1244,7 @@ namespace Chainly.Web
                     var v = map[k];
                     if (i > 0)
                     {
-                        Add("&nbsp;");
+                        Add("，");
                     }
                     Add(v.ToString());
                 }
@@ -1317,7 +1324,7 @@ namespace Chainly.Web
             return this;
         }
 
-        public HtmlContent A_<A>(A href, bool end = false, string css = null)
+        public HtmlContent A_<A>(A href, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1328,15 +1335,11 @@ namespace Chainly.Web
             }
             Add(" href=\"");
             PutKey(href);
-            Add("\"");
-            if (end)
-            {
-                Add(">");
-            }
+            Add("\">");
             return this;
         }
 
-        public HtmlContent A_<A, B>(A a, B b, bool end = false, string css = null)
+        public HtmlContent A_<A, B>(A a, B b, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1348,15 +1351,11 @@ namespace Chainly.Web
             Add(" href=\"");
             PutKey(a);
             PutKey(b);
-            Add("\"");
-            if (end)
-            {
-                Add(">");
-            }
+            Add("\">");
             return this;
         }
 
-        public HtmlContent A_<A, B, C>(A a, B b, C c, bool end = false, string css = null)
+        public HtmlContent A_<A, B, C>(A a, B b, C c, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1369,11 +1368,7 @@ namespace Chainly.Web
             PutKey(a);
             PutKey(b);
             PutKey(c);
-            Add("\"");
-            if (end)
-            {
-                Add(">");
-            }
+            Add("\">");
             return this;
         }
 
@@ -2156,7 +2151,7 @@ namespace Chainly.Web
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    M obj = arr[i];
+                    var obj = arr[i];
                     Add("<form class=\"uk-card");
                     if (css != null)
                     {
@@ -2220,24 +2215,28 @@ namespace Chainly.Web
             Add("</main>");
         }
 
-        public void GRID<M>(M[] arr, Action<M> card, string css = "uk-card-default", int width = 1)
+        public void GRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, int min = 1, string css = "uk-card-default")
         {
             Add("<div uk-grid class=\"uk-child-width-1-");
-            Add(width++);
+            Add(min++);
             Add(" uk-child-width-1-");
-            Add(width++);
+            Add(min++);
             Add("@s uk-child-width-1-");
-            Add(width++);
+            Add(min++);
             Add("@m uk-child-width-1-");
-            Add(width++);
+            Add(min++);
             Add("@l uk-child-width-1-");
-            Add(width);
+            Add(min);
             Add("@xl\">");
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
                 {
                     var obj = arr[i];
+                    if (filter != null && !filter(obj))
+                    {
+                        continue;
+                    }
                     Add("<div>");
                     Add("<form class=\"uk-card");
                     if (css != null)
@@ -2256,7 +2255,7 @@ namespace Chainly.Web
             Add("</div>");
         }
 
-        public void GRID<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, int min = 1, string css = "uk-card-default")
+        public void GRID<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, int min = 2, string css = "uk-card-default")
         {
             Add("<main uk-grid class=\"uk-child-width-1-");
             Add(min);
@@ -2270,6 +2269,12 @@ namespace Chainly.Web
                 for (int i = 0; i < map.Count; i++)
                 {
                     var ety = map.EntryAt(i);
+                    var key = ety.key;
+                    var val = ety.Value;
+                    if (filter != null && !filter(val))
+                    {
+                        continue;
+                    }
                     Add("<div>");
                     Add("<form class=\"uk-card");
                     if (css != null)
@@ -2279,7 +2284,7 @@ namespace Chainly.Web
                     }
 
                     Add("\">");
-                    card(ety);
+                    card(val);
                     Add("</form>");
                     Add("</div>");
                 }
@@ -2313,7 +2318,7 @@ namespace Chainly.Web
             Add("</main>");
         }
 
-        public HtmlContent _DIALOG_(int mode, bool pick, Appear appear, string tip = null)
+        HtmlContent _DIALOG_(int mode, bool pick, Appear appear, string tip = null)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
@@ -2364,16 +2369,26 @@ namespace Chainly.Web
             return this;
         }
 
-        public HtmlContent TOPBAR_()
+        public HtmlContent TOPBAR_(bool large = false)
         {
-            Add("<nav class=\"uk-top-bar uk-flex\">");
+            Add("<nav class=\"uk-top-bar uk-flex");
+            if (large)
+            {
+                Add(" uk-large");
+            }
+            Add("\">");
             return this;
         }
 
-        public HtmlContent _TOPBAR()
+        public HtmlContent _TOPBAR(bool large = false)
         {
             Add("</nav>");
-            Add("<div class=\"uk-top-placeholder\"></div>");
+            Add("<div class=\"uk-top-placeholder");
+            if (large)
+            {
+                Add(" uk-large");
+            }
+            Add("\"></div>");
             return this;
         }
 
@@ -2416,7 +2431,7 @@ namespace Chainly.Web
 
             Add("</span>");
 
-            Add("<span class=\"uk-label\">");
+            Add("<span>");
             if (tip != null)
             {
                 Add(tip);
@@ -2670,6 +2685,8 @@ namespace Chainly.Web
             // render tabs
             FORM_("uk-card- uk-card-default");
             UL_("uk-card-body uk-list uk-list-divider");
+
+
             for (int i = 0; i < wrk.Works?.Count; i++)
             {
                 var sub = wrk.ResolveWork(wc, i);
@@ -2689,8 +2706,8 @@ namespace Chainly.Web
 
                 LI_();
                 T("<a href=\"").T(sub.Key).T("/\" class=\"uk-width-1-1 uk-button-link\" onclick=\"return dialog(this,8,false,4,'');\">");
-                T("<label class=\"uk-label\" uk-icon=\"").T(sub.Tip).T("\"></label>");
-                Add("<span class=\"uk-width-expand\">");
+                T("<label class=\"uk-label\" uk-icon=\"").T(sub.Icon).T("\"></label>");
+                Add("<span class=\"uk-input uk-width-expand\">");
                 Add(sub.Label);
                 Add("</span>");
                 Add("<span uk-icon=\"chevron-right\"></span></a>");

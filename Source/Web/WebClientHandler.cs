@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     public class WebClientHandler : HttpClientHandler
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// Represents a provider or input source of dataset, a data object, or some of its data fields.
@@ -41,13 +41,15 @@ namespace Chainly
 
         bool Get(string name, ref JArr v);
 
-        bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new();
+        bool Get(string name, ref XElem v);
 
-        bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new();
+        bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new();
 
-        D ToObject<D>(short proj = 0xff) where D : IData, new();
+        bool Get<D>(string name, ref D[] v, short msk = 0xff) where D : IData, new();
 
-        D[] ToArray<D>(short proj = 0xff) where D : IData, new();
+        D ToObject<D>(short msk = 0xff) where D : IData, new();
+
+        D[] ToArray<D>(short msk = 0xff) where D : IData, new();
 
         /// <summary>
         /// If this input source contains multiple data records.

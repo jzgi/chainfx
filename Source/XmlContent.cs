@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 
@@ -372,6 +372,10 @@ namespace Chainly
         {
         }
 
+        public void Put(string name, XElem v)
+        {
+        }
+
         public void Put(string name, IData v, short proj = 0xff)
         {
         }
@@ -382,7 +386,6 @@ namespace Chainly
 
         public void PutFromSource(ISource s)
         {
-            throw new NotImplementedException();
         }
     }
 }

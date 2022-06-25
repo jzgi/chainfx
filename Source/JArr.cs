@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// A JSON array.
@@ -138,10 +138,10 @@ namespace Chainly
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new()
         {
             JObj jo = elements[cur];
-            return jo != null && jo.Get(name, ref v, proj);
+            return jo != null && jo.Get(name, ref v, msk);
         }
 
         public bool Get(string name, ref short[] v)
@@ -178,7 +178,13 @@ namespace Chainly
             throw new NotImplementedException();
         }
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
+
+        public bool Get(string name, ref XElem v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Get<D>(string name, ref D[] v, short msk = 0xff) where D : IData, new()
         {
             JObj jo = elements[cur];
             return jo != null && jo.Get(name, ref v);
@@ -188,20 +194,20 @@ namespace Chainly
         // ENTIRITY
         //
 
-        public D ToObject<D>(short proj = 0xff) where D : IData, new()
+        public D ToObject<D>(short msk = 0xff) where D : IData, new()
         {
             var obj = new D();
-            obj.Read(this, proj);
+            obj.Read(this, msk);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
+        public D[] ToArray<D>(short msk = 0xff) where D : IData, new()
         {
             var arr = new D[count];
             for (int i = 0; i < arr.Length; i++)
             {
                 var obj = new D();
-                obj.Read((JObj) elements[i], proj);
+                obj.Read((JObj) elements[i], msk);
                 arr[i] = obj;
             }
 

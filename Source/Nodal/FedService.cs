@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Chainly.Web;
-using static Chainly.Nodal.NodalUtility;
-using static Chainly.Nodal.Store;
+using DoChain.Web;
+using static DoChain.Nodal.NodalUtility;
+using static DoChain.Nodal.Store;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// Called from a counterpart client, to accomplish federated networking communications and operations.
@@ -96,15 +96,9 @@ namespace Chainly.Nodal
 
         #region DIR
 
-        public virtual void dir(WebContext wc)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void dir(WebContext wc);
 
-        public virtual void rsc(WebContext wc, int rscid)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void rsc(WebContext wc, int rscid);
 
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿namespace Chainly
+﻿namespace DoChain
 {
     /// <summary>
     /// A provider that write its contents. 

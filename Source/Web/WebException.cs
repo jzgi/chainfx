@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

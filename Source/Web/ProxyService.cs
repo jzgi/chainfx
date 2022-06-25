@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// A web content proxy or/and web event broker.

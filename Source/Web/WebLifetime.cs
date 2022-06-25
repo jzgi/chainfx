@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

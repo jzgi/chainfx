@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// To specify basic user interface-related information for a nodule (work or action) object.
@@ -11,6 +11,8 @@ namespace Chainly.Web
         readonly string label;
 
         readonly string tip;
+
+        readonly string icon;
 
         readonly short group;
 
@@ -23,10 +25,11 @@ namespace Chainly.Web
         /// <param name="tip">A short description of the functionality</param>
         /// <param name="group"></param>
         /// <param name="fork"></param>
-        public UiAttribute(string label = null, string tip = null, short group = 0, short fork = 0)
+        public UiAttribute(string label = null, string tip = null, string icon = null, short group = 0, short fork = 0)
         {
             this.label = label;
             this.tip = tip;
+            this.icon = icon;
             this.group = group;
             this.fork = fork;
         }
@@ -34,6 +37,8 @@ namespace Chainly.Web
         public string Label => label;
 
         public string Tip => tip;
+
+        public string Icon => icon;
 
         /// <summary>
         /// A number that determines grouping of functions.

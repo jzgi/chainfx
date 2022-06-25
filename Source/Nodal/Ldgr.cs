@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// A ledger record in the distributed ledger system.
@@ -57,7 +57,7 @@ namespace Chainly.Nodal
         internal DateTime stamp;
 
 
-        public void Read(ISource s, short mask = 0xff)
+        public void Read(ISource s, short msk = 0xff)
         {
             s.Get(nameof(seq), ref seq);
             s.Get(nameof(acct), ref acct);
@@ -70,7 +70,7 @@ namespace Chainly.Nodal
             s.Get(nameof(stamp), ref stamp);
         }
 
-        public void Write(ISink s, short mask = 0xff)
+        public void Write(ISink s, short msk = 0xff)
         {
             s.Put(nameof(seq), seq);
             s.Put(nameof(acct), acct);

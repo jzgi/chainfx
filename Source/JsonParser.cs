@@ -1,4 +1,4 @@
-namespace Chainly
+namespace DoChain
 {
     ///
     /// Parse JSON into object model from either bytes or string.

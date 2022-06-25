@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

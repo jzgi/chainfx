@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// To generate a urlencoded byte or char string.
@@ -303,12 +303,14 @@ namespace Chainly
 
         public void Put(string name, JObj v)
         {
-            throw new NotImplementedException();
         }
 
         public void Put(string name, JArr v)
         {
-            throw new NotImplementedException();
+        }
+
+        public void Put(string name, XElem v)
+        {
         }
 
         public void Put(string name, IData v, short proj = 0xff)
@@ -321,7 +323,6 @@ namespace Chainly
 
         public void PutFromSource(ISource s)
         {
-            throw new NotImplementedException();
         }
     }
 }

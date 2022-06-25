@@ -1,4 +1,4 @@
-﻿namespace Chainly.Web
+﻿namespace DoChain.Web
 {
     public interface IForkable
     {

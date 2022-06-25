@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Npgsql;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// The environment for the data store and the distributed ledger. 
@@ -49,7 +50,7 @@ namespace Chainly.Nodal
             // load  peer connectors
             //
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE status >= 0");
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE state > 0");
             var arr = dc.Query<Peer>();
             if (arr != null)
             {
@@ -91,6 +92,16 @@ namespace Chainly.Nodal
             }
 
             return dc;
+        }
+
+
+        public static void AddComposite<T>(string dbTyp = null)
+        {
+            if (dbTyp == null)
+            {
+                dbTyp = string.Concat(typeof(T).Name.ToLower(), "_type");
+            }
+            NpgsqlConnection.GlobalTypeMapper.MapComposite<T>(dbTyp);
         }
 
         public static void Cache<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
@@ -273,7 +284,7 @@ namespace Chainly.Nodal
             // insert locally
             using (var dc = NewDbContext())
             {
-                dc.Sql("INSERT INTO peers_").colset(Peer.Empty)._VALUES_(Peer.Empty);
+                dc.Sql("INSERT INTO peers_ ").colset(Peer.Empty)._VALUES_(Peer.Empty);
                 await dc.ExecuteAsync(p => peer.Write(p));
             }
 

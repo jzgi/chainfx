@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// Represents an output sink that can be a dataset, a single data object, or only some of its data fields.
@@ -44,6 +44,8 @@ namespace Chainly
         void Put(string name, JObj v); // essentially a map
 
         void Put(string name, JArr v);
+
+        void Put(string name, XElem v);
 
         void Put(string name, IData v, short proj = 0xff);
 

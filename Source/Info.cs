@@ -1,32 +1,24 @@
 ﻿using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
-    /// A data model for general unit of information.
+    /// A data model that represents a general piece of information.
     /// </summary>
     public abstract class Info : IData
     {
         public const short
-            STA_GONE = -1,
+            STA_DEAD = -1,
             STA_DISABLED = 0,
             STA_ENABLED = 1,
-            STA_PREFERRED = 2;
+            STA_HOT = 2;
 
-        public static readonly Map<short, string> Statuses = new Map<short, string>
+        public static readonly Map<short, string> States = new Map<short, string>
         {
-            {STA_GONE, "注销"},
-            {STA_DISABLED, "禁用"},
-            {STA_ENABLED, "正常"},
-            {STA_PREFERRED, "优先"},
-        };
-
-        public static readonly Map<short, string> Symbols = new Map<short, string>
-        {
-            {STA_GONE, "注销"},
-            {STA_DISABLED, "禁用"},
-            {STA_ENABLED, null},
-            {STA_PREFERRED, null},
+            {STA_DEAD, "消灭"},
+            {STA_DISABLED, "停用"},
+            {STA_ENABLED, "可用"},
+            {STA_HOT, "热榜"},
         };
 
         public const short
@@ -39,7 +31,7 @@ namespace Chainly
 
 
         public short typ;
-        public short status;
+        public short state;
         public string name;
         public string tip;
         public DateTime created;
@@ -47,58 +39,52 @@ namespace Chainly
         public DateTime adapted;
         public string adapter;
 
-        public virtual void Read(ISource s, short proj = 0xff)
+        public virtual void Read(ISource s, short msk = 0xff)
         {
-            if ((proj & TYP) == TYP || (proj & BORN) == BORN)
+            if ((msk & BORN) == BORN)
             {
                 s.Get(nameof(typ), ref typ);
-            }
-            if ((proj & BORN) == BORN)
-            {
                 s.Get(nameof(created), ref created);
                 s.Get(nameof(creator), ref creator);
             }
-            s.Get(nameof(status), ref status);
+            s.Get(nameof(state), ref state);
             s.Get(nameof(name), ref name);
             s.Get(nameof(tip), ref tip);
-            if ((proj & LATER) == LATER)
+            if ((msk & LATER) == LATER)
             {
                 s.Get(nameof(adapted), ref adapted);
                 s.Get(nameof(adapter), ref adapter);
             }
         }
 
-        public virtual void Write(ISink s, short proj = 0xff)
+        public virtual void Write(ISink s, short msk = 0xff)
         {
-            if ((proj & TYP) == TYP || (proj & BORN) == BORN)
+            if ((msk & BORN) == BORN)
             {
                 s.Put(nameof(typ), typ);
-            }
-            if ((proj & BORN) == BORN)
-            {
                 s.Put(nameof(created), created);
                 s.Put(nameof(creator), creator);
             }
-            s.Put(nameof(status), status);
+            s.Put(nameof(state), state);
             s.Put(nameof(name), name);
             s.Put(nameof(tip), tip);
-            if ((proj & LATER) == LATER)
+            if ((msk & LATER) == LATER)
             {
                 s.Put(nameof(adapted), adapted);
                 s.Put(nameof(adapter), adapter);
             }
         }
 
-        public virtual bool IsGone => status <= STA_GONE;
+        public virtual bool IsDead => state == STA_DEAD;
 
-        public virtual bool IsDisabled => status == STA_DISABLED;
+        public virtual bool IsDisabled => state == STA_DISABLED;
 
-        public virtual bool CanShow => status >= STA_DISABLED;
+        public virtual bool IsShowable => state >= STA_DISABLED;
 
-        public virtual bool IsEnabled => status == STA_ENABLED;
+        public virtual bool IsEnabled => state == STA_ENABLED;
 
-        public virtual bool CanWork => status >= STA_ENABLED;
+        public virtual bool IsWorkable => state >= STA_ENABLED;
 
-        public virtual bool IsPreferred => status == STA_PREFERRED;
+        public virtual bool IsHot => state == STA_HOT;
     }
 }

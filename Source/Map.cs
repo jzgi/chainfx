@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.

@@ -1,6 +1,6 @@
-﻿using Chainly.Web;
+﻿using DoChain.Web;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     public class FedClientHandler : WebClientHandler
     {

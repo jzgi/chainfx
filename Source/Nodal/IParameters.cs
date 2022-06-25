@@ -1,7 +1,7 @@
 ﻿using System;
-using Chainly;
+using DoChain;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

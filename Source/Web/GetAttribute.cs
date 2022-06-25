@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// To document a GET request to the target action.

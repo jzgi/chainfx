@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Chainly.Web;
-using static Chainly.Web.Modal;
-using static Chainly.Nodal.Store;
+using DoChain.Web;
+using static DoChain.Web.Modal;
+using static DoChain.Nodal.Store;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     public class FedMgtVarWork : WebWork
     {
@@ -20,7 +20,7 @@ namespace Chainly.Nodal
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.weburl), o.weburl, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.status), o.status, Peer.Statuses)._LI();
+                    h.LI_().SELECT("状态", nameof(o.state), o.state, Info.States)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });
             }
@@ -52,7 +52,7 @@ namespace Chainly.Nodal
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.weburl), o.weburl, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.status), o.status, Peer.Statuses)._LI();
+                    h.LI_().SELECT("状态", nameof(o.state), o.state, Info.States)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });
             }

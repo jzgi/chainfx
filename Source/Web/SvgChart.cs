@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     public class SvgChart<S> : IResource where S : struct
     {

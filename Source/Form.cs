@@ -1,7 +1,7 @@
 using System;
 
 // ReSharper disable once CheckNamespace
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// A form object model parsed from either x-www-form-urlencoded or multipart/form-data.
@@ -217,25 +217,30 @@ namespace Chainly
             return false;
         }
 
-        public bool Get<D>(string name, ref D v, short proj = 0xff) where D : IData, new()
+        public bool Get(string name, ref XElem v)
+        {
+            return false;
+        }
+
+        public bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new()
         {
             return false;
         }
 
 
-        public bool Get<D>(string name, ref D[] v, short proj = 0xff) where D : IData, new()
+        public bool Get<D>(string name, ref D[] v, short msk = 0xff) where D : IData, new()
         {
             return false;
         }
 
-        public D ToObject<D>(short proj = 0xff) where D : IData, new()
+        public D ToObject<D>(short msk = 0xff) where D : IData, new()
         {
             D obj = new D();
-            obj.Read(this, proj);
+            obj.Read(this, msk);
             return obj;
         }
 
-        public D[] ToArray<D>(short proj = 0xff) where D : IData, new()
+        public D[] ToArray<D>(short msk = 0xff) where D : IData, new()
         {
             throw new NotImplementedException();
         }

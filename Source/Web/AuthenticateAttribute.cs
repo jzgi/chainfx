@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using static Chainly.CryptoUtility;
+using static DoChain.CryptoUtility;
 
-namespace Chainly.Web
+namespace DoChain.Web
 {
     /// <summary>
     /// To determine principal identity based on current web context. The interaction with user, however, is not included.

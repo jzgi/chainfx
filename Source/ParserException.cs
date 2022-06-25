@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// To indicate that a content parsing-related exception occured.

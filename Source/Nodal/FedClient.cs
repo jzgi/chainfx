@@ -3,15 +3,15 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using static Chainly.Nodal.NodalUtility;
-using WebClient = Chainly.Web.WebClient;
+using static DoChain.Nodal.NodalUtility;
+using WebClient = DoChain.Web.WebClient;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// A client connector to the specific federated peer.
     /// </summary>
-    public class FedClient : WebClient, IKeyable<short>
+    public class FedClient : Web.WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 

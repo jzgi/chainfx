@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// Thrown to indicate a blockchain federal network related error.

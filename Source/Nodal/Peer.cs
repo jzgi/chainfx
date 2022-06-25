@@ -1,6 +1,6 @@
 using System;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     public class Peer : Info, IKeyable<short>
     {
@@ -41,18 +41,18 @@ namespace Chainly.Nodal
             Read(cfg);
         }
 
-        public sealed override void Read(ISource s, short mask = 0xff)
+        public sealed override void Read(ISource s, short msk = 0xff)
         {
-            base.Read(s, mask);
+            base.Read(s, msk);
 
             s.Get(nameof(id), ref id);
             s.Get(nameof(weburl), ref weburl);
             s.Get(nameof(secret), ref secret);
         }
 
-        public override void Write(ISink s, short mask = 0xff)
+        public override void Write(ISink s, short msk = 0xff)
         {
-            base.Write(s, mask);
+            base.Write(s, msk);
 
             s.Put(nameof(id), id);
             s.Put(nameof(weburl), weburl);
@@ -67,12 +67,12 @@ namespace Chainly.Nodal
 
         public string Tip => tip;
 
-        public short Status => status;
+        public short State => state;
 
         public string WebUrl => weburl;
 
         public DateTime Created => created;
 
-        public bool IsRunning => status == STA_ENABLED;
+        public bool IsRunning => state == STA_ENABLED;
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace Chainly.Nodal
+namespace DoChain.Nodal
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.
@@ -427,39 +427,39 @@ namespace Chainly.Nodal
         }
 
 
-        public DbSql setlst(IData obj, short proj = 0xff)
+        public DbSql setlst(IData obj, short msk = 0xff)
         {
             ctx = CtxSetList;
             ordinal = 1;
-            obj.Write(this, proj);
+            obj.Write(this, msk);
             return this;
         }
 
-        public DbSql collst(IData obj, short proj = 0xff, string alias = null)
+        public DbSql collst(IData obj, short msk = 0xff, string alias = null)
         {
             ctx = CtxColumnList;
             ordinal = 1;
 
             this.alias = alias;
 
-            obj.Write(this, proj);
+            obj.Write(this, msk);
             // restore non-alias
             this.alias = null;
             return this;
         }
 
-        public DbSql paramlst(IData obj, short proj = 0xff)
+        public DbSql paramlst(IData obj, short msk = 0xff)
         {
             ctx = CtxParamList;
             ordinal = 1;
-            obj.Write(this, proj);
+            obj.Write(this, msk);
             return this;
         }
 
-        public DbSql colset(IData obj, short proj = 0xff, string extra = null)
+        public DbSql colset(IData obj, short msk = 0xff, string extra = null)
         {
             Add('(');
-            collst(obj, proj);
+            collst(obj, msk);
             if (extra != null)
             {
                 Add(',');
@@ -489,10 +489,10 @@ namespace Chainly.Nodal
             return this;
         }
 
-        public DbSql _VALUES_(IData obj, short proj = 0xff, string extra = null)
+        public DbSql _VALUES_(IData obj, short msk = 0xff, string extra = null)
         {
             Add(" VALUES (");
-            paramlst(obj, proj);
+            paramlst(obj, msk);
             if (extra != null)
             {
                 Add(",");
@@ -503,10 +503,10 @@ namespace Chainly.Nodal
             return this;
         }
 
-        public DbSql _SET_(IData obj, short proj = 0xff, string extra = null)
+        public DbSql _SET_(IData obj, short msk = 0xff, string extra = null)
         {
             Add(" SET ");
-            setlst(obj, proj);
+            setlst(obj, msk);
             if (extra != null)
             {
                 Add(",");
@@ -929,6 +929,18 @@ namespace Chainly.Nodal
         }
 
         public void Put(string name, JArr v)
+        {
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Put(string name, XElem v)
         {
             if (name != null)
             {

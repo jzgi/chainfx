@@ -1,4 +1,4 @@
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// To generate a plain/text string or CSV content. 

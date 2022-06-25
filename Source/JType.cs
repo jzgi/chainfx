@@ -1,4 +1,4 @@
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// The enumeration of JSON member types.

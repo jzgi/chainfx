@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Chainly
+namespace DoChain
 {
     /// <summary>
     /// A set of commonly-used array operations.
