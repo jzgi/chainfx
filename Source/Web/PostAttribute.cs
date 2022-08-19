@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// To document a POST request to the target action.

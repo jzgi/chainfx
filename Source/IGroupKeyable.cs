@@ -1,4 +1,4 @@
-﻿namespace CoChain
+﻿namespace ChainFx
 {
     public interface IGroupKeyable<K> : IKeyable<K>
     {

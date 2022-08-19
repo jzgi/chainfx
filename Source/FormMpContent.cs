@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.

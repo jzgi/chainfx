@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// To indicate that a content parsing-related exception occured.

@@ -1,7 +1,7 @@
 ﻿using System;
-using CoChain;
+using ChainFx;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

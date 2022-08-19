@@ -1,6 +1,6 @@
 using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

@@ -1,4 +1,4 @@
-﻿namespace CoChain
+﻿namespace ChainFx
 {
     /// <summary>
     /// Represents a binary web content. 

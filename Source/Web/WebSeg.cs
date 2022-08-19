@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy

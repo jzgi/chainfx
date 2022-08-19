@@ -1,6 +1,6 @@
 using System;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// Thrown to indicate an error during database operation.

@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
-    /// A data model that represents a general piece of information.
+    /// A data model that represents a general entity object.
     /// </summary>
-    public abstract class Info : IData
+    public abstract class Entity : IData
     {
         public const short
             STA_DEAD = -1,

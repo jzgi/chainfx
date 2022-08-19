@@ -1,6 +1,6 @@
 using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// A JSON object model.

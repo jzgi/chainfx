@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// To document a GET request to the target action.

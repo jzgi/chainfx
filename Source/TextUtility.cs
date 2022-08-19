@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace CoChain
+namespace ChainFx
 {
     public static class TextUtility
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     public class WebClientHandler : HttpClientHandler
     {

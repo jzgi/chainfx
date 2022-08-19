@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 

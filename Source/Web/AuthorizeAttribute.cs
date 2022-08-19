@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// To implement principal authorization of access to the target resources.

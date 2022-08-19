@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// To document the response returned by the target action.

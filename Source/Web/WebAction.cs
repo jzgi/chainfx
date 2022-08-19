@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// The descriptor for an action method. 

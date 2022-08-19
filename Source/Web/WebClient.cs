@@ -1,9 +1,9 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static CoChain.DataUtility;
+using static ChainFx.DataUtility;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.

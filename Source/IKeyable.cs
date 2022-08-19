@@ -1,4 +1,4 @@
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// An object with an key name so that can be a map element.

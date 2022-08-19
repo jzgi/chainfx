@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static CoChain.Web.Application;
+using static ChainFx.Application;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.
@@ -144,6 +144,8 @@ namespace CoChain.Web
             }
 
             Console.WriteLine("[" + Name + "] started at " + address);
+
+            Inf("[" + Name + "] started at " + address);
         }
 
         internal async Task StopAsync(CancellationToken token)

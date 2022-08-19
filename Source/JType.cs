@@ -1,4 +1,4 @@
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// The enumeration of JSON member types.

@@ -1,4 +1,4 @@
-﻿namespace CoChain.Web
+﻿namespace ChainFx.Web
 {
     public class OAuthWork : WebWork
     {

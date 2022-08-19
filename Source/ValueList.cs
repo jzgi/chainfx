@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// A lightweight alternative to the List class. The internal array is created on demand.

@@ -1,6 +1,6 @@
 using System;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// A field in a form model.

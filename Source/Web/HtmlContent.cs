@@ -1,6 +1,6 @@
 using System;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
@@ -2899,6 +2899,12 @@ namespace CoChain.Web
                 Add(",'");
                 Add(tip);
                 Add("');\"");
+            }
+            else if (tip != null)
+            {
+                Add(" uk-tooltip=\"");
+                Add(tip);
+                Add("\"");
             }
 
             Add(">");

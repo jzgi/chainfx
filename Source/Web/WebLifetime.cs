@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     internal class WebLifetime : IApplicationLifetime
     {

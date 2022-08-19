@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// A JSON array.

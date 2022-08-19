@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// A global byte buffer pool.
@@ -279,7 +279,7 @@ namespace CoChain.Web
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"uk-pane\">");
+            h.Add("<body>");
 
             main?.Invoke(h);
 

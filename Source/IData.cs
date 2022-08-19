@@ -1,4 +1,4 @@
-﻿namespace CoChain
+﻿namespace ChainFx
 {
     /// <summary>
     /// A data object that reads from input source and writes to output sink.

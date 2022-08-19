@@ -1,4 +1,4 @@
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// To analyze HTTP header.

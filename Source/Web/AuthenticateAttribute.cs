@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using static CoChain.CryptoUtility;
+using static ChainFx.CryptoUtility;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// To determine principal identity based on current web context. The interaction with user, however, is not included.

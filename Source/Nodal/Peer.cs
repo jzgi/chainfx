@@ -1,8 +1,8 @@
 using System;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
-    public class Peer : Info, IKeyable<short>
+    public class Peer : Entity, IKeyable<short>
     {
         public static readonly Peer Empty = new Peer();
 

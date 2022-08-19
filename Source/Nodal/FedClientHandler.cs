@@ -1,6 +1,6 @@
-﻿using CoChain.Web;
+﻿using ChainFx.Web;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
     public class FedClientHandler : WebClientHandler
     {

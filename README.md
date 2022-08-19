@@ -1,8 +1,13 @@
 # Introduction  
 
-CoChain (品链) is a cloud blockchain framework for building decentralized supply chain solutions and metaverse systems
+ChainFx (品链k框架) is a blockchain cloud framework for building decentralized supply chain solutions and metaverse systems
 
-CoChain's characteristics:
+The keyword <i>chain</i> has three implications of meanings:
+1.A built-in distributed ledger (blockchain)
+2.Apps can form federated chains of nodes inter-operable with each other
+3.Apps typically chain many organizational units together to perform business operations 
+
+Characteristics:
 
 * Interoperable through open standards: HTTP/1.1, OAuth 2.1, and JWT
 * The built-in federated blockchain engine powers a distributed ledger, suitable for a formal credit solution like Carbon Credits or Time Bank
@@ -10,7 +15,7 @@ CoChain's characteristics:
 * Support rapid development of workflow-oriented decentralized Web apps 
 
 <pre>
-dotnet add package FabricQ --version 4.1.0
+dotnet add package ChainFx --version 4.1.0
 </pre>
 
 # Dependencies

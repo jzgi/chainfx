@@ -1,4 +1,4 @@
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// To parse application/x-www-form-urlencoded octets or a character string.

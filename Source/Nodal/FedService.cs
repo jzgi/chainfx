@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using CoChain.Web;
-using static CoChain.Nodal.NodalUtility;
-using static CoChain.Nodal.Store;
+using ChainFx.Web;
+using static ChainFx.Nodal.NodalUtility;
+using static ChainFx.Nodal.Store;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// Called from a counterpart client, to accomplish federated networking communications and operations.

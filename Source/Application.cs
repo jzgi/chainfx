@@ -3,14 +3,15 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using CoChain.Nodal;
+using ChainFx.Nodal;
+using ChainFx.Web;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace CoChain.Web
+namespace ChainFx
 {
     /// <summary>
     /// The web application scope that holds global states.
@@ -29,7 +30,7 @@ namespace CoChain.Web
         static readonly uint[] cryptoKey;
 
         // config
-        public static readonly JObj app, ext;
+        public static readonly JObj app, prog;
 
         // X509 certificate
         static readonly X509Certificate2 cert;
@@ -60,6 +61,8 @@ namespace CoChain.Web
                 Level = logging
             };
 
+            Inf("file logger is ready");
+
             // security
             //
             string crypto = app[nameof(crypto)];
@@ -87,13 +90,14 @@ namespace CoChain.Web
             {
                 InitializeStore(store);
             }
+            Inf("db store is initialized");
 
-            ext = app[nameof(ext)];
+            prog = app[nameof(prog)];
         }
 
         public static JObj App => app;
 
-        public static JObj Ext => ext;
+        public static JObj Prog => prog;
 
         public static uint[] CryptoKey => cryptoKey;
 
@@ -166,10 +170,19 @@ namespace CoChain.Web
 
             // start all services
             //
-            for (int i = 0; i < services.Count; i++)
+            try
             {
-                var svc = services.ValueAt(i);
-                await svc.StartAsync(Canceller.Token);
+                for (int i = 0; i < services.Count; i++)
+                {
+                    var svc = services.ValueAt(i);
+
+                    await svc.StartAsync(Canceller.Token);
+                }
+            }
+            catch (Exception e)
+            {
+                Err(e.Message);
+                throw;
             }
 
             // handle SIGTERM and CTRL_C 

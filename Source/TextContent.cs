@@ -1,4 +1,4 @@
-namespace CoChain
+namespace ChainFx
 {
     /// <summary>
     /// To generate a plain/text string or CSV content. 

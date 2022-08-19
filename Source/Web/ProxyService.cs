@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// A web content proxy or/and web event broker.

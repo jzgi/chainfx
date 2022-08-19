@@ -1,4 +1,4 @@
-﻿namespace CoChain
+﻿namespace ChainFx
 {
     /// <summary>
     /// A provider that write its contents. 

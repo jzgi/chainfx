@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using CoChain.Nodal;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.
@@ -474,7 +472,7 @@ namespace CoChain.Web
             return null;
         }
 
-        internal async Task HandleAsync(string rsc, WebContext wc)
+        protected virtual async Task HandleAsync(string rsc, WebContext wc)
         {
             wc.Work = this;
 
@@ -586,7 +584,7 @@ namespace CoChain.Web
         //
         // object locator
 
-        Cell[] cells;
+        Hold[] cells;
 
         int size;
 
@@ -594,10 +592,10 @@ namespace CoChain.Web
         {
             if (cells == null)
             {
-                cells = new Cell[16];
+                cells = new Hold[16];
             }
 
-            cells[size++] = new Cell(value, flag);
+            cells[size++] = new Hold(value, flag);
         }
 
 
@@ -624,7 +622,7 @@ namespace CoChain.Web
         /// <summary>
         /// A object holder in registry.
         /// </summary>
-        class Cell
+        class Hold
         {
             readonly Type typ;
 
@@ -632,7 +630,7 @@ namespace CoChain.Web
 
             readonly short flag;
 
-            internal Cell(object value, short flag)
+            internal Hold(object value, short flag)
             {
                 this.typ = value.GetType();
                 this.value = value;

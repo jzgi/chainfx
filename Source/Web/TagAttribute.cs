@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace CoChain.Web
+namespace ChainFx.Web
 {
     /// <summary>
     /// Tag for API documentation comments. 

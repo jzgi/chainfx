@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
     public static class NodalUtility
     {

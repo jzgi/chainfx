@@ -3,10 +3,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using static CoChain.Nodal.NodalUtility;
-using WebClient = CoChain.Web.WebClient;
+using static ChainFx.Nodal.NodalUtility;
+using WebClient = ChainFx.Web.WebClient;
 
-namespace CoChain.Nodal
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// A client connector to the specific federated peer.
