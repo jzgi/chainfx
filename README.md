@@ -1,11 +1,11 @@
 # Introduction  
 
-ChainFx (品链k框架) is a blockchain cloud framework for building decentralized supply chain solutions and metaverse systems
+ChainFx (品链框架) is a blockchain cloud framework for building decentralized supply chain solutions and metaverse systems
 
 The keyword <i>chain</i> has three implications of meanings:
-1.A built-in distributed ledger (blockchain)
-2.Apps can form federated chains of nodes inter-operable with each other
-3.Apps typically chain many organizational units together to perform business operations 
+1. A built-in distributed ledger (blockchain)
+2. Apps can form federated chains of nodes inter-operable with each other
+3. Apps typically chain many organizational units together to perform business operations 
 
 Characteristics:
 
