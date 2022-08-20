@@ -3,15 +3,15 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using static ChainFx.Nodal.NodalUtility;
+using static ChainFx.Fabric.NodalUtility;
 using WebClient = ChainFx.Web.WebClient;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
     /// A client connector to the specific federated peer.
     /// </summary>
-    public class FedClient : Web.WebClient, IKeyable<short>
+    public class FedClient : WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -108,7 +108,7 @@ namespace ChainFx.Nodal
                 // request
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onask");
 
-                req.Headers.TryAddWithoutValidation(X_FROM, Store.Self.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_FROM, Nodality.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
                 var jc = new JsonContent(true, 1024);
@@ -137,7 +137,7 @@ namespace ChainFx.Nodal
 
         public async Task<(int, FedClientError)> AmswerAsync(short peerid, bool yes)
         {
-            using var dc = Store.NewDbContext();
+            using var dc = Nodality.NewDbContext();
 
             // load the peer record
             dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE id = @1");

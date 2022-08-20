@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

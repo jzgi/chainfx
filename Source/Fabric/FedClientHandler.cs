@@ -1,6 +1,6 @@
 ﻿using ChainFx.Web;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     public class FedClientHandler : WebClientHandler
     {

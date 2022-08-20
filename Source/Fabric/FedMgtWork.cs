@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using ChainFx.Web;
 using static ChainFx.Web.Modal;
-using static ChainFx.Nodal.Store;
+using static ChainFx.Fabric.Nodality;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     [Ui("平台联盟管理", icon: "social")]
     public class FedMgtWork : WebWork

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     public static class NodalUtility
     {
@@ -64,13 +64,13 @@ namespace ChainFx.Nodal
         {
             if (peerid >= 0)
             {
-                if (peerid == 0 || Store.Self.id == peerid) // local
+                if (peerid == 0 || Nodality.Self.id == peerid) // local
                 {
                     return null;
                 }
                 else
                 {
-                    var conn = Store.GetConnector(peerid);
+                    var conn = Nodality.GetConnector(peerid);
                 }
             }
             return null;

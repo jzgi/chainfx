@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
     /// The working environment for a series of database operations. It provides strong-typed reads/writes and lightweight O/R mapping.
@@ -43,7 +43,7 @@ namespace ChainFx.Nodal
 
         internal DbContext()
         {
-            var dbsource = Store.DbSource;
+            var dbsource = Nodality.DbSource;
             connection = new NpgsqlConnection(dbsource.ConnectionString);
             command = new NpgsqlCommand
             {

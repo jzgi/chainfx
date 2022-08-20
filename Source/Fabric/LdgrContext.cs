@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
     /// An encapsulation of relevant resources for domestic or inter-node ledger transaction.
@@ -41,14 +41,14 @@ namespace ChainFx.Nodal
 
         public async Task<bool> CallAsync(short peerid, string op, Action<IParameters> p = null, short proj = 0xff)
         {
-            var self = Store.Self;
+            var self = Nodality.Self;
             if (peerid == 0 || peerid == self.id) // call in- place
             {
                 // local
             }
             else // call remote
             {
-                var conn = Store.GetConnector(peerid);
+                var conn = Nodality.GetConnector(peerid);
                 if (conn != null)
                 {
                     // args

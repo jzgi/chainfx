@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     public class Peer : Entity, IKeyable<short>
     {

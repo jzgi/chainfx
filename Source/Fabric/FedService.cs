@@ -1,16 +1,27 @@
 using System;
 using System.Threading.Tasks;
 using ChainFx.Web;
-using static ChainFx.Nodal.NodalUtility;
-using static ChainFx.Nodal.Store;
+using static ChainFx.Fabric.NodalUtility;
+using static ChainFx.Fabric.Nodality;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
-    /// Called from a counterpart client, to accomplish federated networking communications and operations.
+    /// To realize federation functionalty.
     /// </summary>
+    /// <remarks>
+    /// Inter-node communication
+    /// delegate of shared resources
+    /// </remarks>
     public abstract class FedService : WebService
     {
+        protected internal override void OnCreate()
+        {
+            base.OnCreate();
+
+            CreateVarWork<FedVarWork>();
+        }
+
         #region TIE-MGT
 
         public async Task ontie(WebContext wc, int cmd)

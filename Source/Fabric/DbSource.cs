@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     public class DbSource : IKeyable<string>
     {

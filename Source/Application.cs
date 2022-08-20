@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainFx.Nodal;
+using ChainFx.Fabric;
 using ChainFx.Web;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
@@ -16,7 +16,7 @@ namespace ChainFx
     /// <summary>
     /// The web application scope that holds global states.
     /// </summary>
-    public abstract class Application : Store
+    public abstract class Application : Nodality
     {
         public const string APP_JSON = "app.json";
 
@@ -84,13 +84,12 @@ namespace ChainFx
                 }
             }
 
-            // nodal cfg
-            JObj store = app[nameof(store)];
-            if (store != null)
+            // fabric and nodality cfg
+            JObj nodal = app[nameof(nodal)];
+            if (nodal != null)
             {
-                InitializeStore(store);
+                InitializeNodality(nodal);
             }
-            Inf("db store is initialized");
 
             prog = app[nameof(prog)];
         }

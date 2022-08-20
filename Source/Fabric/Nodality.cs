@@ -6,12 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Npgsql;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
-    /// The environment for the data store and the distributed ledger. 
+    /// The structure & environment for database and distributed ledger. 
     /// </summary>
-    public abstract class Store
+    public abstract class Nodality
     {
         // db
         //
@@ -30,6 +30,8 @@ namespace ChainFx.Nodal
 
         static Peer self;
 
+        static readonly ConcurrentDictionary<short, Peer> peers = new ConcurrentDictionary<short, Peer>();
+
         // establised connectors
         static readonly ConcurrentDictionary<short, FedClient> okayed = new ConcurrentDictionary<short, FedClient>();
 
@@ -37,13 +39,13 @@ namespace ChainFx.Nodal
         static Thread puller;
 
 
-        internal static void InitializeStore(JObj storecfg)
+        internal static void InitializeNodality(JObj nodalcfg)
         {
             // create db source
-            dbSource = new DbSource(storecfg);
+            dbSource = new DbSource(nodalcfg);
 
             // create self peer info
-            self = new Peer(storecfg)
+            self = new Peer(nodalcfg)
             {
             };
 
@@ -82,7 +84,7 @@ namespace ChainFx.Nodal
         {
             if (dbSource == null)
             {
-                throw new DbException("missing 'store' in app.json");
+                throw new DbException("missing 'fabric' in app.json");
             }
 
             var dc = new DbContext();
@@ -262,6 +264,8 @@ namespace ChainFx.Nodal
 
         public static Peer Self => self;
 
+        public static Peer GetPeer(short key) => peers[key];
+
         //
         // transaction id generator
 
@@ -300,7 +304,7 @@ namespace ChainFx.Nodal
         {
             if (dbSource == null)
             {
-                throw new LdgrException("missing 'store' in app.json");
+                throw new LdgrException("missing 'fabric' in app.json");
             }
 
             var cli = toPeerId > 0 ? GetConnector(toPeerId) : null;

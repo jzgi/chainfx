@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
     /// A ledger record in the distributed ledger system.

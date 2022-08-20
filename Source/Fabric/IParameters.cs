@@ -1,7 +1,7 @@
 ﻿using System;
 using ChainFx;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     /// <summary>
     /// To set SQL parameters.  

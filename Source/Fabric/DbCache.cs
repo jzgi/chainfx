@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChainFx.Nodal
+namespace ChainFx.Fabric
 {
     internal abstract class DbCache
     {
@@ -87,7 +87,7 @@ namespace ChainFx.Nodal
                     slim.EnterWriteLock();
                     try
                     {
-                        using var dc = Store.NewDbContext();
+                        using var dc = Nodality.NewDbContext();
                         cached = func(dc);
                         expiry = tick + MaxAge * 1000;
                     }
@@ -117,7 +117,7 @@ namespace ChainFx.Nodal
                 var ticks = Environment.TickCount & int.MaxValue; // positive tick
                 if (ticks >= expiry) // if re-fetch
                 {
-                    using var dc = Store.NewDbContext();
+                    using var dc = Nodality.NewDbContext();
                     cached = await fa(dc);
                     expiry = ticks + MaxAge * 1000;
                 }
@@ -164,7 +164,7 @@ namespace ChainFx.Nodal
             V value;
             if (tick >= expiry) // if re-fetch
             {
-                using var dc = Store.NewDbContext();
+                using var dc = Nodality.NewDbContext();
                 value = func(dc, key);
                 cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
                 expiry = tick + MaxAge * 1000;
@@ -173,7 +173,7 @@ namespace ChainFx.Nodal
             {
                 if (!cached.TryGetValue(key, out value))
                 {
-                    using var dc = Store.NewDbContext();
+                    using var dc = Nodality.NewDbContext();
                     value = func(dc, key);
                     cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
                     expiry = tick + MaxAge * 1000;
@@ -192,7 +192,7 @@ namespace ChainFx.Nodal
             V value;
             if (ticks >= expiry) // if re-fetch
             {
-                using var dc = Store.NewDbContext();
+                using var dc = Nodality.NewDbContext();
                 value = await func(dc, key);
                 cached.TryAdd(key, value); // re-cache
                 expiry = ticks + MaxAge * 1000;
@@ -250,7 +250,7 @@ namespace ChainFx.Nodal
                     slim.EnterWriteLock();
                     try
                     {
-                        using var dc = Store.NewDbContext();
+                        using var dc = Nodality.NewDbContext();
                         value = func(dc, mkey);
                         cached.TryAdd(mkey, value);
                         // adjust expiry time
@@ -288,7 +288,7 @@ namespace ChainFx.Nodal
                 Map<K, V> value;
                 if (ticks >= expiry) // if re-fetch
                 {
-                    using var dc = Store.NewDbContext();
+                    using var dc = Nodality.NewDbContext();
                     value = await func(dc, subkey);
 
                     // adjust expiry time
