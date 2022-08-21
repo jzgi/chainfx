@@ -85,10 +85,10 @@ namespace ChainFx
             }
 
             // fabric and nodality cfg
-            JObj nodal = app[nameof(nodal)];
-            if (nodal != null)
+            JObj fabric = app[nameof(fabric)];
+            if (fabric != null)
             {
-                InitializeNodality(nodal);
+                InitializeFabric(fabric);
             }
 
             prog = app[nameof(prog)];
@@ -123,34 +123,13 @@ namespace ChainFx
                 throw new ApplicationException("missing '" + prop + "' in app.json");
             }
 
-            // address (required)
-            string url = webcfg[nameof(url)];
-            if (url == null)
-            {
-                throw new ApplicationException("missing 'url' in app.json");
-            }
-
-            // optional
-
-            bool cache = webcfg[nameof(cache)];
-
             // create service (properties in order)
             var svc = new S
             {
                 Name = name,
-                Address = url,
-                Cache = cache,
             };
-            if (svc is ProxyService pry)
-            {
-                // forward uri
-                string forward = webcfg[nameof(forward)];
-                pry.Forward = forward;
+            svc.Initialize(prop, webcfg);
 
-                // cycle internal
-                short cycle = webcfg[nameof(cycle)];
-                pry.Cycle = cycle;
-            }
             services.Add(name, svc);
 
             // invoke on creatte

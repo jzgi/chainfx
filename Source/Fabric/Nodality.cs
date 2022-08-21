@@ -39,13 +39,13 @@ namespace ChainFx.Fabric
         static Thread puller;
 
 
-        internal static void InitializeNodality(JObj nodalcfg)
+        internal static void InitializeFabric(JObj fabriccfg)
         {
             // create db source
-            dbSource = new DbSource(nodalcfg);
+            dbSource = new DbSource(fabriccfg);
 
             // create self peer info
-            self = new Peer(nodalcfg)
+            self = new Peer(fabriccfg)
             {
             };
 

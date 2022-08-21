@@ -25,7 +25,7 @@ namespace ChainFx.Web
         //
         // http implementation
 
-        string address;
+        string url;
 
         // the embedded HTTP engine
         readonly KestrelServer server;
@@ -76,6 +76,25 @@ namespace ChainFx.Web
             server = new KestrelServer(Options.Create(opts), TransportFactory, Logger);
         }
 
+        internal virtual void Initialize(string prop, JObj webcfg)
+        {
+            url = webcfg[nameof(url)];
+            if (url == null)
+            {
+                throw new ApplicationException("missing 'url' in app.json web-" + prop);
+            }
+            var feat = server.Features.Get<IServerAddressesFeature>();
+            feat.Addresses.Add(url);
+
+            cache = webcfg[nameof(cache)];
+            if (cache)
+            {
+                // create the response cache
+                shared = new ConcurrentDictionary<string, WebCacheEntry>(ConcurrencyLevel, 1024);
+            }
+        }
+
+
         // IServiceProvider
         public object GetService(Type serviceType)
         {
@@ -90,30 +109,9 @@ namespace ChainFx.Web
             return null;
         }
 
-        public string Address
-        {
-            get => address;
-            set // set server addr
-            {
-                address = value;
-                var feat = server.Features.Get<IServerAddressesFeature>();
-                feat.Addresses.Add(address);
-            }
-        }
+        public string Url => url;
 
-        public bool Cache
-        {
-            get => cache;
-            internal set
-            {
-                cache = value;
-                if (cache)
-                {
-                    // create the response cache
-                    shared = new ConcurrentDictionary<string, WebCacheEntry>(ConcurrencyLevel, 1024);
-                }
-            }
-        }
+        public bool Cache => cache;
 
         protected internal virtual async Task StartAsync(CancellationToken token)
         {
@@ -143,9 +141,9 @@ namespace ChainFx.Web
                 cleaner.Start();
             }
 
-            Console.WriteLine("[" + Name + "] started at " + address);
+            Console.WriteLine("[" + Name + "] started at " + url);
 
-            Inf("[" + Name + "] started at " + address);
+            Inf("[" + Name + "] started at " + url);
         }
 
         internal async Task StopAsync(CancellationToken token)

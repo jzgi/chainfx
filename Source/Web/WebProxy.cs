@@ -8,7 +8,7 @@ namespace ChainFx.Web
     /// <summary>
     /// A web content proxy or/and web event broker.
     /// </summary>
-    public sealed class ProxyService : WebService
+    public sealed class WebProxy : WebService
     {
         //
         // the forwarding support
@@ -31,31 +31,27 @@ namespace ChainFx.Web
 
         private Thread cycler;
 
-
-        public string Forward
+        internal override void Initialize(string prop, JObj webcfg)
         {
-            get => forward;
-            internal set
+            base.Initialize(prop, webcfg);
+
+            // forward url
+            forward = webcfg[nameof(forward)];
+            if (forward != null)
             {
-                forward = value;
-                if (forward != null)
-                {
-                    connector = new WebClient(forward);
-                }
+                connector = new WebClient(forward);
+            }
+
+            // cycle internal
+            cycle = webcfg[nameof(cycle)];
+            if (forward != null && cycle > 0)
+            {
             }
         }
 
-        public short Cycle
-        {
-            get => cycle;
-            internal set
-            {
-                cycle = value;
-                if (forward != null && cycle > 0)
-                {
-                }
-            }
-        }
+        public string Forward => forward;
+
+        public short Cycle => cycle;
 
 
         protected internal override async Task StartAsync(CancellationToken token)
@@ -82,7 +78,7 @@ namespace ChainFx.Web
 
             if (forward != null)
             {
-                Console.WriteLine("as a proxy to [" + forward + "]" + Address);
+                Console.WriteLine("as a proxy to [" + forward + "]" + Url);
             }
         }
 
