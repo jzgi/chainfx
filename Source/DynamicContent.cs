@@ -128,7 +128,15 @@ namespace ChainFx
             checksum = 0;
         }
 
-        void AddByte(byte b)
+        public void RemoveBytes(int num)
+        {
+            if (count > num)
+            {
+                count -= num;
+            }
+        }
+
+        internal void AddByte(byte b)
         {
             // ensure capacity
             int olen = bytebuf.Length; // old length
@@ -152,6 +160,14 @@ namespace ChainFx
             }
             cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
             checksum = cs;
+        }
+
+        public void AddBytes(byte[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                AddByte(arr[i]);
+            }
         }
 
         public void Add(char c)

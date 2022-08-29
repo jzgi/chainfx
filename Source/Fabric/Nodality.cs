@@ -52,7 +52,7 @@ namespace ChainFx.Fabric
             // load  peer connectors
             //
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE state > 0");
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE status > 0");
             var arr = dc.Query<Peer>();
             if (arr != null)
             {

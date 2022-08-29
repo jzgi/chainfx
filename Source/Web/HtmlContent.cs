@@ -2446,7 +2446,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TOOLBAR<V>(int subscript, Map<short, V> opts = null, Func<short, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null, bool top = true)
+        public HtmlContent TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null, bool top = true)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2495,7 +2495,13 @@ namespace ChainFx.Web
                         Add("<option value=\"");
                         AddPrimitive(key);
                         Add("\"");
-                        if (key == subscript) Add(" selected");
+                        switch (key)
+                        {
+                            case short shortkey when shortkey == subscript:
+                            case int intkey when intkey == subscript:
+                                Add(" selected");
+                                break;
+                        }
                         Add(">");
                         AddPrimitive(e.Value.ToString());
                         Add("</option>");
@@ -4020,7 +4026,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
+        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, short spec = 0, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opts != null)
@@ -4029,7 +4035,13 @@ namespace ChainFx.Web
                 for (int i = 0; i < opts.Count; i++)
                 {
                     var e = opts.EntryAt(i);
-                    if (filter != null && !filter(e.key, e.Value)) continue;
+                    if (filter != null && !filter(e.key, e.Value))
+                    {
+                        continue;
+                    }
+
+                    string str = (spec > 0 && e.Value is Entity ent) ? ent.ToString(spec) : e.Value.ToString();
+
                     if (e.IsHead)
                     {
                         if (grpopen)
@@ -4039,7 +4051,7 @@ namespace ChainFx.Web
                         }
 
                         Add("<optgroup label=\"");
-                        AddPrimitive(e.Value);
+                        AddPrimitive(str);
                         Add("\">");
                         grpopen = true;
                     }
@@ -4055,7 +4067,7 @@ namespace ChainFx.Web
                         Add("\"");
                         if (key.Equals(v)) Add(" selected");
                         Add(">");
-                        AddPrimitive(e.Value);
+                        AddPrimitive(str);
                         Add("</option>");
                     }
                 }
@@ -4070,10 +4082,9 @@ namespace ChainFx.Web
             return this;
         }
 
-
-        public HtmlContent SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool multiple = true, bool required = true, sbyte size = 0)
+        public HtmlContent SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0)
         {
-            SELECT_(label, name, multiple, required, size);
+            SELECT_(label, name, true, required, size);
             if (opts != null)
             {
                 for (int i = 0; i < opts.Count; i++)

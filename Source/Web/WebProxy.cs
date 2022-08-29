@@ -15,7 +15,7 @@ namespace ChainFx.Web
         //
 
         // uri to the origin service
-        internal string forward;
+        string forward;
 
         // client connector to the origin service
         WebClient connector;

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
-using static ChainFx.CryptoUtility;
 
 namespace ChainFx.Web
 {
@@ -36,17 +36,26 @@ namespace ChainFx.Web
         public virtual Task<bool> DoAsync(WebContext wc) => throw new NotImplementedException();
 
 
-        public static string EncryptPrincipal<P>(P prin, short proj) where P : IData
+        public static string ToToken<P>(P prin, short msk) where P : IData
         {
             var cnt = new JsonContent(true, 4096);
             try
             {
-                cnt.PutToken(prin, proj); // use the special putting method to append time stamp
-                var buf = cnt.Buffer;
-                int count = cnt.Count;
+                var secret = Application.Secret;
+                cnt.PutToken(prin, msk); // use the special putting method to append time stamp
 
-                Encrypt(buf, count, Application.CryptoKey);
-                return BytesToHex(buf, count);
+                // + ':' + secrent
+                cnt.Add(':');
+                cnt.Add(secret);
+
+                // create and add signature
+                using var md5 = MD5.Create();
+                var sig = md5.ComputeHash(cnt.Buffer, 0, cnt.Count); // 16 bytes
+                cnt.RemoveBytes(secret.Length); // take out secret and add signature
+                cnt.AddBytes(sig);
+
+                // convert to base64 and return
+                return Convert.ToBase64String(cnt.Buffer, 0, cnt.Count);
             }
             finally
             {
@@ -54,14 +63,41 @@ namespace ChainFx.Web
             }
         }
 
-        public static P DecryptPrincipal<P>(string token) where P : IData, new()
+        public static P FromToken<P>(string token) where P : IData, new()
         {
-            var bytes = HexToBytes(token);
-            Decrypt(bytes, bytes.Length, Application.CryptoKey);
+            var bytes = Convert.FromBase64String(token);
+
+            var secret = Application.Secret;
+
+            // replace signature with secret
+            Span<byte> sig = stackalloc byte[16];
+            for (int i = 0; i < 16; i++)
+            {
+                var off = bytes.Length - 16 + i;
+                sig[i] = bytes[off]; // backup 
+                if (i < secret.Length)
+                {
+                    bytes[off] = (byte) secret[i]; // replace
+                }
+            }
+
+            // compare signature
+            using var md5 = MD5.Create();
+            var hash = md5.ComputeHash(bytes, 0, bytes.Length - 16 + secret.Length);
+            for (int i = 0; i < 16; i++)
+            {
+                if (sig[i] != hash[i])
+                {
+                    return default;
+                }
+            }
+
             // deserialize
             try
             {
-                var jo = (JObj) new JsonParser(bytes, bytes.Length).Parse();
+                var len = bytes.Length - 16 - 1;
+                var jo = (JObj) new JsonParser(bytes, len).Parse();
+
                 // check time expiry
                 DateTime stamp = jo["$"];
                 if ((DateTime.Now - stamp).Hours > 2)

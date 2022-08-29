@@ -27,7 +27,7 @@ namespace ChainFx
         internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
 
-        static readonly uint[] cryptoKey;
+        static readonly string secret;
 
         // config
         public static readonly JObj app, prog;
@@ -65,8 +65,7 @@ namespace ChainFx
 
             // security
             //
-            string crypto = app[nameof(crypto)];
-            cryptoKey = CryptoUtility.HexToKey(crypto);
+            secret = app[nameof(secret)];
 
             // string fedkey = app[nameof(fedkey)]; // federal key
             // _fedkey = CryptoUtility.HexToKey(fedkey);
@@ -98,7 +97,7 @@ namespace ChainFx
 
         public static JObj Prog => prog;
 
-        public static uint[] CryptoKey => cryptoKey;
+        public static string Secret => secret;
 
         public static FileLogger Logger => logger;
 

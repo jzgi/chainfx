@@ -179,6 +179,26 @@ namespace ChainFx
             return str.ToString();
         }
 
+        public static string MD5(byte[] src, int len, bool uppercase = false)
+        {
+            if (src == null) return null;
+
+            var harr = uppercase ? HEXU : HEX;
+
+            // digest and transform
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            var hash = md5.ComputeHash(src, 0, len);
+            var str = new StringBuilder(32);
+            for (int i = 0; i < 16; i++)
+            {
+                var b = hash[i];
+                str.Append(harr[b >> 4]);
+                str.Append(harr[b & 0x0f]);
+            }
+
+            return str.ToString();
+        }
+
 
         public static string SHA1(string src)
         {
