@@ -23,10 +23,10 @@ namespace ChainFx
 
         public const short
             MSK_ID = 0x0001,
-            MSK_BORN = 0x0002,
-            MSK_EDIT = 0x0004,
-            MSK_LATER = 0x0008,
-            MSK_PROCESS = 0x0010,
+            MSK_TYP = 0x0002,
+            MSK_BORN = 0x0004,
+            MSK_EDIT = 0x0008,
+            MSK_LATER = 0x0010,
             MSK_EXTRA = 0x0100;
 
 
@@ -41,9 +41,12 @@ namespace ChainFx
 
         public virtual void Read(ISource s, short msk = 0xff)
         {
-            if ((msk & MSK_BORN) == MSK_BORN)
+            if ((msk & MSK_TYP) == MSK_TYP || (msk & MSK_BORN) == MSK_BORN)
             {
                 s.Get(nameof(typ), ref typ);
+            }
+            if ((msk & MSK_BORN) == MSK_BORN)
+            {
                 s.Get(nameof(created), ref created);
                 s.Get(nameof(creator), ref creator);
             }

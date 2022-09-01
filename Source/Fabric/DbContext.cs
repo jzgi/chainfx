@@ -244,38 +244,38 @@ namespace ChainFx.Fabric
             return reader.Read();
         }
 
-        public D QueryTop<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (QueryTop(p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToObject<D>(msk);
             }
             return default;
         }
 
-        public D QueryTop<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public D QueryTop<D>(string sql, Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (QueryTop(sql, p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToObject<D>(msk);
             }
             return default;
         }
 
-        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryTopAsync(p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToObject<D>(msk);
             }
             return default;
         }
 
-        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, short proj = 0xff, bool prepare = true) where D : IData, new()
+        public async Task<D> QueryTopAsync<D>(string sql, Action<IParameters> p = null, short msk = 0xff, bool prepare = true) where D : IData, new()
         {
             if (await QueryTopAsync(sql, p, prepare))
             {
-                return ToObject<D>(proj);
+                return ToObject<D>(msk);
             }
             return default;
         }

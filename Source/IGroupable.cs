@@ -1,6 +1,6 @@
 ﻿namespace ChainFx
 {
-    public interface IGroupKeyable<K> : IKeyable<K>
+    public interface IGroupable<K> : IKeyable<K>
     {
         /// <summary>
         /// To determine if it is in the same group as the given object. 

@@ -299,11 +299,6 @@ namespace ChainFx.Web
             return (a, b);
         }
 
-        public static IForkable ToKindable(WebSeg seg)
-        {
-            return (IForkable) seg.accessor;
-        }
-
         public static implicit operator string[](WebSeg seg)
         {
             return (string[]) seg.accessor;

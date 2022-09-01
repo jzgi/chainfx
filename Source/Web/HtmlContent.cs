@@ -1570,23 +1570,24 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SUBNAV(string[] items, string uri, int subscript)
+        public HtmlContent SUBNAV(params string[] actions)
         {
             Add("<ul class=\"uk-subnav\">");
-            for (int i = 0; i < items.Length; i++)
+            for (int i = 0; i < actions.Length; i++)
             {
+                var act = Web.Work.Actions[actions[i]];
+                if (act == null) continue;
+
                 Add("<li");
-                if (i == subscript)
+                if (act == Web.Action)
                 {
                     Add(" class=\"uk-active\"");
                 }
 
                 Add("><a href=\"");
-                Add(uri);
-                Add('-');
-                Add(i);
+                Add(act.Key);
                 Add("\">");
-                Add(items[i]);
+                Add(act.Label);
                 Add("</a></li>");
             }
 
@@ -2339,7 +2340,7 @@ namespace ChainFx.Web
         public HtmlContent TABBEDBAR(bool group = true)
         {
             var wrk = Web.Work;
-            var wrks = wrk.Parent.Works;
+            var wrks = wrk.Parent.SubWorks;
 
             Add("<form class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
@@ -2693,9 +2694,9 @@ namespace ChainFx.Web
             UL_("uk-card-body uk-list uk-list-divider");
 
 
-            for (int i = 0; i < wrk.Works?.Count; i++)
+            for (int i = 0; i < wrk.SubWorks?.Count; i++)
             {
-                var sub = wrk.ResolveWork(wc, i);
+                var sub = wrk.SubWorks.ValueAt(i);
                 if (sub == null)
                 {
                     continue;

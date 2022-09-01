@@ -25,7 +25,7 @@ namespace ChainFx.Web
         readonly WebAction[] tooled;
 
         // subworks, if any
-        Map<string, WebWork> works;
+        Map<string, WebWork> subworks;
 
         // variable-key subwork, if any
         WebWork varwork;
@@ -132,7 +132,7 @@ namespace ChainFx.Web
 
         public WebAction Catch => @catch;
 
-        public Map<string, WebWork> Works => works;
+        public Map<string, WebWork> SubWorks => subworks;
 
         public WebWork VarWork => varwork;
 
@@ -217,9 +217,9 @@ namespace ChainFx.Web
         protected T CreateWork<T>(string name, object state = null,
             UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
         {
-            if (works == null)
+            if (subworks == null)
             {
-                works = new Map<string, WebWork>();
+                subworks = new Map<string, WebWork>();
             }
 
             var wrk = new T
@@ -239,87 +239,10 @@ namespace ChainFx.Web
             if (before != null) wrk.Before = before;
             if (after != null) wrk.After = after;
 
-            works.Add(wrk);
+            subworks.Add(wrk);
 
             wrk.OnCreate();
             return wrk;
-        }
-
-        protected void CreateWork<T1, T2>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-        }
-
-        protected void CreateWork<T1, T2, T3>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
-        }
-
-        protected void CreateWork<T1, T2, T3, T4>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
-        }
-
-        protected void CreateWork<T1, T2, T3, T4, T5>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
-        }
-
-        protected void CreateWork<T1, T2, T3, T4, T5, T6>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T6>(name, state, ui, authenticate, authorize, before, after);
-        }
-
-        protected void CreateWork<T1, T2, T3, T4, T5, T6, T7>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new() where T7 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T6>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T7>(name, state, ui, authenticate, authorize, before, after);
-        }
-
-        protected void CreateWork<T1, T2, T3, T4, T5, T6, T7, T8>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null)
-            where T1 : WebWork, new() where T2 : WebWork, new() where T3 : WebWork, new() where T4 : WebWork, new() where T5 : WebWork, new() where T6 : WebWork, new() where T7 : WebWork, new() where T8 : WebWork, new()
-        {
-            CreateWork<T1>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T2>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T3>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T4>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T5>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T6>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T7>(name, state, ui, authenticate, authorize, before, after);
-            CreateWork<T8>(name, state, ui, authenticate, authorize, before, after);
         }
 
         protected void Describe(XmlContent xc)
@@ -335,11 +258,11 @@ namespace ChainFx.Web
                 },
                 delegate
                 {
-                    if (works != null)
+                    if (subworks != null)
                     {
-                        for (int i = 0; i < works.Count; i++)
+                        for (int i = 0; i < subworks.Count; i++)
                         {
-                            var wrk = works.EntryAt(i).Value;
+                            var wrk = subworks.EntryAt(i).Value;
                             wrk.Describe(xc);
                         }
                     }
@@ -372,9 +295,9 @@ namespace ChainFx.Web
 
             varwork?.Describe(h);
 
-            for (int i = 0; i < works?.Count; i++)
+            for (int i = 0; i < subworks?.Count; i++)
             {
-                var w = works.EntryAt(i).Value;
+                var w = subworks.EntryAt(i).Value;
                 w.Describe(h);
             }
         }
@@ -406,71 +329,6 @@ namespace ChainFx.Web
             return true;
         }
 
-
-        internal WebWork GetSubWork(WebContext wc, string key)
-        {
-            if (works == null)
-            {
-                return null;
-            }
-            var ety = works.EntryOf(key);
-            var siz = ety.Size;
-            if (siz < 1)
-            {
-                return null;
-            }
-            if (siz == 1)
-            {
-                return ety.Value;
-            }
-            if (wc[0].Accessor is IForkable forkable)
-            {
-                short frk = forkable.Fork;
-                for (var i = 0; i < siz; i++)
-                {
-                    var wrk = ety[i];
-                    if (frk == wrk.Ui?.Fork)
-                    {
-                        return wrk;
-                    }
-                }
-            }
-            return null;
-        }
-
-        internal WebWork ResolveWork(WebContext wc, int idx)
-        {
-            if (works == null)
-            {
-                return null;
-            }
-            var ety = works.EntryAt(idx);
-            var siz = ety.Size;
-            if (siz < 1)
-            {
-                return null;
-            }
-            if (siz == 1)
-            {
-                return ety.Value;
-            }
-            if (wc[0].Accessor is IForkable forkable)
-            {
-                short frk = forkable.Fork;
-                if (frk != 0) // zero forie doesn't match anything
-                {
-                    for (var i = 0; i < siz; i++)
-                    {
-                        var wrk = ety[i];
-                        if (frk == wrk.Ui?.Fork)
-                        {
-                            return wrk;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
 
         protected virtual async Task HandleAsync(string rsc, WebContext wc)
         {
@@ -506,7 +364,7 @@ namespace ChainFx.Web
                 var act = this[name];
                 if (act == null)
                 {
-                    wc.Give(404, "action not found", true, 30);
+                    wc.GiveText(404, "action not found", shared: true, maxage: 30);
                     return;
                 }
 
@@ -540,7 +398,7 @@ namespace ChainFx.Web
             else // sub works
             {
                 string key = rsc.Substring(0, slash);
-                var wrk = GetSubWork(wc, key);
+                var wrk = subworks?[key];
                 if (wrk != null) // if child
                 {
                     // do necessary authentication before entering

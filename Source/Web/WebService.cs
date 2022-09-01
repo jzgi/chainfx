@@ -69,8 +69,6 @@ namespace ChainFx.Web
             if (Certificate != null)
             {
                 opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Certificate);
-
-                Inf("cert is set");
             }
 
             server = new KestrelServer(Options.Create(opts), TransportFactory, Logger);
@@ -142,8 +140,6 @@ namespace ChainFx.Web
             }
 
             Console.WriteLine("[" + Name + "] started at " + url);
-
-            Inf("[" + Name + "] started at " + url);
         }
 
         internal async Task StopAsync(CancellationToken token)
@@ -193,13 +189,16 @@ namespace ChainFx.Web
                 if (@catch != null) // If existing custom catch
                 {
                     wc.Exception = e;
-                    if (@catch.IsAsync) await @catch.DoAsync(wc, 0);
-                    else @catch.Do(wc, 0);
+                    if (@catch.IsAsync)
+                    {
+                        await @catch.DoAsync(wc, 0);
+                    }
+                    else
+                        @catch.Do(wc, 0);
                 }
                 else
                 {
-                    wc.Give(500, e.Message); // internal server error
-                    Console.Write(e.StackTrace);
+                    wc.GiveText(500, e.Message, e.StackTrace); // internal server error
                 }
             }
             finally

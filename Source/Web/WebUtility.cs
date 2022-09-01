@@ -52,7 +52,7 @@ namespace ChainFx.Web
             h.Add("<body style=\"height:100%; overflow-y: hidden\">");
 
             var wrk = wc.Work;
-            var subwrks = wrk.Works;
+            var subwrks = wrk.SubWorks;
             // render tabs
             h.Add("<ul class=\"uk-tab\" uk-tab>");
             h.Add("<li class=\"uk-active\"><a href=\"#\">");
@@ -151,7 +151,7 @@ namespace ChainFx.Web
             h.Add("<button class=\"uk-offcanvas-close\" type=\"button\" uk-close></button>");
 
             var wrk = wc.Work;
-            var subs = wrk.Works;
+            var subs = wrk.SubWorks;
 
             // tabs
             h.Add("<ul class=\"uk-tab uk-tab-right\" uk-tab=\"connect: #iswitcher; media: 270\">");

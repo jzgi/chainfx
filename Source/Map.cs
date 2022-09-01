@@ -172,7 +172,7 @@ namespace ChainFx
             count++;
 
             // decide group
-            if (value is IGroupKeyable<K> gkeyable)
+            if (value is IGroupable<K> gkeyable)
             {
                 // compare to current head
                 if (head == -1 || !gkeyable.GroupWith(entries[head].key))

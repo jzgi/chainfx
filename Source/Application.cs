@@ -22,11 +22,6 @@ namespace ChainFx
 
         public const string CERT_PFX = "cert.pfx";
 
-        internal static readonly WebLifetime Lifetime = new WebLifetime();
-
-        internal static readonly ITransportFactory TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
-
-
         static readonly string secret;
 
         // config
@@ -36,7 +31,12 @@ namespace ChainFx
         static readonly X509Certificate2 cert;
 
         // the global logger
-        static readonly FileLogger logger;
+        internal static readonly FileLogger logger;
+
+
+        internal static readonly WebLifetime Lifetime = new WebLifetime();
+
+        internal static readonly ITransportFactory TransportFactory;
 
 
         // registered services
@@ -61,7 +61,7 @@ namespace ChainFx
                 Level = logging
             };
 
-            Inf("file logger is ready");
+            TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
 
             // security
             //

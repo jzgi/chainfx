@@ -16,22 +16,21 @@ namespace ChainFx.Web
 
         readonly short group;
 
-        readonly short fork;
-
         /// <summary>
         ///  To specify user interface-related attributes.
         /// </summary>
         /// <param name="label">The label text for the target work or action. It can be Unicode symbols or HTML entities</param>
         /// <param name="tip">A short description of the functionality</param>
+        /// <param
+        ///     name="icon">
+        /// </param>
         /// <param name="group"></param>
-        /// <param name="fork"></param>
-        public UiAttribute(string label = null, string tip = null, string icon = null, short group = 0, short fork = 0)
+        public UiAttribute(string label = null, string tip = null, string icon = null, short group = 0)
         {
             this.label = label;
             this.tip = tip;
             this.icon = icon;
             this.group = group;
-            this.fork = fork;
         }
 
         public string Label => label;
@@ -44,7 +43,5 @@ namespace ChainFx.Web
         /// A number that determines grouping of functions.
         /// </summary>
         public short Group => group;
-
-        public short Fork => fork;
     }
 }

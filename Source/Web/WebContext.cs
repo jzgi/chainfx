@@ -123,7 +123,8 @@ namespace ChainFx.Web
 
         public Task<WebSocket> AcceptWebSocketAsync() => fWebSocket.AcceptAsync(null);
 
-        [Obsolete] public override AuthenticationManager Authentication => null;
+        [Obsolete]
+        public override AuthenticationManager Authentication => null;
 
         public override ClaimsPrincipal User { get; set; } = null;
 
@@ -496,14 +497,19 @@ namespace ChainFx.Web
             MaxAge = maxage;
         }
 
-        public void Give(int statusCode, string text, bool? shared = null, int maxage = 12)
+        public void GiveText(int statusCode, string text, string suppl = null, bool? shared = null, int maxage = 12)
         {
-            var content = new TextContent(true, 1024);
+            var cnt = new TextContent(true, 1024);
 
-            content.Add(text);
+            cnt.Add(text);
+            if (suppl != null)
+            {
+                cnt.Add('\n');
+                cnt.Add(suppl);
+            }
 
             StatusCode = statusCode;
-            Content = content;
+            Content = cnt;
             Shared = shared;
             MaxAge = maxage;
         }
