@@ -497,15 +497,15 @@ namespace ChainFx.Web
             MaxAge = maxage;
         }
 
-        public void GiveText(int statusCode, string text, string suppl = null, bool? shared = null, int maxage = 12)
+        public void GiveMsg(int statusCode, string msg, string detail = null, bool? shared = null, int maxage = 12)
         {
             var cnt = new TextContent(true, 1024);
 
-            cnt.Add(text);
-            if (suppl != null)
+            cnt.Add(msg);
+            if (detail != null)
             {
                 cnt.Add('\n');
-                cnt.Add(suppl);
+                cnt.Add(detail);
             }
 
             StatusCode = statusCode;

@@ -198,7 +198,7 @@ namespace ChainFx.Web
                 }
                 else
                 {
-                    wc.GiveText(500, e.Message, e.StackTrace); // internal server error
+                    wc.GiveMsg(500, e.Message, e.StackTrace); // internal server error
                 }
             }
             finally
@@ -217,7 +217,7 @@ namespace ChainFx.Web
                 return;
             }
 
-            string path = Path.Join(Name, filename);
+            string path = Path.Join(Folder, filename);
             if (!File.Exists(path))
             {
                 wc.Give(404, shared: true, maxage: STATIC_MAX_AGE); // not found

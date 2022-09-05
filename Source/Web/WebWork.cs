@@ -33,6 +33,8 @@ namespace ChainFx.Web
 
         public string Name { get; internal set; }
 
+        public string Folder { get; internal set; }
+
         public UiAttribute Ui { get; internal set; }
 
         public AuthenticateAttribute Authenticate { get; internal set; }
@@ -364,7 +366,7 @@ namespace ChainFx.Web
                 var act = this[name];
                 if (act == null)
                 {
-                    wc.GiveText(404, "action not found", shared: true, maxage: 30);
+                    wc.GiveMsg(404, "action not found", shared: true, maxage: 30);
                     return;
                 }
 

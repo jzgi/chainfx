@@ -104,7 +104,7 @@ namespace ChainFx
         public static X509Certificate2 Certificate => cert;
 
 
-        public static S CreateService<S>(string name) where S : WebService, new()
+        public static S CreateService<S>(string name, string folder = null) where S : WebService, new()
         {
             if (app == null)
             {
@@ -126,6 +126,7 @@ namespace ChainFx
             var svc = new S
             {
                 Name = name,
+                Folder = folder ?? name
             };
             svc.Initialize(prop, webcfg);
 
