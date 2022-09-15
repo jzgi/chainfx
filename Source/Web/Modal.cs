@@ -12,21 +12,16 @@ namespace ChainFx.Web
         AnchorPrompt = 0x1002,
 
         /// <summary>
-        /// To show a dialog with the OK button for execution of an standalone activity
-        /// </summary>
-        AnchorShow = 0x1004,
-
-        /// <summary>
         /// To open a free-style dialog without the OK button, where the procedure can be called a number of times.
         /// </summary>
-        AnchorOpen = 0x1008,
+        AnchorOpen = 0x1004,
 
         /// <summary>
         /// To execute a script that calls the procedure asynchronously.
         /// </summary>
-        AnchorScript = 0x1010,
+        AnchorScript = 0x1008,
 
-        AnchorCrop = 0x1020,
+        AnchorCrop = 0x1010,
 
         Button = 0x2000,
 
@@ -43,21 +38,17 @@ namespace ChainFx.Web
 
         ButtonPickPrompt = 0x2102,
 
-        ButtonShow = 0x2004,
-
-        ButtonPickShow = 0x2104,
-
         /// <summary>
         /// To open a free-style dialog, passing current form context
         /// </summary>
-        ButtonOpen = 0x2008,
+        ButtonOpen = 0x2004,
 
-        ButtonPickOpen = 0x2108,
+        ButtonPickOpen = 0x2104,
 
-        ButtonScript = 0x2010,
+        ButtonScript = 0x2008,
 
-        ButtonPickScript = 0x2110,
+        ButtonPickScript = 0x2108,
 
-        ButtonCrop = 0x2020,
+        ButtonCrop = 0x2010,
     }
 }

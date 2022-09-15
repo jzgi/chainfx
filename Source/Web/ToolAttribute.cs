@@ -26,7 +26,7 @@ namespace ChainFx.Web
 
         readonly Appear appear;
 
-        public ToolAttribute(Modal modal, Appear appear = Appear.Large)
+        public ToolAttribute(Modal modal, Appear appear = Appear.High)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
@@ -45,7 +45,7 @@ namespace ChainFx.Web
 
         public bool IsButtonTag => element == 0x2000;
 
-        public bool IsPost => HasConfirm || HasPrompt || HasShow;
+        public bool IsPost => HasConfirm || HasPrompt;
 
         public bool MustPick => pick == 0x0100;
 
@@ -53,12 +53,10 @@ namespace ChainFx.Web
 
         public bool HasPrompt => mode == 0x02;
 
-        public bool HasShow => mode == 0x04;
+        public bool HasOpen => mode == 0x04;
 
-        public bool HasOpen => mode == 0x08;
+        public bool HasScript => mode == 0x08;
 
-        public bool HasScript => mode == 0x10;
-
-        public bool HasCrop => mode == 0x20;
+        public bool HasCrop => mode == 0x10;
     }
 }

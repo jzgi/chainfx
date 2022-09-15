@@ -58,9 +58,7 @@ namespace ChainFx.Web
         ///
         public IData Principal { get; set; }
 
-        public string Party { get; set; }
-
-        public string Role { get; set; }
+        public short Role { get; set; }
 
         // segments along the URI path
         WebSeg[] segs;

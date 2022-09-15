@@ -8,16 +8,14 @@ namespace ChainFx
     public abstract class Entity : IData
     {
         public const short
-            STA_DEAD = -1,
             STA_DISABLED = 0,
             STA_ENABLED = 1,
             STA_TOP = 2;
 
-        public static readonly Map<short, string> States = new Map<short, string>
+        public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STA_DEAD, "消除"},
-            {STA_DISABLED, "禁用"},
-            {STA_ENABLED, "可用"},
+            {STA_DISABLED, "停止"},
+            {STA_ENABLED, "正常"},
             {STA_TOP, "置顶"},
         };
 
@@ -86,16 +84,12 @@ namespace ChainFx
 
         public virtual string ToString(short spec) => ToString();
 
-        public virtual bool IsDead => status == STA_DEAD;
-
         public virtual bool IsDisabled => status == STA_DISABLED;
-
-        public virtual bool IsShowable => status >= STA_DISABLED;
 
         public virtual bool IsEnabled => status == STA_ENABLED;
 
         public virtual bool IsWorkable => status >= STA_ENABLED;
 
-        public virtual bool IsHot => status == STA_TOP;
+        public virtual bool IsTop => status == STA_TOP;
     }
 }

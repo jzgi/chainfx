@@ -1313,7 +1313,7 @@ namespace ChainFx.Web
                 Add("<a class=\"uk-button uk-button-link");
                 Add("\" href=\"");
                 PutKey(key);
-                Add("/\" onclick=\"return dialog(this,4,false,3,'');\">");
+                Add("/\" onclick=\"return dialog(this,4,false,2,'');\">");
                 Add(caption);
                 Add("</a>");
             }
@@ -1369,6 +1369,26 @@ namespace ChainFx.Web
             PutKey(b);
             PutKey(c);
             Add("\">");
+            return this;
+        }
+
+        public HtmlContent ADIALOG_<A, B>(A a, B b, int mode, bool pick, Appear appear, string tip = null, string css = null)
+        {
+            Add("<a");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(" href=\"");
+            PutKey(a);
+            PutKey(b);
+            Add("\"");
+
+            _DIALOG_(mode, pick, appear, tip);
+
+            Add(">");
             return this;
         }
 
@@ -2145,76 +2165,55 @@ namespace ChainFx.Web
             Add("</table>");
         }
 
-        public void BOARD<M>(M[] arr, Action<M> card, string css = "uk-card-default")
+
+        public HtmlContent GRIDVAR<K, M>(Map<K, M> arr, Action<M> card, Predicate<M> filter = null, int min = 1, string css = "uk-card-default") where M : IKeyable<K>
         {
-            Add("<main class=\"uk-board\">");
+            var vw = Web.Work.VarWork;
+            if (vw?.Default == null)
+            {
+                return this;
+            }
+
+            Add("<div uk-grid class=\"uk-child-width-1-");
+            Add(min++);
+            Add(" uk-child-width-1-");
+            Add(min++);
+            Add("@s uk-child-width-1-");
+            Add(min++);
+            Add("@m uk-child-width-1-");
+            Add(min++);
+            Add("@l uk-child-width-1-");
+            Add(min);
+            Add("@xl\">");
             if (arr != null)
             {
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < arr.Count; i++)
                 {
-                    var obj = arr[i];
-                    Add("<form class=\"uk-card");
+                    var obj = arr.ValueAt(i);
+                    if (filter != null && !filter(obj))
+                    {
+                        continue;
+                    }
+                    Add("<a class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
-
-                    Add("\">");
+                    Add("\" href=\"");
+                    PutKey(obj.Key);
+                    Add("/\" onclick=\"return dialog(this,4,false,2,'');\">");
                     card(obj);
-                    Add("</form>");
+                    Add("</a>");
                 }
             }
 
-            Add("</main>");
+            Add("</div>");
+
+
+            return this;
         }
 
-        public void BOARD<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> card, string css = "uk-card-default")
-        {
-            Add("<main class=\"uk-board\">");
-            if (map != null)
-            {
-                for (int i = 0; i < map.Count; i++)
-                {
-                    var ety = map.EntryAt(i);
-                    Add("<form class=\"uk-card");
-                    if (css != null)
-                    {
-                        Add(' ');
-                        Add(css);
-                    }
-
-                    Add("\">");
-                    card(ety);
-                    Add("</form>");
-                }
-            }
-
-            Add("</main>");
-        }
-
-        public void BOARD<S>(S src, Action<S> card, string css = "uk-card-default") where S : ISource
-        {
-            Add("<main class=\"uk-board\">");
-            if (src != null && src.IsDataSet)
-            {
-                while (src.Next())
-                {
-                    Add("<form class=\"uk-card");
-                    if (css != null)
-                    {
-                        Add(' ');
-                        Add(css);
-                    }
-
-                    Add("\">");
-                    card(src);
-                    Add("</form>");
-                }
-            }
-
-            Add("</main>");
-        }
 
         public void GRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, int min = 1, string css = "uk-card-default")
         {
@@ -2245,7 +2244,6 @@ namespace ChainFx.Web
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
                     card(obj);
                     Add("</form>");
@@ -2319,6 +2317,7 @@ namespace ChainFx.Web
             Add("</main>");
         }
 
+
         HtmlContent _DIALOG_(int mode, bool pick, Appear appear, string tip = null)
         {
             Add(" onclick=\"return dialog(this,");
@@ -2337,59 +2336,29 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TABBEDBAR(bool group = true)
+        public HtmlContent TOPBAR_()
         {
-            var wrk = Web.Work;
-            var wrks = wrk.Parent.SubWorks;
+            Add("<nav class=\"uk-top-bar uk-flex\">");
+            return this;
+        }
 
-            Add("<form class=\"uk-top-bar uk-flex-center\">");
-            Add("<ul class=\"uk-subnav\">");
-
-            for (int i = 0; i < wrks.Count; i++)
-            {
-                var w = wrks.ValueAt(i);
-                if (group && w.Group != wrk.Group) continue;
-
-                // render tabs
-                Add("<li");
-                if (w == wrk)
-                {
-                    Add(" class=\"uk-active\"");
-                }
-                Add("><a href=\"../");
-                Add(w.Key);
-                Add("/\">");
-                Add(w.Label);
-                Add("</a></li>");
-            }
-
-            Add("</ul>");
-
-            Add("</form>");
+        public HtmlContent _TOPBAR()
+        {
+            Add("</nav>");
             Add("<div class=\"uk-top-placeholder\"></div>");
             return this;
         }
 
-        public HtmlContent TOPBAR_(bool large = false)
+        public HtmlContent TOPBARXL_()
         {
-            Add("<nav class=\"uk-top-bar uk-flex");
-            if (large)
-            {
-                Add(" uk-large");
-            }
-            Add("\">");
+            Add("<nav class=\"uk-top-bar uk-flex uk-large\">");
             return this;
         }
 
-        public HtmlContent _TOPBAR(bool large = false)
+        public HtmlContent _TOPBARXL()
         {
             Add("</nav>");
-            Add("<div class=\"uk-top-placeholder");
-            if (large)
-            {
-                Add(" uk-large");
-            }
-            Add("\"></div>");
+            Add("<div class=\"uk-top-placeholder uk-large\"></div>");
             return this;
         }
 
@@ -2400,26 +2369,32 @@ namespace ChainFx.Web
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(top ? "uk-top-bar" : "uk-bottom-bar");
             Add("\">");
-            Add("<span class=\"uk-button-group\">");
 
-            bool astack = Web.Query[nameof(astack)];
-
-            if (astack)
+            if (!top)
             {
-                Add("<a class=\"uk-icon-button\" href=\"javascript: closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
+                Add("<span class=\"uk-margin-auto-right\">");
+                if (tip != null)
+                {
+                    Add(tip);
+                }
+                Add("</span>");
             }
 
+            bool astack = Web.Query[nameof(astack)];
+            Add("<span class=\"uk-button-group\">"); // the button group
+            if (astack)
+            {
+                Add("<a class=\"uk-icon-button\" href=\"javascript: closeUp(false, true);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
+            }
             if (toggle)
             {
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
             }
-
             var acts = Web.Work.Tooled;
             if (acts != null)
             {
-                for (int i = 0; i < acts.Length; i++)
+                foreach (var act in acts)
                 {
-                    var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
                     if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
@@ -2429,16 +2404,17 @@ namespace ChainFx.Web
                     }
                 }
             }
-
             Add("</span>");
 
-            Add("<span>");
-            if (tip != null)
+            if (top)
             {
-                Add(tip);
+                Add("<span class=\"uk-margin-auto-left\">");
+                if (tip != null)
+                {
+                    Add(tip);
+                }
+                Add("</span>");
             }
-
-            Add("</span>");
 
             Add("</form>");
             Add("<div class=\"");
@@ -2690,9 +2666,8 @@ namespace ChainFx.Web
             var wc = Web;
             var wrk = wc.Work;
             // render tabs
-            FORM_("uk-card- uk-card-default");
-            UL_("uk-card-body uk-list uk-list-divider");
 
+            string last = null;
 
             for (int i = 0; i < wrk.SubWorks?.Count; i++)
             {
@@ -2711,17 +2686,26 @@ namespace ChainFx.Web
                     continue;
                 }
 
+                if (last == null || last != sub.Tip)
+                {
+                    if (last != null)
+                    {
+                        _FORM();
+                        _UL();
+                    }
+                    FORM_("uk-card- uk-card-default");
+                    H4(sub.Tip, "uk-card-header");
+                    UL_("uk-card-body uk-child-width-1-2", grid: true);
+                }
+
                 LI_();
-                T("<a href=\"").T(sub.Key).T("/\" class=\"uk-width-1-1 uk-button-link\" onclick=\"return dialog(this,8,false,4,'');\">");
-                T("<label class=\"uk-label\" uk-icon=\"").T(sub.Icon).T("\"></label>");
-                Add("<span class=\"uk-input uk-width-expand\">");
-                Add(sub.Label);
-                Add("</span>");
-                Add("<span uk-icon=\"chevron-right\"></span></a>");
+                ADIALOG_(sub.Key, "/", 4, false, Appear.Full, css: "uk-width-1-1 uk-button-link").SPAN(sub.Label).ICON("chevron-right")._A();
                 _LI();
+
+                last = sub.Tip;
             }
-            _UL();
             _FORM();
+            _UL();
         }
 
 
@@ -2810,6 +2794,7 @@ namespace ChainFx.Web
             // check action's availability
             //
             string cap = caption ?? act.Label;
+            string icon = act.Icon;
             bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
             tip ??= act.Tip;
 
@@ -2891,13 +2876,9 @@ namespace ChainFx.Web
             {
                 _DIALOG_(2, tool.MustPick, tool.Appear, tip);
             }
-            else if (tool.HasShow)
-            {
-                _DIALOG_(4, tool.MustPick, tool.Appear, tip);
-            }
             else if (tool.HasOpen)
             {
-                _DIALOG_(8, tool.MustPick, tool.Appear, tip);
+                _DIALOG_(4, tool.MustPick, tool.Appear, tip);
             }
             else if (tool.HasCrop)
             {
@@ -2909,16 +2890,32 @@ namespace ChainFx.Web
             }
             else if (tip != null)
             {
-                Add(" uk-tooltip=\"");
+                Add(" title=\"");
                 Add(tip);
                 Add("\"");
             }
-
             Add(">");
 
+            if (icon != null)
+            {
+                Add("<span uk-icon=\"");
+                Add(icon);
+                Add("\"></span>");
+            }
             if (!string.IsNullOrEmpty(cap))
             {
+                Add("<span");
+                if (icon != null)
+                {
+                    Add(" class=\"uk-visible@m\"");
+                }
+                Add(">");
+                if (icon != null)
+                {
+                    Add("&nbsp;");
+                }
                 Add(cap);
+                Add("</span>");
             }
 
             // put the closing tag
@@ -2930,6 +2927,7 @@ namespace ChainFx.Web
             // check action's availability
             //
             var cap = caption ?? act.Label;
+            string icon = act.Icon;
             var ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
             tip ??= act.Tip;
 
@@ -3018,13 +3016,9 @@ namespace ChainFx.Web
             {
                 _DIALOG_(2, tool.MustPick, tool.Appear, tip);
             }
-            else if (tool.HasShow)
-            {
-                _DIALOG_(4, tool.MustPick, tool.Appear, tip);
-            }
             else if (tool.HasOpen)
             {
-                _DIALOG_(8, tool.MustPick, tool.Appear, tip);
+                _DIALOG_(4, tool.MustPick, tool.Appear, tip);
             }
             else if (tool.HasScript)
             {
@@ -3040,10 +3034,33 @@ namespace ChainFx.Web
                 Add(tip);
                 Add("');\"");
             }
+            else if (tip != null)
+            {
+                Add(" title=\"");
+                Add(tip);
+                Add("\"");
+            }
             Add(">");
+            if (icon != null)
+            {
+                Add("<span uk-icon=\"");
+                Add(icon);
+                Add("\"></span>");
+            }
             if (!string.IsNullOrEmpty(cap))
             {
+                Add("<span");
+                if (icon != null)
+                {
+                    Add(" class=\"uk-visible@m\"");
+                }
+                Add(">");
+                if (icon != null)
+                {
+                    Add("&nbsp;");
+                }
                 Add(cap);
+                Add("</span>");
             }
             // put the closing tag
             Add(tool.IsAnchorTag ? "</a>" : "</button>");

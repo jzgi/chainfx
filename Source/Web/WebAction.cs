@@ -122,6 +122,8 @@ namespace ChainFx.Web
 
         public UiAttribute Ui => ui;
 
+        public string Icon => ui?.Icon;
+
         public string Label => ui?.Label ?? Name;
 
         public string Tip => ui?.Tip;

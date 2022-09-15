@@ -5,12 +5,12 @@ using static ChainFx.Fabric.Nodality;
 
 namespace ChainFx.Fabric
 {
-    [Ui("平台联盟管理", icon: "social")]
-    public class FedMgtWork : WebWork
+    [Ui("平台联盟管理", "系统", icon: "social")]
+    public class FedWork : WebWork
     {
         protected internal override void OnCreate()
         {
-            CreateVarWork<FedMgtVarWork>();
+            CreateVarWork<FedVarWork>();
         }
 
         public void @default(WebContext wc)
@@ -41,7 +41,7 @@ namespace ChainFx.Fabric
         }
 
 
-        [Ui("✚", "添加联盟节点"), Tool(ButtonShow)]
+        [Ui("✚", "添加联盟节点"), Tool(ButtonOpen)]
         public async Task @new(WebContext wc)
         {
             var o = new Peer
@@ -55,7 +55,7 @@ namespace ChainFx.Fabric
                     h.LI_().NUMBER("编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("平台名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.weburl), o.weburl, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.status), o.status, Entity.States)._LI();
+                    h.LI_().SELECT("状态", nameof(o.status), o.status, Entity.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

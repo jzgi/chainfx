@@ -15,13 +15,6 @@ namespace ChainFx.Fabric
     /// </remarks>
     public abstract class FedService : WebService
     {
-        protected internal override void OnCreate()
-        {
-            base.OnCreate();
-
-            CreateVarWork<FedVarWork>();
-        }
-
         #region TIE-MGT
 
         public async Task ontie(WebContext wc, int cmd)

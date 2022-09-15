@@ -1,13 +1,18 @@
 namespace ChainFx.Web
 {
+    /// <summary>
+    /// The dimension or style of a modal dialog, or size of cropped image
+    /// </summary>
     public enum Appear : short
     {
         Half = 1,
 
-        Small = 2,
+        High = 2,
 
-        Large = 3,
+        Small = 3,
 
-        Full = 4,
+        Large = 4,
+
+        Full = 5,
     }
 }
