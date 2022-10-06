@@ -73,6 +73,6 @@ namespace ChainFx.Fabric
 
         public DateTime Created => created;
 
-        public bool IsRunning => status == STA_ENABLED;
+        public bool IsRunning => status == STU_NORMAL;
     }
 }

@@ -5,22 +5,22 @@ namespace ChainFx.Fabric
     /// <summary>
     /// Thrown to indicate a federated networking error.
     /// </summary>
-    public class FedException : Exception
+    public class NodeException : Exception
     {
         /// <summary>
         /// The returned status code.
         /// </summary>
         public int Code { get; internal set; }
 
-        public FedException()
+        public NodeException()
         {
         }
 
-        public FedException(string msg) : base(msg)
+        public NodeException(string msg) : base(msg)
         {
         }
 
-        public FedException(string msg, Exception inner) : base(msg, inner)
+        public NodeException(string msg, Exception inner) : base(msg, inner)
         {
         }
     }

@@ -8,15 +8,15 @@ namespace ChainFx
     public abstract class Entity : IData
     {
         public const short
-            STA_DISABLED = 0,
-            STA_ENABLED = 1,
-            STA_TOP = 2;
+            STU_VOID = 0,
+            STU_NORMAL = 1,
+            STU_TOP = 2;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STA_DISABLED, "停止"},
-            {STA_ENABLED, "正常"},
-            {STA_TOP, "置顶"},
+            {STU_VOID, "停止"},
+            {STU_NORMAL, "正常"},
+            {STU_TOP, "置顶"},
         };
 
         public const short
@@ -82,14 +82,14 @@ namespace ChainFx
             }
         }
 
-        public virtual string ToString(short spec) => ToString();
+        public virtual string Tip => tip;
 
-        public virtual bool IsDisabled => status == STA_DISABLED;
+        public virtual bool IsDisabled => status == STU_VOID;
 
-        public virtual bool IsEnabled => status == STA_ENABLED;
+        public virtual bool IsEnabled => status == STU_NORMAL;
 
-        public virtual bool IsWorkable => status >= STA_ENABLED;
+        public virtual bool IsWorkable => status >= STU_NORMAL;
 
-        public virtual bool IsTop => status == STA_TOP;
+        public virtual bool IsTop => status == STU_TOP;
     }
 }

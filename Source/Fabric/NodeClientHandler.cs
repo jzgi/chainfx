@@ -2,7 +2,7 @@
 
 namespace ChainFx.Fabric
 {
-    public class FedClientHandler : WebClientHandler
+    public class NodeClientHandler : WebClientHandler
     {
         // fed-specific handling
     }

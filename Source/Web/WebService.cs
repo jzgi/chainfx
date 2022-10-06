@@ -24,8 +24,7 @@ namespace ChainFx.Web
 
         //
         // http implementation
-
-        string url;
+        string address;
 
         // the embedded HTTP engine
         readonly KestrelServer server;
@@ -33,6 +32,9 @@ namespace ChainFx.Web
 
         // local shared cache or not
         bool cache;
+
+
+        string proxy;
 
         // shared cache of previous responses
         ConcurrentDictionary<string, WebCacheEntry> shared;
@@ -76,13 +78,13 @@ namespace ChainFx.Web
 
         internal virtual void Initialize(string prop, JObj webcfg)
         {
-            url = webcfg[nameof(url)];
-            if (url == null)
+            address = webcfg[nameof(address)];
+            if (address == null)
             {
                 throw new ApplicationException("missing 'url' in app.json web-" + prop);
             }
             var feat = server.Features.Get<IServerAddressesFeature>();
-            feat.Addresses.Add(url);
+            feat.Addresses.Add(address);
 
             cache = webcfg[nameof(cache)];
             if (cache)
@@ -90,6 +92,8 @@ namespace ChainFx.Web
                 // create the response cache
                 shared = new ConcurrentDictionary<string, WebCacheEntry>(ConcurrencyLevel, 1024);
             }
+
+            proxy = webcfg[nameof(proxy)];
         }
 
 
@@ -107,9 +111,13 @@ namespace ChainFx.Web
             return null;
         }
 
-        public string Url => url;
+        public string Address => address;
 
         public bool Cache => cache;
+
+        public string Proxy => proxy;
+
+        public string VisitUrl => proxy ?? address;
 
         protected internal virtual async Task StartAsync(CancellationToken token)
         {
@@ -139,7 +147,7 @@ namespace ChainFx.Web
                 cleaner.Start();
             }
 
-            Console.WriteLine("[" + Name + "] started at " + url);
+            Console.WriteLine("[" + Name + "] started at " + address);
         }
 
         internal async Task StopAsync(CancellationToken token)

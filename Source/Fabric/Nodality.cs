@@ -33,7 +33,7 @@ namespace ChainFx.Fabric
         static readonly ConcurrentDictionary<short, Peer> peers = new ConcurrentDictionary<short, Peer>();
 
         // establised connectors
-        static readonly ConcurrentDictionary<short, FedClient> okayed = new ConcurrentDictionary<short, FedClient>();
+        static readonly ConcurrentDictionary<short, NodeClient> okayed = new ConcurrentDictionary<short, NodeClient>();
 
         // periodically pulling of blocks of remote ledger  records
         static Thread puller;
@@ -58,7 +58,7 @@ namespace ChainFx.Fabric
             {
                 foreach (var peer in arr)
                 {
-                    var cli = new FedClient(peer);
+                    var cli = new NodeClient(peer);
 
                     okayed.TryAdd(cli.Key, cli);
 
@@ -276,9 +276,9 @@ namespace ChainFx.Fabric
             return Interlocked.Increment(ref lastId);
         }
 
-        public static FedClient GetConnector(short peerid) => okayed[peerid];
+        public static NodeClient GetConnector(short peerid) => okayed[peerid];
 
-        public static ConcurrentDictionary<short, FedClient> Okayed => okayed;
+        public static ConcurrentDictionary<short, NodeClient> Okayed => okayed;
 
 
         public async Task AskAsync(Peer peer)
@@ -292,7 +292,7 @@ namespace ChainFx.Fabric
                 await dc.ExecuteAsync(p => peer.Write(p));
             }
 
-            var connector = new FedClient(peer);
+            var connector = new NodeClient(peer);
 
             // remote req
             peer.id = Self.id;

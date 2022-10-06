@@ -6,11 +6,11 @@ using static ChainFx.Fabric.Nodality;
 namespace ChainFx.Fabric
 {
     [Ui("平台联盟管理", "系统", icon: "social")]
-    public class FedWork : WebWork
+    public class NodeWork : WebWork
     {
         protected internal override void OnCreate()
         {
-            CreateVarWork<FedVarWork>();
+            CreateVarWork<NodeVarWork>();
         }
 
         public void @default(WebContext wc)

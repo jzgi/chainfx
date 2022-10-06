@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ChainFx.Fabric
 {
-    public static class NodalUtility
+    public static class NodeUtility
     {
         public const string X_FROM = "X-From";
 

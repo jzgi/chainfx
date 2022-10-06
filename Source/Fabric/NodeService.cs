@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using ChainFx.Web;
-using static ChainFx.Fabric.NodalUtility;
+using static ChainFx.Fabric.NodeUtility;
 using static ChainFx.Fabric.Nodality;
 
 namespace ChainFx.Fabric
@@ -13,7 +13,7 @@ namespace ChainFx.Fabric
     /// Inter-node communication
     /// delegate of shared resources
     /// </remarks>
-    public abstract class FedService : WebService
+    public abstract class NodeService : WebService
     {
         #region TIE-MGT
 

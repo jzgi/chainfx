@@ -5,7 +5,7 @@ using static ChainFx.Fabric.Nodality;
 
 namespace ChainFx.Fabric
 {
-    public class FedVarWork : WebWork
+    public class NodeVarWork : WebWork
     {
         [Ui("修改", @group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)

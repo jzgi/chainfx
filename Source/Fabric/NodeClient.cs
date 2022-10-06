@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using static ChainFx.Fabric.NodalUtility;
+using static ChainFx.Fabric.NodeUtility;
 using WebClient = ChainFx.Web.WebClient;
 
 namespace ChainFx.Fabric
@@ -11,7 +11,7 @@ namespace ChainFx.Fabric
     /// <summary>
     /// A client connector to the specific federated peer.
     /// </summary>
-    public class FedClient : WebClient, IKeyable<short>
+    public class NodeClient : WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -72,7 +72,7 @@ namespace ChainFx.Fabric
         /// <summary>
         /// To construct a node client. 
         /// </summary>
-        internal FedClient(Peer peer, FedClientHandler handler = null) : base(peer.weburl, handler ?? new FedClientHandler())
+        internal NodeClient(Peer peer, NodeClientHandler handler = null) : base(peer.weburl, handler ?? new NodeClientHandler())
         {
             this.peer = peer;
             try
@@ -101,7 +101,7 @@ namespace ChainFx.Fabric
 
         #region TIE-MGT
 
-        public async Task<(int, FedClientError)> AskAsync(Peer peer)
+        public async Task<(int, NodeClientError)> AskAsync(Peer peer)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace ChainFx.Fabric
             }
         }
 
-        public async Task<(int, FedClientError)> AmswerAsync(short peerid, bool yes)
+        public async Task<(int, NodeClientError)> AmswerAsync(short peerid, bool yes)
         {
             using var dc = Nodality.NewDbContext();
 

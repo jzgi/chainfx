@@ -9,9 +9,9 @@ namespace ChainFx.Fabric
     public class LdgrContext : DbContext
     {
         // connector to remote peer, can be null when domestic
-        readonly FedClient connector;
+        readonly NodeClient connector;
 
-        internal LdgrContext(FedClient connector)
+        internal LdgrContext(NodeClient connector)
         {
             this.connector = connector;
         }

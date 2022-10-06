@@ -24,22 +24,29 @@ namespace ChainFx.Web
 
         readonly int pick; // form value pick
 
-        readonly Appear appear;
+        // only for crop
+        readonly short siz;
 
-        public ToolAttribute(Modal modal, Appear appear = Appear.High)
+        // only for crop
+        readonly short subs;
+
+        public ToolAttribute(Modal modal, short siz = 1, short subs = 0)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0300;
-            this.appear = appear;
+            this.siz = siz;
+            this.subs = subs;
         }
 
         public Modal Modal => modal;
 
         public int Mode => mode;
 
-        public Appear Appear => appear;
+        public short Siz => siz;
+
+        public short Subs => subs;
 
         public bool IsAnchorTag => element == 0x1000;
 
@@ -49,14 +56,18 @@ namespace ChainFx.Web
 
         public bool MustPick => pick == 0x0100;
 
-        public bool HasConfirm => mode == 0x01;
+        public bool HasConfirm => mode == 0x0001;
 
-        public bool HasPrompt => mode == 0x02;
+        public bool HasPrompt => mode == 0x0002;
 
-        public bool HasOpen => mode == 0x04;
+        public bool HasOpen => mode == 0x0004;
 
-        public bool HasScript => mode == 0x08;
+        public bool HasTell => mode == 0x0008;
 
-        public bool HasCrop => mode == 0x10;
+        public bool HasStack => mode == 0x0010;
+
+        public bool HasCrop => mode == 0x0020;
+
+        public bool HasScript => mode == 0x0040;
     }
 }

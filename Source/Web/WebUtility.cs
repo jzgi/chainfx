@@ -254,7 +254,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12, string title = null)
+        public static void GivePane(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12)
         {
             var h = new HtmlContent(true, 8 * 1024)
             {
@@ -265,12 +265,6 @@ namespace ChainFx.Web
             h.Add("<html>");
 
             h.Add("<head>");
-            if (title != null)
-            {
-                h.Add("<title>");
-                h.Add(title);
-                h.Add("</title>");
-            }
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -284,16 +278,17 @@ namespace ChainFx.Web
             main?.Invoke(h);
 
             h.Add("<script>");
-            if (main != null) // enable the ok button
+            if (main == null) // enable the ok button
             {
-                h.Add("var btn = window.parent.document.getElementById('okbtn');");
-                h.Add("if (btn) btn.disabled = (document.forms.length == 0);");
+                if (status == 200 || status == 201)
+                {
+                    h.Add("closeUp(true);");
+                }
+                else
+                {
+                    h.Add("closeUp(false);");
+                }
             }
-            else // trigger click on the close-button
-            {
-                h.Add("closeUp(true);");
-            }
-
             h.Add("</script>");
 
             h.Add("</body>");
