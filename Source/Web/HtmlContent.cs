@@ -2167,7 +2167,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, int min = 1, string css = null)
+        public HtmlContent GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, short mode = ToolAttribute.MOD_SHOW, int min = 1, string css = null)
         {
             var vw = Web.Work.VarWork;
             if (vw?.Default == null)
@@ -2204,7 +2204,9 @@ namespace ChainFx.Web
                     }
                     Add("\" href=\"");
                     PutKey(key);
-                    Add("/\" onclick=\"return dialog(this,8,false,'");
+                    Add("/\" onclick=\"return dialog(this,");
+                    Add(mode);
+                    Add(" ,false,'");
                     Add(obj.ToString());
                     Add("');\">");
                     card(obj);
@@ -2651,13 +2653,13 @@ namespace ChainFx.Web
                         _FORM();
                         _UL();
                     }
-                    FORM_("uk-card uk-card-default");
+                    FORM_("uk-card uk-card-primary");
                     H4(sub.Tip, "uk-card-header");
                     UL_("uk-card-body uk-child-width-1-2", grid: true);
                 }
 
                 LI_();
-                ADIALOG_(sub.Key, "/", 16, false, css: "uk-width-1-1 uk-button-link").SPAN(sub.Label).ICON("chevron-right")._A();
+                ADIALOG_(sub.Key, "/", 64, false, css: "uk-width-1-1 uk-button-link").SPAN(sub.Label).ICON("chevron-right")._A();
                 _LI();
 
                 last = sub.Tip;
@@ -2756,7 +2758,7 @@ namespace ChainFx.Web
             bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
             tip ??= act.Tip;
 
-            if (tool.IsAnchorTag)
+            if (tool.IsAnchorTag) // A
             {
                 Add("<a class=\"uk-button ");
                 Add(css ?? "uk-button-link");
@@ -2785,7 +2787,7 @@ namespace ChainFx.Web
                 }
                 Add("\"");
             }
-            else
+            else // BUTTON
             {
                 Add("<button class=\"uk-button ");
                 Add(css ?? "uk-button-primary");
@@ -2808,9 +2810,16 @@ namespace ChainFx.Web
                     Add(" formmethod=\"post\"");
                 }
             }
+
             if (!ok)
             {
                 Add(" disabled=\"disabled\" onclick=\"return false;\"");
+            }
+            else if (tool.HasScript)
+            {
+                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
+                Add(act.Name);
+                Add("(this);\"");
             }
             else if (tool.HasConfirm)
             {
@@ -2824,31 +2833,22 @@ namespace ChainFx.Web
                 Add(tip ?? act.Label);
                 Add("');\"");
             }
-            else if (tool.HasScript)
-            {
-                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
-                Add(act.Name);
-                Add("(this);\"");
-            }
-            else if (tool.HasPrompt)
-            {
-                _DIALOG_(2, tool.MustPick, tip);
-            }
-            else if (tool.HasOpen)
-            {
-                _DIALOG_(4, tool.MustPick, tip);
-            }
             else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add((byte) tool.Siz);
+                Add(tool.Size);
                 Add(",'");
                 Add(tip);
                 Add("',");
                 Add(tool.Subs);
                 Add(");\"");
             }
-            else if (tip != null)
+            else if (tool.HasAnyDialog)
+            {
+                _DIALOG_(tool.Mode, tool.MustPick, tip);
+            }
+
+            if (tip != null)
             {
                 Add(" title=\"");
                 Add(tip);
@@ -2963,14 +2963,6 @@ namespace ChainFx.Web
                 Add(tip ?? act.Label);
                 Add("');\"");
             }
-            else if (tool.HasPrompt)
-            {
-                _DIALOG_(2, tool.MustPick, tip);
-            }
-            else if (tool.HasOpen)
-            {
-                _DIALOG_(4, tool.MustPick, tip);
-            }
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return by"); // prefix to avoid js naming conflict
@@ -2980,14 +2972,19 @@ namespace ChainFx.Web
             else if (tool.HasCrop)
             {
                 Add(" onclick=\"return crop(this,");
-                Add(tool.Siz);
+                Add(tool.Size);
                 Add(",'");
                 Add(tip);
                 Add("',");
                 Add(tool.Subs);
                 Add(");\"");
             }
-            else if (tip != null)
+            else if (tool.HasAnyDialog)
+            {
+                _DIALOG_(tool.Mode, tool.MustPick, tip);
+            }
+
+            if (tip != null)
             {
                 Add(" title=\"");
                 Add(tip);

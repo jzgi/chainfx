@@ -8,6 +8,15 @@ namespace ChainFx.Web
     [AttributeUsage(AttributeTargets.Method)]
     public class ToolAttribute : Attribute
     {
+        public const short
+            MOD_SCRIPT = 0x0001,
+            MOD_CONFIRM = 0x0002,
+            MOD_CROP = 0x0004,
+            MOD_PROMPT = 0x0008,
+            MOD_SHOW = 0x0010,
+            MOD_OPEN = 0x0020,
+            MOD_ASTACK = 0x0040;
+
         public static readonly ToolAttribute BUTTON_CONFIRM = new ToolAttribute(Modal.ButtonConfirm);
 
         public static readonly ToolAttribute BUTTON_PICK_CONFIRM = new ToolAttribute(Modal.ButtonPickConfirm);
@@ -25,18 +34,18 @@ namespace ChainFx.Web
         readonly int pick; // form value pick
 
         // only for crop
-        readonly short siz;
+        readonly short size;
 
         // only for crop
         readonly short subs;
 
-        public ToolAttribute(Modal modal, short siz = 1, short subs = 0)
+        public ToolAttribute(Modal modal, short size = 1, short subs = 0)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
-            this.pick = (int) modal & 0x0300;
-            this.siz = siz;
+            this.pick = (int) modal & 0x0f00;
+            this.size = size;
             this.subs = subs;
         }
 
@@ -44,7 +53,7 @@ namespace ChainFx.Web
 
         public int Mode => mode;
 
-        public short Siz => siz;
+        public short Size => size;
 
         public short Subs => subs;
 
@@ -56,18 +65,20 @@ namespace ChainFx.Web
 
         public bool MustPick => pick == 0x0100;
 
-        public bool HasConfirm => mode == 0x0001;
+        public bool HasScript => mode == MOD_SCRIPT;
 
-        public bool HasPrompt => mode == 0x0002;
+        public bool HasConfirm => mode == MOD_CONFIRM;
 
-        public bool HasOpen => mode == 0x0004;
+        public bool HasCrop => mode == MOD_CROP;
 
-        public bool HasTell => mode == 0x0008;
+        public bool HasAnyDialog => mode >= MOD_PROMPT;
 
-        public bool HasStack => mode == 0x0010;
+        public bool HasPrompt => mode == MOD_PROMPT;
 
-        public bool HasCrop => mode == 0x0020;
+        public bool HasShow => mode == MOD_SHOW;
 
-        public bool HasScript => mode == 0x0040;
+        public bool HasOpen => mode == MOD_OPEN;
+
+        public bool HasAStack => mode == MOD_ASTACK;
     }
 }
