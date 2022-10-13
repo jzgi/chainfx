@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/SkyCloud.csproj"
+                "${workspaceFolder}/ChainFx.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
