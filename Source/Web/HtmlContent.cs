@@ -1614,7 +1614,7 @@ namespace ChainFx.Web
 
         public HtmlContent NAVBAR<V>(Map<short, V> map, string uri, int subscript, Func<short, V, bool> filter = null)
         {
-            Add("<nav class=\"uk-top-bar\">");
+            Add("<nav class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
             int num = 0;
             var count = map.Count;
@@ -2167,7 +2167,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, short mode = ToolAttribute.MOD_SHOW, int min = 1, string css = null)
+        public HtmlContent GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, short mode = ToolAttribute.MOD_OPEN, int min = 1, string css = null)
         {
             var vw = Web.Work.VarWork;
             if (vw?.Default == null)
@@ -2621,7 +2621,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public void TASKLIST(byte group = 0)
+        public void TASKBOARD(byte group = 0)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -2922,7 +2922,7 @@ namespace ChainFx.Web
             }
             else
             {
-                Add("<button class=\"uk-button uk-button-default");
+                Add("<button class=\"uk-button uk-button-small");
                 if (css != null)
                 {
                     Add(' ');

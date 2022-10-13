@@ -278,7 +278,12 @@ namespace ChainFx.Web
             main?.Invoke(h);
 
             h.Add("<script>");
-            if (main == null) // enable the ok button
+            if (main != null) // enable the ok button
+            {
+                h.Add("var btn = window.parent.document.getElementById('okbtn');");
+                h.Add("if (btn) btn.disabled = (document.forms.length == 0);");
+            }
+            else // trigger click on the close-button
             {
                 if (status == 200 || status == 201)
                 {
