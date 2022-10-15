@@ -1603,7 +1603,7 @@ namespace ChainFx.Web
 
                 Add("><a href=\"");
                 Add(act.Key);
-                Add("\">");
+                Add("\" onclick=\"goto(this, event);\">");
                 Add(act.Label);
                 Add("</a></li>");
             }
@@ -1636,7 +1636,7 @@ namespace ChainFx.Web
                 Add(uri);
                 Add('-');
                 Add(k);
-                Add("\">");
+                Add("\" onclick=\"goto(this, event);\">");
                 Add(v.ToString());
                 Add("</a></li>");
                 num++;
@@ -2285,7 +2285,7 @@ namespace ChainFx.Web
 
         HtmlContent _DIALOG_(int mode, bool pick, string tip = null)
         {
-            Add(" onclick=\"return dialog(this,");
+            Add(" onclick=\"event.preventDefault(); return dialog(this,");
             Add(mode);
             Add(",");
             Add(pick);
@@ -2815,6 +2815,10 @@ namespace ChainFx.Web
             {
                 Add(" disabled=\"disabled\" onclick=\"return false;\"");
             }
+            else if (tool.IsAnchor)
+            {
+                Add(" onclick=\"goto(this, event);\"");
+            }
             else if (tool.HasScript)
             {
                 Add(" onclick=\"return by"); // prefix to avoid js naming conflict
@@ -2962,6 +2966,10 @@ namespace ChainFx.Web
                 Add("confirm('");
                 Add(tip ?? act.Label);
                 Add("');\"");
+            }
+            else if (tool.IsAnchor)
+            {
+                Add(" onclick=\"goto(this, event);\"");
             }
             else if (tool.HasScript)
             {

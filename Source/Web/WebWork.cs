@@ -304,10 +304,6 @@ namespace ChainFx.Web
             }
         }
 
-        readonly WebException AuthReq = new WebException("Authentication required") {Code = 401};
-
-        readonly WebException AccessorReq = new WebException("Accessor required") {Code = 403};
-
         internal async Task<bool> DoAuthenticate(WebContext wc)
         {
             if (Authenticate != null)
@@ -331,110 +327,6 @@ namespace ChainFx.Web
             return true;
         }
 
-
-        protected virtual async Task HandleAsync(string rsc, WebContext wc)
-        {
-            wc.Work = this;
-
-            if (!DoAuthorize(wc, false))
-            {
-                throw new WebException("authorize failed: " + Name) {Code = wc.Principal == null ? 401 : 403};
-            }
-
-            int slash = rsc.IndexOf('/');
-            if (slash == -1) // this work is the target work
-            {
-                if (Before != null)
-                {
-                    if (Before.IsAsync && !await Before.DoAsync(wc) || !Before.IsAsync && Before.Do(wc))
-                    {
-                        return;
-                    }
-                }
-
-                //
-                // resolve the resource
-                string name = rsc;
-                int subscpt = 0;
-                int dash = rsc.LastIndexOf('-');
-                if (dash != -1)
-                {
-                    name = rsc.Substring(0, dash);
-                    wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
-                }
-
-                var act = this[name];
-                if (act == null)
-                {
-                    wc.GiveMsg(404, "action not found", shared: true, maxage: 30);
-                    return;
-                }
-
-                wc.Action = act;
-
-                if (!act.DoAuthorize(wc, false))
-                {
-                    throw new WebException("Do authorize failure: " + act.Name) {Code = wc.Principal == null ? 401 : 403};
-                }
-
-                // try in the cache first
-                if (!Service.TryGiveFromCache(wc))
-                {
-                    // invoke action method 
-                    if (act.IsAsync) await act.DoAsync(wc, subscpt);
-                    else act.Do(wc, subscpt);
-
-                    Service.TryAddForCache(wc);
-                }
-
-                wc.Action = null;
-
-                if (After != null)
-                {
-                    if (After.IsAsync && !await After.DoAsync(wc) || !After.IsAsync && After.Do(wc))
-                    {
-                        return;
-                    }
-                }
-            }
-            else // sub works
-            {
-                string key = rsc.Substring(0, slash);
-                var wrk = subworks?[key];
-                if (wrk != null) // if child
-                {
-                    // do necessary authentication before entering
-                    if (wc.Principal == null && !await wrk.DoAuthenticate(wc)) return;
-
-                    wc.AppendSeg(wrk, key);
-                    await wrk.HandleAsync(rsc.Substring(slash + 1), wc);
-                }
-                else if (varwork != null) // if variable-key subwork
-                {
-                    // do necessary authentication before entering
-                    if (wc.Principal == null && !await varwork.DoAuthenticate(wc)) return;
-
-                    var prin = wc.Principal;
-                    object accessor;
-                    if (key.Length == 0)
-                    {
-                        if (prin == null) throw AuthReq;
-                        accessor = varwork.GetAccessor(prin, null);
-                        if (accessor == null)
-                        {
-                            throw AccessorReq;
-                        }
-                    }
-                    else
-                    {
-                        accessor = varwork.GetAccessor(prin, key);
-                    }
-                    // append the segment
-                    wc.AppendSeg(varwork, key, accessor);
-                    await varwork.HandleAsync(rsc.Substring(slash + 1), wc);
-                }
-            }
-        }
 
         public override string ToString()
         {

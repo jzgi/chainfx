@@ -22,6 +22,10 @@ namespace ChainFx.Web
     {
         static readonly int ConcurrencyLevel = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
 
+        readonly WebException AuthReq = new WebException("Authentication required") {Code = 401};
+
+        readonly WebException AccessorReq = new WebException("Accessor required") {Code = 403};
+
         //
         // http implementation
         string address;
@@ -157,7 +161,7 @@ namespace ChainFx.Web
 
 
         /// <summary>
-        /// To asynchronously process the request.
+        /// To asynchronously process the request. The C-procedural style avoids excessive recursive scheduling of tasks.
         /// </summary>
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
@@ -168,26 +172,150 @@ namespace ChainFx.Web
             // determine it is static file
             try
             {
+                // special handling for content enumeration
                 if (path.EndsWith('*'))
                 {
                     @enum(wc);
+                    return;
                 }
-                else
+
+                var dot = path.LastIndexOf('.');
+
+                // give file content from cache or file system
+                if (dot != -1)
                 {
-                    var dot = path.LastIndexOf('.');
-                    if (dot != -1) // file content from cache or file system
+                    if (!TryGiveFromCache(wc))
                     {
-                        if (!TryGiveFromCache(wc))
-                        {
-                            GiveStaticFile(path, path.Substring(dot), wc);
-                            TryAddForCache(wc);
-                        }
+                        GiveStaticFile(path, path.Substring(dot), wc);
+                        TryAddForCache(wc);
                     }
-                    else
+                    return;
+                }
+
+
+                if (!await DoAuthenticate(wc))
+                {
+                    return;
+                }
+
+                WebWork curwrk = this;
+                var rsc = path.Substring(1);
+                for (;;)
+                {
+                    if (!curwrk.DoAuthorize(wc, false))
                     {
-                        if (await DoAuthenticate(wc))
+                        throw new WebException("authorize failed: " + Name)
                         {
-                            await HandleAsync(path.Substring(1), wc);
+                            Code = wc.Principal == null ? 401 : 403
+                        };
+                    }
+
+                    var varwrk = curwrk.VarWork;
+
+                    int slash = rsc.IndexOf('/');
+                    if (slash == -1) // is the targeted work
+                    {
+                        var bfr = curwrk.Before;
+                        if (bfr != null)
+                        {
+                            if (bfr.IsAsync && !await bfr.DoAsync(wc) || !bfr.IsAsync && bfr.Do(wc))
+                            {
+                                return;
+                            }
+                        }
+
+                        //
+                        // resolve the resource
+                        string name = rsc;
+                        int subscpt = 0;
+                        int dash = rsc.LastIndexOf('-');
+                        if (dash != -1)
+                        {
+                            name = rsc.Substring(0, dash);
+                            wc.Subscript = subscpt = rsc.Substring(dash + 1).ToInt();
+                        }
+
+                        var act = curwrk[name];
+                        if (act == null)
+                        {
+                            wc.GiveMsg(404, "action not found", shared: true, maxage: 30);
+                            return;
+                        }
+
+                        wc.Work = curwrk;
+                        wc.Action = act;
+
+                        if (!act.DoAuthorize(wc, false))
+                        {
+                            throw new WebException("do authorize failure: " + act.Name)
+                            {
+                                Code = wc.Principal == null ? 401 : 403
+                            };
+                        }
+
+                        // try in the cache first
+                        if (!Service.TryGiveFromCache(wc))
+                        {
+                            // invoke action method 
+                            if (act.IsAsync) await act.DoAsync(wc, subscpt);
+                            else act.Do(wc, subscpt);
+
+                            Service.TryAddForCache(wc);
+                        }
+
+                        wc.Action = null;
+
+                        var aft = curwrk.After;
+                        if (aft != null)
+                        {
+                            if (aft.IsAsync && !await aft.DoAsync(wc) || !aft.IsAsync && aft.Do(wc))
+                            {
+                                return;
+                            }
+                        }
+
+                        wc.Work = null;
+                        return;
+                    }
+                    else // check sub works and var work
+                    {
+                        string key = rsc.Substring(0, slash);
+                        var subwrk = curwrk.SubWorks?[key];
+                        if (subwrk != null) // if child
+                        {
+                            // do necessary authentication before entering
+                            if (wc.Principal == null && !await subwrk.DoAuthenticate(wc)) return;
+
+                            wc.AppendSeg(subwrk, key);
+
+                            rsc = rsc.Substring(slash + 1);
+                            curwrk = subwrk;
+                        }
+                        else if (varwrk != null) // if variable-key subwork
+                        {
+                            // do necessary authentication before entering
+                            if (wc.Principal == null && !await varwrk.DoAuthenticate(wc)) return;
+
+                            var prin = wc.Principal;
+                            object accessor;
+                            if (key.Length == 0)
+                            {
+                                if (prin == null) throw AuthReq;
+                                accessor = varwrk.GetAccessor(prin, null);
+                                if (accessor == null)
+                                {
+                                    throw AccessorReq;
+                                }
+                            }
+                            else
+                            {
+                                accessor = varwrk.GetAccessor(prin, key);
+                            }
+                            // append the segment
+                            wc.AppendSeg(varwrk, key, accessor);
+
+                            curwrk = varwrk;
+                            rsc = rsc.Substring(slash + 1);
                         }
                     }
                 }
@@ -214,6 +342,10 @@ namespace ChainFx.Web
                 await wc.SendAsync();
             }
         }
+        
+        //
+        // STATIC FILES
+        //
 
         const int STATIC_MAX_AGE = 3600 * 48;
 

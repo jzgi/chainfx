@@ -57,6 +57,8 @@ namespace ChainFx.Web
 
         public short Subs => subs;
 
+        public bool IsAnchor => element == 0x1000 && mode == 0;
+
         public bool IsAnchorTag => element == 0x1000;
 
         public bool IsButtonTag => element == 0x2000;
