@@ -38,7 +38,7 @@ namespace ChainFx.Web
 
         public static string ToToken<P>(P prin, short msk) where P : IData
         {
-            var cnt = new JsonContent(true, 4096);
+            var cnt = new JsonBuilder(true, 4096);
             try
             {
                 var secret = Application.Secret;

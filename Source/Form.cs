@@ -252,14 +252,14 @@ namespace ChainFx
             throw new NotImplementedException();
         }
 
-        public void Write<C>(C cnt) where C : DynamicContent, ISink
+        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
         {
             throw new NotImplementedException();
         }
 
         public IContent Dump()
         {
-            var cnt = new FormContent(true, 4096);
+            var cnt = new FormBuilder(true, 4096);
             cnt.Put(null, this);
             return cnt;
         }

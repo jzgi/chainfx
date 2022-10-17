@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using static System.Environment;
 
 namespace ChainFx
@@ -13,7 +9,7 @@ namespace ChainFx
     /// <summary>
     /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 
     /// </summary>
-    public abstract class DynamicContent : HttpContent, IContent
+    public abstract class DynamicBuilder : IContent
     {
         static readonly char[] DIGIT =
         {
@@ -89,7 +85,7 @@ namespace ChainFx
         // byte-wise etag checksum, for char-based output only
         long checksum;
 
-        protected DynamicContent(bool bytel, int capacity)
+        protected DynamicBuilder(bool bytel, int capacity)
         {
             if (bytel)
             {
@@ -540,29 +536,19 @@ namespace ChainFx
             }
         }
 
-        internal byte[] ToByteArray()
+        public StaticResource ToStaticResource()
         {
             if (count == 0)
             {
                 return null;
             }
-            var ret = new byte[count];
-            Array.Copy(bytebuf, ret, count);
-            return ret;
-        }
+            var arr = new byte[count];
+            Array.Copy(bytebuf, arr, count);
 
-        //
-        // CLIENT CONTENT
-        //
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        {
-            return stream.WriteAsync(bytebuf, 0, count);
-        }
-
-        protected override bool TryComputeLength(out long length)
-        {
-            length = count;
-            return true;
+            return new StaticResource(arr)
+            {
+                CType = CType
+            };
         }
 
         public override string ToString()

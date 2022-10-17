@@ -127,7 +127,7 @@ namespace ChainFx.Web
             }
             finally
             {
-                if (content is DynamicContent cnt)
+                if (content is DynamicBuilder cnt)
                 {
                     cnt.Clear();
                 }
@@ -166,7 +166,7 @@ namespace ChainFx.Web
             }
             finally
             {
-                if (content is DynamicContent cnt)
+                if (content is DynamicBuilder cnt)
                 {
                     cnt.Clear();
                 }

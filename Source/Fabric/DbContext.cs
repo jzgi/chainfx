@@ -1551,7 +1551,7 @@ namespace ChainFx.Fabric
             return v;
         }
 
-        public void Write<C>(C cnt) where C : DynamicContent, ISink
+        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
         {
             int fc = reader.FieldCount;
             for (int i = 0; i < fc; i++)
@@ -1601,7 +1601,7 @@ namespace ChainFx.Fabric
 
         public IContent Dump()
         {
-            var cnt = new JsonContent(true, 8192);
+            var cnt = new JsonBuilder(true, 8192);
             int fc = reader.FieldCount;
             while (reader.Read())
             {

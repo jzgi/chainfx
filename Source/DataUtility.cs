@@ -92,7 +92,7 @@ namespace ChainFx
 
         public static string ToString<D>(D v, short proj = 0xff) where D : IData
         {
-            var cnt = new JsonContent(false, 4 * 1024);
+            var cnt = new JsonBuilder(false, 4 * 1024);
             try
             {
                 cnt.Put(null, v, proj);
@@ -106,7 +106,7 @@ namespace ChainFx
 
         public static string ToString<D>(D[] v, short proj = 0xff) where D : IData
         {
-            var cnt = new JsonContent(false, 4 * 1024);
+            var cnt = new JsonBuilder(false, 4 * 1024);
             try
             {
                 cnt.Put(null, v, proj);
@@ -120,7 +120,7 @@ namespace ChainFx
 
         public static string ToString<D>(List<D> v, short proj = 0xff) where D : IData
         {
-            var cnt = new JsonContent(false, 4 * 1024);
+            var cnt = new JsonBuilder(false, 4 * 1024);
             try
             {
                 cnt.Put(null, v, proj);

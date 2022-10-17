@@ -247,7 +247,7 @@ namespace ChainFx.Web
             return wrk;
         }
 
-        protected void Describe(XmlContent xc)
+        protected void Describe(XmlBuilder xc)
         {
             xc.ELEM(Key,
                 delegate
@@ -274,7 +274,7 @@ namespace ChainFx.Web
             );
         }
 
-        protected void Describe(HtmlContent h)
+        protected void Describe(HtmlBuilder h)
         {
             for (int i = 0; i < actions?.Count; i++)
             {
@@ -304,7 +304,7 @@ namespace ChainFx.Web
             }
         }
 
-        internal async Task<bool> DoAuthenticate(WebContext wc)
+        internal async Task<bool> DoAuthenticateAsync(WebContext wc)
         {
             if (Authenticate != null)
             {

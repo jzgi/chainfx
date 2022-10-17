@@ -5,7 +5,7 @@ namespace ChainFx
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.
     /// </summary>
-    public class FormMpContent : DynamicContent, ISink
+    public class FormMpBuilder : DynamicBuilder, ISink
     {
         public const string BOUNDARY = "~7^E!3#A&W";
 
@@ -14,7 +14,7 @@ namespace ChainFx
 
         readonly string boundary;
 
-        public FormMpContent(int capacity, string boundary = "~7^E!3#A&W") : base(true, capacity)
+        public FormMpBuilder(int capacity, string boundary = "~7^E!3#A&W") : base(true, capacity)
         {
             this.boundary = boundary;
         }

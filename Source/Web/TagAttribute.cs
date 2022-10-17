@@ -10,7 +10,7 @@ namespace ChainFx.Web
     {
         private const string CRLF = "\r\n";
 
-        internal abstract void Describe(HtmlContent h);
+        internal abstract void Describe(HtmlBuilder h);
 
         internal static string Preprocess(string v)
         {

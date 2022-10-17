@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+using ChainFx.Web;
 
 namespace ChainFx
 {
     /// <summary>
     /// A binary static content of certain mime type.
     /// </summary>
-    public class StaticContent : HttpContent, IKeyable<string>, IContent
+    public class StaticResource : IKeyable<string>, IContent
     {
         static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {
@@ -1524,16 +1521,16 @@ namespace ChainFx
             }
         };
 
-        // the byte buffer
-        readonly byte[] bytes;
+        // the byte array
+        readonly byte[] array;
 
         // fixed length
         readonly int length;
 
 
-        public StaticContent(byte[] bytes)
+        public StaticResource(byte[] bytes)
         {
-            this.bytes = bytes;
+            this.array = bytes;
             length = bytes.Length;
         }
 
@@ -1541,7 +1538,7 @@ namespace ChainFx
 
         public string CType { get; set; }
 
-        public byte[] Buffer => bytes;
+        public byte[] Buffer => array;
 
         public int Count => length;
 
@@ -1551,20 +1548,67 @@ namespace ChainFx
 
         public bool GZip { get; set; }
 
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        {
-            return stream.WriteAsync(bytes, 0, length);
-        }
 
-        protected override bool TryComputeLength(out long length)
-        {
-            length = this.length;
-            return true;
-        }
+        /// cacheable response status, 0 means emptied
+        public int StatusCode { get; internal set; }
+
+        /// time ticks when entered or emptied
+        public int Tick { get; internal set; }
+
+        /// <summary>
+        /// maxage in seconds
+        /// </summary>
+        public int MaxAge { get; internal set; }
+
+
+        /// <summary>
+        /// Return this instance for cache.
+        /// </summary>
+        public StaticResource ToStaticResource() => this;
+
 
         public static bool TryGetType(string ext, out string type)
         {
             return Types.TryGetValue(ext, out type);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nowtick"></param>
+        /// <returns>false to indicate a removal of the entry</returns>
+        internal bool IsStale(int nowtick)
+        {
+            lock (this)
+            {
+                int pass = nowtick - (Tick + MaxAge * 1000);
+
+                return pass > 0;
+            }
+        }
+
+        internal bool TryGiveTo(WebContext wc, int now)
+        {
+            lock (this)
+            {
+                if (StatusCode == 0)
+                {
+                    return false;
+                }
+
+                var remain = (short) (((Tick + MaxAge * 1000) - now) / 1000); // remaining in seconds
+                if (remain > 0)
+                {
+                    short age = (short) ((now - Tick) / 1000); // age in seconds
+                    wc.SetHeader("Age", age);
+
+                    // set for response
+                    wc.Give(StatusCode, this, true, MaxAge);
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 }

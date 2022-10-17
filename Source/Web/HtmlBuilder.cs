@@ -5,12 +5,12 @@ namespace ChainFx.Web
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
     /// </summary>
-    public class HtmlContent : DynamicContent
+    public class HtmlBuilder : DynamicBuilder
     {
         public WebContext Web { get; set; }
 
 
-        public HtmlContent(bool bytel, int capacity) : base(bytel, capacity)
+        public HtmlBuilder(bool bytel, int capacity) : base(bytel, capacity)
         {
         }
 
@@ -77,7 +77,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent T(char v, bool @if = true)
+        public HtmlBuilder T(char v, bool @if = true)
         {
             if (@if)
             {
@@ -87,7 +87,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(bool v, bool @if = true)
+        public HtmlBuilder T(bool v, bool @if = true)
         {
             if (@if)
             {
@@ -97,7 +97,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(short v, bool @if = true)
+        public HtmlBuilder T(short v, bool @if = true)
         {
             if (@if)
             {
@@ -107,7 +107,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(long v, bool @if = true)
+        public HtmlBuilder T(long v, bool @if = true)
         {
             if (@if)
             {
@@ -117,13 +117,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(DateTime v, byte date = 3, byte time = 3)
+        public HtmlBuilder T(DateTime v, byte date = 3, byte time = 3)
         {
             Add(v, date, time);
             return this;
         }
 
-        public HtmlContent T(decimal v, bool @if = true)
+        public HtmlBuilder T(decimal v, bool @if = true)
         {
             if (@if)
             {
@@ -133,7 +133,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(double v, bool @if = true)
+        public HtmlBuilder T(double v, bool @if = true)
         {
             if (@if)
             {
@@ -143,7 +143,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(string v, bool @if = true)
+        public HtmlBuilder T(string v, bool @if = true)
         {
             if (@if)
             {
@@ -153,7 +153,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TT(string v, bool @if = true)
+        public HtmlBuilder TT(string v, bool @if = true)
         {
             if (@if)
             {
@@ -163,7 +163,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(string v, int offset, int len, bool @if = true)
+        public HtmlBuilder T(string v, int offset, int len, bool @if = true)
         {
             if (@if)
             {
@@ -173,7 +173,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TT(string v, int offset, int len, bool @if = true)
+        public HtmlBuilder TT(string v, int offset, int len, bool @if = true)
         {
             if (@if)
             {
@@ -183,7 +183,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent T(string[] v, bool @if = true)
+        public HtmlBuilder T(string[] v, bool @if = true)
         {
             if (@if && v != null)
             {
@@ -197,7 +197,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TT(string[] v, bool @if = true)
+        public HtmlBuilder TT(string[] v, bool @if = true)
         {
             if (@if && v != null)
             {
@@ -211,7 +211,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent S<V>(V v, bool cond = true)
+        public HtmlBuilder S<V>(V v, bool cond = true)
         {
             if (cond)
             {
@@ -228,7 +228,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent S2<A, B>(A a, B b, bool cond = true)
+        public HtmlBuilder S2<A, B>(A a, B b, bool cond = true)
         {
             if (cond)
             {
@@ -250,37 +250,37 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent B_()
+        public HtmlBuilder B_()
         {
             Add("<b>");
             return this;
         }
 
-        public HtmlContent _B()
+        public HtmlBuilder _B()
         {
             Add("</b>");
             return this;
         }
 
-        public HtmlContent BR()
+        public HtmlBuilder BR()
         {
             Add("<br>");
             return this;
         }
 
-        public HtmlContent HR()
+        public HtmlBuilder HR()
         {
             Add("<hr>");
             return this;
         }
 
-        public HtmlContent SP()
+        public HtmlBuilder SP()
         {
             Add("&nbsp;");
             return this;
         }
 
-        public HtmlContent SUB<V>(V v)
+        public HtmlBuilder SUB<V>(V v)
         {
             if (v != null)
             {
@@ -291,7 +291,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SUB_(string css = null)
+        public HtmlBuilder SUB_(string css = null)
         {
             Add("<sub");
             if (css != null)
@@ -305,13 +305,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _SUB()
+        public HtmlBuilder _SUB()
         {
             Add("</sub>");
             return this;
         }
 
-        public HtmlContent ABBR<V>(string title, V v, string color = null)
+        public HtmlBuilder ABBR<V>(string title, V v, string color = null)
         {
             Add("<abbr title=\"");
             Add(title);
@@ -327,7 +327,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ROW_(string css = null)
+        public HtmlBuilder ROW_(string css = null)
         {
             Add("<div class=\"uk-row");
             if (css != null)
@@ -340,14 +340,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _ROW()
+        public HtmlBuilder _ROW()
         {
             Add("</div>");
             return this;
         }
 
 
-        public HtmlContent TH(string caption = null)
+        public HtmlBuilder TH(string caption = null)
         {
             Add("<th>");
 
@@ -360,7 +360,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TH_(string css = null)
+        public HtmlBuilder TH_(string css = null)
         {
             Add("<th");
 
@@ -375,14 +375,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _TH()
+        public HtmlBuilder _TH()
         {
             Add("</th>");
             return this;
         }
 
 
-        public HtmlContent TD(bool v)
+        public HtmlBuilder TD(bool v)
         {
             Add("<td style=\"text-align: center\">");
 
@@ -395,7 +395,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(short v, bool right = true, bool @if = true)
+        public HtmlBuilder TD(short v, bool right = true, bool @if = true)
         {
             Add("<td");
             if (right)
@@ -413,7 +413,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(int v, bool right = true, bool @if = true)
+        public HtmlBuilder TD(int v, bool right = true, bool @if = true)
         {
             Add("<td");
             if (right)
@@ -431,7 +431,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(long v, bool right = true, bool @if = true)
+        public HtmlBuilder TD(long v, bool right = true, bool @if = true)
         {
             Add("<td");
             if (right)
@@ -449,7 +449,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(decimal v, bool currency = false, bool @if = true)
+        public HtmlBuilder TD(decimal v, bool currency = false, bool @if = true)
         {
             Add("<td style=\"text-align: right\">");
             if (@if)
@@ -466,7 +466,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(DateTime v)
+        public HtmlBuilder TD(DateTime v)
         {
             Add("<td style=\"text-align: center\">");
             Add(v);
@@ -474,7 +474,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(string v, bool @if = true)
+        public HtmlBuilder TD(string v, bool @if = true)
         {
             Add("<td>");
 
@@ -487,7 +487,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD2<A, B>(A a, B b, string css = null)
+        public HtmlBuilder TD2<A, B>(A a, B b, string css = null)
         {
             Add("<td");
             if (css != null)
@@ -508,7 +508,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD(string[] v)
+        public HtmlBuilder TD(string[] v)
         {
             Add("<td>");
 
@@ -525,7 +525,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TD_(string css = null, short colspan = 0)
+        public HtmlBuilder TD_(string css = null, short colspan = 0)
         {
             Add("<td");
             if (css != null)
@@ -545,13 +545,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _TD()
+        public HtmlBuilder _TD()
         {
             Add("</td>");
             return this;
         }
 
-        public HtmlContent TDAVAR<K>(K key, string caption)
+        public HtmlBuilder TDAVAR<K>(K key, string caption)
         {
             TD_();
             AVAR(key, caption);
@@ -559,7 +559,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TDFORM(Action rowform)
+        public HtmlBuilder TDFORM(Action rowform)
         {
             if (rowform != null)
             {
@@ -574,7 +574,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent LABEL(string caption, string css = null)
+        public HtmlBuilder LABEL(string caption, string css = null)
         {
             if (caption != null)
             {
@@ -593,20 +593,20 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent STATIC_(string label)
+        public HtmlBuilder STATIC_(string label)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
             return this;
         }
 
-        public HtmlContent _STATIC()
+        public HtmlBuilder _STATIC()
         {
             Add("</span>");
             return this;
         }
 
-        public HtmlContent STATIC<V>(string label, V v)
+        public HtmlBuilder STATIC<V>(string label, V v)
         {
             STATIC_(label);
             AddPrimitive(v);
@@ -614,7 +614,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent COL_(string css = null)
+        public HtmlBuilder COL_(string css = null)
         {
             Add("<div class=\"uk-col");
             if (css != null)
@@ -627,13 +627,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _COL()
+        public HtmlBuilder _COL()
         {
             Add("</div>");
             return this;
         }
 
-        public HtmlContent SPAN_(string css = null)
+        public HtmlBuilder SPAN_(string css = null)
         {
             Add("<span");
             if (css != null)
@@ -647,13 +647,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _SPAN()
+        public HtmlBuilder _SPAN()
         {
             Add("</span>");
             return this;
         }
 
-        public HtmlContent SPAN<V>(V v, string css = null)
+        public HtmlBuilder SPAN<V>(V v, string css = null)
         {
             SPAN_(css);
             AddPrimitive(v);
@@ -661,7 +661,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SPAN2<A, B>(A a, B b, string css = null)
+        public HtmlBuilder SPAN2<A, B>(A a, B b, string css = null)
         {
             SPAN_(css);
             AddPrimitive(a);
@@ -671,7 +671,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent H2_(string css = null)
+        public HtmlBuilder H2_(string css = null)
         {
             Add("<h2");
             if (css != null)
@@ -685,13 +685,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _H2()
+        public HtmlBuilder _H2()
         {
             Add("</h2>");
             return this;
         }
 
-        public HtmlContent H2<V>(V v, string css = null)
+        public HtmlBuilder H2<V>(V v, string css = null)
         {
             H2_(css);
             AddPrimitive(v);
@@ -700,7 +700,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent H3_(string css = null)
+        public HtmlBuilder H3_(string css = null)
         {
             Add("<h3");
             if (css != null)
@@ -714,13 +714,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _H3()
+        public HtmlBuilder _H3()
         {
             Add("</h3>");
             return this;
         }
 
-        public HtmlContent H3<V>(V v, string css = null)
+        public HtmlBuilder H3<V>(V v, string css = null)
         {
             H3_(css);
             AddPrimitive(v);
@@ -729,7 +729,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent H4_(string css = null)
+        public HtmlBuilder H4_(string css = null)
         {
             Add("<h4");
             if (css != null)
@@ -743,13 +743,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _H4()
+        public HtmlBuilder _H4()
         {
             Add("</h4>");
             return this;
         }
 
-        public HtmlContent H4<V>(V v, string css = null)
+        public HtmlBuilder H4<V>(V v, string css = null)
         {
             H4_(css);
             AddPrimitive(v);
@@ -757,7 +757,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent H5_(string css = null)
+        public HtmlBuilder H5_(string css = null)
         {
             Add("<h5");
             if (css != null)
@@ -771,13 +771,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _H5()
+        public HtmlBuilder _H5()
         {
             Add("</h5>");
             return this;
         }
 
-        public HtmlContent H5<V>(V v, string css = null)
+        public HtmlBuilder H5<V>(V v, string css = null)
         {
             H5_(css);
             AddPrimitive(v);
@@ -785,7 +785,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SMALL<V>(V v)
+        public HtmlBuilder SMALL<V>(V v)
         {
             Add("<small>");
             AddPrimitive(v);
@@ -793,19 +793,19 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SMALL_()
+        public HtmlBuilder SMALL_()
         {
             Add("<small>");
             return this;
         }
 
-        public HtmlContent _SMALL()
+        public HtmlBuilder _SMALL()
         {
             Add("</small>");
             return this;
         }
 
-        public HtmlContent P<V>(V v, string css = null)
+        public HtmlBuilder P<V>(V v, string css = null)
         {
             Add("<p");
             if (css != null)
@@ -820,7 +820,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent P2<A, B>(A a, B b, string css = null)
+        public HtmlBuilder P2<A, B>(A a, B b, string css = null)
         {
             Add("<p");
             if (css != null)
@@ -838,7 +838,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent P_(string css = null)
+        public HtmlBuilder P_(string css = null)
         {
             Add("<p");
             if (css != null)
@@ -852,13 +852,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _P()
+        public HtmlBuilder _P()
         {
             Add("</p>");
             return this;
         }
 
-        public HtmlContent DIV_(string css = null, bool grid = false)
+        public HtmlBuilder DIV_(string css = null, bool grid = false)
         {
             Add("<div");
             if (css != null)
@@ -875,13 +875,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _DIV()
+        public HtmlBuilder _DIV()
         {
             Add("</div>");
             return this;
         }
 
-        public HtmlContent SECTION_(string css = null)
+        public HtmlBuilder SECTION_(string css = null)
         {
             Add("<section");
             if (css != null)
@@ -895,13 +895,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _SECTION()
+        public HtmlBuilder _SECTION()
         {
             Add("</section>");
             return this;
         }
 
-        public HtmlContent MAIN_(string css = null, bool grid = false)
+        public HtmlBuilder MAIN_(string css = null, bool grid = false)
         {
             Add("<main");
             if (grid)
@@ -924,13 +924,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _MAIN()
+        public HtmlBuilder _MAIN()
         {
             Add("</main>");
             return this;
         }
 
-        public HtmlContent HEADER_(string css = null)
+        public HtmlBuilder HEADER_(string css = null)
         {
             Add("<header");
             if (css != null)
@@ -944,13 +944,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _HEADER()
+        public HtmlBuilder _HEADER()
         {
             Add("</header>");
             return this;
         }
 
-        public HtmlContent HEADER<V>(V v, string css = null)
+        public HtmlBuilder HEADER<V>(V v, string css = null)
         {
             HEADER_(css);
             AddPrimitive(v);
@@ -959,7 +959,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent FOOTER_(string css = null)
+        public HtmlBuilder FOOTER_(string css = null)
         {
             Add("<footer");
             if (css != null)
@@ -973,13 +973,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _FOOTER()
+        public HtmlBuilder _FOOTER()
         {
             Add("</footer>");
             return this;
         }
 
-        public HtmlContent ARTICLE_(string css = null, bool grid = false)
+        public HtmlBuilder ARTICLE_(string css = null, bool grid = false)
         {
             Add("<article");
             if (grid)
@@ -1002,13 +1002,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _ARTICLE()
+        public HtmlBuilder _ARTICLE()
         {
             Add("</article>");
             return this;
         }
 
-        public HtmlContent NAV_(string css = null)
+        public HtmlBuilder NAV_(string css = null)
         {
             Add("<nav");
             if (css != null)
@@ -1022,13 +1022,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _NAV()
+        public HtmlBuilder _NAV()
         {
             Add("</nav>");
             return this;
         }
 
-        public HtmlContent UL_(string css = null, bool grid = false)
+        public HtmlBuilder UL_(string css = null, bool grid = false)
         {
             Add("<ul");
             if (css != null)
@@ -1045,13 +1045,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _UL()
+        public HtmlBuilder _UL()
         {
             Add("</ul>");
             return this;
         }
 
-        public HtmlContent OL_(string css = null)
+        public HtmlBuilder OL_(string css = null)
         {
             Add("<ol");
             if (css != null)
@@ -1065,14 +1065,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _OL()
+        public HtmlBuilder _OL()
         {
             Add("</ol>");
             return this;
         }
 
 
-        public HtmlContent LI_(string css = null)
+        public HtmlBuilder LI_(string css = null)
         {
             Add("<li");
             if (css != null)
@@ -1086,13 +1086,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _LI()
+        public HtmlBuilder _LI()
         {
             Add("</li>");
             return this;
         }
 
-        public HtmlContent DL_(string css = null)
+        public HtmlBuilder DL_(string css = null)
         {
             Add("<dl");
             if (css != null)
@@ -1106,13 +1106,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _DL()
+        public HtmlBuilder _DL()
         {
             Add("</dl>");
             return this;
         }
 
-        public HtmlContent DT_(string css = null)
+        public HtmlBuilder DT_(string css = null)
         {
             Add("<dt");
             if (css != null)
@@ -1125,13 +1125,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _DT()
+        public HtmlBuilder _DT()
         {
             Add("</dt>");
             return this;
         }
 
-        public HtmlContent DT(string v)
+        public HtmlBuilder DT(string v)
         {
             Add("<dt>");
             AddEsc(v);
@@ -1139,7 +1139,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent DT2(string a, string b)
+        public HtmlBuilder DT2(string a, string b)
         {
             Add("<dt>");
             AddEsc(a);
@@ -1149,7 +1149,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent DT3(string a, string b, string c)
+        public HtmlBuilder DT3(string a, string b, string c)
         {
             Add("<dt>");
             AddEsc(a);
@@ -1162,7 +1162,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent DD(string v)
+        public HtmlBuilder DD(string v)
         {
             Add("<dd>");
             AddEsc(v);
@@ -1170,7 +1170,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FIELD<V>(string label, V v)
+        public HtmlBuilder FIELD<V>(string label, V v)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1179,7 +1179,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FIELD2<V, X>(string label, V v, X x, bool brace = false)
+        public HtmlBuilder FIELD2<V, X>(string label, V v, X x, bool brace = false)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1197,7 +1197,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FIELD<K, V>(string label, K v, Map<K, V> opts)
+        public HtmlBuilder FIELD<K, V>(string label, K v, Map<K, V> opts)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1206,7 +1206,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FIELD(string label, decimal v, bool currency = false)
+        public HtmlBuilder FIELD(string label, decimal v, bool currency = false)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1219,7 +1219,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FIELD(string label, bool v)
+        public HtmlBuilder FIELD(string label, bool v)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1231,7 +1231,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FIELDA<K, V>(string label, K[] keys, Map<K, V> map)
+        public HtmlBuilder FIELDA<K, V>(string label, K[] keys, Map<K, V> map)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1252,7 +1252,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent CNY(decimal v, bool em = false, bool s = false)
+        public HtmlBuilder CNY(decimal v, bool em = false, bool s = false)
         {
             if (em)
             {
@@ -1278,7 +1278,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ACLOSEUP(string caption)
+        public HtmlBuilder ACLOSEUP(string caption)
         {
             Add("<a href=\"#\" onclick=\"closeUp(false); return false;\"");
             Add(" class=\"uk-button uk-button-default uk-border-rounded\"");
@@ -1288,7 +1288,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent AGOTO(string caption, string href = null, string css = null)
+        public HtmlBuilder AGOTO(string caption, string href = null, string css = null)
         {
             Add("<a target=\"_parent\" href=\"");
             Add(href);
@@ -1304,7 +1304,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent AVAR<K>(K key, string caption)
+        public HtmlBuilder AVAR<K>(K key, string caption)
         {
             var vw = Web.Work.VarWork;
             if (vw?.Default != null)
@@ -1323,7 +1323,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent A_<A>(A href, string css = null)
+        public HtmlBuilder A_<A>(A href, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1338,7 +1338,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent A_<A, B>(A a, B b, string css = null)
+        public HtmlBuilder A_<A, B>(A a, B b, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1354,7 +1354,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent A_<A, B, C>(A a, B b, C c, string css = null)
+        public HtmlBuilder A_<A, B, C>(A a, B b, C c, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1371,7 +1371,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ADIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, string css = null)
+        public HtmlBuilder ADIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1391,7 +1391,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ADIALOG_<A, B, C>(A a, B b, C c, int mode, bool pick, string tip = null, string css = null)
+        public HtmlBuilder ADIALOG_<A, B, C>(A a, B b, C c, int mode, bool pick, string tip = null, string css = null)
         {
             Add("<a");
             if (css != null)
@@ -1412,13 +1412,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _A()
+        public HtmlBuilder _A()
         {
             Add("</a>");
             return this;
         }
 
-        public HtmlContent ICON(string name, string css = null)
+        public HtmlBuilder ICON(string name, string css = null)
         {
             Add("<span uk-icon=\"");
             Add(name);
@@ -1431,7 +1431,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent PIC_(string css = null, bool circle = false)
+        public HtmlBuilder PIC_(string css = null, bool circle = false)
         {
             Add("<div class=\"");
             if (css != null)
@@ -1449,13 +1449,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _PIC()
+        public HtmlBuilder _PIC()
         {
             Add("\" alt=\"✰\"></div>");
             return this;
         }
 
-        public HtmlContent PIC<A>(A a, bool circle = false, string css = "uk-margin-auto-vertical")
+        public HtmlBuilder PIC<A>(A a, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
             PutKey(a);
@@ -1463,7 +1463,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent PIC<A, B>(A a, B b, bool circle = false, string css = "uk-margin-auto-vertical")
+        public HtmlBuilder PIC<A, B>(A a, B b, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
             PutKey(a);
@@ -1472,7 +1472,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent PIC<A, B, C>(A a, B b, C c, bool circle = false, string css = "uk-margin-auto-vertical")
+        public HtmlBuilder PIC<A, B, C>(A a, B b, C c, bool circle = false, string css = "uk-margin-auto-vertical")
         {
             PIC_(css, circle);
             PutKey(a);
@@ -1482,7 +1482,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent PROGRESS(int v, int max, string css = null)
+        public HtmlBuilder PROGRESS(int v, int max, string css = null)
         {
             Add("<div class=\"uk-progress");
             if (css != null)
@@ -1497,7 +1497,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent QRCODE(string v, string css = null)
+        public HtmlBuilder QRCODE(string v, string css = null)
         {
             Add("<div class=\"uk-qrcode");
             if (css != null)
@@ -1520,7 +1520,7 @@ namespace ChainFx.Web
         // UIKIT COMPONENTS
         //
 
-        public HtmlContent MSG_(bool yes, string title, string msg)
+        public HtmlBuilder MSG_(bool yes, string title, string msg)
         {
             Add("<div class=\"uk-msg\">");
 
@@ -1547,7 +1547,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ALERT_(string css = null, bool close = false)
+        public HtmlBuilder ALERT_(string css = null, bool close = false)
         {
             Add("<div class=\"");
             if (css != null)
@@ -1564,13 +1564,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _ALERT()
+        public HtmlBuilder _ALERT()
         {
             Add("</div>");
             return this;
         }
 
-        public HtmlContent ALERT(string p, string head = null, string css = null, bool close = false)
+        public HtmlBuilder ALERT(string p, string head = null, string css = null, bool close = false)
         {
             ALERT_(css, close);
             if (head != null)
@@ -1587,7 +1587,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SUBNAV(params string[] actions)
+        public HtmlBuilder SUBNAV(params string[] actions)
         {
             Add("<ul class=\"uk-subnav\">");
             for (int i = 0; i < actions.Length; i++)
@@ -1612,7 +1612,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent NAVBAR<V>(Map<short, V> map, string uri, int subscript, Func<short, V, bool> filter = null)
+        public HtmlBuilder NAVBAR<V>(Map<short, V> map, string uri, int subscript, Func<short, V, bool> filter = null)
         {
             Add("<nav class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
@@ -1649,7 +1649,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FORM_(string css = null, string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null)
+        public HtmlBuilder FORM_(string css = null, string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null)
         {
             Add("<form class=\"");
             if (css != null)
@@ -1693,7 +1693,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _FORM()
+        public HtmlBuilder _FORM()
         {
             Add("</form>");
             return this;
@@ -1702,7 +1702,7 @@ namespace ChainFx.Web
         /// <summary>
         /// The combination of fieldset and ul elements.
         /// </summary>
-        public HtmlContent FIELDSUL_(string legend = null, bool disabled = false, string css = null)
+        public HtmlBuilder FIELDSUL_(string legend = null, bool disabled = false, string css = null)
         {
             Add("<fieldset class=\"uk-fieldset uk-width-1-1");
             if (css != null)
@@ -1730,14 +1730,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _FIELDSUL()
+        public HtmlBuilder _FIELDSUL()
         {
             Add("</ul>");
             Add("</fieldset>");
             return this;
         }
 
-        public HtmlContent LEGEND(string v)
+        public HtmlBuilder LEGEND(string v)
         {
             if (v != null)
             {
@@ -1748,7 +1748,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent BUTTON_(string action, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = null)
+        public HtmlBuilder BUTTON_(string action, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = null)
         {
             Add("<button type=\"button\" class=\"uk-button ");
             Add(css);
@@ -1784,13 +1784,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _BUTTON()
+        public HtmlBuilder _BUTTON()
         {
             Add("</button>");
             return this;
         }
 
-        public HtmlContent BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = "uk-button-default")
+        public HtmlBuilder BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = "uk-button-default")
         {
             BUTTON_(action, subscript, post, onclick, chk, disabled, css);
             AddEsc(caption);
@@ -1798,7 +1798,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = "uk-button-default")
+        public HtmlBuilder BOTTOM_BUTTON(string caption, string action = null, int subscript = -1, bool post = true, string onclick = null, bool chk = false, bool disabled = false, string css = "uk-button-default")
         {
             BOTTOMBAR_();
             BUTTON_(action, subscript, post, onclick, chk, disabled, css);
@@ -1852,7 +1852,7 @@ namespace ChainFx.Web
             }
         }
 
-        public HtmlContent LIST<M>(M[] arr, Action<M> item, string ul = null, string li = null)
+        public HtmlBuilder LIST<M>(M[] arr, Action<M> item, string ul = null, string li = null)
         {
             Add("<ul class=\"uk-list uk-list-divider");
             if (ul != null)
@@ -1917,7 +1917,7 @@ namespace ChainFx.Web
             Add("</ul>");
         }
 
-        public HtmlContent LIST<S>(S src, Action<S> item, string ul = null, string li = null) where S : ISource
+        public HtmlBuilder LIST<S>(S src, Action<S> item, string ul = null, string li = null) where S : ISource
         {
             Add("<ul class=\"uk-list uk-list-divider");
             if (ul != null)
@@ -1949,7 +1949,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ACCORDIONUL_(string css = "uk-list uk-list-divider", bool collapse = false, bool multiple = true)
+        public HtmlBuilder ACCORDIONUL_(string css = "uk-list uk-list-divider", bool collapse = false, bool multiple = true)
         {
             Add("<ul uk-accordion=\"");
             if (collapse)
@@ -1966,13 +1966,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _ACCORDIONUL()
+        public HtmlBuilder _ACCORDIONUL()
         {
             Add("</ul>");
             return this;
         }
 
-        public HtmlContent ACCORDION<M>(M[] arr, Action<M> item, string ul = null, string li = "uk-card-default")
+        public HtmlBuilder ACCORDION<M>(M[] arr, Action<M> item, string ul = null, string li = "uk-card-default")
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
             if (ul != null)
@@ -2006,7 +2006,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent ACCORDION<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string ul = null, string li = "uk-card-default")
+        public HtmlBuilder ACCORDION<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string ul = null, string li = "uk-card-default")
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
             if (ul != null)
@@ -2040,20 +2040,20 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TABLE_()
+        public HtmlBuilder TABLE_()
         {
             // Add("<div class=\"uk-overflow-auto\">");
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             return this;
         }
 
-        public HtmlContent _TABLE()
+        public HtmlBuilder _TABLE()
         {
             Add("</table>");
             return this;
         }
 
-        public HtmlContent TABLE(Action tbody, Action thead = null)
+        public HtmlBuilder TABLE(Action tbody, Action thead = null)
         {
             Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
             if (thead != null)
@@ -2069,19 +2069,19 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TR_()
+        public HtmlBuilder TR_()
         {
             Add("<tr>");
             return this;
         }
 
-        public HtmlContent _TR()
+        public HtmlBuilder _TR()
         {
             Add("</tr>");
             return this;
         }
 
-        public HtmlContent TDCHECK<K>(K key, bool toolbar = true, bool disabled = false)
+        public HtmlBuilder TDCHECK<K>(K key, bool toolbar = true, bool disabled = false)
         {
             Add("<td style=\"width: 1%\"><input");
             if (toolbar)
@@ -2100,7 +2100,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TDRADIO<K>(K key, bool toolbar = true)
+        public HtmlBuilder TDRADIO<K>(K key, bool toolbar = true)
         {
             Add("<td style=\"width: 1%\"><input");
             if (toolbar)
@@ -2167,7 +2167,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, short mode = ToolAttribute.MOD_OPEN, int min = 1, string css = null)
+        public HtmlBuilder GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, short mode = ToolAttribute.MOD_OPEN, int min = 1, string css = null)
         {
             var vw = Web.Work.VarWork;
             if (vw?.Default == null)
@@ -2283,7 +2283,7 @@ namespace ChainFx.Web
         }
 
 
-        HtmlContent _DIALOG_(int mode, bool pick, string tip = null)
+        HtmlBuilder _DIALOG_(int mode, bool pick, string tip = null)
         {
             Add(" onclick=\"event.preventDefault(); return dialog(this,");
             Add(mode);
@@ -2299,33 +2299,33 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TOPBAR_()
+        public HtmlBuilder TOPBAR_()
         {
             Add("<form class=\"uk-top-bar\">");
             return this;
         }
 
-        public HtmlContent _TOPBAR()
+        public HtmlBuilder _TOPBAR()
         {
             Add("</form>");
             Add("<div class=\"uk-top-placeholder\"></div>");
             return this;
         }
 
-        public HtmlContent TOPBARXL_()
+        public HtmlBuilder TOPBARXL_()
         {
             Add("<form class=\"uk-top-bar uk-flex uk-large\">");
             return this;
         }
 
-        public HtmlContent _TOPBARXL()
+        public HtmlBuilder _TOPBARXL()
         {
             Add("</form>");
             Add("<div class=\"uk-top-placeholder uk-large\"></div>");
             return this;
         }
 
-        public HtmlContent TITLEBAR(string v)
+        public HtmlBuilder TITLEBAR(string v)
         {
             Add("<nav class=\"uk-top-bar uk-flex-center uk-modal-title\">");
             Add(v);
@@ -2334,7 +2334,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string tip = null, bool bottom = false)
+        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string tip = null, bool bottom = false)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2400,7 +2400,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null, bool top = true)
+        public HtmlBuilder TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null, bool top = true)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2504,7 +2504,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent BOTTOMBAR_(string css = null, bool toggle = false)
+        public HtmlBuilder BOTTOMBAR_(string css = null, bool toggle = false)
         {
             Add("<div class=\"uk-bottom-placeholder\"></div>");
             Add("<div class=\"uk-bottom-bar");
@@ -2525,13 +2525,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _BOTTOMBAR()
+        public HtmlBuilder _BOTTOMBAR()
         {
             Add("</div>");
             return this;
         }
 
-        public HtmlContent PICK<K>(K varkey, string label = null, bool toolbar = false, bool only = false, short follow = 0, string css = null)
+        public HtmlBuilder PICK<K>(K varkey, string label = null, bool toolbar = false, bool only = false, short follow = 0, string css = null)
         {
             Add("<label");
             if (css != null)
@@ -2559,7 +2559,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent VARTOOLSET<K>(K varkey, int subscript = -1, string pick = null, string css = null, bool nav = true)
+        public HtmlBuilder VARTOOLSET<K>(K varkey, int subscript = -1, string pick = null, string css = null, bool nav = true)
         {
             if (nav)
             {
@@ -2607,7 +2607,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
+        public HtmlBuilder TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
         {
             // locate the proper work
             var w = Web.Work;
@@ -2669,7 +2669,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent CROPPIE(short wid, short hei, string caption, bool large = false)
+        public HtmlBuilder CROPPIE(short wid, short hei, string caption, bool large = false)
         {
             Add("<main id=\"imgbnd\" class=\"");
             Add(large ? "uk-height-large" : "uk-height-medium");
@@ -3028,7 +3028,7 @@ namespace ChainFx.Web
         // CONTROLS
         //
 
-        public HtmlContent HIDDEN<V>(string name, V val)
+        public HtmlBuilder HIDDEN<V>(string name, V val)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
@@ -3038,7 +3038,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent HIDDEN(string name, string val)
+        public HtmlBuilder HIDDEN(string name, string val)
         {
             Add("<input type=\"hidden\" name=\"");
             Add(name);
@@ -3048,7 +3048,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent HIDDENS<V>(string name, V[] vals)
+        public HtmlBuilder HIDDENS<V>(string name, V[] vals)
         {
             for (int i = 0; i < vals?.Length; i++)
             {
@@ -3061,7 +3061,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TEXT(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, string[] datalst = null)
+        public HtmlBuilder TEXT(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, string[] datalst = null)
         {
             LABEL(label);
             Add("<input type=\"text\" class=\"uk-input\" name=\"");
@@ -3124,7 +3124,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TEXT(string label, string name, short[] v, string tip = null, bool @readonly = false, bool required = false)
+        public HtmlBuilder TEXT(string label, string name, short[] v, string tip = null, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"text\" class=\"uk-input\" name=\"");
@@ -3153,7 +3153,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent FILE(string label, string name, string v, string tip = null, bool @readonly = false, bool required = false, bool list = false)
+        public HtmlBuilder FILE(string label, string name, string v, string tip = null, bool @readonly = false, bool required = false, bool list = false)
         {
             LABEL(label);
             Add("<input class=\"uk-input\" type=\"file\" name=\"");
@@ -3162,7 +3162,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TEL(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder TEL(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input class=\"uk-input\" type=\"tel\" name=\"");
@@ -3204,7 +3204,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent URL(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder URL(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input class=\"uk-input\" type=\"url\" name=\"");
@@ -3246,7 +3246,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SEARCH(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
+        public HtmlBuilder SEARCH(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool required = false)
         {
             LABEL(label);
             Add("<div class=\"uk-inline");
@@ -3293,7 +3293,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent PASSWORD(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder PASSWORD(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"password\" class=\"uk-input\" name=\"");
@@ -3339,7 +3339,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent DATE(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
+        public HtmlBuilder DATE(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
         {
             LABEL(label);
             Add("<input type=\"date\" class=\"uk-input uk-width-1-1\" name=\"");
@@ -3375,7 +3375,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent DATETIME(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
+        public HtmlBuilder DATETIME(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
         {
             LABEL(label);
             Add("<input type=\"datetime-local\" class=\"uk-input uk-width-1-1\" name=\"");
@@ -3411,13 +3411,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TIME()
+        public HtmlBuilder TIME()
         {
             T("</tbody>");
             return this;
         }
 
-        public HtmlContent NUMBERPICK(string label, string name, short v, short max = default, short min = default, short step = 1, bool @readonly = false, bool required = false, string onchange = null, string css = null)
+        public HtmlBuilder NUMBERPICK(string label, string name, short v, short max = default, short min = default, short step = 1, bool @readonly = false, bool required = false, string onchange = null, string css = null)
         {
             LABEL(label);
             Add("<div class=\"uk-inline");
@@ -3455,7 +3455,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent NUMBER(string label, string name, int v, string tip = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder NUMBER(string label, string name, int v, string tip = null, int max = 0, int min = 0, int step = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
@@ -3493,7 +3493,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool @readonly = false, bool required = false)
+        public HtmlBuilder NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
@@ -3532,7 +3532,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent NUMBER(string label, string name, double v, double max = double.MaxValue, double min = double.MinValue, double step = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder NUMBER(string label, string name, double v, double max = double.MaxValue, double min = double.MinValue, double step = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
@@ -3571,7 +3571,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent RANGE<V>(string label, string name, V v, V max, V min, V step, bool @readonly = false)
+        public HtmlBuilder RANGE<V>(string label, string name, V v, V max, V min, V step, bool @readonly = false)
         {
             LABEL(label);
             Add("<input type=\"range\" class=\"uk-input\" name=\"");
@@ -3590,7 +3590,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent COLOR(string label, string name, string v, bool @readonly = false, bool required = false)
+        public HtmlBuilder COLOR(string label, string name, string v, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"color\" class=\"uk-input\" name=\"");
@@ -3604,7 +3604,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent CHECKBOX<V>(string label, string name, V v, bool check = false, string tip = null, bool required = false, bool disabled = false, string css = null)
+        public HtmlBuilder CHECKBOX<V>(string label, string name, V v, bool check = false, string tip = null, bool required = false, bool disabled = false, string css = null)
         {
             LABEL(label);
             if (tip != null)
@@ -3650,7 +3650,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlContent CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
+        public HtmlBuilder CHECKBOXSET(string name, string[] v, string[] opt, string legend = null, string css = null)
         {
             FIELDSUL_(legend, false, css);
             for (int i = 0; i < opt.Length; i++)
@@ -3674,7 +3674,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false, bool disabled = false, string tip = null)
+        public HtmlBuilder RADIO<V>(string name, V v, string label = null, bool @checked = false, bool required = false, bool disabled = false, string tip = null)
         {
             Add("<label>");
             Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
@@ -3710,7 +3710,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent RADIO2<V>(string name, V v, string label = null, bool @checked = false, bool required = false, int idx = 0, int last = 0)
+        public HtmlBuilder RADIO2<V>(string name, V v, string label = null, bool @checked = false, bool required = false, int idx = 0, int last = 0)
         {
             if (idx % 2 == 0)
             {
@@ -3744,7 +3744,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, Predicate<V> filter = null, string legend = null, string css = null, bool required = false)
+        public HtmlBuilder RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, Predicate<V> filter = null, string legend = null, string css = null, bool required = false)
         {
             FIELDSUL_(legend, false, css);
             if (opt != null)
@@ -3789,7 +3789,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Func<K, V, bool> filter = null)
+        public HtmlBuilder RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Func<K, V, bool> filter = null)
         {
             FIELDSUL_(legend, false, css);
             if (opt != null)
@@ -3845,7 +3845,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
+        public HtmlBuilder RADIOSET(string name, string v, string[] opt, string legend = null, string css = null, bool required = false)
         {
             if (legend != null)
             {
@@ -3867,7 +3867,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TEXTAREA(string label, string name, string v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder TEXTAREA(string label, string name, string v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             TEXTAREA_(label, name, tip, max, min, @readonly, required);
             Add(v);
@@ -3875,7 +3875,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent TEXTAREA_(string label, string name, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        public HtmlBuilder TEXTAREA_(string label, string name, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<textarea class=\"uk-textarea");
@@ -3923,13 +3923,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _TEXTAREA(bool label = true)
+        public HtmlBuilder _TEXTAREA(bool label = true)
         {
             Add("</textarea>");
             return this;
         }
 
-        public HtmlContent SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, bool refresh = false, string css = null)
+        public HtmlBuilder SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, bool refresh = false, string css = null)
         {
             LABEL(label);
             Add("<select class=\"uk-select");
@@ -3972,13 +3972,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _SELECT()
+        public HtmlBuilder _SELECT()
         {
             Add("</select>");
             return this;
         }
 
-        public HtmlContent OPTION<T>(T v, string caption = null, bool selected = false, bool enabled = true)
+        public HtmlBuilder OPTION<T>(T v, string caption = null, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
             AddPrimitive(v);
@@ -4000,7 +4000,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent OPTION_<T>(T v, bool selected = false, bool enabled = true)
+        public HtmlBuilder OPTION_<T>(T v, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
             PutKey(v);
@@ -4011,13 +4011,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _OPTION()
+        public HtmlBuilder _OPTION()
         {
             Add("</option>");
             return this;
         }
 
-        public HtmlContent OPTGROUP_<T>(T v)
+        public HtmlBuilder OPTGROUP_<T>(T v)
         {
             Add("<optgroup label=\"");
             AddPrimitive(v);
@@ -4025,13 +4025,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent _OPTGROUP()
+        public HtmlBuilder _OPTGROUP()
         {
             Add("</optgroup>");
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opts != null)
@@ -4087,7 +4087,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0)
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)
@@ -4127,7 +4127,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SELECT<V>(string label, string name, V v, V[] opts, bool required = true, sbyte size = 0)
+        public HtmlBuilder SELECT<V>(string label, string name, V v, V[] opts, bool required = true, sbyte size = 0)
         {
             SELECT_(label, name, false, required, size);
             if (opts != null)
@@ -4152,7 +4152,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent SELECT(string label, string name, string[] vs, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlBuilder SELECT(string label, string name, string[] vs, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, true, required, size, refresh);
             if (opts != null)
@@ -4177,7 +4177,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent DATALIST(string id, string[] opt)
+        public HtmlBuilder DATALIST(string id, string[] opt)
         {
             Add("<datalist");
             Add(" id=\"datalist-");
@@ -4197,7 +4197,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent OUTPUT<V>(string label, string name, V v)
+        public HtmlBuilder OUTPUT<V>(string label, string name, V v)
         {
             if (label != null)
             {
@@ -4214,7 +4214,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent OUTPUT_CNY(string label, string name, decimal v)
+        public HtmlBuilder OUTPUT_CNY(string label, string name, decimal v)
         {
             Add("￥<output name=\"");
             Add(name);
@@ -4224,14 +4224,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlContent METER()
+        public HtmlBuilder METER()
         {
             Add("<meter>");
             Add("</meter>");
             return this;
         }
 
-        public HtmlContent CROP(string name, string caption, short width, short height)
+        public HtmlBuilder CROP(string name, string caption, short width, short height)
         {
             Add("<a class=\"uk-button uk-button-default uk-margin-small-bottom\" onclick=\"document.getElementById(\'imginp\').click()\">");
             Add(caption);

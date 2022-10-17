@@ -28,7 +28,7 @@ namespace ChainFx.Web
 
         public static void GiveFrame(this WebContext wc, int status, bool? shared = null, short maxage = 60, string title = null, byte group = 0)
         {
-            var h = new HtmlContent(true, 8 * 1024)
+            var h = new HtmlBuilder(true, 8 * 1024)
             {
                 Web = wc
             };
@@ -122,7 +122,7 @@ namespace ChainFx.Web
 
         public static void GiveOffCanvas(this WebContext wc, short status, bool? shared = null, short maxage = 60, string title = null)
         {
-            var h = new HtmlContent(true, 8 * 1024)
+            var h = new HtmlBuilder(true, 8 * 1024)
             {
                 Web = wc
             };
@@ -213,9 +213,9 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, short status, Action<HtmlContent> main, bool? shared = null, short maxage = 12, string title = null, bool manifest = false)
+        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, short maxage = 12, string title = null, bool manifest = false)
         {
-            var h = new HtmlContent(true, 32 * 1024)
+            var h = new HtmlBuilder(true, 32 * 1024)
             {
                 Web = wc
             };
@@ -254,9 +254,9 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12)
+        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, short maxage = 12)
         {
-            var h = new HtmlContent(true, 8 * 1024)
+            var h = new HtmlBuilder(true, 8 * 1024)
             {
                 Web = wc
             };
@@ -302,9 +302,9 @@ namespace ChainFx.Web
             wc.Give(status, h, shared, maxage);
         }
 
-        public static void GiveSnippet(this WebContext wc, short status, Action<HtmlContent> main = null, bool? shared = null, short maxage = 12, string title = null)
+        public static void GiveSnippet(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, short maxage = 12, string title = null)
         {
-            var h = new HtmlContent(true, 8 * 1024)
+            var h = new HtmlBuilder(true, 8 * 1024)
             {
                 Web = wc
             };

@@ -24,7 +24,7 @@ namespace ChainFx.Web
             this.body = Preprocess(body);
         }
 
-        internal override void Describe(HtmlContent h)
+        internal override void Describe(HtmlBuilder h)
         {
             h.P_();
             h.T(status).SP().T(tip);

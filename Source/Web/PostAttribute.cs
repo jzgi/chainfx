@@ -24,7 +24,7 @@ namespace ChainFx.Web
             this.tip = tip;
         }
 
-        internal override void Describe(HtmlContent h)
+        internal override void Describe(HtmlBuilder h)
         {
             h.P_();
             h.T("POST").SP().T(tip);

@@ -52,7 +52,7 @@ namespace ChainFx.Fabric
                 if (conn != null)
                 {
                     // args
-                    var cnt = new JsonContent(true, 1024);
+                    var cnt = new JsonBuilder(true, 1024);
 
                     // remote call
                     // var (code, v) = await conn.CallAsync(0, 0, op, cnt);

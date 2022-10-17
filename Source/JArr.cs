@@ -243,7 +243,7 @@ namespace ChainFx
             return ++cur < count;
         }
 
-        public void Write<C>(C cnt) where C : DynamicContent, ISink
+        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
         {
             for (int i = 0; i < count; i++)
             {
@@ -282,14 +282,14 @@ namespace ChainFx
 
         public IContent Dump()
         {
-            var cnt = new JsonContent(true, 4096);
+            var cnt = new JsonBuilder(true, 4096);
             cnt.PutFromSource(this);
             return cnt;
         }
 
         public override string ToString()
         {
-            var cnt = new JsonContent(false, 4 * 1024);
+            var cnt = new JsonBuilder(false, 4 * 1024);
             try
             {
                 cnt.Put(null, this);

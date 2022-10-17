@@ -274,7 +274,7 @@ namespace ChainFx
 
             uint[] key = {0x34a3, 0x34a3, 0x34a3, 0x34a3};
 
-            var c = new TextContent(true, 1024);
+            var c = new TextBuilder(true, 1024);
 
             c.Add("we are a plain tex tstring characters, okay!");
 

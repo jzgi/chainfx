@@ -271,13 +271,13 @@ namespace ChainFx
             return false;
         }
 
-        public void Write<C>(C cnt) where C : DynamicContent, ISink
+        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
         {
         }
 
         public IContent Dump()
         {
-            var cnt = new XmlContent(true, 4096);
+            var cnt = new XmlBuilder(true, 4096);
             cnt.ELEM(this);
             return cnt;
         }

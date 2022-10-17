@@ -5,9 +5,9 @@ namespace ChainFx
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 
     /// </summary>
-    public class XmlContent : DynamicContent, ISink
+    public class XmlBuilder : DynamicBuilder, ISink
     {
-        public XmlContent(bool bytel, int capacity) : base(bytel, capacity)
+        public XmlBuilder(bool bytel, int capacity) : base(bytel, capacity)
         {
         }
 
@@ -43,7 +43,7 @@ namespace ChainFx
             }
         }
 
-        public XmlContent ELEM(XElem elem)
+        public XmlBuilder ELEM(XElem elem)
         {
             Add('<');
             Add(elem.Tag);
@@ -88,7 +88,7 @@ namespace ChainFx
         // PUT
         //
 
-        public XmlContent ELEM(string name, Action attrs, Action children)
+        public XmlBuilder ELEM(string name, Action attrs, Action children)
         {
             Add('<');
             Add(name);
@@ -106,7 +106,7 @@ namespace ChainFx
             return this;
         }
 
-        public XmlContent ELEM(string name, bool v)
+        public XmlBuilder ELEM(string name, bool v)
         {
             Add('<');
             Add(name);
@@ -119,7 +119,7 @@ namespace ChainFx
             return this;
         }
 
-        public XmlContent ELEM(string name, short v)
+        public XmlBuilder ELEM(string name, short v)
         {
             Add('<');
             Add(name);
@@ -132,7 +132,7 @@ namespace ChainFx
             return this;
         }
 
-        public XmlContent ELEM(string name, int v)
+        public XmlBuilder ELEM(string name, int v)
         {
             Add('<');
             Add(name);
@@ -145,7 +145,7 @@ namespace ChainFx
             return this;
         }
 
-        public XmlContent ELEM(string name, long v)
+        public XmlBuilder ELEM(string name, long v)
         {
             Add('<');
             Add(name);
@@ -158,7 +158,7 @@ namespace ChainFx
             return this;
         }
 
-        public XmlContent ELEM(string name, decimal v)
+        public XmlBuilder ELEM(string name, decimal v)
         {
             Add('<');
             Add(name);
@@ -171,7 +171,7 @@ namespace ChainFx
             return this;
         }
 
-        public XmlContent ELEM(string name, string v)
+        public XmlBuilder ELEM(string name, string v)
         {
             Add('<');
             Add(name);

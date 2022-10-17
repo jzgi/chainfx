@@ -111,10 +111,10 @@ namespace ChainFx.Fabric
                 req.Headers.TryAddWithoutValidation(X_FROM, Nodality.Self.id.ToString());
                 req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
 
-                var jc = new JsonContent(true, 1024);
+                var jc = new JsonBuilder(true, 1024);
                 peer.Write(jc);
 
-                req.Content = jc;
+                req.Content = null;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, jc.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, jc.Count.ToString());
 

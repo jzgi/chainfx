@@ -46,13 +46,13 @@ namespace ChainFx.Web
 
         public WebService Service { get; internal set; }
 
-        public WebWork Work { get; internal set; }
+        public WebWork Work => segnum == 0 ? Service : segs[segnum - 1].Work;
 
         public WebAction Action { get; internal set; }
 
         public int Subscript { get; set; }
 
-        public Exception Exception { get; set; }
+        public Exception Error { get; set; }
 
         /// The decrypted/decoded principal object.
         ///
@@ -60,10 +60,14 @@ namespace ChainFx.Web
 
         public short Role { get; set; }
 
+        //
+        // the segment stack
+        //
+
         // segments along the URI path
         WebSeg[] segs;
 
-        int seglevel; // actual number of segments
+        int segnum; // actual number of segments
 
         internal void AppendSeg(WebWork work, string key, object accessor = null)
         {
@@ -72,16 +76,16 @@ namespace ChainFx.Web
                 segs = new WebSeg[8];
             }
 
-            segs[seglevel++] = new WebSeg(work, key, accessor);
+            segs[segnum++] = new WebSeg(work, key, accessor);
         }
 
-        public WebSeg this[int pos] => pos <= 0 ? segs[seglevel + pos - 1] : default;
+        public WebSeg this[int pos] => pos <= 0 ? segs[segnum + pos - 1] : default;
 
         public WebSeg this[Type typ]
         {
             get
             {
-                for (int i = seglevel - 1; i >= 0; i--)
+                for (int i = segnum - 1; i >= 0; i--)
                 {
                     var seg = segs[i];
                     if (seg.Work.IsOf(typ)) return seg;
@@ -95,7 +99,7 @@ namespace ChainFx.Web
         {
             get
             {
-                for (int i = seglevel - 1; i >= 0; i--)
+                for (int i = segnum - 1; i >= 0; i--)
                 {
                     var seg = segs[i];
                     if (seg.Work == work) return seg;
@@ -497,7 +501,7 @@ namespace ChainFx.Web
 
         public void GiveMsg(int statusCode, string msg, string detail = null, bool? shared = null, int maxage = 12)
         {
-            var cnt = new TextContent(true, 1024);
+            var cnt = new TextBuilder(true, 1024);
 
             cnt.Add(msg);
             if (detail != null)
@@ -542,7 +546,7 @@ namespace ChainFx.Web
             }
 
             // static content special deal
-            if (Content is StaticContent sta)
+            if (Content is StaticResource sta)
             {
                 var since = HeaderDateTime("If-Modified-Since");
                 Debug.Assert(sta != null);
@@ -575,9 +579,8 @@ namespace ChainFx.Web
         /// </summary>
         public void Close()
         {
-            if (Content is DynamicContent dyn)
+            if (Content is DynamicBuilder dyn)
             {
-                dyn.Dispose();
                 dyn.Clear();
             }
         }

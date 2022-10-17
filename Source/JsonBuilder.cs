@@ -6,7 +6,7 @@ namespace ChainFx
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     ///
-    public class JsonContent : DynamicContent, ISink
+    public class JsonBuilder : DynamicBuilder, ISink
     {
         const int MAX_LEVELS = 16;
 
@@ -16,7 +16,7 @@ namespace ChainFx
         // current level
         int level;
 
-        public JsonContent(bool bytel, int capacity) : base(bytel, capacity)
+        public JsonBuilder(bool bytel, int capacity) : base(bytel, capacity)
         {
             counts = new int[MAX_LEVELS];
             level = 0;
@@ -63,14 +63,14 @@ namespace ChainFx
             }
         }
 
-        public void ARR(Action<JsonContent> a)
+        public void ARR(Action<JsonBuilder> a)
         {
             ARR_();
             a?.Invoke(this);
             _ARR();
         }
 
-        public JsonContent ARR_(string name = null)
+        public JsonBuilder ARR_(string name = null)
         {
             if (counts[level]++ > 0) Add(',');
             counts[++level] = 0; // enter
@@ -85,21 +85,21 @@ namespace ChainFx
             return this;
         }
 
-        public JsonContent _ARR()
+        public JsonBuilder _ARR()
         {
             Add(']');
             level--; // exit
             return this;
         }
 
-        public void OBJ(Action<JsonContent> a)
+        public void OBJ(Action<JsonBuilder> a)
         {
             OBJ_();
             a?.Invoke(this);
             _OBJ();
         }
 
-        public JsonContent OBJ_(string name = null)
+        public JsonBuilder OBJ_(string name = null)
         {
             if (counts[level]++ > 0) Add(',');
             counts[++level] = 0; // enter
@@ -114,7 +114,7 @@ namespace ChainFx
             return this;
         }
 
-        public JsonContent _OBJ()
+        public JsonBuilder _OBJ()
         {
             Add('}');
             level--; // exit

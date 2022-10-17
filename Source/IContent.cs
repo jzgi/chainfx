@@ -11,7 +11,7 @@
         string CType { get; }
 
         ///
-        /// The byte buffer that contains binary content. It can be null.
+        /// The byte buffer that contains binary content. It's value can be null.
         ///
         byte[] Buffer { get; }
 
@@ -21,8 +21,10 @@
         int Count { get; }
 
         /// 
-        /// The ETag value for purpose of cache optimization. It can be null.
+        /// The ETag value for cache optimization. It's value can be null.
         /// 
         string ETag { get; }
+
+        StaticResource ToStaticResource();
     }
 }

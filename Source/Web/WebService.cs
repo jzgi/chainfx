@@ -22,9 +22,15 @@ namespace ChainFx.Web
     {
         static readonly int ConcurrencyLevel = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
 
-        readonly WebException AuthReq = new WebException("Authentication required") {Code = 401};
+        readonly WebException AuthReq = new WebException("Authentication required")
+        {
+            Code = 401
+        };
 
-        readonly WebException AccessorReq = new WebException("Accessor required") {Code = 403};
+        readonly WebException AccessorReq = new WebException("Accessor required")
+        {
+            Code = 403
+        };
 
         //
         // http implementation
@@ -41,7 +47,8 @@ namespace ChainFx.Web
         string proxy;
 
         // shared cache of previous responses
-        ConcurrentDictionary<string, WebCacheEntry> shared;
+        ConcurrentDictionary<string, StaticResource> shared;
+
 
         // the cache cleaner thread, can be null
         Thread cleaner;
@@ -94,7 +101,7 @@ namespace ChainFx.Web
             if (cache)
             {
                 // create the response cache
-                shared = new ConcurrentDictionary<string, WebCacheEntry>(ConcurrencyLevel, 1024);
+                shared = new ConcurrentDictionary<string, StaticResource>(ConcurrencyLevel, 1024);
             }
 
             proxy = webcfg[nameof(proxy)];
@@ -123,7 +130,10 @@ namespace ChainFx.Web
 
         public string VisitUrl => proxy ?? address;
 
-        protected internal virtual async Task StartAsync(CancellationToken token)
+
+        const int CLEANER_INTERVAL = 30 * 1000;
+
+        protected internal async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);
 
@@ -135,15 +145,15 @@ namespace ChainFx.Web
                     while (!token.IsCancellationRequested)
                     {
                         // cleaning cycle
-                        Thread.Sleep(1000 * 12); // every 12 seconds 
+                        Thread.Sleep(CLEANER_INTERVAL);
 
                         // loop to clear or remove each expired items
-                        int now = Environment.TickCount;
-                        foreach (var ca in shared)
+                        var now = Environment.TickCount;
+                        foreach (var (key, value) in shared)
                         {
-                            if (!ca.Value.TryClean(now))
+                            if (!value.IsStale(now))
                             {
-                                shared.TryRemove(ca.Key, out _);
+                                shared.TryRemove(key, out _);
                             }
                         }
                     }
@@ -187,13 +197,13 @@ namespace ChainFx.Web
                     if (!TryGiveFromCache(wc))
                     {
                         GiveStaticFile(path, path.Substring(dot), wc);
-                        TryAddForCache(wc);
+                        TryAddToCache(wc);
                     }
                     return;
                 }
 
 
-                if (!await DoAuthenticate(wc))
+                if (!await DoAuthenticateAsync(wc))
                 {
                     return;
                 }
@@ -242,7 +252,6 @@ namespace ChainFx.Web
                             return;
                         }
 
-                        wc.Work = curwrk;
                         wc.Action = act;
 
                         if (!act.DoAuthorize(wc, false))
@@ -260,7 +269,7 @@ namespace ChainFx.Web
                             if (act.IsAsync) await act.DoAsync(wc, subscpt);
                             else act.Do(wc, subscpt);
 
-                            Service.TryAddForCache(wc);
+                            Service.TryAddToCache(wc);
                         }
 
                         wc.Action = null;
@@ -274,7 +283,6 @@ namespace ChainFx.Web
                             }
                         }
 
-                        wc.Work = null;
                         return;
                     }
                     else // check sub works and var work
@@ -284,7 +292,7 @@ namespace ChainFx.Web
                         if (subwrk != null) // if child
                         {
                             // do necessary authentication before entering
-                            if (wc.Principal == null && !await subwrk.DoAuthenticate(wc)) return;
+                            if (wc.Principal == null && !await subwrk.DoAuthenticateAsync(wc)) return;
 
                             wc.AppendSeg(subwrk, key);
 
@@ -294,7 +302,7 @@ namespace ChainFx.Web
                         else if (varwrk != null) // if variable-key subwork
                         {
                             // do necessary authentication before entering
-                            if (wc.Principal == null && !await varwrk.DoAuthenticate(wc)) return;
+                            if (wc.Principal == null && !await varwrk.DoAuthenticateAsync(wc)) return;
 
                             var prin = wc.Principal;
                             object accessor;
@@ -324,7 +332,7 @@ namespace ChainFx.Web
             {
                 if (@catch != null) // If existing custom catch
                 {
-                    wc.Exception = e;
+                    wc.Error = e;
                     if (@catch.IsAsync)
                     {
                         await @catch.DoAsync(wc, 0);
@@ -342,25 +350,27 @@ namespace ChainFx.Web
                 await wc.SendAsync();
             }
         }
-        
+
         //
         // STATIC FILES
         //
 
-        const int STATIC_MAX_AGE = 3600 * 48;
+        const int STATIC_FILE_MAXAGE = 3600 * 24;
+
+        const int STATIC_FILE_GZIP_THRESHOLD = 1024 * 4;
 
         public void GiveStaticFile(string filename, string ext, WebContext wc)
         {
-            if (!StaticContent.TryGetType(ext, out var ctyp))
+            if (!StaticResource.TryGetType(ext, out var ctyp))
             {
-                wc.Give(415, shared: true, maxage: STATIC_MAX_AGE); // unsupported media type
+                wc.Give(415, shared: true, maxage: STATIC_FILE_MAXAGE); // unsupported media type
                 return;
             }
 
             string path = Path.Join(Folder, filename);
             if (!File.Exists(path))
             {
-                wc.Give(404, shared: true, maxage: STATIC_MAX_AGE); // not found
+                wc.Give(404, shared: true, maxage: STATIC_FILE_MAXAGE); // not found
                 return;
             }
 
@@ -371,14 +381,13 @@ namespace ChainFx.Web
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 int len = (int) fs.Length;
-                if (len > 2048)
+                if (len > STATIC_FILE_GZIP_THRESHOLD)
                 {
                     var ms = new MemoryStream(len);
                     using (var gzs = new GZipStream(ms, CompressionMode.Compress))
                     {
                         fs.CopyTo(gzs);
                     }
-
                     bytes = ms.ToArray();
                     gzip = true;
                 }
@@ -389,14 +398,20 @@ namespace ChainFx.Web
                 }
             }
 
-            var content = new StaticContent(bytes)
+            var staticrsc = new StaticResource(bytes)
             {
                 Key = filename,
                 CType = ctyp,
                 Adapted = modified,
                 GZip = gzip
             };
-            wc.Give(200, content, shared: true, maxage: STATIC_MAX_AGE);
+
+            wc.Give(
+                200,
+                staticrsc,
+                shared: true,
+                maxage: STATIC_FILE_MAXAGE
+            );
         }
 
 
@@ -425,18 +440,18 @@ namespace ChainFx.Web
         //
         // RESPONSE CACHE
 
-        internal void TryAddForCache(WebContext wc)
+        internal void TryAddToCache(WebContext wc)
         {
             if (shared != null && wc.IsGet)
             {
                 if (wc.Shared == true && wc.IsCacheable())
                 {
-                    var ca = new WebCacheEntry(wc.Content)
-                    {
-                        Code = wc.StatusCode,
-                        MaxAge = wc.MaxAge,
-                        Tick = Environment.TickCount
-                    };
+                    var ca = wc.Content.ToStaticResource();
+
+                    ca.StatusCode = wc.StatusCode;
+                    ca.MaxAge = wc.MaxAge;
+                    ca.Tick = Environment.TickCount;
+
                     shared.AddOrUpdate(wc.Uri, ca, (key, old) => old);
                 }
             }
@@ -448,16 +463,11 @@ namespace ChainFx.Web
             {
                 if (shared.TryGetValue(wc.Uri, out var ca))
                 {
-                    return ca.TryGiveBy(wc, Environment.TickCount);
+                    return ca.TryGiveTo(wc, Environment.TickCount);
                 }
             }
 
             return false;
-        }
-
-
-        public virtual async Task ProcessEventAsync(IotContext context)
-        {
         }
 
 
@@ -478,7 +488,7 @@ namespace ChainFx.Web
             // return outgoing
 
             string[] strs = null;
-            var jc = new TextContent(true, 16 * 1024);
+            var jc = new TextBuilder(true, 16 * 1024);
             // jc.Put(null, strs);
 
             wc.Give(200, jc, null, 0);
@@ -493,7 +503,7 @@ namespace ChainFx.Web
         public void DumpAllStacked()
         {
             // stacked.TryAdd();
-            var jc = new JsonContent(true, 16);
+            var jc = new JsonBuilder(true, 16);
 
             jc.OBJ_();
 
