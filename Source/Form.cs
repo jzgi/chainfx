@@ -252,7 +252,7 @@ namespace ChainFx
             throw new NotImplementedException();
         }
 
-        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
+        public void Write<C>(C cnt) where C : ContentBuilder, ISink
         {
             throw new NotImplementedException();
         }

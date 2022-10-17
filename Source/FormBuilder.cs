@@ -5,7 +5,7 @@ namespace ChainFx
     /// <summary>
     /// To generate a urlencoded byte or char string.
     /// </summary>
-    public class FormBuilder : DynamicBuilder, ISink
+    public class FormBuilder : ContentBuilder, ISink
     {
         // hexidecimal characters
         protected static readonly char[] HEX =

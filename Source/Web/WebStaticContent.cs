@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using ChainFx.Web;
 
-namespace ChainFx
+namespace ChainFx.Web
 {
     /// <summary>
     /// A binary static content of certain mime type.
     /// </summary>
-    public class StaticResource : IKeyable<string>, IContent
+    public class WebStaticContent : IKeyable<string>, IContent
     {
         static readonly Dictionary<string, string> Types = new Dictionary<string, string>
         {
@@ -1528,7 +1527,7 @@ namespace ChainFx
         readonly int length;
 
 
-        public StaticResource(byte[] bytes)
+        public WebStaticContent(byte[] bytes)
         {
             this.array = bytes;
             length = bytes.Length;
@@ -1549,22 +1548,26 @@ namespace ChainFx
         public bool GZip { get; set; }
 
 
-        /// cacheable response status, 0 means emptied
+        ///
+        /// cacheable response status
+        /// 
         public int StatusCode { get; internal set; }
 
-        /// time ticks when entered or emptied
+        ///
+        /// time ticks when entered
+        /// 
         public int Tick { get; internal set; }
 
-        /// <summary>
+        /// 
         /// maxage in seconds
-        /// </summary>
+        /// 
         public int MaxAge { get; internal set; }
 
 
-        /// <summary>
+        /// 
         /// Return this instance for cache.
-        /// </summary>
-        public StaticResource ToStaticResource() => this;
+        /// 
+        public WebStaticContent ToStaticContent() => this;
 
 
         public static bool TryGetType(string ext, out string type)

@@ -5,7 +5,7 @@ namespace ChainFx.Web
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
     /// </summary>
-    public class HtmlBuilder : DynamicBuilder
+    public class HtmlBuilder : ContentBuilder
     {
         public WebContext Web { get; set; }
 

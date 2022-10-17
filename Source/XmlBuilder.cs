@@ -5,7 +5,7 @@ namespace ChainFx
     /// <summary>
     /// To generate a UTF-8 encoded XML document. 
     /// </summary>
-    public class XmlBuilder : DynamicBuilder, ISink
+    public class XmlBuilder : ContentBuilder, ISink
     {
         public XmlBuilder(bool bytely, int capacity) : base(bytely, capacity)
         {

@@ -321,7 +321,7 @@ namespace ChainFx
 
         public bool Next() => false;
 
-        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
+        public void Write<C>(C cnt) where C : ContentBuilder, ISink
         {
             for (int i = 0; i < Count; i++)
             {

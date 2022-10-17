@@ -92,7 +92,7 @@ namespace ChainFx.Web
         const int bottom = maxy - margin - legendhei - labelhei;
         const int top = margin;
 
-        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
+        public void Write<C>(C cnt) where C : ContentBuilder, ISink
         {
             cnt.Add("<svg height=\"100%\" width=\"100%\" viewBox=\"0 0 ");
             cnt.Add(maxx);
@@ -163,7 +163,7 @@ namespace ChainFx.Web
             cnt.Add("</svg>");
         }
 
-        public void WriteGrid<C>(C cnt) where C : DynamicBuilder, ISink
+        public void WriteGrid<C>(C cnt) where C : ContentBuilder, ISink
         {
             var vspan = marks[^1] - marks[0];
 
@@ -213,7 +213,7 @@ namespace ChainFx.Web
             cnt.Add("</g>");
         }
 
-        public void WriteLegend<C>(C cnt) where C : DynamicBuilder, ISink
+        public void WriteLegend<C>(C cnt) where C : ContentBuilder, ISink
         {
             var xper = (maxx - margin * 2) / COLORS.Length;
             var y = maxy - margin - legendhei;

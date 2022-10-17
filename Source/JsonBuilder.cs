@@ -6,7 +6,7 @@ namespace ChainFx
     ///
     /// To generate a UTF-8 encoded JSON document. An extension of putting byte array is supported.
     ///
-    public class JsonBuilder : DynamicBuilder, ISink
+    public class JsonBuilder : ContentBuilder, ISink
     {
         const int MAX_LEVELS = 16;
 

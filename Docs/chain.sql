@@ -1,34 +1,43 @@
-create schema chain;
-
-alter schema chain owner to postgres;
-
-create sequence txn_seq;
-
-alter sequence txn_seq owner to postgres;
-
-create table peers
+create table ledgers_
 (
-    id smallint not null
-        constraint peers_pk
-            primary key,
-    typ smallint not null,
-    status smallint default 0 not null,
-    name varchar(10) not null,
-    tip varchar(20),
-    created timestamp(0),
-    creator varchar(10),
-    uri varchar(50)
+	seq integer,
+	acct varchar(20),
+	name varchar(12),
+	amt integer,
+	bal integer,
+	cs uuid,
+	blockcs uuid,
+	stamp timestamp(0)
 );
+
+alter table ledgers_ owner to postgres;
+
+create table peerledgs_
+(
+	peerid smallint
+)
+inherits (ledgers_);
+
+alter table peerledgs_ owner to postgres;
+
+create table peers_
+(
+	id smallint not null
+		constraint peers_pk
+			primary key,
+	weburl varchar(50),
+	secret varchar(16)
+)
+inherits (entities);
 
 alter table peers_ owner to postgres;
 
-create table bids_
+create table accts_
 (
-    peerid smallint
-        constraint bids_peerid_fk
-            references peers_
+	no varchar(20),
+	v integer
 )
-    inherits (public.bids_);
+inherits (entities);
 
-alter table bids_ owner to postgres;
+alter table accts_ owner to postgres;
 

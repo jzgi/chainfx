@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
+using ChainFx.Web;
 using static System.Environment;
 
 namespace ChainFx
@@ -9,7 +10,7 @@ namespace ChainFx
     /// <summary>
     /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 
     /// </summary>
-    public abstract class DynamicBuilder : IContent, IDisposable
+    public abstract class ContentBuilder : IContent, IDisposable
     {
         static readonly char[] DIGIT =
         {
@@ -85,7 +86,7 @@ namespace ChainFx
         // byte-wise etag checksum, for char-based output only
         long checksum;
 
-        protected DynamicBuilder(bool bytely, int capacity)
+        protected ContentBuilder(bool bytely, int capacity)
         {
             if (bytely)
             {
@@ -536,16 +537,16 @@ namespace ChainFx
             }
         }
 
-        public StaticResource ToStaticResource()
+        public WebStaticContent ToStaticContent()
         {
             if (count == 0)
             {
                 return null;
             }
-            var arr = new byte[count];
-            Array.Copy(bytebuf, arr, count);
+            var ba = new byte[count];
+            Array.Copy(bytebuf, ba, count);
 
-            return new StaticResource(arr)
+            return new WebStaticContent(ba)
             {
                 CType = CType
             };

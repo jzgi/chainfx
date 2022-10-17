@@ -1,7 +1,9 @@
-﻿namespace ChainFx
+﻿using ChainFx.Web;
+
+namespace ChainFx
 {
     /// <summary>
-    /// Represents a binary web content. 
+    /// Represents a binary content. 
     /// </summary>
     public interface IContent
     {
@@ -25,6 +27,9 @@
         /// 
         string ETag { get; }
 
-        StaticResource ToStaticResource();
+        /// <summary>
+        /// returns or converts to static content for cache.
+        /// </summary>
+        WebStaticContent ToStaticContent();
     }
 }

@@ -546,7 +546,7 @@ namespace ChainFx.Web
             }
 
             // static content special deal
-            if (Content is StaticResource sta)
+            if (Content is WebStaticContent sta)
             {
                 var since = HeaderDateTime("If-Modified-Since");
                 Debug.Assert(sta != null);
@@ -579,7 +579,7 @@ namespace ChainFx.Web
         /// </summary>
         public void Close()
         {
-            if (Content is DynamicBuilder bdr)
+            if (Content is ContentBuilder bdr)
             {
                 bdr.Dispose();
             }

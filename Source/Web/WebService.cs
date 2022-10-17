@@ -47,7 +47,7 @@ namespace ChainFx.Web
         string proxy;
 
         // shared cache of previous responses
-        ConcurrentDictionary<string, StaticResource> shared;
+        ConcurrentDictionary<string, WebStaticContent> shared;
 
 
         // the cache cleaner thread, can be null
@@ -101,7 +101,7 @@ namespace ChainFx.Web
             if (cache)
             {
                 // create the response cache
-                shared = new ConcurrentDictionary<string, StaticResource>(ConcurrencyLevel, 1024);
+                shared = new ConcurrentDictionary<string, WebStaticContent>(ConcurrencyLevel, 1024);
             }
 
             proxy = webcfg[nameof(proxy)];
@@ -361,7 +361,7 @@ namespace ChainFx.Web
 
         public void GiveStaticFile(string filename, string ext, WebContext wc)
         {
-            if (!StaticResource.TryGetType(ext, out var ctyp))
+            if (!WebStaticContent.TryGetType(ext, out var ctyp))
             {
                 wc.Give(415, shared: true, maxage: STATIC_FILE_MAXAGE); // unsupported media type
                 return;
@@ -398,7 +398,7 @@ namespace ChainFx.Web
                 }
             }
 
-            var staticrsc = new StaticResource(bytes)
+            var staticrsc = new WebStaticContent(bytes)
             {
                 Key = filename,
                 CType = ctyp,
@@ -446,7 +446,7 @@ namespace ChainFx.Web
             {
                 if (wc.Shared == true && wc.IsCacheable())
                 {
-                    var ca = wc.Content.ToStaticResource();
+                    var ca = wc.Content.ToStaticContent();
 
                     ca.StatusCode = wc.StatusCode;
                     ca.MaxAge = wc.MaxAge;

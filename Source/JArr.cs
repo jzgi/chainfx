@@ -243,7 +243,7 @@ namespace ChainFx
             return ++cur < count;
         }
 
-        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
+        public void Write<C>(C cnt) where C : ContentBuilder, ISink
         {
             for (int i = 0; i < count; i++)
             {

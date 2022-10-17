@@ -8,7 +8,7 @@
         /// <summary>
         /// Write out contents.
         /// </summary>
-        void Write<C>(C cnt) where C : DynamicBuilder, ISink;
+        void Write<C>(C cnt) where C : ContentBuilder, ISink;
 
         /// <summary>
         /// Converts contents into an appropriate content object.

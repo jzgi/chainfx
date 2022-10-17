@@ -1551,7 +1551,7 @@ namespace ChainFx.Fabric
             return v;
         }
 
-        public void Write<C>(C cnt) where C : DynamicBuilder, ISink
+        public void Write<C>(C cnt) where C : ContentBuilder, ISink
         {
             int fc = reader.FieldCount;
             for (int i = 0; i < fc; i++)

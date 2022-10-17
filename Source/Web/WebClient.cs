@@ -127,7 +127,7 @@ namespace ChainFx.Web
             }
             finally
             {
-                if (content is DynamicBuilder cnt)
+                if (content is ContentBuilder cnt)
                 {
                     cnt.Dispose();
                 }
@@ -166,7 +166,7 @@ namespace ChainFx.Web
             }
             finally
             {
-                if (content is DynamicBuilder cnt)
+                if (content is ContentBuilder cnt)
                 {
                     cnt.Dispose();
                 }
