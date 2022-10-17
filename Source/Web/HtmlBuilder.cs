@@ -10,7 +10,7 @@ namespace ChainFx.Web
         public WebContext Web { get; set; }
 
 
-        public HtmlBuilder(bool bytel, int capacity) : base(bytel, capacity)
+        public HtmlBuilder(bool bytely, int capacity) : base(bytely, capacity)
         {
         }
 

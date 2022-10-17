@@ -5,7 +5,7 @@ namespace ChainFx
     /// </summary>
     public class TextBuilder : DynamicBuilder
     {
-        public TextBuilder(bool bytel, int capacity) : base(bytel, capacity) {}
+        public TextBuilder(bool bytely, int capacity) : base(bytely, capacity) {}
 
         public override string CType { get; set; } = "text/plain";
     }

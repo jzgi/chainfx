@@ -297,7 +297,7 @@ namespace ChainFx
             }
             finally
             {
-                cnt.Clear();
+                cnt.Dispose();
             }
         }
 

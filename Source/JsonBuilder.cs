@@ -16,7 +16,7 @@ namespace ChainFx
         // current level
         int level;
 
-        public JsonBuilder(bool bytel, int capacity) : base(bytel, capacity)
+        public JsonBuilder(bool bytely, int capacity) : base(bytely, capacity)
         {
             counts = new int[MAX_LEVELS];
             level = 0;

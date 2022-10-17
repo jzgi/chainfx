@@ -38,28 +38,28 @@ namespace ChainFx.Web
 
         public static string ToToken<P>(P prin, short msk) where P : IData
         {
-            var cnt = new JsonBuilder(true, 4096);
+            var bdr = new JsonBuilder(true, 4096);
             try
             {
                 var secret = Application.Secret;
-                cnt.PutToken(prin, msk); // use the special putting method to append time stamp
+                bdr.PutToken(prin, msk); // use the special putting method to append time stamp
 
                 // + ':' + secrent
-                cnt.Add(':');
-                cnt.Add(secret);
+                bdr.Add(':');
+                bdr.Add(secret);
 
                 // create and add signature
                 using var md5 = MD5.Create();
-                var sig = md5.ComputeHash(cnt.Buffer, 0, cnt.Count); // 16 bytes
-                cnt.RemoveBytes(secret.Length); // take out secret and add signature
-                cnt.AddBytes(sig);
+                var sig = md5.ComputeHash(bdr.Buffer, 0, bdr.Count); // 16 bytes
+                bdr.RemoveBytes(secret.Length); // take out secret and add signature
+                bdr.AddBytes(sig);
 
                 // convert to base64 and return
-                return Convert.ToBase64String(cnt.Buffer, 0, cnt.Count);
+                return Convert.ToBase64String(bdr.Buffer, 0, bdr.Count);
             }
             finally
             {
-                cnt.Clear();
+                bdr.Dispose();
             }
         }
 

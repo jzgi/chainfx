@@ -15,7 +15,7 @@ namespace ChainFx
 
         int ordinal = -1;
 
-        public FormBuilder(bool bytel, int capacity) : base(bytel, capacity)
+        public FormBuilder(bool bytely, int capacity) : base(bytely, capacity)
         {
         }
 

@@ -579,9 +579,9 @@ namespace ChainFx.Web
         /// </summary>
         public void Close()
         {
-            if (Content is DynamicBuilder dyn)
+            if (Content is DynamicBuilder bdr)
             {
-                dyn.Clear();
+                bdr.Dispose();
             }
         }
     }

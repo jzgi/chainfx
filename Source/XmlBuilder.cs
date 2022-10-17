@@ -7,7 +7,7 @@ namespace ChainFx
     /// </summary>
     public class XmlBuilder : DynamicBuilder, ISink
     {
-        public XmlBuilder(bool bytel, int capacity) : base(bytel, capacity)
+        public XmlBuilder(bool bytely, int capacity) : base(bytely, capacity)
         {
         }
 

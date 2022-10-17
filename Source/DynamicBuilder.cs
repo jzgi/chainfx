@@ -9,7 +9,7 @@ namespace ChainFx
     /// <summary>
     /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 
     /// </summary>
-    public abstract class DynamicBuilder : IContent
+    public abstract class DynamicBuilder : IContent, IDisposable
     {
         static readonly char[] DIGIT =
         {
@@ -85,9 +85,9 @@ namespace ChainFx
         // byte-wise etag checksum, for char-based output only
         long checksum;
 
-        protected DynamicBuilder(bool bytel, int capacity)
+        protected DynamicBuilder(bool bytely, int capacity)
         {
-            if (bytel)
+            if (bytely)
             {
                 bytebuf = BorrowByteArray(capacity);
             }
@@ -108,7 +108,7 @@ namespace ChainFx
 
         public string ETag => etag ??= CryptoUtility.ToHex(checksum);
 
-        public void Clear()
+        public void Dispose()
         {
             if (bytebuf != null)
             {
@@ -558,17 +558,20 @@ namespace ChainFx
 
 
         // we use number of processor cores as a factor
-        static readonly int factor = (int) Math.Log(ProcessorCount, 2) + 1;
+        static readonly int FACTOR = (int) Math.Log(ProcessorCount, 2) + 1;
 
-        // pool of bytearray
+
+        /// <summary>
+        /// A pool of byte array.
+        /// </summary>
         static readonly Stack<byte>[] bapool =
         {
-            new Stack<byte>(1024 * 16, factor * 8),
-            new Stack<byte>(1024 * 32, factor * 8),
-            new Stack<byte>(1024 * 64, factor * 4),
-            new Stack<byte>(1024 * 128, factor * 4),
-            new Stack<byte>(1024 * 256, factor * 2),
-            new Stack<byte>(1024 * 512, factor * 2),
+            new Stack<byte>(1024 * 8, FACTOR * 8),
+            new Stack<byte>(1024 * 16, FACTOR * 8),
+            new Stack<byte>(1024 * 32, FACTOR * 4),
+            new Stack<byte>(1024 * 64, FACTOR * 4),
+            new Stack<byte>(1024 * 128, FACTOR * 2),
+            new Stack<byte>(1024 * 256, FACTOR * 2),
         };
 
         static byte[] BorrowByteArray(int size)
@@ -615,16 +618,18 @@ namespace ChainFx
             }
         }
 
-        //
-        // pool of chararray
+
+        /// <summary>
+        /// A pool of char array
+        /// </summary>
         static readonly Stack<char>[] capool =
         {
-            new Stack<char>(1024 * 2, factor * 8),
-            new Stack<char>(1024 * 4, factor * 8),
-            new Stack<char>(1024 * 8, factor * 4),
-            new Stack<char>(1024 * 32, factor * 4),
-            new Stack<char>(1024 * 64, factor * 2),
-            new Stack<char>(1024 * 128, factor * 2),
+            new Stack<char>(1024 * 2, FACTOR * 8),
+            new Stack<char>(1024 * 4, FACTOR * 8),
+            new Stack<char>(1024 * 8, FACTOR * 4),
+            new Stack<char>(1024 * 16, FACTOR * 4),
+            new Stack<char>(1024 * 32, FACTOR * 2),
+            new Stack<char>(1024 * 64, FACTOR * 2),
         };
 
         public static char[] BorrowCharArray(int size)

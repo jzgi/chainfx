@@ -129,7 +129,7 @@ namespace ChainFx.Web
             {
                 if (content is DynamicBuilder cnt)
                 {
-                    cnt.Clear();
+                    cnt.Dispose();
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace ChainFx.Web
             {
                 if (content is DynamicBuilder cnt)
                 {
-                    cnt.Clear();
+                    cnt.Dispose();
                 }
             }
         }
