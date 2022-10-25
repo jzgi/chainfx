@@ -1179,6 +1179,25 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder FIELD<V>(string label, V[] arr)
+        {
+            LABEL(label);
+            Add("<span class=\"uk-static\">");
+            if (arr != null)
+            {
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        Add("&nbsp;");
+                    }
+                    AddPrimitive(arr[i]);
+                }
+            }
+            Add("</span>");
+            return this;
+        }
+
         public HtmlBuilder FIELD2<V, X>(string label, V v, X x, bool brace = false)
         {
             LABEL(label);
@@ -1580,9 +1599,9 @@ namespace ChainFx.Web
                 Add("</h3>");
             }
 
-            Add("<p>");
+            Add("<span>");
             Add(p);
-            Add("</p>");
+            Add("</span>");
             _ALERT();
             return this;
         }
@@ -2202,6 +2221,10 @@ namespace ChainFx.Web
                         Add(' ');
                         Add(css);
                     }
+                    if (obj is Entity ent && ent.status <= 0)
+                    {
+                        Add(" uk-disabled");
+                    }
                     Add("\" href=\"");
                     PutKey(key);
                     Add("/\" onclick=\"return dialog(this,");
@@ -2322,15 +2345,6 @@ namespace ChainFx.Web
         {
             Add("</form>");
             Add("<div class=\"uk-top-placeholder uk-large\"></div>");
-            return this;
-        }
-
-        public HtmlBuilder TITLEBAR(string v)
-        {
-            Add("<nav class=\"uk-top-bar uk-flex-center uk-modal-title\">");
-            Add(v);
-            Add("</nav>");
-            Add("<div class=\"uk-top-placeholder\"></div>");
             return this;
         }
 
@@ -2654,7 +2668,7 @@ namespace ChainFx.Web
                         _UL();
                     }
                     FORM_("uk-card uk-card-primary");
-                    H4(sub.Tip, "uk-card-header");
+                    H3(sub.Tip, "uk-card-header");
                     UL_("uk-card-body uk-child-width-1-2", grid: true);
                 }
 

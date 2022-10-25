@@ -581,7 +581,7 @@ namespace ChainFx.Web
         {
             if (Content is ContentBuilder bdr)
             {
-                bdr.Dispose();
+                bdr.Clear();
             }
         }
     }

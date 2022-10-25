@@ -59,7 +59,7 @@ namespace ChainFx.Web
             }
             finally
             {
-                bdr.Dispose();
+                bdr.Clear();
             }
         }
 

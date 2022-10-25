@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using ChainFx.Web;
 using static System.Environment;
 
@@ -10,7 +14,7 @@ namespace ChainFx
     /// <summary>
     /// A dynamically generated content in format of either bytes or chars. It always uses the buffer pool. 
     /// </summary>
-    public abstract class ContentBuilder : IContent, IDisposable
+    public abstract class ContentBuilder : HttpContent, IContent
     {
         static readonly char[] DIGIT =
         {
@@ -109,7 +113,7 @@ namespace ChainFx
 
         public string ETag => etag ??= CryptoUtility.ToHex(checksum);
 
-        public void Dispose()
+        public void Clear()
         {
             if (bytebuf != null)
             {
@@ -551,6 +555,22 @@ namespace ChainFx
                 CType = CType
             };
         }
+
+
+        //
+        // CLIENT CONTENT
+        //
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        {
+            return stream.WriteAsync(bytebuf, 0, count);
+        }
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = count;
+            return true;
+        }
+
 
         public override string ToString()
         {

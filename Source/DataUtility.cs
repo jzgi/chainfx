@@ -100,7 +100,7 @@ namespace ChainFx
             }
             finally
             {
-                cnt.Dispose();
+                cnt.Clear();
             }
         }
 
@@ -114,7 +114,7 @@ namespace ChainFx
             }
             finally
             {
-                cnt.Dispose();
+                cnt.Clear();
             }
         }
 
@@ -128,7 +128,7 @@ namespace ChainFx
             }
             finally
             {
-                cnt.Dispose();
+                cnt.Clear();
             }
         }
 

@@ -36,6 +36,10 @@ namespace ChainFx
         public string creator;
         public DateTime adapted;
         public string adapter;
+        internal string oker;
+        internal DateTime oked;
+        internal short state;
+
 
         public virtual void Read(ISource s, short msk = 0xff)
         {
@@ -58,6 +62,9 @@ namespace ChainFx
             {
                 s.Get(nameof(adapted), ref adapted);
                 s.Get(nameof(adapter), ref adapter);
+                s.Get(nameof(oker), ref oker);
+                s.Get(nameof(oked), ref oked);
+                s.Get(nameof(state), ref state);
             }
         }
 
@@ -79,6 +86,9 @@ namespace ChainFx
             {
                 s.Put(nameof(adapted), adapted);
                 s.Put(nameof(adapter), adapter);
+                s.Put(nameof(oker), oker);
+                s.Put(nameof(oked), oked);
+                s.Put(nameof(state), state);
             }
         }
 

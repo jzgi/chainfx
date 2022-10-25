@@ -7,7 +7,7 @@ namespace ChainFx.Fabric
 {
     public class NodeVarWork : WebWork
     {
-        [Ui("修改", @group: 1), Tool(ButtonOpen)]
+        [Ui("修改", group: 1), Tool(ButtonOpen)]
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
@@ -39,7 +39,7 @@ namespace ChainFx.Fabric
             }
         }
 
-        [Ui("修改",  @group: 1), Tool(ButtonOpen)]
+        [Ui("修改",  group: 1), Tool(ButtonOpen)]
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];

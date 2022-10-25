@@ -42,6 +42,16 @@ namespace ChainFx
             Add<JMbr>(new JMbr(v, name));
         }
 
+        public void Add(string name, string[] v)
+        {
+            var arr = new JArr();
+            foreach (var str in v)
+            {
+                arr.Add(new JMbr(str));
+            }
+            Add<JMbr>(new JMbr(arr));
+        }
+
         //
         // SOURCE
         //
@@ -375,7 +385,7 @@ namespace ChainFx
             }
             finally
             {
-                cnt.Dispose();
+                cnt.Clear();
             }
         }
     }

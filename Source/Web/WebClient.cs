@@ -129,7 +129,7 @@ namespace ChainFx.Web
             {
                 if (content is ContentBuilder cnt)
                 {
-                    cnt.Dispose();
+                    cnt.Clear();
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace ChainFx.Web
             {
                 if (content is ContentBuilder cnt)
                 {
-                    cnt.Dispose();
+                    cnt.Clear();
                 }
             }
         }
