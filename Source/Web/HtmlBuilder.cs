@@ -2186,54 +2186,29 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder GRIDA<K, M>(Map<K, M> map, Action<M> card, Predicate<M> filter = null, short mode = ToolAttribute.MOD_OPEN, int min = 1, string css = null)
+        public HtmlBuilder MAINGRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, string css = null)
         {
-            var vw = Web.Work.VarWork;
-            if (vw?.Default == null)
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            if (arr != null)
             {
-                return this;
-            }
-
-            Add("<main uk-grid class=\"uk-child-width-1-");
-            Add(min++);
-            Add(" uk-child-width-1-");
-            Add(min++);
-            Add("@s uk-child-width-1-");
-            Add(min++);
-            Add("@m uk-child-width-1-");
-            Add(min++);
-            Add("@l uk-child-width-1-");
-            Add(min);
-            Add("@xl\">");
-            if (map != null)
-            {
-                for (int i = 0; i < map.Count; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
-                    var key = map.KeyAt(i);
-                    var obj = map.ValueAt(i);
+                    var obj = arr[i];
                     if (filter != null && !filter(obj))
                     {
                         continue;
                     }
-                    Add("<a class=\"uk-card uk-card-default");
+                    Add("<div class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
-                    if (obj is Entity ent && ent.status <= 0)
-                    {
-                        Add(" uk-disabled");
-                    }
-                    Add("\" href=\"");
-                    PutKey(key);
-                    Add("/\" onclick=\"return dialog(this,");
-                    Add(mode);
-                    Add(" ,false,'");
-                    Add(obj.ToString());
-                    Add("');\">");
+                    Add("\">");
+
                     card(obj);
-                    Add("</a>");
+
+                    Add("</div>");
                 }
             }
             Add("</main>");
@@ -2264,8 +2239,7 @@ namespace ChainFx.Web
                     {
                         continue;
                     }
-                    Add("<div>");
-                    Add("<form class=\"uk-card");
+                    Add("<article class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
@@ -2273,35 +2247,32 @@ namespace ChainFx.Web
                     }
                     Add("\">");
                     card(obj);
-                    Add("</form>");
-                    Add("</div>");
+                    Add("</article>");
                 }
             }
             Add("</div>");
         }
 
-        public void GRID<S>(S src, Action<S> card, string css = null) where S : ISource
+        public void MAINGRID<S>(S src, Action<S> card, string css = null) where S : ISource
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
             if (src != null && src.IsDataSet)
             {
                 while (src.Next())
                 {
-                    Add("<div>");
                     Add("<article class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
+
                     card(src);
+
                     Add("</article>");
-                    Add("</div>");
                 }
             }
-
             Add("</main>");
         }
 
