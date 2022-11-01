@@ -1,4 +1,5 @@
 using System;
+using static ChainFx.Web.ToolAttribute;
 
 namespace ChainFx.Web
 {
@@ -1170,9 +1171,9 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD<V>(string label, V v)
+        public HtmlBuilder FIELD<V>(string label, V v, string css = null)
         {
-            LABEL(label);
+            LABEL(label, css);
             Add("<span class=\"uk-static\">");
             AddPrimitive(v);
             Add("</span>");
@@ -1594,14 +1595,14 @@ namespace ChainFx.Web
             ALERT_(css, close);
             if (head != null)
             {
-                Add("<h3>");
+                Add("<h4>");
                 Add(head);
-                Add("</h3>");
+                Add("</h4>");
             }
 
-            Add("<span>");
+            Add("<p>");
             Add(p);
-            Add("</span>");
+            Add("</p>");
             _ALERT();
             return this;
         }
@@ -1622,7 +1623,7 @@ namespace ChainFx.Web
 
                 Add("><a href=\"");
                 Add(act.Key);
-                Add("\" onclick=\"goto(this, event);\">");
+                Add("\" onclick=\"goto(this.href, event);\">");
                 Add(act.Label);
                 Add("</a></li>");
             }
@@ -1655,7 +1656,7 @@ namespace ChainFx.Web
                 Add(uri);
                 Add('-');
                 Add(k);
-                Add("\" onclick=\"goto(this, event);\">");
+                Add("\" onclick=\"goto(this.href, event);\">");
                 Add(v.ToString());
                 Add("</a></li>");
                 num++;
@@ -2408,7 +2409,7 @@ namespace ChainFx.Web
 
             if (opts != null)
             {
-                Add("<select class=\"uk-select\" onchange=\"location = subscriptUri(location.href, this.value);\">");
+                Add("<select class=\"uk-select uk-button-primary\" onchange=\"goto(subscriptUri(location.href, this.value), event);\">");
                 var grpopen = false;
                 for (int i = 0; i < opts.Count; i++)
                 {
@@ -2621,6 +2622,7 @@ namespace ChainFx.Web
                 {
                     continue;
                 }
+
                 if (sub.Group != 0 && (sub.Group & group) != sub.Group)
                 {
                     continue;
@@ -2644,7 +2646,9 @@ namespace ChainFx.Web
                 }
 
                 LI_();
-                ADIALOG_(sub.Key, "/", 64, false, css: "uk-width-1-1 uk-button-link").SPAN(sub.Label).ICON("chevron-right")._A();
+
+                int mode = sub.HasVarWork ? MOD_ASTACK : MOD_OPEN;
+                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1 uk-button-link").SPAN(sub.Label).ICON("chevron-right")._A();
                 _LI();
 
                 last = sub.Tip;
@@ -2802,7 +2806,7 @@ namespace ChainFx.Web
             }
             else if (tool.IsAnchor)
             {
-                Add(" onclick=\"goto(this, event);\"");
+                Add(" onclick=\"goto(this.href, event);\"");
             }
             else if (tool.HasScript)
             {
@@ -2954,7 +2958,7 @@ namespace ChainFx.Web
             }
             else if (tool.IsAnchor)
             {
-                Add(" onclick=\"goto(this, event);\"");
+                Add(" onclick=\"goto(this.href, event);\"");
             }
             else if (tool.HasScript)
             {
@@ -4030,7 +4034,7 @@ namespace ChainFx.Web
                         continue;
                     }
 
-                    var str = (tip && e.Value is Entity ent) ? ent.Tip : e.Value.ToString();
+                    var str = e.Value.ToString();
 
                     if (e.IsHead)
                     {

@@ -25,7 +25,10 @@ namespace ChainFx
         static readonly string secret;
 
         // config
-        public static readonly JObj app, prog;
+        internal static readonly JObj app;
+
+        internal static readonly JObj prog;
+
 
         // X509 certificate
         static readonly X509Certificate2 cert;
@@ -96,6 +99,7 @@ namespace ChainFx
         public static JObj App => app;
 
         public static JObj Prog => prog;
+
 
         public static string Secret => secret;
 

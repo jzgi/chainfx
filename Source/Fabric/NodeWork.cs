@@ -5,8 +5,7 @@ using static ChainFx.Fabric.Nodality;
 
 namespace ChainFx.Fabric
 {
-    [Ui("平台联盟管理", "系统", icon: "social")]
-    public class NodeWork : WebWork
+    public abstract class NodeWork : WebWork
     {
         protected internal override void OnCreate()
         {
@@ -18,7 +17,8 @@ namespace ChainFx.Fabric
             var arr = Okayed;
             wc.GivePage(200, h =>
             {
-                h.TOOLBAR(tip: Label);
+                h.TOOLBAR();
+
                 // h.BOARD(arr, ety =>
                 // {
                 //     var cli = ety.Value;
@@ -41,7 +41,7 @@ namespace ChainFx.Fabric
         }
 
 
-        [Ui("✚", "添加联盟节点"), Tool(ButtonOpen)]
+        [Ui("添加", "添加联盟节点", "plus"), Tool(ButtonOpen)]
         public async Task @new(WebContext wc)
         {
             var o = new Peer
