@@ -443,25 +443,25 @@ namespace ChainFx.Web
             fResponse.Headers.Add(name, new StringValues(values));
         }
 
-        public void SetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/")
+        public void SetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/", bool httponly = false)
         {
             var sb = new StringBuilder(name).Append('=').Append(value);
             if (maxage > 0)
             {
                 sb.Append("; Max-Age=").Append(maxage);
             }
-
             if (domain != null)
             {
                 sb.Append("; Domain=").Append(domain);
             }
-
             if (path != null)
             {
                 sb.Append("; Path=").Append(path);
             }
-
-            sb.Append("; HttpOnly");
+            if (httponly)
+            {
+                sb.Append("; HttpOnly");
+            }
             SetHeader("Set-Cookie", sb.ToString());
         }
 

@@ -8,24 +8,22 @@ namespace ChainFx
     /// </summary>
     public static class ArrayUtility
     {
-        public static E[] AddOf<E>(this E[] arr, E v, int limit = 0)
+        public static E[] AddOf<E>(this E[] arr, E v, bool first = false)
         {
             if (arr == null || arr.Length == 0)
             {
                 return new[] {v};
             }
 
-            int len = arr.Length;
-            E[] alloc;
-            if (limit > 0 && limit <= len)
+            var len = arr.Length;
+            var alloc = new E[len + 1];
+            if (first)
             {
-                alloc = new E[limit];
-                Array.Copy(arr, len - limit + 1, alloc, 0, limit - 1);
-                alloc[limit - 1] = v;
+                alloc[0] = v;
+                Array.Copy(arr, 0, alloc, 1, len);
             }
             else
             {
-                alloc = new E[len + 1];
                 Array.Copy(arr, alloc, len);
                 alloc[len] = v;
             }

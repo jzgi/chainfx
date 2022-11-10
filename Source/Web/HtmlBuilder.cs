@@ -1226,6 +1226,23 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder FIELD<K, V>(string label, K[] vs, Map<K, V> opts)
+        {
+            LABEL(label);
+            Add("<span class=\"uk-static\">");
+            for (int i = 0; i < vs?.Length; i++)
+            {
+                if (i > 0)
+                {
+                    Add("&nbsp;");
+                }
+                var v = vs[i];
+                Add(opts[v]?.ToString());
+            }
+            Add("</span>");
+            return this;
+        }
+
         public HtmlBuilder FIELD(string label, decimal v, bool currency = false)
         {
             LABEL(label);
@@ -1632,7 +1649,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder NAVBAR<V>(Map<short, V> map, string uri, int subscript, Func<short, V, bool> filter = null)
+        public HtmlBuilder NAVBAR<V>(string uri, int subscript, Map<short, V> map, Func<short, V, bool> filter = null, string zeroicon = null)
         {
             Add("<nav class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
@@ -1648,7 +1665,7 @@ namespace ChainFx.Web
                     continue;
                 }
                 Add("<li");
-                if (k == subscript || num == 0 && subscript == 0)
+                if (k == subscript || (zeroicon == null && num == 0 && subscript == 0))
                 {
                     Add(" class=\"uk-active\"");
                 }
@@ -1660,6 +1677,21 @@ namespace ChainFx.Web
                 Add(v.ToString());
                 Add("</a></li>");
                 num++;
+            }
+
+            // subzero
+            if (zeroicon != null)
+            {
+                Add("<li");
+                if (subscript == 0)
+                {
+                    Add(" class=\"uk-active\"");
+                }
+                Add("><a href=\"");
+                Add(string.IsNullOrEmpty(uri) ? "./" : uri);
+                Add("\" onclick=\"goto(this.href, event);\"><span uk-icon=\"");
+                Add(zeroicon);
+                Add("\"></a></li>");
             }
 
             Add("</ul>");
@@ -2199,7 +2231,7 @@ namespace ChainFx.Web
                     {
                         continue;
                     }
-                    Add("<div class=\"uk-card uk-card-default");
+                    Add("<form class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
@@ -2209,7 +2241,7 @@ namespace ChainFx.Web
 
                     card(obj);
 
-                    Add("</div>");
+                    Add("</form>");
                 }
             }
             Add("</main>");
@@ -2341,7 +2373,7 @@ namespace ChainFx.Web
             bool astack = Web.Query[nameof(astack)];
             if (astack)
             {
-                Add("<a class=\"uk-icon-button\" href=\"javascript: closeUp(false, true);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
+                Add("<a class=\"uk-icon-button\" href=\"javascript: window.parent.closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
             }
             Add("<nav"); // the button group
             if (bottom)
@@ -4203,9 +4235,9 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder OUTPUT_CNY(string label, string name, decimal v)
+        public HtmlBuilder OUTPUTCNY(string name, decimal v)
         {
-            Add("￥<output name=\"");
+            Add("&nbsp;￥<output name=\"");
             Add(name);
             Add("\">");
             Add(v);

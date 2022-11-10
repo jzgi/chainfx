@@ -287,11 +287,11 @@ namespace ChainFx.Web
             {
                 if (status == 200 || status == 201)
                 {
-                    h.Add("closeUp(true);");
+                    h.Add("window.parent.closeUp(true);");
                 }
                 else
                 {
-                    h.Add("closeUp(false);");
+                    h.Add("window.parent.closeUp(false);");
                 }
             }
             h.Add("</script>");
