@@ -198,7 +198,7 @@ namespace ChainFx
         {
         }
 
-        public void Put(string name, IData v, short proj = 0xff)
+        public void Put(string name, IData v, short msk = 0xff)
         {
             Part(name);
             if (v == null)
@@ -208,12 +208,12 @@ namespace ChainFx
             else
             {
                 Add('{');
-                v.Write(this, proj);
+                v.Write(this, msk);
                 Add('}');
             }
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
+        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
         {
             Part(name);
             if (v == null)
@@ -225,7 +225,7 @@ namespace ChainFx
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], proj);
+                    Put(null, v[i], msk);
                 }
                 Add(']');
             }

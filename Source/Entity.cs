@@ -8,15 +8,29 @@ namespace ChainFx
     public abstract class Entity : IData
     {
         public const short
-            STU_VOID = 0,
-            STU_NORMAL = 1,
-            STU_TOP = 2;
+            STA_VOID = 0,
+            STA_NORMAL = 1,
+            STA_TOP = 2;
+
+        public static readonly Map<short, string> States = new Map<short, string>
+        {
+            {STA_VOID, "停止"},
+            {STA_NORMAL, "正常"},
+            {STA_TOP, "置顶"},
+        };
+
+        public const short
+            STU_CREATED = 0,
+            STU_ADAPTED = 1,
+            STU_OKED = 2,
+            STU_DONE = 3;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STU_VOID, "停止"},
-            {STU_NORMAL, "正常"},
-            {STU_TOP, "置顶"},
+            {STU_CREATED, "创鑫"},
+            {STU_ADAPTED, "接纳"},
+            {STU_OKED, "定格"},
+            {STU_DONE, "结束"},
         };
 
         public const short
@@ -29,7 +43,7 @@ namespace ChainFx
 
 
         public short typ;
-        public short status;
+        public short state;
         public string name;
         public string tip;
         public DateTime created;
@@ -38,7 +52,7 @@ namespace ChainFx
         public string adapter;
         internal string oker;
         internal DateTime oked;
-        internal short state;
+        internal short status;
 
 
         public virtual void Read(ISource s, short msk = 0xff)
@@ -54,7 +68,7 @@ namespace ChainFx
             }
             if ((msk & MSK_EDIT) == MSK_EDIT)
             {
-                s.Get(nameof(status), ref status);
+                s.Get(nameof(state), ref state);
                 s.Get(nameof(name), ref name);
                 s.Get(nameof(tip), ref tip);
             }
@@ -64,7 +78,7 @@ namespace ChainFx
                 s.Get(nameof(adapter), ref adapter);
                 s.Get(nameof(oker), ref oker);
                 s.Get(nameof(oked), ref oked);
-                s.Get(nameof(state), ref state);
+                s.Get(nameof(status), ref status);
             }
         }
 
@@ -78,7 +92,7 @@ namespace ChainFx
             }
             if ((msk & MSK_EDIT) == MSK_EDIT)
             {
-                s.Put(nameof(status), status);
+                s.Put(nameof(state), state);
                 s.Put(nameof(name), name);
                 s.Put(nameof(tip), tip);
             }
@@ -88,18 +102,18 @@ namespace ChainFx
                 s.Put(nameof(adapter), adapter);
                 s.Put(nameof(oker), oker);
                 s.Put(nameof(oked), oked);
-                s.Put(nameof(state), state);
+                s.Put(nameof(status), status);
             }
         }
 
         public virtual string Tip => tip;
 
-        public virtual bool IsDisabled => status == STU_VOID;
+        public virtual bool IsDisabled => state == STA_VOID;
 
-        public virtual bool IsEnabled => status == STU_NORMAL;
+        public virtual bool IsEnabled => state == STA_NORMAL;
 
-        public virtual bool IsWorkable => status >= STU_NORMAL;
+        public virtual bool IsWorkable => state >= STA_NORMAL;
 
-        public virtual bool IsTop => status == STU_TOP;
+        public virtual bool IsTop => state == STA_TOP;
     }
 }

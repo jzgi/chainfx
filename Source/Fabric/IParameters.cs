@@ -1,5 +1,5 @@
 ﻿using System;
-using ChainFx;
+using System.Collections.Generic;
 
 namespace ChainFx.Fabric
 {
@@ -70,20 +70,22 @@ namespace ChainFx.Fabric
 
         IParameters Set(JArr v);
 
-        IParameters Set(IData v, short proj = 0xff);
+        IParameters Set(IData v, short msk = 0xff);
 
-        IParameters Set<D>(D[] v, short proj = 0xff) where D : IData;
+        IParameters Set<D>(D[] v, short msk = 0xff) where D : IData;
 
         IParameters SetForIn(short[] v);
 
         IParameters SetForIn(int[] v);
+
+        IParameters SetForIn<M>(IList<M> v) where M : IKeyable<int>;
 
         IParameters SetForIn(long[] v);
 
         IParameters SetForIn(DateTime[] v);
 
         IParameters SetForIn(string[] v);
-        
+
         IParameters SetMoment();
     }
 }

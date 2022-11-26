@@ -55,7 +55,7 @@ namespace ChainFx.Fabric
                     h.LI_().NUMBER("编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("平台名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.weburl), o.weburl, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.status), o.status, Entity.Statuses)._LI();
+                    h.LI_().SELECT("状态", nameof(o.state), o.state, Entity.Statuses)._LI();
                     h._FIELDSUL()._FORM();
                 });
             }

@@ -1,7 +1,10 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ChainFx.Web
 {
@@ -10,7 +13,30 @@ namespace ChainFx.Web
     /// </summary>
     public static class WebUtility
     {
-        public static void GiveRedirect(this WebContext wc, string uri = null, bool? @public = null, int maxage = 60)
+        public static string FormatSetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/", bool httponly = false)
+        {
+            var sb = new StringBuilder(name).Append('=').Append(HttpUtility.UrlEncode(value));
+            if (maxage > 0)
+            {
+                sb.Append("; Max-Age=").Append(maxage);
+            }
+            if (domain != null)
+            {
+                sb.Append("; Domain=").Append(domain);
+            }
+            if (path != null)
+            {
+                sb.Append("; Path=").Append(path);
+            }
+            if (httponly)
+            {
+                sb.Append("; HttpOnly");
+            }
+            return sb.ToString();
+        }
+
+
+        public static void GiveRedirect(this WebContext wc, string uri = null, bool? shared = null, int maxage = 60)
         {
             string a;
             if (uri != null)
@@ -213,7 +239,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, short maxage = 12, string title = null, bool manifest = false)
+        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, short maxage = 12, string title = null, bool manifest = false, string onload = null)
         {
             var h = new HtmlBuilder(true, 32 * 1024)
             {
@@ -241,7 +267,14 @@ namespace ChainFx.Web
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body>");
+            h.Add("<body");
+            if (onload != null)
+            {
+                h.Add(" onload=\"");
+                h.Add(onload);
+                h.Add("\"");
+            }
+            h.Add(">");
 
             main(h);
 

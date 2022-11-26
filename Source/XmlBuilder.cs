@@ -376,11 +376,11 @@ namespace ChainFx
         {
         }
 
-        public void Put(string name, IData v, short proj = 0xff)
+        public void Put(string name, IData v, short msk = 0xff)
         {
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
+        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
         {
         }
 

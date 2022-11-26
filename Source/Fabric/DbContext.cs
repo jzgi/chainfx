@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
@@ -604,7 +605,7 @@ namespace ChainFx.Fabric
             return lst.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(short proj = 0xff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short msk = 0xff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
         {
             if (map == null)
             {
@@ -613,7 +614,7 @@ namespace ChainFx.Fabric
             while (Next())
             {
                 D obj = new D();
-                obj.Read(this, proj);
+                obj.Read(this, msk);
                 K key;
                 if (keyer != null)
                 {
@@ -895,11 +896,6 @@ namespace ChainFx.Fabric
             return false;
         }
 
-        public bool Get(string name, ref Map<string, string> v)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Get<D>(string name, ref D v, short msk = 0xff) where D : IData, new()
         {
             try
@@ -907,11 +903,7 @@ namespace ChainFx.Fabric
                 int ord = reader.GetOrdinal(name);
                 if (!reader.IsDBNull(ord))
                 {
-                    string str = reader.GetString(ord);
-                    var p = new JsonParser(str);
-                    var jo = (JObj) p.Parse();
-                    v = new D();
-                    v.Read(jo, msk);
+                    v = reader.GetFieldValue<D>(ord);
                     return true;
                 }
             }
@@ -1500,7 +1492,7 @@ namespace ChainFx.Fabric
             return v;
         }
 
-        public D Let<D>(out D v, short proj = 0xff) where D : IData, new()
+        public D Let<D>(out D v, short msk = 0xff) where D : IData, new()
         {
             v = default;
             try
@@ -1508,11 +1500,7 @@ namespace ChainFx.Fabric
                 int ord = ordinal++;
                 if (!reader.IsDBNull(ord))
                 {
-                    string str = reader.GetString(ord);
-                    var p = new JsonParser(str);
-                    var jo = (JObj) p.Parse();
-                    v = new D();
-                    v.Read(jo, proj);
+                    v = reader.GetFieldValue<D>(ord);
                 }
             }
             catch
@@ -1522,7 +1510,7 @@ namespace ChainFx.Fabric
             return v;
         }
 
-        public D[] Let<D>(out D[] v, short proj = 0xff) where D : IData, new()
+        public D[] Let<D>(out D[] v, short msk = 0xff) where D : IData, new()
         {
             v = null;
             try
@@ -1530,18 +1518,7 @@ namespace ChainFx.Fabric
                 int ord = ordinal++;
                 if (!reader.IsDBNull(ord))
                 {
-                    string str = reader.GetString(ord);
-                    var parser = new JsonParser(str);
-                    var ja = (JArr) parser.Parse();
-                    int len = ja.Count;
-                    v = new D[len];
-                    for (int i = 0; i < len; i++)
-                    {
-                        JObj jo = ja[i];
-                        var obj = new D();
-                        obj.Read(jo, proj);
-                        v[i] = obj;
-                    }
+                    v = reader.GetFieldValue<D[]>(ord);
                 }
             }
             catch
@@ -2029,50 +2006,20 @@ namespace ChainFx.Fabric
             }
         }
 
-        public void Put(string name, IData v, short proj = 0xff)
+        public void Put(string name, IData v, short msk = 0xff)
         {
-            if (v == null)
+            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object) v : DBNull.Value)
             {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = DBNull.Value
-                });
-            }
-            else
-            {
-                var str = DataUtility.ToString(v, proj);
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = str
-                });
-                if (Digest)
-                {
-                    Check(str);
-                }
-            }
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
+        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
         {
-            if (v == null)
+            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object) v : DBNull.Value)
             {
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = DBNull.Value
-                });
-            }
-            else
-            {
-                var str = DataUtility.ToString(v, proj);
-                command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Jsonb)
-                {
-                    Value = str
-                });
-                if (Digest)
-                {
-                    Check(str);
-                }
-            }
+                Value = (v != null) ? (object) v : DBNull.Value
+            });
         }
 
         public void PutFromSource(ISource s)
@@ -2282,15 +2229,15 @@ namespace ChainFx.Fabric
             return this;
         }
 
-        public IParameters Set(IData v, short proj = 0xff)
+        public IParameters Set(IData v, short msk = 0xff)
         {
-            Put(PARAMS[paramidx++], v, proj);
+            Put(PARAMS[paramidx++], v, msk);
             return this;
         }
 
-        public IParameters Set<D>(D[] v, short proj = 0xff) where D : IData
+        public IParameters Set<D>(D[] v, short msk = 0xff) where D : IData
         {
-            Put(PARAMS[paramidx++], v, proj);
+            Put(PARAMS[paramidx++], v, msk);
             return this;
         }
 
@@ -2308,6 +2255,15 @@ namespace ChainFx.Fabric
             for (int i = 0; i < v.Length; i++)
             {
                 Put(INPARAMS[i], v[i]);
+            }
+            return this;
+        }
+
+        public IParameters SetForIn<M>(IList<M> v) where M : IKeyable<int>
+        {
+            for (int i = 0; i < v.Count; i++)
+            {
+                Put(INPARAMS[i], v[i].Key);
             }
             return this;
         }

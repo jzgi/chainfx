@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace ChainFx.Fabric
 {
@@ -559,6 +560,48 @@ namespace ChainFx.Fabric
             return this;
         }
 
+        public DbSql _IN_(IList<int> lst, bool literal = false)
+        {
+            Add(" IN (");
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (i > 0) Add(',');
+                if (literal)
+                {
+                    Add(lst[i]);
+                }
+                else
+                {
+                    Add('@');
+                    Add('v');
+                    Add(i + 1);
+                }
+            }
+            Add(')');
+            return this;
+        }
+
+        public DbSql _IN_<M>(IList<M> objs, bool literal = false) where M : IKeyable<int>
+        {
+            Add(" IN (");
+            for (int i = 0; i < objs.Count; i++)
+            {
+                if (i > 0) Add(',');
+                if (literal)
+                {
+                    Add(objs[i].Key);
+                }
+                else
+                {
+                    Add('@');
+                    Add('v');
+                    Add(i + 1);
+                }
+            }
+            Add(')');
+            return this;
+        }
+
         public DbSql _IN_(long[] vals, bool literal = false)
         {
             Add(" IN (");
@@ -952,7 +995,7 @@ namespace ChainFx.Fabric
             }
         }
 
-        public void Put(string name, IData v, short proj = 0xff)
+        public void Put(string name, IData v, short msk = 0xff)
         {
             if (name != null)
             {
@@ -967,7 +1010,7 @@ namespace ChainFx.Fabric
             }
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
+        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
         {
             Build(name);
         }

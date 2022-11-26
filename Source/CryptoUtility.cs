@@ -147,6 +147,35 @@ namespace ChainFx
             return buf;
         }
 
+        public static string StringToHex(string str)
+        {
+            var len = str.Length;
+            var buf = new char[len * 4];
+            for (int i = 0; i < len; i++)
+            {
+                char c = str[i];
+                buf[i * 4] = HEX[(c & 0x0f)];
+                buf[i * 4 + 1] = HEX[(c & 0x00f0) >> 4];
+                buf[i * 4 + 2] = HEX[(c & 0x0f00) >> 8];
+                buf[i * 4 + 3] = HEX[(c & 0xf000) >> 12];
+            }
+
+            return new string(buf);
+        }
+
+        public static string HexToString(string str)
+        {
+            int strlen = str.Length;
+            var buf = new char[strlen / 4];
+            for (int i = 0; i < buf.Length; i++)
+            {
+                buf[i] = (char) ((Dv(str[i * 4]) << 4) | Dv(str[i * 4 + 1]) | Dv(str[i * 4 + 2]) | Dv(str[i * 4 + 4]));
+            }
+
+            return new string(buf);
+        }
+
+
         static uint Dv(char hex)
         {
             int num = hex - 'a';

@@ -39,6 +39,16 @@ namespace ChainFx.Fabric
         static Thread puller;
 
 
+        public static void MapComposite<T>(string dbTyp = null)
+        {
+            if (dbTyp == null)
+            {
+                dbTyp = typeof(T).Name.ToLower();
+            }
+            NpgsqlConnection.GlobalTypeMapper.MapComposite<T>(dbTyp);
+        }
+
+
         internal static void InitializeFabric(JObj fabriccfg)
         {
             // create db source
@@ -94,16 +104,6 @@ namespace ChainFx.Fabric
             }
 
             return dc;
-        }
-
-
-        public static void AddComposite<T>(string dbTyp = null)
-        {
-            if (dbTyp == null)
-            {
-                dbTyp = string.Concat(typeof(T).Name.ToLower(), "_type");
-            }
-            NpgsqlConnection.GlobalTypeMapper.MapComposite<T>(dbTyp);
         }
 
         public static void Cache<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>

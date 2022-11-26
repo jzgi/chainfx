@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ChainFx
 {
@@ -6,7 +8,7 @@ namespace ChainFx
     /// A lightweight alternative to the List class. The internal array is created on demand.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct ValueList<T>
+    public struct ValueList<T> : IList<T>
     {
         const int DefaultCap = 16;
 
@@ -23,9 +25,15 @@ namespace ChainFx
             count = 0;
         }
 
+        public bool IsReadOnly => true;
+
         public int Count => count;
 
-        public T this[int idx] => array[idx];
+        public T this[int idx]
+        {
+            get => array[idx];
+            set { }
+        }
 
         public void Add(T v)
         {
@@ -58,6 +66,51 @@ namespace ChainFx
             }
 
             return null;
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
         }
     }
 }

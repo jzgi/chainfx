@@ -67,12 +67,12 @@ namespace ChainFx.Fabric
 
         public string Tip => tip;
 
-        public short Status => status;
+        public short Status => state;
 
         public string WebUrl => weburl;
 
         public DateTime Created => created;
 
-        public bool IsRunning => status == STU_NORMAL;
+        public bool IsRunning => state == STA_NORMAL;
     }
 }

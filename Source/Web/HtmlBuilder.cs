@@ -1260,10 +1260,7 @@ namespace ChainFx.Web
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
-            if (v)
-            {
-                Add("✔");
-            }
+            Add(v ? '✔' : '✘');
             Add("</span>");
             return this;
         }
@@ -1360,7 +1357,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder A_<A>(A href, string css = null)
+        public HtmlBuilder A_<A>(A href, string css = null, int id = 0, string onclick = null)
         {
             Add("<a");
             if (css != null)
@@ -1369,19 +1366,43 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+            if (id > 0)
+            {
+                Add(" id=\"");
+                Add(id);
+                Add("\"");
+            }
+            if (onclick != null)
+            {
+                Add(" onclick=\"");
+                Add(onclick);
+                Add("\"");
+            }
             Add(" href=\"");
             PutKey(href);
             Add("\">");
             return this;
         }
 
-        public HtmlBuilder A_<A, B>(A a, B b, string css = null)
+        public HtmlBuilder A_<A, B>(A a, B b, string css = null, int id = 0, string onclick = null)
         {
             Add("<a");
             if (css != null)
             {
                 Add(" class=\"");
                 Add(css);
+                Add("\"");
+            }
+            if (id > 0)
+            {
+                Add(" id=\"");
+                Add(id);
+                Add("\"");
+            }
+            if (onclick != null)
+            {
+                Add(" onclick=\"");
+                Add(onclick);
                 Add("\"");
             }
             Add(" href=\"");
@@ -2231,7 +2252,7 @@ namespace ChainFx.Web
                     {
                         continue;
                     }
-                    Add("<form class=\"uk-card uk-card-default");
+                    Add("<article class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
@@ -2241,7 +2262,7 @@ namespace ChainFx.Web
 
                     card(obj);
 
-                    Add("</form>");
+                    Add("</article>");
                 }
             }
             Add("</main>");
@@ -2842,7 +2863,7 @@ namespace ChainFx.Web
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
+                Add(" onclick=\"return call_"); // prefix to avoid js naming conflict
                 Add(act.Name);
                 Add("(this);\"");
             }
@@ -2854,7 +2875,7 @@ namespace ChainFx.Web
                     Add("!serialize(this.form) ? false : ");
                 }
 
-                Add("confirm('");
+                Add("askSend(this, '");
                 Add(tip ?? act.Label);
                 Add("');\"");
             }
@@ -2984,7 +3005,7 @@ namespace ChainFx.Web
                     Add("!serialize(this.form) ? false : ");
                 }
 
-                Add("confirm('");
+                Add("askSend(this, '");
                 Add(tip ?? act.Label);
                 Add("');\"");
             }
@@ -2994,7 +3015,7 @@ namespace ChainFx.Web
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return by"); // prefix to avoid js naming conflict
+                Add(" onclick=\"return call_"); // prefix to avoid js naming conflict
                 Add(act.Name);
                 Add("(this);\"");
             }

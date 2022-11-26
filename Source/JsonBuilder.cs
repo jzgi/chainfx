@@ -462,7 +462,7 @@ namespace ChainFx
         {
         }
 
-        public void Put(string name, IData v, short proj = 0xff)
+        public void Put(string name, IData v, short msk = 0xff)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -480,7 +480,7 @@ namespace ChainFx
             {
                 counts[++level] = 0; // enter
                 Add('{');
-                v.Write(this, proj);
+                v.Write(this, msk);
                 Add('}');
                 level--; // exit
             }
@@ -500,7 +500,7 @@ namespace ChainFx
             level--; // exit
         }
 
-        public void Put<D>(string name, D[] v, short proj = 0xff) where D : IData
+        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -520,14 +520,14 @@ namespace ChainFx
                 Add('[');
                 for (int i = 0; i < v.Length; i++)
                 {
-                    Put(null, v[i], proj);
+                    Put(null, v[i], msk);
                 }
                 Add(']');
                 level--; // exit
             }
         }
 
-        public void Put<D>(string name, List<D> v, short proj = 0xff) where D : IData
+        public void Put<D>(string name, List<D> v, short msk = 0xff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -547,7 +547,7 @@ namespace ChainFx
                 Add('[');
                 for (int i = 0; i < v.Count; i++)
                 {
-                    Put(null, v[i], proj);
+                    Put(null, v[i], msk);
                 }
                 Add(']');
                 level--; // exit
