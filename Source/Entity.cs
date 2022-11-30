@@ -12,18 +12,18 @@ namespace ChainFx
             STA_NORMAL = 1,
             STA_TOP = 2;
 
-        public static readonly Map<short, string> States = new Map<short, string>
-        {
-            {STA_VOID, "停止"},
-            {STA_NORMAL, "正常"},
-            {STA_TOP, "置顶"},
-        };
-
         public const short
             STU_CREATED = 0,
             STU_ADAPTED = 1,
             STU_OKED = 2,
             STU_DONE = 3;
+
+        public static readonly Map<short, string> States = new Map<short, string>
+        {
+            {STA_VOID, "停用"},
+            {STA_NORMAL, "正常"},
+            {STA_TOP, "置顶"},
+        };
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -32,6 +32,7 @@ namespace ChainFx
             {STU_OKED, "定格"},
             {STU_DONE, "结束"},
         };
+
 
         public const short
             MSK_ID = 0x0001,

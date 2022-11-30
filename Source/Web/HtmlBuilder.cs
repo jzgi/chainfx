@@ -662,12 +662,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SPAN2<A, B>(A a, B b, string css = null)
+        public HtmlBuilder SPAN2<A, B>(A a, B b, bool brace = false, string css = null)
         {
             SPAN_(css);
             AddPrimitive(a);
-            Add("&nbsp;");
+            Add(brace ? "（" : "&nbsp;");
             AddPrimitive(b);
+            if (brace)
+            {
+                Add("）");
+            }
             _SPAN();
             return this;
         }
@@ -821,7 +825,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder P2<A, B>(A a, B b, string css = null)
+        public HtmlBuilder P2<A, B>(A a, B b, bool brace = false, string css = null)
         {
             Add("<p");
             if (css != null)
@@ -833,8 +837,15 @@ namespace ChainFx.Web
 
             Add(">");
             AddPrimitive(a);
-            Add("&nbsp;");
+
+            Add(brace ? "（" : "&nbsp;");
+
             AddPrimitive(b);
+
+            if (brace)
+            {
+                Add("）");
+            }
             Add("</p>");
             return this;
         }
@@ -856,6 +867,26 @@ namespace ChainFx.Web
         public HtmlBuilder _P()
         {
             Add("</p>");
+            return this;
+        }
+
+        public HtmlBuilder ASIDE_(string css = null)
+        {
+            Add("<aside");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlBuilder _ASIDE()
+        {
+            Add("</aside>");
             return this;
         }
 
@@ -1204,10 +1235,9 @@ namespace ChainFx.Web
             LABEL(label);
             Add("<span class=\"uk-static\">");
             AddPrimitive(v);
-            if (brace)
-            {
-                Add("（");
-            }
+
+            Add(brace ? "（" : "&nbsp;");
+
             AddPrimitive(x);
             if (brace)
             {
@@ -1353,6 +1383,29 @@ namespace ChainFx.Web
             else
             {
                 Add(caption);
+            }
+            return this;
+        }
+
+        public HtmlBuilder BUTTONVAR<A, B, C>(A a, B b, C c, string icon)
+        {
+            var vw = Web.Work.VarWork;
+            if (vw?.Default != null)
+            {
+                Add("<button class=\"uk-button uk-button-link");
+                Add("\" formmethod=\"get\" formaction=\"");
+                PutKey(a);
+                PutKey(b);
+                PutKey(c);
+                Add("\" onclick=\"event.preventDefault(); event.stopPropagation(); return dialog(this,64,false,'');;\">");
+                Add("<span uk-icon=\"");
+                Add(icon);
+                Add("\"</span>");
+                Add("</button>");
+            }
+            else
+            {
+                Add(icon);
             }
             return this;
         }
@@ -2701,7 +2754,7 @@ namespace ChainFx.Web
                 LI_();
 
                 int mode = sub.HasVarWork ? MOD_ASTACK : MOD_OPEN;
-                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1 uk-button-link").SPAN(sub.Label).ICON("chevron-right")._A();
+                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1").SPAN(sub.Label).ICON("chevron-right")._A();
                 _LI();
 
                 last = sub.Tip;
