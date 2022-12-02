@@ -3156,10 +3156,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TEXT(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, string[] datalst = null)
+        public HtmlBuilder TEXT(string label, string name, string v, string tip = null, string pattern = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false, string[] datalst = null, string css = null)
         {
             LABEL(label);
-            Add("<input type=\"text\" class=\"uk-input\" name=\"");
+            Add("<input type=\"text\" class=\"uk-input");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
             AddEsc(v);
