@@ -1234,6 +1234,7 @@ namespace ChainFx.Web
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
+            
             AddPrimitive(v);
 
             Add(brace ? "（" : "&nbsp;");

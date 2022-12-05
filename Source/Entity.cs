@@ -12,18 +12,19 @@ namespace ChainFx
             STA_NORMAL = 1,
             STA_TOP = 2;
 
-        public const short
-            STU_CREATED = 0,
-            STU_ADAPTED = 1,
-            STU_OKED = 2,
-            STU_DONE = 4;
-
         public static readonly Map<short, string> States = new Map<short, string>
         {
             {STA_VOID, "停用"},
             {STA_NORMAL, "正常"},
             {STA_TOP, "置顶"},
         };
+
+        public const short
+            STU_VOID = 0,
+            STU_CREATED = 1,
+            STU_ADAPTED = 2,
+            STU_OKED = 4,
+            STU_DONE = 8;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
@@ -51,8 +52,8 @@ namespace ChainFx
         public string creator;
         public DateTime adapted;
         public string adapter;
-        internal string oker;
-        internal DateTime oked;
+        public string oker;
+        public DateTime oked;
         public short status;
 
 
