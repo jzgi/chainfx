@@ -57,9 +57,17 @@ namespace ChainFx
             }
         }
 
-        public static string GetVCode(string tel, string secret)
+        public static string ComputeVCode(string tel)
         {
-            return "8888";
+            string str = tel + ":" + Application.Secret;
+
+            // digest and transform
+            long v = 0;
+            Digest(str, ref v);
+            var sb = new StringBuilder();
+            sb.Append(Math.Abs((v >> 48) % 10)).Append(Math.Abs((v >> 32) % 10)).Append(Math.Abs((v >> 16) % 10)).Append(Math.Abs((v) % 10));
+
+            return sb.ToString();
         }
 
 

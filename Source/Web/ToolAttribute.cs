@@ -33,18 +33,24 @@ namespace ChainFx.Web
 
         readonly int pick; // form value pick
 
+        readonly short status;
+
+        readonly short state;
+
         // only for crop
         readonly short size;
 
         // only for crop
         readonly short subs;
 
-        public ToolAttribute(Modal modal, short size = 1, short subs = 0)
+        public ToolAttribute(Modal modal, short status = 0, short state = 0, short size = 1, short subs = 0)
         {
             this.modal = modal;
             this.element = (int) modal & 0xf000;
             this.mode = (int) modal & 0x00ff;
             this.pick = (int) modal & 0x0f00;
+            this.status = status;
+            this.state = state;
             this.size = size;
             this.subs = subs;
         }
@@ -82,5 +88,19 @@ namespace ChainFx.Web
         public bool HasOpen => mode == MOD_OPEN;
 
         public bool HasAStack => mode == MOD_ASTACK;
+
+        public short Status => status;
+
+        public short State => state;
+
+        internal bool Meets(short stu, short sta)
+        {
+            bool okstu = (status == 0) || ((status & stu) != 0);
+            if (okstu)
+            {
+                return (state == 0) || ((state & sta) != 0);
+            }
+            return false;
+        }
     }
 }

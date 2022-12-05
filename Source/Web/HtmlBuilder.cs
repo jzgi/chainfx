@@ -1658,19 +1658,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ALERT_(string css = null, bool close = false)
+        public HtmlBuilder ALERT_(string css = null)
         {
             Add("<div class=\"");
             if (css != null)
             {
                 Add(css);
             }
-
             Add("\" uk-alert>");
-            if (close)
-            {
-                Add("<a class=\"uk-alert-close\" uk-close></a>");
-            }
 
             return this;
         }
@@ -1681,19 +1676,21 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ALERT(string p, string head = null, string css = null, bool close = false)
+        public HtmlBuilder ALERT(string head, string p = null, string css = null)
         {
-            ALERT_(css, close);
+            ALERT_(css);
+
             if (head != null)
             {
-                Add("<h4>");
+                Add("<header>");
                 Add(head);
-                Add("</h4>");
+                Add("</header>");
             }
 
             Add("<p>");
             Add(p);
             Add("</p>");
+
             _ALERT();
             return this;
         }
@@ -2426,7 +2423,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string tip = null, bool bottom = false)
+        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2466,6 +2463,9 @@ namespace ChainFx.Web
                 {
                     int g = act.Group;
                     var tool = act.Tool;
+
+                    if (!tool.Meets(status, state)) continue;
+
                     if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
@@ -2492,12 +2492,12 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null, bool top = true)
+        public HtmlBuilder TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
             Add("<form id=\"tool-bar-form\" class=\"");
-            Add(top ? "uk-top-bar" : "uk-bottom-bar");
+            Add("uk-top-bar");
             Add("\">");
             Add("<span class=\"uk-button-group\">");
 
@@ -2571,6 +2571,7 @@ namespace ChainFx.Web
                     var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
+
                     if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
@@ -2591,7 +2592,7 @@ namespace ChainFx.Web
 
             Add("</form>");
             Add("<div class=\"");
-            Add(top ? "uk-top-placeholder" : "uk-bottom-placeholder");
+            Add("uk-top-placeholder");
             Add("\"></div>");
             return this;
         }
@@ -2682,10 +2683,12 @@ namespace ChainFx.Web
                 for (int i = 0; i < acts.Length; i++)
                 {
                     var act = acts[i];
+
                     int g = act.Group;
                     if (g == actgrp || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
+
                         PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, null);
                     }
                 }
@@ -2699,21 +2702,22 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute tool = null, bool enabled = true, string css = null)
+        public HtmlBuilder TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute toolattr = null, bool enabled = true, string css = null)
         {
             // locate the proper work
             var w = Web.Work;
             var act = w[action];
-            var toola = tool ?? act?.Tool;
-            if (toola != null)
+
+            var tool = toolattr ?? act?.Tool;
+            if (tool != null)
             {
-                PutTool(act, toola, subscript, caption, tip, enabled, false, css);
+                PutTool(act, tool, subscript, caption, tip, enabled, false, css);
             }
 
             return this;
         }
 
-        public void TASKBOARD(byte group = 0)
+        public void WORKBOARD(byte group = 0)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -3975,6 +3979,25 @@ namespace ChainFx.Web
             _TEXTAREA(label != null);
             return this;
         }
+
+        public HtmlBuilder TEXTAREA(string label, string name, JObj v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        {
+            TEXTAREA_(label, name, tip, max, min, @readonly, required);
+            var str = v?.ToString();
+            Add(str);
+            _TEXTAREA(label != null);
+            return this;
+        }
+
+        public HtmlBuilder TEXTAREA(string label, string name, JArr v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        {
+            TEXTAREA_(label, name, tip, max, min, @readonly, required);
+            var str = v?.ToString();
+            Add(str);
+            _TEXTAREA(label != null);
+            return this;
+        }
+
 
         public HtmlBuilder TEXTAREA_(string label, string name, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {

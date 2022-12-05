@@ -214,7 +214,7 @@ namespace ChainFx.Web
                 {
                     if (!curwrk.DoAuthorize(wc, false))
                     {
-                        throw new WebException("authorize failed: " + Name)
+                        throw new WebException("Authorize failed: " + Name)
                         {
                             Code = wc.Principal == null ? 401 : 403
                         };
@@ -248,7 +248,7 @@ namespace ChainFx.Web
                         var act = curwrk[name];
                         if (act == null)
                         {
-                            wc.GiveMsg(404, "action not found", shared: true, maxage: 30);
+                            wc.GiveMsg(404, "Action not found", shared: true, maxage: 30);
                             return;
                         }
 
@@ -256,7 +256,7 @@ namespace ChainFx.Web
 
                         if (!act.DoAuthorize(wc, false))
                         {
-                            throw new WebException("do authorize failure: " + act.Name)
+                            throw new WebException("Authorize failure: " + act.Name)
                             {
                                 Code = wc.Principal == null ? 401 : 403
                             };

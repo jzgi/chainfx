@@ -16,7 +16,7 @@ namespace ChainFx
             STU_CREATED = 0,
             STU_ADAPTED = 1,
             STU_OKED = 2,
-            STU_DONE = 3;
+            STU_DONE = 4;
 
         public static readonly Map<short, string> States = new Map<short, string>
         {
@@ -27,9 +27,9 @@ namespace ChainFx
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
-            {STU_CREATED, "创鑫"},
+            {STU_CREATED, "新建"},
             {STU_ADAPTED, "接纳"},
-            {STU_OKED, "定格"},
+            {STU_OKED, "处理"},
             {STU_DONE, "结束"},
         };
 
@@ -53,7 +53,7 @@ namespace ChainFx
         public string adapter;
         internal string oker;
         internal DateTime oked;
-        internal short status;
+        public short status;
 
 
         public virtual void Read(ISource s, short msk = 0xff)
@@ -72,11 +72,11 @@ namespace ChainFx
                 s.Get(nameof(state), ref state);
                 s.Get(nameof(name), ref name);
                 s.Get(nameof(tip), ref tip);
+                s.Get(nameof(adapted), ref adapted);
+                s.Get(nameof(adapter), ref adapter);
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Get(nameof(adapted), ref adapted);
-                s.Get(nameof(adapter), ref adapter);
                 s.Get(nameof(oker), ref oker);
                 s.Get(nameof(oked), ref oked);
                 s.Get(nameof(status), ref status);
@@ -96,11 +96,11 @@ namespace ChainFx
                 s.Put(nameof(state), state);
                 s.Put(nameof(name), name);
                 s.Put(nameof(tip), tip);
+                s.Put(nameof(adapted), adapted);
+                s.Put(nameof(adapter), adapter);
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Put(nameof(adapted), adapted);
-                s.Put(nameof(adapter), adapter);
                 s.Put(nameof(oker), oker);
                 s.Put(nameof(oked), oked);
                 s.Put(nameof(status), status);

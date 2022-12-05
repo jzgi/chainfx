@@ -138,6 +138,7 @@ namespace ChainFx.Web
 
         public TagAttribute[] Tags => tags;
 
+
         public bool DoAuthorize(WebContext wc, bool mock)
         {
             if (Authorize != null)

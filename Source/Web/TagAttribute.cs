@@ -19,7 +19,7 @@ namespace ChainFx.Web
             string[] arr = v.Split(CRLF);
             int count = arr.Length;
 
-            StringBuilder sb = new StringBuilder(v.Length);
+            var sb = new StringBuilder(v.Length);
             if (count > 0)
             {
                 // add first line
