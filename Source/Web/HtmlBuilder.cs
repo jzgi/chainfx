@@ -1234,7 +1234,7 @@ namespace ChainFx.Web
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
-            
+
             AddPrimitive(v);
 
             Add(brace ? "（" : "&nbsp;");
@@ -4156,7 +4156,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool alias = false, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opts != null)
@@ -4170,7 +4170,13 @@ namespace ChainFx.Web
                         continue;
                     }
 
-                    var str = e.Value.ToString();
+                    string str;
+                    if (alias && e.Value is IEquivocal eq)
+                    {
+                        str = eq.Alias ?? eq.ToString();
+                    }
+                    else
+                        str = e.Value.ToString();
 
                     if (e.IsHead)
                     {

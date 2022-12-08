@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using ChainFx.Web;
 
 namespace ChainFx.Fabric
 {
@@ -658,6 +659,30 @@ namespace ChainFx.Fabric
                 }
             }
 
+            Add(')');
+            return this;
+        }
+
+        public DbSql _MEET_(WebContext wc)
+        {
+            var tool = wc.Action.Tool;
+            if (tool != null && (tool.Status != 0 || tool.State != 0))
+            {
+                Add(" AND (");
+                if (tool.Status != 0)
+                {
+                    Add("status & ");
+                    Add(tool.Status);
+                    Add(" <> 0");
+                }
+                if (tool.State != 0)
+                {
+                    if (tool.Status != 0) Add(" AND ");
+                    Add("state & ");
+                    Add(tool.State);
+                    Add(" <> 0");
+                }
+            }
             Add(')');
             return this;
         }
