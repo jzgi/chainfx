@@ -1388,7 +1388,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder BUTTONVAR<A, B, C>(A a, B b, C c, string icon)
+        public HtmlBuilder BUTTONVAR<A, B, C>(A a, B b, C c, string icon, bool disabled = false)
         {
             var vw = Web.Work.VarWork;
             if (vw?.Default != null)
@@ -1398,8 +1398,12 @@ namespace ChainFx.Web
                 PutKey(a);
                 PutKey(b);
                 PutKey(c);
-                Add("\" onclick=\"event.preventDefault(); event.stopPropagation(); return dialog(this,64,false,'');;\">");
-                Add("<span uk-icon=\"");
+                Add("\" onclick=\"event.preventDefault(); event.stopPropagation(); return dialog(this,64,false,'');\"");
+                if (disabled)
+                {
+                    Add(" disabled");
+                }
+                Add("><span uk-icon=\"");
                 Add(icon);
                 Add("\"</span>");
                 Add("</button>");

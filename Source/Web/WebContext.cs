@@ -58,6 +58,9 @@ namespace ChainFx.Web
         ///
         public IData Principal { get; set; }
 
+        // higher level role goes down to act
+        public bool Dive { get; set; }
+
         public short Role { get; set; }
 
         //

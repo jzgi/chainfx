@@ -9,12 +9,13 @@ namespace ChainFx
     {
         public const short
             STA_VOID = 0,
-            STA_NORMAL = 1,
-            STA_TOP = 2;
+            STA_EASY = 1,
+            STA_NORMAL = 2,
+            STA_TOP = 4;
 
         public static readonly Map<short, string> States = new Map<short, string>
         {
-            {STA_VOID, "停用"},
+            {STA_VOID, "暂停"},
             {STA_NORMAL, "正常"},
             {STA_TOP, "置顶"},
         };
