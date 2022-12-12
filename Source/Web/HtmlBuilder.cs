@@ -1363,7 +1363,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
-            Add("\">");
+            Add("\" onclick=\"return goto(this, event);\">");
             Add(caption);
             Add("</a>");
             return this;

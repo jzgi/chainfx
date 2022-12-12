@@ -173,5 +173,7 @@ namespace ChainFx.Web
                 await doAsync(wc);
             }
         }
+
+        public override string ToString() => name;
     }
 }

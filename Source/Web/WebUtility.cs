@@ -320,11 +320,11 @@ namespace ChainFx.Web
             {
                 if (status == 200 || status == 201)
                 {
-                    h.Add("window.parent.closeUp(true);");
+                    h.Add("window.parent.closeUp(true, -2);"); // delta = -1 because of a return page
                 }
                 else
                 {
-                    h.Add("window.parent.closeUp(false);");
+                    h.Add("window.parent.closeUp(false, -2);");
                 }
             }
             h.Add("</script>");
