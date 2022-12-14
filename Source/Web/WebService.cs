@@ -248,8 +248,18 @@ namespace ChainFx.Web
                         var act = curwrk[name];
                         if (act == null)
                         {
-                            wc.GiveMsg(404, "Action not found", shared: true, maxage: 30);
-                            return;
+                            // if name can be converted to a number then call default
+                            var n = name.ToInt();
+                            if (n > 0)
+                            {
+                                act = curwrk.Default;
+                                wc.Subscript = subscpt = n;
+                            }
+                            else // name did not match any action
+                            {
+                                wc.GiveMsg(404, "Action not found", shared: true, maxage: 30);
+                                return;
+                            }
                         }
 
                         wc.Action = act;

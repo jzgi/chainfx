@@ -60,7 +60,7 @@ namespace ChainFx
         {
             if (count > 0)
             {
-                T[] alloc = new T[count];
+                var alloc = new T[count];
                 Array.Copy(array, 0, alloc, 0, count);
                 return alloc;
             }

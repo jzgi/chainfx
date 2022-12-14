@@ -2415,9 +2415,15 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOPBARXL_()
+        public HtmlBuilder TOPBARXL_(string css = null)
         {
-            Add("<form class=\"uk-top-bar uk-flex uk-large\">");
+            Add("<form class=\"uk-top-bar uk-flex uk-large");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
             return this;
         }
 
@@ -2747,6 +2753,7 @@ namespace ChainFx.Web
                 {
                     continue;
                 }
+
 
                 if (last == null || last != sub.Tip)
                 {
@@ -3262,6 +3269,7 @@ namespace ChainFx.Web
 
             return this;
         }
+
 
         public HtmlBuilder FILE(string label, string name, string v, string tip = null, bool @readonly = false, bool required = false, bool list = false)
         {
@@ -3985,6 +3993,23 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder TEXTAREA(string label, string name, string[] v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
+        {
+            TEXTAREA_(label, name, tip, max, min, @readonly, required);
+            for (int i = 0; i < v?.Length; i++)
+            {
+                if (i > 0)
+                {
+                    Add(' ');
+                }
+                Add(v[i]);
+            }
+            _TEXTAREA(label != null);
+
+            return this;
+        }
+
+
         public HtmlBuilder TEXTAREA(string label, string name, JObj v, string tip = null, short max = 0, short min = 0, bool @readonly = false, bool required = false)
         {
             TEXTAREA_(label, name, tip, max, min, @readonly, required);
@@ -4090,7 +4115,7 @@ namespace ChainFx.Web
 
             if (refresh)
             {
-                Add(" onchange=\"var a = location.href.split('?'); b = serialize(this.form); location = a[0] + '?' + b + (a.length == 1 ?  '' : '&' + a[1]);\"");
+                Add(" onchange=\"formRefresh(this, event);\"");
             }
 
             Add(">");

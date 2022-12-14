@@ -75,7 +75,7 @@ namespace ChainFx.Fabric
         {
             if (!(fetcher is Func<DbContext, Map<K, V>> func)) // simple object
             {
-                throw new DbException("missing fetcher for " + Typ);
+                throw new DbException("Missing fetcher for " + Typ);
             }
             var slim = (ReaderWriterLockSlim) @lock;
             slim.EnterUpgradeableReadLock();
@@ -158,7 +158,7 @@ namespace ChainFx.Fabric
         {
             if (!(fetcher is Func<DbContext, K, V> func)) // simple object
             {
-                throw new DbException("missing fetcher for " + Typ);
+                throw new DbException("Missing fetcher for " + Typ);
             }
             var tick = Environment.TickCount & int.MaxValue; // positive tick
             V value;
@@ -236,7 +236,7 @@ namespace ChainFx.Fabric
         {
             if (!(fetcher is Func<DbContext, M, Map<K, V>> func)) // simple object
             {
-                throw new DbException("missing fetcher for " + Typ);
+                throw new DbException("Missing fetcher for " + Typ);
             }
 
             var slim = (ReaderWriterLockSlim) @lock;
@@ -277,7 +277,7 @@ namespace ChainFx.Fabric
         {
             if (!(fetcher is Func<DbContext, M, Task<Map<K, V>>> func)) // simple object
             {
-                throw new DbException("missing fetcher for " + Typ);
+                throw new DbException("Missing fetcher for " + Typ);
             }
 
             var slim = (SemaphoreSlim) @lock;

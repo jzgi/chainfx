@@ -607,13 +607,14 @@ namespace ChainFx.Fabric
 
         public Map<K, D> ToMap<K, D>(short msk = 0xff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
         {
-            if (map == null)
-            {
-                map = new Map<K, D>(64);
-            }
             while (Next())
             {
-                D obj = new D();
+                if (map == null)
+                {
+                    map = new Map<K, D>(64);
+                }
+
+                var obj = new D();
                 obj.Read(this, msk);
                 K key;
                 if (keyer != null)
@@ -626,9 +627,43 @@ namespace ChainFx.Fabric
                 }
                 else
                 {
-                    throw new DbException("neither keyer nor IKeyable<D>");
+                    throw new DbException("Must be keyer nor IKeyable<D>");
                 }
                 map.Add(key, obj);
+            }
+            return map;
+        }
+
+        public Map<int, string> ToIntMap(Map<int, string> map = null)
+        {
+            while (Next())
+            {
+                if (map == null)
+                {
+                    map = new Map<int, string>(32);
+                }
+
+                Let(out int k);
+                Let(out string v);
+
+                map.Add(k, v);
+            }
+            return map;
+        }
+
+        public Map<short, string> ToShortMap(Map<short, string> map = null)
+        {
+            while (Next())
+            {
+                if (map == null)
+                {
+                    map = new Map<short, string>(32);
+                }
+
+                Let(out short k);
+                Let(out string v);
+
+                map.Add(k, v);
             }
             return map;
         }
