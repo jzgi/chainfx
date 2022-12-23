@@ -47,7 +47,7 @@ namespace ChainFx
         {
             Add('<');
             Add(elem.Tag);
-            Map<string, string> attrs = elem.Attrs;
+            var attrs = elem.Attrs;
             if (attrs != null)
             {
                 for (int i = 0; i < attrs.Count; i++)
@@ -374,6 +374,9 @@ namespace ChainFx
 
         public void Put(string name, XElem v)
         {
+            Add('<');
+            Add(name);
+            Add('<');
         }
 
         public void Put(string name, IData v, short msk = 0xff)

@@ -18,7 +18,6 @@ namespace ChainFx
 
         int count; // number of children
 
-        int current;
 
         public XElem(string tag, Map<string, string> attrs = null)
         {
@@ -80,12 +79,11 @@ namespace ChainFx
         {
             if (children != null)
             {
-                for (int i = current; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     var el = children[i];
                     if (el.tag.Equals(name))
                     {
-                        current = i;
                         return el;
                     }
                 }
@@ -300,6 +298,36 @@ namespace ChainFx
         public static implicit operator int(XElem v)
         {
             return v?.Text.ToInt() ?? 0;
+        }
+
+
+        public override string ToString()
+        {
+            var cnt = new XmlBuilder(false, 1024);
+            try
+            {
+                cnt.ELEM(this);
+
+                return cnt.ToString();
+            }
+            finally
+            {
+                cnt.Clear();
+            }
+        }
+
+        public static void TestXmlTosTring()
+        {
+            var x = new XElem("xml")
+            {
+                {"appid", "appid"},
+                {"mch_id", "mch_id"},
+                {"nonce_str", "nonce_str"},
+                {"out_trade_no", "out_trade_no"}
+            };
+
+            var str = x.ToString();
+            Console.WriteLine(str);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace ChainFx.Fabric
         static readonly ConcurrentDictionary<short, NodeClient> okayed = new ConcurrentDictionary<short, NodeClient>();
 
         // periodically pulling of blocks of remote ledger  records
-        static Thread puller;
+        // static Thread puller;
 
 
         public static void MapComposite<T>(string dbTyp = null)
@@ -78,11 +78,11 @@ namespace ChainFx.Fabric
             }
 
             // start the puller thead
-            puller = new Thread(Replicate)
-            {
-                Name = "Block Puller"
-            };
-            puller.Start();
+            // puller = new Thread(Replicate)
+            // {
+            //     Name = "Block Puller"
+            // };
+            // puller.Start();
         }
 
 

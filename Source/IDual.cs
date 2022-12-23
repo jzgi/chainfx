@@ -1,6 +1,6 @@
 ﻿namespace ChainFx
 {
-    public interface IEquivocal
+    public interface IDual
     {
         string Name { get; }
 

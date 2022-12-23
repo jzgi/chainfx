@@ -175,6 +175,23 @@ namespace ChainFx
             return (short) str.ToInt(0, str.Length);
         }
 
+        public static short[] ToShortArray(this string str, char sep = ' ')
+        {
+            if (str == null) return null;
+
+            var strs = str.Split(sep);
+            var ret = new short[strs.Length];
+
+            for (int i = 0; i < strs.Length; i++)
+            {
+                var v = strs[i];
+                short.TryParse(v, out short shortv);
+                ret[i] = shortv;
+            }
+
+            return ret;
+        }
+
         public static int ToInt(this string str, int start, int end = -1)
         {
             if (str == null) return 0;

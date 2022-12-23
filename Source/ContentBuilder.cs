@@ -390,7 +390,7 @@ namespace ChainFx
         ///
         /// This method outputs decimal numbers fastly.
         ///
-        public void Add(decimal v)
+        public void Add(decimal v, bool money = false)
         {
             int[] bits = decimal.GetBits(v); // get the binary representation
             int low = bits[0], mid = bits[1], hi = bits[2], flags = bits[3];
@@ -468,13 +468,16 @@ namespace ChainFx
             }
 
             // to pad extra zeros for monetary output
-            if (scale == 0)
+            if (money)
             {
-                Add(".00");
-            }
-            else if (scale == 1)
-            {
-                Add('0');
+                if (scale == 0)
+                {
+                    Add(".00");
+                }
+                else if (scale == 1)
+                {
+                    Add('0');
+                }
             }
         }
 

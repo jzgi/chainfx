@@ -1230,17 +1230,20 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD2<V, X>(string label, V v, X x, bool brace = false)
+        public HtmlBuilder FIELD2<V, X>(string label, V v, X x, string sep = null)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
 
             AddPrimitive(v);
 
-            Add(brace ? "（" : "&nbsp;");
+            if (sep != null)
+            {
+                Add(sep);
+            }
 
             AddPrimitive(x);
-            if (brace)
+            if (sep == "（")
             {
                 Add("）");
             }
@@ -1257,7 +1260,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD<K, V>(string label, K[] vs, Map<K, V> opts)
+        public HtmlBuilder FIELD<K, V>(string label, K[] vs, Map<K, V> opts, bool alias = false)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1268,21 +1271,23 @@ namespace ChainFx.Web
                     Add("&nbsp;");
                 }
                 var v = vs[i];
-                Add(opts[v]?.ToString());
+                var opt = opts[v];
+                var str = (opt is IDual duo) ? duo.Alias : opt.ToString();
+                Add(str);
             }
             Add("</span>");
             return this;
         }
 
-        public HtmlBuilder FIELD(string label, decimal v, bool currency = false)
+        public HtmlBuilder FIELD(string label, decimal v, bool money = false)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
-            if (currency)
+            if (money)
             {
                 Add('￥');
             }
-            Add(v);
+            Add(v, money);
             Add("</span>");
             return this;
         }
@@ -3241,7 +3246,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TEXT(string label, string name, short[] v, string tip = null, bool @readonly = false, bool required = false)
+        public HtmlBuilder TEXT(string label, string name, short[] v, string tip = null, sbyte max = 0, sbyte min = 0, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"text\" class=\"uk-input\" name=\"");
@@ -3260,6 +3265,20 @@ namespace ChainFx.Web
             {
                 Add(" placeholder=\"");
                 Add(tip);
+                Add("\"");
+            }
+
+            if (max > 0)
+            {
+                Add(" maxlength=\"");
+                Add(max);
+                Add("\"");
+            }
+
+            if (min > 0)
+            {
+                Add(" minlength=\"");
+                Add(min);
                 Add("\"");
             }
 
@@ -3611,13 +3630,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool @readonly = false, bool required = false)
+        public HtmlBuilder NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool money = true, bool @readonly = false, bool required = false)
         {
             LABEL(label);
             Add("<input type=\"number\" class=\"uk-input\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(v);
+            Add(v, money);
             Add("\"");
             if (min != decimal.MinValue)
             {
@@ -4185,7 +4204,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool alias = false, bool refresh = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opts != null)
@@ -4193,21 +4212,15 @@ namespace ChainFx.Web
                 bool grpopen = false;
                 for (int i = 0; i < opts.Count; i++)
                 {
-                    var e = opts.EntryAt(i);
-                    if (filter != null && !filter(e.key, e.Value))
+                    var ety = opts.EntryAt(i);
+                    if (filter != null && !filter(ety.key, ety.Value))
                     {
                         continue;
                     }
 
-                    string str;
-                    if (alias && e.Value is IEquivocal eq)
-                    {
-                        str = eq.Alias ?? eq.ToString();
-                    }
-                    else
-                        str = e.Value.ToString();
+                    var strv = ety.Value.ToString();
 
-                    if (e.IsHead)
+                    if (ety.IsHead)
                     {
                         if (grpopen)
                         {
@@ -4216,7 +4229,7 @@ namespace ChainFx.Web
                         }
 
                         Add("<optgroup label=\"");
-                        AddPrimitive(str);
+                        AddPrimitive(strv);
                         Add("\">");
                         grpopen = true;
                     }
@@ -4226,13 +4239,13 @@ namespace ChainFx.Web
                         {
                             Add("<option value=\"\"></option>");
                         }
-                        var key = e.Key;
+                        var key = ety.Key;
                         Add("<option value=\"");
                         AddPrimitive(key);
                         Add("\"");
                         if (key.Equals(v)) Add(" selected");
                         Add(">");
-                        AddPrimitive(str);
+                        AddPrimitive(strv);
                         Add("</option>");
                     }
                 }
@@ -4247,7 +4260,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0, bool alias = false)
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)
@@ -4263,23 +4276,31 @@ namespace ChainFx.Web
                     var val = e.value;
                     if (filter != null && !filter(key, val)) continue;
                     Add("<option value=\"");
-                    if (key is short shortv)
+                    if (key is short shortk)
                     {
-                        Add(shortv);
+                        Add(shortk);
                     }
-                    else if (key is int intv)
+                    else if (key is int intk)
                     {
-                        Add(intv);
+                        Add(intk);
                     }
-                    else if (key is string strv)
+                    else if (key is string strk)
                     {
-                        Add(strv);
+                        Add(strk);
                     }
+
+                    string strv;
+                    if (alias && e.Value is IDual eq)
+                    {
+                        strv = eq.Alias ?? eq.ToString();
+                    }
+                    else
+                        strv = e.Value.ToString();
 
                     Add("\"");
                     if (vs.Contains(key)) Add(" selected");
                     Add(">");
-                    AddPrimitive(e.Value);
+                    AddPrimitive(strv);
                     Add("</option>");
                 }
             }
@@ -4357,16 +4378,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder OUTPUT<V>(string label, string name, V v)
+        public HtmlBuilder OUTPUT<V>(string name, V v, string css = null)
         {
-            if (label != null)
+            Add("<output");
+            if (css != null)
             {
-                Add("<label class=\"uk-label\">");
-                Add(label);
-                Add("</label>");
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
             }
-
-            Add("<output class=\"uk-output\" name=\"");
+            Add(" name=\"");
             Add(name);
             Add("\">");
             AddPrimitive(v);
@@ -4374,12 +4395,12 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder OUTPUTCNY(string name, decimal v)
+        public HtmlBuilder OUTPUTCNY(string name, decimal v, bool money = false)
         {
             Add("&nbsp;￥<output name=\"");
             Add(name);
             Add("\">");
-            Add(v);
+            Add(v, money);
             Add("</output>");
             return this;
         }

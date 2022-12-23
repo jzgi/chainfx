@@ -202,11 +202,8 @@ namespace ChainFx.Web
                     return;
                 }
 
-
-                if (!await DoAuthenticateAsync(wc))
-                {
-                    return;
-                }
+                // do necessary authentication before entering the work
+                if (wc.Principal == null && !await DoAuthenticateAsync(wc)) return;
 
                 WebWork curwrk = this;
                 var rsc = path.Substring(1);
@@ -225,15 +222,6 @@ namespace ChainFx.Web
                     int slash = rsc.IndexOf('/');
                     if (slash == -1) // is the targeted work
                     {
-                        var bfr = curwrk.Before;
-                        if (bfr != null)
-                        {
-                            if (bfr.IsAsync && !await bfr.DoAsync(wc) || !bfr.IsAsync && bfr.Do(wc))
-                            {
-                                return;
-                            }
-                        }
-
                         //
                         // resolve the resource
                         string name = rsc;
@@ -284,15 +272,6 @@ namespace ChainFx.Web
 
                         wc.Action = null;
 
-                        var aft = curwrk.After;
-                        if (aft != null)
-                        {
-                            if (aft.IsAsync && !await aft.DoAsync(wc) || !aft.IsAsync && aft.Do(wc))
-                            {
-                                return;
-                            }
-                        }
-
                         return;
                     }
                     else // check sub works and var work
@@ -301,7 +280,7 @@ namespace ChainFx.Web
                         var subwrk = curwrk.SubWorks?[key];
                         if (subwrk != null) // if child
                         {
-                            // do necessary authentication before entering
+                            // do necessary authentication before entering the work
                             if (wc.Principal == null && !await subwrk.DoAuthenticateAsync(wc)) return;
 
                             wc.AppendSeg(subwrk, key);
@@ -311,7 +290,7 @@ namespace ChainFx.Web
                         }
                         else if (varwrk != null) // if variable-key subwork
                         {
-                            // do necessary authentication before entering
+                            // do necessary authentication before entering the work
                             if (wc.Principal == null && !await varwrk.DoAuthenticateAsync(wc)) return;
 
                             var prin = wc.Principal;

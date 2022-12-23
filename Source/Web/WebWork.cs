@@ -41,12 +41,6 @@ namespace ChainFx.Web
 
         public AuthorizeAttribute Authorize { get; internal set; }
 
-        // pre-action operation
-        public BeforeAttribute Before { get; internal set; }
-
-        // post-action operation
-        public AfterAttribute After { get; internal set; }
-
         public object State { get; set; }
 
 
@@ -58,8 +52,6 @@ namespace ChainFx.Web
             Ui = (UiAttribute) type.GetCustomAttribute(typeof(UiAttribute), true);
             Authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
             Authorize = (AuthorizeAttribute) type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
-            Before = (BeforeAttribute) type.GetCustomAttribute(typeof(BeforeAttribute), false);
-            After = (AfterAttribute) type.GetCustomAttribute(typeof(AfterAttribute), false);
 
             // gather actions
             foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -172,13 +164,10 @@ namespace ChainFx.Web
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="authenticate"></param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
-        /// <param name="before"></param>
-        /// <param name="after"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T CreateVarWork<T>(Func<IData, string, object> accessor = null, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T CreateVarWork<T>(Func<IData, string, object> accessor = null, object state = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
         {
             var wrk = new T
             {
@@ -194,8 +183,6 @@ namespace ChainFx.Web
             if (ui != null) wrk.Ui = ui;
             if (authenticate != null) wrk.Authenticate = authenticate;
             if (authorize != null) wrk.Authorize = authorize;
-            if (before != null) wrk.Before = before;
-            if (after != null) wrk.After = after;
 
             varwork = wrk;
 
@@ -211,13 +198,10 @@ namespace ChainFx.Web
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="authenticate"></param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
-        /// <param name="before"></param>
-        /// <param name="after"></param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="WebException">Thrown if error</exception>
-        protected T CreateWork<T>(string name, object state = null,
-            UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, BeforeAttribute before = null, AfterAttribute after = null) where T : WebWork, new()
+        protected T CreateWork<T>(string name, object state = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
         {
             if (subworks == null)
             {
@@ -238,12 +222,11 @@ namespace ChainFx.Web
             if (ui != null) wrk.Ui = ui;
             if (authenticate != null) wrk.Authenticate = authenticate;
             if (authorize != null) wrk.Authorize = authorize;
-            if (before != null) wrk.Before = before;
-            if (after != null) wrk.After = after;
 
             subworks.Add(wrk);
 
             wrk.OnCreate();
+            
             return wrk;
         }
 
