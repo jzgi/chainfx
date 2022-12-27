@@ -143,7 +143,7 @@ namespace ChainFx.Web
         {
             if (Authorize != null)
             {
-                return Authorize.Do(wc, mock);
+                return wc.Principal != null && Authorize.Do(wc, mock);
             }
 
             return true;

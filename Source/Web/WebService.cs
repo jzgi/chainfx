@@ -22,16 +22,6 @@ namespace ChainFx.Web
     {
         static readonly int ConcurrencyLevel = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
 
-        readonly WebException AuthReq = new WebException("Authentication required")
-        {
-            Code = 401
-        };
-
-        readonly WebException AccessorReq = new WebException("Accessor required")
-        {
-            Code = 403
-        };
-
         //
         // http implementation
         string address;
@@ -189,9 +179,8 @@ namespace ChainFx.Web
                     return;
                 }
 
-                var dot = path.LastIndexOf('.');
-
                 // give file content from cache or file system
+                var dot = path.LastIndexOf('.');
                 if (dot != -1)
                 {
                     if (!TryGiveFromCache(wc))
@@ -209,13 +198,7 @@ namespace ChainFx.Web
                 var rsc = path.Substring(1);
                 for (;;)
                 {
-                    if (!curwrk.DoAuthorize(wc, false))
-                    {
-                        throw new WebException("Authorize failed: " + Name)
-                        {
-                            Code = wc.Principal == null ? 401 : 403
-                        };
-                    }
+                    if (!curwrk.DoAuthorize(wc, false)) throw new ForbiddenException(Name);
 
                     var varwrk = curwrk.VarWork;
 
@@ -250,15 +233,12 @@ namespace ChainFx.Web
                             }
                         }
 
+                        //
+                        // entering action level
+
                         wc.Action = act;
 
-                        if (!act.DoAuthorize(wc, false))
-                        {
-                            throw new WebException("Authorize failure: " + act.Name)
-                            {
-                                Code = wc.Principal == null ? 401 : 403
-                            };
-                        }
+                        if (!act.DoAuthorize(wc, false)) throw new ForbiddenException(act.Name);
 
                         // try in the cache first
                         if (!Service.TryGiveFromCache(wc))
@@ -297,11 +277,12 @@ namespace ChainFx.Web
                             object accessor;
                             if (key.Length == 0)
                             {
-                                if (prin == null) throw AuthReq;
+                                if (prin == null) throw ForbiddenException.NoPrincipalError;
+
                                 accessor = varwrk.GetAccessor(prin, null);
                                 if (accessor == null)
                                 {
-                                    throw AccessorReq;
+                                    throw ForbiddenException.AccessorReq;
                                 }
                             }
                             else

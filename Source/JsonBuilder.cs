@@ -486,16 +486,13 @@ namespace ChainFx
             }
         }
 
-        internal void PutToken(IData v, short proj = 0xff)
+        internal void PutToken(IData v, short msk = 0xff)
         {
             counts[level]++;
 
             counts[++level] = 0; // enter
             Add('{');
-            v.Write(this, proj);
-            // append a time stamp
-            Put("$", DateTime.Now);
-
+            v.Write(this, msk);
             Add('}');
             level--; // exit
         }

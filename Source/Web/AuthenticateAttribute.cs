@@ -98,13 +98,6 @@ namespace ChainFx.Web
                 var len = bytes.Length - 16 - 1;
                 var jo = (JObj) new JsonParser(bytes, len).Parse();
 
-                // check time expiry
-                DateTime stamp = jo["$"];
-                if ((DateTime.Now - stamp).Hours > 2)
-                {
-                    return default;
-                }
-
                 // construct a principal object
                 var prin = new P();
                 prin.Read(jo, 0xff);

@@ -15,8 +15,8 @@ namespace ChainFx
 
         public static readonly Map<short, string> States = new Map<short, string>
         {
-            {STA_VOID, "禁用"},
-            {STA_PRE, "暂停"},
+            {STA_VOID, null},
+            {STA_PRE, "停用"},
             {STA_NORMAL, "正常"},
             {STA_TOP, "优先"},
         };
@@ -25,15 +25,14 @@ namespace ChainFx
             STU_VOID = 0,
             STU_CREATED = 1,
             STU_ADAPTED = 2,
-            STU_OKED = 4,
-            STU_OFF = 8;
+            STU_OKED = 4;
 
         public static readonly Map<short, string> Statuses = new Map<short, string>
         {
+            {STU_VOID, null},
             {STU_CREATED, "新建"},
             {STU_ADAPTED, "调配"},
             {STU_OKED, "完成"},
-            {STU_OFF, "消除"},
         };
 
 
@@ -92,9 +91,12 @@ namespace ChainFx
 
         public virtual void Write(ISink s, short msk = 0xff)
         {
-            if ((msk & MSK_BORN) == MSK_BORN)
+            if ((msk & MSK_TYP) == MSK_TYP || (msk & MSK_BORN) == MSK_BORN)
             {
                 s.Put(nameof(typ), typ);
+            }
+            if ((msk & MSK_BORN) == MSK_BORN)
+            {
                 s.Put(nameof(created), created);
                 s.Put(nameof(creator), creator);
             }

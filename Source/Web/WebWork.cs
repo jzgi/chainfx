@@ -166,7 +166,7 @@ namespace ChainFx.Web
         /// <param name="authorize">to override class-wise Authorize attribute</param>
         /// <typeparam name="T"></typeparam>
         /// <returns>The newly created subwork instance.</returns>
-        /// <exception cref="WebException">Thrown if error</exception>
+        /// <exception cref="ForbiddenException">Thrown if error</exception>
         protected T CreateVarWork<T>(Func<IData, string, object> accessor = null, object state = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
         {
             var wrk = new T
@@ -200,7 +200,7 @@ namespace ChainFx.Web
         /// <param name="authorize">to override class-wise Authorize attribute</param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
-        /// <exception cref="WebException">Thrown if error</exception>
+        /// <exception cref="ForbiddenException">Thrown if error</exception>
         protected T CreateWork<T>(string name, object state = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
         {
             if (subworks == null)
@@ -226,7 +226,7 @@ namespace ChainFx.Web
             subworks.Add(wrk);
 
             wrk.OnCreate();
-            
+
             return wrk;
         }
 
@@ -304,7 +304,7 @@ namespace ChainFx.Web
         {
             if (Authorize != null)
             {
-                return Authorize.Do(wc, mock);
+                return wc.Principal != null && Authorize.Do(wc, mock);
             }
 
             return true;
