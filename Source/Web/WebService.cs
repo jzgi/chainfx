@@ -228,7 +228,7 @@ namespace ChainFx.Web
                             }
                             else // name did not match any action
                             {
-                                wc.GiveMsg(404, "Action not found", shared: true, maxage: 30);
+                                wc.GiveMsg(404, "Action not found", shared: true, maxage: 3600);
                                 return;
                             }
                         }
@@ -265,6 +265,7 @@ namespace ChainFx.Web
 
                             wc.AppendSeg(subwrk, key);
 
+                            // adjust rsc string
                             rsc = rsc.Substring(slash + 1);
                             curwrk = subwrk;
                         }
@@ -292,8 +293,14 @@ namespace ChainFx.Web
                             // append the segment
                             wc.AppendSeg(varwrk, key, accessor);
 
-                            curwrk = varwrk;
+                            // adjust rsc string
                             rsc = rsc.Substring(slash + 1);
+                            curwrk = varwrk;
+                        }
+                        else
+                        {
+                            wc.GiveMsg(404, "Work not found", shared: true, maxage: 3600);
+                            return;
                         }
                     }
                 }
