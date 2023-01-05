@@ -10,14 +10,14 @@ namespace ChainFx
         public const short
             STA_VOID = 0,
             STA_PRE = 1,
-            STA_NORMAL = 2,
+            STA_FINE = 2,
             STA_TOP = 4;
 
         public static readonly Map<short, string> States = new Map<short, string>
         {
             {STA_VOID, null},
             {STA_PRE, "停用"},
-            {STA_NORMAL, "正常"},
+            {STA_FINE, "正常"},
             {STA_TOP, "优先"},
         };
 
@@ -75,7 +75,6 @@ namespace ChainFx
             }
             if ((msk & MSK_EDIT) == MSK_EDIT)
             {
-                s.Get(nameof(state), ref state);
                 s.Get(nameof(name), ref name);
                 s.Get(nameof(tip), ref tip);
                 s.Get(nameof(adapted), ref adapted);
@@ -83,6 +82,7 @@ namespace ChainFx
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
+                s.Get(nameof(state), ref state);
                 s.Get(nameof(oker), ref oker);
                 s.Get(nameof(oked), ref oked);
                 s.Get(nameof(status), ref status);
@@ -102,7 +102,6 @@ namespace ChainFx
             }
             if ((msk & MSK_EDIT) == MSK_EDIT)
             {
-                s.Put(nameof(state), state);
                 s.Put(nameof(name), name);
                 s.Put(nameof(tip), tip);
                 s.Put(nameof(adapted), adapted);
@@ -110,6 +109,7 @@ namespace ChainFx
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
+                s.Put(nameof(state), state);
                 s.Put(nameof(oker), oker);
                 s.Put(nameof(oked), oked);
                 s.Put(nameof(status), status);
@@ -120,9 +120,9 @@ namespace ChainFx
 
         public virtual bool IsDisabled => state == STA_VOID;
 
-        public virtual bool IsEnabled => state == STA_NORMAL;
+        public virtual bool IsEnabled => state == STA_FINE;
 
-        public virtual bool IsWorkable => state >= STA_NORMAL;
+        public virtual bool IsWorkable => state >= STA_FINE;
 
         public virtual bool IsTop => state == STA_TOP;
     }

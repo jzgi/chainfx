@@ -384,6 +384,44 @@ namespace ChainFx
         }
 
 
+        public static string ToString(short[] arr)
+        {
+            if (arr == null)
+            {
+                return null;
+            }
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(' ');
+                }
+                sb.Append(arr[i]);
+            }
+            return sb.ToString();
+        }
+
+        public static string ToString(int[] arr)
+        {
+            if (arr == null)
+            {
+                return null;
+            }
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(' ');
+                }
+                sb.Append(arr[i]);
+            }
+            return sb.ToString();
+        }
+
         public static bool Compare(string a, string b, int num)
         {
             if (a.Length < num || b.Length < num) return false;

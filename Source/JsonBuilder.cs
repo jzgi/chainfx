@@ -493,6 +493,10 @@ namespace ChainFx
             counts[++level] = 0; // enter
             Add('{');
             v.Write(this, msk);
+
+            // append a time stamp
+            Put("$", DateTime.Now);
+
             Add('}');
             level--; // exit
         }

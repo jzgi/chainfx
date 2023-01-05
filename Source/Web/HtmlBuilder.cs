@@ -212,6 +212,25 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder MARK(string v, string csspre = null, short idx = 0)
+        {
+            Add("<mark");
+            if (csspre != null)
+            {
+                Add(" class=\"");
+                Add(csspre);
+                Add('-');
+                Add(idx);
+                Add('\"');
+            }
+            Add(">");
+            AddPrimitive(v);
+            Add("</mark>");
+
+            return this;
+        }
+
+
         public HtmlBuilder S<V>(V v, bool cond = true)
         {
             if (cond)
@@ -870,6 +889,66 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder Q<V>(V v, string css = null)
+        {
+            Add("<q");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
+            AddPrimitive(v);
+            Add("</q>");
+            return this;
+        }
+
+        public HtmlBuilder Q2<A, B>(A a, B b, bool brace = false, string css = null)
+        {
+            Add("<q");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            AddPrimitive(a);
+
+            Add(brace ? "（" : "&nbsp;");
+
+            AddPrimitive(b);
+
+            if (brace)
+            {
+                Add("）");
+            }
+            Add("</q>");
+            return this;
+        }
+
+        public HtmlBuilder Q_(string css = null)
+        {
+            Add("<q");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlBuilder _Q()
+        {
+            Add("</q>");
+            return this;
+        }
+
         public HtmlBuilder ASIDE_(string css = null)
         {
             Add("<aside");
@@ -1260,20 +1339,22 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD<K, V>(string label, K[] vs, Map<K, V> opts, bool alias = false)
+        public HtmlBuilder FIELD<K, V>(string label, K[] vals, Map<K, V> opts, Func<V, string> capt = null)
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
-            for (int i = 0; i < vs?.Length; i++)
+            for (int i = 0; i < vals?.Length; i++)
             {
                 if (i > 0)
                 {
                     Add("&nbsp;");
                 }
-                var v = vs[i];
-                var opt = opts[v];
-                var str = (opt is IDual duo) ? duo.Alias : opt.ToString();
-                Add(str);
+                var val = vals[i];
+                var opt = opts[val];
+
+                var strv = capt?.Invoke(opt) ?? opt.ToString();
+
+                Add(strv);
             }
             Add("</span>");
             return this;
@@ -1901,14 +1982,18 @@ namespace ChainFx.Web
             if (onclick != null)
             {
                 Add(onclick);
-                Add("; ");
+                Add(";");
             }
-            Add("btnSubmit(this");
-            if (chk)
+            else
             {
-                Add(", true");
+                Add("btnSubmit(this");
+                if (chk)
+                {
+                    Add(", true");
+                }
+                Add(");");
             }
-            Add(");\"");
+            Add("\"");
             if (disabled)
             {
                 Add(" disabled");
@@ -2493,12 +2578,12 @@ namespace ChainFx.Web
 
             if (!bottom)
             {
-                Add("<span class=\"uk-margin-auto-left\">");
                 if (tip != null)
                 {
+                    Add("<span class=\"uk-label uk-padding\">");
                     Add(tip);
+                    Add("</span>");
                 }
-                Add("</span>");
             }
 
             Add("</form>");
@@ -2598,10 +2683,11 @@ namespace ChainFx.Web
 
             Add("</span>");
 
-            Add("<span class=\"uk-label\">");
             if (tip != null)
             {
+                Add("<span class=\"uk-label uk-padding\">");
                 Add(tip);
+                Add("</span>");
             }
 
             Add("</span>");
@@ -2613,10 +2699,18 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder BOTTOMBAR_(string css = null, bool toggle = false)
+        public HtmlBuilder BOTTOMBAR_(string css = null, bool toggle = false, bool large = false)
         {
-            Add("<div class=\"uk-bottom-placeholder\"></div>");
-            Add("<div class=\"uk-bottom-bar");
+            if (large)
+            {
+                Add("<div class=\"uk-bottom-placeholder uk-large\"></div>");
+                Add("<div class=\"uk-bottom-bar uk-large");
+            }
+            else
+            {
+                Add("<div class=\"uk-bottom-placeholder\"></div>");
+                Add("<div class=\"uk-bottom-bar");
+            }
             if (css != null)
             {
                 Add(' ');
@@ -4102,6 +4196,45 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder SELECT_<V>(V name, string cookie = null, string onfix = null, bool rtl = true, string onchange = null, string css = null)
+        {
+            Add("<select class=\"uk-select");
+
+            if (rtl)
+            {
+                Add(" uk-select-right");
+            }
+
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\" name=\"");
+            AddPrimitive(name);
+
+            if (cookie != null)
+            {
+                Add("\" cookie=\"");
+                Add(cookie);
+            }
+            if (onfix != null)
+            {
+                Add("\" onfix=\"");
+                Add(onfix);
+            }
+
+            if (onchange != null)
+            {
+                Add("\" onchange=\"");
+                Add(onchange);
+            }
+
+            Add("\">");
+            return this;
+        }
+
+
         public HtmlBuilder SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, bool refresh = false, string css = null)
         {
             LABEL(label);
@@ -4260,7 +4393,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = true, sbyte size = 0, bool alias = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0)
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)
@@ -4289,13 +4422,7 @@ namespace ChainFx.Web
                         Add(strk);
                     }
 
-                    string strv;
-                    if (alias && e.Value is IDual eq)
-                    {
-                        strv = eq.Alias ?? eq.ToString();
-                    }
-                    else
-                        strv = e.Value.ToString();
+                    var strv = capt?.Invoke(val) ?? val.ToString();
 
                     Add("\"");
                     if (vs.Contains(key)) Add(" selected");
@@ -4378,7 +4505,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder OUTPUT<V>(string name, V v, string css = null)
+        public HtmlBuilder OUTPUT<V>(string name, V v, string cookie = null, string onfix = null, string css = null)
         {
             Add("<output");
             if (css != null)
@@ -4389,19 +4516,50 @@ namespace ChainFx.Web
             }
             Add(" name=\"");
             Add(name);
+
+            if (cookie != null)
+            {
+                Add("\" cookie=\"");
+                Add(cookie);
+            }
+            if (onfix != null)
+            {
+                Add("\" onfix=\"");
+                Add(onfix);
+            }
             Add("\">");
             AddPrimitive(v);
             Add("</output>");
             return this;
         }
 
-        public HtmlBuilder OUTPUTCNY(string name, decimal v, bool money = false)
+        public HtmlBuilder CNYOUTPUT(string name, decimal v, string cookie = null, string onfix = null, string css = null)
         {
-            Add("&nbsp;￥<output name=\"");
+            Add("<output class=\"rmb");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\" name=\"");
             Add(name);
+
+            if (cookie != null)
+            {
+                Add("\" cookie=\"");
+                Add(cookie);
+            }
+            if (onfix != null)
+            {
+                Add("\" onfix=\"");
+                Add(onfix);
+            }
             Add("\">");
-            Add(v, money);
+
+            Add(v, true);
+
             Add("</output>");
+
             return this;
         }
 

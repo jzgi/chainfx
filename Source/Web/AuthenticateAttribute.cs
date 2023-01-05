@@ -63,6 +63,9 @@ namespace ChainFx.Web
             }
         }
 
+        const int TOKEN_DAYS = 7;
+
+
         public static P FromToken<P>(string token) where P : IData, new()
         {
             var bytes = Convert.FromBase64String(token);
@@ -97,6 +100,13 @@ namespace ChainFx.Web
             {
                 var len = bytes.Length - 16 - 1;
                 var jo = (JObj) new JsonParser(bytes, len).Parse();
+
+                // check time expiry
+                DateTime stamp = jo["$"];
+                if ((DateTime.Now - stamp).Days > TOKEN_DAYS)
+                {
+                    return default;
+                }
 
                 // construct a principal object
                 var prin = new P();

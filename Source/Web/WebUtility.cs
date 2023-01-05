@@ -13,7 +13,7 @@ namespace ChainFx.Web
     /// </summary>
     public static class WebUtility
     {
-        public static string FormatSetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/", bool httponly = false)
+        public static string BuildSetCookie(string name, string value, int maxage = 0, string domain = null, string path = "/", bool httponly = false)
         {
             var sb = new StringBuilder(name).Append('=').Append(HttpUtility.UrlEncode(value));
             if (maxage > 0)
