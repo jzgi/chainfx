@@ -904,7 +904,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder Q2<A, B>(A a, B b, bool brace = false, string css = null)
+        public HtmlBuilder Q2(string a, string b, bool brace = false, string css = null)
         {
             Add("<q");
             if (css != null)
@@ -915,11 +915,19 @@ namespace ChainFx.Web
             }
 
             Add(">");
-            AddPrimitive(a);
 
-            Add(brace ? "（" : "&nbsp;");
+            Add(a);
 
-            AddPrimitive(b);
+            if (a != null)
+            {
+                Add(brace ? "（" : "；");
+            }
+            else
+            {
+                if (brace) Add('（');
+            }
+
+            Add(b);
 
             if (brace)
             {
@@ -1309,7 +1317,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD2<V, X>(string label, V v, X x, string sep = null)
+        public HtmlBuilder FIELD2<V, X>(string label, V v, X x, string sep = "&nbsp;")
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1322,6 +1330,7 @@ namespace ChainFx.Web
             }
 
             AddPrimitive(x);
+
             if (sep == "（")
             {
                 Add("）");

@@ -348,7 +348,7 @@ namespace ChainFx.Web
             return entity as M;
         }
 
-        public async Task<D> ReadObjectAsync<D>(short proj = 0xff, D instance = default) where D : IData, new()
+        public async Task<D> ReadObjectAsync<D>(short msk = 0xff, D instance = default) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -379,7 +379,7 @@ namespace ChainFx.Web
                 instance = new D();
             }
 
-            instance.Read(src, proj);
+            instance.Read(src, msk);
             return instance;
         }
 
