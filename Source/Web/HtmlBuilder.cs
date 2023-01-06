@@ -809,6 +809,34 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder H6_(string css = null)
+        {
+            Add("<h6");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlBuilder _H6()
+        {
+            Add("</h6>");
+            return this;
+        }
+
+        public HtmlBuilder H6<V>(V v, string css = null)
+        {
+            H6_(css);
+            AddPrimitive(v);
+            _H6();
+            return this;
+        }
+
         public HtmlBuilder SMALL<V>(V v)
         {
             Add("<small>");
@@ -2035,7 +2063,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public void PAGINATION(bool more, int begin = 0, int step = 1)
+        public void PAGINATION(bool more, int begin = 0, int step = 1, bool print = false)
         {
             var act = Web.Action;
             if (act.Subscript != null)
@@ -2073,6 +2101,11 @@ namespace ChainFx.Web
                 else
                 {
                     Add("<li class=\"uk-disabled\">≫</li>");
+                }
+
+                if (print)
+                {
+                    Add("<a class=\"uk-icon-button\" uk-icon=\"print\" onclick=\"window.print();\">");
                 }
 
                 Add("</ul>");
