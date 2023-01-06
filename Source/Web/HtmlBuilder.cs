@@ -4205,7 +4205,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT_<V>(V name, string cookie = null, string onfix = null, bool rtl = true, string onchange = null, string css = null)
+        public HtmlBuilder SELECT_<V>(V name, string cookie = null, string onfix = null, bool rtl = false, string onchange = null, string css = null)
         {
             Add("<select class=\"uk-select");
 

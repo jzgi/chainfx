@@ -63,7 +63,8 @@ namespace ChainFx.Web
             }
         }
 
-        const int TOKEN_DAYS = 7;
+        // 3 days
+        const int EXPIRY_DAYS = 3;
 
 
         public static P FromToken<P>(string token) where P : IData, new()
@@ -103,7 +104,7 @@ namespace ChainFx.Web
 
                 // check time expiry
                 DateTime stamp = jo["$"];
-                if ((DateTime.Now - stamp).Days > TOKEN_DAYS)
+                if ((DateTime.Now - stamp).Days > EXPIRY_DAYS)
                 {
                     return default;
                 }
