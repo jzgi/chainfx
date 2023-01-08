@@ -115,7 +115,25 @@ namespace ChainFx.Fabric
             caches.Add(new DbCache<K, V>(fetcher, typeof(V), maxage, flag));
         }
 
+        public static void Cache<K, V>(Func<DbContext, Task<Map<K, V>>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        {
+            if (caches == null)
+            {
+                caches = new List<DbCache>(16);
+            }
+            caches.Add(new DbCache<K, V>(fetcher, typeof(V), maxage, flag));
+        }
+
         public static void CacheObject<K, V>(Func<DbContext, K, V> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        {
+            if (objectCaches == null)
+            {
+                objectCaches = new List<DbCache>(16);
+            }
+            objectCaches.Add(new DbObjectCache<K, V>(fetcher, typeof(V), maxage, flag));
+        }
+
+        public static void CacheObject<K, V>(Func<DbContext, K, Task<V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
             if (objectCaches == null)
             {
@@ -209,7 +227,7 @@ namespace ChainFx.Fabric
             {
                 if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
-                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
+                    if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
                         return await ((DbObjectCache<K, V>) ca).GetAsync(key);
                     }

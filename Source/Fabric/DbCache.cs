@@ -19,9 +19,6 @@ namespace ChainFx.Fabric
         // either of the two forms
         protected readonly Delegate fetcher;
 
-        // tick count,   
-        protected int expiry;
-
 
         protected DbCache(Delegate fetcher, Type typ, int maxage, short flag)
         {
@@ -45,27 +42,38 @@ namespace ChainFx.Fabric
 
 
     /// <summary>
-    /// A cache for single whole map.
+    /// A cache for single entire map.
     /// </summary>
     internal class DbCache<K, V> : DbCache where K : IComparable<K>
     {
         readonly bool async;
 
-        // either of two types
-        protected readonly IDisposable @lock;
+        // either readerwriterlock or semaphore
+        protected readonly IDisposable slim;
 
         protected Map<K, V> cached;
+
+        // tick count,   
+        volatile int expiry;
+
 
         internal DbCache(Func<DbContext, Map<K, V>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = false;
-            @lock = new ReaderWriterLockSlim();
+            slim = new ReaderWriterLockSlim();
         }
 
+        /// <summary>
+        /// The async version of constructor.
+        /// </summary>
+        /// <param name="fetcher"></param>
+        /// <param name="typ"></param>
+        /// <param name="maxage"></param>
+        /// <param name="flag"></param>
         internal DbCache(Func<DbContext, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = true;
-            @lock = new SemaphoreSlim(1, 1);
+            slim = new SemaphoreSlim(1, 1);
         }
 
         public override bool IsAsync => async;
@@ -73,61 +81,63 @@ namespace ChainFx.Fabric
 
         public Map<K, V> Get()
         {
-            if (!(fetcher is Func<DbContext, Map<K, V>> func)) // simple object
+            if (!(fetcher is Func<DbContext, Map<K, V>> func)) // check fetcher
             {
                 throw new DbException("Missing fetcher for " + Typ);
             }
-            var slim = (ReaderWriterLockSlim) @lock;
-            slim.EnterUpgradeableReadLock();
+            var @lock = (ReaderWriterLockSlim) slim;
+            @lock.EnterUpgradeableReadLock();
             try
             {
                 var tick = Environment.TickCount & int.MaxValue; // positive tick
-                if (tick >= expiry) // if re-fetch
+                if (tick >= expiry) // if expires
                 {
-                    slim.EnterWriteLock();
+                    @lock.EnterWriteLock();
                     try
                     {
+                        // re-fetch
                         using var dc = Nodality.NewDbContext();
                         cached = func(dc);
                         expiry = tick + MaxAge * 1000;
                     }
                     finally
                     {
-                        slim.ExitWriteLock();
+                        @lock.ExitWriteLock();
                     }
                 }
                 return cached;
             }
             finally
             {
-                slim.ExitUpgradeableReadLock();
+                @lock.ExitUpgradeableReadLock();
             }
         }
 
         public async Task<Map<K, V>> GetAsync()
         {
-            if (!(fetcher is Func<DbContext, Task<Map<K, V>>> fa)) // simple object
+            if (!(fetcher is Func<DbContext, Task<Map<K, V>>> func)) // check fetcher
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("Wrong fetcher for " + Typ);
             }
-            var slim = (SemaphoreSlim) @lock;
-            await slim.WaitAsync();
+            var semaphore = (SemaphoreSlim) slim;
+            await semaphore.WaitAsync();
             try
             {
-                var ticks = Environment.TickCount & int.MaxValue; // positive tick
-                if (ticks >= expiry) // if re-fetch
+                var tick = Environment.TickCount & int.MaxValue; // positive tick
+                if (tick >= expiry)
                 {
+                    // re-fetch
                     using var dc = Nodality.NewDbContext();
-                    cached = await fa(dc);
-                    expiry = ticks + MaxAge * 1000;
+                    cached = await func(dc);
+                    expiry = tick + MaxAge * 1000;
                 }
+
+                return cached;
             }
             finally
             {
-                slim.Release();
+                semaphore.Release();
             }
-
-            return cached;
         }
     }
 
@@ -139,13 +149,27 @@ namespace ChainFx.Fabric
     {
         readonly bool async;
 
-        readonly ConcurrentDictionary<K, V> cached = new ConcurrentDictionary<K, V>();
+        readonly ConcurrentDictionary<K, (int, V)> cached = new ConcurrentDictionary<K, (int, V)>();
 
+        /// <summary>
+        /// The sync version of constructor.
+        /// </summary>
+        /// <param name="fetcher"></param>
+        /// <param name="typ"></param>
+        /// <param name="maxage"></param>
+        /// <param name="flag"></param>
         internal DbObjectCache(Func<DbContext, K, V> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = false;
         }
 
+        /// <summary>
+        /// The async version of constructor.
+        /// </summary>
+        /// <param name="fetcher"></param>
+        /// <param name="typ"></param>
+        /// <param name="maxage"></param>
+        /// <param name="flag"></param>
         internal DbObjectCache(Func<DbContext, K, Task<V>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = true;
@@ -156,52 +180,50 @@ namespace ChainFx.Fabric
 
         public V Get(K key)
         {
-            if (!(fetcher is Func<DbContext, K, V> func)) // simple object
+            if (!(fetcher is Func<DbContext, K, V> func)) // check fetcher
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("Wrong fetcher for " + Typ);
             }
             var tick = Environment.TickCount & int.MaxValue; // positive tick
-            V value;
-            if (tick >= expiry) // if re-fetch
+
+            var exist = cached.TryGetValue(key, out var ety);
+            if (exist && tick < ety.Item1)
             {
-                using var dc = Nodality.NewDbContext();
-                value = func(dc, key);
-                cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
-                expiry = tick + MaxAge * 1000;
+                return ety.Item2;
             }
-            else
-            {
-                if (!cached.TryGetValue(key, out value))
-                {
-                    using var dc = Nodality.NewDbContext();
-                    value = func(dc, key);
-                    cached.AddOrUpdate(key, value, (k, old) => old); // re-cache
-                    expiry = tick + MaxAge * 1000;
-                }
-            }
-            return value;
+
+            // re-fetch
+            using var dc = Nodality.NewDbContext();
+            ety.Item1 = tick + MaxAge * 1000;
+            ety.Item2 = func(dc, key);
+
+            cached.AddOrUpdate(key, ety, (k, old) => ety); // re-cache
+
+            return ety.Item2;
         }
 
         public async Task<V> GetAsync(K key)
         {
-            if (!(fetcher is Func<DbContext, K, Task<V>> func)) // simple object
+            if (!(fetcher is Func<DbContext, K, Task<V>> func)) // check fetcher
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("Wrong fetcher for " + Typ);
             }
-            var ticks = Environment.TickCount & int.MaxValue; // positive tick
-            V value;
-            if (ticks >= expiry) // if re-fetch
+            var tick = Environment.TickCount & int.MaxValue; // positive tick
+
+            var exist = cached.TryGetValue(key, out var ety);
+            if (exist && tick < ety.Item1)
             {
-                using var dc = Nodality.NewDbContext();
-                value = await func(dc, key);
-                cached.TryAdd(key, value); // re-cache
-                expiry = ticks + MaxAge * 1000;
+                return ety.Item2;
             }
-            else
-            {
-                cached.TryGetValue(key, out value);
-            }
-            return value;
+
+            // re-fetch
+            using var dc = Nodality.NewDbContext();
+            ety.Item1 = tick + MaxAge * 1000;
+            ety.Item2 = await func(dc, key);
+
+            cached.AddOrUpdate(key, ety, (k, old) => ety); // re-cache
+
+            return ety.Item2;
         }
     }
 
@@ -212,98 +234,70 @@ namespace ChainFx.Fabric
     {
         readonly bool async;
 
-        // either of two types
-        readonly IDisposable @lock;
+        readonly ConcurrentDictionary<M, (int, Map<K, V>)> cached = new ConcurrentDictionary<M, (int, Map<K, V>)>();
 
-        readonly ConcurrentDictionary<M, Map<K, V>> cached = new ConcurrentDictionary<M, Map<K, V>>();
 
         internal DbMapCache(Func<DbContext, M, Map<K, V>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = false;
-            @lock = new ReaderWriterLockSlim();
         }
 
         internal DbMapCache(Func<DbContext, M, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag) : base(fetcher, typ, maxage, flag)
         {
             async = true;
-            @lock = new SemaphoreSlim(1, 1);
         }
 
         public override bool IsAsync => async;
 
 
-        public Map<K, V> Get(M mkey)
+        public Map<K, V> Get(M key)
         {
             if (!(fetcher is Func<DbContext, M, Map<K, V>> func)) // simple object
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("Wrong fetcher for " + Typ);
             }
 
-            var slim = (ReaderWriterLockSlim) @lock;
-            slim.EnterUpgradeableReadLock();
-            try
+            var tick = Environment.TickCount & int.MaxValue; // positive tick
+
+            var exist = cached.TryGetValue(key, out var ety);
+            if (exist && tick < ety.Item1)
             {
-                var ticks = (Environment.TickCount & int.MaxValue); // positive ticks
-                Map<K, V> value;
-                if (ticks >= expiry) // if re-fetch
-                {
-                    slim.EnterWriteLock();
-                    try
-                    {
-                        using var dc = Nodality.NewDbContext();
-                        value = func(dc, mkey);
-                        cached.TryAdd(mkey, value);
-                        // adjust expiry time
-                        expiry = ticks + MaxAge * 1000;
-                    }
-                    finally
-                    {
-                        slim.ExitWriteLock();
-                    }
-                }
-                else
-                {
-                    cached.TryGetValue(mkey, out value);
-                }
-                return value;
+                return ety.Item2;
             }
-            finally
-            {
-                slim.ExitUpgradeableReadLock();
-            }
+
+            // re-fetch
+            using var dc = Nodality.NewDbContext();
+            ety.Item1 = tick + MaxAge * 1000;
+            ety.Item2 = func(dc, key);
+
+            cached.AddOrUpdate(key, ety, (k, old) => ety);
+
+            return ety.Item2;
         }
 
-        public async Task<Map<K, V>> GetAsync(M subkey)
+        public async Task<Map<K, V>> GetAsync(M key)
         {
-            if (!(fetcher is Func<DbContext, M, Task<Map<K, V>>> func)) // simple object
+            if (!(fetcher is Func<DbContext, M, Task<Map<K, V>>> func)) // check fetcher
             {
-                throw new DbException("Missing fetcher for " + Typ);
+                throw new DbException("Wrong fetcher for " + Typ);
             }
 
-            var slim = (SemaphoreSlim) @lock;
-            await slim.WaitAsync();
-            try
-            {
-                var ticks = (Environment.TickCount & int.MaxValue); // positive ticks
-                Map<K, V> value;
-                if (ticks >= expiry) // if re-fetch
-                {
-                    using var dc = Nodality.NewDbContext();
-                    value = await func(dc, subkey);
+            var tick = Environment.TickCount & int.MaxValue; // positive tick
 
-                    // adjust expiry time
-                    expiry = ticks + MaxAge * 1000;
-                }
-                else
-                {
-                    cached.TryGetValue(subkey, out value);
-                }
-                return value;
-            }
-            finally
+            var exist = cached.TryGetValue(key, out var ety);
+            if (exist && tick < ety.Item1)
             {
-                slim.Release();
+                return ety.Item2;
             }
+
+            // re-fetch
+            using var dc = Nodality.NewDbContext();
+            ety.Item1 = tick + MaxAge * 1000;
+            ety.Item2 = await func(dc, key);
+
+            cached.AddOrUpdate(key, ety, (k, old) => ety);
+
+            return ety.Item2;
         }
     }
 }

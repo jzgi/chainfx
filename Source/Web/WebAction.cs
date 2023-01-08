@@ -28,13 +28,14 @@ namespace ChainFx.Web
 
         readonly UiAttribute ui;
 
+        // tool annotation for ui
+        readonly ToolAttribute tool;
+
         readonly AuthenticateAttribute authenticate;
 
         readonly AuthorizeAttribute authorize;
 
-        // tool annotation for ui
-        readonly ToolAttribute tool;
-
+        readonly NoticeAttribute notice;
 
         // 4 possible forms of the action method
         //
@@ -55,9 +56,10 @@ namespace ChainFx.Web
             this.subscript = subscript;
 
             ui = (UiAttribute) mi.GetCustomAttribute(typeof(UiAttribute), true);
+            tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
             authenticate = (AuthenticateAttribute) mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute) mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
-            tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
+            notice = (NoticeAttribute) mi.GetCustomAttribute(typeof(NoticeAttribute), true);
 
             // create a doer delegate
             if (async)
@@ -130,13 +132,15 @@ namespace ChainFx.Web
 
         public short Group => ui?.Group ?? 0;
 
+        public ToolAttribute Tool => tool;
+
+        public TagAttribute[] Tags => tags;
+
         public AuthenticateAttribute Authenticate => authenticate;
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public ToolAttribute Tool => tool;
-
-        public TagAttribute[] Tags => tags;
+        public NoticeAttribute Notice => notice;
 
 
         public bool DoAuthorize(WebContext wc, bool mock)

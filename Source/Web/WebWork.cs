@@ -24,6 +24,9 @@ namespace ChainFx.Web
         // actions with ToolAttribute
         readonly WebAction[] tooled;
 
+        // actions with NoticeAttribute
+        readonly WebAction[] noticed;
+
         // subworks, if any
         Map<string, WebWork> subworks;
 
@@ -81,17 +84,23 @@ namespace ChainFx.Web
             }
 
             // gather tooled action methods
-            var list = new ValueList<WebAction>(16);
+            var toollst = new ValueList<WebAction>(16);
+            var noticelst = new ValueList<WebAction>(8);
             for (int i = 0; i < actions.Count; i++)
             {
-                var a = actions.EntryAt(i).Value;
-                if (a.Tool != null)
+                var act = actions.ValueAt(i);
+                if (act.Tool != null)
                 {
-                    list.Add(a);
+                    toollst.Add(act);
+                }
+                if (act.Notice != null)
+                {
+                    noticelst.Add(act);
                 }
             }
 
-            tooled = list.ToArray();
+            tooled = toollst.ToArray();
+            noticed = noticelst.ToArray();
         }
 
         public virtual string Key => Name;
@@ -121,6 +130,8 @@ namespace ChainFx.Web
         public Map<string, WebAction> Actions => actions;
 
         public WebAction[] Tooled => tooled;
+
+        public WebAction[] Noticed => noticed;
 
         public WebAction Default => @default;
 
