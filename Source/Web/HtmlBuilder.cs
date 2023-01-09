@@ -78,42 +78,37 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder T(char v, bool @if = true)
+        public HtmlBuilder T(char v)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             return this;
         }
 
-        public HtmlBuilder T(bool v, bool @if = true)
+        public HtmlBuilder T(bool v)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             return this;
         }
 
-        public HtmlBuilder T(short v, bool @if = true)
+        public HtmlBuilder T(short v)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             return this;
         }
 
-        public HtmlBuilder T(long v, bool @if = true)
+        public HtmlBuilder T(int v, int digits = 0)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v, digits);
+
+            return this;
+        }
+
+        public HtmlBuilder T(long v)
+        {
+            Add(v);
 
             return this;
         }
@@ -124,69 +119,51 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder T(decimal v, bool @if = true)
+        public HtmlBuilder T(decimal v)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             return this;
         }
 
-        public HtmlBuilder T(double v, bool @if = true)
+        public HtmlBuilder T(double v)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             return this;
         }
 
-        public HtmlBuilder T(string v, bool @if = true)
+        public HtmlBuilder T(string v)
         {
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             return this;
         }
 
-        public HtmlBuilder TT(string v, bool @if = true)
+        public HtmlBuilder TT(string v)
         {
-            if (@if)
-            {
-                AddEsc(v);
-            }
+            AddEsc(v);
 
             return this;
         }
 
-        public HtmlBuilder T(string v, int offset, int len, bool @if = true)
+        public HtmlBuilder T(string v, int offset, int len)
         {
-            if (@if)
-            {
-                Add(v, offset, len);
-            }
+            Add(v, offset, len);
 
             return this;
         }
 
-        public HtmlBuilder TT(string v, int offset, int len, bool @if = true)
+        public HtmlBuilder TT(string v, int offset, int len)
         {
-            if (@if)
-            {
-                AddEsc(v, offset, len);
-            }
+            AddEsc(v, offset, len);
 
             return this;
         }
 
-        public HtmlBuilder T(string[] v, bool @if = true)
+        public HtmlBuilder T(string[] v)
         {
-            if (@if && v != null)
+            if (v != null)
             {
                 for (int i = 0; i < v.Length; i++)
                 {
@@ -198,9 +175,9 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TT(string[] v, bool @if = true)
+        public HtmlBuilder TT(string[] v)
         {
-            if (@if && v != null)
+            if (v != null)
             {
                 for (int i = 0; i < v.Length; i++)
                 {
@@ -1345,19 +1322,19 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD2<V, X>(string label, V v, X x, string sep = "&nbsp;")
+        public HtmlBuilder FIELD2<A, B>(string label, A a, B b, string sep = "&nbsp;")
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
 
-            AddPrimitive(v);
+            AddPrimitive(a);
 
             if (sep != null)
             {
                 Add(sep);
             }
 
-            AddPrimitive(x);
+            AddPrimitive(b);
 
             if (sep == "（")
             {
@@ -1406,6 +1383,15 @@ namespace ChainFx.Web
                 Add('￥');
             }
             Add(v, money);
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlBuilder FIELD(string label, int v, int digits = 0)
+        {
+            LABEL(label);
+            Add("<span class=\"uk-static\">");
+            Add(v, digits);
             Add("</span>");
             return this;
         }
@@ -2566,7 +2552,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
+        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, int notice = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2607,12 +2593,21 @@ namespace ChainFx.Web
                     int g = act.Group;
                     var tool = act.Tool;
 
+                    // status & state check
                     if (!tool.Meets(status, state)) continue;
 
-                    if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
+                    // current user autnorize check
+                    var perm = Web.Principal == null || act.DoAuthorize(Web, true);
+
+                    var anchor = tool.IsAnchorTag;
+
+                    // retrieve notice num
+                    var ntc = (notice > 0 && anchor && act.Notice != null) ? act.Notice.DoCheck(notice, clear: true) : 0;
+
+                    if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
                     {
-                        // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, astack: astack, css: "uk-button-primary");
+                        // provide current anchor as subscript 
+                        PutTool(act, tool, anchor ? -1 : subscript, badge: ntc, disabled: !perm, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
@@ -2715,10 +2710,13 @@ namespace ChainFx.Web
                     int g = act.Group;
                     var tool = act.Tool;
 
+                    // current user autnorize check
+                    var perm = Web.Principal == null || act.DoAuthorize(Web, true);
+
                     if (tool.IsAnchorTag || ctxgrp == g || (g & ctxgrp) > 0)
                     {
                         // provide the state about current anchor as subscript 
-                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, astack: astack, css: "uk-button-primary");
+                        PutTool(act, tool, tool.IsAnchorTag ? -1 : subscript, disabled: !perm, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
@@ -2854,7 +2852,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute toolattr = null, bool enabled = true, string css = null)
+        public HtmlBuilder TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute toolattr = null, string css = null)
         {
             // locate the proper work
             var w = Web.Work;
@@ -2863,13 +2861,13 @@ namespace ChainFx.Web
             var tool = toolattr ?? act?.Tool;
             if (tool != null)
             {
-                PutTool(act, tool, subscript, caption, tip, enabled, false, css);
+                PutTool(act, tool, subscript, caption, tip, css: css);
             }
 
             return this;
         }
 
-        public void WORKBOARD(byte group = 0)
+        public void WORKBOARD(byte group = 0, int notice = 0)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -2911,7 +2909,12 @@ namespace ChainFx.Web
                 LI_();
 
                 int mode = sub.HasVarWork ? MOD_ASTACK : MOD_OPEN;
-                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1").SPAN(sub.Label).ICON("chevron-right")._A();
+                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1").SPAN(sub.Label).ICON("chevron-right");
+                if (notice > 0 && sub.HasNewNotice(notice))
+                {
+                    SPAN('✹',css:"uk-text-danger");
+                }
+                _A();
                 _LI();
 
                 last = sub.Tip;
@@ -3001,13 +3004,13 @@ namespace ChainFx.Web
             }
         }
 
-        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, bool enabled = true, bool astack = false, string css = null)
+        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, int badge = 0, bool disabled = true, bool astack = false, string css = null)
         {
             // check action's availability
             //
             string cap = caption ?? act.Label;
             string icon = act.Icon;
-            bool ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
+
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag) // A
@@ -3018,7 +3021,7 @@ namespace ChainFx.Web
                 {
                     Add(" uk-active");
                 }
-                if (!ok)
+                if (disabled)
                 {
                     Add(" disabled");
                 }
@@ -3063,7 +3066,7 @@ namespace ChainFx.Web
                 }
             }
 
-            if (!ok)
+            if (disabled)
             {
                 Add(" disabled=\"disabled\" onclick=\"return false;\"");
             }
@@ -3126,6 +3129,13 @@ namespace ChainFx.Web
                     Add("&nbsp;");
                 }
                 Add(cap);
+                Add("</span>");
+            }
+            // notice badge
+            if (badge > 0)
+            {
+                Add("<span class=\"uk-badge-secondary\">");
+                Add(badge);
                 Add("</span>");
             }
 

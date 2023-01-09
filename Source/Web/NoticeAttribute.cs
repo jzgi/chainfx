@@ -8,17 +8,15 @@ namespace ChainFx.Web
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class NoticeAttribute : Attribute
     {
-        readonly short typ;
+        protected readonly short slot;
 
-        protected NoticeAttribute(short typ)
+        protected NoticeAttribute(short slot)
         {
-            this.typ = typ;
+            this.slot = slot;
         }
 
-        public short Typ => typ;
+        public short Slot => slot;
 
-        public abstract int DoCheck();
-
-        public abstract void DoClear(WebContext wc);
+        public abstract int DoCheck(int noticeId, bool clear = false);
     }
 }

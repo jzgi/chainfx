@@ -322,6 +322,23 @@ namespace ChainFx.Web
         }
 
 
+        internal bool HasNewNotice(int noticeId)
+        {
+            if (noticed != null)
+            {
+                foreach (var ntc in noticed)
+                {
+                    var n = ntc.Notice.DoCheck(noticeId);
+                    if (n > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
         public override string ToString()
         {
             return Name;

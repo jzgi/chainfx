@@ -319,11 +319,11 @@ namespace ChainFx
             Add(DIGIT[x]); // last reminder
         }
 
-        public void Add(int v)
+        public void Add(int v, int digits = 0)
         {
-            if (v >= short.MinValue && v <= short.MaxValue)
+            if (v == 0)
             {
-                Add((short) v);
+                Add('0');
                 return;
             }
 
@@ -341,8 +341,20 @@ namespace ChainFx
                 v = v % bas;
                 if (q != 0 || bgn)
                 {
+                    if (!bgn)
+                    {
+                        bgn = true;
+
+                        if (digits > 0) // padding with zero
+                        {
+                            int pad = digits - i - 1;
+                            for (int k = 0; k < pad; k++)
+                            {
+                                Add('0');
+                            }
+                        }
+                    }
                     Add(DIGIT[q]);
-                    bgn = true;
                 }
             }
 
