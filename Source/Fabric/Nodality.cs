@@ -62,7 +62,7 @@ namespace ChainFx.Fabric
             // load  peer connectors
             //
             using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE status > 0");
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM _peers_ WHERE status > 0");
             var arr = dc.Query<Peer>();
             if (arr != null)
             {
@@ -306,7 +306,7 @@ namespace ChainFx.Fabric
             // insert locally
             using (var dc = NewDbContext())
             {
-                dc.Sql("INSERT INTO peers_ ").colset(Peer.Empty)._VALUES_(Peer.Empty);
+                dc.Sql("INSERT INTO _peers_ ").colset(Peer.Empty)._VALUES_(Peer.Empty);
                 await dc.ExecuteAsync(p => peer.Write(p));
             }
 

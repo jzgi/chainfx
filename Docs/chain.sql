@@ -10,15 +10,15 @@ create table ledgers_
 	stamp timestamp(0)
 );
 
-alter table ledgers_ owner to postgres;
+alter table _ldgs_ owner to postgres;
 
 create table peerledgs_
 (
 	peerid smallint
 )
-inherits (ledgers_);
+inherits (_ldgs_);
 
-alter table peerledgs_ owner to postgres;
+alter table _peerldgs_ owner to postgres;
 
 create table peers_
 (
@@ -30,7 +30,7 @@ create table peers_
 )
 inherits (entities);
 
-alter table peers_ owner to postgres;
+alter table _peers_ owner to postgres;
 
 create table accts_
 (
@@ -39,5 +39,5 @@ create table accts_
 )
 inherits (entities);
 
-alter table accts_ owner to postgres;
+alter table _accts_ owner to postgres;
 

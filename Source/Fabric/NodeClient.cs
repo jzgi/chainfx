@@ -140,13 +140,13 @@ namespace ChainFx.Fabric
             using var dc = Nodality.NewDbContext();
 
             // load the peer record
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM peers_ WHERE id = @1");
+            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM _peers_ WHERE id = @1");
             var obj = await dc.QueryAsync(p => p.Set(peerid));
 
             // check status
 
             // change states
-            dc.Sql("UPDATE peers_ SET tie = @1 WHERE id = @2");
+            dc.Sql("UPDATE _peers_ SET tie = @1 WHERE id = @2");
             await dc.ExecuteAsync(p => p.Set(0));
 
             // notify the asker

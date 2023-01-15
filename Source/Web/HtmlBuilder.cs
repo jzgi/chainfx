@@ -392,7 +392,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TD(short v, bool right = true, bool @if = true)
+        public HtmlBuilder TD(short v, bool right = true)
         {
             Add("<td");
             if (right)
@@ -401,16 +401,13 @@ namespace ChainFx.Web
             }
             Add(">");
 
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             Add("</td>");
             return this;
         }
 
-        public HtmlBuilder TD(int v, bool right = true, bool @if = true)
+        public HtmlBuilder TD(int v, bool right = true)
         {
             Add("<td");
             if (right)
@@ -419,16 +416,13 @@ namespace ChainFx.Web
             }
             Add(">");
 
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             Add("</td>");
             return this;
         }
 
-        public HtmlBuilder TD(long v, bool right = true, bool @if = true)
+        public HtmlBuilder TD(long v, bool right = true)
         {
             Add("<td");
             if (right)
@@ -437,27 +431,21 @@ namespace ChainFx.Web
             }
             Add(">");
 
-            if (@if)
-            {
-                Add(v);
-            }
+            Add(v);
 
             Add("</td>");
             return this;
         }
 
-        public HtmlBuilder TD(decimal v, bool currency = false, bool @if = true)
+        public HtmlBuilder TD(decimal v, bool money = false)
         {
             Add("<td style=\"text-align: right\">");
-            if (@if)
+            if (money)
             {
-                if (currency)
-                {
-                    Add('￥');
-                }
-
-                Add(v);
+                Add('￥');
             }
+
+            Add(v);
 
             Add("</td>");
             return this;
@@ -471,14 +459,11 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TD(string v, bool @if = true)
+        public HtmlBuilder TD(string v)
         {
             Add("<td>");
 
-            if (@if)
-            {
-                AddEsc(v);
-            }
+            AddEsc(v);
 
             Add("</td>");
             return this;
@@ -587,27 +572,6 @@ namespace ChainFx.Web
                 Add("</label>");
             }
 
-            return this;
-        }
-
-        public HtmlBuilder STATIC_(string label)
-        {
-            LABEL(label);
-            Add("<span class=\"uk-static\">");
-            return this;
-        }
-
-        public HtmlBuilder _STATIC()
-        {
-            Add("</span>");
-            return this;
-        }
-
-        public HtmlBuilder STATIC<V>(string label, V v)
-        {
-            STATIC_(label);
-            AddPrimitive(v);
-            _STATIC();
             return this;
         }
 
@@ -1426,6 +1390,20 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder FIELD_(string label, string css = null)
+        {
+            LABEL(label, css);
+            Add("<span class=\"uk-static\">");
+            return this;
+        }
+
+        public HtmlBuilder _FIELD()
+        {
+            Add("</span>");
+            return this;
+        }
+
+
         public HtmlBuilder CNY(decimal v, bool em = false, bool s = false)
         {
             if (em)
@@ -1658,10 +1636,10 @@ namespace ChainFx.Web
 
         public HtmlBuilder PIC_(string css = null, bool circle = false)
         {
-            Add("<div class=\"");
+            Add("<div");
             if (css != null)
             {
-                Add(' ');
+                Add(" class=\"");
                 Add(css);
             }
             Add("\"><img style=\"width: 100%\"");
@@ -1670,13 +1648,13 @@ namespace ChainFx.Web
                 Add(" class=\"uk-border-circle\"");
             }
 
-            Add(" src=\"");
+            Add(" loading\"lazy\" src=\"");
             return this;
         }
 
         public HtmlBuilder _PIC()
         {
-            Add("\" alt=\"✰\"></div>");
+            Add("\"></div>");
             return this;
         }
 
@@ -1963,7 +1941,7 @@ namespace ChainFx.Web
                 Add("</legend>");
             }
 
-            Add("<ul class=\"uk-list uk-list-divider\">");
+            Add("<ul>");
             return this;
         }
 
@@ -2065,7 +2043,7 @@ namespace ChainFx.Web
                     Add('-');
                     Add(page - step);
                     Add(Web.QueryStr);
-                    Add("\">≪</a>");
+                    Add("\" onclick=\"return goto(this, event);\">≪</a>");
                     Add("</li>");
                 }
                 else
@@ -2081,7 +2059,7 @@ namespace ChainFx.Web
                     Add('-');
                     Add(page + step);
                     Add(Web.QueryStr);
-                    Add("\">≫</a>");
+                    Add("\" onclick=\"return goto(this, event);\">≪</a>");
                     Add("</li>");
                 }
                 else
@@ -2357,11 +2335,12 @@ namespace ChainFx.Web
             Add(" name=\"key\" type=\"radio\" class=\"uk-radio\" value=\"");
             PutKey(key);
             Add("\"></td>");
+
             return this;
         }
 
 
-        public void TABLE<M>(M[] arr, Action<M> tr, Action thead = null, string caption = null)
+        public HtmlBuilder TABLE<M>(M[] arr, Action<M> tr, Action thead = null, string caption = null)
         {
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
             if (caption != null)
@@ -2384,9 +2363,11 @@ namespace ChainFx.Web
                 Add("</tbody>");
             }
             Add("</table>");
+
+            return this;
         }
 
-        public void TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, string caption = null)
+        public HtmlBuilder TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, string caption = null)
         {
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
             if (caption != null)
@@ -2410,6 +2391,8 @@ namespace ChainFx.Web
                 Add("</tbody>");
             }
             Add("</table>");
+
+            return this;
         }
 
 
@@ -2506,7 +2489,7 @@ namespace ChainFx.Web
 
         HtmlBuilder _DIALOG_(int mode, bool pick, string tip = null)
         {
-            Add(" onclick=\"event.preventDefault(); return dialog(this,");
+            Add(" onclick=\"return dialog(this,");
             Add(mode);
             Add(",");
             Add(pick);
@@ -2602,7 +2585,7 @@ namespace ChainFx.Web
                     var anchor = tool.IsAnchorTag;
 
                     // retrieve notice num
-                    var ntc = (notice > 0 && anchor && act.Notice != null) ? act.Notice.DoCheck(notice, clear: true) : 0;
+                    var ntc = (notice > 0 && anchor && act.Notice != null) ? act.Notice.DoCheck(notice, clear: act == Web.Action) : 0;
 
                     if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
                     {
@@ -2802,19 +2785,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder VARTOOLSET<K>(K varkey, int subscript = -1, string pick = null, string css = null, bool nav = true)
+        public HtmlBuilder NAVVAR<K>(K varkey, int subscript = -1, string pick = null, short status = 0, short state = 0, string css = null)
         {
-            if (nav)
+            Add("<nav class=\"uk-button-group");
+            if (css != null)
             {
-                Add("<nav class=\"uk-button-group");
-                if (css != null)
-                {
-                    Add(' ');
-                    Add(css);
-                }
-
-                Add("\">");
+                Add(' ');
+                Add(css);
             }
+
+            Add("\">");
 
             var w = Web.Work;
             var vw = w.VarWork;
@@ -2839,15 +2819,18 @@ namespace ChainFx.Web
                     {
                         var tool = act.Tool;
 
-                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, null, null, true, null);
+                        // status & state check
+                        if (!tool.Meets(status, state)) continue;
+
+                        // current user autnorize check
+                        var perm = Web.Principal == null || act.DoAuthorize(Web, true);
+
+                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, disabled: !perm);
                     }
                 }
             }
 
-            if (nav)
-            {
-                Add("</nav>");
-            }
+            Add("</nav>");
 
             return this;
         }
@@ -2912,7 +2895,7 @@ namespace ChainFx.Web
                 ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1").SPAN(sub.Label).ICON("chevron-right");
                 if (notice > 0 && sub.HasNewNotice(notice))
                 {
-                    SPAN('✹',css:"uk-text-danger");
+                    SPAN('✹', css: "uk-text-danger");
                 }
                 _A();
                 _LI();
@@ -3143,13 +3126,13 @@ namespace ChainFx.Web
             Add(tool.IsAnchorTag ? "</a>" : "</button>");
         }
 
-        void PutToolVar<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, string tip = null, bool enabled = true, string css = null)
+        void PutToolVar<K>(WebAction act, ToolAttribute tool, K varkey, int subscript = -1, string caption = null, string tip = null, bool disabled = true, string css = null)
         {
             // check action's availability
             //
             var cap = caption ?? act.Label;
             string icon = act.Icon;
-            var ok = enabled && (Web.Principal == null || act.DoAuthorize(Web, true));
+
             tip ??= act.Tip;
 
             if (tool.IsAnchorTag)
@@ -3165,7 +3148,7 @@ namespace ChainFx.Web
                     Add(" uk-active");
                 }
 
-                if (!ok)
+                if (disabled)
                 {
                     Add(" disabled");
                 }
@@ -3213,7 +3196,7 @@ namespace ChainFx.Web
                 }
             }
 
-            if (!ok)
+            if (disabled)
             {
                 Add(" disabled=\"disabled\" onclick=\"return false;\"");
             }
@@ -4040,9 +4023,9 @@ namespace ChainFx.Web
                         if (filter != null && !filter(e.Value)) continue;
                         if (e.IsHead)
                         {
-                            STATIC_(null);
+                            FIELD_(null);
                             Add(e.Value.ToString());
-                            _STATIC();
+                            _FIELD();
                         }
                         else
                         {
@@ -4086,9 +4069,9 @@ namespace ChainFx.Web
                         if (filter != null && !filter(e.key, e.Value)) continue;
                         if (e.IsHead)
                         {
-                            STATIC_(null);
+                            FIELD_(null);
                             Add(e.Value.ToString());
-                            _STATIC();
+                            _FIELD();
                             odd = true;
                         }
                         else

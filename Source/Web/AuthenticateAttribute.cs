@@ -67,38 +67,39 @@ namespace ChainFx.Web
         const int EXPIRY_DAYS = 3;
 
 
-        public static P FromToken<P>(string token) where P : IData, new()
+        public static P FromToken<P>(string token) where P : class, IData, new()
         {
-            var bytes = Convert.FromBase64String(token);
-
-            var secret = Application.Secret;
-
-            // replace signature with secret
-            Span<byte> sig = stackalloc byte[16];
-            for (int i = 0; i < 16; i++)
-            {
-                var off = bytes.Length - 16 + i;
-                sig[i] = bytes[off]; // backup 
-                if (i < secret.Length)
-                {
-                    bytes[off] = (byte) secret[i]; // replace
-                }
-            }
-
-            // compare signature
-            using var md5 = MD5.Create();
-            var hash = md5.ComputeHash(bytes, 0, bytes.Length - 16 + secret.Length);
-            for (int i = 0; i < 16; i++)
-            {
-                if (sig[i] != hash[i])
-                {
-                    return default;
-                }
-            }
-
-            // deserialize
             try
             {
+                var bytes = Convert.FromBase64String(token);
+
+                var secret = Application.Secret;
+
+                // replace signature with secret
+                Span<byte> sig = stackalloc byte[16];
+                for (int i = 0; i < 16; i++)
+                {
+                    var off = bytes.Length - 16 + i;
+                    sig[i] = bytes[off]; // backup 
+                    if (i < secret.Length)
+                    {
+                        bytes[off] = (byte) secret[i]; // replace
+                    }
+                }
+
+                // compare signature
+                using var md5 = MD5.Create();
+                var hash = md5.ComputeHash(bytes, 0, bytes.Length - 16 + secret.Length);
+                for (int i = 0; i < 16; i++)
+                {
+                    if (sig[i] != hash[i])
+                    {
+                        return null;
+                    }
+                }
+
+                // deserialize
+
                 var len = bytes.Length - 16 - 1;
                 var jo = (JObj) new JsonParser(bytes, len).Parse();
 
@@ -106,7 +107,7 @@ namespace ChainFx.Web
                 DateTime stamp = jo["$"];
                 if ((DateTime.Now - stamp).Days > EXPIRY_DAYS)
                 {
-                    return default;
+                    return null;
                 }
 
                 // construct a principal object
@@ -116,7 +117,7 @@ namespace ChainFx.Web
             }
             catch
             {
-                return default;
+                return null;
             }
         }
     }
