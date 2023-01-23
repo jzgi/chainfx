@@ -11,7 +11,7 @@ namespace ChainFx.Web
         // opened writer on the log file
         readonly StreamWriter logWriter;
 
-        internal FileLogger(string file)
+        public FileLogger(string file)
         {
             // init the file-based logger
             var stream = new FileStream(file, FileMode.Append, FileAccess.Write);
@@ -25,7 +25,7 @@ namespace ChainFx.Web
         {
         }
 
-        public int Level { get; internal set; } = 3;
+        public int Level { get; set; } = 3;
 
 
         //

@@ -437,9 +437,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TD(decimal v, bool money = false)
+        public HtmlBuilder TD(decimal v, bool money = false, bool right = false)
         {
-            Add("<td style=\"text-align: right\">");
+            Add("<td");
+            if (right)
+            {
+                Add(" style=\"text-align: right\"");
+            }
+            Add(">");
             if (money)
             {
                 Add('￥');
@@ -2785,7 +2790,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder NAVVAR<K>(K varkey, int subscript = -1, string pick = null, short status = 0, short state = 0, string css = null)
+        public HtmlBuilder VARPAD<K>(K varkey, int subscript = -1, string pick = null, short status = 0, short state = 0, string css = null)
         {
             Add("<nav class=\"uk-button-group");
             if (css != null)
@@ -3171,7 +3176,7 @@ namespace ChainFx.Web
             }
             else
             {
-                Add("<button class=\"uk-button uk-button-small");
+                Add("<button class=\"uk-button uk-button-secondary");
                 if (css != null)
                 {
                     Add(' ');
@@ -4199,15 +4204,12 @@ namespace ChainFx.Web
                 Add("\"");
 
                 Add(" rows=\"");
-                Add(max <= 30 ? 2 :
+                Add(max <= 40 ? 2 :
                     max <= 60 ? 3 :
                     max <= 100 ? 4 :
                     max <= 150 ? 5 :
-                    max <= 200 ? 6 :
-                    max <= 250 ? 7 :
-                    max <= 300 ? 8 :
-                    max <= 400 ? 10 :
-                    12
+                    max <= 250 ? 6 :
+                    max <= 400 ? 7 : 8
                 );
                 Add("\"");
             }
@@ -4435,10 +4437,6 @@ namespace ChainFx.Web
             {
                 for (int i = 0; i < opts.Count; i++)
                 {
-                    if (!required && i == 0)
-                    {
-                        Add("<option value=\"\"></option>");
-                    }
                     var e = opts.EntryAt(i);
                     var key = e.Key;
                     var val = e.value;
