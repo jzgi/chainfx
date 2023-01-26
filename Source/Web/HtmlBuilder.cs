@@ -2345,9 +2345,15 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder TABLE<M>(M[] arr, Action<M> tr, Action thead = null, string caption = null)
+        public HtmlBuilder TABLE<M>(M[] arr, Action<M> tr, Action thead = null, string caption = null, bool reverse = false, string css = null)
         {
-            Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
+            Add("<table class=\"uk-table uk-table-hover uk-table-divider");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
             if (caption != null)
             {
                 Add("<caption>");
@@ -2358,12 +2364,25 @@ namespace ChainFx.Web
             {
                 Add("<tbody>");
                 thead?.Invoke();
-                for (int i = 0; i < arr.Length; i++)
+                if (reverse)
                 {
-                    var obj = arr[i];
-                    Add("<tr>");
-                    tr(obj);
-                    Add("</tr>");
+                    for (int i = arr.Length - 1; i >= 0; i--)
+                    {
+                        var obj = arr[i];
+                        Add("<tr>");
+                        tr(obj);
+                        Add("</tr>");
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        var obj = arr[i];
+                        Add("<tr>");
+                        tr(obj);
+                        Add("</tr>");
+                    }
                 }
                 Add("</tbody>");
             }

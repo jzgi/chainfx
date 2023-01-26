@@ -118,6 +118,8 @@ namespace ChainFx
             }
         }
 
+        public override string ToString() => name;
+
         public virtual string Tip => tip;
 
         public virtual bool IsDisabled => state == STA_VOID;
