@@ -306,7 +306,7 @@ namespace ChainFx.Web
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body>");
+            h.Add("<body class=\"uk-pane\">");
 
             main?.Invoke(h);
 

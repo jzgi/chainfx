@@ -344,9 +344,17 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder TH(string caption = null)
+        public HtmlBuilder TH(string caption = null, string css = null)
         {
-            Add("<th>");
+            Add("<th");
+
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+            Add(">");
 
             if (caption != null)
             {
@@ -1639,12 +1647,61 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder PIC_(string css = null, bool circle = false)
+        public HtmlBuilder PIC_<A>(A a, bool circle = false, string css = null)
         {
-            Add("<div");
+            Add("<div class=\"uk-margin-auto-vertical uk-inline");
             if (css != null)
             {
-                Add(" class=\"");
+                Add(' ');
+                Add(css);
+            }
+            Add("\"><img style=\"width: 100%\"");
+            if (circle)
+            {
+                Add(" class=\"uk-border-circle\"");
+            }
+            Add(" loading=\"lazy\" src=\"");
+
+            PutKey(a);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlBuilder _PIC()
+        {
+            Add("</div>");
+            return this;
+        }
+
+        public HtmlBuilder PIC_<A, B>(A a, B b, bool circle = false, string css = null)
+        {
+            Add("<div class=\"uk-margin-auto-vertical uk-inline");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\"><img style=\"width: 100%\"");
+            if (circle)
+            {
+                Add(" class=\"uk-border-circle\"");
+            }
+            Add(" loading=\"lazy\" src=\"");
+
+            PutKey(a);
+            PutKey(b);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlBuilder PIC_<A, B, C>(A a, B b, C c, bool circle = false, string css = null)
+        {
+            Add("<div class=\"uk-margin-auto-vertical uk-inline");
+            if (css != null)
+            {
+                Add(' ');
                 Add(css);
             }
             Add("\"><img style=\"width: 100%\"");
@@ -1653,39 +1710,65 @@ namespace ChainFx.Web
                 Add(" class=\"uk-border-circle\"");
             }
 
-            Add(" loading\"lazy\" src=\"");
-            return this;
-        }
+            Add(" loading=\"lazy\" src=\"");
 
-        public HtmlBuilder _PIC()
-        {
-            Add("\"></div>");
-            return this;
-        }
-
-        public HtmlBuilder PIC<A>(A a, bool circle = false, string css = "uk-margin-auto-vertical")
-        {
-            PIC_(css, circle);
-            PutKey(a);
-            _PIC();
-            return this;
-        }
-
-        public HtmlBuilder PIC<A, B>(A a, B b, bool circle = false, string css = "uk-margin-auto-vertical")
-        {
-            PIC_(css, circle);
-            PutKey(a);
-            PutKey(b);
-            _PIC();
-            return this;
-        }
-
-        public HtmlBuilder PIC<A, B, C>(A a, B b, C c, bool circle = false, string css = "uk-margin-auto-vertical")
-        {
-            PIC_(css, circle);
             PutKey(a);
             PutKey(b);
             PutKey(c);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlBuilder PIC_<A, B, C, D>(A a, B b, C c, D d, bool circle = false, string css = null)
+        {
+            Add("<div class=\"uk-margin-auto-vertical uk-inline");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\"><img style=\"width: 100%\"");
+            if (circle)
+            {
+                Add(" class=\"uk-border-circle\"");
+            }
+
+            Add(" loading=\"lazy\" src=\"");
+
+            PutKey(a);
+            PutKey(b);
+            PutKey(c);
+            PutKey(d);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlBuilder PIC<A>(A a, bool circle = false, string css = null)
+        {
+            PIC_(a, circle, css);
+            _PIC();
+            return this;
+        }
+
+        public HtmlBuilder PIC<A, B>(A a, B b, bool circle = false, string css = null)
+        {
+            PIC_(a, b, circle, css);
+            _PIC();
+            return this;
+        }
+
+        public HtmlBuilder PIC<A, B, C>(A a, B b, C c, bool circle = false, string css = null)
+        {
+            PIC_(a, b, c, circle, css);
+            _PIC();
+            return this;
+        }
+
+        public HtmlBuilder PIC<A, B, C, D>(A a, B b, C c, D d, bool circle = false, string css = null)
+        {
+            PIC_(a, b, c, d, circle, css);
             _PIC();
             return this;
         }
@@ -2900,14 +2983,15 @@ namespace ChainFx.Web
                     continue;
                 }
 
-
-                if (last == null || last != sub.Tip)
+                if (sub.Tip != null && last != sub.Tip) // take null as smae group 
                 {
-                    if (last != null)
-                    {
-                        _FORM();
-                        _UL();
-                    }
+                    _FORM();
+                    _UL();
+                    // if (last != null)
+                    // {
+                    //     _FORM();
+                    //     _UL();
+                    // }
                     FORM_("uk-card uk-card-primary");
                     H3(sub.Tip, "uk-card-header");
                     UL_("uk-card-body uk-child-width-1-2", grid: true);
@@ -2924,7 +3008,10 @@ namespace ChainFx.Web
                 _A();
                 _LI();
 
-                last = sub.Tip;
+                if (sub.Tip != null) // make it same group if without tip
+                {
+                    last = sub.Tip;
+                }
             }
             _FORM();
             _UL();
@@ -3783,10 +3870,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool money = true, bool @readonly = false, bool required = false)
+        public HtmlBuilder NUMBER(string label, string name, decimal v, decimal max = decimal.MaxValue, decimal min = decimal.MinValue, decimal step = 0.00m, bool money = true, bool @readonly = false, bool required = false, string onchange = null, string css = null)
         {
             LABEL(label);
-            Add("<input type=\"number\" class=\"uk-input\" name=\"");
+            Add("<input type=\"number\" class=\"uk-input");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
             Add(v, money);
@@ -3795,17 +3888,15 @@ namespace ChainFx.Web
             {
                 Add(" min=\"");
                 Add(min);
-                Add("\"");
             }
 
             if (max != decimal.MaxValue)
             {
-                Add(" max=\"");
+                Add("\" max=\"");
                 Add(max);
-                Add("\"");
             }
 
-            Add(" step=\"");
+            Add("\" step=\"");
             if (step > 0)
             {
                 Add(step);
@@ -3815,9 +3906,15 @@ namespace ChainFx.Web
                 Add("any");
             }
 
+            if (onchange != null)
+            {
+                Add("\" onchange=\"");
+                Add(onchange);
+            }
             Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
+
             Add(">");
             return this;
         }
