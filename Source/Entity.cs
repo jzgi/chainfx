@@ -8,20 +8,6 @@ namespace ChainFx
     public abstract class Entity : IData
     {
         public const short
-            STA_VOID = 0,
-            STA_PRE = 1,
-            STA_FINE = 2,
-            STA_TOP = 4;
-
-        public static readonly Map<short, string> States = new Map<short, string>
-        {
-            {STA_VOID, null},
-            {STA_PRE, "停用"},
-            {STA_FINE, "正常"},
-            {STA_TOP, "优先"},
-        };
-
-        public const short
             STU_VOID = 0,
             STU_CREATED = 1,
             STU_ADAPTED = 2,
@@ -34,7 +20,7 @@ namespace ChainFx
             {STU_CREATED, "新建"},
             {STU_ADAPTED, "处理"},
             {STU_OKED, "完成"},
-            {STU_ABORTED, "取消"},
+            {STU_ABORTED, "撤销"},
         };
 
 
@@ -48,7 +34,6 @@ namespace ChainFx
 
 
         public short typ;
-        public short state;
         public string name;
         public string tip;
 
@@ -58,10 +43,10 @@ namespace ChainFx
         public DateTime adapted;
         public string adapter;
 
-        public string oker;
-        public DateTime oked;
-
+        public string ender;
+        public DateTime ended;
         public short status;
+        public short state;
 
 
         public virtual void Read(ISource s, short msk = 0xff)
@@ -84,10 +69,10 @@ namespace ChainFx
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Get(nameof(state), ref state);
-                s.Get(nameof(oker), ref oker);
-                s.Get(nameof(oked), ref oked);
+                s.Get(nameof(ender), ref ender);
+                s.Get(nameof(ended), ref ended);
                 s.Get(nameof(status), ref status);
+                s.Get(nameof(state), ref state);
             }
         }
 
@@ -111,23 +96,25 @@ namespace ChainFx
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Put(nameof(state), state);
-                s.Put(nameof(oker), oker);
-                s.Put(nameof(oked), oked);
+                s.Put(nameof(ender), ender);
+                s.Put(nameof(ended), ended);
                 s.Put(nameof(status), status);
+                s.Put(nameof(state), state);
             }
         }
 
+        public string Tip => tip;
+
+        public bool IsDisabled => status == STU_VOID || status == STU_ABORTED;
+
+        public bool IsEnabled => state > STU_VOID && status < STU_ABORTED;
+
+        public bool IsChangeable => status < STU_OKED;
+
+        public bool IsEnded => status >= STU_OKED;
+
+        public bool IsCancelled => status == STU_ABORTED;
+
         public override string ToString() => name;
-
-        public virtual string Tip => tip;
-
-        public virtual bool IsDisabled => state == STA_VOID;
-
-        public virtual bool IsEnabled => state == STA_FINE;
-
-        public virtual bool IsWorkable => state >= STA_FINE;
-
-        public virtual bool IsTop => state == STA_TOP;
     }
 }

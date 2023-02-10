@@ -73,6 +73,6 @@ namespace ChainFx.Fabric
 
         public DateTime Created => created;
 
-        public bool IsRunning => state == STA_FINE;
+        public bool IsRunning => state == 2;
     }
 }

@@ -450,7 +450,7 @@ namespace ChainFx.Web
             Add("<td");
             if (right)
             {
-                Add(" style=\"text-align: right\"");
+                Add(" class=\"uk-text-right\"");
             }
             Add(">");
             if (money)
@@ -3217,13 +3217,13 @@ namespace ChainFx.Web
             }
             if (!string.IsNullOrEmpty(cap))
             {
-                Add("<span>");
+                // Add("<span>");
                 if (icon != null)
                 {
                     Add("&nbsp;");
                 }
                 Add(cap);
-                Add("</span>");
+                // Add("</span>");
             }
             // notice badge
             if (badge > 0)

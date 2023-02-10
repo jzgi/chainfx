@@ -20,7 +20,7 @@ namespace ChainFx.Fabric
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.weburl), o.weburl, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.state), o.state, Entity.States)._LI();
+                    // h.LI_().SELECT("状态", nameof(o.state), o.state, Entity.States)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });
             }
@@ -52,7 +52,7 @@ namespace ChainFx.Fabric
                     h.LI_().NUMBER("节点编号", nameof(o.id), o.id, min: 1, max: 24, required: true)._LI();
                     h.LI_().TEXT("名称", nameof(o.name), o.name, max: 20, required: true)._LI();
                     h.LI_().URL("连接地址", nameof(o.weburl), o.weburl, max: 30, required: true)._LI();
-                    h.LI_().SELECT("状态", nameof(o.state), o.state, Entity.States)._LI();
+                    // h.LI_().SELECT("状态", nameof(o.state), o.state, Entity.States)._LI();
                     h._FIELDSUL().BOTTOM_BUTTON("确认", nameof(upd))._FORM();
                 });
             }
