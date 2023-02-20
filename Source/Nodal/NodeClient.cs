@@ -3,15 +3,16 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using static ChainFx.Fabric.NodeUtility;
+using ChainFx.Web;
+using static ChainFx.Nodal.NodeUtility;
 using WebClient = ChainFx.Web.WebClient;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// A client connector to the specific federated peer.
     /// </summary>
-    public class NodeClient : WebClient, IKeyable<short>
+    public class NodeClient : Web.WebClient, IKeyable<short>
     {
         const int REQUEST_TIMEOUT = 3;
 
@@ -33,7 +34,7 @@ namespace ChainFx.Fabric
         };
 
         // the remote peer
-        readonly Peer peer;
+        readonly Node _node;
 
         // acceptable remote addresses
         readonly IPAddress[] addrs;
@@ -51,7 +52,7 @@ namespace ChainFx.Fabric
 
         internal async Task PeekLastBlockAsync(DbContext dc)
         {
-            await dc.QueryTopAsync("SELECT seq, blockcs FROM ledgrs_ WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(peer.Id));
+            await dc.QueryTopAsync("SELECT seq, blockcs FROM ledgrs_ WHERE peerid = @1 ORDER BY seq DESC LIMIT 1", p => p.Set(_node.Id));
             dc.Let(out long seq);
             dc.Let(out long bcs);
             if (seq > 0)
@@ -72,9 +73,9 @@ namespace ChainFx.Fabric
         /// <summary>
         /// To construct a node client. 
         /// </summary>
-        internal NodeClient(Peer peer, NodeClientHandler handler = null) : base(peer.weburl, handler ?? new NodeClientHandler())
+        internal NodeClient(Node node, NodeClientHandler handler = null) : base(node.weburl, handler ?? new NodeClientHandler())
         {
-            this.peer = peer;
+            this._node = node;
             try
             {
                 addrs = Dns.GetHostAddresses(BaseAddress.Host);
@@ -87,9 +88,9 @@ namespace ChainFx.Fabric
         }
 
 
-        public short Key => peer.id;
+        public short Key => _node.id;
 
-        public Peer Peer => peer;
+        public Node Node => _node;
 
         public string Err => err;
 
@@ -101,7 +102,7 @@ namespace ChainFx.Fabric
 
         #region TIE-MGT
 
-        public async Task<(int, NodeClientError)> AskAsync(Peer peer)
+        public async Task<(int, NodeClientError)> AskAsync(Node node)
         {
             try
             {
@@ -109,10 +110,10 @@ namespace ChainFx.Fabric
                 var req = new HttpRequestMessage(HttpMethod.Get, "/onask");
 
                 req.Headers.TryAddWithoutValidation(X_FROM, Nodality.Self.id.ToString());
-                req.Headers.TryAddWithoutValidation(X_CRYPTO, peer.id.ToString());
+                req.Headers.TryAddWithoutValidation(X_CRYPTO, node.id.ToString());
 
                 var jc = new JsonBuilder(true, 1024);
-                peer.Write(jc);
+                node.Write(jc);
 
                 req.Content = null;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, jc.CType);
@@ -140,7 +141,7 @@ namespace ChainFx.Fabric
             using var dc = Nodality.NewDbContext();
 
             // load the peer record
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM _peers_ WHERE id = @1");
+            dc.Sql("SELECT ").collst(Node.Empty).T(" FROM _peers_ WHERE id = @1");
             var obj = await dc.QueryAsync(p => p.Set(peerid));
 
             // check status

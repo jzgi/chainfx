@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// Thrown to indicate an error during database operation.
@@ -16,11 +16,11 @@ namespace ChainFx.Fabric
         {
         }
 
-        public DbException(string message) : base(message)
+        public DbException(string msg) : base(msg)
         {
         }
 
-        public DbException(string message, Exception inner) : base(message, inner)
+        public DbException(string msg, Exception inner) : base(msg, inner)
         {
         }
     }

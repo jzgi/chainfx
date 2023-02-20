@@ -1,10 +1,10 @@
 using System;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
-    public class Peer : Entity, IKeyable<short>
+    public class Node : Entity, IKeyable<short>
     {
-        public static readonly Peer Empty = new Peer();
+        public static readonly Node Empty = new Node();
 
         public const short
             TYP_ASK = 1,
@@ -32,11 +32,11 @@ namespace ChainFx.Fabric
 
         internal string secret;
 
-        public Peer()
+        public Node()
         {
         }
 
-        public Peer(ISource cfg)
+        public Node(ISource cfg)
         {
             Read(cfg);
         }

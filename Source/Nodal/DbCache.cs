@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     internal abstract class DbCache
     {

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using ChainFx.Web;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// A specialized string builder for generating SQL commands.

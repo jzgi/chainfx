@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     public static class NodeUtility
     {
@@ -34,10 +34,10 @@ namespace ChainFx.Fabric
             return (long) blockid * BLOCK_CAPACITY + idx;
         }
 
-        public static async Task<Peer[]> GetPeersAsync(this DbContext dc)
+        public static async Task<Node[]> GetPeersAsync(this DbContext dc)
         {
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM chain.peers");
-            return await dc.QueryAsync<Peer>();
+            dc.Sql("SELECT ").collst(Node.Empty).T(" FROM chain.peers");
+            return await dc.QueryAsync<Node>();
         }
 
         // public static async Task<Archival> GetArchiveAsync(this DbContext dc, short typ, string acct)

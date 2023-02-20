@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using ChainFx.Web;
 using static ChainFx.Web.Modal;
-using static ChainFx.Fabric.Nodality;
+using static ChainFx.Nodal.Nodality;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     public abstract class NodeWork : WebWork
     {
@@ -44,7 +44,7 @@ namespace ChainFx.Fabric
         [Ui("添加", "添加联盟节点", "plus"), Tool(ButtonOpen)]
         public async Task @new(WebContext wc)
         {
-            var o = new Peer
+            var o = new Node
             {
             };
             if (wc.IsGet)

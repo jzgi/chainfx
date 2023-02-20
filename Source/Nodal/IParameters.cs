@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// To set SQL parameters.  

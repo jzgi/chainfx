@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using ChainFx.Web;
 using static ChainFx.Web.Modal;
-using static ChainFx.Fabric.Nodality;
+using static ChainFx.Nodal.Nodality;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     public class NodeVarWork : WebWork
     {
@@ -11,7 +11,7 @@ namespace ChainFx.Fabric
         public async Task upd(WebContext wc)
         {
             short id = wc[0];
-            var o = GetConnector(id)?.Peer;
+            var o = GetConnector(id)?.Node;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>
@@ -43,7 +43,7 @@ namespace ChainFx.Fabric
         public async Task fedupd(WebContext wc)
         {
             short id = wc[0];
-            var o = GetConnector(id)?.Peer;
+            var o = GetConnector(id)?.Node;
             if (wc.IsGet)
             {
                 wc.GivePane(200, h =>

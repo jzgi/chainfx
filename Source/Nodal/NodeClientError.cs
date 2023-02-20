@@ -1,4 +1,4 @@
-﻿namespace ChainFx.Fabric
+﻿namespace ChainFx.Nodal
 {
     public enum NodeClientError
     {

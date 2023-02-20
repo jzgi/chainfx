@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// Thrown to indicate a blockchain federal network related error.

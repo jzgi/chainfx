@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using ChainFx.Web;
-using static ChainFx.Fabric.NodeUtility;
-using static ChainFx.Fabric.Nodality;
+using static ChainFx.Nodal.NodeUtility;
+using static ChainFx.Nodal.Nodality;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// To realize federation functionalty.

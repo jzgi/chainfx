@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainFx.Fabric;
+using ChainFx.Nodal;
 using ChainFx.Web;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
@@ -87,10 +87,10 @@ namespace ChainFx
             }
 
             // fabric and nodality cfg
-            JObj fabric = app[nameof(fabric)];
-            if (fabric != null)
+            JObj nodal = app[nameof(nodal)];
+            if (nodal != null)
             {
-                InitializeFabric(fabric);
+                InitializeNodal(nodal);
             }
 
             prog = app[nameof(prog)];

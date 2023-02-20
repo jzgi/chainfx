@@ -37,16 +37,16 @@ namespace ChainFx
         public string name;
         public string tip;
 
+        public short state;
+        public short status;
         public DateTime created;
         public string creator;
 
         public DateTime adapted;
         public string adapter;
 
-        public string ender;
-        public DateTime ended;
-        public short status;
-        public short state;
+        public string fixer;
+        public DateTime @fixed;
 
 
         public virtual void Read(ISource s, short msk = 0xff)
@@ -57,6 +57,8 @@ namespace ChainFx
             }
             if ((msk & MSK_BORN) == MSK_BORN)
             {
+                s.Get(nameof(state), ref state);
+                s.Get(nameof(status), ref status);
                 s.Get(nameof(created), ref created);
                 s.Get(nameof(creator), ref creator);
             }
@@ -69,10 +71,8 @@ namespace ChainFx
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Get(nameof(ender), ref ender);
-                s.Get(nameof(ended), ref ended);
-                s.Get(nameof(status), ref status);
-                s.Get(nameof(state), ref state);
+                s.Get(nameof(fixer), ref fixer);
+                s.Get(nameof(@fixed), ref @fixed);
             }
         }
 
@@ -84,6 +84,8 @@ namespace ChainFx
             }
             if ((msk & MSK_BORN) == MSK_BORN)
             {
+                s.Put(nameof(state), state);
+                s.Put(nameof(status), status);
                 s.Put(nameof(created), created);
                 s.Put(nameof(creator), creator);
             }
@@ -96,10 +98,8 @@ namespace ChainFx
             }
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Put(nameof(ender), ender);
-                s.Put(nameof(ended), ended);
-                s.Put(nameof(status), status);
-                s.Put(nameof(state), state);
+                s.Put(nameof(fixer), fixer);
+                s.Put(nameof(@fixed), @fixed);
             }
         }
 

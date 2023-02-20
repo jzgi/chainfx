@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// An encapsulation of relevant resources for domestic or inter-node ledger transaction.
@@ -65,7 +65,7 @@ namespace ChainFx.Fabric
             return false;
         }
 
-        public async void AcceptAsync(Peer peer)
+        public async void AcceptAsync(Node node)
         {
         }
 

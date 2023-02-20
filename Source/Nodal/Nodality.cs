@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Npgsql;
 
-namespace ChainFx.Fabric
+namespace ChainFx.Nodal
 {
     /// <summary>
     /// The structure & environment for database and distributed ledger. 
@@ -28,15 +28,12 @@ namespace ChainFx.Fabric
         // peer connectivty
         //
 
-        static Peer self;
+        static Node self;
 
-        static readonly ConcurrentDictionary<short, Peer> peers = new ConcurrentDictionary<short, Peer>();
+        static readonly ConcurrentDictionary<short, Node> peers = new ConcurrentDictionary<short, Node>();
 
         // establised connectors
         static readonly ConcurrentDictionary<short, NodeClient> okayed = new ConcurrentDictionary<short, NodeClient>();
-
-        // periodically pulling of blocks of remote ledger  records
-        // static Thread puller;
 
 
         public static void MapComposite<T>(string dbTyp = null)
@@ -49,33 +46,33 @@ namespace ChainFx.Fabric
         }
 
 
-        internal static void InitializeFabric(JObj fabriccfg)
+        internal static void InitializeNodal(JObj fabriccfg)
         {
             // create db source
             dbSource = new DbSource(fabriccfg);
 
             // create self peer info
-            self = new Peer(fabriccfg)
+            self = new Node(fabriccfg)
             {
             };
 
             // load  peer connectors
             //
-            using var dc = NewDbContext();
-            dc.Sql("SELECT ").collst(Peer.Empty).T(" FROM _peers_ WHERE status > 0");
-            var arr = dc.Query<Peer>();
-            if (arr != null)
-            {
-                foreach (var peer in arr)
-                {
-                    var cli = new NodeClient(peer);
-
-                    okayed.TryAdd(cli.Key, cli);
-
-                    // init current block id
-                    // await o.PeekLastBlockAsync(dc);
-                }
-            }
+            // using var dc = NewDbContext();
+            // dc.Sql("SELECT ").collst(Node.Empty).T(" FROM _peers_ WHERE status > 0");
+            // var arr = dc.Query<Node>();
+            // if (arr != null)
+            // {
+            //     foreach (var peer in arr)
+            //     {
+            //         var cli = new NodeClient(peer);
+            //
+            //         okayed.TryAdd(cli.Key, cli);
+            //
+            //         // init current block id
+            //         // await o.PeekLastBlockAsync(dc);
+            //     }
+            // }
 
             // start the puller thead
             // puller = new Thread(Replicate)
@@ -280,9 +277,9 @@ namespace ChainFx.Fabric
 
         #region NODAL-API
 
-        public static Peer Self => self;
+        public static Node Self => self;
 
-        public static Peer GetPeer(short key) => peers[key];
+        public static Node GetPeer(short key) => peers[key];
 
         //
         // transaction id generator
@@ -299,22 +296,22 @@ namespace ChainFx.Fabric
         public static ConcurrentDictionary<short, NodeClient> Okayed => okayed;
 
 
-        public async Task AskAsync(Peer peer)
+        public async Task AskAsync(Node node)
         {
             // validate peer
 
             // insert locally
             using (var dc = NewDbContext())
             {
-                dc.Sql("INSERT INTO _peers_ ").colset(Peer.Empty)._VALUES_(Peer.Empty);
-                await dc.ExecuteAsync(p => peer.Write(p));
+                dc.Sql("INSERT INTO _peers_ ").colset(Node.Empty)._VALUES_(Node.Empty);
+                await dc.ExecuteAsync(p => node.Write(p));
             }
 
-            var connector = new NodeClient(peer);
+            var connector = new NodeClient(node);
 
             // remote req
-            peer.id = Self.id;
-            var (code, err) = await connector.AskAsync(peer);
+            node.id = Self.id;
+            var (code, err) = await connector.AskAsync(node);
         }
 
 
@@ -343,12 +340,29 @@ namespace ChainFx.Fabric
         //
         // replicate ledgers for remote peer
         //
+        // periodically pulling of blocks of remote ledger  records
+        static Thread routine;
+
 
         const int MAX_BLOCK_SIZE = 64;
 
         const int MIN_BLOCK_SIZE = 8;
 
-        static async void Replicate(object state)
+        public static void StartNetwork(bool hub = false)
+        {
+            if (hub)
+            {
+                routine = new Thread(HubCycle);
+            }
+            else
+            {
+                routine = new Thread(PeerCycle);
+            }
+            
+            routine.Start();
+        }
+
+        static async void PeerCycle(object state)
         {
             while (true)
             {
@@ -360,7 +374,7 @@ namespace ChainFx.Fabric
                 foreach (var pair in okayed) // LOOP
                 {
                     var cli = pair.Value;
-                    if (!cli.Peer.IsRunning) continue;
+                    if (!cli.Node.IsRunning) continue;
 
                     int busy = 0;
                     var code = await cli.ReplicateAsync();
@@ -439,6 +453,10 @@ namespace ChainFx.Fabric
                     outer = false;
                 }
             } // outer
+        }
+
+        static void HubCycle(object state)
+        {
         }
     }
 }
