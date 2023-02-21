@@ -57,8 +57,6 @@ namespace ChainFx
             }
             if ((msk & MSK_BORN) == MSK_BORN)
             {
-                s.Get(nameof(state), ref state);
-                s.Get(nameof(status), ref status);
                 s.Get(nameof(created), ref created);
                 s.Get(nameof(creator), ref creator);
             }
@@ -73,6 +71,8 @@ namespace ChainFx
             {
                 s.Get(nameof(fixer), ref fixer);
                 s.Get(nameof(@fixed), ref @fixed);
+                s.Get(nameof(state), ref state);
+                s.Get(nameof(status), ref status);
             }
         }
 
@@ -84,8 +84,6 @@ namespace ChainFx
             }
             if ((msk & MSK_BORN) == MSK_BORN)
             {
-                s.Put(nameof(state), state);
-                s.Put(nameof(status), status);
                 s.Put(nameof(created), created);
                 s.Put(nameof(creator), creator);
             }
@@ -100,6 +98,8 @@ namespace ChainFx
             {
                 s.Put(nameof(fixer), fixer);
                 s.Put(nameof(@fixed), @fixed);
+                s.Put(nameof(state), state);
+                s.Put(nameof(status), status);
             }
         }
 

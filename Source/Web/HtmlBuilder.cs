@@ -4391,6 +4391,7 @@ namespace ChainFx.Web
         public HtmlBuilder SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, bool refresh = false, string css = null)
         {
             LABEL(label);
+
             Add("<select class=\"uk-select");
             if (rtl)
             {
@@ -4424,7 +4425,7 @@ namespace ChainFx.Web
             }
 
             Add(">");
-            if (!required)
+            if (!required && !multiple)
             {
                 Add("<option style=\"display:none\" selected></option>");
             }
@@ -4556,7 +4557,12 @@ namespace ChainFx.Web
                     var e = opts.EntryAt(i);
                     var key = e.Key;
                     var val = e.value;
-                    if (filter != null && !filter(key, val)) continue;
+
+                    if (filter != null && !filter(key, val))
+                    {
+                        continue;
+                    }
+
                     Add("<option value=\"");
                     if (key is short shortk)
                     {
