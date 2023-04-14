@@ -70,12 +70,25 @@ namespace ChainFx
 
         public bool IsProperty => name != null;
 
+        public bool IsObject => typ == JType.Object;
+
+        public bool IsArray => typ == JType.Array;
+
+        public bool IsString => typ == JType.String;
+
+        public bool IsNumber => typ == JType.Number;
+
+        public bool IsNull => typ == JType.Null;
+
+        public bool IsBoolean => typ is JType.True or JType.False;
+
         public static implicit operator JObj(JMbr v)
         {
             if (v.typ == JType.Object)
             {
-                return (JObj) v.refv;
+                return (JObj)v.refv;
             }
+
             return null;
         }
 
@@ -83,8 +96,9 @@ namespace ChainFx
         {
             if (v.typ == JType.Array)
             {
-                return (JArr) v.refv;
+                return (JArr)v.refv;
             }
+
             return null;
         }
 
@@ -97,9 +111,10 @@ namespace ChainFx
         {
             if (v.typ == JType.String)
             {
-                var str = (string) v.refv;
+                var str = (string)v.refv;
                 return str.Length == 0 ? '\0' : str[0];
             }
+
             return '\0';
         }
 
@@ -109,6 +124,7 @@ namespace ChainFx
             {
                 return v.numv.Short;
             }
+
             return 0;
         }
 
@@ -118,6 +134,7 @@ namespace ChainFx
             {
                 return v.numv.Int;
             }
+
             return 0;
         }
 
@@ -127,6 +144,7 @@ namespace ChainFx
             {
                 return v.numv.Long;
             }
+
             return 0;
         }
 
@@ -136,6 +154,7 @@ namespace ChainFx
             {
                 return v.numv.Double;
             }
+
             return 0;
         }
 
@@ -145,6 +164,7 @@ namespace ChainFx
             {
                 return v.numv.Decimal;
             }
+
             return 0;
         }
 
@@ -154,6 +174,7 @@ namespace ChainFx
             {
                 return v.numv;
             }
+
             return default;
         }
 
@@ -161,9 +182,10 @@ namespace ChainFx
         {
             if (v.typ == JType.String)
             {
-                string str = (string) v.refv;
+                string str = (string)v.refv;
                 if (TextUtility.TryParseDate(str, out var dt)) return dt;
             }
+
             return default;
         }
 
@@ -171,8 +193,9 @@ namespace ChainFx
         {
             if (v.typ == JType.String)
             {
-                return (string) v.refv;
+                return (string)v.refv;
             }
+
             return null;
         }
     }

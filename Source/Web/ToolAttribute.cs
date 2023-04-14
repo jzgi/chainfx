@@ -17,13 +17,13 @@ namespace ChainFx.Web
             MOD_OPEN = 0x0020,
             MOD_ASTACK = 0x0040;
 
-        public static readonly ToolAttribute BUTTON_CONFIRM = new ToolAttribute(Modal.ButtonConfirm);
+        public static readonly ToolAttribute BUTTON_CONFIRM = new(Modal.ButtonConfirm);
 
-        public static readonly ToolAttribute BUTTON_PICK_CONFIRM = new ToolAttribute(Modal.ButtonPickConfirm);
+        public static readonly ToolAttribute BUTTON_PICK_CONFIRM = new(Modal.ButtonPickConfirm);
 
-        public static readonly ToolAttribute BUTTON_SCRIPT = new ToolAttribute(Modal.ButtonScript);
+        public static readonly ToolAttribute BUTTON_SCRIPT = new(Modal.ButtonScript);
 
-        public static readonly ToolAttribute BUTTON_PICK_SCRIPT = new ToolAttribute(Modal.ButtonPickScript);
+        public static readonly ToolAttribute BUTTON_PICK_SCRIPT = new(Modal.ButtonPickScript);
 
         readonly Modal modal;
 
@@ -46,9 +46,9 @@ namespace ChainFx.Web
         public ToolAttribute(Modal modal, short status = 0, short state = 0, short size = 1, short subs = 0)
         {
             this.modal = modal;
-            this.element = (int) modal & 0xf000;
-            this.mode = (int) modal & 0x00ff;
-            this.pick = (int) modal & 0x0f00;
+            this.element = (int)modal & 0xf000;
+            this.mode = (int)modal & 0x00ff;
+            this.pick = (int)modal & 0x0f00;
             this.status = status;
             this.state = state;
             this.size = size;
@@ -93,14 +93,15 @@ namespace ChainFx.Web
 
         public short State => state;
 
-        internal bool Meets(short stu, short sta)
+
+        internal bool MeetsStatus(short oStatus)
         {
-            bool okstu = (status == 0) || ((status & stu) != 0);
-            if (okstu)
-            {
-                return (state == 0) || ((state & sta) != 0);
-            }
-            return false;
+            return (status == 0 && oStatus == 0) || (oStatus > 0 && (status & oStatus) == oStatus);
+        }
+
+        internal bool MeetState(short oState)
+        {
+            return (state == 0 || (state & oState) == state); // required state is contained by the obj
         }
     }
 }

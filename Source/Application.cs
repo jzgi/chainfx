@@ -54,7 +54,7 @@ namespace ChainFx
             // load app config
             var bytes = File.ReadAllBytes(APP_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
-            app = (JObj) parser.Parse();
+            app = (JObj)parser.Parse();
 
             // file-based logger
             int logging = app[nameof(logging)];
@@ -64,7 +64,8 @@ namespace ChainFx
                 Level = logging
             };
 
-            TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance);
+            TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime,
+                NullLoggerFactory.Instance);
 
             // security
             //
@@ -119,7 +120,7 @@ namespace ChainFx
             //
 
             var prop = "web-" + name;
-            var webcfg = (JObj) app[prop];
+            var webcfg = (JObj)app[prop];
 
             if (webcfg == null)
             {

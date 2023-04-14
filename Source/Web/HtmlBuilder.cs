@@ -200,6 +200,7 @@ namespace ChainFx.Web
                 Add(idx);
                 Add('\"');
             }
+
             Add(">");
             AddPrimitive(v);
             Add("</mark>");
@@ -285,6 +286,7 @@ namespace ChainFx.Web
                 AddPrimitive(v);
                 Add("</sub>");
             }
+
             return this;
         }
 
@@ -354,6 +356,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
 
             if (caption != null)
@@ -407,6 +410,7 @@ namespace ChainFx.Web
             {
                 Add(" style=\"text-align: right\"");
             }
+
             Add(">");
 
             Add(v);
@@ -422,6 +426,7 @@ namespace ChainFx.Web
             {
                 Add(" style=\"text-align: right\"");
             }
+
             Add(">");
 
             Add(v);
@@ -437,6 +442,7 @@ namespace ChainFx.Web
             {
                 Add(" style=\"text-align: right\"");
             }
+
             Add(">");
 
             Add(v);
@@ -452,6 +458,7 @@ namespace ChainFx.Web
             {
                 Add(" class=\"uk-text-right\"");
             }
+
             Add(">");
             if (money)
             {
@@ -491,6 +498,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add('>');
 
             AddPrimitive(a);
@@ -529,6 +537,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             if (colspan > 0)
             {
                 Add(" colspan=\"");
@@ -645,6 +654,7 @@ namespace ChainFx.Web
             {
                 Add("）");
             }
+
             _SPAN();
             return this;
         }
@@ -820,6 +830,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             AddPrimitive(v);
             Add("</p>");
@@ -847,6 +858,7 @@ namespace ChainFx.Web
             {
                 Add("）");
             }
+
             Add("</p>");
             return this;
         }
@@ -880,6 +892,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             AddPrimitive(v);
             Add("</q>");
@@ -915,6 +928,7 @@ namespace ChainFx.Web
             {
                 Add("）");
             }
+
             Add("</q>");
             return this;
         }
@@ -968,10 +982,12 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             if (grid)
             {
                 Add(" uk-grid");
             }
+
             Add(">");
             return this;
         }
@@ -1013,6 +1029,7 @@ namespace ChainFx.Web
                     Add(' ');
                     Add(css);
                 }
+
                 Add("\"");
             }
             else if (css != null)
@@ -1021,6 +1038,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             return this;
         }
@@ -1091,6 +1109,7 @@ namespace ChainFx.Web
                     Add(' ');
                     Add(css);
                 }
+
                 Add("\"");
             }
             else if (css != null)
@@ -1099,6 +1118,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             return this;
         }
@@ -1138,10 +1158,12 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             if (grid)
             {
                 Add(" uk-grid");
             }
+
             Add(">");
             return this;
         }
@@ -1222,6 +1244,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(">");
             return this;
         }
@@ -1292,9 +1315,11 @@ namespace ChainFx.Web
                     {
                         Add("&nbsp;");
                     }
+
                     AddPrimitive(arr[i]);
                 }
             }
+
             Add("</span>");
             return this;
         }
@@ -1317,6 +1342,34 @@ namespace ChainFx.Web
             {
                 Add("）");
             }
+
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlBuilder FIELD3<A, B, C>(string label, A a, B b, C c)
+        {
+            LABEL(label);
+            Add("<span class=\"uk-static\">");
+
+            AddPrimitive(a);
+            AddPrimitive(b);
+            AddPrimitive(c);
+
+            Add("</span>");
+            return this;
+        }
+
+        public HtmlBuilder FIELD4<A, B, C, D>(string label, A a, B b, C c, D d)
+        {
+            LABEL(label);
+            Add("<span class=\"uk-static\">");
+
+            AddPrimitive(a);
+            AddPrimitive(b);
+            AddPrimitive(c);
+            AddPrimitive(d);
+
             Add("</span>");
             return this;
         }
@@ -1340,6 +1393,7 @@ namespace ChainFx.Web
                 {
                     Add("&nbsp;");
                 }
+
                 var val = vals[i];
                 var opt = opts[val];
 
@@ -1347,6 +1401,7 @@ namespace ChainFx.Web
 
                 Add(strv);
             }
+
             Add("</span>");
             return this;
         }
@@ -1359,6 +1414,7 @@ namespace ChainFx.Web
             {
                 Add('￥');
             }
+
             Add(v, money);
             Add("</span>");
             return this;
@@ -1396,9 +1452,11 @@ namespace ChainFx.Web
                     {
                         Add("，");
                     }
+
                     Add(v.ToString());
                 }
             }
+
             Add("</span>");
             return this;
         }
@@ -1423,12 +1481,14 @@ namespace ChainFx.Web
             {
                 Add("<em>");
             }
+
             Add('￥');
 
             if (s)
             {
                 Add("<s>");
             }
+
             Add(v);
             if (s)
             {
@@ -1453,18 +1513,47 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder AGOTO(string caption, string href = null, string css = null)
+        public HtmlBuilder AGOTO<A>(A a, string action = null, int subscpt = 0, string css = null)
         {
             Add("<a target=\"_parent\" href=\"");
-            Add(href);
+            Add(action);
+            if (subscpt > 0)
+            {
+                Add('-');
+                Add(subscpt);
+            }
             Add("\" class=\"uk-button");
             if (css != null)
             {
                 Add(' ');
                 Add(css);
             }
+
             Add("\" onclick=\"return goto(this, event);\">");
-            Add(caption);
+            AddPrimitive(a);
+            Add("</a>");
+            return this;
+        }
+
+        public HtmlBuilder AGOTO<A, B>(A a, B b, string action = null, int subscpt = 0, string css = null)
+        {
+            Add("<a target=\"_parent\" href=\"");
+            Add(action);
+            if (subscpt > 0)
+            {
+                Add('-');
+                Add(subscpt);
+            }
+            Add("\" class=\"uk-button");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+
+            Add("\" onclick=\"return goto(this, event);\">");
+            AddPrimitive(a);
+            AddPrimitive(b);
             Add("</a>");
             return this;
         }
@@ -1485,6 +1574,7 @@ namespace ChainFx.Web
             {
                 Add(caption);
             }
+
             return this;
         }
 
@@ -1503,6 +1593,7 @@ namespace ChainFx.Web
                 {
                     Add(" disabled");
                 }
+
                 Add("><span uk-icon=\"");
                 Add(icon);
                 Add("\"</span>");
@@ -1512,6 +1603,7 @@ namespace ChainFx.Web
             {
                 Add(icon);
             }
+
             return this;
         }
 
@@ -1524,18 +1616,21 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             if (id > 0)
             {
                 Add(" id=\"");
                 Add(id);
                 Add("\"");
             }
+
             if (onclick != null)
             {
                 Add(" onclick=\"");
                 Add(onclick);
                 Add("\"");
             }
+
             Add(" href=\"");
             PutKey(href);
             Add("\">");
@@ -1551,18 +1646,21 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             if (id > 0)
             {
                 Add(" id=\"");
                 Add(id);
                 Add("\"");
             }
+
             if (onclick != null)
             {
                 Add(" onclick=\"");
                 Add(onclick);
                 Add("\"");
             }
+
             Add(" href=\"");
             PutKey(a);
             PutKey(b);
@@ -1579,6 +1677,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" href=\"");
             PutKey(a);
             PutKey(b);
@@ -1596,6 +1695,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" href=\"");
             PutKey(a);
             PutKey(b);
@@ -1616,6 +1716,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" href=\"");
             PutKey(a);
             PutKey(b);
@@ -1643,6 +1744,7 @@ namespace ChainFx.Web
                 Add("\" class=\"");
                 Add(css);
             }
+
             Add("\"></span>");
             return this;
         }
@@ -1655,11 +1757,13 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
                 Add(" class=\"uk-border-circle\"");
             }
+
             Add(" loading=\"lazy\" src=\"");
 
             PutKey(a);
@@ -1682,11 +1786,13 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
                 Add(" class=\"uk-border-circle\"");
             }
+
             Add(" loading=\"lazy\" src=\"");
 
             PutKey(a);
@@ -1704,6 +1810,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
@@ -1728,6 +1835,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\"><img style=\"width: 100%\"");
             if (circle)
             {
@@ -1845,6 +1953,7 @@ namespace ChainFx.Web
             {
                 Add(css);
             }
+
             Add("\" uk-alert>");
 
             return this;
@@ -1915,11 +2024,13 @@ namespace ChainFx.Web
                 {
                     continue;
                 }
+
                 Add("<li");
                 if (k == subscript || (zeroicon == null && num == 0 && subscript == 0))
                 {
                     Add(" class=\"uk-active\"");
                 }
+
                 Add("><a href=\"");
                 Add(uri);
                 Add('-');
@@ -1938,6 +2049,7 @@ namespace ChainFx.Web
                 {
                     Add(" class=\"uk-active\"");
                 }
+
                 Add("><a href=\"");
                 Add(string.IsNullOrEmpty(uri) ? "./" : uri);
                 Add("\" onclick=\"goto(this.href, event);\"><span uk-icon=\"");
@@ -2013,6 +2125,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             if (disabled)
             {
                 Add("\" disabled>");
@@ -2048,6 +2161,7 @@ namespace ChainFx.Web
                 AddEsc(v);
                 Add("</legend>");
             }
+
             return this;
         }
 
@@ -2062,11 +2176,13 @@ namespace ChainFx.Web
                 Add("\" formaction=\"");
                 Add(action);
             }
+
             if (subscript > -1)
             {
                 Add('-');
                 Add(subscript);
             }
+
             Add("\" onclick=\"");
             if (onclick != null)
             {
@@ -2080,13 +2196,16 @@ namespace ChainFx.Web
                 {
                     Add(", true");
                 }
+
                 Add(");");
             }
+
             Add("\"");
             if (disabled)
             {
                 Add(" disabled");
             }
+
             Add(">");
             return this;
         }
@@ -2268,10 +2387,12 @@ namespace ChainFx.Web
             {
                 Add("collapsible: false;");
             }
+
             if (multiple)
             {
                 Add("multiple: true");
             }
+
             Add("\" multiple: true\" class=\"");
             Add(css);
             Add("\">");
@@ -2374,6 +2495,7 @@ namespace ChainFx.Web
                 thead();
                 Add("</thead>");
             }
+
             Add("<tbody>");
             tbody();
             Add("</tbody>");
@@ -2408,6 +2530,7 @@ namespace ChainFx.Web
             {
                 Add(" disabled");
             }
+
             Add("></td>");
             return this;
         }
@@ -2436,6 +2559,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\">");
             if (caption != null)
             {
@@ -2443,6 +2567,7 @@ namespace ChainFx.Web
                 Add(caption);
                 Add("</caption>");
             }
+
             if (arr != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
@@ -2467,8 +2592,10 @@ namespace ChainFx.Web
                         Add("</tr>");
                     }
                 }
+
                 Add("</tbody>");
             }
+
             Add("</table>");
 
             return this;
@@ -2483,6 +2610,7 @@ namespace ChainFx.Web
                 Add(caption);
                 Add("</caption>");
             }
+
             if (arr != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
@@ -2495,17 +2623,25 @@ namespace ChainFx.Web
                     tr(obj);
                     Add("</tr>");
                 }
+
                 Add("</tbody>");
             }
+
             Add("</table>");
 
             return this;
         }
 
 
-        public HtmlBuilder MAINGRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, string css = null)
+        public HtmlBuilder MAINGRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, bool duo = false, string css = null)
         {
-            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            if (duo)
+            {
+                Add("<main uk-grid class=\"uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-child-width-1-8@l uk-child-width-1-6@xl\">");
+            }
+            else
+                Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+
             if (arr != null)
             {
                 for (int i = 0; i < arr.Length; i++)
@@ -2515,12 +2651,14 @@ namespace ChainFx.Web
                     {
                         continue;
                     }
+
                     Add("<article class=\"uk-card uk-card-default");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
 
                     card(obj);
@@ -2528,6 +2666,7 @@ namespace ChainFx.Web
                     Add("</article>");
                 }
             }
+
             Add("</main>");
 
             return this;
@@ -2556,17 +2695,20 @@ namespace ChainFx.Web
                     {
                         continue;
                     }
+
                     Add("<article class=\"uk-card");
                     if (css != null)
                     {
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
                     card(obj);
                     Add("</article>");
                 }
             }
+
             Add("</div>");
         }
 
@@ -2583,6 +2725,7 @@ namespace ChainFx.Web
                         Add(' ');
                         Add(css);
                     }
+
                     Add("\">");
 
                     card(src);
@@ -2590,6 +2733,7 @@ namespace ChainFx.Web
                     Add("</article>");
                 }
             }
+
             Add("</main>");
         }
 
@@ -2605,6 +2749,7 @@ namespace ChainFx.Web
             {
                 Add(tip);
             }
+
             Add("');\"");
 
             return this;
@@ -2631,6 +2776,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\">");
             return this;
         }
@@ -2657,6 +2803,7 @@ namespace ChainFx.Web
                 {
                     Add(tip);
                 }
+
                 Add("</span>");
             }
 
@@ -2665,16 +2812,19 @@ namespace ChainFx.Web
             {
                 Add("<a class=\"uk-icon-button\" href=\"javascript: window.parent.closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
             }
+
             Add("<nav"); // the button group
             if (bottom)
             {
                 Add(" class=\"uk-flex-center\"");
             }
+
             Add(">");
             if (toggle)
             {
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
             }
+
             var acts = Web.Work.Tooled;
             if (acts != null)
             {
@@ -2684,10 +2834,10 @@ namespace ChainFx.Web
                     var tool = act.Tool;
 
                     // status & state check
-                    if (!tool.Meets(status, state)) continue;
+                    if (!tool.MeetsStatus(status)) continue;
 
                     // current user autnorize check
-                    var perm = Web.Principal == null || act.DoAuthorize(Web, true);
+                    if (Web.Principal != null && !act.DoAuthorize(Web, true)) continue;
 
                     var anchor = tool.IsAnchorTag;
 
@@ -2696,11 +2846,13 @@ namespace ChainFx.Web
 
                     if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
                     {
+                        var stateyes = tool.MeetState(state);
                         // provide current anchor as subscript 
-                        PutTool(act, tool, anchor ? -1 : subscript, badge: ntc, disabled: !perm, astack: astack, css: "uk-button-primary");
+                        PutTool(act, tool, anchor ? -1 : subscript, badge: ntc, disabled: !stateyes, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
+
             Add("</nav>");
 
             if (!bottom)
@@ -2776,6 +2928,7 @@ namespace ChainFx.Web
                                 Add(" selected");
                                 break;
                         }
+
                         Add(">");
                         AddPrimitive(e.Value.ToString());
                         Add("</option>");
@@ -2841,20 +2994,24 @@ namespace ChainFx.Web
                 Add("<div class=\"uk-bottom-placeholder\"></div>");
                 Add("<div class=\"uk-bottom-bar");
             }
+
             if (css != null)
             {
                 Add(' ');
                 Add(css);
             }
+
             if (toggle)
             {
                 Add("\" id=\"tool-bar-form");
             }
+
             Add("\">");
             if (toggle)
             {
                 Add("<span style=\"position: absolute; left: 0.25rem\"><input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\"></span>");
             }
+
             return this;
         }
 
@@ -2873,11 +3030,13 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add("><input");
             if (toolbar)
             {
                 Add(" form=\"tool-bar-form\"");
             }
+
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(varkey);
             Add("\" onchange=\"checkToggle(this");
@@ -2886,6 +3045,7 @@ namespace ChainFx.Web
                 Add(", true, ");
                 Add(follow);
             }
+
             Add(");\">&nbsp;");
             Add(label);
             Add("</label>");
@@ -2926,13 +3086,15 @@ namespace ChainFx.Web
                     {
                         var tool = act.Tool;
 
-                        // status & state check
-                        if (!tool.Meets(status, state)) continue;
+                        // status check
+                        if (!tool.MeetsStatus(status)) continue;
 
                         // current user autnorize check
                         var perm = Web.Principal == null || act.DoAuthorize(Web, true);
 
-                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, disabled: !perm);
+                        var stateyes = tool.MeetState((state));
+
+                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, disabled: !perm && !stateyes);
                     }
                 }
             }
@@ -3005,6 +3167,7 @@ namespace ChainFx.Web
                 {
                     SPAN('✹', css: "uk-text-danger");
                 }
+
                 _A();
                 _LI();
 
@@ -3013,6 +3176,7 @@ namespace ChainFx.Web
                     last = sub.Tip;
                 }
             }
+
             _FORM();
             _UL();
         }
@@ -3098,7 +3262,7 @@ namespace ChainFx.Web
             }
         }
 
-        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, int badge = 0, bool disabled = true, bool astack = false, string css = null)
+        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, int badge = 0, bool disabled = false, bool astack = false, string css = null)
         {
             // check action's availability
             //
@@ -3115,25 +3279,30 @@ namespace ChainFx.Web
                 {
                     Add(" uk-active");
                 }
+
                 if (disabled)
                 {
                     Add(" disabled");
                 }
+
                 Add("\" href=\"");
                 Add(act == Web.Action ? act.Key : act.Relative);
                 if (subscript == -1 && Web.Subscript > 0)
                 {
                     subscript = Web.Subscript;
                 }
+
                 if (subscript > 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
                 }
+
                 if (astack)
                 {
                     Add("?astack=true");
                 }
+
                 Add("\"");
             }
             else // BUTTON
@@ -3144,6 +3313,7 @@ namespace ChainFx.Web
                 {
                     Add(" uk-width-micro");
                 }
+
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");
@@ -3153,6 +3323,7 @@ namespace ChainFx.Web
                     Add('-');
                     Add(subscript);
                 }
+
                 Add("\"");
                 if (tool.IsPost)
                 {
@@ -3207,6 +3378,7 @@ namespace ChainFx.Web
                 Add(tip);
                 Add("\"");
             }
+
             Add(">");
 
             if (icon != null)
@@ -3215,6 +3387,7 @@ namespace ChainFx.Web
                 Add(icon);
                 Add("\"></span>");
             }
+
             if (!string.IsNullOrEmpty(cap))
             {
                 // Add("<span>");
@@ -3222,9 +3395,11 @@ namespace ChainFx.Web
                 {
                     Add("&nbsp;");
                 }
+
                 Add(cap);
                 // Add("</span>");
             }
+
             // notice badge
             if (badge > 0)
             {
@@ -3254,6 +3429,7 @@ namespace ChainFx.Web
                     Add(' ');
                     Add(css);
                 }
+
                 if (act == Web.Action) // if current action
                 {
                     Add(" uk-active");
@@ -3272,6 +3448,7 @@ namespace ChainFx.Web
                 {
                     subscript = Web.Subscript;
                 }
+
                 if (subscript > 0 && act.Subscript != null)
                 {
                     Add('-');
@@ -3288,6 +3465,7 @@ namespace ChainFx.Web
                     Add(' ');
                     Add(css);
                 }
+
                 Add("\" name=\"");
                 Add(act.Key);
                 Add("\" formaction=\"");
@@ -3354,6 +3532,7 @@ namespace ChainFx.Web
                 Add(tip);
                 Add("\"");
             }
+
             Add(">");
             if (icon != null)
             {
@@ -3361,6 +3540,7 @@ namespace ChainFx.Web
                 Add(icon);
                 Add("\"></span>");
             }
+
             if (!string.IsNullOrEmpty(cap))
             {
                 Add("<span");
@@ -3368,14 +3548,17 @@ namespace ChainFx.Web
                 {
                     Add(" class=\"uk-visible@m\"");
                 }
+
                 Add(">");
                 if (icon != null)
                 {
                     Add("&nbsp;");
                 }
+
                 Add(cap);
                 Add("</span>");
             }
+
             // put the closing tag
             Add(tool.IsAnchorTag ? "</a>" : "</button>");
         }
@@ -3414,6 +3597,7 @@ namespace ChainFx.Web
                 AddPrimitive(vals[i]);
                 Add("\">");
             }
+
             return this;
         }
 
@@ -3426,6 +3610,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -3467,6 +3652,7 @@ namespace ChainFx.Web
                 Add(name);
                 Add("\"");
             }
+
             Add(">");
 
             if (datalst != null)
@@ -3481,8 +3667,10 @@ namespace ChainFx.Web
                     Add(dat);
                     Add("\">");
                 }
+
                 Add("</datalist>");
             }
+
             return this;
         }
 
@@ -3498,8 +3686,10 @@ namespace ChainFx.Web
                 {
                     Add(' ');
                 }
+
                 Add(v[i]);
             }
+
             Add("\" pattern=\"[0-9\\s]+\""); // numbers and spaces
             if (tip != null)
             {
@@ -3879,6 +4069,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -3911,6 +4102,7 @@ namespace ChainFx.Web
                 Add("\" onchange=\"");
                 Add(onchange);
             }
+
             Add("\"");
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
@@ -4003,16 +4195,19 @@ namespace ChainFx.Web
                     Add(css);
                 }
             }
+
             if (tip == null)
             {
                 Add("<div class=\"uk-input\">");
             }
+
             Add("<input type=\"checkbox\" class=\"uk-checkbox");
             if (tip == null && css != null)
             {
                 Add(' ');
                 Add(css);
             }
+
             Add("\" name=\"");
             Add(name);
             Add("\" value=\"");
@@ -4026,6 +4221,7 @@ namespace ChainFx.Web
             {
                 Add("</div>");
             }
+
             if (tip != null)
             {
                 Add("&nbsp;");
@@ -4093,6 +4289,7 @@ namespace ChainFx.Web
                 Add(tip);
                 Add("</span>");
             }
+
             Add("</label>");
             return this;
         }
@@ -4271,8 +4468,10 @@ namespace ChainFx.Web
                 {
                     Add(' ');
                 }
+
                 Add(v[i]);
             }
+
             _TEXTAREA(label != null);
 
             return this;
@@ -4349,7 +4548,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT_<V>(V name, string cookie = null, string onfix = null, bool rtl = false, string onchange = null, string css = null)
+        public HtmlBuilder SELECT_<V>(V name, string local = null, bool rtl = false, string onchange = null, bool required = false, string css = null)
         {
             Add("<select class=\"uk-select");
 
@@ -4363,18 +4562,14 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\" name=\"");
             AddPrimitive(name);
 
-            if (cookie != null)
+            if (local != null)
             {
-                Add("\" cookie=\"");
-                Add(cookie);
-            }
-            if (onfix != null)
-            {
-                Add("\" onfix=\"");
-                Add(onfix);
+                Add("\" local=\"");
+                Add(local);
             }
 
             if (onchange != null)
@@ -4383,7 +4578,16 @@ namespace ChainFx.Web
                 Add(onchange);
             }
 
-            Add("\">");
+            if (required)
+            {
+                Add("\" required>");
+            }
+            else
+            {
+                Add("\">");
+                Add("<option selected></option>");
+            }
+
             return this;
         }
 
@@ -4412,6 +4616,7 @@ namespace ChainFx.Web
             {
                 Add(" value=\"\" required");
             }
+
             if (size > 0)
             {
                 Add(" size=\"");
@@ -4429,6 +4634,7 @@ namespace ChainFx.Web
             {
                 Add("<option style=\"display:none\" selected></option>");
             }
+
             return this;
         }
 
@@ -4526,6 +4732,7 @@ namespace ChainFx.Web
                         {
                             Add("<option value=\"\"></option>");
                         }
+
                         var key = ety.Key;
                         Add("<option value=\"");
                         AddPrimitive(key);
@@ -4543,6 +4750,7 @@ namespace ChainFx.Web
                     grpopen = false;
                 }
             }
+
             _SELECT();
             return this;
         }
@@ -4586,6 +4794,7 @@ namespace ChainFx.Web
                     Add("</option>");
                 }
             }
+
             _SELECT();
             return this;
         }
@@ -4601,6 +4810,7 @@ namespace ChainFx.Web
                     {
                         Add("<option value=\"\"></option>");
                     }
+
                     var e = opts[i];
                     Add("<option value=\"");
                     AddPrimitive(e);
@@ -4611,6 +4821,7 @@ namespace ChainFx.Web
                     Add("</option>");
                 }
             }
+
             _SELECT();
             return this;
         }
@@ -4626,6 +4837,7 @@ namespace ChainFx.Web
                     {
                         Add("<option value=\"\"></option>");
                     }
+
                     var e = opts[i];
                     Add("<option value=\"");
                     Add(e);
@@ -4636,6 +4848,7 @@ namespace ChainFx.Web
                     Add("</option>");
                 }
             }
+
             _SELECT();
             return this;
         }
@@ -4669,6 +4882,7 @@ namespace ChainFx.Web
                 Add(css);
                 Add("\"");
             }
+
             Add(" name=\"");
             Add(name);
 
@@ -4677,11 +4891,13 @@ namespace ChainFx.Web
                 Add("\" cookie=\"");
                 Add(cookie);
             }
+
             if (onfix != null)
             {
                 Add("\" onfix=\"");
                 Add(onfix);
             }
+
             Add("\">");
             AddPrimitive(v);
             Add("</output>");
@@ -4696,6 +4912,7 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
+
             Add("\" name=\"");
             Add(name);
 
@@ -4704,11 +4921,13 @@ namespace ChainFx.Web
                 Add("\" cookie=\"");
                 Add(cookie);
             }
+
             if (onfix != null)
             {
                 Add("\" onfix=\"");
                 Add(onfix);
             }
+
             Add("\">");
 
             Add(v, true);

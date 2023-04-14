@@ -1,6 +1,4 @@
-﻿using ChainFx.Web;
-
-namespace ChainFx
+﻿namespace ChainFx
 {
     /// <summary>
     /// Represents a binary content. 
@@ -26,10 +24,5 @@ namespace ChainFx
         /// The ETag value for cache optimization. It's value can be null.
         /// 
         string ETag { get; }
-
-        /// <summary>
-        /// returns or converts to static content for cache.
-        /// </summary>
-        WebStaticContent ToStaticContent();
     }
 }

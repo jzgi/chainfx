@@ -16,12 +16,12 @@ namespace ChainFx.Nodal
 
         public static readonly Map<short, string> Typs = new Map<short, string>
         {
-            {TYP_ASK, "发出请求"},
-            {TYP_ASKED, "收到请求"},
-            {TYP_OKAY, "接纳请求"},
-            {TYP_OKAYED, "请求成功"},
-            {TYP_DENIAL, "回拒请求"},
-            {TYP_DENIED, "请求被拒"},
+            { TYP_ASK, "发出请求" },
+            { TYP_ASKED, "收到请求" },
+            { TYP_OKAY, "接纳请求" },
+            { TYP_OKAYED, "请求成功" },
+            { TYP_DENIAL, "回拒请求" },
+            { TYP_DENIED, "请求被拒" },
         };
 
         // unique id within the network
@@ -65,14 +65,10 @@ namespace ChainFx.Nodal
 
         public string Name => name;
 
-        public string Tip => tip;
-
-        public short Status => state;
-
         public string WebUrl => weburl;
 
         public DateTime Created => created;
 
-        public bool IsRunning => state == 2;
+        public bool IsRunning => status == 2;
     }
 }

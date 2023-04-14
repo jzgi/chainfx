@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 618
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Net.WebSockets;
 using System.Security.Claims;
@@ -59,7 +58,7 @@ namespace ChainFx.Web
         public IData Principal { get; set; }
 
         // higher level role goes down to act
-        public bool Dive { get; set; }
+        public bool Super { get; set; }
 
         public short Role { get; set; }
 
@@ -128,8 +127,7 @@ namespace ChainFx.Web
 
         public Task<WebSocket> AcceptWebSocketAsync() => fWebSocket.AcceptAsync(null);
 
-        [Obsolete]
-        public override AuthenticationManager Authentication => null;
+        [Obsolete] public override AuthenticationManager Authentication => null;
 
         public override ClaimsPrincipal User { get; set; } = null;
 
@@ -313,7 +311,7 @@ namespace ChainFx.Web
                 if (clen > 0)
                 {
                     // reading
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -333,7 +331,7 @@ namespace ChainFx.Web
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -357,7 +355,7 @@ namespace ChainFx.Web
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -392,7 +390,7 @@ namespace ChainFx.Web
                 int? clen = HeaderInt("Content-Length");
                 if (clen > 0)
                 {
-                    int len = (int) clen;
+                    int len = (int)clen;
                     buffer = new byte[len];
                     while ((count += await fRequest.Body.ReadAsync(buffer, count, (len - count))) < len)
                     {
@@ -490,8 +488,48 @@ namespace ChainFx.Web
         /// </summary>
         public bool IsCacheable()
         {
+            if (!IsGet)
+            {
+                return false;
+            }
             var sc = StatusCode;
-            return sc == 200 || sc == 203 || sc == 204 || sc == 206 || sc == 300 || sc == 301 || sc == 404 || sc == 405 || sc == 410 || sc == 414 || sc == 501;
+            return sc is 200 or 203 or 204 or 206 or 300 or 301 or 404 or 405 or 410 or 414 or 501;
+        }
+
+        internal WebStaticContent ToCacheContent()
+        {
+            if (Content == null)
+            {
+                return new WebStaticContent(null)
+                {
+                    StatusCode = StatusCode,
+                    MaxAge = MaxAge,
+                    Tick = Environment.TickCount
+                };
+            }
+            else if (Content is WebStaticContent sta)
+            {
+                return new WebStaticContent(sta.Buffer, sta.CType)
+                {
+                    Modified = sta.Modified,
+                    GZip = sta.GZip,
+                    StatusCode = StatusCode,
+                    MaxAge = MaxAge,
+                    Tick = Environment.TickCount
+                };
+            }
+            else if (Content is ContentBuilder b)
+            {
+                return new WebStaticContent(b.ToByteArray(), b.CType)
+                {
+                    ETag = b.ETag,
+                    StatusCode = StatusCode,
+                    MaxAge = MaxAge,
+                    Tick = Environment.TickCount
+                };
+            }
+
+            return default;
         }
 
         public void Give(int statusCode, IContent content = null, bool? shared = null, int maxage = 12)
@@ -552,14 +590,14 @@ namespace ChainFx.Web
             if (Content is WebStaticContent sta)
             {
                 var since = HeaderDateTime("If-Modified-Since");
-                Debug.Assert(sta != null);
-                if (since != null && sta.Adapted <= since)
+
+                if (since != null && sta.Modified <= since)
                 {
                     StatusCode = 304; // not modified
                     return;
                 }
 
-                var last = sta.Adapted;
+                var last = sta.Modified;
                 if (last != null)
                 {
                     SetHeader("Last-Modified", TextUtility.FormatUtcDate(last.Value));

@@ -136,6 +136,7 @@ namespace ChainFx.Nodal
             {
                 return false;
             }
+
             return reader.NextResult();
         }
 
@@ -146,6 +147,7 @@ namespace ChainFx.Nodal
             {
                 return false;
             }
+
             return reader.Read();
         }
 
@@ -159,6 +161,7 @@ namespace ChainFx.Nodal
                 {
                     moment = DateTime.Now;
                 }
+
                 return moment;
             }
         }
@@ -174,6 +177,7 @@ namespace ChainFx.Nodal
                 builder.Clear(); // reset
                 builder.Add(str);
             }
+
             return builder;
         }
 
@@ -251,6 +255,7 @@ namespace ChainFx.Nodal
             {
                 return ToObject<D>(msk);
             }
+
             return default;
         }
 
@@ -260,6 +265,7 @@ namespace ChainFx.Nodal
             {
                 return ToObject<D>(msk);
             }
+
             return default;
         }
 
@@ -269,6 +275,7 @@ namespace ChainFx.Nodal
             {
                 return ToObject<D>(msk);
             }
+
             return default;
         }
 
@@ -278,6 +285,7 @@ namespace ChainFx.Nodal
             {
                 return ToObject<D>(msk);
             }
+
             return default;
         }
 
@@ -365,6 +373,7 @@ namespace ChainFx.Nodal
             {
                 return ToArray<D>(msk);
             }
+
             return null;
         }
 
@@ -374,6 +383,7 @@ namespace ChainFx.Nodal
             {
                 return ToArray<D>(msk);
             }
+
             return null;
         }
 
@@ -393,6 +403,7 @@ namespace ChainFx.Nodal
             {
                 return ToMap(msk, keyer);
             }
+
             return null;
         }
 
@@ -402,6 +413,7 @@ namespace ChainFx.Nodal
             {
                 return ToMap(msk, keyer);
             }
+
             return null;
         }
 
@@ -411,6 +423,7 @@ namespace ChainFx.Nodal
             {
                 return ToMap(msk, keyer);
             }
+
             return null;
         }
 
@@ -420,6 +433,7 @@ namespace ChainFx.Nodal
             {
                 return ToMap(msk, keyer);
             }
+
             return null;
         }
 
@@ -456,6 +470,7 @@ namespace ChainFx.Nodal
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return command.ExecuteNonQuery();
         }
 
@@ -500,6 +515,7 @@ namespace ChainFx.Nodal
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteNonQueryAsync();
         }
 
@@ -518,6 +534,7 @@ namespace ChainFx.Nodal
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteNonQueryAsync();
         }
 
@@ -561,6 +578,7 @@ namespace ChainFx.Nodal
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteScalarAsync();
         }
 
@@ -579,6 +597,7 @@ namespace ChainFx.Nodal
                 p(this);
                 if (prepare) command.Prepare();
             }
+
             return await command.ExecuteScalarAsync();
         }
 
@@ -602,6 +621,7 @@ namespace ChainFx.Nodal
                 obj.Read(this, msk);
                 lst.Add(obj);
             }
+
             return lst.ToArray();
         }
 
@@ -629,8 +649,10 @@ namespace ChainFx.Nodal
                 {
                     throw new DbException("Must be keyer nor IKeyable<D>");
                 }
+
                 map.Add(key, obj);
             }
+
             return map;
         }
 
@@ -648,6 +670,7 @@ namespace ChainFx.Nodal
 
                 map.Add(k, v);
             }
+
             return map;
         }
 
@@ -665,6 +688,7 @@ namespace ChainFx.Nodal
 
                 map.Add(k, v);
             }
+
             return map;
         }
 
@@ -685,6 +709,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -702,6 +727,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -719,6 +745,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -736,6 +763,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -753,6 +781,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -770,6 +799,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -787,6 +817,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -804,6 +835,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -821,6 +853,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -838,6 +871,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -855,6 +889,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -872,6 +907,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -889,6 +925,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -906,6 +943,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -917,7 +955,7 @@ namespace ChainFx.Nodal
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         v = new byte[len];
                         reader.GetBytes(ord, 0, v, 0, len); // read data into the buffer
@@ -928,6 +966,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -945,6 +984,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -957,13 +997,14 @@ namespace ChainFx.Nodal
                 {
                     string str = reader.GetString(ord);
                     var p = new JsonParser(str);
-                    v = (JObj) p.Parse();
+                    v = (JObj)p.Parse();
                     return true;
                 }
             }
             catch
             {
             }
+
             return false;
         }
 
@@ -976,13 +1017,14 @@ namespace ChainFx.Nodal
                 {
                     string str = reader.GetString(ord);
                     var parser = new JsonParser(str);
-                    v = (JArr) parser.Parse();
+                    v = (JArr)parser.Parse();
                     return true;
                 }
             }
             catch
             {
             }
+
             return false;
         }
 
@@ -1002,6 +1044,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1019,6 +1062,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1036,6 +1080,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1053,6 +1098,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1070,6 +1116,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1087,6 +1134,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1104,6 +1152,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1121,6 +1170,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1138,6 +1188,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1155,6 +1206,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1172,6 +1224,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1189,6 +1242,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return false;
         }
 
@@ -1386,7 +1440,7 @@ namespace ChainFx.Nodal
                 if (!reader.IsDBNull(ord))
                 {
                     int len;
-                    if ((len = (int) reader.GetBytes(ord, 0, null, 0, 0)) > 0)
+                    if ((len = (int)reader.GetBytes(ord, 0, null, 0, 0)) > 0)
                     {
                         var buf = new byte[len];
                         reader.GetBytes(ord, 0, buf, 0, len); // read data into the buffer
@@ -1469,6 +1523,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return v;
         }
 
@@ -1486,6 +1541,7 @@ namespace ChainFx.Nodal
             catch
             {
             }
+
             return v;
         }
 
@@ -1499,12 +1555,13 @@ namespace ChainFx.Nodal
                 {
                     var str = reader.GetString(ord);
                     var p = new JsonParser(str);
-                    v = (JObj) p.Parse();
+                    v = (JObj)p.Parse();
                 }
             }
             catch
             {
             }
+
             return v;
         }
 
@@ -1518,12 +1575,13 @@ namespace ChainFx.Nodal
                 {
                     var str = reader.GetString(ord);
                     var p = new JsonParser(str);
-                    v = (JArr) p.Parse();
+                    v = (JArr)p.Parse();
                 }
             }
             catch
             {
             }
+
             return v;
         }
 
@@ -1634,10 +1692,13 @@ namespace ChainFx.Nodal
                     {
                         cnt.Put(reader.GetName(i), reader.GetString(i));
                     }
+
                     cnt._OBJ();
                 }
+
                 cnt._ARR();
             }
+
             return cnt;
         }
 
@@ -1783,7 +1844,7 @@ namespace ChainFx.Nodal
             int len = v?.Length ?? 0;
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Varchar, len)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (Digest)
             {
@@ -1795,7 +1856,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Boolean)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1810,7 +1871,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Char)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1825,7 +1886,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
             {
-                Value = (v.Array != null) ? (object) v : DBNull.Value
+                Value = (v.Array != null) ? v : DBNull.Value
             });
         }
 
@@ -1833,7 +1894,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v?.Length ?? 0)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1848,7 +1909,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1863,7 +1924,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1872,6 +1933,7 @@ namespace ChainFx.Nodal
                     Check(e);
                 }
             }
+
             if (v != null && Digest)
             {
                 foreach (var e in v)
@@ -1885,7 +1947,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1900,7 +1962,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Real)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1915,7 +1977,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Double)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1930,7 +1992,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Numeric)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1945,7 +2007,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Date)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -1961,7 +2023,7 @@ namespace ChainFx.Nodal
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
             if (v != null && Digest)
             {
@@ -2043,17 +2105,17 @@ namespace ChainFx.Nodal
 
         public void Put(string name, IData v, short msk = 0xff)
         {
-            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object) v : DBNull.Value)
+            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object)v : DBNull.Value)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
         public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
         {
-            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object) v : DBNull.Value)
+            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object)v : DBNull.Value)
             {
-                Value = (v != null) ? (object) v : DBNull.Value
+                Value = (v != null) ? (object)v : DBNull.Value
             });
         }
 
@@ -2085,7 +2147,7 @@ namespace ChainFx.Nodal
 
         public IParameters Set(byte v)
         {
-            Put(PARAMS[paramidx++], (short) v);
+            Put(PARAMS[paramidx++], (short)v);
             return this;
         }
 
@@ -2105,6 +2167,7 @@ namespace ChainFx.Nodal
             {
                 Put(PARAMS[paramidx++], v);
             }
+
             return this;
         }
 
@@ -2124,6 +2187,7 @@ namespace ChainFx.Nodal
             {
                 Put(PARAMS[paramidx++], v);
             }
+
             return this;
         }
 
@@ -2143,6 +2207,7 @@ namespace ChainFx.Nodal
             {
                 Put(PARAMS[paramidx++], v);
             }
+
             return this;
         }
 
@@ -2182,6 +2247,7 @@ namespace ChainFx.Nodal
             {
                 v = null;
             }
+
             Put(PARAMS[paramidx++], v);
             return this;
         }
@@ -2282,6 +2348,7 @@ namespace ChainFx.Nodal
             {
                 Put(INPARAMS[i], v[i]);
             }
+
             return this;
         }
 
@@ -2291,6 +2358,7 @@ namespace ChainFx.Nodal
             {
                 Put(INPARAMS[i], v[i]);
             }
+
             return this;
         }
 
@@ -2300,6 +2368,7 @@ namespace ChainFx.Nodal
             {
                 Put(INPARAMS[i], v[i].Key);
             }
+
             return this;
         }
 
@@ -2309,6 +2378,7 @@ namespace ChainFx.Nodal
             {
                 Put(INPARAMS[i], v[i]);
             }
+
             return this;
         }
 
@@ -2318,6 +2388,7 @@ namespace ChainFx.Nodal
             {
                 Put(INPARAMS[i], v[i]);
             }
+
             return this;
         }
 
@@ -2327,6 +2398,7 @@ namespace ChainFx.Nodal
             {
                 Put(INPARAMS[i], v[i]);
             }
+
             return this;
         }
 
@@ -2353,47 +2425,47 @@ namespace ChainFx.Nodal
                 for (int i = 0; i < v.Length; i++)
                 {
                     var c = v[i];
-                    CheckByte((byte) c);
-                    CheckByte((byte) (c >> 8));
+                    CheckByte((byte)c);
+                    CheckByte((byte)(c >> 8));
                 }
             }
         }
 
         void Check(char v)
         {
-            CheckByte((byte) v);
-            CheckByte((byte) (v >> 8));
+            CheckByte((byte)v);
+            CheckByte((byte)(v >> 8));
         }
 
         void Check(bool v)
         {
-            CheckByte(v ? (byte) 1 : (byte) 0);
+            CheckByte(v ? (byte)1 : (byte)0);
         }
 
         void Check(short v)
         {
-            CheckByte((byte) v);
-            CheckByte((byte) (v >> 8));
+            CheckByte((byte)v);
+            CheckByte((byte)(v >> 8));
         }
 
         void Check(int v)
         {
-            CheckByte((byte) v);
-            CheckByte((byte) (v >> 8));
-            CheckByte((byte) (v >> 16));
-            CheckByte((byte) (v >> 24));
+            CheckByte((byte)v);
+            CheckByte((byte)(v >> 8));
+            CheckByte((byte)(v >> 16));
+            CheckByte((byte)(v >> 24));
         }
 
         void Check(long v)
         {
-            CheckByte((byte) v);
-            CheckByte((byte) (v >> 8));
-            CheckByte((byte) (v >> 16));
-            CheckByte((byte) (v >> 24));
-            CheckByte((byte) (v >> 32));
-            CheckByte((byte) (v >> 40));
-            CheckByte((byte) (v >> 48));
-            CheckByte((byte) (v >> 56));
+            CheckByte((byte)v);
+            CheckByte((byte)(v >> 8));
+            CheckByte((byte)(v >> 16));
+            CheckByte((byte)(v >> 24));
+            CheckByte((byte)(v >> 32));
+            CheckByte((byte)(v >> 40));
+            CheckByte((byte)(v >> 48));
+            CheckByte((byte)(v >> 56));
         }
 
         void Check(decimal v)
@@ -2407,12 +2479,12 @@ namespace ChainFx.Nodal
 
         void Check(float v)
         {
-            Check((decimal) v);
+            Check((decimal)v);
         }
 
         void Check(double v)
         {
-            Check((decimal) v);
+            Check((decimal)v);
         }
 
         void Check(DateTime v, bool time)
@@ -2435,8 +2507,9 @@ namespace ChainFx.Nodal
             cs ^= b << ((b & 0b00000111) * 8);
             unchecked
             {
-                cs *= ((b & 0b00011000) >> 3) switch {0 => 7, 1 => 11, 2 => 13, _ => 17};
+                cs *= ((b & 0b00011000) >> 3) switch { 0 => 7, 1 => 11, 2 => 13, _ => 17 };
             }
+
             cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
             checksum = cs;
         }

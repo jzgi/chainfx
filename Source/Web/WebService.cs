@@ -20,7 +20,7 @@ namespace ChainFx.Web
     /// </summary>
     public abstract class WebService : WebWork, IHttpApplication<HttpContext>, IServiceProvider
     {
-        static readonly int ConcurrencyLevel = (int) (Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
+        static readonly int ConcurrencyLevel = (int)(Math.Log(Environment.ProcessorCount, 2) + 1) * 2;
 
         //
         // http implementation
@@ -121,11 +121,11 @@ namespace ChainFx.Web
         public string VisitUrl => proxy ?? address;
 
 
-        const int CLEANER_INTERVAL = 30 * 1000;
-
         protected internal async Task StartAsync(CancellationToken token)
         {
             await server.StartAsync(this, token);
+
+            const int INTERVAL = 60 * 1000;
 
             // create & start the cleaner thread
             if (shared != null)
@@ -135,13 +135,13 @@ namespace ChainFx.Web
                     while (!token.IsCancellationRequested)
                     {
                         // cleaning cycle
-                        Thread.Sleep(CLEANER_INTERVAL);
+                        Thread.Sleep(INTERVAL);
 
                         // loop to clear or remove each expired items
-                        var now = Environment.TickCount;
+                        var nowtick = Environment.TickCount;
                         foreach (var (key, value) in shared)
                         {
-                            if (!value.IsStale(now))
+                            if (value.IsStale(nowtick))
                             {
                                 shared.TryRemove(key, out _);
                             }
@@ -165,7 +165,7 @@ namespace ChainFx.Web
         /// </summary>
         public virtual async Task ProcessRequestAsync(HttpContext context)
         {
-            var wc = (WebContext) context;
+            var wc = (WebContext)context;
 
             var path = wc.Path;
 
@@ -186,6 +186,7 @@ namespace ChainFx.Web
                     if (!TryGiveFromCache(wc))
                     {
                         GiveStaticFile(path, path.Substring(dot), wc);
+
                         TryAddToCache(wc);
                     }
                     return;
@@ -338,7 +339,7 @@ namespace ChainFx.Web
 
         public void GiveStaticFile(string filename, string ext, WebContext wc)
         {
-            if (!WebStaticContent.TryGetType(ext, out var ctyp))
+            if (!WebStaticContent.TryGetType(ext, out var ctype))
             {
                 wc.Give(415, shared: true, maxage: STATIC_FILE_MAXAGE); // unsupported media type
                 return;
@@ -357,7 +358,7 @@ namespace ChainFx.Web
             bool gzip = false;
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                int len = (int) fs.Length;
+                int len = (int)fs.Length;
                 if (len > STATIC_FILE_GZIP_THRESHOLD)
                 {
                     var ms = new MemoryStream(len);
@@ -375,11 +376,9 @@ namespace ChainFx.Web
                 }
             }
 
-            var staticrsc = new WebStaticContent(bytes)
+            var staticrsc = new WebStaticContent(bytes, ctype)
             {
-                Key = filename,
-                CType = ctyp,
-                Adapted = modified,
+                Modified = modified,
                 GZip = gzip
             };
 
@@ -406,7 +405,7 @@ namespace ChainFx.Web
         public void DisposeContext(HttpContext context, Exception excep)
         {
             // close the context
-            ((WebContext) context).Close();
+            ((WebContext)context).Close();
         }
 
         public void Close()
@@ -419,18 +418,11 @@ namespace ChainFx.Web
 
         internal void TryAddToCache(WebContext wc)
         {
-            if (shared != null && wc.IsGet)
+            if (shared != null && wc.Shared == true && wc.IsCacheable())
             {
-                if (wc.Shared == true && wc.IsCacheable())
-                {
-                    var ca = wc.Content.ToStaticContent();
+                var ca = wc.ToCacheContent();
 
-                    ca.StatusCode = wc.StatusCode;
-                    ca.MaxAge = wc.MaxAge;
-                    ca.Tick = Environment.TickCount;
-
-                    shared.AddOrUpdate(wc.Uri, ca, (key, old) => old);
-                }
+                shared.AddOrUpdate(wc.Uri, ca, (_, _) => ca);
             }
         }
 

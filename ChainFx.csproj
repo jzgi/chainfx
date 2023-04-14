@@ -3,15 +3,12 @@
         <Description>Web framework for Dapp</Description>
         <VersionPrefix>4.1</VersionPrefix>
         <Authors>JZG Institute for IT Research</Authors>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <DebugType>portable</DebugType>
         <PackageId>ChainFx</PackageId>
-        <RuntimeFrameworkVersion>3.1</RuntimeFrameworkVersion>
-        <Version>4.0.1</Version>
-        <LangVersion>8</LangVersion>
+        <LangVersion>11</LangVersion>
         <Company>Jgz Institute for IT Research</Company>
         <PackageProjectUrl>https://github.com/jzgi</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/jzgi</RepositoryUrl>
         <PackageVersion>4.1.0</PackageVersion>
         <Title>Chain Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
@@ -20,7 +17,7 @@
         <RootNamespace>ChainFx</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PlatformTarget>x64</PlatformTarget>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -55,33 +55,33 @@ namespace ChainFx.Web
             this.async = async;
             this.subscript = subscript;
 
-            ui = (UiAttribute) mi.GetCustomAttribute(typeof(UiAttribute), true);
-            tool = (ToolAttribute) mi.GetCustomAttribute(typeof(ToolAttribute), true);
-            authenticate = (AuthenticateAttribute) mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
-            authorize = (AuthorizeAttribute) mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
-            notice = (NoticeAttribute) mi.GetCustomAttribute(typeof(NoticeAttribute), true);
+            ui = (UiAttribute)mi.GetCustomAttribute(typeof(UiAttribute), true);
+            tool = (ToolAttribute)mi.GetCustomAttribute(typeof(ToolAttribute), true);
+            authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
+            authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
+            notice = (NoticeAttribute)mi.GetCustomAttribute(typeof(NoticeAttribute), true);
 
             // create a doer delegate
             if (async)
             {
                 if (subscript != null)
                 {
-                    do2Async = (Func<WebContext, int, Task>) mi.CreateDelegate(typeof(Func<WebContext, int, Task>), work);
+                    do2Async = (Func<WebContext, int, Task>)mi.CreateDelegate(typeof(Func<WebContext, int, Task>), work);
                 }
                 else
                 {
-                    doAsync = (Func<WebContext, Task>) mi.CreateDelegate(typeof(Func<WebContext, Task>), work);
+                    doAsync = (Func<WebContext, Task>)mi.CreateDelegate(typeof(Func<WebContext, Task>), work);
                 }
             }
             else
             {
                 if (subscript != null)
                 {
-                    do2 = (Action<WebContext, int>) mi.CreateDelegate(typeof(Action<WebContext, int>), work);
+                    do2 = (Action<WebContext, int>)mi.CreateDelegate(typeof(Action<WebContext, int>), work);
                 }
                 else
                 {
-                    @do = (Action<WebContext>) mi.CreateDelegate(typeof(Action<WebContext>), work);
+                    @do = (Action<WebContext>)mi.CreateDelegate(typeof(Action<WebContext>), work);
                 }
             }
 
@@ -153,11 +153,11 @@ namespace ChainFx.Web
             return true;
         }
 
-        internal void Do(WebContext wc, int subscript)
+        internal void Do(WebContext wc, int subscpt)
         {
             if (do2 != null)
             {
-                do2(wc, subscript);
+                do2(wc, subscpt);
             }
             else
             {
@@ -166,11 +166,11 @@ namespace ChainFx.Web
         }
 
         // invoke the right method
-        internal async Task DoAsync(WebContext wc, int subscript)
+        internal async Task DoAsync(WebContext wc, int subscpt)
         {
             if (do2Async != null)
             {
-                await do2Async(wc, subscript);
+                await do2Async(wc, subscpt);
             }
             else
             {

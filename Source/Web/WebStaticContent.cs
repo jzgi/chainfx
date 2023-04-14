@@ -6,9 +6,9 @@ namespace ChainFx.Web
     /// <summary>
     /// A binary static content of certain mime type.
     /// </summary>
-    public class WebStaticContent : IKeyable<string>, IContent
+    public struct WebStaticContent : IContent
     {
-        static readonly Dictionary<string, string> Types = new Dictionary<string, string>
+        static readonly Dictionary<string, string> Types = new()
         {
             {
                 ".323",
@@ -1524,28 +1524,28 @@ namespace ChainFx.Web
         readonly byte[] array;
 
         // fixed length
-        readonly int length;
+        readonly string ctype;
 
-
-        public WebStaticContent(byte[] bytes)
+        public WebStaticContent(byte[] array, string ctype = null)
         {
-            this.array = bytes;
-            length = bytes.Length;
+            this.array = array;
+            if (ctype != null)
+            {
+                this.ctype = ctype;
+            }
         }
 
-        public string Key { get; set; }
-
-        public string CType { get; set; }
+        public string CType => ctype;
 
         public byte[] Buffer => array;
 
-        public int Count => length;
+        public int Count => array?.Length ?? 0;
 
-        public DateTime? Adapted { get; set; }
+        public DateTime? Modified { get; init; }
 
-        public string ETag => null;
+        public string ETag { get; init; }
 
-        public bool GZip { get; set; }
+        public bool GZip { get; init; }
 
 
         ///
@@ -1553,65 +1553,62 @@ namespace ChainFx.Web
         /// 
         public int StatusCode { get; internal set; }
 
-        ///
-        /// time ticks when entered
+        /// time ticks when being added
         /// 
-        public int Tick { get; internal set; }
+        internal int Tick { get; set; }
 
-        /// 
         /// maxage in seconds
         /// 
         public int MaxAge { get; internal set; }
 
 
-        /// 
-        /// Return this instance for cache.
-        /// 
-        public WebStaticContent ToStaticContent() => this;
-
-
-        public static bool TryGetType(string ext, out string type)
+        public static bool TryGetType(string ext, out string ctype)
         {
-            return Types.TryGetValue(ext, out type);
+            return Types.TryGetValue(ext, out ctype);
+        }
+
+        public WebStaticContent ToCacheContent()
+        {
+            var ca = new WebStaticContent(array, ctype)
+            {
+                Modified = Modified,
+                ETag = ETag,
+                GZip = GZip
+            };
+
+            return ca;
         }
 
         /// <summary>
-        /// 
+        /// To determine whether this cache content is stale.
         /// </summary>
         /// <param name="nowtick"></param>
-        /// <returns>false to indicate a removal of the entry</returns>
         internal bool IsStale(int nowtick)
         {
-            lock (this)
-            {
-                int pass = nowtick - (Tick + MaxAge * 1000);
+            int pass = nowtick - (Tick + MaxAge * 1000);
 
-                return pass > 0;
-            }
+            return pass > 0;
         }
 
         internal bool TryGiveTo(WebContext wc, int now)
         {
-            lock (this)
+            if (StatusCode == 0)
             {
-                if (StatusCode == 0)
-                {
-                    return false;
-                }
-
-                var remain = (short) (((Tick + MaxAge * 1000) - now) / 1000); // remaining in seconds
-                if (remain > 0)
-                {
-                    short age = (short) ((now - Tick) / 1000); // age in seconds
-                    wc.SetHeader("Age", age);
-
-                    // set for response
-                    wc.Give(StatusCode, this, true, MaxAge);
-                    return true;
-                }
-
                 return false;
             }
+
+            var remain = (short)(((Tick + MaxAge * 1000) - now) / 1000); // remaining in seconds
+            if (remain > 0)
+            {
+                short age = (short)((now - Tick) / 1000); // age in seconds
+                wc.SetHeader("Age", age);
+
+                // set for response
+                wc.Give(StatusCode, this, true, MaxAge);
+                return true;
+            }
+
+            return false;
         }
     }
 }

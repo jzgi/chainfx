@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using ChainFx.Web;
 using static System.Environment;
 
 namespace ChainFx
@@ -125,6 +124,7 @@ namespace ChainFx
                 Return(charbuf);
                 charbuf = null;
             }
+
             count = 0;
             checksum = 0;
         }
@@ -157,8 +157,9 @@ namespace ChainFx
             cs ^= b << ((b & 0b00000111) * 8);
             unchecked
             {
-                cs *= ((b & 0b00011000) >> 3) switch {0 => 7, 1 => 11, 2 => 13, _ => 17};
+                cs *= ((b & 0b00011000) >> 3) switch { 0 => 7, 1 => 11, 2 => 13, _ => 17 };
             }
+
             cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
             checksum = cs;
         }
@@ -179,20 +180,20 @@ namespace ChainFx
                 if (c < 0x80)
                 {
                     // have at most seven bits
-                    AddByte((byte) c);
+                    AddByte((byte)c);
                 }
                 else if (c < 0x800)
                 {
                     // 2 char, 11 bits
-                    AddByte((byte) (0xc0 | (c >> 6)));
-                    AddByte((byte) (0x80 | (c & 0x3f)));
+                    AddByte((byte)(0xc0 | (c >> 6)));
+                    AddByte((byte)(0x80 | (c & 0x3f)));
                 }
                 else
                 {
                     // 3 char, 16 bits
-                    AddByte((byte) (0xe0 | ((c >> 12))));
-                    AddByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                    AddByte((byte) (0x80 | (c & 0x3f)));
+                    AddByte((byte)(0xe0 | ((c >> 12))));
+                    AddByte((byte)(0x80 | ((c >> 6) & 0x3f)));
+                    AddByte((byte)(0x80 | (c & 0x3f)));
                 }
             }
             else // char-oriented
@@ -263,6 +264,7 @@ namespace ChainFx
             {
                 return;
             }
+
             Add(v, 0, v.Length);
         }
 
@@ -272,6 +274,7 @@ namespace ChainFx
             {
                 return;
             }
+
             for (int i = offset; i < len; i++)
             {
                 Add(v[i]);
@@ -280,12 +283,12 @@ namespace ChainFx
 
         public void Add(sbyte v)
         {
-            Add((short) v);
+            Add((short)v);
         }
 
         public void Add(byte v)
         {
-            Add((short) v);
+            Add((short)v);
         }
 
         public void Add(short v)
@@ -354,6 +357,7 @@ namespace ChainFx
                             }
                         }
                     }
+
                     Add(DIGIT[q]);
                 }
             }
@@ -365,7 +369,7 @@ namespace ChainFx
         {
             if (v >= int.MinValue && v <= int.MaxValue)
             {
-                Add((int) v);
+                Add((int)v);
                 return;
             }
 
@@ -397,7 +401,7 @@ namespace ChainFx
         }
 
         // sign mask
-        const int Sign = unchecked((int) 0x80000000);
+        const int Sign = unchecked((int)0x80000000);
 
         ///
         /// This method outputs decimal numbers fastly.
@@ -422,7 +426,7 @@ namespace ChainFx
 
             if (mid != 0) // if 64 bits
             {
-                long x = ((long) mid << 32) + low;
+                long x = ((long)mid << 32) + low;
                 bool bgn = false;
                 for (int i = LONG.Length - 1; i > 0; i--)
                 {
@@ -507,7 +511,7 @@ namespace ChainFx
         {
             if (date >= 3)
             {
-                short yr = (short) v.Year;
+                short yr = (short)v.Year;
 
                 // yyyy-mm-dd
                 if (yr < 1000) Add('0');
@@ -549,28 +553,19 @@ namespace ChainFx
             else if (v is bool boolv) Add(boolv);
             else if (v is decimal decv) Add(decv);
             else if (v is double doublev) Add(doublev);
-            else if (v is DateTime dtv) Add(dtv, time: 2);
+            else if (v is DateTime dtv) Add(dtv, time: 0);
             else
             {
                 Add(v?.ToString());
             }
         }
 
-        public WebStaticContent ToStaticContent()
+        public byte[] ToByteArray()
         {
-            if (count == 0)
-            {
-                return null;
-            }
             var ba = new byte[count];
             Array.Copy(bytebuf, ba, count);
-
-            return new WebStaticContent(ba)
-            {
-                CType = CType
-            };
+            return ba;
         }
-
 
         //
         // CLIENT CONTENT
@@ -594,7 +589,7 @@ namespace ChainFx
 
 
         // we use number of processor cores as a factor
-        static readonly int FACTOR = (int) Math.Log(ProcessorCount, 2) + 1;
+        static readonly int FACTOR = (int)Math.Log(ProcessorCount, 2) + 1;
 
 
         /// <summary>
@@ -602,28 +597,29 @@ namespace ChainFx
         /// </summary>
         static readonly Stack<byte>[] bapool =
         {
-            new Stack<byte>(1024 * 8, FACTOR * 8),
-            new Stack<byte>(1024 * 16, FACTOR * 8),
-            new Stack<byte>(1024 * 32, FACTOR * 4),
-            new Stack<byte>(1024 * 64, FACTOR * 4),
-            new Stack<byte>(1024 * 128, FACTOR * 2),
-            new Stack<byte>(1024 * 256, FACTOR * 2),
+            new(1024 * 8, FACTOR * 8),
+            new(1024 * 16, FACTOR * 8),
+            new(1024 * 32, FACTOR * 4),
+            new(1024 * 64, FACTOR * 4),
+            new(1024 * 128, FACTOR * 2),
+            new(1024 * 256, FACTOR * 2),
         };
 
         static byte[] BorrowByteArray(int size)
         {
             // seek the stack
-            for (int i = 0; i < bapool.Length; i++)
+            foreach (var stack in bapool)
             {
-                var stack = bapool[i];
                 if (stack.Spec < size)
                 {
                     continue;
                 }
+
                 if (!stack.TryPop(out var buf))
                 {
                     buf = new byte[stack.Spec];
                 }
+
                 return buf;
             }
 
@@ -636,9 +632,8 @@ namespace ChainFx
             if (buf == null) return;
 
             int len = buf.Length;
-            for (int i = 0; i < bapool.Length; i++)
+            foreach (var stack in bapool)
             {
-                var stack = bapool[i];
                 if (stack.Spec == len) // the right stack
                 {
                     if (stack.Count < stack.Capacity)
@@ -660,28 +655,29 @@ namespace ChainFx
         /// </summary>
         static readonly Stack<char>[] capool =
         {
-            new Stack<char>(1024 * 2, FACTOR * 8),
-            new Stack<char>(1024 * 4, FACTOR * 8),
-            new Stack<char>(1024 * 8, FACTOR * 4),
-            new Stack<char>(1024 * 16, FACTOR * 4),
-            new Stack<char>(1024 * 32, FACTOR * 2),
-            new Stack<char>(1024 * 64, FACTOR * 2),
+            new(1024 * 2, FACTOR * 8),
+            new(1024 * 4, FACTOR * 8),
+            new(1024 * 8, FACTOR * 4),
+            new(1024 * 16, FACTOR * 4),
+            new(1024 * 32, FACTOR * 2),
+            new(1024 * 64, FACTOR * 2),
         };
 
         public static char[] BorrowCharArray(int size)
         {
             // seek the stack
-            for (int i = 0; i < capool.Length; i++)
+            foreach (var stack in capool)
             {
-                var stack = capool[i];
                 if (stack.Spec < size)
                 {
                     continue;
                 }
+
                 if (!stack.TryPop(out var buf))
                 {
                     buf = new char[stack.Spec];
                 }
+
                 return buf;
             }
 
@@ -712,7 +708,7 @@ namespace ChainFx
             }
         }
 
-        class Stack<T> : ConcurrentStack<T[]> where T : struct
+        private class Stack<T> : ConcurrentStack<T[]> where T : struct
         {
             // buffer size in bytes
             readonly int spec;

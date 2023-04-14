@@ -11,25 +11,24 @@ namespace ChainFx
             STU_VOID = 0,
             STU_CREATED = 1,
             STU_ADAPTED = 2,
-            STU_OKED = 4,
-            STU_ABORTED = 8;
+            STU_OKED = 4;
 
-        public static readonly Map<short, string> Statuses = new Map<short, string>
+        public static readonly Map<short, string> Statuses = new()
         {
-            {STU_VOID, null},
-            {STU_CREATED, "新建"},
-            {STU_ADAPTED, "处理"},
-            {STU_OKED, "完成"},
-            {STU_ABORTED, "撤销"},
+            { STU_VOID, "无效" },
+            { STU_CREATED, "新建" },
+            { STU_ADAPTED, "修改" },
+            { STU_OKED, "上线" },
         };
 
 
         public const short
             MSK_ID = 0x0001,
-            MSK_TYP = 0x0002,
-            MSK_BORN = 0x0004,
-            MSK_EDIT = 0x0008,
-            MSK_LATER = 0x0010,
+            MSK_BORN = 0x0002,
+            MSK_TYP = 0x0004,
+            MSK_EDIT = 0x0010,
+            MSK_LATER = 0x0020,
+            MSK_STATUS = 0x0040,
             MSK_EXTRA = 0x0100;
 
 
@@ -37,16 +36,15 @@ namespace ChainFx
         public string name;
         public string tip;
 
-        public short state;
-        public short status;
         public DateTime created;
         public string creator;
 
         public DateTime adapted;
         public string adapter;
 
-        public string fixer;
-        public DateTime @fixed;
+        public string oker;
+        public DateTime oked;
+        public short status;
 
 
         public virtual void Read(ISource s, short msk = 0xff)
@@ -55,11 +53,13 @@ namespace ChainFx
             {
                 s.Get(nameof(typ), ref typ);
             }
+
             if ((msk & MSK_BORN) == MSK_BORN)
             {
                 s.Get(nameof(created), ref created);
                 s.Get(nameof(creator), ref creator);
             }
+
             if ((msk & MSK_EDIT) == MSK_EDIT)
             {
                 s.Get(nameof(name), ref name);
@@ -67,12 +67,16 @@ namespace ChainFx
                 s.Get(nameof(adapted), ref adapted);
                 s.Get(nameof(adapter), ref adapter);
             }
+
+            if ((msk & MSK_STATUS) == MSK_STATUS || (msk & MSK_LATER) == MSK_LATER)
+            {
+                s.Get(nameof(status), ref status);
+            }
+
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Get(nameof(fixer), ref fixer);
-                s.Get(nameof(@fixed), ref @fixed);
-                s.Get(nameof(state), ref state);
-                s.Get(nameof(status), ref status);
+                s.Get(nameof(oker), ref oker);
+                s.Get(nameof(oked), ref oked);
             }
         }
 
@@ -82,11 +86,13 @@ namespace ChainFx
             {
                 s.Put(nameof(typ), typ);
             }
+
             if ((msk & MSK_BORN) == MSK_BORN)
             {
                 s.Put(nameof(created), created);
                 s.Put(nameof(creator), creator);
             }
+
             if ((msk & MSK_EDIT) == MSK_EDIT)
             {
                 s.Put(nameof(name), name);
@@ -94,26 +100,32 @@ namespace ChainFx
                 s.Put(nameof(adapted), adapted);
                 s.Put(nameof(adapter), adapter);
             }
+
+            if ((msk & MSK_STATUS) == MSK_STATUS || (msk & MSK_LATER) == MSK_LATER)
+            {
+                s.Put(nameof(status), status);
+            }
+
             if ((msk & MSK_LATER) == MSK_LATER)
             {
-                s.Put(nameof(fixer), fixer);
-                s.Put(nameof(@fixed), @fixed);
-                s.Put(nameof(state), state);
-                s.Put(nameof(status), status);
+                s.Put(nameof(oker), oker);
+                s.Put(nameof(oked), oked);
             }
         }
 
         public string Tip => tip;
 
-        public bool IsDisabled => status == STU_VOID || status == STU_ABORTED;
+        public bool IsVoid => status == STU_VOID;
 
-        public bool IsEnabled => state > STU_VOID && status < STU_ABORTED;
+        public bool IsEnabled => status > STU_VOID;
 
-        public bool IsChangeable => status < STU_OKED;
+        public bool IsModifiable => status < STU_OKED;
 
-        public bool IsEnded => status >= STU_OKED;
+        public bool IsOked => status == STU_OKED;
 
-        public bool IsCancelled => status == STU_ABORTED;
+        public short Status => status;
+
+        public virtual short State => 0;
 
         public override string ToString() => name;
     }
