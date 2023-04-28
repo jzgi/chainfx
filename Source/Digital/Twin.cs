@@ -1,4 +1,4 @@
-﻿namespace ChainFx.Graph;
+﻿namespace ChainFx.Digital;
 
 public class Twin
 {

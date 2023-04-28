@@ -2266,7 +2266,7 @@ namespace ChainFx.Web
                     Add('-');
                     Add(page + step);
                     Add(Web.QueryStr);
-                    Add("\" onclick=\"return goto(this, event);\">≪</a>");
+                    Add("\" onclick=\"return goto(this, event);\">≫</a>");
                     Add("</li>");
                 }
                 else
@@ -4697,7 +4697,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool tip = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool keyonly = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opts != null)
@@ -4711,7 +4711,10 @@ namespace ChainFx.Web
                         continue;
                     }
 
-                    var strv = ety.Value.ToString();
+                    K key = ety.Key;
+                    V value = ety.Value;
+
+                    // var strv = ety.Value.ToString();
 
                     if (ety.IsHead)
                     {
@@ -4722,7 +4725,7 @@ namespace ChainFx.Web
                         }
 
                         Add("<optgroup label=\"");
-                        AddPrimitive(strv);
+                        AddPrimitive(value);
                         Add("\">");
                         grpopen = true;
                     }
@@ -4733,13 +4736,19 @@ namespace ChainFx.Web
                             Add("<option value=\"\"></option>");
                         }
 
-                        var key = ety.Key;
                         Add("<option value=\"");
                         AddPrimitive(key);
                         Add("\"");
                         if (key.Equals(v)) Add(" selected");
                         Add(">");
-                        AddPrimitive(strv);
+                        if (keyonly)
+                        {
+                            AddPrimitive(key);
+                        }
+                        else
+                        {
+                            AddPrimitive(value);
+                        }
                         Add("</option>");
                     }
                 }
