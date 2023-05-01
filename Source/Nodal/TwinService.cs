@@ -1,6 +1,6 @@
 ﻿using ChainFx.Web;
 
-namespace ChainFx.Digital;
+namespace ChainFx.Nodal;
 
 public class TwinService : WebService
 {

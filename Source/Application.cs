@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -22,6 +23,8 @@ namespace ChainFx
 
         public const string CERT_PFX = "cert.pfx";
 
+        static readonly string name;
+
         static readonly string secret;
 
         // config
@@ -43,7 +46,10 @@ namespace ChainFx
 
 
         // registered services
-        static readonly Map<string, WebService> services = new Map<string, WebService>(4);
+        static readonly Map<string, WebService> services = new(8);
+
+
+        static readonly ConcurrentDictionary<short, WebClient> peers = new();
 
 
         /// <summary>
@@ -56,16 +62,19 @@ namespace ChainFx
             var parser = new JsonParser(bytes, bytes.Length);
             app = (JObj)parser.Parse();
 
+            name = app[nameof(name)];
+
             // file-based logger
             int logging = app[nameof(logging)];
-            var logfile = DateTime.Now.ToString("yyyyMM") + ".log";
-            logger = new FileLogger(logfile)
+            var file = DateTime.Now.ToString("yyyyMM") + ".log";
+            logger = new FileLogger(file)
             {
                 Level = logging
             };
 
-            TransportFactory = new SocketTransportFactory(Options.Create(new SocketTransportOptions()), Lifetime,
-                NullLoggerFactory.Instance);
+            TransportFactory = new SocketTransportFactory(
+                Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance
+            );
 
             // security
             //
@@ -88,10 +97,10 @@ namespace ChainFx
             }
 
             // fabric and nodality cfg
-            JObj nodal = app[nameof(nodal)];
-            if (nodal != null)
+            JObj db = app[nameof(db)];
+            if (db != null)
             {
-                InitializeNodal(nodal);
+                InitNodality(db);
             }
 
             prog = app[nameof(prog)];
@@ -101,6 +110,7 @@ namespace ChainFx
 
         public static JObj Prog => prog;
 
+        public static string Name => name;
 
         public static string Secret => secret;
 
@@ -119,10 +129,10 @@ namespace ChainFx
             // web config
             //
 
-            var prop = "web-" + name;
-            var webcfg = (JObj)app[prop];
+            var prop = "service-" + name;
+            var servicecfg = (JObj)app[prop];
 
-            if (webcfg == null)
+            if (servicecfg == null)
             {
                 throw new ApplicationException("missing '" + prop + "' in app.json");
             }
@@ -133,7 +143,7 @@ namespace ChainFx
                 Name = name,
                 Folder = folder ?? name
             };
-            svc.Initialize(prop, webcfg);
+            svc.Init(prop, servicecfg);
 
             services.Add(name, svc);
 

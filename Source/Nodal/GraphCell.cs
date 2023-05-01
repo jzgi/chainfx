@@ -1,4 +1,4 @@
-﻿namespace ChainFx.Digital;
+﻿namespace ChainFx.Nodal;
 
 
 public class GraphCell

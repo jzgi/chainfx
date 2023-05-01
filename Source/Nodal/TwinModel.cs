@@ -1,6 +1,6 @@
-﻿namespace ChainFx.Digital;
+﻿namespace ChainFx.Nodal;
 
-public class Model
+public class TwinModel
 {
     // state properties
     

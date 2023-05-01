@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
@@ -9,14 +8,15 @@ using Npgsql;
 namespace ChainFx.Nodal
 {
     /// <summary>
-    /// The structure & environment for database and distributed ledger. 
+    /// The structure & environment for data store and digital twins. 
     /// </summary>
     public abstract class Nodality
     {
-        // db
-        //
+        // db store
 
         static DbSource dbSource;
+
+        // cache
 
         static List<DbCache> caches; // an entire map (standard)
 
@@ -25,15 +25,9 @@ namespace ChainFx.Nodal
         static List<DbCache> mapCaches; // many a map
 
 
-        // peer connectivty
-        //
+        // graph
 
-        static Node self;
-
-        static readonly ConcurrentDictionary<short, Node> peers = new ConcurrentDictionary<short, Node>();
-
-        // establised connectors
-        static readonly ConcurrentDictionary<short, NodeClient> okayed = new ConcurrentDictionary<short, NodeClient>();
+        static List<TwinCollection> graphs;
 
 
         public static void MapComposite<T>(string dbTyp = null)
@@ -46,40 +40,10 @@ namespace ChainFx.Nodal
         }
 
 
-        internal static void InitializeNodal(JObj fabriccfg)
+        internal static void InitNodality(JObj dbcfg)
         {
             // create db source
-            dbSource = new DbSource(fabriccfg);
-
-            // create self peer info
-            self = new Node(fabriccfg)
-            {
-            };
-
-            // load  peer connectors
-            //
-            // using var dc = NewDbContext();
-            // dc.Sql("SELECT ").collst(Node.Empty).T(" FROM _peers_ WHERE status > 0");
-            // var arr = dc.Query<Node>();
-            // if (arr != null)
-            // {
-            //     foreach (var peer in arr)
-            //     {
-            //         var cli = new NodeClient(peer);
-            //
-            //         okayed.TryAdd(cli.Key, cli);
-            //
-            //         // init current block id
-            //         // await o.PeekLastBlockAsync(dc);
-            //     }
-            // }
-
-            // start the puller thead
-            // puller = new Thread(Replicate)
-            // {
-            //     Name = "Block Puller"
-            // };
-            // puller.Start();
+            dbSource = new DbSource(dbcfg);
         }
 
 
@@ -169,7 +133,7 @@ namespace ChainFx.Nodal
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbCache<K, V>) ca).Get();
+                        return ((DbCache<K, V>)ca).Get();
                     }
                 }
             }
@@ -188,7 +152,7 @@ namespace ChainFx.Nodal
                 {
                     if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbCache<K, V>) ca).GetAsync();
+                        return await ((DbCache<K, V>)ca).GetAsync();
                     }
                 }
             }
@@ -207,7 +171,7 @@ namespace ChainFx.Nodal
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbObjectCache<K, V>) ca).Get(key);
+                        return ((DbObjectCache<K, V>)ca).Get(key);
                     }
                 }
             }
@@ -226,7 +190,7 @@ namespace ChainFx.Nodal
                 {
                     if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbObjectCache<K, V>) ca).GetAsync(key);
+                        return await ((DbObjectCache<K, V>)ca).GetAsync(key);
                     }
                 }
             }
@@ -246,7 +210,7 @@ namespace ChainFx.Nodal
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbMapCache<D, K, V>) ca).Get(discr);
+                        return ((DbMapCache<D, K, V>)ca).Get(discr);
                     }
                 }
             }
@@ -265,7 +229,7 @@ namespace ChainFx.Nodal
                 {
                     if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbMapCache<D, K, V>) ca).GetAsync(discr);
+                        return await ((DbMapCache<D, K, V>)ca).GetAsync(discr);
                     }
                 }
             }
@@ -277,10 +241,6 @@ namespace ChainFx.Nodal
 
         #region NODAL-API
 
-        public static Node Self => self;
-
-        public static Node GetPeer(short key) => peers[key];
-
         //
         // transaction id generator
 
@@ -289,50 +249,6 @@ namespace ChainFx.Nodal
         public static int AutoInc()
         {
             return Interlocked.Increment(ref lastId);
-        }
-
-        public static NodeClient GetConnector(short peerid) => okayed[peerid];
-
-        public static ConcurrentDictionary<short, NodeClient> Okayed => okayed;
-
-
-        public async Task AskAsync(Node node)
-        {
-            // validate peer
-
-            // insert locally
-            using (var dc = NewDbContext())
-            {
-                dc.Sql("INSERT INTO _peers_ ").colset(Node.Empty)._VALUES_(Node.Empty);
-                await dc.ExecuteAsync(p => node.Write(p));
-            }
-
-            var connector = new NodeClient(node);
-
-            // remote req
-            node.id = Self.id;
-            var (code, err) = await connector.AskAsync(node);
-        }
-
-
-        public static LdgrContext NewLdgrContext(short toPeerId = 0, IsolationLevel? level = IsolationLevel.ReadCommitted)
-        {
-            if (dbSource == null)
-            {
-                throw new LdgrException("missing 'fabric' in app.json");
-            }
-
-            var cli = toPeerId > 0 ? GetConnector(toPeerId) : null;
-            var lc = new LdgrContext(cli)
-            {
-            };
-
-            if (level != null)
-            {
-                lc.Begin(level.Value);
-            }
-
-            return lc;
         }
 
         #endregion
@@ -356,104 +272,11 @@ namespace ChainFx.Nodal
             }
             else
             {
-                routine = new Thread(PeerCycle);
             }
-            
+
             routine.Start();
         }
 
-        static async void PeerCycle(object state)
-        {
-            while (true)
-            {
-                Cycle:
-                var outer = true;
-
-                Thread.Sleep(60 * 1000);
-
-                foreach (var pair in okayed) // LOOP
-                {
-                    var cli = pair.Value;
-                    if (!cli.Node.IsRunning) continue;
-
-                    int busy = 0;
-                    var code = await cli.ReplicateAsync();
-                    if (code == 200)
-                    {
-                        try
-                        {
-                            using var dc = NewDbContext(IsolationLevel.ReadCommitted);
-                            long bchk = 0; // block checksum
-                            for (short k = 0; k < cli.arr.Length; k++)
-                            {
-                                var o = cli.arr[k];
-
-                                // long seq = ChainUtility.WeaveSeq(blockid, i);
-                                // dc.Sql("INSERT INTO chain.archive ").colset(Archival.Empty, extra: "peerid, cs, blockcs")._VALUES_(Archival.Empty, extra: "@1, @2, @3");
-                                // direct parameter setting
-                                var p = dc.ReCommand();
-                                p.Digest = true;
-                                // o.Write(p);
-                                p.Digest = false;
-
-                                // validate record-wise checksum
-                                // if (o.cs != p.Checksum)
-                                // {
-                                //     cli.SetDataError(o.seq);
-                                //     break;
-                                // }
-
-                                CryptoUtility.Digest(p.Checksum, ref bchk);
-                                p.Set(p.Checksum); // set primary and checksum
-                                // block-wise digest
-                                // if (i == 0) // begin of block 
-                                // {
-                                //     // if (o.blockcs != bchk) // compare with previous block
-                                //     // {
-                                //     //     cli.SetDataError("");
-                                //     //     break;
-                                //     // }
-                                //
-                                //     p.Set(bchk);
-                                // }
-                                // else if (i == arr.Count - 1) // end of block
-                                // {
-                                //     // validate block check
-                                //     // if (bchk != o.blockcs)
-                                //     // {
-                                //     //     cli.SetDataError("");
-                                //     // }
-                                //     // p.Set(bchk = o.blockcs); // assign & set
-                                // }
-                                // else
-                                // {
-                                //     p.SetNull();
-                                // }
-
-                                await dc.SimpleExecuteAsync();
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            // cli.SetInternalError(e.Message);
-                        }
-                    }
-
-                    if (code == 200 || (outer && (code == 0 || code == 204)))
-                    {
-                        // cli.ScheduleRemotePoll(0);
-                        busy++;
-                    }
-
-                    //
-                    if (busy == 0) // to outer for delay
-                    {
-                        break;
-                    }
-                    outer = false;
-                }
-            } // outer
-        }
 
         static void HubCycle(object state)
         {
