@@ -240,7 +240,7 @@ namespace ChainFx.Nodal
 
         #region GRAPH-API
 
-        protected static G Graph<G>(string name, object state = null) where G : TwinGraph, new()
+        protected static G MakeGraph<G>(string name, object state = null) where G : TwinGraph, new()
         {
             // create service (properties in order)
             var grh = new G
@@ -257,7 +257,7 @@ namespace ChainFx.Nodal
             return grh;
         }
 
-        public static T Find<T>(int id) where T : class, ITwin
+        public static T GetTwin<T>(int id) where T : class, ITwin
         {
             if (graphs == null)
             {
@@ -274,7 +274,7 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public static T[] FindArray<T>(int setkey, Predicate<T> filter = null, Comparison<T> comp = null) where T : class, ITwin
+        public static T[] GetTwinArray<T>(int setkey, Predicate<T> filter = null, Comparison<T> comp = null) where T : class, ITwin
         {
             if (graphs == null)
             {
@@ -291,7 +291,7 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public static Map<int, T> FindSet<T>(int setkey) where T : class, ITwin
+        public static Map<int, T> GetTwinSet<T>(int setkey) where T : class, ITwin
         {
             if (graphs == null)
             {
