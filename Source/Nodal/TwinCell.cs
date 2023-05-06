@@ -1,7 +1,7 @@
 ﻿namespace ChainFx.Nodal;
 
 
-public class GraphCell
+public class TwinCell
 {
     private ITwin[] twins;
 }

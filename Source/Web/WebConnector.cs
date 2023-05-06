@@ -8,7 +8,7 @@ namespace ChainFx.Web
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class WebClient : HttpClient
+    public class WebConnector : HttpClient
     {
         const string
             CONTENT_TYPE = "Content-Type",
@@ -18,7 +18,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
-        public WebClient(string baseUri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
+        public WebConnector(string baseUri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
         {
             BaseAddress = new Uri(baseUri);
             Timeout = TimeSpan.FromSeconds(7);

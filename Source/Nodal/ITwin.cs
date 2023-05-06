@@ -2,5 +2,5 @@
 
 public interface ITwin
 {
-    
+    int TwinSetKey { get; }
 }

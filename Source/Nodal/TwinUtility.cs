@@ -1,3 +1,5 @@
+using System;
+
 namespace ChainFx.Nodal
 {
     public static class NodalUtility
@@ -29,6 +31,39 @@ namespace ChainFx.Nodal
         internal static long WeaveSeq(int blockid, short idx)
         {
             return (long)blockid * BLOCK_CAPACITY + idx;
+        }
+
+        public static int CompareWith(this string x, string y)
+        {
+            if (x == null)
+            {
+                return y == null ? 0 : -1;
+            }
+
+            return x.CompareTo(y);
+        }
+
+        public static ArraySegment<T> segment<T>(this T[] array, int offset, int count) where T : class
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var len = array.Length;
+
+            if (offset >= len)
+            {
+                throw new ArgumentException(null, nameof(offset));
+            }
+
+            var v = offset + count;
+            if (v > len)
+            {
+                count = len - offset;
+            }
+
+            return new ArraySegment<T>(array, offset, count);
         }
     }
 }

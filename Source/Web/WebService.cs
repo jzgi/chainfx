@@ -51,7 +51,7 @@ namespace ChainFx.Web
         short cycle;
 
         // client connector to the origin service
-        WebClient connector;
+        WebConnector connector;
 
         // 
         ConcurrentDictionary<string, WebEventLot> inbox;

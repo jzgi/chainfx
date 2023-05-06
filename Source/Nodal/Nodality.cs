@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Threading;
 using System.Threading.Tasks;
 using Npgsql;
 
@@ -20,14 +19,14 @@ namespace ChainFx.Nodal
 
         static List<DbCache> caches; // an entire map (standard)
 
-        static List<DbCache> objectCaches; // once an object a time
+        static List<DbCache> rowCaches; // once an object a time
 
-        static List<DbCache> mapCaches; // many a map
+        static List<DbCache> setCaches; // many a map
 
 
         // graph
 
-        static List<TwinCollection> graphs;
+        static readonly List<TwinGraph> graphs = new();
 
 
         public static void MapComposite<T>(string dbTyp = null)
@@ -47,8 +46,6 @@ namespace ChainFx.Nodal
         }
 
 
-        #region DB-API
-
         public static DbSource DbSource => dbSource;
 
         public static DbContext NewDbContext(IsolationLevel? level = null)
@@ -67,58 +64,60 @@ namespace ChainFx.Nodal
             return dc;
         }
 
-        public static void Cache<K, V>(Func<DbContext, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        #region CACHE-API
+
+        public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
             if (caches == null)
             {
                 caches = new List<DbCache>(16);
             }
-            caches.Add(new DbCache<K, V>(fetcher, typeof(V), maxage, flag));
+            caches.Add(new DbCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void Cache<K, V>(Func<DbContext, Task<Map<K, V>>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
             if (caches == null)
             {
                 caches = new List<DbCache>(16);
             }
-            caches.Add(new DbCache<K, V>(fetcher, typeof(V), maxage, flag));
+            caches.Add(new DbCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void CacheObject<K, V>(Func<DbContext, K, V> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeRowCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (objectCaches == null)
+            if (rowCaches == null)
             {
-                objectCaches = new List<DbCache>(16);
+                rowCaches = new List<DbCache>(16);
             }
-            objectCaches.Add(new DbObjectCache<K, V>(fetcher, typeof(V), maxage, flag));
+            rowCaches.Add(new DbRowCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void CacheObject<K, V>(Func<DbContext, K, Task<V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeRowCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (objectCaches == null)
+            if (rowCaches == null)
             {
-                objectCaches = new List<DbCache>(16);
+                rowCaches = new List<DbCache>(16);
             }
-            objectCaches.Add(new DbObjectCache<K, V>(fetcher, typeof(V), maxage, flag));
+            rowCaches.Add(new DbRowCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void CacheMap<S, K, V>(Func<DbContext, S, Map<K, V>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeSetCache<S, K, V>(Func<DbContext, S, Map<K, V>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (mapCaches == null)
+            if (setCaches == null)
             {
-                mapCaches = new List<DbCache>(8);
+                setCaches = new List<DbCache>(8);
             }
-            mapCaches.Add(new DbMapCache<S, K, V>(fetcher, typeof(V), maxage, flag));
+            setCaches.Add(new DbSetCache<S, K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void CacheMap<S, K, V>(Func<DbContext, S, Task<Map<K, V>>> fetcher, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeSetCache<S, K, V>(Func<DbContext, S, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
         {
-            if (mapCaches == null)
+            if (setCaches == null)
             {
-                mapCaches = new List<DbCache>();
+                setCaches = new List<DbCache>();
             }
-            mapCaches.Add(new DbMapCache<S, K, V>(fetcher, typeof(V), maxage, flag));
+            setCaches.Add(new DbSetCache<S, K, V>(fetch, typeof(V), maxage, flag));
         }
 
         public static Map<K, V> Grab<K, V>(short flag = 0) where K : IComparable<K>
@@ -159,38 +158,38 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public static V GrabObject<K, V>(K key, short flag = 0) where K : IComparable<K>
+        public static V GrabRow<K, V>(K key, short flag = 0) where K : IComparable<K>
         {
-            if (objectCaches == null)
+            if (rowCaches == null)
             {
                 return default;
             }
-            foreach (var ca in objectCaches)
+            foreach (var ca in rowCaches)
             {
                 if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbObjectCache<K, V>)ca).Get(key);
+                        return ((DbRowCache<K, V>)ca).Get(key);
                     }
                 }
             }
             return default;
         }
 
-        public static async Task<V> GrabObjectAsync<K, V>(K key, short flag = 0) where K : IComparable<K>
+        public static async Task<V> GrabRowAsync<K, V>(K key, short flag = 0) where K : IComparable<K>
         {
-            if (objectCaches == null)
+            if (rowCaches == null)
             {
                 return default;
             }
-            foreach (var ca in objectCaches)
+            foreach (var ca in rowCaches)
             {
                 if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
                     if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbObjectCache<K, V>)ca).GetAsync(key);
+                        return await ((DbRowCache<K, V>)ca).GetAsync(key);
                     }
                 }
             }
@@ -198,38 +197,38 @@ namespace ChainFx.Nodal
         }
 
 
-        public static Map<K, V> GrabMap<D, K, V>(D discr, short flag = 0) where K : IComparable<K>
+        public static Map<K, V> GrabSet<S, K, V>(S setkey, short flag = 0) where K : IComparable<K>
         {
-            if (mapCaches == null)
+            if (setCaches == null)
             {
                 return null;
             }
-            foreach (var ca in mapCaches)
+            foreach (var ca in setCaches)
             {
                 if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbMapCache<D, K, V>)ca).Get(discr);
+                        return ((DbSetCache<S, K, V>)ca).Get(setkey);
                     }
                 }
             }
             return null;
         }
 
-        public static async Task<Map<K, V>> GrabMapAsync<D, K, V>(D discr, short flag = 0) where K : IComparable<K>
+        public static async Task<Map<K, V>> GrabSetAsync<S, K, V>(S setkey, short flag = 0) where K : IComparable<K>
         {
-            if (mapCaches == null)
+            if (setCaches == null)
             {
                 return null;
             }
-            foreach (var ca in mapCaches)
+            foreach (var ca in setCaches)
             {
                 if (ca.Flag == 0 || (ca.Flag & flag) > 0)
                 {
                     if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return await ((DbMapCache<D, K, V>)ca).GetAsync(discr);
+                        return await ((DbSetCache<S, K, V>)ca).GetAsync(setkey);
                     }
                 }
             }
@@ -239,47 +238,76 @@ namespace ChainFx.Nodal
         #endregion
 
 
-        #region NODAL-API
+        #region GRAPH-API
 
-        //
-        // transaction id generator
-
-        static int lastId = 0;
-
-        public static int AutoInc()
+        protected static G Graph<G>(string name, object state = null) where G : TwinGraph, new()
         {
-            return Interlocked.Increment(ref lastId);
+            // create service (properties in order)
+            var grh = new G
+            {
+                // Folder = folder ?? name
+            };
+            // svc.Init(prop, servicecfg);
+
+            graphs.Add(grh);
+
+            // invoke on creatte
+            // grh.On();
+
+            return grh;
+        }
+
+        public static T Find<T>(int id) where T : class, ITwin
+        {
+            if (graphs == null)
+            {
+                return null;
+            }
+
+            foreach (var graph in graphs)
+            {
+                if (typeof(T).IsAssignableFrom(graph.Typ))
+                {
+                    return ((TwinGraph<T>)graph).Get(id);
+                }
+            }
+            return null;
+        }
+
+        public static T[] FindArray<T>(int setkey, Predicate<T> filter = null, Comparison<T> comp = null) where T : class, ITwin
+        {
+            if (graphs == null)
+            {
+                return null;
+            }
+
+            foreach (var graph in graphs)
+            {
+                if (typeof(T).IsAssignableFrom(graph.Typ))
+                {
+                    return ((TwinGraph<T>)graph).GetArray(setkey, filter, comp);
+                }
+            }
+            return null;
+        }
+
+        public static Map<int, T> FindSet<T>(int setkey) where T : class, ITwin
+        {
+            if (graphs == null)
+            {
+                return null;
+            }
+
+            foreach (var graph in graphs)
+            {
+                if (typeof(T).IsAssignableFrom(graph.Typ))
+                {
+                    return ((TwinGraph<T>)graph).GetMap(setkey);
+                }
+            }
+            return null;
         }
 
         #endregion
-
-        //
-        // replicate ledgers for remote peer
-        //
-        // periodically pulling of blocks of remote ledger  records
-        static Thread routine;
-
-
-        const int MAX_BLOCK_SIZE = 64;
-
-        const int MIN_BLOCK_SIZE = 8;
-
-        public static void StartNetwork(bool hub = false)
-        {
-            if (hub)
-            {
-                routine = new Thread(HubCycle);
-            }
-            else
-            {
-            }
-
-            routine.Start();
-        }
-
-
-        static void HubCycle(object state)
-        {
-        }
     }
 }

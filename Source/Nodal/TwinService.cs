@@ -10,7 +10,7 @@ public class TwinService : WebService
     
     // geo based index
 
-    private static GraphCell[][] cells;
+    private static TwinCell[][] cells;
 
 
 }

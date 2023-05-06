@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using static ChainFx.Web.ToolAttribute;
 
 namespace ChainFx.Web
@@ -2633,7 +2634,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder MAINGRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, bool duo = false, string css = null)
+        public HtmlBuilder MAINGRID<E>(IList<E> lst, Action<E> card, Predicate<E> filter = null, bool duo = false, string css = null)
         {
             if (duo)
             {
@@ -2642,11 +2643,10 @@ namespace ChainFx.Web
             else
                 Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
 
-            if (arr != null)
+            if (lst != null)
             {
-                for (int i = 0; i < arr.Length; i++)
+                foreach (var obj in lst)
                 {
-                    var obj = arr[i];
                     if (filter != null && !filter(obj))
                     {
                         continue;
@@ -4775,10 +4775,7 @@ namespace ChainFx.Web
                     var key = e.Key;
                     var val = e.value;
 
-                    if (filter != null && !filter(key, val))
-                    {
-                        continue;
-                    }
+                    if (filter != null && !filter(key, val)) continue;
 
                     Add("<option value=\"");
                     if (key is short shortk)
@@ -4808,7 +4805,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<V>(string label, string name, V v, V[] opts, bool required = true, sbyte size = 0)
+        public HtmlBuilder SELECT<V>(string label, string name, V v, V[] opts, Func<V, bool> filter = null, bool required = true, sbyte size = 0)
         {
             SELECT_(label, name, false, required, size);
             if (opts != null)
@@ -4820,13 +4817,16 @@ namespace ChainFx.Web
                         Add("<option value=\"\"></option>");
                     }
 
-                    var e = opts[i];
+                    var opt = opts[i];
+
+                    if (filter != null && !filter(opt)) continue;
+
                     Add("<option value=\"");
-                    AddPrimitive(e);
+                    AddPrimitive(opt);
                     Add("\"");
-                    if (e.Equals(v)) Add(" selected");
+                    if (opt.Equals(v)) Add(" selected");
                     Add(">");
-                    AddPrimitive(e);
+                    AddPrimitive(opt);
                     Add("</option>");
                 }
             }

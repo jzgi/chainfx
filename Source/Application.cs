@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -19,11 +18,14 @@ namespace ChainFx
     /// </summary>
     public abstract class Application : Nodality
     {
-        public const string APP_JSON = "app.json";
+        public const string
+            APP_JSON = "app.json",
+            CERT_PFX = "cert.pfx";
 
-        public const string CERT_PFX = "cert.pfx";
 
         static readonly string name;
+
+        static readonly int logging;
 
         static readonly string secret;
 
@@ -45,27 +47,33 @@ namespace ChainFx
         internal static readonly ITransportFactory TransportFactory;
 
 
-        // registered services
+        // registered web services
         static readonly Map<string, WebService> services = new(8);
 
 
-        static readonly ConcurrentDictionary<short, WebClient> peers = new();
+        // registered web connectors
+        static readonly Map<string, WebConnector> connectors = new(32);
 
 
         /// <summary>
-        /// Load the configuration and initialize.
+        /// The process of configuration and initialization.
         /// </summary>
         static Application()
         {
-            // load app config
+            // load the app config
+            //
+
             var bytes = File.ReadAllBytes(APP_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
             app = (JObj)parser.Parse();
 
             name = app[nameof(name)];
 
-            // file-based logger
-            int logging = app[nameof(logging)];
+            // logging and logger
+            //
+
+            logging = app[nameof(logging)];
+
             var file = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new FileLogger(file)
             {
@@ -80,10 +88,10 @@ namespace ChainFx
             //
             secret = app[nameof(secret)];
 
-            // string fedkey = app[nameof(fedkey)]; // federal key
-            // _fedkey = CryptoUtility.HexToKey(fedkey);
+            // X509 certificate
+            //
 
-            string certpasswd = app[nameof(certpasswd)]; // X509 certificate
+            string certpasswd = app[nameof(certpasswd)];
             if (certpasswd != null)
             {
                 try
@@ -96,7 +104,9 @@ namespace ChainFx
                 }
             }
 
-            // fabric and nodality cfg
+            // db config
+            //
+
             JObj db = app[nameof(db)];
             if (db != null)
             {
@@ -112,13 +122,16 @@ namespace ChainFx
 
         public static string Name => name;
 
-        public static string Secret => secret;
+        public static int Logging => logging;
 
         public static FileLogger Logger => logger;
 
         public static X509Certificate2 Certificate => cert;
 
+        public static string Secret => secret;
 
+
+        // ReSharper disable once ParameterHidesMember
         public static S CreateService<S>(string name, string folder = null) where S : WebService, new()
         {
             if (app == null)
@@ -179,12 +192,14 @@ namespace ChainFx
             }
 
             // handle SIGTERM and CTRL_C 
-            AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
+            //
+
+            AppDomain.CurrentDomain.ProcessExit += (_, _) =>
             {
                 Canceller.Cancel(false);
                 exitevt.Set(); // release the Main thread
             };
-            Console.CancelKeyPress += (sender, eventArgs) =>
+            Console.CancelKeyPress += (_, eventArgs) =>
             {
                 Canceller.Cancel(false);
                 exitevt.Set(); // release the Main thread
@@ -252,6 +267,6 @@ namespace ChainFx
             }
         }
 
-        static readonly CancellationTokenSource Canceller = new CancellationTokenSource();
+        static readonly CancellationTokenSource Canceller = new();
     }
 }
