@@ -12,13 +12,15 @@ public abstract class TwinGraph
     public short Flag { get; set; }
 }
 
-public abstract class TwinGraph<T> : TwinGraph where T : ITwin
+public abstract class TwinGraph<G, K, T> : TwinGraph where T : ITwin<G, K>
+    where G : IEquatable<G>, IComparable<G>
+    where K : IEquatable<K>, IComparable<K>
 {
     // index for all
-    readonly ConcurrentDictionary<int, T> all = new();
+    readonly ConcurrentDictionary<K, T> all = new();
 
-    // keyed by setkey
-    readonly ConcurrentDictionary<int, Map<int, T>> sets = new();
+    // by group key
+    readonly ConcurrentDictionary<G, Map<K, T>> groups = new();
 
     // index geographic
     TwinCell[] cells;
@@ -27,7 +29,7 @@ public abstract class TwinGraph<T> : TwinGraph where T : ITwin
     public override Type Typ => typeof(T);
 
 
-    public T Get(int key)
+    public T Get(K key)
     {
         if (!all.TryGetValue(key, out var v))
         {
@@ -38,15 +40,15 @@ public abstract class TwinGraph<T> : TwinGraph where T : ITwin
 
             if (v == null) return v;
 
-            var setkey = v.TwinSetKey;
+            var gkey = v.GroupKey;
 
             // load the same group
 
-            var map = LoadMap(dc, setkey);
+            var map = LoadGroup(dc, gkey);
 
             if (map != null)
             {
-                sets.TryAdd(setkey, map);
+                groups.TryAdd(gkey, map);
 
                 for (int i = 0; i < map.Count; i++)
                 {
@@ -58,9 +60,50 @@ public abstract class TwinGraph<T> : TwinGraph where T : ITwin
         return v;
     }
 
-    public Map<int, T> GetMap(int setkey)
+    public void Add(T v)
     {
-        if (sets.TryGetValue(setkey, out var v))
+        var key = v.Key;
+
+        if (all.TryGetValue(key, out _))
+        {
+            return;
+        }
+
+        using var dc = Nodality.NewDbContext();
+        var gkey = v.GroupKey;
+        if (!groups.TryGetValue(gkey, out var group))
+        {
+            group = LoadGroup(dc, gkey);
+            
+            if (group != null)
+            {
+                groups.TryAdd(gkey, group);
+
+                for (int i = 0; i < group.Count; i++)
+                {
+                    var ety = group.EntryAt(i);
+                    all.TryAdd(ety.Key, ety.value);
+                }
+            }
+            return;
+        }
+        
+        group.Add(key, v);
+
+    }
+
+    public Map<K, T> GetMap(G gkey)
+    {
+        if (groups.TryGetValue(gkey, out var v))
+        {
+            return v;
+        }
+        return null;
+    }
+
+    public Map<K, T> DropMap(G gkey)
+    {
+        if (groups.TryRemove(gkey, out var v))
         {
             return v;
         }
@@ -68,36 +111,34 @@ public abstract class TwinGraph<T> : TwinGraph where T : ITwin
     }
 
 
-    public T[] GetArray(int setkey, Predicate<T> filter = null, Comparison<T> comp = null)
+    public T[] GetArray(G gkey, Predicate<T> cond = null, Comparison<T> comp = null)
     {
-        if (!sets.TryGetValue(setkey, out var map))
+        if (!groups.TryGetValue(gkey, out var map))
         {
             using var dc = Nodality.NewDbContext();
 
-            map = LoadMap(dc, setkey);
+            map = LoadGroup(dc, gkey);
 
             if (map == null)
             {
                 return null;
             }
 
-            sets.TryAdd(setkey, map);
+            groups.TryAdd(gkey, map);
         }
 
-        var arr = map.All(filter);
+        var arr = map.All(cond);
 
-        if (comp != null)
+        if (comp != null && arr != null)
         {
             Array.Sort(arr, comp);
         }
         return arr;
     }
 
-    public abstract T Load(DbContext dc, int key);
+    public abstract T Load(DbContext dc, K key);
 
-    public abstract Map<int, T> LoadMap(DbContext dc, int setkey);
+    public abstract Map<K, T> LoadGroup(DbContext dc, G gkey);
 
-    public void Save()
-    {
-    }
+    public abstract bool Save(DbContext dc, T v);
 }

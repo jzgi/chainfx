@@ -43,11 +43,11 @@ namespace ChainFx.Nodal
             return x.CompareTo(y);
         }
 
-        public static ArraySegment<T> segment<T>(this T[] array, int offset, int count) where T : class
+        public static ArraySegment<T> Segment<T>(this T[] array, int offset, int count) where T : class
         {
             if (array == null)
             {
-                throw new ArgumentNullException(nameof(array));
+                return null;
             }
 
             var len = array.Length;

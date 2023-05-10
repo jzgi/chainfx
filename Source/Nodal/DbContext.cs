@@ -397,7 +397,9 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             if (Query(p, prepare))
             {
@@ -407,7 +409,9 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public Map<K, D> Query<K, D>(string sql, Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             if (Query(sql, p, prepare))
             {
@@ -417,7 +421,9 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             if (await QueryAsync(p, prepare))
             {
@@ -427,7 +433,9 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true) where D : IData, new()
+        public async Task<Map<K, D>> QueryAsync<K, D>(string sql, Action<IParameters> p = null, short msk = 0xff, Func<D, K> keyer = null, bool prepare = true)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             if (await QueryAsync(sql, p, prepare))
             {
@@ -625,7 +633,9 @@ namespace ChainFx.Nodal
             return lst.ToArray();
         }
 
-        public Map<K, D> ToMap<K, D>(short msk = 0xff, Func<D, K> keyer = null, Map<K, D> map = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short msk = 0xff, Func<D, K> keyer = null, Map<K, D> map = null)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             while (Next())
             {

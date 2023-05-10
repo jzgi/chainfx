@@ -207,20 +207,22 @@ namespace ChainFx
             for (int i = 0; i < arr.Length; i++)
             {
                 var obj = new D();
-                obj.Read((JObj) elements[i], msk);
+                obj.Read((JObj)elements[i], msk);
                 arr[i] = obj;
             }
 
             return arr;
         }
 
-        public Map<K, D> ToMap<K, D>(short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             var map = new Map<K, D>();
             for (int i = 0; i < count; i++)
             {
                 D obj = new D();
-                obj.Read((JObj) elements[i], proj);
+                obj.Read((JObj)elements[i], proj);
                 K key = default;
                 if (keyer != null)
                 {
@@ -251,19 +253,19 @@ namespace ChainFx
                 var typ = el.typ;
                 if (typ == JType.Array)
                 {
-                    cnt.Put(null, (JArr) el);
+                    cnt.Put(null, (JArr)el);
                 }
                 else if (typ == JType.Object)
                 {
-                    cnt.Put(null, (JObj) el);
+                    cnt.Put(null, (JObj)el);
                 }
                 else if (typ == JType.String)
                 {
-                    cnt.Put(null, (string) el);
+                    cnt.Put(null, (string)el);
                 }
                 else if (typ == JType.Number)
                 {
-                    cnt.Put(null, (JNumber) el);
+                    cnt.Put(null, (JNumber)el);
                 }
                 else if (typ == JType.True)
                 {

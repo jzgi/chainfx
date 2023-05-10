@@ -7,7 +7,8 @@ namespace ChainFx
     /// <summary>
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
     /// </summary>
-    public class Map<K, V> : IEnumerable<Map<K, V>.Entry>
+    public class Map<K, V> : IEnumerable<Map<K, V>.Entry> where K : IEquatable<K>, IComparable<K>
+
     {
         int[] buckets;
 
@@ -245,7 +246,7 @@ namespace ChainFx
             return list.ToArray();
         }
 
-        public Map<R, V> All<R>(Func<K, V, bool> cond, Func<V, R> keyer)
+        public Map<R, V> All<R>(Func<K, V, bool> cond, Func<V, R> keyer) where R : IEquatable<R>, IComparable<R>
         {
             var map = new Map<R, V>(32);
             for (int i = 0; i < count; i++)

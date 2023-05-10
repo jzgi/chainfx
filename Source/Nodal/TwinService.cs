@@ -6,7 +6,7 @@ public class TwinService : WebService
 {
     
     // natural model hierachy
-    private static ITwin[] top;
+    // private static ITwin[] top;
     
     // geo based index
 

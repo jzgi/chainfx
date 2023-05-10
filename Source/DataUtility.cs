@@ -80,13 +80,13 @@ namespace ChainFx
 
         public static D StringToObject<D>(string v, short msk = 0xff) where D : IData, new()
         {
-            JObj jo = (JObj) new JsonParser(v).Parse();
+            JObj jo = (JObj)new JsonParser(v).Parse();
             return jo.ToObject<D>(msk);
         }
 
         public static D[] StringToArray<D>(string v, short msk = 0xff) where D : IData, new()
         {
-            JArr ja = (JArr) new JsonParser(v).Parse();
+            JArr ja = (JArr)new JsonParser(v).Parse();
             return ja.ToArray<D>(msk);
         }
 
@@ -165,7 +165,7 @@ namespace ChainFx
             try
             {
                 byte[] bytes = File.ReadAllBytes(file);
-                JObj jo = (JObj) new JsonParser(bytes, bytes.Length).Parse();
+                JObj jo = (JObj)new JsonParser(bytes, bytes.Length).Parse();
                 if (jo != null)
                 {
                     return jo.ToObject<D>(proj);
@@ -184,7 +184,7 @@ namespace ChainFx
             try
             {
                 var bytes = File.ReadAllBytes(file);
-                var ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
+                var ja = (JArr)new JsonParser(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
                     return ja.ToArray<D>(proj);
@@ -198,12 +198,14 @@ namespace ChainFx
             return null;
         }
 
-        public static Map<K, D> FileToMap<K, D>(string file, short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null) where D : IData, new()
+        public static Map<K, D> FileToMap<K, D>(string file, short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null)
+            where K : IEquatable<K>, IComparable<K>
+            where D : IData, new()
         {
             try
             {
                 var bytes = File.ReadAllBytes(file);
-                var ja = (JArr) new JsonParser(bytes, bytes.Length).Parse();
+                var ja = (JArr)new JsonParser(bytes, bytes.Length).Parse();
                 if (ja != null)
                 {
                     return ja.ToMap(proj, keyer, toper);

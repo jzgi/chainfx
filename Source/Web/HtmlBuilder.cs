@@ -1375,7 +1375,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD<K, V>(string label, K v, Map<K, V> opts)
+        public HtmlBuilder FIELD<K, V>(string label, K v, Map<K, V> opts) where K : IEquatable<K>, IComparable<K>
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1384,7 +1384,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELD<K, V>(string label, K[] vals, Map<K, V> opts, Func<V, string> capt = null)
+        public HtmlBuilder FIELD<K, V>(string label, K[] vals, Map<K, V> opts, Func<V, string> capt = null) where K : IEquatable<K>, IComparable<K>
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -1439,7 +1439,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder FIELDA<K, V>(string label, K[] keys, Map<K, V> map)
+        public HtmlBuilder FIELDA<K, V>(string label, K[] keys, Map<K, V> map) where K : IEquatable<K>, IComparable<K>
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
@@ -2318,6 +2318,7 @@ namespace ChainFx.Web
         }
 
         public void LIST<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> item, string ul = null, string li = null)
+            where K : IEquatable<K>, IComparable<K>
         {
             Add("<ul class=\"uk-list");
             if (ul != null)
@@ -2441,6 +2442,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder ACCORDION<K, M>(Map<K, M> map, Action<Map<K, M>.Entry> card, string ul = null, string li = "uk-card-default")
+            where K : IEquatable<K>, IComparable<K>
         {
             Add("<ul uk-accordion=\"multiple: true\" class=\"");
             if (ul != null)
@@ -2603,6 +2605,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, string caption = null)
+            where K : IEquatable<K>, IComparable<K>
         {
             Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
             if (caption != null)
@@ -2738,7 +2741,7 @@ namespace ChainFx.Web
         }
 
 
-        HtmlBuilder _DIALOG_(int mode, bool pick, string tip = null)
+        void _DIALOG_(int mode, bool pick, string tip = null)
         {
             Add(" onclick=\"return dialog(this,");
             Add(mode);
@@ -2751,8 +2754,6 @@ namespace ChainFx.Web
             }
 
             Add("');\"");
-
-            return this;
         }
 
         public HtmlBuilder TOPBAR_()
@@ -2873,6 +2874,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null)
+            where K : IEquatable<K>, IComparable<K>
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2947,9 +2949,8 @@ namespace ChainFx.Web
             var acts = Web.Work.Tooled;
             if (acts != null)
             {
-                for (int i = 0; i < acts.Length; i++)
+                foreach (var act in acts)
                 {
-                    var act = acts[i];
                     int g = act.Group;
                     var tool = act.Tool;
 
@@ -4329,6 +4330,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, Predicate<V> filter = null, string legend = null, string css = null, bool required = false)
+            where K : IEquatable<K>, IComparable<K>
         {
             FIELDSUL_(legend, false, css);
             if (opt != null)
@@ -4374,6 +4376,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Func<K, V, bool> filter = null)
+            where K : IEquatable<K>, IComparable<K>
         {
             FIELDSUL_(legend, false, css);
             if (opt != null)
@@ -4548,7 +4551,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT_<V>(V name, string local = null, bool rtl = false, string onchange = null, bool required = false, string css = null)
+        public HtmlBuilder SELECT_<V>(V name, string local = null, bool rtl = false, string onchange = null, bool required = false, string empty = null, string css = null)
         {
             Add("<select class=\"uk-select");
 
@@ -4585,7 +4588,12 @@ namespace ChainFx.Web
             else
             {
                 Add("\">");
-                Add("<option selected></option>");
+            }
+            if (empty != null)
+            {
+                Add("<option value=\"\">");
+                Add(empty);
+                Add("</option>");
             }
 
             return this;
@@ -4698,6 +4706,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool keyonly = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
+            where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
             if (opts != null)
@@ -4765,6 +4774,7 @@ namespace ChainFx.Web
         }
 
         public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0)
+            where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)

@@ -64,7 +64,9 @@ namespace ChainFx.Nodal
 
         #region CACHE-API
 
-        public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
+            where K : IEquatable<K>, IComparable<K>
+
         {
             if (caches == null)
             {
@@ -73,7 +75,8 @@ namespace ChainFx.Nodal
             caches.Add(new DbUniCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
+
         {
             if (caches == null)
             {
@@ -82,7 +85,8 @@ namespace ChainFx.Nodal
             caches.Add(new DbUniCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void MakeCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
+
         {
             if (rowCaches == null)
             {
@@ -91,7 +95,8 @@ namespace ChainFx.Nodal
             rowCaches.Add(new DbKeyedCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0) where K : IComparable<K>
+        public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
+
         {
             if (rowCaches == null)
             {
@@ -100,7 +105,7 @@ namespace ChainFx.Nodal
             rowCaches.Add(new DbKeyedCache<K, V>(fetch, typeof(V), maxage, flag));
         }
 
-        public static Map<K, V> Grab<K, V>(short flag = 0) where K : IComparable<K>
+        public static Map<K, V> Grab<K, V>(short flag = 0) where K : IEquatable<K>, IComparable<K>
         {
             if (caches == null)
             {
@@ -119,7 +124,8 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public static async Task<Map<K, V>> GrabAsync<K, V>(short flag = 0) where K : IComparable<K>
+        public static async Task<Map<K, V>> GrabAsync<K, V>(short flag = 0) where K : IEquatable<K>, IComparable<K>
+
         {
             if (caches == null)
             {
@@ -138,7 +144,8 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public static V GrabValue<K, V>(K key, short flag = 0) where K : IComparable<K>
+        public static V GrabValue<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+
         {
             if (rowCaches == null)
             {
@@ -157,7 +164,8 @@ namespace ChainFx.Nodal
             return default;
         }
 
-        public static async Task<V> GrabValueAsync<K, V>(K key, short flag = 0) where K : IComparable<K>
+        public static async Task<V> GrabValueAsync<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+
         {
             if (rowCaches == null)
             {
@@ -198,24 +206,40 @@ namespace ChainFx.Nodal
             return grh;
         }
 
-        public static T GrabTwin<T>(int id) where T : class, ITwin
+        public static T GrabTwin<G, K, T>(K key)
+            where G : IEquatable<G>, IComparable<G>
+            where K : IEquatable<K>, IComparable<K>
+            where T : ITwin<G, K>
         {
-            if (graphs == null)
-            {
-                return null;
-            }
-
             foreach (var graph in graphs)
             {
                 if (typeof(T).IsAssignableFrom(graph.Typ))
                 {
-                    return ((TwinGraph<T>)graph).Get(id);
+                    return ((TwinGraph<G, K, T>)graph).Get(key);
+                }
+            }
+            return default;
+        }
+
+        public static T[] GrabTwinArray<G, K, T>(G gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+            where T : ITwin<G, K>
+            where G : IEquatable<G>, IComparable<G>
+            where K : IEquatable<K>, IComparable<K>
+        {
+            foreach (var graph in graphs)
+            {
+                if (typeof(T).IsAssignableFrom(graph.Typ))
+                {
+                    return ((TwinGraph<G, K, T>)graph).GetArray(gkey, cond, comp);
                 }
             }
             return null;
         }
 
-        public static T[] GrabTwinArray<T>(int setkey, Predicate<T> filter = null, Comparison<T> comp = null) where T : class, ITwin
+        public static Map<K, T> GrabTwinSet<G, K, T>(G gkey)
+            where G : IEquatable<G>, IComparable<G>
+            where K : IEquatable<K>, IComparable<K>
+            where T : ITwin<G, K>
         {
             if (graphs == null)
             {
@@ -226,13 +250,32 @@ namespace ChainFx.Nodal
             {
                 if (typeof(T).IsAssignableFrom(graph.Typ))
                 {
-                    return ((TwinGraph<T>)graph).GetArray(setkey, filter, comp);
+                    return ((TwinGraph<G, K, T>)graph).GetMap(gkey);
                 }
             }
             return null;
         }
 
-        public static Map<int, T> GrabTwinSet<T>(int setkey) where T : class, ITwin
+
+        public static void AddTwin<G, K, T>(T v)
+            where G : IEquatable<G>, IComparable<G>
+            where K : IEquatable<K>, IComparable<K>
+            where T : ITwin<G, K>
+        {
+            foreach (var graph in graphs)
+            {
+                if (typeof(T).IsAssignableFrom(graph.Typ))
+                {
+                    ((TwinGraph<G, K, T>)graph).Add(v);
+                }
+            }
+        }
+
+
+        public static Map<K, T> DropTwinSet<G, K, T>(G gkey)
+            where G : IEquatable<G>, IComparable<G>
+            where K : IEquatable<K>, IComparable<K>
+            where T : ITwin<G, K>
         {
             if (graphs == null)
             {
@@ -243,7 +286,7 @@ namespace ChainFx.Nodal
             {
                 if (typeof(T).IsAssignableFrom(graph.Typ))
                 {
-                    return ((TwinGraph<T>)graph).GetMap(setkey);
+                    return ((TwinGraph<G, K, T>)graph).DropMap(gkey);
                 }
             }
             return null;

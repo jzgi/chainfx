@@ -7,7 +7,7 @@ namespace ChainFx.Nodal;
 /// <summary>
 /// A cache for single entire map.
 /// </summary>
-internal class DbUniCache<K, V> : DbCache where K : IComparable<K>
+internal class DbUniCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
 {
     readonly bool async;
 

@@ -1,6 +1,10 @@
-﻿namespace ChainFx.Nodal;
+﻿using System;
 
-public interface ITwin
+namespace ChainFx.Nodal;
+
+public interface ITwin<out G, out K> : IKeyable<K>
+    where G : IEquatable<G>, IComparable<G>
+    where K : IEquatable<K>, IComparable<K>
 {
-    int TwinSetKey { get; }
+    G GroupKey { get; }
 }
