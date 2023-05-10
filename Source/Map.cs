@@ -8,7 +8,6 @@ namespace ChainFx
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
     /// </summary>
     public class Map<K, V> : IEnumerable<Map<K, V>.Entry> where K : IEquatable<K>, IComparable<K>
-
     {
         int[] buckets;
 
@@ -31,15 +30,17 @@ namespace ChainFx
             ReInit(size);
         }
 
-        void ReInit(int size) // size must be power of 2
+        private void ReInit(int size) // must be power of 2
         {
-            if (entries == null || size > entries.Length) // allocalte new arrays as needed
+            // allocalte new arrays as needed
+            if (entries == null || size > entries.Length)
             {
                 buckets = new int[size];
                 entries = new Entry[size];
             }
 
-            for (int i = 0; i < buckets.Length; i++) // initialize all buckets to -1
+            // initialize all buckets to -1
+            for (int i = 0; i < buckets.Length; i++)
             {
                 buckets[i] = -1;
             }
@@ -47,10 +48,23 @@ namespace ChainFx
             count = 0;
         }
 
+        /// <summary>
+        /// Gets the number of added entries.
+        /// </summary>
         public int Count => count;
 
+        /// <summary>
+        /// Gets the entry at the specified ordinal position.
+        /// </summary>
+        /// <param name="idx">0-based position</param>
+        /// <returns></returns>
         public Entry EntryAt(int idx) => entries[idx];
 
+        /// <summary>
+        /// Finds the entry with the specified key.
+        /// </summary>
+        /// <param name="key">A key to find</param>
+        /// <returns></returns>
         public Entry EntryOf(K key)
         {
             var idx = IndexOf(key);
@@ -83,9 +97,9 @@ namespace ChainFx
 
         public V ValueAt(int idx) => entries[idx].value;
 
-        public V[] SubgroupOf(K key)
+        public V[] SubGroupOf(K key)
         {
-            int idx = IndexOf(key);
+            var idx = IndexOf(key);
             if (idx > -1)
             {
                 int tail = entries[idx].tail;
@@ -107,7 +121,7 @@ namespace ChainFx
             int idx = buckets[buck];
             while (idx != -1)
             {
-                Entry e = entries[idx];
+                var e = entries[idx];
                 if (e.Match(code, key))
                 {
                     return idx;
@@ -132,23 +146,24 @@ namespace ChainFx
             Add(key, value, false);
         }
 
-        public void Add<M>(M v) where M : V, IKeyable<K>
+        public void Add<T>(T v) where T : V, IKeyable<K>
         {
             Add(v.Key, v, false);
         }
 
-        void Add(K key, V value, bool rehash)
+        private void Add(K key, V value, bool rehash)
         {
             // ensure double-than-needed capacity
             if (!rehash && count >= entries.Length / 2)
             {
-                var old = entries;
-                int oldc = count;
+                var oldEntires = entries;
+                int oldCount = count;
                 ReInit(entries.Length * 2);
+
                 // re-add old elements
-                for (int i = 0; i < oldc; i++)
+                for (int i = 0; i < oldCount; i++)
                 {
-                    Add(old[i].key, old[i].value, true);
+                    Add(oldEntires[i].key, oldEntires[i].value, true);
                 }
             }
 
@@ -173,10 +188,10 @@ namespace ChainFx
             count++;
 
             // decide group
-            if (value is IGroupable<K> gkeyable)
+            if (value is IGroupable<K> grpable)
             {
                 // compare to current head
-                if (head == -1 || !gkeyable.GroupWith(entries[head].key))
+                if (head == -1 || !grpable.GroupWith(entries[head].key))
                 {
                     head = idx;
                 }
@@ -185,7 +200,12 @@ namespace ChainFx
             }
         }
 
-        public bool Contains(K key)
+        /// <summary>
+        /// Determines whether the Map&lt;K,V&gt; contains the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate in the Map&lt;K,V&gt;.</param>
+        /// <returns>true if the Map&lt;K,V&gt; contains an element with the specified key; otherwise, false.</returns>
+        public bool ContainsKey(K key)
         {
             if (TryGetValue(key, out _))
             {
@@ -195,9 +215,20 @@ namespace ChainFx
             return false;
         }
 
-        public V this[K key] => TryGetValue(key, out V v) ? v : default;
+
+        /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key of the value to get.</param>
+        public V this[K key] => TryGetValue(key, out var v) ? v : default;
 
 
+        /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key of the value to get.</param>
+        /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter. This parameter is passed uninitialized.</param>
+        /// <returns>true if the map contains an element with the specified key; otherwise, false.</returns>
         public bool TryGetValue(K key, out V value)
         {
             if (key != null)
@@ -220,6 +251,33 @@ namespace ChainFx
             value = default;
             return false;
         }
+
+        public bool TryResetValue(K key, out V value)
+        {
+            if (key != null)
+            {
+                int code = key.GetHashCode() & 0x7fffffff;
+                int buck = code % buckets.Length; // target bucket
+                int idx = buckets[buck];
+                while (idx != -1)
+                {
+                    var e = entries[idx];
+                    if (e.Match(code, key))
+                    {
+                        value = e.value;
+                        e.value = default; // reset value
+
+                        return true;
+                    }
+
+                    idx = entries[idx].next; // adjust for next index
+                }
+            }
+
+            value = default;
+            return false;
+        }
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -335,7 +393,7 @@ namespace ChainFx
 
             internal V value; // entry value
 
-            V[] array; // extra values
+            private V[] moreValues; // maybe extra values
 
             internal readonly int next; // index of next entry, -1 if last
 
@@ -348,7 +406,7 @@ namespace ChainFx
                 this.key = key;
                 size = 1;
                 this.value = value;
-                array = null;
+                moreValues = null;
                 tail = -1;
             }
 
@@ -366,21 +424,21 @@ namespace ChainFx
                 else // add to list
                 {
                     // ensure capacity
-                    if (array == null)
+                    if (moreValues == null)
                     {
-                        array = new V[16];
+                        moreValues = new V[8];
                     }
                     else
                     {
-                        int len = array.Length;
+                        int len = moreValues.Length;
                         if (size > len)
                         {
                             var alloc = new V[len * 4];
-                            Array.Copy(array, 0, alloc, 0, len);
-                            array = alloc;
+                            Array.Copy(moreValues, 0, alloc, 0, len);
+                            moreValues = alloc;
                         }
                     }
-                    array[size - 1] = v;
+                    moreValues[size - 1] = v;
                 }
                 size++;
             }
@@ -406,7 +464,7 @@ namespace ChainFx
 
             public int Size => size;
 
-            public V this[int idx] => idx == 0 ? value : array[idx - 1];
+            public V this[int idx] => idx == 0 ? value : moreValues[idx - 1];
 
             public bool IsHead => tail > -1;
 

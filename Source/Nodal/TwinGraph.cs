@@ -74,7 +74,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph where T : ITwin<G, K>
         if (!groups.TryGetValue(gkey, out var group))
         {
             group = LoadGroup(dc, gkey);
-            
+
             if (group != null)
             {
                 groups.TryAdd(gkey, group);
@@ -87,9 +87,8 @@ public abstract class TwinGraph<G, K, T> : TwinGraph where T : ITwin<G, K>
             }
             return;
         }
-        
-        group.Add(key, v);
 
+        group.Add(key, v);
     }
 
     public Map<K, T> GetMap(G gkey)
@@ -141,4 +140,6 @@ public abstract class TwinGraph<G, K, T> : TwinGraph where T : ITwin<G, K>
     public abstract Map<K, T> LoadGroup(DbContext dc, G gkey);
 
     public abstract bool Save(DbContext dc, T v);
+
+    public abstract bool Remove(DbContext dc, K key);
 }
