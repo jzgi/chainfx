@@ -31,33 +31,36 @@ public abstract class TwinGraph<G, K, T> : TwinGraph where T : ITwin<G, K>
 
     public T Get(K key)
     {
-        if (!all.TryGetValue(key, out var v))
+        if (!all.TryGetValue(key, out var value))
         {
             using var dc = Nodality.NewDbContext();
 
             // load 
-            v = Load(dc, key);
+            value = Load(dc, key);
 
-            if (v == null) return v;
+            if (value == null) return default;
 
-            var gkey = v.GroupKey;
+            var gkey = value.GroupKey;
 
             // load the same group
 
-            var map = LoadGroup(dc, gkey);
-
-            if (map != null)
+            if (!groups.TryGetValue(gkey, out var map))
             {
-                groups.TryAdd(gkey, map);
-
-                for (int i = 0; i < map.Count; i++)
+                map = LoadGroup(dc, gkey);
+                
+                if (map != null)
                 {
-                    var ety = map.EntryAt(i);
-                    all.TryAdd(ety.Key, ety.value);
+                    groups.TryAdd(gkey, map);
+
+                    for (int i = 0; i < map.Count; i++)
+                    {
+                        var ety = map.EntryAt(i);
+                        all.TryAdd(ety.Key, ety.value);
+                    }
                 }
             }
         }
-        return v;
+        return value;
     }
 
     public void Add(T v)

@@ -2000,7 +2000,7 @@ namespace ChainFx.Web
                 }
 
                 Add("><a href=\"");
-                Add(act.Key);
+                Add(string.IsNullOrEmpty(act.Key) ? "./" : act.Key);
                 Add("\" onclick=\"goto(this.href, event);\">");
                 Add(act.Label);
                 Add("</a></li>");

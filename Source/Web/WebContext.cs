@@ -9,10 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
 using static ChainFx.DataUtility;
-using AuthenticationManager = Microsoft.AspNetCore.Http.Authentication.AuthenticationManager;
 
 namespace ChainFx.Web
 {
@@ -23,7 +21,7 @@ namespace ChainFx.Web
     {
         readonly IFeatureCollection features;
 
-        private readonly DefaultConnectionInfo connection;
+        readonly IHttpConnectionFeature fConnection;
 
         readonly IHttpRequestFeature fRequest;
 
@@ -36,7 +34,8 @@ namespace ChainFx.Web
         internal WebContext(IFeatureCollection features)
         {
             this.features = features;
-            connection = new DefaultConnectionInfo(features);
+
+            fConnection = features.Get<IHttpConnectionFeature>();
             fRequest = features.Get<IHttpRequestFeature>();
             fRequestCookies = new RequestCookiesFeature(features);
             fResponse = features.Get<IHttpResponseFeature>();
@@ -119,15 +118,13 @@ namespace ChainFx.Web
 
         public override HttpResponse Response => null;
 
-        public override ConnectionInfo Connection => connection;
+        public override ConnectionInfo Connection => null;
 
         public override WebSocketManager WebSockets => null;
 
         public bool IsWebSocketRequest => fWebSocket.IsWebSocketRequest;
 
-        public Task<WebSocket> AcceptWebSocketAsync() => fWebSocket.AcceptAsync(null);
-
-        [Obsolete] public override AuthenticationManager Authentication => null;
+        public Task<WebSocket> AcceptWebSocketAsync(WebSocketAcceptContext wsaCtx) => fWebSocket.AcceptAsync(wsaCtx);
 
         public override ClaimsPrincipal User { get; set; } = null;
 
@@ -160,7 +157,7 @@ namespace ChainFx.Web
 
         public string UserAgent => Header("User-Agent");
 
-        public IPAddress RemoteIpAddress => connection.RemoteIpAddress;
+        public IPAddress RemoteIpAddress => fConnection.RemoteIpAddress;
 
         public bool IsWeChat => UserAgent?.Contains("MicroMessenger/") ?? false;
 

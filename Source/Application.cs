@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ChainFx.Nodal;
 using ChainFx.Web;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -44,7 +44,7 @@ namespace ChainFx
 
         internal static readonly WebLifetime Lifetime = new WebLifetime();
 
-        internal static readonly ITransportFactory TransportFactory;
+        internal static readonly IConnectionListenerFactory TransportFactory;
 
 
         // registered web services
@@ -81,7 +81,7 @@ namespace ChainFx
             };
 
             TransportFactory = new SocketTransportFactory(
-                Options.Create(new SocketTransportOptions()), Lifetime, NullLoggerFactory.Instance
+                Options.Create(new SocketTransportOptions()), NullLoggerFactory.Instance
             );
 
             // security
