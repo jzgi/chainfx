@@ -206,6 +206,22 @@ namespace ChainFx.Nodal
             return grh;
         }
 
+        public static G GetGraph<G, B, K, T>()
+            where B : IEquatable<B>, IComparable<B>
+            where K : IEquatable<K>, IComparable<K>
+            where T : ITwin<B, K>
+            where G : TwinGraph<B, K, T>
+        {
+            foreach (var graph in graphs)
+            {
+                if (typeof(T).IsAssignableFrom(graph.Typ))
+                {
+                    return (G)graph;
+                }
+            }
+            return default;
+        }
+
         public static T GrabTwin<G, K, T>(K key)
             where G : IEquatable<G>, IComparable<G>
             where K : IEquatable<K>, IComparable<K>
@@ -251,42 +267,6 @@ namespace ChainFx.Nodal
                 if (typeof(T).IsAssignableFrom(graph.Typ))
                 {
                     return ((TwinGraph<G, K, T>)graph).GetMap(gkey);
-                }
-            }
-            return null;
-        }
-
-
-        public static void AddTwin<G, K, T>(T v)
-            where G : IEquatable<G>, IComparable<G>
-            where K : IEquatable<K>, IComparable<K>
-            where T : ITwin<G, K>
-        {
-            foreach (var graph in graphs)
-            {
-                if (typeof(T).IsAssignableFrom(graph.Typ))
-                {
-                    ((TwinGraph<G, K, T>)graph).Add(v);
-                }
-            }
-        }
-
-
-        public static Map<K, T> DropTwinSet<G, K, T>(G gkey)
-            where G : IEquatable<G>, IComparable<G>
-            where K : IEquatable<K>, IComparable<K>
-            where T : ITwin<G, K>
-        {
-            if (graphs == null)
-            {
-                return null;
-            }
-
-            foreach (var graph in graphs)
-            {
-                if (typeof(T).IsAssignableFrom(graph.Typ))
-                {
-                    return ((TwinGraph<G, K, T>)graph).DropMap(gkey);
                 }
             }
             return null;

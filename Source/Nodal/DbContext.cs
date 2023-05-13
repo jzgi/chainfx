@@ -1259,7 +1259,6 @@ namespace ChainFx.Nodal
         //
         // LET
         //
-
         public bool Let(out bool v)
         {
             v = false;

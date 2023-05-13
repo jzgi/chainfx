@@ -7,7 +7,8 @@ namespace ChainFx
     /// <summary>
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
     /// </summary>
-    public class Map<K, V> : IEnumerable<Map<K, V>.Entry> where K : IEquatable<K>, IComparable<K>
+    public class Map<K, V> : IEnumerable<Map<K, V>.Entry>
+        where K : IEquatable<K>, IComparable<K>
     {
         int[] buckets;
 
@@ -71,24 +72,6 @@ namespace ChainFx
             if (idx > -1)
             {
                 return entries[idx];
-            }
-            return default;
-        }
-
-        public V Seek(K key, Predicate<V> cond)
-        {
-            var idx = IndexOf(key);
-            if (idx > -1)
-            {
-                var ety = entries[idx];
-                for (int i = 0; i < ety.Size; i++)
-                {
-                    var v = ety[i];
-                    if (cond(v))
-                    {
-                        return v;
-                    }
-                }
             }
             return default;
         }
@@ -174,7 +157,7 @@ namespace ChainFx
             {
                 if (entries[idx].Match(code, key))
                 {
-                    entries[idx].Add(value);
+                    entries[idx].value = value;
                     return; // replace the old value
                 }
 
@@ -295,10 +278,14 @@ namespace ChainFx
             var list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
-                var v = entries[i].value;
-                if (cond == null || cond(v))
+                var value = entries[i].value;
+                if (value == null) // been set to null
                 {
-                    list.Add(v);
+                    continue;
+                }
+                if (cond == null || cond(value))
+                {
+                    list.Add(value);
                 }
             }
             return list.ToArray();
@@ -309,14 +296,15 @@ namespace ChainFx
             var map = new Map<R, V>(32);
             for (int i = 0; i < count; i++)
             {
-                var ety = entries[i];
-                for (int k = 0; k < ety.Size; k++)
+                K key = entries[i].key;
+                V value = entries[i].value;
+                if (value == null) // been set to null
                 {
-                    var v = ety[k];
-                    if (cond(ety.Key, v))
-                    {
-                        map.Add(keyer(v), v);
-                    }
+                    continue;
+                }
+                if (cond(key, value))
+                {
+                    map.Add(keyer(value), value);
                 }
             }
             return map;
@@ -326,10 +314,14 @@ namespace ChainFx
         {
             for (int i = 0; i < count; i++)
             {
-                var v = entries[i].value;
-                if (filter == null || filter(v))
+                var value = entries[i].value;
+                if (value == null) // been set to null
                 {
-                    return v;
+                    continue;
+                }
+                if (filter == null || filter(value))
+                {
+                    return value;
                 }
             }
             return default;
@@ -383,17 +375,13 @@ namespace ChainFx
         /// <summary>
         /// A single entry can hold one ore multiple values, as indicated by size.
         /// </summary>
-        public struct Entry : IEnumerable<V>, IKeyable<K>
+        public struct Entry : IKeyable<K>
         {
             readonly int code; // lower 31 bits of hash code
 
             internal readonly K key; // entry key
 
-            int size; // number of values
-
             internal V value; // entry value
-
-            private V[] moreValues; // maybe extra values
 
             internal readonly int next; // index of next entry, -1 if last
 
@@ -404,53 +392,13 @@ namespace ChainFx
                 this.code = code;
                 this.next = next;
                 this.key = key;
-                size = 1;
                 this.value = value;
-                moreValues = null;
                 tail = -1;
             }
 
             internal bool Match(int code, K key)
             {
                 return this.code == code && this.key.Equals(key);
-            }
-
-            internal void Add(V v)
-            {
-                if (size == 0)
-                {
-                    value = v;
-                }
-                else // add to list
-                {
-                    // ensure capacity
-                    if (moreValues == null)
-                    {
-                        moreValues = new V[8];
-                    }
-                    else
-                    {
-                        int len = moreValues.Length;
-                        if (size > len)
-                        {
-                            var alloc = new V[len * 4];
-                            Array.Copy(moreValues, 0, alloc, 0, len);
-                            moreValues = alloc;
-                        }
-                    }
-                    moreValues[size - 1] = v;
-                }
-                size++;
-            }
-
-            public IEnumerator<V> GetEnumerator()
-            {
-                return new Enumerator(this);
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return new Enumerator(this);
             }
 
             public override string ToString()
@@ -462,43 +410,7 @@ namespace ChainFx
 
             public V Value => value;
 
-            public int Size => size;
-
-            public V this[int idx] => idx == 0 ? value : moreValues[idx - 1];
-
             public bool IsHead => tail > -1;
-
-            // ReSharper disable once MemberHidesStaticFromOuterClass
-            public struct Enumerator : IEnumerator<V>
-            {
-                readonly Entry entry;
-
-                int current;
-
-                internal Enumerator(Entry entry)
-                {
-                    this.entry = entry;
-                    current = -1;
-                }
-
-                public bool MoveNext()
-                {
-                    return ++current < entry.size;
-                }
-
-                public void Reset()
-                {
-                    current = -1;
-                }
-
-                public V Current => entry[current];
-
-                object IEnumerator.Current => entry[current];
-
-                public void Dispose()
-                {
-                }
-            }
         }
     }
 }
