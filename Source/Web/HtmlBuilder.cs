@@ -4845,6 +4845,46 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, V[] opts, Func<V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0)
+            where K : IEquatable<K>, IComparable<K>
+            where V : IKeyable<K>
+        {
+            SELECT_(label, name, true, required, size);
+            if (opts != null)
+            {
+                foreach (var val in opts)
+                {
+                    K key = val.Key;
+                    if (filter != null && !filter(val)) continue;
+
+                    Add("<option value=\"");
+                    if (key is short shortk)
+                    {
+                        Add(shortk);
+                    }
+                    else if (key is int intk)
+                    {
+                        Add(intk);
+                    }
+                    else if (key is string strk)
+                    {
+                        Add(strk);
+                    }
+
+                    var strv = capt?.Invoke(val) ?? val.ToString();
+
+                    Add("\"");
+                    if (vs.Contains(key)) Add(" selected");
+                    Add(">");
+                    AddPrimitive(strv);
+                    Add("</option>");
+                }
+            }
+
+            _SELECT();
+            return this;
+        }
+
         public HtmlBuilder SELECT(string label, string name, string[] vs, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, true, required, size, refresh);

@@ -13,7 +13,8 @@ public abstract class TwinGraph
     public short Flag { get; set; }
 }
 
-public abstract class TwinGraph<B, K, T> : TwinGraph where T : ITwin<B, K>
+public abstract class TwinGraph<B, K, T> : TwinGraph
+    where T : class, ITwin<B, K>
     where B : IEquatable<B>, IComparable<B>
     where K : IEquatable<K>, IComparable<K>
 {
@@ -163,15 +164,24 @@ public abstract class TwinGraph<B, K, T> : TwinGraph where T : ITwin<B, K>
 
             map = LoadGroup(dc, gkey);
 
-            if (map == null)
+            if (map == null) return null;
+
+            // index each of the group members
+            for (int i = 0; i < map.Count; i++)
             {
-                return null;
+                var ety = map.EntryAt(i);
+                all.TryAdd(ety.Key, ety.value);
             }
 
+            // enlist the group
             groups.TryAdd(gkey, map);
         }
 
-        var arr = map.All(cond);
+        T[] arr;
+        lock (map)
+        {
+            arr = map.All(cond);
+        }
 
         if (comp != null && arr != null)
         {

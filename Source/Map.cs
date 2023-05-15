@@ -275,7 +275,7 @@ namespace ChainFx
 
         public V[] All(Predicate<V> cond = null)
         {
-            var list = new ValueList<V>(16);
+            var lst = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
                 var value = entries[i].value;
@@ -285,10 +285,10 @@ namespace ChainFx
                 }
                 if (cond == null || cond(value))
                 {
-                    list.Add(value);
+                    lst.Add(value);
                 }
             }
-            return list.ToArray();
+            return lst.ToArray();
         }
 
         public Map<R, V> All<R>(Func<K, V, bool> cond, Func<V, R> keyer) where R : IEquatable<R>, IComparable<R>

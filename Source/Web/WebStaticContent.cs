@@ -1583,7 +1583,7 @@ namespace ChainFx.Web
         /// To determine whether this cache content is stale.
         /// </summary>
         /// <param name="nowtick"></param>
-        internal bool IsStale(int nowtick)
+        internal bool IsStaleByNow(int nowtick)
         {
             int pass = nowtick - (Tick + MaxAge * 1000);
 

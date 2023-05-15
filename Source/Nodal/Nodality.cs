@@ -209,7 +209,7 @@ namespace ChainFx.Nodal
         public static G GetGraph<G, B, K, T>()
             where B : IEquatable<B>, IComparable<B>
             where K : IEquatable<K>, IComparable<K>
-            where T : ITwin<B, K>
+            where T : class, ITwin<B, K>
             where G : TwinGraph<B, K, T>
         {
             foreach (var graph in graphs)
@@ -225,7 +225,7 @@ namespace ChainFx.Nodal
         public static T GrabTwin<G, K, T>(K key)
             where G : IEquatable<G>, IComparable<G>
             where K : IEquatable<K>, IComparable<K>
-            where T : ITwin<G, K>
+            where T : class, ITwin<G, K>
         {
             foreach (var graph in graphs)
             {
@@ -238,7 +238,7 @@ namespace ChainFx.Nodal
         }
 
         public static T[] GrabTwinArray<G, K, T>(G gkey, Predicate<T> cond = null, Comparison<T> comp = null)
-            where T : ITwin<G, K>
+            where T : class, ITwin<G, K>
             where G : IEquatable<G>, IComparable<G>
             where K : IEquatable<K>, IComparable<K>
         {
@@ -255,7 +255,7 @@ namespace ChainFx.Nodal
         public static Map<K, T> GrabTwinSet<G, K, T>(G gkey)
             where G : IEquatable<G>, IComparable<G>
             where K : IEquatable<K>, IComparable<K>
-            where T : ITwin<G, K>
+            where T : class, ITwin<G, K>
         {
             if (graphs == null)
             {

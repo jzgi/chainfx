@@ -139,9 +139,10 @@ namespace ChainFx.Web
 
                         // loop to clear or remove each expired items
                         var nowtick = Environment.TickCount;
+                        
                         foreach (var (key, value) in shared)
                         {
-                            if (value.IsStale(nowtick))
+                            if (value.IsStaleByNow(nowtick))
                             {
                                 shared.TryRemove(key, out _);
                             }
@@ -185,7 +186,7 @@ namespace ChainFx.Web
                 {
                     if (!TryGiveFromCache(wc))
                     {
-                        GiveStaticFile(path, path.Substring(dot), wc);
+                        await GiveFileAsync(path, path.Substring(dot), wc);
 
                         TryAddToCache(wc);
                     }
@@ -337,7 +338,7 @@ namespace ChainFx.Web
 
         const int STATIC_FILE_GZIP_THRESHOLD = 1024 * 4;
 
-        public void GiveStaticFile(string filename, string ext, WebContext wc)
+        public async Task GiveFileAsync(string filename, string ext, WebContext wc)
         {
             if (!WebStaticContent.TryGetType(ext, out var ctype))
             {
@@ -364,7 +365,7 @@ namespace ChainFx.Web
                     var ms = new MemoryStream(len);
                     using (var gzs = new GZipStream(ms, CompressionMode.Compress))
                     {
-                        fs.CopyTo(gzs);
+                        await fs.CopyToAsync(gzs);
                     }
                     bytes = ms.ToArray();
                     gzip = true;
@@ -372,7 +373,7 @@ namespace ChainFx.Web
                 else
                 {
                     bytes = new byte[len];
-                    fs.Read(bytes, 0, len);
+                    await fs.ReadAsync(bytes, 0, len);
                 }
             }
 
