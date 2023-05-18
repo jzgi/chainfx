@@ -445,26 +445,6 @@ namespace ChainFx.Web
         // poll
         //
 
-        ///
-        /// Requested by polling from a proxy. respond with outgoing events
-        /// 
-        public void onswitch(WebContext wc, int key)
-        {
-            // stacked.TryGetValue(key, out var v);
-
-            var t = wc.ReadAsync<Text>();
-
-
-            // return outgoing
-
-            string[] strs = null;
-            var jc = new TextBuilder(true, 16 * 1024);
-            // jc.Put(null, strs);
-
-            wc.Give(200, jc, null, 0);
-        }
-
-
         public void AddNotif(int key, string v)
         {
             // var wp = stacked.GetOrAdd(key, (x) => new EventBag());

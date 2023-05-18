@@ -1,10 +1,11 @@
 using System;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace ChainFx.Web
 {
-    internal class WebLifetime : IApplicationLifetime
+    internal class WebLifetime : IHostApplicationLifetime
     {
         readonly CancellationTokenSource started = new CancellationTokenSource();
 

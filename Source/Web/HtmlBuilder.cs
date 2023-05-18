@@ -4705,7 +4705,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool keyonly = false, bool required = false, sbyte size = 0, bool rtl = false, bool refresh = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool keyset = false, bool required = true, sbyte size = 0, bool rtl = false, bool refresh = false)
             where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, false, required, size, rtl, refresh);
@@ -4750,7 +4750,7 @@ namespace ChainFx.Web
                         Add("\"");
                         if (key.Equals(v)) Add(" selected");
                         Add(">");
-                        if (keyonly)
+                        if (keyset)
                         {
                             AddPrimitive(key);
                         }
@@ -4885,7 +4885,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT(string label, string name, string[] vs, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
+        public HtmlBuilder SELECT(string label, string name, string[] vs, string[] opts, bool required = true, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, true, required, size, refresh);
             if (opts != null)

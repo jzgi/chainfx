@@ -44,7 +44,7 @@ namespace ChainFx
 
         public string oker;
         public DateTime oked;
-        public volatile short status;
+        public short status;
 
 
         public virtual void Read(ISource s, short msk = 0xff)
