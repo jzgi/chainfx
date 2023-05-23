@@ -7,7 +7,7 @@ namespace ChainFx.Nodal;
 /// <summary>
 /// A cache for single entire map.
 /// </summary>
-internal class DbUniCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
+internal class DbSetCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
 {
     readonly bool async;
 
@@ -20,7 +20,7 @@ internal class DbUniCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K
     volatile int expiry;
 
 
-    internal DbUniCache(Func<DbContext, Map<K, V>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbSetCache(Func<DbContext, Map<K, V>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
     {
         async = false;
         slim = new ReaderWriterLockSlim();
@@ -33,7 +33,7 @@ internal class DbUniCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K
     /// <param name="typ"></param>
     /// <param name="maxage"></param>
     /// <param name="flag"></param>
-    internal DbUniCache(Func<DbContext, Task<Map<K, V>>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbSetCache(Func<DbContext, Task<Map<K, V>>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
     {
         async = true;
         slim = new SemaphoreSlim(1, 1);

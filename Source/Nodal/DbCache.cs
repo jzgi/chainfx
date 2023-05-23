@@ -4,13 +4,13 @@ namespace ChainFx.Nodal
 {
     internal abstract class DbCache
     {
-        // the actual type cached (and to seek for)
+        // the actual type cached 
         readonly Type typ;
 
-        // bitwise matcher
+        // bitwise match
         readonly short flag;
 
-        // in seconds
+        // expiration period in seconds
         readonly int maxage;
 
         // either of the two forms
@@ -28,9 +28,9 @@ namespace ChainFx.Nodal
 
         public Delegate Fetch => fetch;
 
-        public abstract bool IsAsync { get; }
-
         public Type Typ => typ;
+
+        public abstract bool IsAsync { get; }
 
         public int MaxAge => maxage;
 

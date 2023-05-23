@@ -5,34 +5,24 @@ using System.Threading.Tasks;
 namespace ChainFx.Nodal;
 
 /// <summary>
-/// A cache for multiple objects.
+/// A cache for multiple keyed datasets.
 /// </summary>
-internal class DbKeyedCache<K, V> : DbCache
+internal class DbKeySetCache<M, K, V> : DbCache
+    where K : IEquatable<K>, IComparable<K>
 {
     readonly bool async;
 
-    readonly ConcurrentDictionary<K, (int, V)> cached = new();
+    readonly ConcurrentDictionary<M, (int, Map<K, V>)> cached = new();
 
-    /// <summary>
-    /// The sync version of constructor.
-    /// </summary>
-    /// <param name="fetch"></param>
-    /// <param name="typ"></param>
-    /// <param name="maxage"></param>
-    /// <param name="flag"></param>
-    internal DbKeyedCache(Func<DbContext, K, V> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+
+    internal DbKeySetCache(Func<DbContext, M, Map<K, V>> fetcher, Type typ, int maxage, byte flag) :
+        base(fetcher, typ, maxage, flag)
     {
         async = false;
     }
 
-    /// <summary>
-    /// The async version of constructor.
-    /// </summary>
-    /// <param name="fetch"></param>
-    /// <param name="typ"></param>
-    /// <param name="maxage"></param>
-    /// <param name="flag"></param>
-    internal DbKeyedCache(Func<DbContext, K, Task<V>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbKeySetCache(Func<DbContext, M, Task<Map<K, V>>> fetcher, Type typ, int maxage, byte flag) :
+        base(fetcher, typ, maxage, flag)
     {
         async = true;
     }
@@ -40,12 +30,13 @@ internal class DbKeyedCache<K, V> : DbCache
     public override bool IsAsync => async;
 
 
-    public V Get(K key)
+    public Map<K, V> Get(M key)
     {
-        if (!(fetch is Func<DbContext, K, V> func)) // check fetcher
+        if (!(fetch is Func<DbContext, M, Map<K, V>> func)) // simple object
         {
             throw new DbException("Wrong fetcher for " + Typ);
         }
+
         var tick = Environment.TickCount & int.MaxValue; // positive tick
 
         var exist = cached.TryGetValue(key, out var ety);
@@ -59,17 +50,18 @@ internal class DbKeyedCache<K, V> : DbCache
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = func(dc, key);
 
-        cached.AddOrUpdate(key, ety, (k, old) => ety); // re-cache
+        cached.AddOrUpdate(key, ety, (k, old) => ety);
 
         return ety.Item2;
     }
 
-    public async Task<V> GetAsync(K key)
+    public async Task<Map<K, V>> GetAsync(M key)
     {
-        if (!(fetch is Func<DbContext, K, Task<V>> func)) // check fetcher
+        if (!(fetch is Func<DbContext, M, Task<Map<K, V>>> func)) // check fetcher
         {
             throw new DbException("Wrong fetcher for " + Typ);
         }
+
         var tick = Environment.TickCount & int.MaxValue; // positive tick
 
         var exist = cached.TryGetValue(key, out var ety);
@@ -83,8 +75,14 @@ internal class DbKeyedCache<K, V> : DbCache
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = await func(dc, key);
 
-        cached.AddOrUpdate(key, ety, (k, old) => ety); // re-cache
+        cached.AddOrUpdate(key, ety, (k, old) => ety);
 
         return ety.Item2;
+    }
+
+
+    public bool Invalidate(M key)
+    {
+        return cached.TryRemove(key, out _);
     }
 }

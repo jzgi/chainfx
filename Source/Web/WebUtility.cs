@@ -40,7 +40,7 @@ namespace ChainFx.Web
             string a;
             if (uri != null)
             {
-                a = Uri.EscapeDataString(uri);
+                a = uri;
             }
             else
             {

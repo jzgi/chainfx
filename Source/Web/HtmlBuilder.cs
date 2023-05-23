@@ -660,6 +660,25 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder SPAN3<A, B, C>(A a, B b, C c, bool sp = true, string css = null)
+        {
+            SPAN_(css);
+            AddPrimitive(a);
+            if (sp)
+            {
+                Add("&nbsp;");
+            }
+            AddPrimitive(b);
+            if (sp)
+            {
+                Add("&nbsp;");
+            }
+            AddPrimitive(c);
+
+            _SPAN();
+            return this;
+        }
+
         public HtmlBuilder H2_(string css = null)
         {
             Add("<h2");
@@ -1736,10 +1755,15 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ICON(string name, string css = null)
+        public HtmlBuilder ICON(string name, int ratio = 1, string css = null)
         {
-            Add("<span uk-icon=\"");
+            Add("<span uk-icon=\"icon: ");
             Add(name);
+            if (ratio > 1)
+            {
+                Add("; ratio: ");
+                Add(ratio);
+            }
             if (css != null)
             {
                 Add("\" class=\"");
@@ -2554,7 +2578,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder TABLE<M>(M[] arr, Action<M> tr, Action thead = null, string caption = null, bool reverse = false, string css = null)
+        public HtmlBuilder TABLE<M>(IList<M> lst, Action<M> tr, Action thead = null, string caption = null, bool reverse = false, string css = null)
         {
             Add("<table class=\"uk-table uk-table-hover uk-table-divider");
             if (css != null)
@@ -2571,15 +2595,15 @@ namespace ChainFx.Web
                 Add("</caption>");
             }
 
-            if (arr != null && tr != null) // tbody if having data objects
+            if (lst != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
                 thead?.Invoke();
                 if (reverse)
                 {
-                    for (int i = arr.Length - 1; i >= 0; i--)
+                    for (int i = lst.Count - 1; i >= 0; i--)
                     {
-                        var obj = arr[i];
+                        var obj = lst[i];
                         Add("<tr>");
                         tr(obj);
                         Add("</tr>");
@@ -2587,9 +2611,9 @@ namespace ChainFx.Web
                 }
                 else
                 {
-                    for (int i = 0; i < arr.Length; i++)
+                    for (int i = 0; i < lst.Count; i++)
                     {
-                        var obj = arr[i];
+                        var obj = lst[i];
                         Add("<tr>");
                         tr(obj);
                         Add("</tr>");
@@ -2676,7 +2700,7 @@ namespace ChainFx.Web
         }
 
 
-        public void GRID<M>(M[] arr, Action<M> card, Predicate<M> filter = null, int min = 1, string css = "uk-card-default")
+        public void GRID<M>(IList<M> lst, Action<M> card, Predicate<M> filter = null, int min = 1, string css = "uk-card-default")
         {
             Add("<div uk-grid class=\"uk-child-width-1-");
             Add(min++);
@@ -2689,11 +2713,11 @@ namespace ChainFx.Web
             Add("@l uk-child-width-1-");
             Add(min);
             Add("@xl\">");
-            if (arr != null)
+            if (lst != null)
             {
-                for (int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < lst.Count; i++)
                 {
-                    var obj = arr[i];
+                    var obj = lst[i];
                     if (filter != null && !filter(obj))
                     {
                         continue;
@@ -2756,9 +2780,15 @@ namespace ChainFx.Web
             Add("');\"");
         }
 
-        public HtmlBuilder TOPBAR_()
+        public HtmlBuilder TOPBAR_(string css = null)
         {
-            Add("<form class=\"uk-top-bar\">");
+            Add("<form class=\"uk-top-bar");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
             return this;
         }
 
@@ -3120,12 +3150,12 @@ namespace ChainFx.Web
             return this;
         }
 
-        public void WORKBOARD(byte group = 0, int notice = 0)
+        public void WORKBOARD(byte group = 0, int notice = 0, bool compact = true)
         {
             var wc = Web;
             var wrk = wc.Work;
-            // render tabs
 
+            // render tabs
             string last = null;
 
             for (int i = 0; i < wrk.SubWorks?.Count; i++)
@@ -3146,24 +3176,34 @@ namespace ChainFx.Web
                     continue;
                 }
 
-                if (sub.Tip != null && last != sub.Tip) // take null as smae group 
+                if ((!compact || sub.Tip != null) && last != sub.Tip) // take null as smae group 
                 {
                     _FORM();
                     _UL();
-                    // if (last != null)
-                    // {
-                    //     _FORM();
-                    //     _UL();
-                    // }
+
                     FORM_("uk-card uk-card-primary");
-                    H3(sub.Tip, "uk-card-header");
-                    UL_("uk-card-body uk-child-width-1-2", grid: true);
+                    if (compact)
+                    {
+                        H3(sub.Tip, "uk-card-header");
+                    }
+                    UL_(compact ? "uk-card-body uk-child-width-1-2" : "uk-card-body uk-child-width-1-1", grid: true);
                 }
 
                 LI_();
 
                 int mode = sub.HasVarWork ? MOD_ASTACK : MOD_OPEN;
-                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1").SPAN(sub.Label).ICON("chevron-right");
+                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1");
+                if (!compact)
+                {
+                    ICON(sub.Icon).SP().SP();
+                    SPAN(sub.Label);
+                    P(sub.Tip, css: "uk-margin-auto-left");
+                }
+                else
+                {
+                    SPAN(sub.Label);
+                }
+                ICON("chevron-right");
                 if (notice > 0 && sub.HasNewNotice(notice))
                 {
                     SPAN('✹', css: "uk-text-danger");
@@ -4600,7 +4640,7 @@ namespace ChainFx.Web
         }
 
 
-        public HtmlBuilder SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, bool refresh = false, string css = null)
+        public HtmlBuilder SELECT_<V>(string label, V name, bool multiple = false, bool required = true, int size = 0, bool rtl = false, string onchange = null, string css = null)
         {
             LABEL(label);
 
@@ -4632,9 +4672,12 @@ namespace ChainFx.Web
                 Add("\"");
             }
 
-            if (refresh)
+            if (onchange != null)
             {
-                Add(" onchange=\"formRefresh(this, event);\"");
+                Add(" onchange=\"");
+                Add(onchange);
+                Add("\"");
+                // Add(" onchange=\"formRefresh(this, event);\"");
             }
 
             Add(">");
@@ -4705,10 +4748,10 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool keyset = false, bool required = true, sbyte size = 0, bool rtl = false, bool refresh = false)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool showkey = false, bool required = true, sbyte size = 0, bool rtl = false, bool @readonly = false, string onchange = null)
             where K : IEquatable<K>, IComparable<K>
         {
-            SELECT_(label, name, false, required, size, rtl, refresh);
+            SELECT_(label, name, false, required, size, rtl, onchange);
             if (opts != null)
             {
                 bool grpopen = false;
@@ -4740,7 +4783,7 @@ namespace ChainFx.Web
                     }
                     else
                     {
-                        if (!required && !refresh && i == 0)
+                        if (!required && onchange == null && i == 0)
                         {
                             Add("<option value=\"\"></option>");
                         }
@@ -4748,9 +4791,23 @@ namespace ChainFx.Web
                         Add("<option value=\"");
                         AddPrimitive(key);
                         Add("\"");
-                        if (key.Equals(v)) Add(" selected");
+                        if (showkey)
+                        {
+                            Add(" title=\"");
+                            AddPrimitive(value);
+                            Add("\"");
+                        }
+
+                        if (@readonly)
+                        {
+                            Add(" disabled");
+                        }
+                        if (key.Equals(v))
+                        {
+                            Add(" selected");
+                        }
                         Add(">");
-                        if (keyset)
+                        if (showkey)
                         {
                             AddPrimitive(key);
                         }
@@ -4854,7 +4911,7 @@ namespace ChainFx.Web
             {
                 foreach (var val in opts)
                 {
-                    K key = val.Key;
+                    var key = val.Key;
                     if (filter != null && !filter(val)) continue;
 
                     Add("<option value=\"");
@@ -4876,7 +4933,7 @@ namespace ChainFx.Web
                     Add("\"");
                     if (vs.Contains(key)) Add(" selected");
                     Add(">");
-                    AddPrimitive(strv);
+                    Add(strv);
                     Add("</option>");
                 }
             }

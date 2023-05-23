@@ -1,6 +1,9 @@
-﻿namespace ChainFx
+﻿using System;
+
+namespace ChainFx
 {
     public interface IGroupable<K> : IKeyable<K>
+        where K : IEquatable<K>, IComparable<K>
     {
         /// <summary>
         /// To determine if it is in the same group as the given object. 
