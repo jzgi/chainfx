@@ -20,7 +20,8 @@ internal class DbKeyValueCache<K, V> : DbCache
     /// <param name="typ"></param>
     /// <param name="maxage"></param>
     /// <param name="flag"></param>
-    internal DbKeyValueCache(Func<DbContext, K, V> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbKeyValueCache(Func<DbContext, K, V> fetch, Type typ, int maxage, byte flag) :
+        base(fetch, typ, maxage, flag)
     {
         async = false;
     }
@@ -32,7 +33,8 @@ internal class DbKeyValueCache<K, V> : DbCache
     /// <param name="typ"></param>
     /// <param name="maxage"></param>
     /// <param name="flag"></param>
-    internal DbKeyValueCache(Func<DbContext, K, Task<V>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbKeyValueCache(Func<DbContext, K, Task<V>> fetch, Type typ, int maxage, byte flag) :
+        base(fetch, typ, maxage, flag)
     {
         async = true;
     }
@@ -88,13 +90,8 @@ internal class DbKeyValueCache<K, V> : DbCache
         return ety.Item2;
     }
 
-    public bool Invalidate(K key)
+    public bool Remove(K key)
     {
-        if (!(fetch is Func<DbContext, K, V> func)) // check fetcher
-        {
-            throw new DbException("Wrong fetcher for " + Typ);
-        }
-
         return cached.TryRemove(key, out _);
     }
 }

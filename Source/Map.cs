@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ChainFx
 {
     /// <summary>
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
     /// </summary>
+    [DebuggerDisplay("Count = {Count}")]
     public class Map<K, V> : IEnumerable<Map<K, V>.Entry>
         where K : IEquatable<K>, IComparable<K>
     {

@@ -81,7 +81,7 @@ internal class DbKeySetCache<M, K, V> : DbCache
     }
 
 
-    public bool Invalidate(M key)
+    public bool Remove(M key)
     {
         return cached.TryRemove(key, out _);
     }

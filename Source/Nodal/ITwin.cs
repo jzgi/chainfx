@@ -7,6 +7,8 @@ public interface ITwin<out G, out K> : IKeyable<K>
     where K : IEquatable<K>, IComparable<K>
 {
     G GroupKey { get; }
-    
-    
+
+    TwinInput Input { get; }
+
+    TwinOutput Output { get; }
 }

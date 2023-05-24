@@ -4,14 +4,27 @@ using System.Threading.Tasks;
 
 namespace ChainFx.Nodal;
 
-public class FsTable : IKeyable<string>
+/// <summary>
+/// A data table based on a certain directory.
+/// </summary>
+public class DirTable : IKeyable<string>
 {
     JObj Find(string pk)
     {
         return null;
     }
 
-    IList<JObj> FindAll(string pk, Predicate<string> namefltr)
+    E Find<E>(string pk)
+    {
+        return default;
+    }
+
+    IList<JObj> FindAll(string pk, Predicate<string> nameflt)
+    {
+        return null;
+    }
+
+    E[] FindAll<E>(string pk, Predicate<string> nameflt)
     {
         return null;
     }

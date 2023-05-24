@@ -89,7 +89,7 @@ namespace ChainFx.Nodal
             );
         }
 
-        public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0) 
+        public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0)
             where K : IEquatable<K>, IComparable<K>
 
         {
@@ -176,7 +176,7 @@ namespace ChainFx.Nodal
             return default;
         }
 
-        public static bool InvalidateValue<K, V>(K key, short flag = 0)
+        public static bool ExpireValue<K, V>(K key, short flag = 0)
             where K : IEquatable<K>, IComparable<K>
         {
             foreach (var ca in caches)
@@ -185,7 +185,7 @@ namespace ChainFx.Nodal
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbKeyValueCache<K, V>)ca).Invalidate(key);
+                        return ((DbKeyValueCache<K, V>)ca).Remove(key);
                     }
                 }
             }
@@ -225,7 +225,7 @@ namespace ChainFx.Nodal
             return null;
         }
 
-        public static bool InvalidateSet<S, K, V>(S setkey, short flag = 0)
+        public static bool ExpireSet<S, K, V>(S setkey, short flag = 0)
             where K : IEquatable<K>, IComparable<K>
         {
             foreach (var ca in caches)
@@ -234,7 +234,7 @@ namespace ChainFx.Nodal
                 {
                     if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                     {
-                        return ((DbKeySetCache<S, K, V>)ca).Invalidate(setkey);
+                        return ((DbKeySetCache<S, K, V>)ca).Remove(setkey);
                     }
                 }
             }
@@ -246,7 +246,8 @@ namespace ChainFx.Nodal
 
         #region Graph-API
 
-        protected static G MakeGraph<G>(string name, object state = null) where G : TwinGraph, new()
+        protected static G MakeGraph<G>(string name, object state = null)
+            where G : TwinGraph, new()
         {
             // create service (properties in order)
             var grh = new G
@@ -254,11 +255,10 @@ namespace ChainFx.Nodal
                 // Folder = folder ?? name
             };
             // svc.Init(prop, servicecfg);
-
             graphs.Add(grh);
 
-            // invoke on creatte
-            // grh.On();
+            // oncreate
+            grh.OnCreate();
 
             return grh;
         }
@@ -269,11 +269,11 @@ namespace ChainFx.Nodal
             where T : class, ITwin<B, K>
             where G : TwinGraph<B, K, T>
         {
-            foreach (var graph in graphs)
+            foreach (var grh in graphs)
             {
-                if (typeof(T).IsAssignableFrom(graph.Typ))
+                if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return (G)graph;
+                    return (G)grh;
                 }
             }
             return default;
@@ -284,11 +284,11 @@ namespace ChainFx.Nodal
             where K : IEquatable<K>, IComparable<K>
             where T : class, ITwin<G, K>
         {
-            foreach (var graph in graphs)
+            foreach (var grh in graphs)
             {
-                if (typeof(T).IsAssignableFrom(graph.Typ))
+                if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return ((TwinGraph<G, K, T>)graph).Get(key);
+                    return ((TwinGraph<G, K, T>)grh).Get(key);
                 }
             }
             return default;
@@ -299,11 +299,11 @@ namespace ChainFx.Nodal
             where G : IEquatable<G>, IComparable<G>
             where K : IEquatable<K>, IComparable<K>
         {
-            foreach (var graph in graphs)
+            foreach (var grh in graphs)
             {
-                if (typeof(T).IsAssignableFrom(graph.Typ))
+                if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return ((TwinGraph<G, K, T>)graph).GetArray(gkey, cond, comp);
+                    return ((TwinGraph<G, K, T>)grh).GetArray(gkey, cond, comp);
                 }
             }
             return null;
@@ -319,11 +319,11 @@ namespace ChainFx.Nodal
                 return null;
             }
 
-            foreach (var graph in graphs)
+            foreach (var grh in graphs)
             {
-                if (typeof(T).IsAssignableFrom(graph.Typ))
+                if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return ((TwinGraph<G, K, T>)graph).GetMap(gkey);
+                    return ((TwinGraph<G, K, T>)grh).GetGroup(gkey);
                 }
             }
             return null;

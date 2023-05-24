@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChainFx.Nodal;
@@ -11,25 +12,56 @@ public abstract class TwinGraph
 
     // bitwise matcher
     public short Flag { get; set; }
+
+    protected internal virtual void OnCreate()
+    {
+    }
 }
 
-public abstract class TwinGraph<B, K, T> : TwinGraph
-    where T : class, ITwin<B, K>
-    where B : IEquatable<B>, IComparable<B>
+public abstract class TwinGraph<G, K, T> : TwinGraph
+    where T : class, ITwin<G, K>
+    where G : IEquatable<G>, IComparable<G>
     where K : IEquatable<K>, IComparable<K>
 {
     // index for all
     readonly ConcurrentDictionary<K, T> all = new();
 
     // by group key
-    readonly ConcurrentDictionary<B, Map<K, T>> groups = new();
+    readonly ConcurrentDictionary<G, Map<K, T>> groups = new();
 
     // index geographic
     TwinCell[] cells;
 
 
+    readonly Thread worker;
+
     public override Type Typ => typeof(T);
 
+    protected TwinGraph()
+    {
+        worker = new Thread(async (state) =>
+        {
+            Thread.Sleep(1000 * 30);
+
+            // settle group by group
+            int sum = 0;
+            foreach (var pair in groups)
+            {
+                sum += await DischargeGroupAsync(pair.Key, pair.Value);
+            }
+        })
+        {
+            Name = "Graph " + Typ.Name
+        };
+
+        // start the thread
+        worker.Start();
+    }
+
+    protected virtual async Task<int> DischargeGroupAsync(G gkey, Map<K, T> group)
+    {
+        return 0;
+    }
 
     public async Task<T> CreateAsync(Func<DbContext, Task<T>> dbfunc)
     {
@@ -109,13 +141,13 @@ public abstract class TwinGraph<B, K, T> : TwinGraph
         {
             using var dc = Nodality.NewDbContext();
 
-            // load 
-            value = Load(dc, key);
-
-            if (value == null) return default;
+            // try get group key first 
+            if (!TryGetGroupKey(dc, key, out var gkey))
+            {
+                return default;
+            }
 
             // ensure the same group is loaded
-            var gkey = value.GroupKey;
             if (!groups.TryGetValue(gkey, out var map))
             {
                 map = LoadGroup(dc, gkey);
@@ -137,7 +169,7 @@ public abstract class TwinGraph<B, K, T> : TwinGraph
         return value;
     }
 
-    public Map<K, T> GetMap(B gkey)
+    public Map<K, T> GetGroup(G gkey)
     {
         if (groups.TryGetValue(gkey, out var v))
         {
@@ -146,17 +178,28 @@ public abstract class TwinGraph<B, K, T> : TwinGraph
         return null;
     }
 
-    public Map<K, T> DropMap(B gkey)
+    public Map<K, T> RemoveGroup(G gkey)
     {
-        if (groups.TryRemove(gkey, out var v))
+        if (groups.TryRemove(gkey, out var map))
         {
-            return v;
+            // remove each from the all index
+            lock (map)
+            {
+                for (int i = 0; i < map.Count; i++)
+                {
+                    var key = map.KeyAt(i);
+
+                    all.TryRemove(key, out var _);
+                }
+            }
+
+            return map;
         }
         return null;
     }
 
 
-    public T[] GetArray(B gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+    public T[] GetArray(G gkey, Predicate<T> cond = null, Comparison<T> comp = null)
     {
         if (!groups.TryGetValue(gkey, out var map))
         {
@@ -190,7 +233,7 @@ public abstract class TwinGraph<B, K, T> : TwinGraph
         return arr;
     }
 
-    public abstract T Load(DbContext dc, K key);
+    public abstract bool TryGetGroupKey(DbContext dc, K key, out G gkey);
 
-    public abstract Map<K, T> LoadGroup(DbContext dc, B gkey);
+    public abstract Map<K, T> LoadGroup(DbContext dc, G gkey);
 }
