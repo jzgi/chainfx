@@ -3,7 +3,7 @@ namespace ChainFx
     /// <summary>
     /// An XML parser structure that deals with well-formed XML documents.
     /// </summary>
-    public struct XmlParser : IParser<XElem>
+    public readonly struct XmlParser : IParser<XElem>
     {
         static readonly ParserException ParserEx = new ParserException("error parsing xml");
 

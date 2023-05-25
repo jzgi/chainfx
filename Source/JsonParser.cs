@@ -3,7 +3,7 @@ namespace ChainFx
     ///
     /// Parse JSON into object model from either bytes or string.
     ///
-    public struct JsonParser : IParser<ISource>
+    public readonly struct JsonParser : IParser<ISource>
     {
         static readonly ParserException ParserEx = new ParserException("error parsing json");
 

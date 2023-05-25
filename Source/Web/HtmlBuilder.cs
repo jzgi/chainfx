@@ -3195,8 +3195,8 @@ namespace ChainFx.Web
                 ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1");
                 if (!compact)
                 {
-                    ICON(sub.Icon).SP().SP();
-                    SPAN(sub.Label);
+                    ICON(sub.Icon, css: "uk-circle uk-background-muted").SP().SP();
+                    H4(sub.Label);
                     P(sub.Tip, css: "uk-margin-auto-left");
                 }
                 else

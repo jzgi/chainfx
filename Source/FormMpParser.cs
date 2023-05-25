@@ -3,7 +3,7 @@ namespace ChainFx
     /// <summary>
     /// To parse multipart/form-data content, with the part Content-Length extension.
     /// </summary>
-    public struct FormMpParser : IParser<Form>
+    public readonly struct FormMpParser : IParser<Form>
     {
         static readonly Form Empty = new Form(true);
 

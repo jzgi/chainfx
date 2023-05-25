@@ -3,7 +3,7 @@ namespace ChainFx
     /// <summary>
     /// To parse application/x-www-form-urlencoded octets or a character string.
     /// </summary>
-    public struct FormParser : IParser<Form>
+    public readonly struct FormParser : IParser<Form>
     {
         static readonly Form Empty = new Form(false);
 
@@ -34,7 +34,7 @@ namespace ChainFx
             this.text = new Text(256);
         }
 
-        int this[int index] => bytebuf?[index] ?? (int) strbuf[index];
+        int this[int index] => bytebuf?[index] ?? (int)strbuf[index];
 
         public Form Parse()
         {
@@ -130,14 +130,20 @@ namespace ChainFx
         }
 
         // return digit value
-        static int Dv(int h)
+        private static int Dv(int h)
         {
+            // try digit
             int v = h - '0';
             if (v >= 0 && v <= 9)
             {
                 return v;
             }
+            // try letters
             v = h - 'A';
+            if (v > 5) // try lower case
+            {
+                v = h - 'a';
+            }
             if (v >= 0 && v <= 5) return 10 + v;
             return 0;
         }
