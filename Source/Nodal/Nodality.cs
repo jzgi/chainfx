@@ -308,27 +308,7 @@ namespace ChainFx.Nodal
             }
             return null;
         }
-
-        public static Map<K, T> GrabTwinSet<G, K, T>(G gkey)
-            where G : IEquatable<G>, IComparable<G>
-            where K : IEquatable<K>, IComparable<K>
-            where T : class, ITwin<G, K>
-        {
-            if (graphs == null)
-            {
-                return null;
-            }
-
-            foreach (var grh in graphs)
-            {
-                if (typeof(T).IsAssignableFrom(grh.Typ))
-                {
-                    return ((TwinGraph<G, K, T>)grh).GetGroup(gkey);
-                }
-            }
-            return null;
-        }
-
-        #endregion
     }
+
+    #endregion
 }

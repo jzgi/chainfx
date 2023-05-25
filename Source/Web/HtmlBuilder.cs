@@ -4872,7 +4872,9 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<V>(string label, string name, V v, V[] opts, Func<V, bool> filter = null, bool required = true, sbyte size = 0)
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, V[] opts, Func<V, bool> filter = null, bool required = true, sbyte size = 0)
+            where K : IEquatable<K>, IComparable<K>
+            where V : IKeyable<K>
         {
             SELECT_(label, name, false, required, size);
             if (opts != null)
@@ -4889,11 +4891,11 @@ namespace ChainFx.Web
                     if (filter != null && !filter(opt)) continue;
 
                     Add("<option value=\"");
-                    AddPrimitive(opt);
+                    AddPrimitive(opt.Key);
                     Add("\"");
-                    if (opt.Equals(v)) Add(" selected");
+                    if (opt.Key.Equals(v)) Add(" selected");
                     Add(">");
-                    AddPrimitive(opt);
+                    AddPrimitive(opt.ToString());
                     Add("</option>");
                 }
             }
@@ -4934,6 +4936,33 @@ namespace ChainFx.Web
                     if (vs.Contains(key)) Add(" selected");
                     Add(">");
                     Add(strv);
+                    Add("</option>");
+                }
+            }
+
+            _SELECT();
+            return this;
+        }
+
+        public HtmlBuilder SELECT(string label, string name, string v, string[] opts, bool required = true, sbyte size = 0, bool refresh = false)
+        {
+            SELECT_(label, name, true, required, size, refresh);
+            if (opts != null)
+            {
+                for (int i = 0; i < opts.Length; i++)
+                {
+                    if (!required && i == 0)
+                    {
+                        Add("<option value=\"\"></option>");
+                    }
+
+                    var e = opts[i];
+                    Add("<option value=\"");
+                    Add(e);
+                    Add("\"");
+                    if (v == e) Add(" selected");
+                    Add(">");
+                    Add(e);
                     Add("</option>");
                 }
             }

@@ -152,30 +152,29 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
             {
                 map = LoadGroup(dc, gkey);
 
-                if (map != null)
+                if (map == null)
                 {
-                    // index each of the group members
-                    for (int i = 0; i < map.Count; i++)
-                    {
-                        var ety = map.EntryAt(i);
-                        all.TryAdd(ety.Key, ety.value);
-                    }
-
-                    // enlist the group
-                    groups.TryAdd(gkey, map);
+                    // must be something wrong
+                    return default;
                 }
+
+                // index each of the group members
+                for (int i = 0; i < map.Count; i++)
+                {
+                    var ety = map.EntryAt(i);
+                    all.TryAdd(ety.Key, ety.value);
+
+                    // set return value
+                    if (key.Equals(ety.key))
+                    {
+                        value = ety.value;
+                    }
+                }
+                // enlist the group
+                groups.TryAdd(gkey, map);
             }
         }
         return value;
-    }
-
-    public Map<K, T> GetGroup(G gkey)
-    {
-        if (groups.TryGetValue(gkey, out var v))
-        {
-            return v;
-        }
-        return null;
     }
 
     public Map<K, T> RemoveGroup(G gkey)
