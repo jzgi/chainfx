@@ -2819,7 +2819,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, int notice = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
+        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, int twinid = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
         {
             var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
 
@@ -2873,7 +2873,7 @@ namespace ChainFx.Web
                     var anchor = tool.IsAnchorTag;
 
                     // retrieve notice num
-                    var ntc = (notice > 0 && anchor && act.Notice != null) ? act.Notice.DoCheck(notice, clear: act == Web.Action) : 0;
+                    var ntc = (twinid > 0 && anchor && act.Twiner != null) ? act.Twiner.DoSpy(twinid, clear: act == Web.Action) : 0;
 
                     if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
                     {

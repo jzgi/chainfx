@@ -1,6 +1,5 @@
 ﻿namespace ChainFx.Nodal;
 
-public interface ITwinEvent
+public abstract class TwinBox
 {
-    
 }

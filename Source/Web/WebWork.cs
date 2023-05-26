@@ -93,7 +93,7 @@ namespace ChainFx.Web
                 {
                     toollst.Add(act);
                 }
-                if (act.Notice != null)
+                if (act.Twiner != null)
                 {
                     noticelst.Add(act);
                 }
@@ -328,7 +328,7 @@ namespace ChainFx.Web
             {
                 foreach (var ntc in noticed)
                 {
-                    var n = ntc.Notice.DoCheck(noticeId);
+                    var n = ntc.Twiner.DoSpy(noticeId);
                     if (n > 0)
                     {
                         return true;

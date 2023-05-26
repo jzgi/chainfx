@@ -18,16 +18,15 @@ public abstract class TwinGraph
     }
 }
 
-public abstract class TwinGraph<G, K, T> : TwinGraph
-    where T : class, ITwin<G, K>
-    where G : IEquatable<G>, IComparable<G>
-    where K : IEquatable<K>, IComparable<K>
+public abstract class TwinGraph<S, T> : TwinGraph
+    where S : IEquatable<S>, IComparable<S>
+    where T : class, ITwin<S>
 {
     // index for all
-    readonly ConcurrentDictionary<K, T> all = new();
+    readonly ConcurrentDictionary<int, T> all = new();
 
     // by group key
-    readonly ConcurrentDictionary<G, Map<K, T>> groups = new();
+    readonly ConcurrentDictionary<S, Map<int, T>> groups = new();
 
     // index geographic
     TwinCell[] cells;
@@ -58,7 +57,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
         worker.Start();
     }
 
-    protected virtual async Task<int> DischargeGroupAsync(G gkey, Map<K, T> group)
+    protected virtual async Task<int> DischargeGroupAsync(S setkey, Map<int, T> set)
     {
         return 0;
     }
@@ -74,7 +73,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
             all.TryAdd(twin.Key, twin);
 
             // add to loaded group
-            var gkey = twin.GroupKey;
+            var gkey = twin.SetKey;
             if (groups.TryGetValue(gkey, out var map))
             {
                 lock (map)
@@ -84,7 +83,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
             }
             else // load group, the target group is included
             {
-                map = LoadGroup(dc, twin.GroupKey);
+                map = LoadGroup(dc, twin.SetKey);
                 if (map != null)
                 {
                     // index each of the group members
@@ -121,7 +120,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
         {
             all.TryRemove(twin.Key, out _);
 
-            if (groups.TryGetValue(twin.GroupKey, out var map))
+            if (groups.TryGetValue(twin.SetKey, out var map))
             {
                 lock (map)
                 {
@@ -134,7 +133,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
     }
 
 
-    public T Get(K key)
+    public T Get(int key)
     {
         // check if indexed
         if (!all.TryGetValue(key, out var value))
@@ -177,7 +176,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
         return value;
     }
 
-    public Map<K, T> RemoveGroup(G gkey)
+    public Map<int, T> RemoveGroup(S gkey)
     {
         if (groups.TryRemove(gkey, out var map))
         {
@@ -198,7 +197,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
     }
 
 
-    public T[] GetArray(G gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+    public T[] GetArray(S gkey, Predicate<T> cond = null, Comparison<T> comp = null)
     {
         if (!groups.TryGetValue(gkey, out var map))
         {
@@ -232,7 +231,7 @@ public abstract class TwinGraph<G, K, T> : TwinGraph
         return arr;
     }
 
-    public abstract bool TryGetGroupKey(DbContext dc, K key, out G gkey);
+    public abstract bool TryGetGroupKey(DbContext dc, int key, out S setkey);
 
-    public abstract Map<K, T> LoadGroup(DbContext dc, G gkey);
+    public abstract Map<int, T> LoadGroup(DbContext dc, S setkey);
 }

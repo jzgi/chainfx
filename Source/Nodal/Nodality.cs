@@ -263,11 +263,10 @@ namespace ChainFx.Nodal
             return grh;
         }
 
-        public static G GetGraph<G, B, K, T>()
-            where B : IEquatable<B>, IComparable<B>
-            where K : IEquatable<K>, IComparable<K>
-            where T : class, ITwin<B, K>
-            where G : TwinGraph<B, K, T>
+        public static G GetGraph<G, S, T>()
+            where G : TwinGraph<S, T>
+            where S : IEquatable<S>, IComparable<S>
+            where T : class, ITwin<S>
         {
             foreach (var grh in graphs)
             {
@@ -279,31 +278,29 @@ namespace ChainFx.Nodal
             return default;
         }
 
-        public static T GrabTwin<G, K, T>(K key)
-            where G : IEquatable<G>, IComparable<G>
-            where K : IEquatable<K>, IComparable<K>
-            where T : class, ITwin<G, K>
+        public static T GrabTwin<S, T>(int key)
+            where S : IEquatable<S>, IComparable<S>
+            where T : class, ITwin<S>
         {
             foreach (var grh in graphs)
             {
                 if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return ((TwinGraph<G, K, T>)grh).Get(key);
+                    return ((TwinGraph<S, T>)grh).Get(key);
                 }
             }
             return default;
         }
 
-        public static T[] GrabTwinArray<G, K, T>(G gkey, Predicate<T> cond = null, Comparison<T> comp = null)
-            where T : class, ITwin<G, K>
-            where G : IEquatable<G>, IComparable<G>
-            where K : IEquatable<K>, IComparable<K>
+        public static T[] GrabTwinArray<S, T>(S gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+            where S : IEquatable<S>, IComparable<S>
+            where T : class, ITwin<S>
         {
             foreach (var grh in graphs)
             {
                 if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return ((TwinGraph<G, K, T>)grh).GetArray(gkey, cond, comp);
+                    return ((TwinGraph<S, T>)grh).GetArray(gkey, cond, comp);
                 }
             }
             return null;

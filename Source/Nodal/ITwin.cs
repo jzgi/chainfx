@@ -2,13 +2,8 @@
 
 namespace ChainFx.Nodal;
 
-public interface ITwin<out G, out K> : IKeyable<K>
-    where G : IEquatable<G>, IComparable<G>
-    where K : IEquatable<K>, IComparable<K>
+public interface ITwin<out S> : IKeyable<int>
+    where S : IEquatable<S>, IComparable<S>
 {
-    G GroupKey { get; }
-
-    TwinInput Input { get; }
-
-    TwinOutput Output { get; }
+    S SetKey { get; }
 }

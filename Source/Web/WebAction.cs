@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ChainFx.Nodal;
 
 namespace ChainFx.Web
 {
@@ -35,7 +36,9 @@ namespace ChainFx.Web
 
         readonly AuthorizeAttribute authorize;
 
-        readonly NoticeAttribute notice;
+        readonly TwinerUpdateAttribute twinerUpdate;
+
+        readonly TwinSpyAttribute twiner;
 
         // 4 possible forms of the action method
         //
@@ -59,7 +62,8 @@ namespace ChainFx.Web
             tool = (ToolAttribute)mi.GetCustomAttribute(typeof(ToolAttribute), true);
             authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
-            notice = (NoticeAttribute)mi.GetCustomAttribute(typeof(NoticeAttribute), true);
+            twinerUpdate = (TwinerUpdateAttribute)mi.GetCustomAttribute(typeof(TwinerUpdateAttribute), true);
+            twiner = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
 
             // create a doer delegate
             if (async)
@@ -140,7 +144,9 @@ namespace ChainFx.Web
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public NoticeAttribute Notice => notice;
+        public TwinerUpdateAttribute TwinerUpdate => twinerUpdate;
+
+        public TwinSpyAttribute Twiner => twiner;
 
 
         public bool DoAuthorize(WebContext wc, bool mock)
