@@ -292,7 +292,7 @@ namespace ChainFx.Nodal
             return default;
         }
 
-        public static T[] GrabTwinArray<S, T>(S gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+        public static T[] GrabTwinSet<S, T>(S gkey, Predicate<T> cond = null, Comparison<T> comp = null)
             where S : IEquatable<S>, IComparable<S>
             where T : class, ITwin<S>
         {

@@ -104,11 +104,11 @@ namespace ChainFx.Web
                 var jo = (JObj) new JsonParser(bytes, len).Parse();
 
                 // check time expiry
-                DateTime stamp = jo["$"];
-                if ((DateTime.Now - stamp).Days > EXPIRY_DAYS)
-                {
-                    return null;
-                }
+                // DateTime stamp = jo["$"];
+                // if ((DateTime.Now - stamp).Days > EXPIRY_DAYS)
+                // {
+                //     return null;
+                // }
 
                 // construct a principal object
                 var prin = new P();

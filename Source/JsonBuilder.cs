@@ -24,13 +24,12 @@ namespace ChainFx
 
         public override string CType { get; set; } = "application/json; charset=utf-8";
 
-        void AddEsc(string v)
+        private void AddEsc(string v)
         {
             if (v == null) return;
 
-            for (int i = 0; i < v.Length; i++)
+            foreach (var c in v)
             {
-                char c = v[i];
                 if (c == '\"')
                 {
                     Add('\\');
@@ -495,7 +494,7 @@ namespace ChainFx
             v.Write(this, msk);
 
             // append a time stamp
-            Put("$", DateTime.Now);
+            // Put("$", DateTime.Now);
 
             Add('}');
             level--; // exit

@@ -44,17 +44,11 @@ namespace ChainFx.Web
         Thread cleaner;
 
 
-        // outgoing web events 
-        ConcurrentDictionary<int, WebEventLot> outbox;
-
         // interval for web event processing cycle, in seconds
         short cycle;
 
         // client connector to the origin service
         WebConnector connector;
-
-        // 
-        ConcurrentDictionary<string, WebEventLot> inbox;
 
 
         protected WebService()
