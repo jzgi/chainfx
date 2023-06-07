@@ -6,22 +6,22 @@ namespace ChainFx.Web
     /// To document a GET request to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-    public class GetAttribute : TagAttribute
+    public class GetAttribute : Attribute, IRestfulTag
     {
         readonly string tip;
 
         readonly string query;
 
-        readonly string headers;
+        readonly string[] headers;
 
-        public GetAttribute(string tip = null, string query = null, string headers = null)
+        public GetAttribute(string tip = null, string query = null, string[] headers = null)
         {
             this.tip = tip;
-            this.query = Preprocess(query);
-            this.headers = Preprocess(headers);
+            this.query = query;
+            this.headers = headers;
         }
 
-        internal override void Describe(HtmlBuilder h)
+        public void Render(HtmlBuilder h)
         {
             h.P_();
             h.T("GET").SP().T(tip);
@@ -31,7 +31,12 @@ namespace ChainFx.Web
             }
             if (headers != null)
             {
-                h.T("<pre>").TT(headers).T("</pre>");
+                h.T("<pre>");
+                foreach (var v in headers)
+                {
+                    h.TT(v);
+                }
+                h.T("</pre>");
             }
             h._P();
         }

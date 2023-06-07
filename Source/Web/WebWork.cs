@@ -33,6 +33,9 @@ namespace ChainFx.Web
         // variable-key subwork, if any
         WebWork varwork;
 
+        // for generating user guide
+        readonly IGuideTag[] guideTags;
+
 
         public string Name { get; internal set; }
 
@@ -44,17 +47,32 @@ namespace ChainFx.Web
 
         public AuthorizeAttribute Authorize { get; internal set; }
 
+        public IGuideTag[] GuideTags => guideTags;
+
         public object State { get; set; }
 
+        public string Header { get; set; }
 
         // to obtain a string key from a data object.
         protected WebWork()
         {
             type = GetType();
 
-            Ui = (UiAttribute) type.GetCustomAttribute(typeof(UiAttribute), true);
-            Authenticate = (AuthenticateAttribute) type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
-            Authorize = (AuthorizeAttribute) type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
+            Ui = (UiAttribute)type.GetCustomAttribute(typeof(UiAttribute), true);
+            Authenticate = (AuthenticateAttribute)type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
+            Authorize = (AuthorizeAttribute)type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
+
+            // user guide comments
+            var glst = new ValueList<IGuideTag>(8);
+            foreach (var m in type.GetCustomAttributes())
+            {
+                if (m is IGuideTag c)
+                {
+                    glst.Add(c);
+                }
+            }
+            guideTags = glst.ToArray();
+
 
             // gather actions
             foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -93,7 +111,7 @@ namespace ChainFx.Web
                 {
                     toollst.Add(act);
                 }
-                if (act.Twiner != null)
+                if (act.TwinSpy != null)
                 {
                     noticelst.Add(act);
                 }
@@ -206,13 +224,14 @@ namespace ChainFx.Web
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="state"></param>
+        /// <param name="header"></param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="authenticate"></param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ForbiddenException">Thrown if error</exception>
-        protected T CreateWork<T>(string name, object state = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
+        protected T CreateWork<T>(string name, object state = null, string header = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
         {
             if (subworks == null)
             {
@@ -228,7 +247,8 @@ namespace ChainFx.Web
                 IsVar = false,
                 Directory = (Parent == null) ? name : Path.Combine(Parent.Directory, name),
                 Pathing = Pathing + name + "/",
-                State = state
+                State = state,
+                Header = header
             };
             if (ui != null) wrk.Ui = ui;
             if (authenticate != null) wrk.Authenticate = authenticate;
@@ -273,15 +293,15 @@ namespace ChainFx.Web
             for (int i = 0; i < actions?.Count; i++)
             {
                 var a = actions.ValueAt(i);
-                if (a.Tags != null)
+                if (a.RestfulTags != null)
                 {
                     h.ARTICLE_("uk-card uk-card-primary");
                     h.HEADER_("uk-card-header").TT(a.Pathing)._HEADER();
                     h.MAIN_("uk-card-body");
-                    for (int k = 0; k < a.Tags.Length; k++)
+
+                    foreach (var c in a.RestfulTags)
                     {
-                        var c = a.Tags[k];
-                        c.Describe(h);
+                        c.Render(h);
                     }
 
                     h._MAIN();
@@ -328,7 +348,7 @@ namespace ChainFx.Web
             {
                 foreach (var ntc in noticed)
                 {
-                    var n = ntc.Twiner.DoSpy(noticeId);
+                    var n = ntc.TwinSpy.DoSpy(noticeId);
                     if (n > 0)
                     {
                         return true;

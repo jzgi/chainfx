@@ -11,19 +11,21 @@ namespace ChainFx.Nodal
     /// </summary>
     public abstract class Nodality
     {
-        // db store
-
+        // db data source
         static DbSource dbSource;
 
-        // cache
-
+        // db object caches
         static readonly List<DbCache> caches = new();
 
-        // graph
-
+        // twin graphs
         static readonly List<TwinGraph> graphs = new();
 
 
+        /// <summary>
+        /// To register a CLR type to map to a postgresql composite type.
+        /// </summary>
+        /// <param name="dbTyp">the composite type name</param>
+        /// <typeparam name="T">the CLR type</typeparam>
         public static void MapComposite<T>(string dbTyp = null)
         {
             if (dbTyp == null)
@@ -244,7 +246,7 @@ namespace ChainFx.Nodal
         #endregion
 
 
-        #region Graph-API
+        #region Twin Graph-API
 
         protected static G MakeGraph<G>(string name, object state = null)
             where G : TwinGraph, new()

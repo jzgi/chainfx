@@ -38,7 +38,7 @@ namespace ChainFx.Web
 
         readonly TwinerUpdateAttribute twinerUpdate;
 
-        readonly TwinSpyAttribute twiner;
+        readonly TwinSpyAttribute twinspy;
 
         // 4 possible forms of the action method
         //
@@ -47,8 +47,11 @@ namespace ChainFx.Web
         readonly Action<WebContext, int> do2;
         readonly Func<WebContext, int, Task> do2Async;
 
-        // commenting tags
-        readonly TagAttribute[] tags;
+        // for generating restful API doc
+        readonly IRestfulTag[] restfulTags;
+
+        // for generating user guide
+        readonly IGuideTag[] guideTags;
 
         internal WebAction(WebWork work, MethodInfo mi, bool async, string subscript)
         {
@@ -63,7 +66,7 @@ namespace ChainFx.Web
             authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
             twinerUpdate = (TwinerUpdateAttribute)mi.GetCustomAttribute(typeof(TwinerUpdateAttribute), true);
-            twiner = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
+            twinspy = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
 
             // create a doer delegate
             if (async)
@@ -89,17 +92,27 @@ namespace ChainFx.Web
                 }
             }
 
-            // comments
-            var vlst = new ValueList<TagAttribute>(8);
+            // restful comments
+            var rlst = new ValueList<IRestfulTag>(8);
             foreach (var m in mi.GetCustomAttributes())
             {
-                if (m is TagAttribute c)
+                if (m is IRestfulTag c)
                 {
-                    vlst.Add(c);
+                    rlst.Add(c);
                 }
             }
+            restfulTags = rlst.ToArray();
 
-            tags = vlst.ToArray();
+            // user guide comments
+            var glst = new ValueList<IGuideTag>(8);
+            foreach (var m in mi.GetCustomAttributes())
+            {
+                if (m is IGuideTag c)
+                {
+                    glst.Add(c);
+                }
+            }
+            guideTags = glst.ToArray();
 
             // resolve the action pathing
             var sb = new StringBuilder(work.Pathing);
@@ -138,7 +151,9 @@ namespace ChainFx.Web
 
         public ToolAttribute Tool => tool;
 
-        public TagAttribute[] Tags => tags;
+        public IRestfulTag[] RestfulTags => restfulTags;
+
+        public IGuideTag[] GuideTags => guideTags;
 
         public AuthenticateAttribute Authenticate => authenticate;
 
@@ -146,7 +161,7 @@ namespace ChainFx.Web
 
         public TwinerUpdateAttribute TwinerUpdate => twinerUpdate;
 
-        public TwinSpyAttribute Twiner => twiner;
+        public TwinSpyAttribute TwinSpy => twinspy;
 
 
         public bool DoAuthorize(WebContext wc, bool mock)

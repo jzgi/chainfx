@@ -2873,7 +2873,7 @@ namespace ChainFx.Web
                     var anchor = tool.IsAnchorTag;
 
                     // retrieve notice num
-                    var ntc = (twinid > 0 && anchor && act.Twiner != null) ? act.Twiner.DoSpy(twinid, clear: act == Web.Action) : 0;
+                    var ntc = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.DoSpy(twinid, clear: act == Web.Action) : 0;
 
                     if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
                     {
@@ -3176,7 +3176,7 @@ namespace ChainFx.Web
                     continue;
                 }
 
-                if ((!compact || sub.Tip != null) && last != sub.Tip) // take null as smae group 
+                if ((!compact || sub.Header != null) && last != sub.Header) // take null as smae group 
                 {
                     _FORM();
                     _UL();
@@ -3184,7 +3184,7 @@ namespace ChainFx.Web
                     FORM_("uk-card uk-card-primary");
                     if (compact)
                     {
-                        H3(sub.Tip, "uk-card-header");
+                        H3(sub.Header, "uk-card-header");
                     }
                     UL_(compact ? "uk-card-body uk-child-width-1-2" : "uk-card-body uk-child-width-1-1", grid: true);
                 }
@@ -3197,7 +3197,7 @@ namespace ChainFx.Web
                 {
                     ICON(sub.Icon, css: "uk-circle uk-background-muted").SP().SP();
                     H4(sub.Label);
-                    P(sub.Tip, css: "uk-margin-auto-left");
+                    P(sub.Header, css: "uk-margin-auto-left");
                 }
                 else
                 {
@@ -3212,9 +3212,9 @@ namespace ChainFx.Web
                 _A();
                 _LI();
 
-                if (sub.Tip != null) // make it same group if without tip
+                if (sub.Header != null) // make it same group if without tip
                 {
-                    last = sub.Tip;
+                    last = sub.Header;
                 }
             }
 

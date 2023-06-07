@@ -8,13 +8,13 @@ namespace ChainFx
     ///
     public class JsonBuilder : ContentBuilder, ISink
     {
-        const int MAX_LEVELS = 16;
+        private const int MAX_LEVELS = 16;
 
         // starting positions of each level
-        readonly int[] counts;
+        private readonly int[] counts;
 
         // current level
-        int level;
+        private int level;
 
         public JsonBuilder(bool bytely, int capacity) : base(bytely, capacity)
         {

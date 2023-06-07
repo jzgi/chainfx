@@ -170,7 +170,7 @@ namespace ChainFx
         /// <summary>
         /// Runs a number of web services and then block until shutdown.
         /// </summary>
-        public static async Task StartAsync()
+        public static async Task StartAsync(bool waiton = true)
         {
             var exitevt = new ManualResetEventSlim(false);
 
@@ -210,9 +210,17 @@ namespace ChainFx
 
             Lifetime.NotifyStarted();
 
-            // wait on the reset event
-            exitevt.Wait(Canceller.Token);
+            if (waiton)
+            {
+                // wait on the reset event
+                exitevt.Wait(Canceller.Token);
 
+                await StopAsync();
+            }
+        }
+
+        public static async Task StopAsync()
+        {
             Lifetime.StopApplication();
 
             for (int i = 0; i < services.Count; i++)
@@ -223,6 +231,7 @@ namespace ChainFx
 
             Lifetime.NotifyStopped();
         }
+
         //
         // logging methods
         //

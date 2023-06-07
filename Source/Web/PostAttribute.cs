@@ -6,40 +6,49 @@ namespace ChainFx.Web
     /// To document a POST request to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class PostAttribute : TagAttribute
+    public class PostAttribute : Attribute, IRestfulTag
     {
         readonly string query;
 
-        readonly string headers;
+        readonly string[] headers;
 
         readonly string body;
 
         readonly string tip;
 
-        public PostAttribute(string tip = null, string query = null, string headers = null, string body = null)
+        public PostAttribute(string tip = null, string query = null, string[] headers = null, string body = null)
         {
-            this.query = Preprocess(query);
-            this.headers = Preprocess(headers);
-            this.body = Preprocess(body);
+            this.query = query;
+            this.headers = headers;
+            this.body = body;
             this.tip = tip;
         }
 
-        internal override void Describe(HtmlBuilder h)
+        public void Render(HtmlBuilder h)
         {
             h.P_();
+
             h.T("POST").SP().T(tip);
             if (query != null)
             {
                 h.T("<pre>").TT(query).T("</pre>");
             }
+
             if (headers != null)
             {
-                h.T("<pre>").TT(headers).T("</pre>");
+                h.T("<pre>");
+                foreach (var v in headers)
+                {
+                    h.TT(v);
+                }
+                h.T("</pre>");
             }
+
             if (body != null)
             {
                 h.T("<pre>").TT(body).T("</pre>");
             }
+
             h._P();
         }
     }

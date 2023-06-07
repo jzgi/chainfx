@@ -6,36 +6,45 @@ namespace ChainFx.Web
     /// To document the response returned by the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class ReplyAttribute : TagAttribute
+    public class ReplyAttribute : Attribute, IRestfulTag
     {
         readonly short status;
 
         readonly string tip;
 
-        readonly string headers;
+        readonly string[] headers;
 
         readonly string body;
 
-        public ReplyAttribute(short status, string tip = null, string headers = null, string body = null)
+        public ReplyAttribute(short status, string tip = null, string[] headers = null, string body = null)
         {
             this.status = status;
             this.tip = tip;
-            this.headers = Preprocess(headers);
-            this.body = Preprocess(body);
+            this.headers = headers;
+            this.body = body;
         }
 
-        internal override void Describe(HtmlBuilder h)
+        public void Render(HtmlBuilder h)
         {
             h.P_();
+            
             h.T(status).SP().T(tip);
+
             if (headers != null)
             {
-                h.T("<pre>").TT(headers).T("</pre>");
+                h.T("<pre>");
+                foreach (var v in headers)
+                {
+                    h.TT(v);
+                }
+                h.T("</pre>");
             }
+            
             if (body != null)
             {
                 h.T("<pre>").TT(body).T("</pre>");
             }
+            
             h._P();
         }
     }
