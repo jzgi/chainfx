@@ -9,10 +9,10 @@
         <LangVersion>11</LangVersion>
         <Company>Jgz Institute for IT Research</Company>
         <PackageProjectUrl>https://github.com/jzgi</PackageProjectUrl>
-        <PackageVersion>4.1.0</PackageVersion>
-        <Title>Chain Framework</Title>
+        <PackageVersion>4.2.0</PackageVersion>
+        <Title>The Chain Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
-        <AssemblyVersion>4.1</AssemblyVersion>
+        <AssemblyVersion>4.2</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RootNamespace>ChainFx</RootNamespace>
     </PropertyGroup>

@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document the response returned by the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class ReplyAttribute : Attribute, IRestfulTag
+    public class ReplyAttribute : Attribute, IDocTag
     {
         readonly short status;
 
@@ -27,7 +27,7 @@ namespace ChainFx.Web
         public void Render(HtmlBuilder h)
         {
             h.P_();
-            
+
             h.T(status).SP().T(tip);
 
             if (headers != null)
@@ -39,12 +39,12 @@ namespace ChainFx.Web
                 }
                 h.T("</pre>");
             }
-            
+
             if (body != null)
             {
                 h.T("<pre>").TT(body).T("</pre>");
             }
-            
+
             h._P();
         }
     }

@@ -1627,9 +1627,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder A_<A>(A href, string css = null, int id = 0, string onclick = null)
+        public HtmlBuilder A_<A>(A href, bool parent = false, string css = null, int id = 0, string onclick = null)
         {
             Add("<a");
+            if (parent)
+            {
+                Add(" target=\"_parent\"");
+            }
             if (css != null)
             {
                 Add(" class=\"");
@@ -3150,7 +3154,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public void WORKBOARD(byte group = 0, int notice = 0, bool compact = true)
+        public void WORKBOARD(byte group = 0, int twinSpy = 0, bool compact = true)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -3176,17 +3180,21 @@ namespace ChainFx.Web
                     continue;
                 }
 
-                if ((!compact || sub.Header != null) && last != sub.Header) // take null as smae group 
+                var hdr = sub.Header;
+                if (hdr != null && last != hdr || i == 0) // take null as smae group 
                 {
-                    _FORM();
-                    _UL();
+                    if (i > 0)
+                    {
+                        _UL();
+                        _FORM();
+                    }
 
                     FORM_("uk-card uk-card-primary");
                     if (compact)
                     {
                         H3(sub.Header, "uk-card-header");
                     }
-                    UL_(compact ? "uk-card-body uk-child-width-1-2" : "uk-card-body uk-child-width-1-1", grid: true);
+                    UL_(compact ? "uk-card-body uk-child-width-1-2" : "uk-card-body uk-list uk-list-divider uk-child-width-1-1", grid: true);
                 }
 
                 LI_();
@@ -3197,14 +3205,14 @@ namespace ChainFx.Web
                 {
                     ICON(sub.Icon, css: "uk-circle uk-background-muted").SP().SP();
                     H4(sub.Label);
-                    P(sub.Header, css: "uk-margin-auto-left");
+                    P(sub.Tip, css: "uk-margin-auto-left");
                 }
                 else
                 {
                     SPAN(sub.Label);
                 }
                 ICON("chevron-right");
-                if (notice > 0 && sub.HasNewNotice(notice))
+                if (twinSpy > 0 && sub.HasNewNotice(twinSpy))
                 {
                     SPAN('✹', css: "uk-text-danger");
                 }
@@ -3212,16 +3220,24 @@ namespace ChainFx.Web
                 _A();
                 _LI();
 
-                if (sub.Header != null) // make it same group if without tip
+                if (hdr != null) // make it same group if without tip
                 {
-                    last = sub.Header;
+                    last = hdr;
                 }
             }
 
-            _FORM();
             _UL();
+            _FORM();
         }
 
+        public void AHELP(bool bottom = true)
+        {
+            Add("<a class=\"uk-position-fixed ");
+            Add(bottom ? "uk-position-bottom-right" : "uk-position-top-right");
+            Add("\" href=\"doc\" onclick=\"return dialog(this,16,false,'');\"");
+            Add("<span uk-icon=\"question\"></span>");
+            Add("</a>");
+        }
 
         public HtmlBuilder CROPPIE(short wid, short hei, string caption, bool large = false)
         {

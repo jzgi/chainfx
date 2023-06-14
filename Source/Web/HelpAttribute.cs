@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document a work to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
-    public class HelpAttribute : Attribute, IGuideTag
+    public class HelpAttribute : Attribute, IDocTag
     {
         readonly string[] texts;
 

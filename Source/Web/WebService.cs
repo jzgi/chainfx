@@ -476,7 +476,7 @@ namespace ChainFx.Web
                 h.DIV_("uk-top-bar").H3(" API Reference")._DIV();
                 h.DIV_("uk-top-placeholder")._DIV();
 
-                Describe(h);
+                DocGen(h);
             });
         }
 

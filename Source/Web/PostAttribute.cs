@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document a POST request to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class PostAttribute : Attribute, IRestfulTag
+    public class PostAttribute : Attribute, IDocTag
     {
         readonly string query;
 

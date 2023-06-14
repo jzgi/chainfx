@@ -1,9 +1,9 @@
 namespace ChainFx.Web
 {
     /// <summary>
-    /// A comment tag for generating user guide. 
+    /// A comment tag for generating reference documentation. 
     /// </summary>
-    public interface IGuideTag
+    public interface IDocTag
     {
         public const string CRLF = "\r\n";
 

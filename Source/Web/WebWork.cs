@@ -25,16 +25,16 @@ namespace ChainFx.Web
         readonly WebAction[] tooled;
 
         // actions with NoticeAttribute
-        readonly WebAction[] noticed;
+        readonly WebAction[] twinSpied;
 
         // subworks, if any
-        Map<string, WebWork> subworks;
+        Map<string, WebWork> subWorks;
 
         // variable-key subwork, if any
-        WebWork varwork;
+        WebWork varWork;
 
-        // for generating user guide
-        readonly IGuideTag[] guideTags;
+        // documentation tags
+        readonly IDocTag[] docTags;
 
 
         public string Name { get; internal set; }
@@ -47,7 +47,7 @@ namespace ChainFx.Web
 
         public AuthorizeAttribute Authorize { get; internal set; }
 
-        public IGuideTag[] GuideTags => guideTags;
+        public IDocTag[] DocTags => docTags;
 
         public object State { get; set; }
 
@@ -62,16 +62,16 @@ namespace ChainFx.Web
             Authenticate = (AuthenticateAttribute)type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
             Authorize = (AuthorizeAttribute)type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
 
-            // user guide comments
-            var glst = new ValueList<IGuideTag>(8);
+            // documentation tags
+            var dlst = new ValueList<IDocTag>(8);
             foreach (var m in type.GetCustomAttributes())
             {
-                if (m is IGuideTag c)
+                if (m is IDocTag c)
                 {
-                    glst.Add(c);
+                    dlst.Add(c);
                 }
             }
-            guideTags = glst.ToArray();
+            docTags = dlst.ToArray();
 
 
             // gather actions
@@ -118,7 +118,7 @@ namespace ChainFx.Web
             }
 
             tooled = toollst.ToArray();
-            noticed = noticelst.ToArray();
+            twinSpied = noticelst.ToArray();
         }
 
         public virtual string Key => Name;
@@ -149,17 +149,17 @@ namespace ChainFx.Web
 
         public WebAction[] Tooled => tooled;
 
-        public WebAction[] Noticed => noticed;
+        public WebAction[] TwinSpied => twinSpied;
 
         public WebAction Default => @default;
 
         public WebAction Catch => @catch;
 
-        public Map<string, WebWork> SubWorks => subworks;
+        public Map<string, WebWork> SubWorks => subWorks;
 
-        public WebWork VarWork => varwork;
+        public WebWork VarWork => varWork;
 
-        public bool HasVarWork => varwork != null;
+        public bool HasVarWork => varWork != null;
 
         public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
@@ -213,7 +213,7 @@ namespace ChainFx.Web
             if (authenticate != null) wrk.Authenticate = authenticate;
             if (authorize != null) wrk.Authorize = authorize;
 
-            varwork = wrk;
+            varWork = wrk;
 
             wrk.OnCreate();
             return wrk;
@@ -233,9 +233,9 @@ namespace ChainFx.Web
         /// <exception cref="ForbiddenException">Thrown if error</exception>
         protected T CreateWork<T>(string name, object state = null, string header = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
         {
-            if (subworks == null)
+            if (subWorks == null)
             {
-                subworks = new Map<string, WebWork>();
+                subWorks = new Map<string, WebWork>();
             }
 
             var wrk = new T
@@ -254,52 +254,54 @@ namespace ChainFx.Web
             if (authenticate != null) wrk.Authenticate = authenticate;
             if (authorize != null) wrk.Authorize = authorize;
 
-            subworks.Add(wrk);
+            subWorks.Add(wrk);
 
             wrk.OnCreate();
 
             return wrk;
         }
 
-        protected void Describe(XmlBuilder xc)
+        [Ui(icon: "question"), Tool(Modal.ButtonShow, status: 15)]
+        public virtual void help(WebContext wc)
         {
-            xc.ELEM(Key,
-                delegate
+            wc.GivePane(200, h =>
+            {
+                // class doc tags
+
+
+                h.ARTICLE_("uk-card uk-card-primary");
+                h.H3(Label);
+                h.UL_("uk-bard-body");
+
+                for (int i = 0; i < actions?.Count; i++)
                 {
-                    for (int i = 0; i < actions.Count; i++)
+                    var a = actions.ValueAt(i);
+                    if (a.DocTags != null)
                     {
-                        var act = actions.EntryAt(i).Value;
-                        xc.Put(act.Key, "");
-                    }
-                },
-                delegate
-                {
-                    if (subworks != null)
-                    {
-                        for (int i = 0; i < subworks.Count; i++)
+                        foreach (var c in a.DocTags)
                         {
-                            var wrk = subworks.EntryAt(i).Value;
-                            wrk.Describe(xc);
+                            c.Render(h);
                         }
                     }
-
-                    varwork?.Describe(xc);
                 }
-            );
+
+                h._UL();
+                h._ARTICLE();
+            });
         }
 
-        protected void Describe(HtmlBuilder h)
+        protected void DocGen(HtmlBuilder h)
         {
             for (int i = 0; i < actions?.Count; i++)
             {
                 var a = actions.ValueAt(i);
-                if (a.RestfulTags != null)
+                if (a.DocTags != null)
                 {
                     h.ARTICLE_("uk-card uk-card-primary");
                     h.HEADER_("uk-card-header").TT(a.Pathing)._HEADER();
                     h.MAIN_("uk-card-body");
 
-                    foreach (var c in a.RestfulTags)
+                    foreach (var c in a.DocTags)
                     {
                         c.Render(h);
                     }
@@ -309,12 +311,12 @@ namespace ChainFx.Web
                 }
             }
 
-            varwork?.Describe(h);
+            varWork?.DocGen(h);
 
-            for (int i = 0; i < subworks?.Count; i++)
+            for (int i = 0; i < subWorks?.Count; i++)
             {
-                var w = subworks.EntryAt(i).Value;
-                w.Describe(h);
+                var w = subWorks.EntryAt(i).Value;
+                w.DocGen(h);
             }
         }
 
@@ -344,9 +346,9 @@ namespace ChainFx.Web
 
         internal bool HasNewNotice(int noticeId)
         {
-            if (noticed != null)
+            if (twinSpied != null)
             {
-                foreach (var ntc in noticed)
+                foreach (var ntc in twinSpied)
                 {
                     var n = ntc.TwinSpy.DoSpy(noticeId);
                     if (n > 0)

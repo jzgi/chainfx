@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document a GET request to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-    public class GetAttribute : Attribute, IRestfulTag
+    public class GetAttribute : Attribute, IDocTag
     {
         readonly string tip;
 

@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To markup a figure/iamge.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
-    public class FigureAttribute : Attribute, IGuideTag
+    public class FigureAttribute : Attribute, IDocTag
     {
         readonly string[] texts;
 
