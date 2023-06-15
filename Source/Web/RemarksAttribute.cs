@@ -3,14 +3,14 @@
 namespace ChainFx.Web
 {
     /// <summary>
-    /// To markup a figure/iamge.
+    /// To document a supplemental or detail information to the target work or action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
-    public class FigureAttribute : HelpAttribute
+    public class RemarksAttribute : HelpAttribute
     {
         readonly string[] texts;
 
-        public FigureAttribute(params string[] texts)
+        public RemarksAttribute(params string[] texts)
         {
             this.texts = texts;
         }

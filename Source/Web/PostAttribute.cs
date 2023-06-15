@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document a POST request to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class PostAttribute : Attribute, IDocTag
+    public class PostAttribute : RestAttribute
     {
         readonly string query;
 
@@ -24,7 +24,7 @@ namespace ChainFx.Web
             this.tip = tip;
         }
 
-        public void Render(HtmlBuilder h)
+        public override void Render(HtmlBuilder h)
         {
             h.P_();
 

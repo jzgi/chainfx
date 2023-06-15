@@ -3,14 +3,12 @@ using System;
 namespace ChainFx.Web
 {
     /// <summary>
-    /// A comment tag for generating help documentation. 
+    /// A comment tag for generating RESTful API documentation. 
     /// </summary>
-    public abstract class HelpAttribute : Attribute
+    public abstract class RestAttribute : Attribute
     {
         public const string CRLF = "\r\n";
 
         public abstract void Render(HtmlBuilder h);
-
-        public abstract bool IsDetail { get; }
     }
 }

@@ -679,6 +679,34 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder H1_(string css = null)
+        {
+            Add("<h1");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlBuilder _H1()
+        {
+            Add("</h2>");
+            return this;
+        }
+
+        public HtmlBuilder H1<V>(V v, string css = null)
+        {
+            H1_(css);
+            AddPrimitive(v);
+            _H1();
+            return this;
+        }
+
         public HtmlBuilder H2_(string css = null)
         {
             Add("<h2");

@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document a GET request to the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = true)]
-    public class GetAttribute : Attribute, IDocTag
+    public class GetAttribute : RestAttribute
     {
         readonly string tip;
 
@@ -21,7 +21,7 @@ namespace ChainFx.Web
             this.headers = headers;
         }
 
-        public void Render(HtmlBuilder h)
+        public override void Render(HtmlBuilder h)
         {
             h.P_();
             h.T("GET").SP().T(tip);

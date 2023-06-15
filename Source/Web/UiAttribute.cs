@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlTypes;
 
 namespace ChainFx.Web
 {
@@ -43,5 +44,10 @@ namespace ChainFx.Web
         /// A number that determines grouping of functions.
         /// </summary>
         public short Group => group;
+
+        /// <summary>
+        /// Can be included & shown as help documentation.
+        /// </summary>
+        public bool Help { get; set; } = true;
     }
 }

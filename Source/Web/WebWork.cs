@@ -24,7 +24,7 @@ namespace ChainFx.Web
         // actions with ToolAttribute
         readonly WebAction[] tooled;
 
-        // actions with NoticeAttribute
+        // actions with TwinSpyAttribute
         readonly WebAction[] twinSpied;
 
         // subworks, if any
@@ -33,8 +33,8 @@ namespace ChainFx.Web
         // variable-key subwork, if any
         WebWork varWork;
 
-        // documentation tags
-        readonly IDocTag[] docTags;
+        // help tags
+        readonly HelpAttribute[] helps;
 
 
         public string Name { get; internal set; }
@@ -47,7 +47,7 @@ namespace ChainFx.Web
 
         public AuthorizeAttribute Authorize { get; internal set; }
 
-        public IDocTag[] DocTags => docTags;
+        public HelpAttribute[] Helps => helps;
 
         public object State { get; set; }
 
@@ -61,18 +61,7 @@ namespace ChainFx.Web
             Ui = (UiAttribute)type.GetCustomAttribute(typeof(UiAttribute), true);
             Authenticate = (AuthenticateAttribute)type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
             Authorize = (AuthorizeAttribute)type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
-
-            // documentation tags
-            var dlst = new ValueList<IDocTag>(8);
-            foreach (var m in type.GetCustomAttributes())
-            {
-                if (m is IDocTag c)
-                {
-                    dlst.Add(c);
-                }
-            }
-            docTags = dlst.ToArray();
-
+            helps = (HelpAttribute[])type.GetCustomAttributes(typeof(HelpAttribute), true);
 
             // gather actions
             foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -103,7 +92,7 @@ namespace ChainFx.Web
 
             // gather tooled action methods
             var toollst = new ValueList<WebAction>(16);
-            var noticelst = new ValueList<WebAction>(8);
+            var spylst = new ValueList<WebAction>(8);
             for (int i = 0; i < actions.Count; i++)
             {
                 var act = actions.ValueAt(i);
@@ -113,12 +102,12 @@ namespace ChainFx.Web
                 }
                 if (act.TwinSpy != null)
                 {
-                    noticelst.Add(act);
+                    spylst.Add(act);
                 }
             }
 
             tooled = toollst.ToArray();
-            twinSpied = noticelst.ToArray();
+            twinSpied = spylst.ToArray();
         }
 
         public virtual string Key => Name;
@@ -261,47 +250,77 @@ namespace ChainFx.Web
             return wrk;
         }
 
-        [Ui(icon: "question"), Tool(Modal.ButtonShow, status: 15)]
+        [Ui(icon: "question", Help = false), Tool(Modal.ButtonShow, status: 15)]
         public virtual void help(WebContext wc)
         {
             wc.GivePane(200, h =>
             {
                 // class doc tags
 
+                h.ARTICLE_("uk-card uk-card-primary");
+                h.H2(Label, "uk-card-header");
+
+                h.DIV_("uk-card-body");
+                for (int i = 0; i < helps?.Length; i++)
+                {
+                    var hlp = helps[i];
+                    if (!hlp.IsDetail)
+                    {
+                        hlp.Render(h);
+                    }
+                }
+                h._DIV();
+                h._ARTICLE();
 
                 h.ARTICLE_("uk-card uk-card-primary");
-                h.H3(Label);
+                h.H3("包含功能模块", "uk-card-header");
                 h.UL_("uk-bard-body");
 
+                for (int i = 0; i < SubWorks?.Count; i++)
+                {
+                    var w = SubWorks.ValueAt(i);
+                    if (w.Ui != null)
+                    {
+                        h.LI_();
+
+
+                        h._LI();
+                    }
+                }
+                h._UL();
+                h._ARTICLE();
+
+                h.ARTICLE_("uk-card uk-card-primary");
+                h.H3("操作说明", "uk-card-header");
+                h.DL_("uk-bard-body");
                 for (int i = 0; i < actions?.Count; i++)
                 {
                     var a = actions.ValueAt(i);
-                    if (a.DocTags != null)
+
+                    if (a.Ui?.Help == true)
                     {
-                        foreach (var c in a.DocTags)
-                        {
-                            c.Render(h);
-                        }
+                        h.DT(a.Dt);
+                        h.DD(a.Tip);
                     }
                 }
 
-                h._UL();
+                h._DL();
                 h._ARTICLE();
             });
         }
 
-        protected void DocGen(HtmlBuilder h)
+        protected void GenerateRestDoc(HtmlBuilder h)
         {
             for (int i = 0; i < actions?.Count; i++)
             {
                 var a = actions.ValueAt(i);
-                if (a.DocTags != null)
+                if (a.Rests != null)
                 {
                     h.ARTICLE_("uk-card uk-card-primary");
                     h.HEADER_("uk-card-header").TT(a.Pathing)._HEADER();
                     h.MAIN_("uk-card-body");
 
-                    foreach (var c in a.DocTags)
+                    foreach (var c in a.Rests)
                     {
                         c.Render(h);
                     }
@@ -311,12 +330,12 @@ namespace ChainFx.Web
                 }
             }
 
-            varWork?.DocGen(h);
+            varWork?.GenerateRestDoc(h);
 
             for (int i = 0; i < subWorks?.Count; i++)
             {
                 var w = subWorks.EntryAt(i).Value;
-                w.DocGen(h);
+                w.GenerateRestDoc(h);
             }
         }
 

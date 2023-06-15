@@ -36,7 +36,7 @@ namespace ChainFx.Web
 
         readonly AuthorizeAttribute authorize;
 
-        readonly TwinSpyAttribute twinspy;
+        readonly TwinSpyAttribute twinSpy;
 
         // 4 possible forms of the action method
         //
@@ -45,8 +45,11 @@ namespace ChainFx.Web
         readonly Action<WebContext, int> do2;
         readonly Func<WebContext, int, Task> do2Async;
 
-        // documentation tags
-        readonly IDocTag[] docTags;
+        // help tags
+        readonly HelpAttribute[] helps;
+
+        // restful tags
+        readonly RestAttribute[] rests;
 
         internal WebAction(WebWork work, MethodInfo mi, bool async, string subscript)
         {
@@ -60,7 +63,9 @@ namespace ChainFx.Web
             tool = (ToolAttribute)mi.GetCustomAttribute(typeof(ToolAttribute), true);
             authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
-            twinspy = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
+            twinSpy = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
+            helps = (HelpAttribute[])mi.GetCustomAttributes(typeof(HelpAttribute), true);
+            rests = (RestAttribute[])mi.GetCustomAttributes(typeof(RestAttribute), true);
 
             // create a doer delegate
             if (async)
@@ -85,17 +90,6 @@ namespace ChainFx.Web
                     @do = (Action<WebContext>)mi.CreateDelegate(typeof(Action<WebContext>), work);
                 }
             }
-
-            // reference tags
-            var dlst = new ValueList<IDocTag>(8);
-            foreach (var m in mi.GetCustomAttributes())
-            {
-                if (m is IDocTag c)
-                {
-                    dlst.Add(c);
-                }
-            }
-            docTags = dlst.ToArray();
 
             // resolve the action pathing
             var sb = new StringBuilder(work.Pathing);
@@ -130,17 +124,21 @@ namespace ChainFx.Web
 
         public string Tip => ui?.Tip;
 
+        public string Dt => Label ?? Tip ?? name;
+
         public short Group => ui?.Group ?? 0;
 
         public ToolAttribute Tool => tool;
 
-        public IDocTag[] DocTags => docTags;
+        public RestAttribute[] Rests => rests;
+
+        public HelpAttribute[] HelpTags => helps;
 
         public AuthenticateAttribute Authenticate => authenticate;
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public TwinSpyAttribute TwinSpy => twinspy;
+        public TwinSpyAttribute TwinSpy => twinSpy;
 
 
         public bool DoAuthorize(WebContext wc, bool mock)

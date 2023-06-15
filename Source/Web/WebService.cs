@@ -444,25 +444,6 @@ namespace ChainFx.Web
             // var wp = stacked.GetOrAdd(key, (x) => new EventBag());
         }
 
-        public void DumpAllStacked()
-        {
-            // stacked.TryAdd();
-            var jc = new JsonBuilder(true, 16);
-
-            jc.OBJ_();
-
-            // foreach (var pair in stacked)
-            // {
-            //     var key = pair.Key;
-            //     var v = pair.Value;
-            //
-            //     string[] arr = null;
-            //
-            //     jc.Put(key.ToString(), arr);
-            // }
-
-            jc._OBJ();
-        }
 
         #region Web Actions
 
@@ -476,7 +457,7 @@ namespace ChainFx.Web
                 h.DIV_("uk-top-bar").H3(" API Reference")._DIV();
                 h.DIV_("uk-top-placeholder")._DIV();
 
-                DocGen(h);
+                GenerateRestDoc(h);
             });
         }
 

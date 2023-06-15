@@ -6,7 +6,7 @@ namespace ChainFx.Web
     /// To document the response returned by the target action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class ReplyAttribute : Attribute, IDocTag
+    public class ReplyAttribute : RestAttribute
     {
         readonly short status;
 
@@ -24,7 +24,7 @@ namespace ChainFx.Web
             this.body = body;
         }
 
-        public void Render(HtmlBuilder h)
+        public override void Render(HtmlBuilder h)
         {
             h.P_();
 
