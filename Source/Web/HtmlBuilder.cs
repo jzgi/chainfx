@@ -2851,9 +2851,9 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(byte group = 0, int subscript = -1, int twinid = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
+        public HtmlBuilder TOOLBAR(int subscript = -1, int twinid = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
         {
-            var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
+            var ctxgrp = status > 0 ? status : Web.Action.Group; // the contextual group
 
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(bottom ? "uk-bottom-bar" : "uk-top-bar");
@@ -2897,21 +2897,21 @@ namespace ChainFx.Web
                     var tool = act.Tool;
 
                     // status & state check
-                    if (!tool.MeetsStatus(status)) continue;
+                    // if (!tool.MeetsStatus(status)) continue;
 
                     // current user autnorize check
                     if (Web.Principal != null && !act.DoAuthorize(Web, true)) continue;
 
                     var anchor = tool.IsAnchorTag;
 
-                    // retrieve notice num
-                    var ntc = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.DoSpy(twinid, clear: act == Web.Action) : 0;
+                    // retrieve spy num
+                    var spy = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.DoSpy(twinid, clear: act == Web.Action) : 0;
 
                     if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
                     {
                         var stateyes = tool.MeetState(state);
                         // provide current anchor as subscript 
-                        PutTool(act, tool, anchor ? -1 : subscript, badge: ntc, disabled: !stateyes, astack: astack, css: "uk-button-primary");
+                        PutTool(act, tool, anchor ? -1 : subscript, badge: spy, disabled: !stateyes, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
@@ -3149,9 +3149,6 @@ namespace ChainFx.Web
                     {
                         var tool = act.Tool;
 
-                        // status check
-                        if (!tool.MeetsStatus(status)) continue;
-
                         // current user autnorize check
                         var perm = Web.Principal == null || act.DoAuthorize(Web, true);
 
@@ -3217,7 +3214,7 @@ namespace ChainFx.Web
                         _FORM();
                     }
 
-                    FORM_("uk-card uk-card-primary");
+                    FORM_("uk-card uk-card-default");
                     if (compact)
                     {
                         H3(sub.Header, "uk-card-header");

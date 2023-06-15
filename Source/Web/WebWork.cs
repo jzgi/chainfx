@@ -118,7 +118,7 @@ namespace ChainFx.Web
 
         public string Icon => Ui?.Icon;
 
-        public short Group => Ui?.Group ?? 0;
+        public short Group => Ui?.Status ?? 0;
 
         readonly Type type;
 
@@ -250,7 +250,7 @@ namespace ChainFx.Web
             return wrk;
         }
 
-        [Ui(icon: "question", Help = false), Tool(Modal.ButtonShow, status: 15)]
+        [Ui(icon: "question", Help = false), Tool(Modal.ButtonShow)]
         public virtual void help(WebContext wc)
         {
             wc.GivePane(200, h =>

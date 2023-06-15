@@ -1,6 +1,6 @@
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 using ChainFx.Web;
 
 namespace ChainFx.Nodal
@@ -158,7 +158,7 @@ namespace ChainFx.Nodal
         {
             if (v >= short.MinValue && v <= short.MaxValue)
             {
-                Add((short) v);
+                Add((short)v);
                 return;
             }
 
@@ -186,7 +186,7 @@ namespace ChainFx.Nodal
         {
             if (v >= int.MinValue && v <= int.MaxValue)
             {
-                Add((int) v);
+                Add((int)v);
                 return;
             }
 
@@ -216,7 +216,7 @@ namespace ChainFx.Nodal
         }
 
         // sign mask
-        const int Sign = unchecked((int) 0x80000000);
+        const int Sign = unchecked((int)0x80000000);
 
         ///
         /// This method outputs decimal numbers fastly.
@@ -241,7 +241,7 @@ namespace ChainFx.Nodal
 
             if (mid != 0) // if 64 bits
             {
-                long x = ((long) mid << 32) + low;
+                long x = ((long)mid << 32) + low;
                 bool bgn = false;
                 for (int i = LONG.Length - 1; i > 0; i--)
                 {
@@ -305,7 +305,7 @@ namespace ChainFx.Nodal
 
         public void Add(DateTime v, bool time = false)
         {
-            short yr = (short) v.Year;
+            short yr = (short)v.Year;
 
             // yyyy-mm-dd
             if (yr < 1000) Add('0');
@@ -665,19 +665,20 @@ namespace ChainFx.Nodal
 
         public DbSql _MEET_(WebContext wc)
         {
+            var ui = wc.Action.Ui;
             var tool = wc.Action.Tool;
-            if (tool != null && (tool.Status != 0 || tool.State != 0))
+            if (ui != null && (ui.Status != 0 || tool.State != 0))
             {
                 Add(" AND (");
-                if (tool.Status != 0)
+                if (ui.Status != 0)
                 {
                     Add("status & ");
-                    Add(tool.Status);
+                    Add(ui.Status);
                     Add(" <> 0");
                 }
                 if (tool.State != 0)
                 {
-                    if (tool.Status != 0) Add(" AND ");
+                    if (ui.Status != 0) Add(" AND ");
                     Add("state & ");
                     Add(tool.State);
                     Add(" <> 0");

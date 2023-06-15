@@ -1,5 +1,4 @@
 using System;
-using System.Data.SqlTypes;
 
 namespace ChainFx.Web
 {
@@ -15,7 +14,7 @@ namespace ChainFx.Web
 
         readonly string icon;
 
-        readonly short group;
+        readonly short status;
 
         /// <summary>
         ///  To specify user interface-related attributes.
@@ -25,13 +24,13 @@ namespace ChainFx.Web
         /// <param
         ///     name="icon">
         /// </param>
-        /// <param name="group"></param>
-        public UiAttribute(string label = null, string tip = null, string icon = null, short group = 0)
+        /// <param name="status"></param>
+        public UiAttribute(string label = null, string tip = null, string icon = null, short status = 0)
         {
             this.label = label;
             this.tip = tip;
             this.icon = icon;
-            this.group = group;
+            this.status = status;
         }
 
         public string Label => label;
@@ -43,7 +42,7 @@ namespace ChainFx.Web
         /// <summary>
         /// A number that determines grouping of functions.
         /// </summary>
-        public short Group => group;
+        public short Status => status;
 
         /// <summary>
         /// Can be included & shown as help documentation.
