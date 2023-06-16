@@ -328,6 +328,18 @@ namespace ChainFx.Nodal
             }
         }
 
+        public void Add(TimeSpan v, bool second = false)
+        {
+            Add(SEX[v.Hours]);
+            Add(':');
+            Add(SEX[v.Minutes]);
+            if (second)
+            {
+                Add(':');
+                Add(SEX[v.Seconds]);
+            }
+        }
+
         public DbSql T(short v, bool cond = true)
         {
             if (cond)
@@ -828,6 +840,18 @@ namespace ChainFx.Nodal
         }
 
         public void Put(string name, DateTime v)
+        {
+            if (name != null)
+            {
+                Build(name);
+            }
+            else
+            {
+                Add(v);
+            }
+        }
+
+        public void Put(string name, TimeSpan v)
         {
             if (name != null)
             {

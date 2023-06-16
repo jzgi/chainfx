@@ -5,7 +5,7 @@ namespace ChainFx
     ///
     /// A JSON member that is either a value, or a property if with name.
     ///
-    public struct JMbr : IKeyable<string>
+    public readonly struct JMbr : IKeyable<string>
     {
         // property name, if not null
         readonly string name;
@@ -184,6 +184,17 @@ namespace ChainFx
             {
                 string str = (string)v.refv;
                 if (TextUtility.TryParseDate(str, out var dt)) return dt;
+            }
+
+            return default;
+        }
+
+        public static implicit operator TimeSpan(JMbr v)
+        {
+            if (v.typ == JType.String)
+            {
+                string str = (string)v.refv;
+                if (TextUtility.TryParseTime(str, out var tm)) return tm;
             }
 
             return default;

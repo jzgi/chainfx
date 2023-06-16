@@ -8,10 +8,6 @@ namespace ChainFx.Nodal
     /// </summary>
     public interface IParameters : ISink
     {
-        bool Digest { get; set; }
-
-        long Checksum { get; }
-
         IParameters SetNull();
 
         IParameters Set(bool v);

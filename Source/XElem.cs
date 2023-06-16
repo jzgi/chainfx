@@ -182,6 +182,11 @@ namespace ChainFx
             return false;
         }
 
+        public bool Get(string name, ref TimeSpan v)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Get(string name, ref Guid v)
         {
             throw new NotImplementedException();

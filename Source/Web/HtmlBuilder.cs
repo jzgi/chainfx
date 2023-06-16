@@ -1738,22 +1738,32 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ADIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, string css = null)
+        public HtmlBuilder ADIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, bool disabled = false, string css = null)
         {
-            Add("<a");
+            Add("<a class=\"");
             if (css != null)
             {
-                Add(" class=\"");
                 Add(css);
-                Add("\"");
             }
-
-            Add(" href=\"");
-            PutKey(a);
-            PutKey(b);
+            if (disabled)
+            {
+                Add(" uk-disabled");
+            }
             Add("\"");
 
-            _DIALOG_(mode, pick, tip);
+            if (disabled)
+            {
+                Add(" href=\"javascript:void(0)\"");
+            }
+            else
+            {
+                Add(" href=\"");
+                PutKey(a);
+                PutKey(b);
+                Add("\"");
+
+                _DIALOG_(mode, pick, tip);
+            }
 
             Add(">");
             return this;
@@ -2887,7 +2897,11 @@ namespace ChainFx.Web
             }
 
             // the contextual group
-            var ctxStu = status < 255 ? status : Web.Action.Status;
+            var ctxStu = Web.Action.Status;
+            if (ctxStu == 0)
+            {
+                ctxStu = status;
+            }
 
             var acts = Web.Work.Tooled;
             if (acts != null)
@@ -4057,9 +4071,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TIME()
+        public HtmlBuilder TIME(string label, string name, TimeSpan val)
         {
-            T("</tbody>");
+            LABEL(label);
+            Add("<input type=\"time\" class=\"uk-input uk-width-1-1\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            Add(val);
+            Add("\">");
             return this;
         }
 

@@ -282,6 +282,11 @@ namespace ChainFx
             Add('"');
         }
 
+        public void Put(string name, TimeSpan v)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Put(string name, string v)
         {
             Add(' ');

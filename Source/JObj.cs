@@ -143,6 +143,16 @@ namespace ChainFx
             return false;
         }
 
+        public bool Get(string name, ref TimeSpan v)
+        {
+            if (TryGetValue(name, out var mbr))
+            {
+                v = mbr;
+                return true;
+            }
+            return false;
+        }
+
         public bool Get(string name, ref Guid v)
         {
             throw new NotImplementedException();

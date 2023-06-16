@@ -120,8 +120,7 @@ namespace ChainFx.Web
 
         public short Status => Ui?.Status ?? 0;
 
-        
-        
+
         readonly Type type;
 
         public WebService Service { get; internal set; }
@@ -341,10 +340,14 @@ namespace ChainFx.Web
             }
         }
 
-        internal async Task<bool> DoAuthenticateAsync(WebContext wc)
+        internal async Task<bool> DoAuthenticateAsync(WebContext wc, bool @default)
         {
             if (Authenticate != null)
             {
+                if (Authenticate.OmitDefault && @default)
+                {
+                    return true;
+                }
                 if (Authenticate.IsAsync && !await Authenticate.DoAsync(wc) || !Authenticate.IsAsync && !Authenticate.Do(wc))
                 {
                     return false;

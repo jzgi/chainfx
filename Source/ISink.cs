@@ -27,6 +27,8 @@ namespace ChainFx
 
         void Put(string name, DateTime v);
 
+        void Put(string name, TimeSpan v);
+
         void Put(string name, string v);
 
         void Put(string name, ArraySegment<byte> v);

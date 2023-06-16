@@ -133,7 +133,7 @@ namespace ChainFx.Web
 
                         // loop to clear or remove each expired items
                         var nowtick = Environment.TickCount;
-                        
+
                         foreach (var (key, value) in shared)
                         {
                             if (value.IsStaleByNow(nowtick))
@@ -188,7 +188,7 @@ namespace ChainFx.Web
                 }
 
                 // do necessary authentication before entering the work
-                if (wc.Principal == null && !await DoAuthenticateAsync(wc)) return;
+                if (wc.Principal == null && !await DoAuthenticateAsync(wc, false)) return;
 
                 WebWork curwrk = this;
                 var rsc = path.Substring(1);
@@ -256,19 +256,29 @@ namespace ChainFx.Web
                         var subwrk = curwrk.SubWorks?[key];
                         if (subwrk != null) // if child
                         {
+                            // adjust rsc string
+                            rsc = rsc.Substring(slash + 1);
+
                             // do necessary authentication before entering the work
-                            if (wc.Principal == null && !await subwrk.DoAuthenticateAsync(wc)) return;
+                            if (wc.Principal == null && !await subwrk.DoAuthenticateAsync(wc, string.IsNullOrEmpty(rsc)))
+                            {
+                                return;
+                            }
 
                             wc.AppendSeg(subwrk, key);
 
-                            // adjust rsc string
-                            rsc = rsc.Substring(slash + 1);
                             curwrk = subwrk;
                         }
                         else if (varwrk != null) // if variable-key subwork
                         {
+                            // adjust rsc string
+                            rsc = rsc.Substring(slash + 1);
+
                             // do necessary authentication before entering the work
-                            if (wc.Principal == null && !await varwrk.DoAuthenticateAsync(wc)) return;
+                            if (wc.Principal == null && !await varwrk.DoAuthenticateAsync(wc, string.IsNullOrEmpty(rsc)))
+                            {
+                                return;
+                            }
 
                             var prin = wc.Principal;
                             object accessor;
@@ -289,8 +299,6 @@ namespace ChainFx.Web
                             // append the segment
                             wc.AppendSeg(varwrk, key, accessor);
 
-                            // adjust rsc string
-                            rsc = rsc.Substring(slash + 1);
                             curwrk = varwrk;
                         }
                         else

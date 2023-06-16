@@ -6,7 +6,7 @@ namespace ChainFx
     public static class TextUtility
     {
         // days of week
-        static readonly string[] DOW = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        static readonly string[] DOW = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
         // sexagesimal numbers
         static readonly string[] SEX =
@@ -57,7 +57,7 @@ namespace ChainFx
             v = v.ToUniversalTime();
 
             var gmt = new StringBuilder();
-            gmt.Append(DOW[(int) v.DayOfWeek]);
+            gmt.Append(DOW[(int)v.DayOfWeek]);
             gmt.Append(", ");
 
             gmt.Append(SEX[v.Day]);
@@ -96,6 +96,33 @@ namespace ChainFx
             try
             {
                 v = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Unspecified);
+                return true;
+            }
+            catch
+            {
+                v = default;
+                return false;
+            }
+        }
+
+        public static bool TryParseTime(string str, out TimeSpan v)
+        {
+            int len = str.Length;
+
+            int hour = 0, minute = 0, second = 0; // optional time part
+            if (len >= 5)
+            {
+                hour = ParseInt(str, 0, 2, 10);
+                minute = ParseInt(str, 3, 2, 10);
+                if (len >= 9)
+                {
+                    second = ParseInt(str, 6, 2, 10);
+                }
+            }
+
+            try
+            {
+                v = new TimeSpan(hour, minute, second);
                 return true;
             }
             catch
@@ -172,7 +199,7 @@ namespace ChainFx
         public static short ToShort(this string str)
         {
             if (str == null) return 0;
-            return (short) str.ToInt(0, str.Length);
+            return (short)str.ToInt(0, str.Length);
         }
 
         public static short[] ToShortArray(this string str, char sep = ' ')
@@ -289,7 +316,7 @@ namespace ChainFx
                 p++;
             }
             pos = p;
-            return (short) sum;
+            return (short)sum;
         }
 
         public static int ParseInt(this string str, ref int pos, char sep = '-')

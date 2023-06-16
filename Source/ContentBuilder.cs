@@ -544,6 +544,20 @@ namespace ChainFx
             }
         }
 
+        public void Add(TimeSpan v, bool second = false)
+        {
+            Add(SEX[v.Hours]);
+
+            Add(':');
+            Add(SEX[v.Minutes]);
+
+            if (second)
+            {
+                Add(':');
+                Add(SEX[v.Seconds]);
+            }
+        }
+
         public void AddPrimitive<V>(V v)
         {
             if (v is short shortv) Add(shortv);

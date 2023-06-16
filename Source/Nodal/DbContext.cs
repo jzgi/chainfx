@@ -67,8 +67,6 @@ namespace ChainFx.Nodal
             // command parameter reset
             command.Parameters.Clear();
             paramidx = 0;
-
-            checksum = 0;
         }
 
         public void Dispose()
@@ -885,6 +883,24 @@ namespace ChainFx.Nodal
             return false;
         }
 
+        public bool Get(string name, ref TimeSpan v)
+        {
+            try
+            {
+                int ord = reader.GetOrdinal(name);
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetTimeSpan(ord);
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+
+            return false;
+        }
+
         public bool Get(string name, ref Guid v)
         {
             try
@@ -1421,6 +1437,24 @@ namespace ChainFx.Nodal
             return v;
         }
 
+        public TimeSpan Let(out TimeSpan v)
+        {
+            v = default;
+            try
+            {
+                int ord = ordinal++;
+                if (!reader.IsDBNull(ord))
+                {
+                    v = reader.GetTimeSpan(ord);
+                }
+            }
+            catch
+            {
+            }
+
+            return v;
+        }
+
         public string Let(out string v)
         {
             v = null;
@@ -1726,10 +1760,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = dec
             });
-            if (Digest)
-            {
-                Check(dec);
-            }
         }
 
         public void Put(string name, bool v)
@@ -1738,10 +1768,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, char v)
@@ -1750,10 +1776,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, short v)
@@ -1762,10 +1784,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, int v)
@@ -1774,10 +1792,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, long v)
@@ -1786,10 +1800,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, float v)
@@ -1798,10 +1808,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, double v)
@@ -1810,10 +1816,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, decimal v)
@@ -1822,10 +1824,6 @@ namespace ChainFx.Nodal
             {
                 TypedValue = v
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, DateTime v)
@@ -1841,10 +1839,21 @@ namespace ChainFx.Nodal
                 {
                     TypedValue = v
                 });
-                if (Digest)
+            }
+        }
+
+        public void Put(string name, TimeSpan v)
+        {
+            if (v == default)
+            {
+                command.Parameters.AddWithValue(name, DBNull.Value);
+            }
+            else
+            {
+                command.Parameters.Add(new NpgsqlParameter<TimeSpan>(name, NpgsqlDbType.Time)
                 {
-                    Check(v, !notime);
-                }
+                    TypedValue = v
+                });
             }
         }
 
@@ -1855,10 +1864,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (Digest)
-            {
-                Check(v);
-            }
         }
 
         public void Put(string name, bool[] v)
@@ -1867,13 +1872,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, char[] v)
@@ -1882,13 +1880,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, ArraySegment<byte> v)
@@ -1905,13 +1896,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, short[] v)
@@ -1920,13 +1904,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, int[] v)
@@ -1935,21 +1912,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
-
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, long[] v)
@@ -1958,13 +1920,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, float[] v)
@@ -1973,13 +1928,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, double[] v)
@@ -1988,13 +1936,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, decimal[] v)
@@ -2003,13 +1944,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, DateTime[] v)
@@ -2018,14 +1952,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    bool notime = e.Hour == 0 && e.Minute == 0 && e.Second == 0 && e.Millisecond == 0;
-                    Check(e, !notime);
-                }
-            }
         }
 
         public void Put(string name, string[] v)
@@ -2034,13 +1960,6 @@ namespace ChainFx.Nodal
             {
                 Value = (v != null) ? v : DBNull.Value
             });
-            if (v != null && Digest)
-            {
-                foreach (var e in v)
-                {
-                    Check(e);
-                }
-            }
         }
 
         public void Put(string name, JObj v)
@@ -2059,10 +1978,6 @@ namespace ChainFx.Nodal
                 {
                     Value = str
                 });
-                if (Digest)
-                {
-                    Check(str);
-                }
             }
         }
 
@@ -2082,10 +1997,6 @@ namespace ChainFx.Nodal
                 {
                     Value = str
                 });
-                if (Digest)
-                {
-                    Check(str);
-                }
             }
         }
 
@@ -2105,10 +2016,6 @@ namespace ChainFx.Nodal
                 {
                     Value = str
                 });
-                if (Digest)
-                {
-                    Check(str);
-                }
             }
         }
 
@@ -2415,112 +2322,6 @@ namespace ChainFx.Nodal
         {
             Set(Moment);
             return this;
-        }
-        //
-        // digest
-        //
-
-
-        public bool Digest { get; set; }
-
-        long checksum;
-
-        public long Checksum => checksum;
-
-        void Check(string v)
-        {
-            if (v != null)
-            {
-                for (int i = 0; i < v.Length; i++)
-                {
-                    var c = v[i];
-                    CheckByte((byte)c);
-                    CheckByte((byte)(c >> 8));
-                }
-            }
-        }
-
-        void Check(char v)
-        {
-            CheckByte((byte)v);
-            CheckByte((byte)(v >> 8));
-        }
-
-        void Check(bool v)
-        {
-            CheckByte(v ? (byte)1 : (byte)0);
-        }
-
-        void Check(short v)
-        {
-            CheckByte((byte)v);
-            CheckByte((byte)(v >> 8));
-        }
-
-        void Check(int v)
-        {
-            CheckByte((byte)v);
-            CheckByte((byte)(v >> 8));
-            CheckByte((byte)(v >> 16));
-            CheckByte((byte)(v >> 24));
-        }
-
-        void Check(long v)
-        {
-            CheckByte((byte)v);
-            CheckByte((byte)(v >> 8));
-            CheckByte((byte)(v >> 16));
-            CheckByte((byte)(v >> 24));
-            CheckByte((byte)(v >> 32));
-            CheckByte((byte)(v >> 40));
-            CheckByte((byte)(v >> 48));
-            CheckByte((byte)(v >> 56));
-        }
-
-        void Check(decimal v)
-        {
-            var bits = decimal.GetBits(v);
-            for (int i = 0; i < bits.Length; i++)
-            {
-                Check(bits[i]);
-            }
-        }
-
-        void Check(float v)
-        {
-            Check((decimal)v);
-        }
-
-        void Check(double v)
-        {
-            Check((decimal)v);
-        }
-
-        void Check(DateTime v, bool time)
-        {
-            Check(v.Year);
-            Check(v.Month);
-            Check(v.Day);
-            if (time)
-            {
-                Check(v.Hour);
-                Check(v.Minute);
-                Check(v.Second);
-                Check(v.Millisecond);
-            }
-        }
-
-        void CheckByte(byte b)
-        {
-            var cs = checksum;
-            cs ^= b << ((b & 0b00000111) * 8);
-            unchecked
-            {
-                cs *= ((b & 0b00011000) >> 3) switch { 0 => 7, 1 => 11, 2 => 13, _ => 17 };
-            }
-
-            cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
-            checksum = cs;
         }
     }
 }

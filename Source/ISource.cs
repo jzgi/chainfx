@@ -23,6 +23,8 @@ namespace ChainFx
 
         bool Get(string name, ref DateTime v);
 
+        bool Get(string name, ref TimeSpan v);
+
         bool Get(string name, ref Guid v);
 
         bool Get(string name, ref string v);
