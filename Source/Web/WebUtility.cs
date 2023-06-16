@@ -86,7 +86,7 @@ namespace ChainFx.Web
             for (int i = 0; i < subwrks?.Count; i++)
             {
                 var sub = subwrks.ValueAt(i);
-                if (sub.Group != 0 && (sub.Group & group) != sub.Group)
+                if (sub.Status != 0 && (sub.Status & group) != sub.Status)
                 {
                     continue;
                 }
@@ -112,7 +112,7 @@ namespace ChainFx.Web
             for (int i = 0; i < subwrks?.Count; i++)
             {
                 var sub = subwrks.ValueAt(i);
-                if (sub.Group != 0 && (sub.Group & group) != sub.Group)
+                if (sub.Status != 0 && (sub.Status & group) != sub.Status)
                 {
                     continue;
                 }

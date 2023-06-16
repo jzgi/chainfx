@@ -89,9 +89,9 @@ namespace ChainFx.Web
         public short State => state;
 
 
-        internal bool MeetState(short oState)
+        internal bool MeetsOf(short src)
         {
-            return (state == 0 || (state & oState) == state); // required state is contained by the obj
+            return state == src || (state & src) == state;
         }
     }
 }

@@ -118,8 +118,10 @@ namespace ChainFx.Web
 
         public string Icon => Ui?.Icon;
 
-        public short Group => Ui?.Status ?? 0;
+        public short Status => Ui?.Status ?? 0;
 
+        
+        
         readonly Type type;
 
         public WebService Service { get; internal set; }

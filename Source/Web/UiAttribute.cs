@@ -25,7 +25,7 @@ namespace ChainFx.Web
         ///     name="icon">
         /// </param>
         /// <param name="status"></param>
-        public UiAttribute(string label = null, string tip = null, string icon = null, short status = 0)
+        public UiAttribute(string label = null, string tip = null, string icon = null, short status = 255)
         {
             this.label = label;
             this.tip = tip;

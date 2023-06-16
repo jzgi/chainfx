@@ -2851,10 +2851,8 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(int subscript = -1, int twinid = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 0, short state = 0)
+        public HtmlBuilder TOOLBAR(int subscript = -1, int twinid = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 255, short state = 0)
         {
-            var ctxgrp = status > 0 ? status : Web.Action.Group; // the contextual group
-
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(bottom ? "uk-bottom-bar" : "uk-top-bar");
             Add("\">");
@@ -2888,16 +2886,15 @@ namespace ChainFx.Web
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
             }
 
+            // the contextual group
+            var ctxStu = status < 255 ? status : Web.Action.Status;
+
             var acts = Web.Work.Tooled;
             if (acts != null)
             {
                 foreach (var act in acts)
                 {
-                    int g = act.Group;
                     var tool = act.Tool;
-
-                    // status & state check
-                    // if (!tool.MeetsStatus(status)) continue;
 
                     // current user autnorize check
                     if (Web.Principal != null && !act.DoAuthorize(Web, true)) continue;
@@ -2907,11 +2904,11 @@ namespace ChainFx.Web
                     // retrieve spy num
                     var spy = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.DoSpy(twinid, clear: act == Web.Action) : 0;
 
-                    if (anchor || ctxgrp == g || (g & ctxgrp) > 0) // anchor is always included
+                    if (anchor || ctxStu == act.Status || (ctxStu & act.Status) > 0) // anchor is always included
                     {
-                        var stateyes = tool.MeetState(state);
+                        var stateYes = tool.MeetsOf(state);
                         // provide current anchor as subscript 
-                        PutTool(act, tool, anchor ? -1 : subscript, badge: spy, disabled: !stateyes, astack: astack, css: "uk-button-primary");
+                        PutTool(act, tool, anchor ? -1 : subscript, badge: spy, disabled: !stateYes, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
@@ -2938,7 +2935,7 @@ namespace ChainFx.Web
         public HtmlBuilder TOOLBAR<K, V>(int subscript, Map<K, V> opts = null, Func<K, V, bool> filter = null, byte group = 0, bool toggle = false, string tip = null)
             where K : IEquatable<K>, IComparable<K>
         {
-            var ctxgrp = group > 0 ? group : Web.Action.Group; // the contextual group
+            var ctxgrp = group > 0 ? group : Web.Action.Status; // the contextual group
 
             Add("<form id=\"tool-bar-form\" class=\"");
             Add("uk-top-bar");
@@ -3013,7 +3010,7 @@ namespace ChainFx.Web
             {
                 foreach (var act in acts)
                 {
-                    int g = act.Group;
+                    int g = act.Status;
                     var tool = act.Tool;
 
                     // current user autnorize check
@@ -3136,7 +3133,7 @@ namespace ChainFx.Web
             }
 
             // output button group
-            var actgrp = Web.Action.Group;
+            var actgrp = Web.Action.Status;
             var acts = vw?.Tooled;
             if (acts != null)
             {
@@ -3144,7 +3141,7 @@ namespace ChainFx.Web
                 {
                     var act = acts[i];
 
-                    int g = act.Group;
+                    int g = act.Status;
                     if (g == actgrp || (g & actgrp) > 0)
                     {
                         var tool = act.Tool;
@@ -3152,7 +3149,7 @@ namespace ChainFx.Web
                         // current user autnorize check
                         var perm = Web.Principal == null || act.DoAuthorize(Web, true);
 
-                        var stateyes = tool.MeetState((state));
+                        var stateyes = tool.MeetsOf((state));
 
                         PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, disabled: !perm && !stateyes);
                     }
@@ -3179,7 +3176,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public void WORKBOARD(byte group = 0, int twinSpy = 0, bool compact = true)
+        public void WORKBOARD(int twinSpy = 0, bool compact = true, short status = 255)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -3195,7 +3192,7 @@ namespace ChainFx.Web
                     continue;
                 }
 
-                if (sub.Group != 0 && (sub.Group & group) != sub.Group)
+                if (sub.Status != 0 && (sub.Status & status) != sub.Status)
                 {
                     continue;
                 }

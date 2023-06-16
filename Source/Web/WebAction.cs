@@ -126,7 +126,7 @@ namespace ChainFx.Web
 
         public string Dt => Label ?? Tip ?? name;
 
-        public short Group => ui?.Status ?? 0;
+        public short Status => ui?.Status ?? 0;
 
         public ToolAttribute Tool => tool;
 

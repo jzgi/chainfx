@@ -13,7 +13,7 @@ namespace ChainFx
             {
                 fixed (byte* p = buf)
                 {
-                    uint* pa = (uint*) p, pb = (uint*) p;
+                    uint* pa = (uint*)p, pb = (uint*)p;
                     for (int seg = 0; seg < len - 8; seg += 8) // NOTE: up to 7 bytes ignored 
                     {
                         uint v0 = *pa++, v1 = *pa++, sum = 0; // set up
@@ -39,7 +39,7 @@ namespace ChainFx
             {
                 fixed (byte* p = buf)
                 {
-                    uint* pa = (uint*) p, pb = (uint*) p;
+                    uint* pa = (uint*)p, pb = (uint*)p;
                     for (int seg = 0; seg < len - 8; seg += 8)
                     {
                         uint v0 = *pa++, v1 = *pa++, sum = 0xC6EF3720; // set up
@@ -71,9 +71,9 @@ namespace ChainFx
         }
 
 
-        static readonly char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        static readonly char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-        static readonly char[] HEXU = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        static readonly char[] HEXU = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         public static uint[] HexToKey(string v)
         {
@@ -148,7 +148,7 @@ namespace ChainFx
             var buf = new byte[strlen / 2];
             for (int i = 0; i < buf.Length; i++)
             {
-                byte b = (byte) ((Dv(str[i * 2]) << 4) | Dv(str[i * 2 + 1]));
+                byte b = (byte)((Dv(str[i * 2]) << 4) | Dv(str[i * 2 + 1]));
                 buf[i] = b;
             }
 
@@ -177,7 +177,7 @@ namespace ChainFx
             var buf = new char[strlen / 4];
             for (int i = 0; i < buf.Length; i++)
             {
-                buf[i] = (char) ((Dv(str[i * 4]) << 4) | Dv(str[i * 4 + 1]) | Dv(str[i * 4 + 2]) | Dv(str[i * 4 + 4]));
+                buf[i] = (char)((Dv(str[i * 4]) << 4) | Dv(str[i * 4 + 1]) | Dv(str[i * 4 + 2]) | Dv(str[i * 4 + 4]));
             }
 
             return new string(buf);
@@ -189,12 +189,12 @@ namespace ChainFx
             int num = hex - 'a';
             if (num >= 0 && num <= 5)
             {
-                return (uint) (num + 10);
+                return (uint)(num + 10);
             }
             num = hex - '0';
             if (num >= 0 && num <= 9)
             {
-                return (uint) num;
+                return (uint)num;
             }
             return 0;
         }
@@ -270,8 +270,8 @@ namespace ChainFx
                 for (int i = 0; i < v.Length; i++)
                 {
                     var c = v[i];
-                    DigestByte((byte) c, ref hash);
-                    DigestByte((byte) (c >> 8), ref hash);
+                    DigestByte((byte)c, ref hash);
+                    DigestByte((byte)(c >> 8), ref hash);
                 }
             }
         }
@@ -279,14 +279,14 @@ namespace ChainFx
 
         public static void Digest(long v, ref long hash)
         {
-            DigestByte((byte) v, ref hash);
-            DigestByte((byte) (v >> 8), ref hash);
-            DigestByte((byte) (v >> 16), ref hash);
-            DigestByte((byte) (v >> 24), ref hash);
-            DigestByte((byte) (v >> 32), ref hash);
-            DigestByte((byte) (v >> 40), ref hash);
-            DigestByte((byte) (v >> 48), ref hash);
-            DigestByte((byte) (v >> 56), ref hash);
+            DigestByte((byte)v, ref hash);
+            DigestByte((byte)(v >> 8), ref hash);
+            DigestByte((byte)(v >> 16), ref hash);
+            DigestByte((byte)(v >> 24), ref hash);
+            DigestByte((byte)(v >> 32), ref hash);
+            DigestByte((byte)(v >> 40), ref hash);
+            DigestByte((byte)(v >> 48), ref hash);
+            DigestByte((byte)(v >> 56), ref hash);
         }
 
         static void DigestByte(byte b, ref long hash)
@@ -296,7 +296,7 @@ namespace ChainFx
             cs ^= b << ((b & 0b00000111) * 8);
             unchecked
             {
-                cs *= ((b & 0b00011000) >> 3) switch {0 => 7, 1 => 11, 2 => 13, _ => 17};
+                cs *= ((b & 0b00011000) >> 3) switch { 0 => 7, 1 => 11, 2 => 13, _ => 17 };
             }
             cs ^= ~b << (((b & 0b11100000) >> 5) * 8);
 
@@ -309,7 +309,7 @@ namespace ChainFx
             var bs = HexToBytes("ebce206103e439514f3c4748c683274e");
             string sssdf = BytesToHex(bs, bs.Length);
 
-            uint[] key = {0x34a3, 0x34a3, 0x34a3, 0x34a3};
+            uint[] key = { 0x34a3, 0x34a3, 0x34a3, 0x34a3 };
 
             var c = new TextBuilder(true, 1024);
 
