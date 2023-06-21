@@ -202,7 +202,7 @@ public abstract class TwinGraph<S, T> : TwinGraph
     }
 
 
-    public T[] GetArray(S gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+    public T[] GetArray(S gkey, Predicate<T> filter = null, Comparison<T> sorter = null)
     {
         if (!groups.TryGetValue(gkey, out var map))
         {
@@ -223,17 +223,16 @@ public abstract class TwinGraph<S, T> : TwinGraph
             groups.TryAdd(gkey, map);
         }
 
-        T[] arr;
-        lock (map)
+        lock (map) // synchronize on the entire set
         {
-            arr = map.All(cond);
-        }
+            var arr = map.All(filter);
 
-        if (comp != null && arr != null)
-        {
-            Array.Sort(arr, comp);
+            if (sorter != null && arr != null)
+            {
+                Array.Sort(arr, sorter);
+            }
+            return arr;
         }
-        return arr;
     }
 
     public abstract bool TryGetTwinSetKey(DbContext dc, int key, out S setkey);

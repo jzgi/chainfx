@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ChainFx.Nodal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
@@ -319,7 +320,7 @@ namespace ChainFx.Web
             return new ArraySegment<byte>(buffer, 0, count);
         }
 
-        public async Task<M> ReadAsync<M>() where M : class, ISource
+        public async Task<S> ReadAsync<S>() where S : class, ISource
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -337,10 +338,10 @@ namespace ChainFx.Web
 
                 // parse
                 string ctyp = Header("Content-Type");
-                entity = ParseContent(ctyp, buffer, count, typeof(M));
+                entity = ParseContent(ctyp, buffer, count, typeof(S));
             }
 
-            return entity as M;
+            return entity as S;
         }
 
         public async Task<D> ReadObjectAsync<D>(short msk = 0xff, D instance = default) where D : IData, new()
@@ -375,10 +376,11 @@ namespace ChainFx.Web
             }
 
             instance.Read(src, msk);
+
             return instance;
         }
 
-        public async Task<D[]> ReadArrayAsync<D>(short proj = 0xff) where D : IData, new()
+        public async Task<D[]> ReadArrayAsync<D>(short msk = 0xff) where D : IData, new()
         {
             if (entity == null && count == -1) // if not yet parse and read
             {
@@ -399,7 +401,7 @@ namespace ChainFx.Web
                 entity = ParseContent(ctyp, buffer, count);
             }
 
-            return (entity as ISource)?.ToArray<D>(proj);
+            return (entity as ISource)?.ToArray<D>(msk);
         }
 
         //

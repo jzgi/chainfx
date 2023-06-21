@@ -294,7 +294,7 @@ namespace ChainFx.Nodal
             return default;
         }
 
-        public static T[] GrabTwinSet<S, T>(S gkey, Predicate<T> cond = null, Comparison<T> comp = null)
+        public static T[] GrabTwinSet<S, T>(S gkey, Predicate<T> filter = null, Comparison<T> sorter = null)
             where S : IEquatable<S>, IComparable<S>
             where T : class, ITwin<S>
         {
@@ -302,7 +302,7 @@ namespace ChainFx.Nodal
             {
                 if (typeof(T).IsAssignableFrom(grh.Typ))
                 {
-                    return ((TwinGraph<S, T>)grh).GetArray(gkey, cond, comp);
+                    return ((TwinGraph<S, T>)grh).GetArray(gkey, filter, sorter);
                 }
             }
             return null;
