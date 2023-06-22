@@ -1333,6 +1333,17 @@ namespace ChainFx.Web
             return this;
         }
 
+        public HtmlBuilder DD_()
+        {
+            Add("<dd>");
+            return this;
+        }
+
+        public HtmlBuilder _DD()
+        {
+            Add("</dd>");
+            return this;
+        }
 
         public HtmlBuilder DD(string v)
         {
@@ -1738,32 +1749,23 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ADIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, bool disabled = false, string css = null)
+        public HtmlBuilder ADIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, bool inactive = false, string css = null)
         {
             Add("<a class=\"");
             if (css != null)
             {
                 Add(css);
             }
-            if (disabled)
+            if (inactive)
             {
-                Add(" uk-disabled");
+                Add(" uk-inactive");
             }
+            Add("\" href=\"");
+            PutKey(a);
+            PutKey(b);
             Add("\"");
 
-            if (disabled)
-            {
-                Add(" href=\"javascript:void(0)\"");
-            }
-            else
-            {
-                Add(" href=\"");
-                PutKey(a);
-                PutKey(b);
-                Add("\"");
-
-                _DIALOG_(mode, pick, tip);
-            }
+            _DIALOG_(mode, pick, tip);
 
             Add(">");
             return this;
@@ -2013,15 +2015,20 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ALERT_(string css = null)
+        public HtmlBuilder ALERT_(bool sticky = false, string css = null)
         {
-            Add("<div class=\"");
+            Add("<div");
+            if (sticky)
+            {
+                Add(" uk-sticky");
+            }
             if (css != null)
             {
+                Add(" class=\"");
                 Add(css);
+                Add('\"');
             }
-
-            Add("\" uk-alert>");
+            Add(" uk-alert>");
 
             return this;
         }
@@ -2032,9 +2039,9 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ALERT(string head, string p = null, string css = null)
+        public HtmlBuilder ALERT(string head, string p = null, bool sticky = false, string css = null)
         {
-            ALERT_(css);
+            ALERT_(sticky, css);
 
             if (head != null)
             {

@@ -113,7 +113,7 @@ namespace ChainFx
             }
         }
 
-        public string Tip => tip;
+        public virtual string Tip => tip;
 
         public bool IsVoid => status == STU_VOID;
 
