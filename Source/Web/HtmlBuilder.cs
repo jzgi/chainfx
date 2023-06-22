@@ -472,10 +472,10 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TD(DateTime v)
+        public HtmlBuilder TD(DateTime v, byte date = 3, byte time = 3)
         {
             Add("<td style=\"text-align: center\">");
-            Add(v);
+            Add(v, date, time);
             Add("</td>");
             return this;
         }
@@ -2552,6 +2552,18 @@ namespace ChainFx.Web
         public HtmlBuilder _TABLE()
         {
             Add("</table>");
+            return this;
+        }
+
+        public HtmlBuilder THEAD_()
+        {
+            Add("<thead>");
+            return this;
+        }
+
+        public HtmlBuilder _THEAD()
+        {
+            Add("</thead>");
             return this;
         }
 
