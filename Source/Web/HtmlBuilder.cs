@@ -2039,13 +2039,17 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ALERT(string head, string p = null, bool sticky = false, string css = null)
+        public HtmlBuilder ALERT(string head, string p = null, bool bell = false, string css = null)
         {
-            ALERT_(sticky, css);
+            ALERT_(bell, css);
 
             if (head != null)
             {
                 Add("<header>");
+                if (bell)
+                {
+                    Add("<span uk-icon=\"bell\"></span>&nbsp;");
+                }
                 Add(head);
                 Add("</header>");
             }
