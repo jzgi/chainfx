@@ -1,13 +1,13 @@
 ﻿#pragma warning disable 618
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainFx.Nodal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
@@ -30,6 +30,8 @@ namespace ChainFx.Web
 
         readonly IHttpResponseFeature fResponse;
 
+        readonly IHttpResponseBodyFeature fResponseBody;
+
         readonly IHttpWebSocketFeature fWebSocket;
 
         internal WebContext(IFeatureCollection features)
@@ -40,6 +42,7 @@ namespace ChainFx.Web
             fRequest = features.Get<IHttpRequestFeature>();
             fRequestCookies = new RequestCookiesFeature(features);
             fResponse = features.Get<IHttpResponseFeature>();
+            fResponseBody = features.Get<IHttpResponseBodyFeature>();
             fWebSocket = features.Get<IHttpWebSocketFeature>();
         }
 
@@ -611,8 +614,10 @@ namespace ChainFx.Web
             // send out the content async
             fResponse.Headers["Content-Length"] = Content.Count.ToString();
             fResponse.Headers["Content-Type"] = Content.CType;
-            await fResponse.Body.WriteAsync(Content.Buffer, 0, Content.Count);
+            await fResponseBody.Stream.WriteAsync(Content.Buffer, 0, Content.Count);
         }
+
+        public Stream ResponseStream => fResponseBody.Stream;
 
         /// <summary>
         /// Called on context closing 

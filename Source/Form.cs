@@ -32,7 +32,7 @@ namespace ChainFx
             }
             else
             {
-                entries[idx].value.Add(v);
+                entries[idx].Value.Add(v);
             }
         }
 

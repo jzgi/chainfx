@@ -5,7 +5,7 @@ namespace ChainFx.Nodal;
 /// <summary>
 /// An edgly internet event.
 /// </summary>
-public struct Edgie : IKeyable<short>
+public struct Event : IKeyable<short>
 {
     private short typ;
 

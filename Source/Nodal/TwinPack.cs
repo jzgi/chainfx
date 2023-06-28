@@ -1,7 +1,11 @@
-﻿namespace ChainFx.Nodal;
+﻿using System;
 
-public abstract class TwinPack<E> 
+namespace ChainFx.Nodal;
+
+public abstract class TwinPack<E> : Map<short, E>
     where E : IKeyable<short>
 {
-    private Map<short, E> entries;
+    private DateTime start;
+
+    private DateTime end;
 }

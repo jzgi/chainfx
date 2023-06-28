@@ -2939,7 +2939,7 @@ namespace ChainFx.Web
                     var anchor = tool.IsAnchorTag;
 
                     // retrieve spy num
-                    var spy = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.DoSpy(twinid, clear: act == Web.Action) : 0;
+                    var spy = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.Do(twinid, clear: act == Web.Action) : 0;
 
                     if (anchor || ctxStu == act.Status || (ctxStu & act.Status) > 0) // anchor is always included
                     {
@@ -2999,7 +2999,7 @@ namespace ChainFx.Web
                 {
                     var e = opts.EntryAt(i);
                     var key = e.key;
-                    var val = e.value;
+                    var val = e.Value;
                     if (filter != null && !filter(key, val)) continue;
                     if (e.IsHead)
                     {
@@ -3186,9 +3186,9 @@ namespace ChainFx.Web
                         // current user autnorize check
                         var perm = Web.Principal == null || act.DoAuthorize(Web, true);
 
-                        var stateyes = tool.MeetsOf((state));
+                        var stateYes = tool.MeetsOf((state));
 
-                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, disabled: !perm && !stateyes);
+                        PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, disabled: !perm && !stateYes);
                     }
                 }
             }
@@ -3457,7 +3457,7 @@ namespace ChainFx.Web
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return call_"); // prefix to avoid js naming conflict
+                Add(" onclick=\"return $"); // prefix to avoid js naming conflict
                 Add(act.Name);
                 Add("(this);\"");
             }
@@ -3623,7 +3623,7 @@ namespace ChainFx.Web
             }
             else if (tool.HasScript)
             {
-                Add(" onclick=\"return call_"); // prefix to avoid js naming conflict
+                Add(" onclick=\"return $"); // prefix to avoid js naming conflict
                 Add(act.Name);
                 Add("(this);\"");
             }
@@ -4920,7 +4920,7 @@ namespace ChainFx.Web
                 {
                     var e = opts.EntryAt(i);
                     var key = e.Key;
-                    var val = e.value;
+                    var val = e.Value;
 
                     if (filter != null && !filter(key, val)) continue;
 

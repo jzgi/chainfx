@@ -1,295 +1,318 @@
 using System;
 using System.Collections.Generic;
 
-namespace ChainFx
+namespace ChainFx;
+
+/// <summary>
+/// A set of commonly-used array operations.
+/// </summary>
+public static class ArrayUtility
 {
-    /// <summary>
-    /// A set of commonly-used array operations.
-    /// </summary>
-    public static class ArrayUtility
+    public static E[] AddOf<E>(this E[] arr, E v, bool first = false)
     {
-        public static E[] AddOf<E>(this E[] arr, E v, bool first = false)
+        if (arr == null || arr.Length == 0)
         {
-            if (arr == null || arr.Length == 0)
-            {
-                return new[] {v};
-            }
-
-            var len = arr.Length;
-            var alloc = new E[len + 1];
-            if (first)
-            {
-                alloc[0] = v;
-                Array.Copy(arr, 0, alloc, 1, len);
-            }
-            else
-            {
-                Array.Copy(arr, alloc, len);
-                alloc[len] = v;
-            }
-
-            return alloc;
+            return new[] { v };
         }
 
-        public static E[] AddOf<E>(this E[] arr, params E[] v)
+        var len = arr.Length;
+        var alloc = new E[len + 1];
+        if (first)
         {
-            if (arr == null || arr.Length == 0)
-            {
-                return v;
-            }
-
-            int len = arr.Length;
-            int vlen = v.Length;
-            var alloc = new E[len + vlen];
+            alloc[0] = v;
+            Array.Copy(arr, 0, alloc, 1, len);
+        }
+        else
+        {
             Array.Copy(arr, alloc, len);
-            Array.Copy(v, 0, alloc, len, vlen);
+            alloc[len] = v;
+        }
+
+        return alloc;
+    }
+
+    public static E[] AddOf<E>(this E[] arr, params E[] v)
+    {
+        if (arr == null || arr.Length == 0)
+        {
+            return v;
+        }
+
+        int len = arr.Length;
+        int vlen = v.Length;
+        var alloc = new E[len + vlen];
+        Array.Copy(arr, alloc, len);
+        Array.Copy(v, 0, alloc, len, vlen);
+        return alloc;
+    }
+
+    public static E[] MergeOf<E>(this E[] arr, params E[] v) where E : IEquatable<E>
+    {
+        if (arr == null || arr.Length == 0)
+        {
+            return v;
+        }
+
+        int len = arr.Length;
+        int vlen = v.Length;
+        var lst = new ValueList<E>();
+        for (int i = 0; i < vlen; i++) // out loop
+        {
+            var t = v[i];
+            if (t == null) continue;
+            bool dup = false; // found duplicate
+            for (int k = 0; k < len; k++) // match among arr elements
+            {
+                var a = arr[k];
+                if (a == null) continue;
+                if (a.Equals(t))
+                {
+                    dup = true;
+                    break;
+                }
+            }
+
+            if (!dup)
+            {
+                lst.Add(t);
+            }
+        }
+
+        int count = lst.Count;
+        if (count > 0)
+        {
+            var alloc = new E[len + count];
+            Array.Copy(arr, alloc, len);
+            // copy new elements
+            for (int i = 0; i < count; i++)
+            {
+                alloc[len + i] = lst[i];
+            }
+
             return alloc;
         }
 
-        public static E[] MergeOf<E>(this E[] arr, params E[] v) where E : IEquatable<E>
+        return arr;
+    }
+
+    public static E[] RemovedOf<E>(this E[] arr, E v)
+    {
+        if (arr == null) return null;
+
+        int idx = -1;
+        for (int i = 0; i < arr.Length; i++)
         {
-            if (arr == null || arr.Length == 0)
+            if (arr[i].Equals(v))
             {
-                return v;
+                idx = i;
+                break;
             }
+        }
+        if (idx == -1) return arr;
 
-            int len = arr.Length;
-            int vlen = v.Length;
-            var lst = new ValueList<E>();
-            for (int i = 0; i < vlen; i++) // out loop
+        int nlen = arr.Length - 1;
+
+        if (nlen == 0) return null;
+        var alloc = new E[nlen];
+        if (idx > 0)
+        {
+            Array.Copy(arr, 0, alloc, 0, idx);
+        }
+        if (idx < nlen)
+        {
+            Array.Copy(arr, idx + 1, alloc, idx, nlen - idx);
+        }
+        return alloc;
+    }
+
+    public static E[] RemovedOf<E>(this E[] arr, Predicate<E> cond)
+    {
+        if (arr == null) return null;
+
+        int len = arr.Length;
+
+        if (len == 1 && cond(arr[0])) return null;
+
+        for (int i = 0; i < len; i++)
+        {
+            var e = arr[i];
+            if (cond(e))
             {
-                var t = v[i];
-                if (t == null) continue;
-                bool dup = false; // found duplicate
-                for (int k = 0; k < len; k++) // match among arr elements
-                {
-                    var a = arr[k];
-                    if (a == null) continue;
-                    if (a.Equals(t))
-                    {
-                        dup = true;
-                        break;
-                    }
-                }
-
-                if (!dup)
-                {
-                    lst.Add(t);
-                }
-            }
-
-            int count = lst.Count;
-            if (count > 0)
-            {
-                var alloc = new E[len + count];
-                Array.Copy(arr, alloc, len);
-                // copy new elements
-                for (int i = 0; i < count; i++)
-                {
-                    alloc[len + i] = lst[i];
-                }
-
+                var alloc = new E[len - 1];
+                Array.Copy(arr, 0, alloc, 0, i);
+                int next = i + 1;
+                Array.Copy(arr, next, alloc, i, len - next);
                 return alloc;
             }
-
-            return arr;
         }
 
-        public static E[] RemovedOf<E>(this E[] arr, E v)
+        return arr;
+    }
+
+    public static E[] RemovedOf<E>(this E[] arr, E[] cond)
+    {
+        var lst = new List<E>(arr);
+        lst.RemoveAll(e => cond.IndexOf(e) != -1);
+        return lst.ToArray();
+    }
+
+    public static E[] ReplaceOf<E>(this E[] arr, E old, E @new)
+    {
+        if (arr == null) return null;
+
+        int idx = -1;
+        for (int i = 0; i < arr.Length; i++)
         {
-            if (arr == null) return null;
-
-            int idx = -1;
-            for (int i = 0; i < arr.Length; i++)
+            if (arr[i].Equals(old))
             {
-                if (arr[i].Equals(v))
-                {
-                    idx = i;
-                    break;
-                }
+                idx = i;
+                break;
             }
-            if (idx == -1) return arr;
-
-            int nlen = arr.Length - 1;
-
-            if (nlen == 0) return null;
-            var alloc = new E[nlen];
-            if (idx > 0)
-            {
-                Array.Copy(arr, 0, alloc, 0, idx);
-            }
-            if (idx < nlen)
-            {
-                Array.Copy(arr, idx + 1, alloc, idx, nlen - idx);
-            }
-            return alloc;
         }
+        if (idx == -1) return arr;
 
-        public static E[] RemovedOf<E>(this E[] arr, Predicate<E> cond)
+        arr[idx] = @new;
+
+        return arr;
+    }
+
+
+    public static E First<E>(this E[] arr, Predicate<E> cond)
+    {
+        if (arr != null)
         {
-            if (arr == null) return null;
-
             int len = arr.Length;
-
-            if (len == 1 && cond(arr[0])) return null;
-
             for (int i = 0; i < len; i++)
             {
-                var e = arr[i];
-                if (cond(e))
-                {
-                    var alloc = new E[len - 1];
-                    Array.Copy(arr, 0, alloc, 0, i);
-                    int next = i + 1;
-                    Array.Copy(arr, next, alloc, i, len - next);
-                    return alloc;
-                }
+                E e = arr[i];
+                if (cond(e)) return e;
             }
-
-            return arr;
         }
 
-        public static E[] RemovedOf<E>(this E[] arr, E[] cond)
+        return default;
+    }
+
+    public static E Last<E>(this E[] arr, Predicate<E> cond)
+    {
+        if (arr != null)
         {
-            var lst = new List<E>(arr);
-            lst.RemoveAll(e => cond.IndexOf(e) != -1);
-            return lst.ToArray();
+            int len = arr.Length;
+            for (int i = len - 1; i > 0; i--)
+            {
+                E e = arr[i];
+                if (cond(e)) return e;
+            }
         }
 
-        public static E[] ReplaceOf<E>(this E[] arr, E old, E @new)
-        {
-            if (arr == null) return null;
+        return default;
+    }
 
-            int idx = -1;
+    public static V[] Exract<E, V>(this E[] arr, Func<E, V> expr)
+    {
+        var lst = new ValueList<V>();
+        if (arr != null)
+        {
+            int len = arr.Length;
+            for (int i = 0; i < len; i++)
+            {
+                E e = arr[i];
+                lst.Add(expr(e));
+            }
+        }
+
+        return lst.ToArray();
+    }
+
+
+    public static int IndexOf<E>(this E[] arr, Predicate<E> cond)
+    {
+        if (arr != null)
+        {
+            int len = arr.Length;
+            for (int i = 0; i < len; i++)
+            {
+                E e = arr[i];
+                if (cond(e)) return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public static bool IsNullOrEmpty<E>(this E[] arr)
+    {
+        return arr == null || arr.Length == 0;
+    }
+
+    public static bool Contains<V>(this V[] arr, V v)
+    {
+        if (v != null && arr != null)
+        {
             for (int i = 0; i < arr.Length; i++)
             {
-                if (arr[i].Equals(old))
-                {
-                    idx = i;
-                    break;
-                }
+                if (arr[i].Equals(v)) return true;
             }
-            if (idx == -1) return arr;
-
-            arr[idx] = @new;
-
-            return arr;
         }
 
+        return false;
+    }
 
-        public static E First<E>(this E[] arr, Predicate<E> cond)
+    public static int IndexOf<V>(this V[] arr, V v)
+    {
+        if (v != null && arr != null)
         {
-            if (arr != null)
+            for (int i = 0; i < arr.Length; i++)
             {
-                int len = arr.Length;
-                for (int i = 0; i < len; i++)
-                {
-                    E e = arr[i];
-                    if (cond(e)) return e;
-                }
+                if (arr[i].Equals(v)) return i;
             }
-
-            return default;
         }
 
-        public static E Last<E>(this E[] arr, Predicate<E> cond)
+        return -1;
+    }
+
+
+    public static bool IsSameAs<E>(this E[] arr, E[] another)
+    {
+        if (arr == null && another == null)
         {
-            if (arr != null)
-            {
-                int len = arr.Length;
-                for (int i = len - 1; i > 0; i--)
-                {
-                    E e = arr[i];
-                    if (cond(e)) return e;
-                }
-            }
-
-            return default;
+            return true;
         }
 
-        public static V[] Exract<E, V>(this E[] arr, Func<E, V> expr)
+        if (arr != null && another != null && arr.Length == another.Length)
         {
-            var lst = new ValueList<V>();
-            if (arr != null)
+            int len = arr.Length;
+            for (int i = 0; i < len; i++)
             {
-                int len = arr.Length;
-                for (int i = 0; i < len; i++)
-                {
-                    E e = arr[i];
-                    lst.Add(expr(e));
-                }
+                if (!arr[i].Equals(another[i])) return false;
             }
 
-            return lst.ToArray();
+            return true;
         }
 
+        return false;
+    }
 
-        public static int IndexOf<E>(this E[] arr, Predicate<E> cond)
+    public static Map<K, V> ToMap<K, V>(this V[] arr)
+        where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
+    {
+        if (arr == null || arr.Length == 0)
         {
-            if (arr != null)
-            {
-                int len = arr.Length;
-                for (int i = 0; i < len; i++)
-                {
-                    E e = arr[i];
-                    if (cond(e)) return i;
-                }
-            }
-
-            return -1;
+            return null;
         }
 
-        public static bool IsNullOrEmpty<E>(this E[] arr)
+        int size = 8;
+        while (size < arr.Length)
         {
-            return arr == null || arr.Length == 0;
+            size <<= 1;
         }
 
-        public static bool Contains<V>(this V[] arr, V v)
+        var map = new Map<K, V>(size);
+
+        foreach (var o in arr)
         {
-            if (v != null && arr != null)
-            {
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    if (arr[i].Equals(v)) return true;
-                }
-            }
-
-            return false;
+            map.Add(o);
         }
 
-        public static int IndexOf<V>(this V[] arr, V v)
-        {
-            if (v != null && arr != null)
-            {
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    if (arr[i].Equals(v)) return i;
-                }
-            }
-
-            return -1;
-        }
-
-
-        public static bool IsSameAs<E>(this E[] arr, E[] another)
-        {
-            if (arr == null && another == null)
-            {
-                return true;
-            }
-
-            if (arr != null && another != null && arr.Length == another.Length)
-            {
-                int len = arr.Length;
-                for (int i = 0; i < len; i++)
-                {
-                    if (!arr[i].Equals(another[i])) return false;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
+        return map;
     }
 }

@@ -17,6 +17,6 @@ namespace ChainFx.Nodal
 
         public short Slot => slot;
 
-        public abstract int DoSpy(int twinKey, bool clear = false);
+        public abstract int Do(int twinKey, bool clear = false);
     }
 }

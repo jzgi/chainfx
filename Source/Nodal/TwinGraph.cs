@@ -95,7 +95,7 @@ public abstract class TwinGraph<S, T> : TwinGraph
                     for (int i = 0; i < map.Count; i++)
                     {
                         var ety = map.EntryAt(i);
-                        all.TryAdd(ety.Key, ety.value);
+                        all.TryAdd(ety.Key, ety.Value);
                     }
 
                     // enlist the group
@@ -166,12 +166,12 @@ public abstract class TwinGraph<S, T> : TwinGraph
                 for (int i = 0; i < map.Count; i++)
                 {
                     var ety = map.EntryAt(i);
-                    all.TryAdd(ety.Key, ety.value);
+                    all.TryAdd(ety.Key, ety.Value);
 
                     // set return value
                     if (key.Equals(ety.key))
                     {
-                        value = ety.value;
+                        value = ety.Value;
                     }
                 }
                 // enlist the group
@@ -216,7 +216,7 @@ public abstract class TwinGraph<S, T> : TwinGraph
             for (int i = 0; i < map.Count; i++)
             {
                 var ety = map.EntryAt(i);
-                all.TryAdd(ety.Key, ety.value);
+                all.TryAdd(ety.Key, ety.Value);
             }
 
             // enlist the group

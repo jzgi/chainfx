@@ -14,6 +14,7 @@ namespace ChainFx
     {
         int[] buckets;
 
+        // accessible to the subclasses, useful for 
         protected Entry[] entries;
 
         int count;
@@ -83,7 +84,7 @@ namespace ChainFx
 
         public K KeyAt(int idx) => entries[idx].key;
 
-        public V ValueAt(int idx) => entries[idx].value;
+        public V ValueAt(int idx) => entries[idx].Value;
 
         public V[] SubgroupOf(K key)
         {
@@ -95,7 +96,7 @@ namespace ChainFx
                 var arr = new V[ret];
                 for (int i = 0; i < ret; i++)
                 {
-                    arr[i] = entries[idx + 1 + i].value;
+                    arr[i] = entries[idx + 1 + i].Value;
                 }
                 return arr;
             }
@@ -109,8 +110,7 @@ namespace ChainFx
             int idx = buckets[buck];
             while (idx != -1)
             {
-                Entry e = entries[idx];
-                if (e.Match(code, key))
+                if (entries[idx].Match(code, key))
                 {
                     return idx;
                 }
@@ -150,7 +150,7 @@ namespace ChainFx
                 // re-add old elements
                 for (int i = 0; i < oldc; i++)
                 {
-                    Add(old[i].key, old[i].value, true);
+                    Add(old[i].key, old[i].Value, true);
                 }
             }
 
@@ -161,7 +161,7 @@ namespace ChainFx
             {
                 if (entries[idx].Match(code, key))
                 {
-                    entries[idx].Add(value);
+                    entries[idx].AddValue(value);
                     return; // replace the old value
                 }
 
@@ -212,7 +212,7 @@ namespace ChainFx
                     var e = entries[idx];
                     if (e.Match(code, key))
                     {
-                        value = e.value;
+                        value = e.Value;
                         return true;
                     }
 
@@ -239,7 +239,7 @@ namespace ChainFx
             var list = new ValueList<V>(16);
             for (int i = 0; i < count; i++)
             {
-                var v = entries[i].value;
+                var v = entries[i].Value;
                 if (cond == null || cond(v))
                 {
                     list.Add(v);
@@ -257,7 +257,7 @@ namespace ChainFx
                 for (int k = 0; k < ety.Size; k++)
                 {
                     var v = ety[k];
-                    if (cond(ety.Key, v))
+                    if (cond == null || cond(ety.Key, v))
                     {
                         map.Add(keyer(v), v);
                     }
@@ -270,7 +270,7 @@ namespace ChainFx
         {
             for (int i = 0; i < count; i++)
             {
-                var v = entries[i].value;
+                var v = entries[i].Value;
                 if (filter == null || filter(v))
                 {
                     return v;
@@ -284,10 +284,10 @@ namespace ChainFx
             for (int i = 0; i < count; i++)
             {
                 K key = entries[i].key;
-                V value = entries[i].value;
+                V value = entries[i].Value;
                 if (cond == null || cond(key, value))
                 {
-                    handler(entries[i].key, entries[i].value);
+                    handler(entries[i].key, entries[i].Value);
                 }
             }
         }
@@ -333,11 +333,11 @@ namespace ChainFx
 
             internal readonly K key; // entry key
 
-            int size; // number of values
-
-            internal V value; // entry value
+            public V Value; // entry value
 
             V[] array; // extra values
+
+            int size; // number of values
 
             internal readonly int next; // index of next entry, -1 if last
 
@@ -349,7 +349,7 @@ namespace ChainFx
                 this.next = next;
                 this.key = key;
                 size = 1;
-                this.value = value;
+                this.Value = value;
                 array = null;
                 tail = -1;
             }
@@ -359,11 +359,11 @@ namespace ChainFx
                 return this.code == code && this.key.Equals(key);
             }
 
-            internal void Add(V v)
+            public void AddValue(V v)
             {
                 if (size == 0)
                 {
-                    value = v;
+                    Value = v;
                 }
                 else // add to list
                 {
@@ -404,11 +404,9 @@ namespace ChainFx
 
             public K Key => key;
 
-            public V Value => value;
-
             public int Size => size;
 
-            public V this[int idx] => idx == 0 ? value : array[idx - 1];
+            public V this[int idx] => idx == 0 ? Value : array[idx - 1];
 
             public bool IsHead => tail > -1;
 

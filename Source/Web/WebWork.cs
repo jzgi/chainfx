@@ -374,7 +374,7 @@ namespace ChainFx.Web
             {
                 foreach (var ntc in twinSpied)
                 {
-                    var n = ntc.TwinSpy.DoSpy(noticeId);
+                    var n = ntc.TwinSpy.Do(noticeId);
                     if (n > 0)
                     {
                         return true;
