@@ -2039,16 +2039,18 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder ALERT(string head, string p = null, bool bell = false, string css = null)
+        public HtmlBuilder ALERT(string head, string p = null, bool sticky = false, string icon = null, string css = null)
         {
-            ALERT_(bell, css);
+            ALERT_(sticky, css);
 
             if (head != null)
             {
                 Add("<header>");
-                if (bell)
+                if (icon != null)
                 {
-                    Add("<span uk-icon=\"bell\"></span>&nbsp;");
+                    Add("<span uk-icon=\"");
+                    Add(icon);
+                    Add("\"></span>&nbsp;");
                 }
                 Add(head);
                 Add("</header>");
@@ -3259,7 +3261,7 @@ namespace ChainFx.Web
                 LI_();
 
                 int mode = sub.HasVarWork ? MOD_ASTACK : MOD_OPEN;
-                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1");
+                ADIALOG_(sub.Key, "/", mode, false, tip: sub.Label, css: "uk-width-1-1 uk-link");
                 if (!compact)
                 {
                     ICON(sub.Icon, css: "uk-circle uk-background-muted").SP().SP();
