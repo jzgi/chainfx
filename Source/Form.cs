@@ -133,7 +133,12 @@ namespace ChainFx
 
         public bool Get(string name, ref TimeSpan v)
         {
-            throw new NotImplementedException();
+            if (TryGetValue(name, out var fld))
+            {
+                v = fld;
+                return true;
+            }
+            return false;
         }
 
         public bool Get(string name, ref Guid v)

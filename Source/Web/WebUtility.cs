@@ -238,7 +238,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, short maxage = 12, string title = null, bool manifest = false, string onload = null)
+        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, int maxage = 12, string title = null, bool manifest = false, string onload = null)
         {
             var h = new HtmlBuilder(true, 32 * 1024)
             {
@@ -286,7 +286,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, short maxage = 12)
+        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, int maxage = 12)
         {
             var h = new HtmlBuilder(true, 8 * 1024)
             {
@@ -305,7 +305,7 @@ namespace ChainFx.Web
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"uk-pane\">");
+            h.Add("<body>");
 
             main?.Invoke(h);
 
@@ -317,13 +317,14 @@ namespace ChainFx.Web
             }
             else // trigger click on the close-button
             {
+                // closeUp has the goback once argument because the request & response roundtrip
                 if (status == 200 || status == 201)
                 {
-                    h.Add("window.parent.closeUp(true, -2);"); // delta = -1 because of a return page
+                    h.Add("window.parent.closeUp(true, true);");
                 }
                 else
                 {
-                    h.Add("window.parent.closeUp(false, -2);");
+                    h.Add("window.parent.closeUp(false, true);");
                 }
             }
             h.Add("</script>");
@@ -334,7 +335,7 @@ namespace ChainFx.Web
             wc.Give(status, h, shared, maxage);
         }
 
-        public static void GiveSnippet(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, short maxage = 12, string title = null)
+        public static void GiveSnippet(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, int maxage = 12, string title = null)
         {
             var h = new HtmlBuilder(true, 8 * 1024)
             {

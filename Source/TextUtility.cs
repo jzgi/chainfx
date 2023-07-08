@@ -105,6 +105,34 @@ namespace ChainFx
             }
         }
 
+        public static bool TryParseTimeSpan(string str, out TimeSpan v)
+        {
+            int hour = 0, minute = 0, second = 0; // optional time part
+
+            var strlen = str.Length;
+
+            hour = ParseInt(str, 0, 2, 10);
+            if (strlen > 3)
+            {
+                minute = ParseInt(str, 3, 2, 10);
+            }
+            if (strlen > 6)
+            {
+                second = ParseInt(str, 6, 2, 10);
+            }
+
+            try
+            {
+                v = new TimeSpan(hour, minute, second);
+                return true;
+            }
+            catch
+            {
+                v = default;
+                return false;
+            }
+        }
+
         public static bool TryParseTime(string str, out TimeSpan v)
         {
             int len = str.Length;

@@ -1687,10 +1687,14 @@ namespace ChainFx.Web
                 Add("\"");
             }
 
-            if (onclick != null)
+            if (parent || onclick != null)
             {
                 Add(" onclick=\"");
-                Add(onclick);
+                if (parent)
+                {
+                    Add("history.go(-1);");
+                }
+                Add(onclick ?? "return true;");
                 Add("\"");
             }
 
@@ -1815,6 +1819,72 @@ namespace ChainFx.Web
             }
 
             Add("\"></span>");
+            return this;
+        }
+
+        public HtmlBuilder IMG<A>(A a, bool circle = false, string css = null)
+        {
+            Add("<img class=\"");
+            if (circle)
+            {
+                Add("uk-border-circle");
+            }
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+
+            Add("\" loading=\"lazy\" src=\"");
+
+            PutKey(a);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlBuilder IMG<A, B>(A a, B b, bool circle = false, string css = null)
+        {
+            Add("<img class=\"");
+            if (circle)
+            {
+                Add("uk-border-circle");
+            }
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+
+            Add("\" loading=\"lazy\" src=\"");
+
+            PutKey(a);
+            PutKey(b);
+
+            Add("\">");
+            return this;
+        }
+
+        public HtmlBuilder IMG<A, B, C>(A a, B b, C c, bool circle = false, string css = null)
+        {
+            Add("<img class=\"");
+            if (circle)
+            {
+                Add("uk-border-circle");
+            }
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+
+            Add("\" loading=\"lazy\" src=\"");
+
+            PutKey(a);
+            PutKey(b);
+            PutKey(c);
+
+            Add("\">");
             return this;
         }
 
@@ -2056,9 +2126,12 @@ namespace ChainFx.Web
                 Add("</header>");
             }
 
-            Add("<p>");
-            Add(p);
-            Add("</p>");
+            if (p != null)
+            {
+                Add("<p>");
+                Add(p);
+                Add("</p>");
+            }
 
             _ALERT();
             return this;
@@ -2089,7 +2162,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder NAVBAR<V>(string uri, int subscript, Map<short, V> map, Func<short, V, bool> filter = null, string zeroicon = null)
+        public HtmlBuilder NAVBAR<V>(string uri, int subscript, Map<short, V> map, Func<short, V, bool> filter = null)
         {
             Add("<nav class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
@@ -2106,7 +2179,7 @@ namespace ChainFx.Web
                 }
 
                 Add("<li");
-                if (k == subscript || (zeroicon == null && num == 0 && subscript == 0))
+                if (k == subscript || (num == 6 && subscript == 0))
                 {
                     Add(" class=\"uk-active\"");
                 }
@@ -2119,22 +2192,6 @@ namespace ChainFx.Web
                 Add(v.ToString());
                 Add("</a></li>");
                 num++;
-            }
-
-            // subzero
-            if (zeroicon != null)
-            {
-                Add("<li");
-                if (subscript == 0)
-                {
-                    Add(" class=\"uk-active\"");
-                }
-
-                Add("><a href=\"");
-                Add(string.IsNullOrEmpty(uri) ? "./" : uri);
-                Add("\" onclick=\"goto(this.href, event);\"><span uk-icon=\"");
-                Add(zeroicon);
-                Add("\"></a></li>");
             }
 
             Add("</ul>");
@@ -2732,7 +2789,7 @@ namespace ChainFx.Web
         {
             if (duo)
             {
-                Add("<main uk-grid class=\"uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-child-width-1-8@l uk-child-width-1-6@xl\">");
+                Add("<main uk-grid class=\"uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-child-width-1-5@l uk-child-width-1-6@xl\">");
             }
             else
                 Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
@@ -2886,7 +2943,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(int subscript = -1, int twinid = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 255, short state = 0)
+        public HtmlBuilder TOOLBAR(int subscript = -1, int twin = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 255, short state = 0)
         {
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(bottom ? "uk-bottom-bar" : "uk-top-bar");
@@ -2941,7 +2998,7 @@ namespace ChainFx.Web
                     var anchor = tool.IsAnchorTag;
 
                     // retrieve spy num
-                    var spy = (twinid > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.Do(twinid, clear: act == Web.Action) : 0;
+                    var spy = (twin > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.Do(twin, clear: act == Web.Action) : 0;
 
                     if (anchor || ctxStu == act.Status || (ctxStu & act.Status) > 0) // anchor is always included
                     {
@@ -3120,7 +3177,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder PICK<K>(K varkey, string label = null, bool toolbar = false, bool only = false, short follow = 0, string css = null)
+        public HtmlBuilder PICK<K>(K varkey, string label = null, bool toolbar = true, bool only = false, short follow = 0, string css = null)
         {
             Add("<label");
             if (css != null)
@@ -3138,15 +3195,19 @@ namespace ChainFx.Web
 
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
             PutKey(varkey);
-            Add("\" onchange=\"checkToggle(this");
+            Add("\" onclick=\"event.stopImmediatePropagation();\" onchange=\"checkToggle(this");
             if (only)
             {
                 Add(", true, ");
                 Add(follow);
             }
 
-            Add(");\">&nbsp;");
-            Add(label);
+            Add(");\">");
+            if (!string.IsNullOrEmpty(label))
+            {
+                Add("&nbsp;");
+                Add(label);
+            }
             Add("</label>");
             return this;
         }

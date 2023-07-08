@@ -15,7 +15,7 @@ namespace ChainFx
 
         public static readonly Map<short, string> Statuses = new()
         {
-            { STU_VOID, "无效" },
+            { STU_VOID, null },
             { STU_CREATED, "新建" },
             { STU_ADAPTED, "修改" },
             { STU_OKED, "上线" },
@@ -29,7 +29,8 @@ namespace ChainFx
             MSK_EDIT = 0x0010,
             MSK_LATER = 0x0020,
             MSK_STATUS = 0x0040,
-            MSK_EXTRA = 0x0100;
+            MSK_AUX = 0x0100,
+            MSK_EXTRA = 0x0200;
 
 
         public short typ;

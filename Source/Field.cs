@@ -48,7 +48,7 @@ namespace ChainFx
             if (items == 1) // a single string
             {
                 var arr = new string[8];
-                arr[0] = (string) value;
+                arr[0] = (string)value;
                 arr[1] = v;
                 value = arr;
                 items = 2;
@@ -56,7 +56,7 @@ namespace ChainFx
             else
             {
                 // ensure capacity
-                string[] arr = (string[]) value;
+                string[] arr = (string[])value;
                 int len = arr.Length;
                 if (items >= len)
                 {
@@ -69,7 +69,7 @@ namespace ChainFx
         }
 
         string First => (items == 0) ? null :
-            (items == 1) ? (string) value : ((string[]) value)[0];
+            (items == 1) ? (string)value : ((string[])value)[0];
 
         //
         // CONVERSION
@@ -170,6 +170,16 @@ namespace ChainFx
             return default;
         }
 
+        public static implicit operator TimeSpan(Field v)
+        {
+            string str = v.First;
+            if (TextUtility.TryParseTimeSpan(str, out var dt))
+            {
+                return dt;
+            }
+            return default;
+        }
+
         public static implicit operator string(Field v)
         {
             return v.First;
@@ -216,15 +226,15 @@ namespace ChainFx
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string) v.value;
-                return new[] {short.TryParse(str, out var n) ? n : (short) 0};
+                string str = (string)v.value;
+                return new[] { short.TryParse(str, out var n) ? n : (short)0 };
             }
 
-            var strs = (string[]) v.value;
+            var strs = (string[])v.value;
             var arr = new short[len];
             for (int i = 0; i < len; i++)
             {
-                arr[i] = short.TryParse(strs[i], out var n) ? n : (short) 0;
+                arr[i] = short.TryParse(strs[i], out var n) ? n : (short)0;
             }
             return arr;
         }
@@ -235,11 +245,11 @@ namespace ChainFx
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string) v.value;
-                return new[] {int.TryParse(str, out var n) ? n : 0};
+                string str = (string)v.value;
+                return new[] { int.TryParse(str, out var n) ? n : 0 };
             }
 
-            var strs = (string[]) v.value;
+            var strs = (string[])v.value;
             var arr = new int[len];
             for (int i = 0; i < len; i++)
             {
@@ -254,10 +264,10 @@ namespace ChainFx
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string) v.value;
-                return new[] {long.TryParse(str, out var n) ? n : 0};
+                string str = (string)v.value;
+                return new[] { long.TryParse(str, out var n) ? n : 0 };
             }
-            var strs = (string[]) v.value;
+            var strs = (string[])v.value;
             var arr = new long[len];
             for (int i = 0; i < len; i++)
             {
@@ -272,11 +282,11 @@ namespace ChainFx
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string) v.value;
+                string str = (string)v.value;
                 DateTime.TryParse(str, out var dt);
-                return new[] {dt};
+                return new[] { dt };
             }
-            var strs = (string[]) v.value;
+            var strs = (string[])v.value;
             var arr = new DateTime[len];
             for (int i = 0; i < len; i++)
             {
@@ -292,11 +302,11 @@ namespace ChainFx
             if (len == 0) return null;
             if (len == 1)
             {
-                string str = (string) v.value;
-                return new[] {str};
+                string str = (string)v.value;
+                return new[] { str };
             }
 
-            var strs = (string[]) v.value;
+            var strs = (string[])v.value;
             var arr = new string[len];
             for (int i = 0; i < len; i++)
             {
