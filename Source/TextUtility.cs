@@ -78,7 +78,7 @@ namespace ChainFx
             return gmt.ToString();
         }
 
-        public static bool TryParseDate(string str, out DateTime v)
+        public static bool TryParseDateTime(string str, out DateTime v)
         {
             int year = ParseInt(str, 0, 4, 1000);
             int month = ParseInt(str, 5, 2, 10);
@@ -299,7 +299,7 @@ namespace ChainFx
 
         public static DateTime ToDateTime(this string str)
         {
-            TryParseDate(str, out var v);
+            TryParseDateTime(str, out var v);
             return v;
         }
 

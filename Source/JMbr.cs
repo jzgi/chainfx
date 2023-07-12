@@ -183,7 +183,7 @@ namespace ChainFx
             if (v.typ == JType.String)
             {
                 string str = (string)v.refv;
-                if (TextUtility.TryParseDate(str, out var dt)) return dt;
+                if (TextUtility.TryParseDateTime(str, out var dt)) return dt;
             }
 
             return default;

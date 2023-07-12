@@ -126,7 +126,7 @@ namespace ChainFx
 
         public short Status => status;
 
-        public virtual short State => 0;
+        public virtual short ToState() => 0;
 
         public override string ToString() => name;
     }

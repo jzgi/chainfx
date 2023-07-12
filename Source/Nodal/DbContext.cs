@@ -601,7 +601,7 @@ namespace ChainFx.Nodal
             if (p != null)
             {
                 p(this);
-                if (prepare) command.Prepare();
+                if (prepare) await command.PrepareAsync();
             }
 
             return await command.ExecuteScalarAsync();

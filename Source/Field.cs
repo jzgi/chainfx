@@ -77,33 +77,30 @@ namespace ChainFx
 
         public static implicit operator bool(Field v)
         {
-            string str = v.First;
-            if (str != null)
+            string strv = v.First;
+            if (strv != null)
             {
-                return "true".Equals(str) || "1".Equals(str) || "on".Equals(str);
+                return "true".Equals(strv) || "1".Equals(strv) || "on".Equals(strv);
             }
             return false;
         }
 
         public static implicit operator char(Field v)
         {
-            string str = v.First;
-            if (!string.IsNullOrEmpty(str))
+            string strv = v.First;
+            if (!string.IsNullOrEmpty(strv))
             {
-                return str[0];
+                return strv[0];
             }
             return '\0';
         }
 
         public static implicit operator short(Field v)
         {
-            string str = v.First;
-            if (str != null)
+            string strv = v.First;
+            if (strv != null && short.TryParse(strv, out var n))
             {
-                if (short.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
@@ -111,59 +108,47 @@ namespace ChainFx
         public static implicit operator int(Field v)
         {
             string str = v.First;
-            if (str != null)
+            if (str != null && int.TryParse(str, out var n))
             {
-                if (int.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
 
         public static implicit operator long(Field v)
         {
-            string str = v.First;
-            if (str != null)
+            string strv = v.First;
+            if (strv != null && long.TryParse(strv, out var n))
             {
-                if (long.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
 
         public static implicit operator double(Field v)
         {
-            string str = v.First;
-            if (str != null)
+            string strv = v.First;
+            if (strv != null && double.TryParse(strv, out var n))
             {
-                if (double.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
 
         public static implicit operator decimal(Field v)
         {
-            string str = v.First;
-            if (str != null)
+            string strv = v.First;
+            if (strv != null && decimal.TryParse(strv, out var n))
             {
-                if (decimal.TryParse(str, out var n))
-                {
-                    return n;
-                }
+                return n;
             }
             return 0;
         }
 
         public static implicit operator DateTime(Field v)
         {
-            string str = v.First;
-            if (TextUtility.TryParseDate(str, out var dt))
+            string strv = v.First;
+            if (strv != null && TextUtility.TryParseDateTime(strv, out var dt))
             {
                 return dt;
             }
@@ -172,8 +157,8 @@ namespace ChainFx
 
         public static implicit operator TimeSpan(Field v)
         {
-            string str = v.First;
-            if (TextUtility.TryParseTimeSpan(str, out var dt))
+            string strv = v.First;
+            if (strv != null && TextUtility.TryParseTimeSpan(strv, out var dt))
             {
                 return dt;
             }
@@ -187,14 +172,14 @@ namespace ChainFx
 
         public static implicit operator ValueTuple<int, string>(Field v)
         {
-            string str = v.First;
-            if (string.IsNullOrEmpty(str))
+            string strv = v.First;
+            if (string.IsNullOrEmpty(strv))
             {
                 return (0, null);
             }
             int pos = 0;
-            var a = str.ParseInt(ref pos);
-            var b = str.ParseString(ref pos);
+            var a = strv.ParseInt(ref pos);
+            var b = strv.ParseString(ref pos);
             return (a, b);
         }
 

@@ -38,22 +38,26 @@ public abstract class TwinGraph<S, T> : TwinGraph
 
     public override Type Typ => typeof(T);
 
-
-    public int Period { get; set; } = 1000 * 30;
+    public int Period { get; set; } = 60;
 
     protected TwinGraph()
     {
-        handler = new Thread(async (state) =>
-        {
-            Thread.Sleep(Period);
-
-            // settle group by group
-            int sum = 0;
-            foreach (var pair in groups)
+        handler = new Thread(async () =>
             {
-                sum += await TwinSetIoCycleAsync(pair.Key, pair.Value);
+                // repeated execution
+                while (true)
+                {
+                    Thread.Sleep(Period * 1000);
+
+                    // settle group by group
+                    int sum = 0;
+                    foreach (var pair in groups)
+                    {
+                        sum += await TwinSetIoCycleAsync(pair.Key, pair.Value);
+                    }
+                }
             }
-        })
+        )
         {
             Name = "Graph " + Typ.Name
         };
@@ -107,12 +111,21 @@ public abstract class TwinGraph<S, T> : TwinGraph
         return twin;
     }
 
-    public async Task<bool> UpdateAsync(T twin, Func<DbContext, Task<bool>> dbfunc)
+    public async Task<bool> UpdateAsync(T twin, Func<DbContext, Task<bool>> dbupd, Action<T> upd = null)
     {
         using var dc = Nodality.NewDbContext();
 
         // the resulted object after operation
-        return await dbfunc(dc);
+        var ret = await dbupd(dc);
+
+        if (upd != null)
+        {
+            lock (twin)
+            {
+                upd(twin);
+            }
+        }
+        return ret;
     }
 
     public async Task<bool> RemoveAsync(T twin, Func<DbContext, Task<bool>> dbfunc)
