@@ -2943,22 +2943,11 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(int subscript = -1, int twin = 0, bool toggle = false, string tip = null, bool bottom = false, short status = 255, short state = 0)
+        public HtmlBuilder TOOLBAR(int subscript = -1, int twin = 0, bool toggle = false, bool bottom = false, short status = 255, short state = 0, string[] exclude = null)
         {
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(bottom ? "uk-bottom-bar" : "uk-top-bar");
             Add("\">");
-
-            if (bottom)
-            {
-                Add("<span class=\"uk-margin-auto-right\">");
-                if (tip != null)
-                {
-                    Add(tip);
-                }
-
-                Add("</span>");
-            }
 
             bool astack = Web.Query[nameof(astack)];
             if (astack)
@@ -2979,10 +2968,10 @@ namespace ChainFx.Web
             }
 
             // the contextual group
-            var ctxStu = Web.Action.Status;
-            if (ctxStu == 0)
+            var ctxStatus = Web.Action.Status;
+            if (ctxStatus == 0)
             {
-                ctxStu = status;
+                ctxStatus = status;
             }
 
             var acts = Web.Work.Tooled;
@@ -2992,6 +2981,21 @@ namespace ChainFx.Web
                 {
                     var tool = act.Tool;
 
+                    // if exclude is specified 
+                    if (exclude != null)
+                    {
+                        bool match = false;
+                        foreach (var t in exclude)
+                        {
+                            if (t == act.Name)
+                            {
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (match) continue;
+                    }
+
                     // current user autnorize check
                     if (Web.Principal != null && !act.DoAuthorize(Web, true)) continue;
 
@@ -3000,7 +3004,8 @@ namespace ChainFx.Web
                     // retrieve spy num
                     var spy = (twin > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.Do(twin, clear: act == Web.Action) : 0;
 
-                    if (anchor || ctxStu == act.Status || (ctxStu & act.Status) > 0) // anchor is always included
+
+                    if (anchor || ctxStatus == act.Status || (ctxStatus & act.Status) > 0) // anchor is always included
                     {
                         var stateYes = tool.MeetsOf(state);
                         // provide current anchor as subscript 
@@ -3010,16 +3015,6 @@ namespace ChainFx.Web
             }
 
             Add("</nav>");
-
-            if (!bottom)
-            {
-                if (tip != null)
-                {
-                    Add("<span class=\"uk-label uk-padding\">");
-                    Add(tip);
-                    Add("</span>");
-                }
-            }
 
             Add("</form>");
             Add("<div class=\"");
