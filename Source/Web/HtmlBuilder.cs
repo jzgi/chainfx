@@ -404,62 +404,74 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TD(short v, bool right = true)
+        public HtmlBuilder TD(short v, bool? right = true)
         {
             Add("<td");
-            if (right)
+            if (right == null)
             {
-                Add(" style=\"text-align: right\"");
+                Add(" class=\"uk-text-center\"");
             }
-
-            Add(">");
-
-            Add(v);
-
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlBuilder TD(int v, bool right = true)
-        {
-            Add("<td");
-            if (right)
-            {
-                Add(" style=\"text-align: right\"");
-            }
-
-            Add(">");
-
-            Add(v);
-
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlBuilder TD(long v, bool right = true)
-        {
-            Add("<td");
-            if (right)
-            {
-                Add(" style=\"text-align: right\"");
-            }
-
-            Add(">");
-
-            Add(v);
-
-            Add("</td>");
-            return this;
-        }
-
-        public HtmlBuilder TD(decimal v, bool money = false, bool right = false)
-        {
-            Add("<td");
-            if (right)
+            else if (right.Value)
             {
                 Add(" class=\"uk-text-right\"");
             }
+            Add(">");
 
+            Add(v);
+
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlBuilder TD(int v, bool? right = true)
+        {
+            Add("<td");
+            if (right == null)
+            {
+                Add(" class=\"uk-text-center\"");
+            }
+            else if (right.Value)
+            {
+                Add(" class=\"uk-text-right\"");
+            }
+            Add(">");
+
+            Add(v);
+
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlBuilder TD(long v, bool? right = true)
+        {
+            Add("<td");
+            if (right == null)
+            {
+                Add(" class=\"uk-text-center\"");
+            }
+            else if (right.Value)
+            {
+                Add(" class=\"uk-text-right\"");
+            }
+            Add(">");
+
+            Add(v);
+
+            Add("</td>");
+            return this;
+        }
+
+        public HtmlBuilder TD(decimal v, bool money = false, bool? right = false)
+        {
+            Add("<td");
+            if (right == null)
+            {
+                Add(" class=\"uk-text-center\"");
+            }
+            else if (right.Value)
+            {
+                Add(" class=\"uk-text-right\"");
+            }
             Add(">");
             if (money)
             {
@@ -3172,7 +3184,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder PICK<K>(K varkey, string label = null, bool toolbar = true, bool only = false, short follow = 0, string css = null)
+        public HtmlBuilder PICK<K>(K varkey, string label = null, bool toolbar = true, bool only = false, short follow = 0, bool @checked = false, string css = null)
         {
             Add("<label");
             if (css != null)
@@ -3186,6 +3198,11 @@ namespace ChainFx.Web
             if (toolbar)
             {
                 Add(" form=\"tool-bar-form\"");
+            }
+
+            if (@checked)
+            {
+                Add(" checked");
             }
 
             Add(" name=\"key\" type=\"checkbox\" class=\"uk-checkbox\" value=\"");
@@ -3521,15 +3538,11 @@ namespace ChainFx.Web
             }
             else if (tool.HasConfirm)
             {
-                Add(" onclick=\"return ");
-                if (tool.MustPick)
-                {
-                    Add("!serialize(this.form) ? false : ");
-                }
-
-                Add("askSend(this, '");
+                Add(" onclick=\"return askSend(this, '");
                 Add(tip ?? act.Label);
-                Add("');\"");
+                Add("',");
+                Add(tool.MustPick);
+                Add(");\"");
             }
             else if (tool.HasCrop)
             {
@@ -3665,15 +3678,11 @@ namespace ChainFx.Web
             }
             else if (tool.HasConfirm)
             {
-                Add(" onclick=\"return ");
-                if (tool.MustPick)
-                {
-                    Add("!serialize(this.form) ? false : ");
-                }
-
-                Add("askSend(this, '");
+                Add(" onclick=\"return askSend(this, '");
                 Add(tip ?? act.Label);
-                Add("');\"");
+                Add("',");
+                Add(tool.MustPick);
+                Add(");\"");
             }
             else if (tool.IsAnchor)
             {

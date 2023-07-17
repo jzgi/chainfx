@@ -138,6 +138,17 @@ namespace ChainFx.Nodal
             return reader.NextResult();
         }
 
+        public bool NextResultTop()
+        {
+            ordinal = 0; // reset column ordinal
+            if (reader == null)
+            {
+                return false;
+            }
+
+            return reader.NextResult() && Next();
+        }
+
         public bool Next()
         {
             ordinal = 0; // reset column ordinal
