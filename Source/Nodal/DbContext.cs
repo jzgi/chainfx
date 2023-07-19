@@ -2168,6 +2168,12 @@ namespace ChainFx.Nodal
             return this;
         }
 
+        public IParameters Set(TimeSpan v)
+        {
+            Put(PARAMS[paramidx++], v);
+            return this;
+        }
+
         public IParameters Set(string v)
         {
             if (v == string.Empty)

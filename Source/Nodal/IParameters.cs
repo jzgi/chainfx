@@ -38,6 +38,8 @@ namespace ChainFx.Nodal
 
         IParameters Set(DateTime v);
 
+        IParameters Set(TimeSpan v);
+
         IParameters Set(string v);
 
         IParameters Set(bool[] v);
