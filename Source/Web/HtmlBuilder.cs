@@ -1584,9 +1584,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder AGOTO<A>(A a, string action = null, int subscpt = 0, string css = null)
+        public HtmlBuilder AGOTO<A>(A a, string action = null, int subscpt = 0, bool parent = true, string css = null)
         {
-            Add("<a target=\"_parent\" href=\"");
+            Add("<a");
+            if (parent)
+            {
+                Add(" target=\"_parent\"");
+            }
+            Add(" href=\"");
             Add(action);
             if (subscpt > 0)
             {
@@ -1606,9 +1611,14 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder AGOTO<A, B>(A a, B b, string action = null, int subscpt = 0, string css = null)
+        public HtmlBuilder AGOTO<A, B>(A a, B b, string action = null, int subscpt = 0, bool parent = true, string css = null)
         {
-            Add("<a target=\"_parent\" href=\"");
+            Add("<a");
+            if (parent)
+            {
+                Add(" target=\"_parent\"");
+            }
+            Add(" href=\"");
             Add(action);
             if (subscpt > 0)
             {
