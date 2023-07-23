@@ -11,7 +11,8 @@ namespace ChainFx
             STU_VOID = 0,
             STU_CREATED = 1,
             STU_ADAPTED = 2,
-            STU_OKED = 4;
+            STU_OKED = 4,
+            STU_ENDED = 8;
 
         public static readonly Map<short, string> Statuses = new()
         {

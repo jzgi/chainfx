@@ -2278,21 +2278,12 @@ namespace ChainFx.Web
         /// </summary>
         public HtmlBuilder FIELDSUL_(string legend = null, bool disabled = false, string css = null)
         {
-            Add("<fieldset class=\"uk-fieldset uk-width-1-1");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-
+            Add("<fieldset class=\"uk-fieldset\"");
             if (disabled)
             {
-                Add("\" disabled>");
+                Add(" disabled>");
             }
-            else
-            {
-                Add("\">");
-            }
+            Add("\">");
 
             if (legend != null)
             {
@@ -2301,7 +2292,15 @@ namespace ChainFx.Web
                 Add("</legend>");
             }
 
-            Add("<ul>");
+            Add("<ul");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
+            }
+            Add('>');
+
             return this;
         }
 
@@ -3196,15 +3195,25 @@ namespace ChainFx.Web
 
         public HtmlBuilder PICK<K>(K varkey, string label = null, bool toolbar = true, bool only = false, short follow = 0, bool @checked = false, string css = null)
         {
-            Add("<label");
-            if (css != null)
+            if (label != null)
+            {
+                Add("<label");
+                if (css != null)
+                {
+                    Add(" class=\"");
+                    Add(css);
+                    Add("\"");
+                }
+                Add('>');
+            }
+
+            Add("<input");
+            if (label == null && css != null)
             {
                 Add(" class=\"");
                 Add(css);
-                Add("\"");
+                Add('\"');
             }
-
-            Add("><input");
             if (toolbar)
             {
                 Add(" form=\"tool-bar-form\"");
@@ -3230,7 +3239,11 @@ namespace ChainFx.Web
                 Add("&nbsp;");
                 Add(label);
             }
-            Add("</label>");
+
+            if (label != null)
+            {
+                Add("</label>");
+            }
             return this;
         }
 
@@ -3587,14 +3600,11 @@ namespace ChainFx.Web
 
             if (!string.IsNullOrEmpty(cap))
             {
-                // Add("<span>");
                 if (icon != null)
                 {
                     Add("&nbsp;");
                 }
-
                 Add(cap);
-                // Add("</span>");
             }
 
             // notice badge
