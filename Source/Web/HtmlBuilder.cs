@@ -1584,7 +1584,7 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder AGOTO<A>(A a, string action = null, int subscpt = 0, bool parent = true, string css = null)
+        public HtmlBuilder AGOTO_(string action = null, int subscpt = 0, bool parent = true, string css = null)
         {
             Add("<a");
             if (parent)
@@ -1606,36 +1606,6 @@ namespace ChainFx.Web
             }
 
             Add("\" onclick=\"return goto(this, event);\">");
-            AddPrimitive(a);
-            Add("</a>");
-            return this;
-        }
-
-        public HtmlBuilder AGOTO<A, B>(A a, B b, string action = null, int subscpt = 0, bool parent = true, string css = null)
-        {
-            Add("<a");
-            if (parent)
-            {
-                Add(" target=\"_parent\"");
-            }
-            Add(" href=\"");
-            Add(action);
-            if (subscpt > 0)
-            {
-                Add('-');
-                Add(subscpt);
-            }
-            Add("\" class=\"uk-button");
-            if (css != null)
-            {
-                Add(' ');
-                Add(css);
-            }
-
-            Add("\" onclick=\"return goto(this, event);\">");
-            AddPrimitive(a);
-            AddPrimitive(b);
-            Add("</a>");
             return this;
         }
 
@@ -2283,7 +2253,7 @@ namespace ChainFx.Web
             {
                 Add(" disabled>");
             }
-            Add("\">");
+            Add(">");
 
             if (legend != null)
             {
@@ -2395,50 +2365,51 @@ namespace ChainFx.Web
         public void PAGINATION(bool more, int begin = 0, int step = 1, bool print = false)
         {
             var act = Web.Action;
-            if (act.Subscript != null)
+
+            if (act.Subscript == null) return;
+
+            Add("<div class=\"uk-bottom-placeholder\"></div>");
+            Add("<ul class=\"uk-pagination uk-flex-center\">");
+
+            int page = Web.Subscript;
+            if (page > begin)
             {
-                Add("<ul class=\"uk-pagination uk-flex-center\">");
-
-                int page = Web.Subscript;
-                if (page > begin)
-                {
-                    Add("<li class=\"uk-active\">");
-                    Add("<a href=\"");
-                    Add(act.Key);
-                    Add('-');
-                    Add(page - step);
-                    Add(Web.QueryStr);
-                    Add("\" onclick=\"return goto(this, event);\">≪</a>");
-                    Add("</li>");
-                }
-                else
-                {
-                    Add("<li class=\"uk-disabled\">≪</li>");
-                }
-
-                if (more)
-                {
-                    Add("<li class=\"uk-active\">");
-                    Add("<a href=\"");
-                    Add(act.Key);
-                    Add('-');
-                    Add(page + step);
-                    Add(Web.QueryStr);
-                    Add("\" onclick=\"return goto(this, event);\">≫</a>");
-                    Add("</li>");
-                }
-                else
-                {
-                    Add("<li class=\"uk-disabled\">≫</li>");
-                }
-
-                if (print)
-                {
-                    Add("<a class=\"uk-icon-button\" uk-icon=\"print\" onclick=\"window.print();\">");
-                }
-
-                Add("</ul>");
+                Add("<li class=\"uk-active\">");
+                Add("<a href=\"");
+                Add(act.Key);
+                Add('-');
+                Add(page - step);
+                Add(Web.QueryStr);
+                Add("\" onclick=\"return goto(this, event);\">≪</a>");
+                Add("</li>");
             }
+            else
+            {
+                Add("<li class=\"uk-disabled\">≪</li>");
+            }
+
+            if (more)
+            {
+                Add("<li class=\"uk-active\">");
+                Add("<a href=\"");
+                Add(act.Key);
+                Add('-');
+                Add(page + step);
+                Add(Web.QueryStr);
+                Add("\" onclick=\"return goto(this, event);\">≫</a>");
+                Add("</li>");
+            }
+            else
+            {
+                Add("<li class=\"uk-disabled\">≫</li>");
+            }
+
+            if (print)
+            {
+                Add("<a class=\"uk-icon-button\" uk-icon=\"print\" onclick=\"window.print();\">");
+            }
+
+            Add("</ul>");
         }
 
         public HtmlBuilder LIST<M>(M[] arr, Action<M> item, string ul = null, string li = null)
@@ -3579,7 +3550,7 @@ namespace ChainFx.Web
             }
             else if (tool.HasAnyDialog)
             {
-                _DIALOG_(tool.Mode, tool.MustPick, tip);
+                _DIALOG_(tool.Mode, tool.MustPick, tip ?? act.Label);
             }
 
             if (tip != null)
@@ -4109,13 +4080,13 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder DATE(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
+        public HtmlBuilder MONTH(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool @readonly = false, bool required = false, int step = 0)
         {
             LABEL(label);
-            Add("<input type=\"date\" class=\"uk-input uk-width-1-1\" name=\"");
+            Add("<input type=\"month\" class=\"uk-input uk-width-1-1\" name=\"");
             Add(name);
             Add("\" value=\"");
-            Add(val, 3, 0);
+            AddMonth(val);
             Add("\"");
 
             if (max != default)
@@ -4133,6 +4104,47 @@ namespace ChainFx.Web
             }
 
             if (@readonly) Add(" readonly");
+            if (required) Add(" required");
+            if (step != 0)
+            {
+                Add(" step=\"");
+                Add(step);
+                Add("\"");
+            }
+
+            Add(">");
+            return this;
+        }
+
+
+        public HtmlBuilder DATE(string label, string name, DateTime val, DateTime max = default, DateTime min = default, bool? disabled = false, bool required = false, int step = 0)
+        {
+            LABEL(label);
+            Add("<input type=\"date\" class=\"uk-input uk-width-1-1\" name=\"");
+            Add(name);
+            Add("\" value=\"");
+            if (val != default)
+            {
+                Add(val, 3, 0);
+            }
+            Add("\"");
+
+            if (max != default)
+            {
+                Add(" max=\"");
+                Add(max);
+                Add("\"");
+            }
+
+            if (min != default)
+            {
+                Add(" min=\"");
+                Add(min);
+                Add("\"");
+            }
+
+            if (disabled == null) Add(" readonly");
+            else if (disabled.Value) Add(" disabled");
             if (required) Add(" required");
             if (step != 0)
             {

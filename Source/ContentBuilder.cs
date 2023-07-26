@@ -507,6 +507,20 @@ namespace ChainFx
             }
         }
 
+        public void AddMonth(DateTime v)
+        {
+            short yr = (short)v.Year;
+
+            // yyyy-mm-dd
+            if (yr < 1000) Add('0');
+            if (yr < 100) Add('0');
+            if (yr < 10) Add('0');
+            Add(v.Year);
+
+            Add('-');
+            Add(SEX[v.Month]);
+        }
+
         public void Add(DateTime v, byte date = 3, byte time = 3)
         {
             if (date >= 3)
