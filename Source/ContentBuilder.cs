@@ -581,7 +581,10 @@ namespace ChainFx
             else if (v is bool boolv) Add(boolv);
             else if (v is decimal decv) Add(decv);
             else if (v is double doublev) Add(doublev);
-            else if (v is DateTime dtv) Add(dtv, time: 0);
+            else if (v is DateTime dtv)
+            {
+                if (dtv != default) Add(dtv, time: 2);
+            }
             else
             {
                 Add(v?.ToString());

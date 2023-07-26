@@ -1398,7 +1398,12 @@ namespace ChainFx.Web
         public HtmlBuilder FIELD2<A, B>(string label, A a, B b, string sep = "&nbsp;")
         {
             LABEL(label);
-            Add("<span class=\"uk-static\">");
+            Add("<span class=\"uk-static");
+            if (sep == "<br>")
+            {
+                Add(" uk-text-small");
+            }
+            Add("\">");
 
             AddPrimitive(a);
 
