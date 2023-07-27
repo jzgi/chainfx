@@ -17,7 +17,7 @@ namespace ChainFx
         {
             { STU_VOID, null },
             { STU_CREATED, "新建" },
-            { STU_ADAPTED, "修改" },
+            { STU_ADAPTED, "调整" },
             { STU_OKED, "上线" },
         };
 
