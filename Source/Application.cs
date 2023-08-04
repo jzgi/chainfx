@@ -116,9 +116,9 @@ namespace ChainFx
             program = app[nameof(program)];
         }
 
-        public static JObj App => app;
+        public static JObj AppConf => app;
 
-        public static JObj Program => program;
+        public static JObj ProgramConf => program;
 
         public static string Name => name;
 
@@ -143,9 +143,9 @@ namespace ChainFx
             //
 
             var prop = "service-" + name;
-            var servicecfg = (JObj)app[prop];
+            var serviceConf = (JObj)app[prop];
 
-            if (servicecfg == null)
+            if (serviceConf == null)
             {
                 throw new ApplicationException("missing '" + prop + "' in app.json");
             }
@@ -156,7 +156,7 @@ namespace ChainFx
                 Name = name,
                 Folder = folder ?? name
             };
-            svc.Init(prop, servicecfg);
+            svc.Init(prop, serviceConf);
 
             services.Add(name, svc);
 

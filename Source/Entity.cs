@@ -11,11 +11,12 @@ namespace ChainFx
             STU_VOID = 0,
             STU_CREATED = 1,
             STU_ADAPTED = 2,
-            STU_OKED = 4;
+            STU_OKED = 4,
+            STU_CLOSED = 8;
 
         public static readonly Map<short, string> Statuses = new()
         {
-            { STU_VOID, null },
+            { STU_VOID, "作废" },
             { STU_CREATED, "新建" },
             { STU_ADAPTED, "调整" },
             { STU_OKED, "上线" },

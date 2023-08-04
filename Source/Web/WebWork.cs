@@ -251,7 +251,7 @@ namespace ChainFx.Web
             return wrk;
         }
 
-        [Ui(icon: "question", Help = false), Tool(Modal.ButtonShow)]
+        [Ui(icon: "question", Documented = false), Tool(Modal.ButtonShow)]
         public virtual void help(WebContext wc)
         {
             wc.GivePane(200, h =>
@@ -298,7 +298,7 @@ namespace ChainFx.Web
                 {
                     var a = actions.ValueAt(i);
 
-                    if (a.Ui?.Help == true)
+                    if (a.Ui?.Documented == true)
                     {
                         h.DT(a.Dt);
                         h.DD(a.Tip);

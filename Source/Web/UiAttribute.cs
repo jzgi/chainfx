@@ -25,7 +25,7 @@ namespace ChainFx.Web
         ///     name="icon">
         /// </param>
         /// <param name="status"></param>
-        public UiAttribute(string label = null, string tip = null, string icon = null, short status = 255)
+        public UiAttribute(string label = null, string tip = null, string icon = null, short status = 0xff)
         {
             this.label = label;
             this.tip = tip;
@@ -47,6 +47,6 @@ namespace ChainFx.Web
         /// <summary>
         /// Can be included & shown as help documentation.
         /// </summary>
-        public bool Help { get; set; } = true;
+        public bool Documented { get; set; } = true;
     }
 }

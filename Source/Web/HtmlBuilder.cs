@@ -3001,8 +3001,8 @@ namespace ChainFx.Web
                     // retrieve spy num
                     var spy = (twin > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.Do(twin, clear: act == Web.Action) : 0;
 
-
-                    if (anchor || ctxStatus == act.Status || (ctxStatus & act.Status) > 0) // anchor is always included
+                    var actStatus = act.Status;
+                    if (anchor || actStatus == 0xff || actStatus == ctxStatus || (ctxStatus & actStatus) > 0) // anchor is always included
                     {
                         var stateYes = tool.MeetsOf(state);
                         // provide current anchor as subscript 
