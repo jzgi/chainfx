@@ -46,7 +46,7 @@ namespace ChainFx.Web
         readonly Func<WebContext, int, Task> do2Async;
 
         // help tags
-        readonly HelpAttribute[] helps;
+        readonly HelpAttribute help;
 
         // restful tags
         readonly RestAttribute[] rests;
@@ -64,7 +64,7 @@ namespace ChainFx.Web
             authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
             twinSpy = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
-            helps = (HelpAttribute[])mi.GetCustomAttributes(typeof(HelpAttribute), true);
+            help = (HelpAttribute)mi.GetCustomAttribute(typeof(HelpAttribute), true);
             rests = (RestAttribute[])mi.GetCustomAttributes(typeof(RestAttribute), true);
 
             // create a doer delegate
@@ -124,15 +124,13 @@ namespace ChainFx.Web
 
         public string Tip => ui?.Tip;
 
-        public string Dt => Label ?? Tip ?? name;
-
         public short Status => ui?.Status ?? 0;
 
         public ToolAttribute Tool => tool;
 
         public RestAttribute[] Rests => rests;
 
-        public HelpAttribute[] HelpTags => helps;
+        public HelpAttribute Help => help;
 
         public AuthenticateAttribute Authenticate => authenticate;
 

@@ -3576,10 +3576,6 @@ namespace ChainFx.Web
 
             if (!string.IsNullOrEmpty(cap))
             {
-                if (icon != null)
-                {
-                    Add("&nbsp;");
-                }
                 Add(cap);
             }
 
@@ -3729,11 +3725,6 @@ namespace ChainFx.Web
                 }
 
                 Add(">");
-                if (icon != null)
-                {
-                    Add("&nbsp;");
-                }
-
                 Add(cap);
                 Add("</span>");
             }

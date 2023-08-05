@@ -34,7 +34,7 @@ namespace ChainFx.Web
         WebWork varWork;
 
         // help tags
-        readonly HelpAttribute[] helps;
+        readonly HelpAttribute _help;
 
 
         public string Name { get; internal set; }
@@ -47,7 +47,7 @@ namespace ChainFx.Web
 
         public AuthorizeAttribute Authorize { get; internal set; }
 
-        public HelpAttribute[] Helps => helps;
+        public HelpAttribute Help => _help;
 
         public object State { get; set; }
 
@@ -61,7 +61,7 @@ namespace ChainFx.Web
             Ui = (UiAttribute)type.GetCustomAttribute(typeof(UiAttribute), true);
             Authenticate = (AuthenticateAttribute)type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
             Authorize = (AuthorizeAttribute)type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
-            helps = (HelpAttribute[])type.GetCustomAttributes(typeof(HelpAttribute), true);
+            _help = (HelpAttribute)type.GetCustomAttribute(typeof(HelpAttribute), true);
 
             // gather actions
             foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -256,25 +256,70 @@ namespace ChainFx.Web
         {
             wc.GivePane(200, h =>
             {
-                // class doc tags
+                // class help
 
                 h.ARTICLE_("uk-card uk-card-primary");
                 h.H2(Label, "uk-card-header");
-
-                h.DIV_("uk-card-body");
-                for (int i = 0; i < helps?.Length; i++)
+                h.SECTION_("uk-card-body");
+                if (Ui != null)
                 {
-                    var hlp = helps[i];
-                    if (!hlp.IsDetail)
+                    if (Tip != null)
                     {
-                        hlp.Render(h);
+                        h.T(Tip);
                     }
                 }
-                h._DIV();
+                _help?.Render(h);
+
+                h._SECTION();
                 h._ARTICLE();
 
                 h.ARTICLE_("uk-card uk-card-primary");
-                h.H3("包含功能模块", "uk-card-header");
+                h.H3("操作说明", "uk-card-header");
+                h.DL_("uk-bard-body");
+                for (int i = 0; i < actions?.Count; i++)
+                {
+                    var act = actions.ValueAt(i);
+
+                    if (act.Ui?.Documented == true)
+                    {
+                        // term
+
+                        h.DT_();
+
+                        if (act.Label != null)
+                        {
+                            if (act.Icon != null)
+                            {
+                                h.ICON(act.Icon);
+                            }
+                            h.T(act.Label);
+                        }
+                        else if (act.Icon != null)
+                        {
+                            h.ICON(act.Icon);
+                        }
+                        else
+                        {
+                            h.T(act.Tip);
+                        }
+
+                        h._DT();
+
+                        // definition
+
+                        h.DD_();
+                        h.P(act.Tip);
+                        act.Help?.Render(h);
+                        h._DD();
+                    }
+                }
+                h._DL();
+                h._ARTICLE();
+
+                if (SubWorks == null) return;
+
+                h.ARTICLE_("uk-card uk-card-primary");
+                h.H3("功能模块", "uk-card-header");
                 h.UL_("uk-bard-body");
 
                 for (int i = 0; i < SubWorks?.Count; i++)
@@ -289,23 +334,6 @@ namespace ChainFx.Web
                     }
                 }
                 h._UL();
-                h._ARTICLE();
-
-                h.ARTICLE_("uk-card uk-card-primary");
-                h.H3("操作说明", "uk-card-header");
-                h.DL_("uk-bard-body");
-                for (int i = 0; i < actions?.Count; i++)
-                {
-                    var a = actions.ValueAt(i);
-
-                    if (a.Ui?.Documented == true)
-                    {
-                        h.DT(a.Dt);
-                        h.DD(a.Tip);
-                    }
-                }
-
-                h._DL();
                 h._ARTICLE();
             });
         }

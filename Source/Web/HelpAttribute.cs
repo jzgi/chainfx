@@ -1,16 +1,31 @@
-using System;
+﻿using System;
 
 namespace ChainFx.Web
 {
     /// <summary>
-    /// A comment tag for generating help documentation. 
+    /// To document an help information to the target work or action.
     /// </summary>
-    public abstract class HelpAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
+    public class HelpAttribute : Attribute
     {
-        public const string CRLF = "\r\n";
+        readonly string[] texts;
 
-        public abstract void Render(HtmlBuilder h);
+        public HelpAttribute(params string[] texts)
+        {
+            this.texts = texts;
+        }
 
-        public abstract bool IsDetail { get; }
+        public bool IsDetail => true;
+
+        public void Render(HtmlBuilder h)
+        {
+            if (texts != null)
+            {
+                foreach (var v in texts)
+                {
+                    h.P(v);
+                }
+            }
+        }
     }
 }
