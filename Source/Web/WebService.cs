@@ -48,7 +48,7 @@ namespace ChainFx.Web
         short cycle;
 
         // client connector to the origin service
-        WebConnector connector;
+        WebConnect connect;
 
 
         protected WebService()

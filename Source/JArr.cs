@@ -131,12 +131,6 @@ namespace ChainFx
             return jo != null && jo.Get(name, ref v);
         }
 
-        public bool Get(string name, ref ArraySegment<byte> v)
-        {
-            JObj jo = elements[cur];
-            return jo != null && jo.Get(name, ref v);
-        }
-
         public bool Get(string name, ref byte[] v)
         {
             JObj jo = elements[cur];

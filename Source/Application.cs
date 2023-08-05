@@ -52,7 +52,7 @@ namespace ChainFx
 
 
         // registered web connectors
-        static readonly Map<string, WebConnector> connectors = new(32);
+        static readonly Map<string, WebConnect> connectors = new(32);
 
 
         /// <summary>

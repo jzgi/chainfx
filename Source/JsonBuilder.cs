@@ -265,7 +265,17 @@ namespace ChainFx
 
         public void Put(string name, TimeSpan v)
         {
-            throw new NotImplementedException();
+            if (counts[level]++ > 0) Add(',');
+            if (name != null)
+            {
+                Add('"');
+                Add(name);
+                Add('"');
+                Add(':');
+            }
+            Add('"');
+            Add(v);
+            Add('"');
         }
 
         public void Put(string name, string v)
@@ -290,15 +300,11 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, ArraySegment<byte> v)
+        public void Put(string name, IList<byte> v)
         {
         }
 
-        public void Put(string name, byte[] v)
-        {
-        }
-
-        public void Put(string name, short[] v)
+        public void Put(string name, IList<short> v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -315,7 +321,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     Add(v[i]);
@@ -324,7 +330,7 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, int[] v)
+        public void Put(string name, IList<int> v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -341,7 +347,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     Add(v[i]);
@@ -350,7 +356,7 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, long[] v)
+        public void Put(string name, IList<long> v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -368,7 +374,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     Add(v[i]);
@@ -377,7 +383,7 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, string[] v)
+        public void Put(string name, IList<string> v)
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)
@@ -394,7 +400,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     string str = v[i];
@@ -505,34 +511,7 @@ namespace ChainFx
             level--; // exit
         }
 
-        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
-        {
-            if (counts[level]++ > 0) Add(',');
-            if (name != null)
-            {
-                Add('"');
-                Add(name);
-                Add('"');
-                Add(':');
-            }
-            if (v == null)
-            {
-                Add("null");
-            }
-            else
-            {
-                counts[++level] = 0; // enter
-                Add('[');
-                for (int i = 0; i < v.Length; i++)
-                {
-                    Put(null, v[i], msk);
-                }
-                Add(']');
-                level--; // exit
-            }
-        }
-
-        public void Put<D>(string name, List<D> v, short msk = 0xff) where D : IData
+        public void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData
         {
             if (counts[level]++ > 0) Add(',');
             if (name != null)

@@ -877,17 +877,12 @@ namespace ChainFx.Nodal
             }
         }
 
-        public void Put(string name, ArraySegment<byte> v)
+        public void Put(string name, IList<byte> v)
         {
             Build(name);
         }
 
-        public void Put(string name, byte[] v)
-        {
-            Build(name);
-        }
-
-        public void Put(string name, short[] v)
+        public void Put(string name, IList<short> v)
         {
             if (name != null)
             {
@@ -902,14 +897,14 @@ namespace ChainFx.Nodal
                 else
                 {
                     Add("ARRAY[");
-                    for (int i = 0; i < v.Length; i++)
+                    for (int i = 0; i < v.Count; i++)
                     {
                         if (i > 0) Add(',');
                         Add(v[i]);
                     }
 
                     Add(']');
-                    if (v.Length == 0)
+                    if (v.Count == 0)
                     {
                         Add("::smallint[]");
                     }
@@ -917,7 +912,7 @@ namespace ChainFx.Nodal
             }
         }
 
-        public void Put(string name, int[] v)
+        public void Put(string name, IList<int> v)
         {
             if (name != null)
             {
@@ -932,14 +927,14 @@ namespace ChainFx.Nodal
                 else
                 {
                     Add("ARRAY[");
-                    for (int i = 0; i < v.Length; i++)
+                    for (int i = 0; i < v.Count; i++)
                     {
                         if (i > 0) Add(',');
                         Add(v[i]);
                     }
 
                     Add(']');
-                    if (v.Length == 0)
+                    if (v.Count == 0)
                     {
                         Add("::integer[]");
                     }
@@ -947,7 +942,7 @@ namespace ChainFx.Nodal
             }
         }
 
-        public void Put(string name, long[] v)
+        public void Put(string name, IList<long> v)
         {
             if (name != null)
             {
@@ -962,14 +957,14 @@ namespace ChainFx.Nodal
                 else
                 {
                     Add("ARRAY[");
-                    for (int i = 0; i < v.Length; i++)
+                    for (int i = 0; i < v.Count; i++)
                     {
                         if (i > 0) Add(',');
                         Add(v[i]);
                     }
 
                     Add(']');
-                    if (v.Length == 0)
+                    if (v.Count == 0)
                     {
                         Add("::bigint[]");
                     }
@@ -977,7 +972,7 @@ namespace ChainFx.Nodal
             }
         }
 
-        public void Put(string name, string[] v)
+        public void Put(string name, IList<string> v)
         {
             if (name != null)
             {
@@ -992,7 +987,7 @@ namespace ChainFx.Nodal
                 else
                 {
                     Add("ARRAY[");
-                    for (int i = 0; i < v.Length; i++)
+                    for (int i = 0; i < v.Count; i++)
                     {
                         if (i > 0) Add(',');
                         Add('\'');
@@ -1001,7 +996,7 @@ namespace ChainFx.Nodal
                     }
 
                     Add(']');
-                    if (v.Length == 0)
+                    if (v.Count == 0)
                     {
                         Add("::varchar[]");
                     }
@@ -1060,7 +1055,7 @@ namespace ChainFx.Nodal
             }
         }
 
-        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
+        public void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData
         {
             Build(name);
         }

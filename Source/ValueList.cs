@@ -35,6 +35,8 @@ namespace ChainFx
             set { }
         }
 
+        public short Tag { get; set; }
+
         public void Add(T v)
         {
             // ensure capacity
@@ -70,12 +72,12 @@ namespace ChainFx
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            count = 0;
         }
 
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            return IndexOf(item) > -1;
         }
 
         public bool Remove(T item)
@@ -85,17 +87,25 @@ namespace ChainFx
 
         public int IndexOf(T item)
         {
-            throw new NotImplementedException();
+            if (item != null)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (item.Equals(array[i]))
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
         }
 
         public void Insert(int index, T item)
         {
-            throw new NotImplementedException();
         }
 
         public void RemoveAt(int index)
         {
-            throw new NotImplementedException();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

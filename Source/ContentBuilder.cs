@@ -137,6 +137,12 @@ namespace ChainFx
             }
         }
 
+        public void Reset()
+        {
+            count = 0;
+            checksum = 0;
+        }
+
         internal void AddByte(byte b)
         {
             // ensure capacity

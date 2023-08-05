@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChainFx
 {
@@ -52,20 +53,20 @@ namespace ChainFx
             if (c < 0x80)
             {
                 // have at most seven bits
-                AddEscByte((byte) c);
+                AddEscByte((byte)c);
             }
             else if (c < 0x800)
             {
                 // 2 char, 11 bits
-                AddEscByte((byte) (0xc0 | (c >> 6)));
-                AddEscByte((byte) (0x80 | (c & 0x3f)));
+                AddEscByte((byte)(0xc0 | (c >> 6)));
+                AddEscByte((byte)(0x80 | (c & 0x3f)));
             }
             else
             {
                 // 3 char, 16 bits
-                AddEscByte((byte) (0xe0 | ((c >> 12))));
-                AddEscByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-                AddEscByte((byte) (0x80 | (c & 0x3f)));
+                AddEscByte((byte)(0xe0 | ((c >> 12))));
+                AddEscByte((byte)(0x80 | ((c >> 6) & 0x3f)));
+                AddEscByte((byte)(0x80 | (c & 0x3f)));
             }
         }
 
@@ -230,15 +231,11 @@ namespace ChainFx
             AddEsc(v);
         }
 
-        public void Put(string name, ArraySegment<byte> v)
+        public void Put(string name, IList<byte> v)
         {
         }
 
-        public void Put(string name, byte[] v)
-        {
-        }
-
-        public void Put(string name, short[] v)
+        public void Put(string name, IList<short> v)
         {
             ordinal++;
 
@@ -248,14 +245,14 @@ namespace ChainFx
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
         }
 
-        public void Put(string name, int[] v)
+        public void Put(string name, IList<int> v)
         {
             ordinal++;
 
@@ -265,14 +262,14 @@ namespace ChainFx
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
         }
 
-        public void Put(string name, long[] v)
+        public void Put(string name, IList<long> v)
         {
             ordinal++;
 
@@ -282,14 +279,14 @@ namespace ChainFx
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
             }
         }
 
-        public void Put(string name, string[] v)
+        public void Put(string name, IList<string> v)
         {
             ordinal++;
 
@@ -299,7 +296,7 @@ namespace ChainFx
             }
             Add(name);
             Add('=');
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
@@ -322,7 +319,7 @@ namespace ChainFx
         {
         }
 
-        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
+        public void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData
         {
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChainFx
 {
@@ -107,15 +108,11 @@ namespace ChainFx
             Add(v ?? "null");
         }
 
-        public void Put(string name, ArraySegment<byte> v)
+        public void Put(string name, IList<byte> v)
         {
         }
 
-        public void Put(string name, byte[] v)
-        {
-        }
-
-        public void Put(string name, short[] v)
+        public void Put(string name, IList<short> v)
         {
             Part(name);
             if (v == null)
@@ -125,7 +122,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     Add(v[i]);
@@ -134,7 +131,7 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, int[] v)
+        public void Put(string name, IList<int> v)
         {
             Part(name);
             if (v == null)
@@ -144,7 +141,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     Add(v[i]);
@@ -153,7 +150,7 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, long[] v)
+        public void Put(string name, IList<long> v)
         {
             if (v == null)
             {
@@ -162,7 +159,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     Add(v[i]);
@@ -171,7 +168,7 @@ namespace ChainFx
             }
         }
 
-        public void Put(string name, string[] v)
+        public void Put(string name, IList<string> v)
         {
             Part(name);
             if (v == null)
@@ -181,7 +178,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     if (i > 0) Add(',');
                     string str = v[i];
@@ -218,7 +215,7 @@ namespace ChainFx
             }
         }
 
-        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
+        public void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData
         {
             Part(name);
             if (v == null)
@@ -228,7 +225,7 @@ namespace ChainFx
             else
             {
                 Add('[');
-                for (int i = 0; i < v.Length; i++)
+                for (int i = 0; i < v.Count; i++)
                 {
                     Put(null, v[i], msk);
                 }

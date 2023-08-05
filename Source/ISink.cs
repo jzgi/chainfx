@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChainFx
 {
@@ -31,17 +32,15 @@ namespace ChainFx
 
         void Put(string name, string v);
 
-        void Put(string name, ArraySegment<byte> v);
+        void Put(string name, IList<byte> v);
 
-        void Put(string name, byte[] v);
+        void Put(string name, IList<short> v);
 
-        void Put(string name, short[] v);
+        void Put(string name, IList<int> v);
 
-        void Put(string name, int[] v);
+        void Put(string name, IList<long> v);
 
-        void Put(string name, long[] v);
-
-        void Put(string name, string[] v);
+        void Put(string name, IList<string> v);
 
         void Put(string name, JObj v); // essentially a map
 
@@ -51,7 +50,7 @@ namespace ChainFx
 
         void Put(string name, IData v, short msk = 0xff);
 
-        void Put<D>(string name, D[] v, short msk = 0xff) where D : IData;
+        void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData;
 
         void PutFromSource(ISource s);
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChainFx
 {
@@ -297,22 +298,18 @@ namespace ChainFx
             Add('"');
         }
 
-        public void Put(string name, ArraySegment<byte> v)
+        public void Put(string name, IList<byte> v)
         {
         }
 
-        public void Put(string name, byte[] v)
-        {
-        }
-
-        public void Put(string name, short[] v)
+        public void Put(string name, IList<short> v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
@@ -321,14 +318,14 @@ namespace ChainFx
             Add('"');
         }
 
-        public void Put(string name, int[] v)
+        public void Put(string name, IList<int> v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
@@ -337,14 +334,14 @@ namespace ChainFx
             Add('"');
         }
 
-        public void Put(string name, long[] v)
+        public void Put(string name, IList<long> v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
@@ -353,14 +350,14 @@ namespace ChainFx
             Add('"');
         }
 
-        public void Put(string name, string[] v)
+        public void Put(string name, IList<string> v)
         {
             Add(' ');
             Add(name);
             Add('=');
             Add('"');
 
-            for (int i = 0; i < v.Length; i++)
+            for (int i = 0; i < v.Count; i++)
             {
                 if (i > 0) Add(',');
                 Add(v[i]);
@@ -388,7 +385,7 @@ namespace ChainFx
         {
         }
 
-        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
+        public void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData
         {
         }
 

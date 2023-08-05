@@ -1877,7 +1877,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, bool[] v)
+        public void Put(string name, IList<bool> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Boolean)
             {
@@ -1885,7 +1885,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, char[] v)
+        public void Put(string name, IList<char> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Char)
             {
@@ -1893,23 +1893,15 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, ArraySegment<byte> v)
+        public void Put(string name, IList<byte> v)
         {
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v.Count)
-            {
-                Value = (v.Array != null) ? v : DBNull.Value
-            });
-        }
-
-        public void Put(string name, byte[] v)
-        {
-            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v?.Length ?? 0)
+            command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Bytea, v?.Count ?? 0)
             {
                 Value = (v != null) ? v : DBNull.Value
             });
         }
 
-        public void Put(string name, short[] v)
+        public void Put(string name, IList<short> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Smallint)
             {
@@ -1917,7 +1909,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, int[] v)
+        public void Put(string name, IList<int> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
@@ -1925,7 +1917,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, long[] v)
+        public void Put(string name, IList<long> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Bigint)
             {
@@ -1933,7 +1925,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, float[] v)
+        public void Put(string name, IList<float> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Real)
             {
@@ -1941,7 +1933,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, double[] v)
+        public void Put(string name, IList<double> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Double)
             {
@@ -1949,7 +1941,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, decimal[] v)
+        public void Put(string name, IList<decimal> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Numeric)
             {
@@ -1957,7 +1949,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, DateTime[] v)
+        public void Put(string name, IList<DateTime> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Date)
             {
@@ -1965,7 +1957,7 @@ namespace ChainFx.Nodal
             });
         }
 
-        public void Put(string name, string[] v)
+        public void Put(string name, IList<string> v)
         {
             command.Parameters.Add(new NpgsqlParameter(name, NpgsqlDbType.Array | NpgsqlDbType.Text)
             {
@@ -2032,17 +2024,17 @@ namespace ChainFx.Nodal
 
         public void Put(string name, IData v, short msk = 0xff)
         {
-            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object)v : DBNull.Value)
+            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? v : DBNull.Value)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
         }
 
-        public void Put<D>(string name, D[] v, short msk = 0xff) where D : IData
+        public void Put<D>(string name, IList<D> v, short msk = 0xff) where D : IData
         {
-            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? (object)v : DBNull.Value)
+            command.Parameters.Add(new NpgsqlParameter(name, (v != null) ? v : DBNull.Value)
             {
-                Value = (v != null) ? (object)v : DBNull.Value
+                Value = (v != null) ? v : DBNull.Value
             });
         }
 
