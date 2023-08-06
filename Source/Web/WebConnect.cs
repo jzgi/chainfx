@@ -13,7 +13,7 @@ namespace ChainFx.Web
         const string
             CONTENT_TYPE = "Content-Type",
             CONTENT_LENGTH = "Content-Length",
-            AUTHORIZATION = "Authorization";
+            COOKIE = "Cookie";
 
         /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
@@ -28,24 +28,24 @@ namespace ChainFx.Web
         // RPC
         //
 
-        public async Task<(short, S)> GetAsync<S>(string uri, string authstring = null) where S : class, ISource
+        public async Task<(short, S)> GetAsync<S>(string uri, string token = null) where S : class, ISource
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (authstring != null)
+                if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
+                    req.Headers.TryAddWithoutValidation(COOKIE, token);
                 }
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
-                    var model = (S) ParseContent(ctyp, bytea, bytea.Length, typeof(S));
-                    return ((short) rsp.StatusCode, model);
+                    var model = (S)ParseContent(ctyp, bytea, bytea.Length, typeof(S));
+                    return ((short)rsp.StatusCode, model);
                 }
-                return ((short) rsp.StatusCode, default);
+                return ((short)rsp.StatusCode, default);
             }
             catch
             {
@@ -53,14 +53,14 @@ namespace ChainFx.Web
             }
         }
 
-        public async Task<(short, D)> GetObjectAsync<D>(string uri, short proj = 0xff, string authstring = null) where D : IData, new()
+        public async Task<(short, D)> GetObjectAsync<D>(string uri, short proj = 0xff, string token = null) where D : IData, new()
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (authstring != null)
+                if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
+                    req.Headers.TryAddWithoutValidation(COOKIE, token);
                 }
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
@@ -70,9 +70,9 @@ namespace ChainFx.Web
                     var inp = ParseContent(ctyp, bytea, bytea.Length);
                     var obj = new D();
                     obj.Read(inp, proj);
-                    return ((short) rsp.StatusCode, obj);
+                    return ((short)rsp.StatusCode, obj);
                 }
-                return ((short) rsp.StatusCode, default);
+                return ((short)rsp.StatusCode, default);
             }
             catch
             {
@@ -80,14 +80,14 @@ namespace ChainFx.Web
             }
         }
 
-        public async Task<(short, D[])> GetArrayAsync<D>(string uri, short proj = 0xff, string authstring = null) where D : IData, new()
+        public async Task<(short, D[])> GetArrayAsync<D>(string uri, short msk = 0xff, string token = null) where D : IData, new()
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
-                if (authstring != null)
+                if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
+                    req.Headers.TryAddWithoutValidation(COOKIE, token);
                 }
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.IsSuccessStatusCode)
@@ -95,10 +95,10 @@ namespace ChainFx.Web
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
                     var inp = ParseContent(ctyp, bytea, bytea.Length);
-                    var arr = inp.ToArray<D>(proj);
-                    return ((short) rsp.StatusCode, arr);
+                    var arr = inp.ToArray<D>(msk);
+                    return ((short)rsp.StatusCode, arr);
                 }
-                return ((short) rsp.StatusCode, default);
+                return ((short)rsp.StatusCode, default);
             }
             catch
             {
@@ -106,20 +106,20 @@ namespace ChainFx.Web
             }
         }
 
-        public async Task<short> PostAsync(string uri, IContent content, string authstring = null)
+        public async Task<short> PostAsync(string uri, IContent content, string token = null)
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Post, uri);
-                if (authstring != null)
+                if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
+                    req.Headers.TryAddWithoutValidation(COOKIE, token);
                 }
-                req.Content = (HttpContent) content;
+                req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                return (short) rsp.StatusCode;
+                return (short)rsp.StatusCode;
             }
             catch
             {
@@ -134,16 +134,16 @@ namespace ChainFx.Web
             }
         }
 
-        public async Task<(short, S)> PostAsync<S>(string uri, IContent content, string authstring = null) where S : class, ISource
+        public async Task<(short, S)> PostAsync<S>(string uri, IContent content, string token = null) where S : class, ISource
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Post, uri);
-                if (authstring != null)
+                if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(AUTHORIZATION, authstring);
+                    req.Headers.TryAddWithoutValidation(COOKIE, token);
                 }
-                req.Content = (HttpContent) content;
+                req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
 
@@ -151,13 +151,13 @@ namespace ChainFx.Web
                 string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
                 if (ctyp == null)
                 {
-                    return ((short) rsp.StatusCode, null);
+                    return ((short)rsp.StatusCode, null);
                 }
                 else
                 {
                     var bytes = await rsp.Content.ReadAsByteArrayAsync();
                     var src = ParseContent(ctyp, bytes, bytes.Length, typeof(S)) as S;
-                    return ((short) rsp.StatusCode, src);
+                    return ((short)rsp.StatusCode, src);
                 }
             }
             catch
