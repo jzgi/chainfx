@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using static ChainFx.DataUtility;
@@ -28,54 +29,61 @@ namespace ChainFx.Web
         // RPC
         //
 
-        public async Task<(short, S)> GetAsync<S>(string uri, string token = null) where S : class, ISource
+        public async Task<(short, M)> GetAsync<M>(string uri, string token = null) where M : class, ISource
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(COOKIE, token);
+                    req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
+                if (rsp.StatusCode == HttpStatusCode.OK)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
-                    var model = (S)ParseContent(ctyp, bytea, bytea.Length, typeof(S));
+                    var model = (M)ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+
                     return ((short)rsp.StatusCode, model);
                 }
                 return ((short)rsp.StatusCode, default);
             }
-            catch
+            catch (Exception e)
             {
+                Application.Err(e.Message);
+
                 return (0, default);
             }
         }
 
-        public async Task<(short, D)> GetObjectAsync<D>(string uri, short proj = 0xff, string token = null) where D : IData, new()
+        public async Task<(short, D)> GetObjectAsync<D>(string uri, short msk = 0xff, string token = null) where D : IData, new()
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(COOKIE, token);
+                    req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
+                if (rsp.StatusCode == HttpStatusCode.OK)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
                     var inp = ParseContent(ctyp, bytea, bytea.Length);
+
                     var obj = new D();
-                    obj.Read(inp, proj);
+                    obj.Read(inp, msk);
+
                     return ((short)rsp.StatusCode, obj);
                 }
                 return ((short)rsp.StatusCode, default);
             }
-            catch
+            catch (Exception e)
             {
+                Application.Err(e.Message);
+
                 return (0, default);
             }
         }
@@ -87,21 +95,25 @@ namespace ChainFx.Web
                 var req = new HttpRequestMessage(HttpMethod.Get, uri);
                 if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(COOKIE, token);
+                    req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                if (rsp.IsSuccessStatusCode)
+                if (rsp.StatusCode == HttpStatusCode.OK)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
+
                     var inp = ParseContent(ctyp, bytea, bytea.Length);
                     var arr = inp.ToArray<D>(msk);
+
                     return ((short)rsp.StatusCode, arr);
                 }
                 return ((short)rsp.StatusCode, default);
             }
-            catch
+            catch (Exception e)
             {
+                Application.Err(e.Message);
+
                 return (0, default);
             }
         }
@@ -113,7 +125,7 @@ namespace ChainFx.Web
                 var req = new HttpRequestMessage(HttpMethod.Post, uri);
                 if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(COOKIE, token);
+                    req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
                 req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
@@ -121,8 +133,10 @@ namespace ChainFx.Web
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return (short)rsp.StatusCode;
             }
-            catch
+            catch (Exception e)
             {
+                Application.Err(e.Message);
+
                 return 0;
             }
             finally
@@ -134,34 +148,34 @@ namespace ChainFx.Web
             }
         }
 
-        public async Task<(short, S)> PostAsync<S>(string uri, IContent content, string token = null) where S : class, ISource
+        public async Task<(short, M)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Post, uri);
                 if (token != null)
                 {
-                    req.Headers.TryAddWithoutValidation(COOKIE, token);
+                    req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
                 req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
 
                 var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
-                string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
-                if (ctyp == null)
+                if (rsp.StatusCode == HttpStatusCode.OK || rsp.StatusCode == HttpStatusCode.Created)
                 {
-                    return ((short)rsp.StatusCode, null);
-                }
-                else
-                {
+                    string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
                     var bytes = await rsp.Content.ReadAsByteArrayAsync();
-                    var src = ParseContent(ctyp, bytes, bytes.Length, typeof(S)) as S;
-                    return ((short)rsp.StatusCode, src);
+                    var model = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
+
+                    return ((short)rsp.StatusCode, model);
                 }
+                return ((short)rsp.StatusCode, null);
             }
-            catch
+            catch (Exception e)
             {
+                Application.Err(e.Message);
+
                 return (0, default);
             }
             finally

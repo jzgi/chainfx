@@ -106,6 +106,19 @@ namespace ChainFx
             return new string(buf);
         }
 
+        public static string ToHexQuoted(long v)
+        {
+            const int LEN = 16;
+            var buf = new char[LEN + 2];
+            buf[0] = '"';
+            for (int i = 0; i < LEN; i++)
+            {
+                buf[LEN - i] = HEX[(v >> (i * 4)) & 0x0fL];
+            }
+            buf[LEN + 1] = '"';
+            return new string(buf);
+        }
+
         public static string ToHex(int v)
         {
             const int LEN = 8;

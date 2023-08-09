@@ -110,7 +110,7 @@ namespace ChainFx
         // double-quoted entity tag
         string etag;
 
-        public string ETag => etag ??= CryptoUtility.ToHex(checksum);
+        public string ETag => etag ??= CryptoUtility.ToHexQuoted(checksum);
 
         public void Clear()
         {
