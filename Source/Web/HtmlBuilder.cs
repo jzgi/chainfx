@@ -417,7 +417,10 @@ namespace ChainFx.Web
             }
             Add(">");
 
-            Add(v);
+            if (v != 0)
+            {
+                Add(v);
+            }
 
             Add("</td>");
             return this;
@@ -436,7 +439,10 @@ namespace ChainFx.Web
             }
             Add(">");
 
-            Add(v);
+            if (v != 0)
+            {
+                Add(v);
+            }
 
             Add("</td>");
             return this;
@@ -1083,7 +1089,7 @@ namespace ChainFx.Web
             Add("<main");
             if (grid)
             {
-                Add(" uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl");
+                Add(" uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l");
                 if (css != null)
                 {
                     Add(' ');
@@ -2609,10 +2615,24 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TABLE_()
+        public HtmlBuilder TABLE_(bool dark = false, string css = null)
         {
             // Add("<div class=\"uk-overflow-auto\">");
-            Add("<table class=\"uk-table uk-table-divider uk-table-hover\">");
+            if (dark)
+            {
+                Add("<table class=\"uk-table-dark uk-table-dark-divider uk-table-dark-hover");
+            }
+            else
+            {
+                Add("<table class=\"uk-table uk-table-divider uk-table-hover");
+            }
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
+
             return this;
         }
 
@@ -2622,9 +2642,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder THEAD_()
+        public HtmlBuilder THEAD_(string css = null)
         {
-            Add("<thead>");
+            Add("<thead");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
+            }
+            Add('>');
             return this;
         }
 
@@ -2651,9 +2678,16 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder TR_()
+        public HtmlBuilder TR_(string css = null)
         {
-            Add("<tr>");
+            Add("<tr");
+            if (css != null)
+            {
+                Add(" class=\"");
+                Add(css);
+                Add('\"');
+            }
+            Add('>');
             return this;
         }
 
@@ -3295,6 +3329,7 @@ namespace ChainFx.Web
             // render tabs
             string last = null;
 
+            MAIN_(css: "uk-grid");
             for (int i = 0; i < wrk.SubWorks?.Count; i++)
             {
                 var sub = wrk.SubWorks.ValueAt(i);
@@ -3361,6 +3396,7 @@ namespace ChainFx.Web
 
             _UL();
             _FORM();
+            _MAIN();
         }
 
         public void AHELP(bool bottom = true)

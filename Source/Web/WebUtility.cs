@@ -238,7 +238,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, int maxage = 12, string title = null, bool manifest = false, string onload = null)
+        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, int maxage = 12, string title = null, bool manifest = false, string onload = null, short refresh = 0)
         {
             var h = new HtmlBuilder(true, 32 * 1024)
             {
@@ -252,6 +252,12 @@ namespace ChainFx.Web
             h.Add("<title>");
             h.Add(title ?? wc.Work.Label);
             h.Add("</title>");
+            if (refresh > 0)
+            {
+                h.Add("<meta http-equiv=\"refresh\" content=\"");
+                h.Add(refresh);
+                h.Add("\">");
+            }
             h.Add("<link rel=\"shortcut icon\" href=\"/favicon.ico\" />");
             if (manifest)
             {
@@ -267,6 +273,10 @@ namespace ChainFx.Web
             h.Add("</head>");
 
             h.Add("<body");
+            if (refresh > 0)
+            {
+                h.Add(" class=\"uk-background-secondary\"");
+            }
             if (onload != null)
             {
                 h.Add(" onload=\"");

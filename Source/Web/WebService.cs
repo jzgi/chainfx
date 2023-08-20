@@ -429,7 +429,7 @@ namespace ChainFx.Web
             }
         }
 
-        internal bool TryGiveFromCache(WebContext wc)
+        public bool TryGiveFromCache(WebContext wc)
         {
             if (shared != null && wc.IsGet)
             {

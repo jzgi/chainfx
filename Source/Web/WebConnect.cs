@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static ChainFx.DataUtility;
 
@@ -9,20 +11,56 @@ namespace ChainFx.Web
     /// <summary>
     /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
     /// </summary>
-    public class WebConnect : HttpClient
+    public class WebConnect : IEnumerable
     {
-        const string
+        public const string
             CONTENT_TYPE = "Content-Type",
             CONTENT_LENGTH = "Content-Length",
             COOKIE = "Cookie";
 
+        readonly HttpClientHandler handler;
+
+        readonly HttpClient client;
+
         /// <summary>
         /// Used to construct a random client that does not necessarily connect to a remote service. 
         /// </summary>
-        public WebConnect(string baseUri, WebClientHandler handler = null) : base(handler ?? new WebClientHandler())
+        public WebConnect(string baseUri)
         {
-            BaseAddress = new Uri(baseUri);
-            Timeout = TimeSpan.FromSeconds(7);
+            handler = new HttpClientHandler()
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual
+            };
+            client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(baseUri),
+                Timeout = TimeSpan.FromSeconds(6),
+            };
+        }
+
+        public Uri BaseAddress => client.BaseAddress;
+
+        public void Add(X509Certificate2 cert)
+        {
+            handler.ClientCertificates.Add(cert);
+        }
+
+        public void Add(string file, string password)
+        {
+            var cert = new X509Certificate2(file, password, X509KeyStorageFlags.EphemeralKeySet);
+            handler.ClientCertificates.Add(cert);
+        }
+
+        public void Add(byte[] data, string password)
+        {
+            var cert = new X509Certificate2(data, password, X509KeyStorageFlags.EphemeralKeySet);
+            handler.ClientCertificates.Add(cert);
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return handler.ClientCertificates.GetEnumerator();
         }
 
         //
@@ -38,7 +76,7 @@ namespace ChainFx.Web
                 {
                     req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode == HttpStatusCode.OK)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
@@ -66,7 +104,7 @@ namespace ChainFx.Web
                 {
                     req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode == HttpStatusCode.OK)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
@@ -97,7 +135,7 @@ namespace ChainFx.Web
                 {
                     req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
                 }
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode == HttpStatusCode.OK)
                 {
                     var bytea = await rsp.Content.ReadAsByteArrayAsync();
@@ -130,7 +168,7 @@ namespace ChainFx.Web
                 req.Content = (HttpContent)content;
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 return (short)rsp.StatusCode;
             }
             catch (Exception e)
@@ -161,7 +199,7 @@ namespace ChainFx.Web
                 req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
                 req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
 
-                var rsp = await SendAsync(req, HttpCompletionOption.ResponseContentRead);
+                var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
                 if (rsp.StatusCode == HttpStatusCode.OK || rsp.StatusCode == HttpStatusCode.Created)
                 {
                     string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);

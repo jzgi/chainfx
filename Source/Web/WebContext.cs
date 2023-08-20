@@ -559,7 +559,7 @@ namespace ChainFx.Web
             MaxAge = maxage;
         }
 
-        internal async Task SendAsync()
+        public async Task SendAsync()
         {
             // set connection header if absent
             SetHeaderAbsent("Connection", "keep-alive");
