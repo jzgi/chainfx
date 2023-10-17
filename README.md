@@ -22,7 +22,7 @@ dotnet add package ChainFx --version 4.1.0
 
 The open source software being used: 
 
-| ![kestrel](https://raw.githubusercontent.com/jzgi/chainfx/master/Docs/netcore.jpg) | ![npgsql](https://raw.githubusercontent.com/jzgi/chainfx/master/Docs/postgresql.png) |
-| ---- | ----- |
-| [kestrel](https://github.com/aspnet/AspNetCore) | [npgsql](http://www.npgsql.org) |
-| .NET's built-in web engine | .NET access to PostgreSQL |
+| ![kestrel](https://raw.githubusercontent.com/jzgi/chainfx/master/Docs/dotnet.png) | ![npgsql](https://raw.githubusercontent.com/jzgi/chainfx/master/Docs/postgresql.png) |
+|-----------------------------------------------------------------------------------| ----- |
+| [kestrel](https://github.com/aspnet/AspNetCore)                                   | [npgsql](http://www.npgsql.org) |
+| .NET's built-in web engine                                                        | .NET access to PostgreSQL |

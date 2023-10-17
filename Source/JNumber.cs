@@ -70,13 +70,13 @@ namespace ChainFx
             }
         }
 
-        public double Double => (double) Decimal;
+        public double Double => (double)Decimal;
 
         public long Long => negative ? -bigint : bigint;
 
-        public int Int => negative ? (int) -bigint : (int) bigint;
+        public int Int => negative ? (int)-bigint : (int)bigint;
 
-        public short Short => negative ? (short) -bigint : (short) bigint;
+        public short Short => negative ? (short)-bigint : (short)bigint;
 
         public decimal Decimal
         {
@@ -85,9 +85,9 @@ namespace ChainFx
                 if (pt <= 0) return new decimal(bigint);
 
                 long v = bigint * BASE[pt] + fract;
-                int lo = (int) v;
-                int mid = (int) (v >> 32);
-                byte scale = (byte) pt;
+                int lo = (int)v;
+                int mid = (int)(v >> 32);
+                byte scale = (byte)pt;
 
                 return new decimal(lo, mid, 0, negative, scale);
             }
@@ -104,7 +104,27 @@ namespace ChainFx
         public static implicit operator decimal(JNumber v) => v.Decimal;
 
         /// <summary>
-        /// Cast from int.
+        /// Cast from long.
+        /// </summary>
+        public static implicit operator JNumber(decimal v)
+        {
+            var bits = decimal.GetBits(v); // get the binary representation
+            int low = bits[0], mid = bits[1], hi = bits[2], flags = bits[3];
+            var scale = (sbyte)((bits[3] >> 16) & 0x7F);
+
+            long x = ((long)mid << 32) + low;
+
+            JNumber num;
+            num.bigint = x / BASE[scale];
+            num.fract = (int)x % BASE[scale];
+            num.pt = scale;
+            num.negative = v < 0;
+            return num;
+        }
+
+
+        /// <summary>
+        /// Cast from long.
         /// </summary>
         public static implicit operator JNumber(long v)
         {

@@ -49,7 +49,7 @@ namespace ChainFx
             {
                 arr.Add(new JMbr(str));
             }
-            Add<JMbr>(new JMbr(arr));
+            Add<JMbr>(new JMbr(arr, name));
         }
 
         //
@@ -349,19 +349,19 @@ namespace ChainFx
                 var t = mbr.typ;
                 if (t == JType.Array)
                 {
-                    cnt.Put(mbr.Key, (JArr) mbr);
+                    cnt.Put(mbr.Key, (JArr)mbr);
                 }
                 else if (t == JType.Object)
                 {
-                    cnt.Put(mbr.Key, (JObj) mbr);
+                    cnt.Put(mbr.Key, (JObj)mbr);
                 }
                 else if (t == JType.String)
                 {
-                    cnt.Put(mbr.Key, (string) mbr);
+                    cnt.Put(mbr.Key, (string)mbr);
                 }
                 else if (t == JType.Number)
                 {
-                    cnt.Put(mbr.Key, (JNumber) mbr);
+                    cnt.Put(mbr.Key, (JNumber)mbr);
                 }
                 else if (t == JType.True)
                 {

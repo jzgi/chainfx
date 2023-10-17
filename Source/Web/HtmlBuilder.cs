@@ -713,7 +713,7 @@ namespace ChainFx.Web
 
         public HtmlBuilder _H1()
         {
-            Add("</h2>");
+            Add("</h1>");
             return this;
         }
 
@@ -2002,23 +2002,41 @@ namespace ChainFx.Web
             return this;
         }
 
-        public HtmlBuilder PIC<A, B>(A a, B b, bool circle = false, string css = null)
+        public HtmlBuilder PIC<A, B>(A a, B b, bool circle = false, string marker = null, string css = null)
         {
             PIC_(a, b, circle, css);
+            if (marker != null)
+            {
+                Add("<span icon=\"");
+                Add(marker);
+                Add("\" class=\"uk-position-bottom-right\" uk-marker></span>");
+            }
             _PIC();
             return this;
         }
 
-        public HtmlBuilder PIC<A, B, C>(A a, B b, C c, bool circle = false, string css = null)
+        public HtmlBuilder PIC<A, B, C>(A a, B b, C c, bool circle = false, string marker = null, string css = null)
         {
             PIC_(a, b, c, circle, css);
+            if (marker != null)
+            {
+                Add("<span icon=\"");
+                Add(marker);
+                Add("\" class=\"uk-position-bottom-right\" uk-marker></span>");
+            }
             _PIC();
             return this;
         }
 
-        public HtmlBuilder PIC<A, B, C, D>(A a, B b, C c, D d, bool circle = false, string css = null)
+        public HtmlBuilder PIC<A, B, C, D>(A a, B b, C c, D d, bool circle = false, string marker = null, string css = null)
         {
             PIC_(a, b, c, d, circle, css);
+            if (marker != null)
+            {
+                Add("<span icon=\"");
+                Add(marker);
+                Add("\" class=\"uk-position-bottom-right\" uk-marker></span>");
+            }
             _PIC();
             return this;
         }
@@ -2820,10 +2838,10 @@ namespace ChainFx.Web
         {
             if (duo)
             {
-                Add("<main uk-grid class=\"uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-child-width-1-5@l uk-child-width-1-6@xl\">");
+                Add("<main uk-grid class=\"uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-child-width-1-5@l\">");
             }
             else
-                Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+                Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
 
             if (lst != null)
             {
@@ -2865,9 +2883,7 @@ namespace ChainFx.Web
             Add(min++);
             Add("@m uk-child-width-1-");
             Add(min++);
-            Add("@l uk-child-width-1-");
-            Add(min);
-            Add("@xl\">");
+            Add("@l\">");
             if (lst != null)
             {
                 for (int i = 0; i < lst.Count; i++)
@@ -2896,7 +2912,7 @@ namespace ChainFx.Web
 
         public void MAINGRID<S>(S src, Action<S> card, string css = null) where S : ISource
         {
-            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-child-width-1-5@xl\">");
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
             if (src != null && src.IsDataSet)
             {
                 while (src.Next())
@@ -2962,7 +2978,6 @@ namespace ChainFx.Web
                 Add(' ');
                 Add(css);
             }
-
             Add("\">");
             return this;
         }
@@ -2981,7 +2996,7 @@ namespace ChainFx.Web
             Add("\">");
 
             bool astack = Web.Query[nameof(astack)];
-            if (astack)
+            if (astack && !bottom)
             {
                 Add("<a class=\"uk-icon-button\" href=\"javascript: window.parent.closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
             }
@@ -3488,14 +3503,14 @@ namespace ChainFx.Web
             }
         }
 
-        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string tip = null, int badge = 0, bool disabled = false, bool astack = false, string css = null)
+        public void PutTool(WebAction act, ToolAttribute tool, int subscript = -1, string caption = null, string title = null, int badge = 0, bool disabled = false, bool astack = false, string css = null)
         {
             // check action's availability
             //
             string cap = caption ?? act.Label;
             string icon = act.Icon;
 
-            tip ??= act.Tip;
+            title ??= act.Tip;
 
             if (tool.IsAnchorTag) // A
             {
@@ -3544,7 +3559,7 @@ namespace ChainFx.Web
                 Add(act.Key);
                 Add("\" formaction=\"");
                 Add(act.Key);
-                if (subscript != -1 && act.Subscript != null)
+                if (subscript > 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -3574,7 +3589,7 @@ namespace ChainFx.Web
             else if (tool.HasConfirm)
             {
                 Add(" onclick=\"return askSend(this, '");
-                Add(tip ?? act.Label);
+                Add(title ?? act.Label);
                 Add("',");
                 Add(tool.MustPick);
                 Add(");\"");
@@ -3584,20 +3599,20 @@ namespace ChainFx.Web
                 Add(" onclick=\"return crop(this,");
                 Add(tool.Size);
                 Add(",'");
-                Add(tip);
+                Add(title);
                 Add("',");
                 Add(tool.Subs);
                 Add(");\"");
             }
             else if (tool.HasAnyDialog)
             {
-                _DIALOG_(tool.Mode, tool.MustPick, tip ?? act.Label);
+                _DIALOG_(tool.Mode, tool.MustPick, act.Label ?? title);
             }
 
-            if (tip != null)
+            if (title != null)
             {
                 Add(" title=\"");
-                Add(tip);
+                Add(title);
                 Add("\"");
             }
 
@@ -3687,7 +3702,7 @@ namespace ChainFx.Web
                 PutKey(varkey);
                 Add('/');
                 Add(act.Key);
-                if (subscript != -1 && act.Subscript != null)
+                if (subscript > 0 && act.Subscript != null)
                 {
                     Add('-');
                     Add(subscript);
@@ -4309,6 +4324,7 @@ namespace ChainFx.Web
             if (@readonly) Add(" readonly");
             if (required) Add(" required");
             Add(">");
+
             return this;
         }
 

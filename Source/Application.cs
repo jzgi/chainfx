@@ -32,7 +32,7 @@ namespace ChainFx
         // config
         internal static readonly JObj app;
 
-        internal static readonly JObj program;
+        internal static readonly JObj custom;
 
 
         // X509 certificate
@@ -113,12 +113,12 @@ namespace ChainFx
                 InitNodality(db);
             }
 
-            program = app[nameof(program)];
+            custom = app[nameof(custom)];
         }
 
         public static JObj AppConf => app;
 
-        public static JObj ProgramConf => program;
+        public static JObj CustomConf => custom;
 
         public static string Name => name;
 

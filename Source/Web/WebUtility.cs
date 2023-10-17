@@ -275,7 +275,7 @@ namespace ChainFx.Web
             h.Add("<body");
             if (refresh > 0)
             {
-                h.Add(" class=\"uk-background-secondary\"");
+                h.Add(" class=\"uk-dark\"");
             }
             if (onload != null)
             {
@@ -296,7 +296,7 @@ namespace ChainFx.Web
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, int maxage = 12)
+        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, int maxage = 12, string title = null)
         {
             var h = new HtmlBuilder(true, 8 * 1024)
             {
@@ -307,6 +307,12 @@ namespace ChainFx.Web
             h.Add("<html>");
 
             h.Add("<head>");
+            if (title != null)
+            {
+                h.Add("<title>");
+                h.Add(title);
+                h.Add("</title>");
+            }
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -315,7 +321,7 @@ namespace ChainFx.Web
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body>");
+            h.Add("<body class=\"uk-light\">");
 
             main?.Invoke(h);
 
