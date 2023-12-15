@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// Represents an output sink that can be a dataset, a single data object, or only some of its data fields.

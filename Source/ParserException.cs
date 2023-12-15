@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// To indicate that a content parsing-related exception occured.

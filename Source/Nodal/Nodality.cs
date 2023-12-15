@@ -4,309 +4,324 @@ using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
 
-namespace ChainFx.Nodal
+namespace ChainFX.Nodal;
+
+/// <summary>
+/// The structure & environment for data store and digital twins. 
+/// </summary>
+public abstract class Nodality
 {
+    // db data source
+    private static DbSource dbSource;
+
+    // db object caches
+    private static readonly List<DbCache> maps = new();
+
+    private static readonly List<DbCache> valueCaches = new();
+
+    private static readonly List<DbCache> grouperCaches = new();
+
+    // twin caches
+    private static readonly List<DbCache> twinCaches = new();
+
+
     /// <summary>
-    /// The structure & environment for data store and digital twins. 
+    /// To register a CLR type to map to a postgresql composite type.
     /// </summary>
-    public abstract class Nodality
+    /// <param name="dbTyp">the composite type name</param>
+    /// <typeparam name="T">the CLR type</typeparam>
+    public static void MapCompositeDbType<T>(string dbTyp = null)
     {
-        // db data source
-        static DbSource dbSource;
-
-        // db object caches
-        static readonly List<DbCache> caches = new();
-
-        // twin graphs
-        static readonly List<TwinGraph> graphs = new();
-
-
-        /// <summary>
-        /// To register a CLR type to map to a postgresql composite type.
-        /// </summary>
-        /// <param name="dbTyp">the composite type name</param>
-        /// <typeparam name="T">the CLR type</typeparam>
-        public static void MapComposite<T>(string dbTyp = null)
+        if (dbTyp == null)
         {
-            if (dbTyp == null)
+            dbTyp = typeof(T).Name.ToLower();
+        }
+        NpgsqlConnection.GlobalTypeMapper.MapComposite<T>(dbTyp);
+    }
+
+
+    internal static void InitNodality(JObj dbcfg)
+    {
+        // create db source
+        dbSource = new DbSource(dbcfg);
+    }
+
+
+    public static DbSource DbSource => dbSource;
+
+    public static DbContext NewDbContext(IsolationLevel? level = null)
+    {
+        if (dbSource == null)
+        {
+            throw new DbException("missing 'db' in app.json");
+        }
+
+        var dc = new DbContext();
+        if (level != null)
+        {
+            dc.Begin(level.Value);
+        }
+
+        return dc;
+    }
+
+
+    public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
+        where K : IEquatable<K>, IComparable<K>
+
+    {
+        maps.Add(
+            new DbMap<K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0)
+        where K : IEquatable<K>, IComparable<K>
+
+    {
+        maps.Add(
+            new DbMap<K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static void MakeCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0)
+        where K : IEquatable<K>, IComparable<K>
+
+    {
+        valueCaches.Add(
+            new DbValueCache<K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0)
+        where K : IEquatable<K>, IComparable<K>
+
+    {
+        valueCaches.Add(
+            new DbValueCache<K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static void MakeCache<GK, K, V>(Func<DbContext, GK, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
+        where K : IEquatable<K>, IComparable<K>
+    {
+        grouperCaches.Add(
+            new DbGrouperCache<GK, K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static void MakeCache<GK, K, V>(Func<DbContext, GK, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0)
+        where K : IEquatable<K>, IComparable<K>
+    {
+        grouperCaches.Add(
+            new DbGrouperCache<GK, K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static Map<K, V> Grab<K, V>(short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in maps)
+        {
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                dbTyp = typeof(T).Name.ToLower();
-            }
-            NpgsqlConnection.GlobalTypeMapper.MapComposite<T>(dbTyp);
-        }
-
-
-        internal static void InitNodality(JObj dbcfg)
-        {
-            // create db source
-            dbSource = new DbSource(dbcfg);
-        }
-
-
-        public static DbSource DbSource => dbSource;
-
-        public static DbContext NewDbContext(IsolationLevel? level = null)
-        {
-            if (dbSource == null)
-            {
-                throw new DbException("missing 'db' in app.json");
-            }
-
-            var dc = new DbContext();
-            if (level != null)
-            {
-                dc.Begin(level.Value);
-            }
-
-            return dc;
-        }
-
-
-        #region Cache-API
-
-        public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
-            where K : IEquatable<K>, IComparable<K>
-
-        {
-            caches.Add(
-                new DbSetCache<K, V>(fetch, typeof(V), maxage, flag)
-            );
-        }
-
-        public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0)
-            where K : IEquatable<K>, IComparable<K>
-
-        {
-            caches.Add(
-                new DbSetCache<K, V>(fetch, typeof(V), maxage, flag)
-            );
-        }
-
-        public static void MakeCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0)
-            where K : IEquatable<K>, IComparable<K>
-
-        {
-            caches.Add(
-                new DbKeyValueCache<K, V>(fetch, typeof(V), maxage, flag)
-            );
-        }
-
-        public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0)
-            where K : IEquatable<K>, IComparable<K>
-
-        {
-            caches.Add(
-                new DbKeyValueCache<K, V>(fetch, typeof(V), maxage, flag)
-            );
-        }
-
-        public static void MakeCache<S, K, V>(Func<DbContext, S, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
-            where K : IEquatable<K>, IComparable<K>
-        {
-            caches.Add(
-                new DbKeySetCache<S, K, V>(fetch, typeof(V), maxage, flag)
-            );
-        }
-
-        public static void MakeCache<S, K, V>(Func<DbContext, S, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0)
-            where K : IEquatable<K>, IComparable<K>
-        {
-            caches.Add(
-                new DbKeySetCache<S, K, V>(fetch, typeof(V), maxage, flag)
-            );
-        }
-
-        public static Map<K, V> Grab<K, V>(short flag = 0) where K : IEquatable<K>, IComparable<K>
-        {
-            foreach (var ca in caches)
-            {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return ((DbSetCache<K, V>)ca).Get();
-                    }
+                    return ((DbMap<K, V>)ca).Get();
                 }
             }
-            return null;
         }
+        return null;
+    }
 
-        public static async Task<Map<K, V>> GrabAsync<K, V>(short flag = 0) where K : IEquatable<K>, IComparable<K>
-
+    public static async Task<Map<K, V>> GrabAsync<K, V>(short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in maps)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return await ((DbSetCache<K, V>)ca).GetAsync();
-                    }
+                    return await ((DbMap<K, V>)ca).GetAsync();
                 }
             }
-            return null;
         }
+        return null;
+    }
 
-        public static V GrabValue<K, V>(K key, short flag = 0)
-            where K : IEquatable<K>, IComparable<K>
+    public static bool Expire<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in maps)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return ((DbKeyValueCache<K, V>)ca).Get(key);
-                    }
+                    // return ((DbMap<K, V>)ca).Get();
                 }
             }
-            return default;
         }
+        return false;
+    }
 
-        public static async Task<V> GrabValueAsync<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    public static V GrabValue<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in valueCaches)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return await ((DbKeyValueCache<K, V>)ca).GetAsync(key);
-                    }
+                    return ((DbValueCache<K, V>)ca).Get(key);
                 }
             }
-            return default;
         }
+        return default;
+    }
 
-        public static bool ExpireValue<K, V>(K key, short flag = 0)
-            where K : IEquatable<K>, IComparable<K>
+    public static async Task<V> GrabValueAsync<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in valueCaches)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return ((DbKeyValueCache<K, V>)ca).Remove(key);
-                    }
+                    return await ((DbValueCache<K, V>)ca).GetAsync(key);
                 }
             }
-            return false;
         }
+        return default;
+    }
 
-
-        public static Map<K, V> GrabSet<S, K, V>(S setkey, short flag = 0)
-            where K : IEquatable<K>, IComparable<K>
+    public static bool ExpireValue<K, V>(K key, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in valueCaches)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return ((DbKeySetCache<S, K, V>)ca).Get(setkey);
-                    }
+                    return ((DbValueCache<K, V>)ca).Remove(key);
                 }
             }
-            return null;
         }
+        return false;
+    }
 
-        public static async Task<Map<K, V>> GrabSetAsync<S, K, V>(S setkey, short flag = 0)
-            where K : IEquatable<K>, IComparable<K>
+    public static Map<K, V> GrabGroup<GK, K, V>(GK groupKey, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in grouperCaches)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return await ((DbKeySetCache<S, K, V>)ca).GetAsync(setkey);
-                    }
+                    return ((DbGrouperCache<GK, K, V>)ca).Get(groupKey);
                 }
             }
-            return null;
         }
+        return null;
+    }
 
-        public static bool ExpireSet<S, K, V>(S setkey, short flag = 0)
-            where K : IEquatable<K>, IComparable<K>
+    public static async Task<Map<K, V>> GrabGroupAsync<GK, K, V>(GK groupKey, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in grouperCaches)
         {
-            foreach (var ca in caches)
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                if (ca.Flag == 0 || (ca.Flag & flag) > 0)
+                if (ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
-                    {
-                        return ((DbKeySetCache<S, K, V>)ca).Remove(setkey);
-                    }
+                    return await ((DbGrouperCache<GK, K, V>)ca).GetAsync(groupKey);
                 }
             }
-            return false;
         }
+        return null;
+    }
 
-        #endregion
-
-
-        #region Twin Graph-API
-
-        protected static G MakeGraph<G>(string name, object state = null)
-            where G : TwinGraph, new()
+    public static bool ExpireGroup<GK, K, V>(GK groupKey, short flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        foreach (var ca in grouperCaches)
         {
-            // create service (properties in order)
-            var grh = new G
+            if (ca.Flag == 0 || (ca.Flag & flag) > 0)
             {
-                // Folder = folder ?? name
-            };
-            // svc.Init(prop, servicecfg);
-            graphs.Add(grh);
-
-            // oncreate
-            grh.OnCreate();
-
-            return grh;
-        }
-
-        public static G GetGraph<G, S, T>()
-            where G : TwinGraph<S, T>
-            where S : IEquatable<S>, IComparable<S>
-            where T : class, ITwin<S>
-        {
-            foreach (var grh in graphs)
-            {
-                if (typeof(T).IsAssignableFrom(grh.Typ))
+                if (!ca.IsAsync && typeof(V).IsAssignableFrom(ca.Typ))
                 {
-                    return (G)grh;
+                    return ((DbGrouperCache<GK, K, V>)ca).Remove(groupKey);
                 }
             }
-            return default;
         }
+        return false;
+    }
 
-        public static T GrabTwin<S, T>(int key)
-            where S : IEquatable<S>, IComparable<S>
-            where T : class, ITwin<S>
-        {
-            foreach (var grh in graphs)
-            {
-                if (typeof(T).IsAssignableFrom(grh.Typ))
-                {
-                    return ((TwinGraph<S, T>)grh).Get(key);
-                }
-            }
-            return default;
-        }
 
-        public static T[] GrabTwinSet<S, T>(S gkey, Predicate<T> filter = null, Comparison<T> sorter = null)
-            where S : IEquatable<S>, IComparable<S>
-            where T : class, ITwin<S>
+    #region Twin Cache API
+
+    public static T MakeCache<T>(string name, object state = null) where T : DbCache, new()
+    {
+        // create service (properties in order)
+        var grh = new T
         {
-            foreach (var grh in graphs)
+            // Folder = folder ?? name
+        };
+        // svc.Init(prop, servicecfg);
+        twinCaches.Add(grh);
+
+        // oncreate
+        // grh.OnCreate();
+
+        return grh;
+    }
+
+    /// <summary>
+    /// Gets 
+    /// </summary>
+    /// <typeparam name="C">The cache class</typeparam>
+    /// <typeparam name="FK">fork key type</typeparam>
+    /// <typeparam name="T">twin class</typeparam>
+    /// <returns></returns>
+    public static C GetTwinCache<C, FK, T>() where C : DbTwinCache<FK, T> where FK : IEquatable<FK>, IComparable<FK> where T : class, ITwin<FK>
+    {
+        foreach (var ca in twinCaches)
+        {
+            if (typeof(T).IsAssignableFrom(ca.Typ))
             {
-                if (typeof(T).IsAssignableFrom(grh.Typ))
-                {
-                    return ((TwinGraph<S, T>)grh).GetArray(gkey, filter, sorter);
-                }
+                return (C)ca;
             }
-            return null;
         }
+        return default;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <typeparam name="FK"></typeparam>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GrabTwin<FK, T>(int key) where FK : IEquatable<FK>, IComparable<FK> where T : class, ITwin<FK>
+    {
+        foreach (var ca in twinCaches)
+        {
+            if (typeof(T).IsAssignableFrom(ca.Typ))
+            {
+                return ((DbTwinCache<FK, T>)ca).Get(key);
+            }
+        }
+        return default;
+    }
+
+    public static T[] GrabTwinArray<FK, T>(FK forkKey, Predicate<T> filter = null, Comparison<T> sorter = null)
+        where FK : IEquatable<FK>, IComparable<FK>
+        where T : class, ITwin<FK>
+    {
+        foreach (var ca in twinCaches)
+        {
+            if (typeof(T).IsAssignableFrom(ca.Typ))
+            {
+                return ((DbTwinCache<FK, T>)ca).GetArray(forkKey, filter, sorter);
+            }
+        }
+        return null;
     }
 
     #endregion

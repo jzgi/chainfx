@@ -1,4 +1,4 @@
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// To analyze HTTP header.

@@ -1,13 +1,11 @@
 using System;
 
-namespace ChainFx
+namespace ChainFX;
+
+/// <summary>
+/// An object with an unique key.
+/// </summary>
+public interface IKeyable<out K> where K : IEquatable<K>, IComparable<K>
 {
-    /// <summary>
-    /// An object with an key name so that can be a map element.
-    /// </summary>
-    public interface IKeyable<out K>
-        where K : IEquatable<K>, IComparable<K>
-    {
-        K Key { get; }
-    }
+    K Key { get; }
 }

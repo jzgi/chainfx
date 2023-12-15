@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// A JSON array.

@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// To generate a plain/text string or CSV content. 

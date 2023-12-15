@@ -5,16 +5,15 @@
         <Authors>JZG Institute for IT Research</Authors>
         <TargetFramework>net7.0</TargetFramework>
         <DebugType>portable</DebugType>
-        <PackageId>ChainFx</PackageId>
+        <PackageId>ChainFX</PackageId>
         <LangVersion>11</LangVersion>
         <Company>Jgz Institute for IT Research</Company>
         <PackageProjectUrl>https://github.com/jzgi</PackageProjectUrl>
-        <PackageVersion>4.2.0</PackageVersion>
-        <Title>The Chain Framework</Title>
+        <PackageVersion>4.5</PackageVersion>
+        <Title>The ChainFX Framework</Title>
         <PackageLicenseUrl>Apache 2.0</PackageLicenseUrl>
-        <AssemblyVersion>4.2</AssemblyVersion>
+        <AssemblyVersion>4.5</AssemblyVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>ChainFx</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>x64</PlatformTarget>

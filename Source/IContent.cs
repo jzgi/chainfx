@@ -1,4 +1,4 @@
-﻿namespace ChainFx
+﻿namespace ChainFX
 {
     /// <summary>
     /// Represents a binary content. 

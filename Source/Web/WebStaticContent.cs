@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// A binary static content of certain mime type.

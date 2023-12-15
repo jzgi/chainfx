@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// A work is a virtual web folder that contains a single or collection of resources along with operations on it or them.

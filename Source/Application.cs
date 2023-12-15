@@ -3,15 +3,15 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainFx.Nodal;
-using ChainFx.Web;
+using ChainFX.Nodal;
+using ChainFX.Web;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// The web application scope that holds global states.

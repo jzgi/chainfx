@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using static ChainFx.Web.ToolAttribute;
+using static ChainFX.Web.ToolAttribute;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// For generating dynamic HTML5 content tooled with UiKit.
@@ -3344,7 +3344,6 @@ namespace ChainFx.Web
             // render tabs
             string last = null;
 
-            MAIN_(css: "uk-grid");
             for (int i = 0; i < wrk.SubWorks?.Count; i++)
             {
                 var sub = wrk.SubWorks.ValueAt(i);
@@ -3372,7 +3371,7 @@ namespace ChainFx.Web
                         _FORM();
                     }
 
-                    FORM_("uk-card uk-card-default");
+                    FORM_("uk-card uk-card-primary");
                     if (compact)
                     {
                         H3(sub.Header, "uk-card-header");
@@ -3411,7 +3410,6 @@ namespace ChainFx.Web
 
             _UL();
             _FORM();
-            _MAIN();
         }
 
         public void AHELP(bool bottom = true)
@@ -3627,6 +3625,7 @@ namespace ChainFx.Web
 
             if (!string.IsNullOrEmpty(cap))
             {
+                if (icon != null) Add("&nbsp;");
                 Add(cap);
             }
 

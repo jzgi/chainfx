@@ -1,15 +1,13 @@
 ﻿using System;
 
-namespace ChainFx
+namespace ChainFX;
+
+public interface IGroupable<K> : IKeyable<K> where K : IEquatable<K>, IComparable<K>
 {
-    public interface IGroupable<K> : IKeyable<K>
-        where K : IEquatable<K>, IComparable<K>
-    {
-        /// <summary>
-        /// To determine if it is in the same group as the given object. 
-        /// </summary>
-        /// <param name="akey"></param>
-        /// <returns></returns>
-        bool GroupWith(K akey);
-    }
+    /// <summary>
+    /// To determine whether the same group as the specified key. 
+    /// </summary>
+    /// <param name="akey"></param>
+    /// <returns></returns>
+    bool IsSameGroupAs(K akey);
 }

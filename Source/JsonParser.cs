@@ -1,4 +1,4 @@
-namespace ChainFx
+namespace ChainFX
 {
     ///
     /// Parse JSON into object model from either bytes or string.

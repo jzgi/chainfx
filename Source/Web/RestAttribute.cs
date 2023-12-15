@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// A comment tag for generating RESTful API documentation. 

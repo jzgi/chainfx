@@ -2,9 +2,9 @@
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ChainFx.Nodal;
+using ChainFX.Nodal;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// The descriptor for an action method. 

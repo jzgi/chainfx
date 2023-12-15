@@ -1,9 +1,12 @@
 ﻿using System;
 
-namespace ChainFx.Nodal;
+namespace ChainFX.Nodal;
 
-public interface ITwin<out S> : IKeyable<int>
-    where S : IEquatable<S>, IComparable<S>
+/// <summary>
+/// To de
+/// </summary>
+/// <typeparam name="FK">the fork-key type</typeparam>
+public interface ITwin<out FK> : IKeyable<int> where FK : IEquatable<FK>, IComparable<FK>
 {
-    S SetKey { get; }
+    FK ForkKey { get; }
 }

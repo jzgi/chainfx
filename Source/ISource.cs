@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// Represents a provider or input source of dataset, a data object, or some of its data fields.

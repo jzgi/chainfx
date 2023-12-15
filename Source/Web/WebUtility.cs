@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// A global byte buffer pool.

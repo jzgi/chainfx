@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// To document the response returned by the target action.

@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     ///
     /// Thrown to indicate an illegal structuring in a work hierarchy.

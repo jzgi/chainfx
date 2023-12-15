@@ -1,4 +1,4 @@
-﻿namespace ChainFx
+﻿namespace ChainFX
 {
     /// <summary>
     /// A provider that write its contents. 

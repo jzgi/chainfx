@@ -1,18 +1,16 @@
-ChainFx (品链框架) is a web application framework for building industrial-oriented phygital platform systems.
+ChainFX (品链框架) is a web framework for building phygital industrial-internet systems.
 
-ChainFx introduces an new incremental engineering process, that allows beginning with the abstraction and evolving into detail realization
+ChainFX well maps UI logic, business logic, workflow process and access control to C# coding structures, enabling rapid & incremental development of complex, high-performance and low-cost industrial solutions.
 
-The framework has invented types of caches and in-memory representation structures particularly for classic inductiral scenarioes: static datasets, organizational hiararchy, IoT, and so on.
+The framework has implemented efficient practices for common issues related to industrial internet. Such as high traffic, multi-layer management, ever-evolving business logic, IoT, and so on.
 
 <pre>
-dotnet add package ChainFx --version 4.5
+dotnet add package ChainFX --version 4.5
 </pre>
 
-A ChainFx-based application is made up of one single master-nodal system, perhaps plus a number of sub-nodal systems. 
+ChainFX depends on the following open source software products: 
 
-ChainFx depends on the following open source software products: 
-
-| ![kestrel](https://raw.githubusercontent.com/jzgi/chainfx/master/Docs/dotnet.png) | ![npgsql](https://raw.githubusercontent.com/jzgi/chainfx/master/Docs/postgresql.png) |
+| ![kestrel](https://raw.githubusercontent.com/jzgi/ChainFX/master/Docs/dotnet.png) | ![npgsql](https://raw.githubusercontent.com/jzgi/ChainFX/master/Docs/postgresql.png) |
 |-----------------------------------------------------------------------------------| ----- |
 | [kestrel](https://github.com/aspnet/AspNetCore)                                   | [npgsql](http://www.npgsql.org) |
 | .NET's built-in web engine                                                        | .NET access to PostgreSQL |

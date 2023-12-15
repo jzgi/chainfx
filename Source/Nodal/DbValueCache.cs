@@ -2,16 +2,18 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace ChainFx.Nodal;
+namespace ChainFX.Nodal;
 
 /// <summary>
-/// A cache for multiple objects.
+/// A cache for key-value pairs retrived from database..
 /// </summary>
-internal class DbKeyValueCache<K, V> : DbCache
+/// <typeparam name="K">the type of the keys in the cache</typeparam>
+/// <typeparam name="V">the type of the values in the cache</typeparam>
+internal class DbValueCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
 {
-    readonly bool async;
+    private readonly bool async;
 
-    readonly ConcurrentDictionary<K, (int, V)> cached = new();
+    private readonly ConcurrentDictionary<K, (int, V)> data = new();
 
     /// <summary>
     /// The sync version of constructor.
@@ -20,7 +22,7 @@ internal class DbKeyValueCache<K, V> : DbCache
     /// <param name="typ"></param>
     /// <param name="maxage"></param>
     /// <param name="flag"></param>
-    internal DbKeyValueCache(Func<DbContext, K, V> fetch, Type typ, int maxage, byte flag) :
+    internal DbValueCache(Func<DbContext, K, V> fetch, Type typ, int maxage, byte flag) :
         base(fetch, typ, maxage, flag)
     {
         async = false;
@@ -33,7 +35,7 @@ internal class DbKeyValueCache<K, V> : DbCache
     /// <param name="typ"></param>
     /// <param name="maxage"></param>
     /// <param name="flag"></param>
-    internal DbKeyValueCache(Func<DbContext, K, Task<V>> fetch, Type typ, int maxage, byte flag) :
+    internal DbValueCache(Func<DbContext, K, Task<V>> fetch, Type typ, int maxage, byte flag) :
         base(fetch, typ, maxage, flag)
     {
         async = true;
@@ -46,12 +48,12 @@ internal class DbKeyValueCache<K, V> : DbCache
     {
         if (!(fetch is Func<DbContext, K, V> func)) // check fetcher
         {
-            throw new DbException("Wrong fetcher for " + Typ);
+            throw new DbCacheException("incorrect fetcher for " + Typ);
         }
         var tick = Environment.TickCount & int.MaxValue; // positive tick
 
-        var exist = cached.TryGetValue(key, out var ety);
-        if (exist && tick < ety.Item1)
+        var hit = data.TryGetValue(key, out var ety);
+        if (hit && tick < ety.Item1)
         {
             return ety.Item2;
         }
@@ -61,7 +63,7 @@ internal class DbKeyValueCache<K, V> : DbCache
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = func(dc, key);
 
-        cached.AddOrUpdate(key, ety, (k, old) => ety); // re-cache
+        data.AddOrUpdate(key, ety, (_, _) => ety); // re-cache
 
         return ety.Item2;
     }
@@ -70,12 +72,13 @@ internal class DbKeyValueCache<K, V> : DbCache
     {
         if (!(fetch is Func<DbContext, K, Task<V>> func)) // check fetcher
         {
-            throw new DbException("Wrong fetcher for " + Typ);
+            throw new DbCacheException("incorrect fetcher for " + Typ);
         }
+
         var tick = Environment.TickCount & int.MaxValue; // positive tick
 
-        var exist = cached.TryGetValue(key, out var ety);
-        if (exist && tick < ety.Item1)
+        var hit = data.TryGetValue(key, out var ety);
+        if (hit && tick < ety.Item1)
         {
             return ety.Item2;
         }
@@ -85,13 +88,13 @@ internal class DbKeyValueCache<K, V> : DbCache
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = await func(dc, key);
 
-        cached.AddOrUpdate(key, ety, (k, old) => ety); // re-cache
+        data.AddOrUpdate(key, ety, (_, _) => ety); // re-cache
 
         return ety.Item2;
     }
 
     public bool Remove(K key)
     {
-        return cached.TryRemove(key, out _);
+        return data.TryRemove(key, out _);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// A lightweight alternative to the List class. The internal array is created on demand.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// To generate a urlencoded byte or char string.

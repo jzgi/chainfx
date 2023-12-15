@@ -1,4 +1,4 @@
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// The enumeration of JSON member types.

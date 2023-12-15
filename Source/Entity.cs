@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// A data model that represents a general entity object.

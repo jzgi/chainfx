@@ -3,9 +3,9 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using static ChainFx.DataUtility;
+using static ChainFX.DataUtility;
 
-namespace ChainFx.Web;
+namespace ChainFX.Web;
 
 /// <summary>
 /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.

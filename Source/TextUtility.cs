@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace ChainFx
+namespace ChainFX
 {
     public static class TextUtility
     {

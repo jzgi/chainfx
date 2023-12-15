@@ -1,4 +1,4 @@
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     public enum Modal
     {

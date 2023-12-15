@@ -3,7 +3,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     internal class WebLifetime : IHostApplicationLifetime
     {

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace ChainFx.Web;
+namespace ChainFX.Web;
 
 /// <summary>
 /// To determine principal identity based on current web context. The interaction with user, however, is not included.

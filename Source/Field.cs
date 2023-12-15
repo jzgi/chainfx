@@ -1,6 +1,6 @@
 using System;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// A field in a form model.

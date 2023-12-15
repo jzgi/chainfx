@@ -11,9 +11,8 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static ChainFx.Application;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// An embedded web service that wraps around the kestrel HTTP engine.
@@ -24,31 +23,24 @@ namespace ChainFx.Web
 
         //
         // http implementation
-        string address;
+        private string address;
 
         // the embedded HTTP engine
-        readonly KestrelServer server;
+        private readonly KestrelServer server;
 
 
         // local shared cache or not
-        bool cache;
+        private bool cache;
 
 
-        string proxy;
+        private string proxy;
 
         // shared cache of previous responses
-        ConcurrentDictionary<string, WebStaticContent> shared;
+        private ConcurrentDictionary<string, WebStaticContent> shared;
 
 
         // the cache cleaner thread, can be null
-        Thread cleaner;
-
-
-        // interval for web event processing cycle, in seconds
-        short cycle;
-
-        // client connector to the origin service
-        WebConnect connect;
+        private Thread cleaner;
 
 
         protected WebService()
@@ -63,12 +55,12 @@ namespace ChainFx.Web
                 ApplicationServices = this
             };
 
-            if (Certificate != null)
+            if (Application.Certificate != null)
             {
-                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Certificate);
+                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Application.Certificate);
             }
 
-            server = new KestrelServer(Options.Create(opts), TransportFactory, Logger);
+            server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
         }
 
         internal void Init(string prop, JObj servicecfg)
@@ -97,11 +89,11 @@ namespace ChainFx.Web
         {
             if (serviceType == typeof(ILogger<KestrelServer>))
             {
-                return Logger;
+                return Application.Logger;
             }
             if (serviceType == typeof(ILoggerFactory))
             {
-                return Logger;
+                return Application.Logger;
             }
             return null;
         }
@@ -359,13 +351,13 @@ namespace ChainFx.Web
             var modified = File.GetLastWriteTime(path);
             byte[] bytes;
             bool gzip = false;
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            await using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 int len = (int)fs.Length;
                 if (len > STATIC_FILE_GZIP_THRESHOLD)
                 {
                     var ms = new MemoryStream(len);
-                    using (var gzs = new GZipStream(ms, CompressionMode.Compress))
+                    await using (var gzs = new GZipStream(ms, CompressionMode.Compress))
                     {
                         await fs.CopyToAsync(gzs);
                     }
@@ -375,7 +367,7 @@ namespace ChainFx.Web
                 else
                 {
                     bytes = new byte[len];
-                    await fs.ReadAsync(bytes, 0, len);
+                    len = await fs.ReadAsync(bytes, 0, len);
                 }
             }
 

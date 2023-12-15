@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// To document a GET request to the target action.

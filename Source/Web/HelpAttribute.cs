@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     /// <summary>
     /// To document an help information to the target work or action.

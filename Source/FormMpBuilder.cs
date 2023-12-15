@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// To generate multipart/form-data binary content, with the part Content-Length extension.

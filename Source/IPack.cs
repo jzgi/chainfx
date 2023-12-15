@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx.Nodal;
+namespace ChainFX.Nodal;
 
 public interface IPack<in B>
 {

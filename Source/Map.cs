@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
@@ -178,7 +178,7 @@ namespace ChainFx
             if (value is IGroupable<K> gkeyable)
             {
                 // compare to current head
-                if (head == -1 || !gkeyable.GroupWith(entries[head].key))
+                if (head == -1 || !gkeyable.IsSameGroupAs(entries[head].key))
                 {
                     head = idx;
                 }

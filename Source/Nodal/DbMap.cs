@@ -2,25 +2,28 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChainFx.Nodal;
+namespace ChainFX.Nodal;
 
 /// <summary>
-/// A cache for single entire map.
+/// A cache for a single map polulated from database. 
 /// </summary>
-internal class DbSetCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
+/// <typeparam name="K">the type of the keys in the cache</typeparam>
+/// <typeparam name="V">the type of the values in the cache</typeparam>
+internal class DbMap<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
 {
-    readonly bool async;
+    private readonly bool async;
 
     // either readerwriterlock or semaphore
     protected readonly IDisposable slim;
 
-    protected Map<K, V> cached;
+    protected Map<K, V> data;
 
     // tick count,   
-    volatile int expiry;
+    private volatile int expiry;
 
 
-    internal DbSetCache(Func<DbContext, Map<K, V>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbMap(Func<DbContext, Map<K, V>> fetch, Type typ, int maxage, byte flag) :
+        base(fetch, typ, maxage, flag)
     {
         async = false;
         slim = new ReaderWriterLockSlim();
@@ -33,7 +36,8 @@ internal class DbSetCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K
     /// <param name="typ"></param>
     /// <param name="maxage"></param>
     /// <param name="flag"></param>
-    internal DbSetCache(Func<DbContext, Task<Map<K, V>>> fetch, Type typ, int maxage, byte flag) : base(fetch, typ, maxage, flag)
+    internal DbMap(Func<DbContext, Task<Map<K, V>>> fetch, Type typ, int maxage, byte flag) :
+        base(fetch, typ, maxage, flag)
     {
         async = true;
         slim = new SemaphoreSlim(1, 1);
@@ -46,33 +50,34 @@ internal class DbSetCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K
     {
         if (!(fetch is Func<DbContext, Map<K, V>> func)) // check fetcher
         {
-            throw new DbException("Missing fetcher for " + Typ);
+            throw new DbCacheException("incorrect fetcher for " + Typ);
         }
-        var @lock = (ReaderWriterLockSlim)slim;
-        @lock.EnterUpgradeableReadLock();
+
+        var lck = (ReaderWriterLockSlim)slim;
+        lck.EnterUpgradeableReadLock();
         try
         {
             var tick = Environment.TickCount & int.MaxValue; // positive tick
             if (tick >= expiry) // if expires
             {
-                @lock.EnterWriteLock();
+                lck.EnterWriteLock();
                 try
                 {
                     // re-fetch
                     using var dc = Nodality.NewDbContext();
-                    cached = func(dc);
+                    data = func(dc);
                     expiry = tick + MaxAge * 1000;
                 }
                 finally
                 {
-                    @lock.ExitWriteLock();
+                    lck.ExitWriteLock();
                 }
             }
-            return cached;
+            return data;
         }
         finally
         {
-            @lock.ExitUpgradeableReadLock();
+            lck.ExitUpgradeableReadLock();
         }
     }
 
@@ -80,8 +85,9 @@ internal class DbSetCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K
     {
         if (!(fetch is Func<DbContext, Task<Map<K, V>>> func)) // check fetcher
         {
-            throw new DbException("Wrong fetcher for " + Typ);
+            throw new DbCacheException("incorrect fetcher for " + Typ);
         }
+
         var semaphore = (SemaphoreSlim)slim;
         await semaphore.WaitAsync();
         try
@@ -91,11 +97,11 @@ internal class DbSetCache<K, V> : DbCache where K : IComparable<K>, IEquatable<K
             {
                 // re-fetch
                 using var dc = Nodality.NewDbContext();
-                cached = await func(dc);
+                data = await func(dc);
                 expiry = tick + MaxAge * 1000;
             }
 
-            return cached;
+            return data;
         }
         finally
         {

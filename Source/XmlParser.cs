@@ -1,4 +1,4 @@
-namespace ChainFx
+namespace ChainFX
 {
     /// <summary>
     /// An XML parser structure that deals with well-formed XML documents.

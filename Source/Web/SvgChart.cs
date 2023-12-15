@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFx.Web
+namespace ChainFX.Web
 {
     public class SvgChart<S> : IResource where S : struct
     {
