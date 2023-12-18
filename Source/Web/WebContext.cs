@@ -60,10 +60,10 @@ namespace ChainFX.Web
         ///
         public IData Principal { get; set; }
 
-        // higher level role goes down to act
-        public bool Super { get; set; }
+        public short Role { get; internal set; }
 
-        public short Role { get; set; }
+        // higher level role goes down to act
+        public bool Super { get; internal set; }
 
         //
         // the segment stack

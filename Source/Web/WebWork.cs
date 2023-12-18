@@ -387,9 +387,15 @@ namespace ChainFX.Web
 
         public bool DoAuthorize(WebContext wc, bool mock)
         {
-            if (Authorize != null)
+            if (Authorize != null && wc.Principal != null)
             {
-                return wc.Principal != null && Authorize.Do(wc, mock);
+                var yes = Authorize.DoCheck(wc, out var super);
+                if (yes && !mock)
+                {
+                    wc.Role = Authorize.Role;
+                    wc.Super = super;
+                }
+                return yes;
             }
 
             return true;

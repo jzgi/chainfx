@@ -19,8 +19,8 @@ namespace ChainFX
     public abstract class Application : Nodality
     {
         public const string
-            APP_JSON = "app.json",
-            CERT_PFX = "cert.pfx";
+            APPLICATION_JSON = "application.json",
+            CERTIFICATE_PFX = "certificate.pfx";
 
 
         static readonly string name;
@@ -30,13 +30,13 @@ namespace ChainFX
         static readonly string secret;
 
         // config
-        internal static readonly JObj app;
+        internal static readonly JObj config;
 
         internal static readonly JObj custom;
 
 
         // X509 certificate
-        static readonly X509Certificate2 cert;
+        static readonly X509Certificate2 certificate;
 
         // the global logger
         internal static readonly FileLogger logger;
@@ -63,16 +63,15 @@ namespace ChainFX
             // load the app config
             //
 
-            var bytes = File.ReadAllBytes(APP_JSON);
+            var bytes = File.ReadAllBytes(APPLICATION_JSON);
             var parser = new JsonParser(bytes, bytes.Length);
-            app = (JObj)parser.Parse();
-
-            name = app[nameof(name)];
+            config = (JObj)parser.Parse();
+            name = config[nameof(name)];
 
             // logging and logger
             //
 
-            logging = app[nameof(logging)];
+            logging = config[nameof(logging)];
 
             var file = DateTime.Now.ToString("yyyyMM") + ".log";
             logger = new FileLogger(file)
@@ -86,17 +85,17 @@ namespace ChainFX
 
             // security
             //
-            secret = app[nameof(secret)];
+            secret = config[nameof(secret)];
 
             // X509 certificate
             //
 
-            string certpasswd = app[nameof(certpasswd)];
+            string certpasswd = config[nameof(certpasswd)];
             if (certpasswd != null)
             {
                 try
                 {
-                    cert = new X509Certificate2(File.ReadAllBytes(CERT_PFX), certpasswd);
+                    certificate = new X509Certificate2(File.ReadAllBytes(CERTIFICATE_PFX), certpasswd);
                 }
                 catch (Exception e)
                 {
@@ -107,18 +106,24 @@ namespace ChainFX
             // db config
             //
 
-            JObj db = app[nameof(db)];
+            JObj db = config[nameof(db)];
             if (db != null)
             {
                 InitNodality(db);
             }
 
-            custom = app[nameof(custom)];
+            custom = config[nameof(custom)];
         }
 
-        public static JObj AppConf => app;
+        /// <summary>
+        /// The configuration for the application (application.json).
+        /// </summary>
+        public static JObj Config => config;
 
-        public static JObj CustomConf => custom;
+        /// <summary>
+        /// The custom section within the application configuration.
+        /// </summary>
+        public static JObj CustomConfig => custom;
 
         public static string Name => name;
 
@@ -126,7 +131,7 @@ namespace ChainFX
 
         public static FileLogger Logger => logger;
 
-        public static X509Certificate2 Certificate => cert;
+        public static X509Certificate2 Certificate => certificate;
 
         public static string Secret => secret;
 
@@ -134,29 +139,29 @@ namespace ChainFX
         // ReSharper disable once ParameterHidesMember
         public static S CreateService<S>(string name, string folder = null) where S : WebService, new()
         {
-            if (app == null)
+            if (config == null)
             {
-                throw new ApplicationException("missing app.json");
+                throw new ApplicationException("missing " + APPLICATION_JSON);
             }
 
             // web config
             //
 
             var prop = "service-" + name;
-            var serviceConf = (JObj)app[prop];
+            var serviceConfig = (JObj)config[prop];
 
-            if (serviceConf == null)
+            if (serviceConfig == null)
             {
-                throw new ApplicationException("missing '" + prop + "' in app.json");
+                throw new ApplicationException("missing '" + prop + "' in " + APPLICATION_JSON);
             }
 
             // create service (properties in order)
             var svc = new S
             {
                 Name = name,
-                Folder = folder ?? name
+                Folder = folder
             };
-            svc.Init(prop, serviceConf);
+            svc.Init(prop, serviceConfig);
 
             services.Add(name, svc);
 

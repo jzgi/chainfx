@@ -63,9 +63,9 @@ namespace ChainFX.Web
             server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
         }
 
-        internal void Init(string prop, JObj servicecfg)
+        internal void Init(string prop, JObj serviceConfig)
         {
-            address = servicecfg[nameof(address)];
+            address = serviceConfig[nameof(address)];
             if (address == null)
             {
                 throw new ApplicationException("missing 'url' in app.json web-" + prop);
@@ -73,14 +73,14 @@ namespace ChainFX.Web
             var feat = server.Features.Get<IServerAddressesFeature>();
             feat.Addresses.Add(address);
 
-            cache = servicecfg[nameof(cache)];
+            cache = serviceConfig[nameof(cache)];
             if (cache)
             {
                 // create the response cache
                 shared = new ConcurrentDictionary<string, WebStaticContent>(ConcurrencyLevel, 1024);
             }
 
-            proxy = servicecfg[nameof(proxy)];
+            proxy = serviceConfig[nameof(proxy)];
         }
 
 
@@ -104,7 +104,7 @@ namespace ChainFX.Web
 
         public string Proxy => proxy;
 
-        public string VisitUrl => proxy ?? address;
+        public string PublicUrl => proxy ?? address;
 
 
         protected internal async Task StartAsync(CancellationToken token)

@@ -8,6 +8,16 @@ namespace ChainFX.Web
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
     public abstract class AuthorizeAttribute : Attribute
     {
-        public abstract bool Do(WebContext wc, bool mock);
+        // org role requirement (bitwise)
+        private readonly short role;
+
+        protected AuthorizeAttribute(short role)
+        {
+            this.role = role;
+        }
+
+        public short Role => role;
+
+        public abstract bool DoCheck(WebContext wc, out bool super);
     }
 }
