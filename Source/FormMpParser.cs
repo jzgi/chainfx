@@ -21,13 +21,13 @@ namespace ChainFX
             int len = boundary.Length;
             byte[] a = new byte[4 + len];
             int i = 0;
-            a[i++] = (byte) '\r';
-            a[i++] = (byte) '\n';
-            a[i++] = (byte) '-';
-            a[i++] = (byte) '-';
+            a[i++] = (byte)'\r';
+            a[i++] = (byte)'\n';
+            a[i++] = (byte)'-';
+            a[i++] = (byte)'-';
             for (int k = 0; k < len; k++, i++)
             {
-                a[i] = (byte) boundary[k];
+                a[i] = (byte)boundary[k];
             }
             this.bound = a;
             this.buffer = buffer;
@@ -37,13 +37,13 @@ namespace ChainFX
         public Form Parse()
         {
             // locality for performance
-            byte[] bound_ = this.bound;
-            byte[] buffer_ = this.buffer;
-            int length_ = this.length;
+            byte[] bound_ = bound;
+            byte[] buffer_ = buffer;
+            int length_ = length;
 
             // UTF-8 header builder
-            HeaderText hdr = new HeaderText(128);
-            Text text = new Text(128);
+            var hdr = new HeaderText(128);
+            var text = new Text(128);
 
             // keep local for speed
             int boundlen = bound_.Length;
@@ -106,7 +106,7 @@ namespace ChainFX
                         idx++;
                         if (idx >= boundlen) // fully matched the bound accumulatively
                         {
-                            if (frm == null) frm = new Form(true) {Buffer = buffer_};
+                            if (frm == null) frm = new Form(true) { Buffer = buffer_ };
                             if (plain)
                                 frm.Add(name, text.ToString());
                             else

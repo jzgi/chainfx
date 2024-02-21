@@ -8,15 +8,16 @@ namespace ChainFX.Web
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true)]
     public abstract class AuthorizeAttribute : Attribute
     {
-        // org role requirement (bitwise)
-        private readonly short role;
+        /// <summary>
+        /// The access type to check upon; A value of zero means any type, otherwise a specific access type.
+        /// </summary>
+        public short AccessTyp { get; protected set; }
 
-        protected AuthorizeAttribute(short role)
-        {
-            this.role = role;
-        }
+        /// <summary>
+        /// The role to check upon under certain access type.
+        /// </summary>
+        public short Role { get; protected set; }
 
-        public short Role => role;
 
         public abstract bool DoCheck(WebContext wc, out bool super);
     }

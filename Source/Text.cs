@@ -49,12 +49,12 @@ namespace ChainFX
             {
                 if (b > 0xff) // if a char already
                 {
-                    Add((char) b);
+                    Add((char)b);
                     return;
                 }
                 if (b < 0x80)
                 {
-                    Add((char) b); // single byte
+                    Add((char)b); // single byte
                 }
                 else if (b >= 0xc0 && b < 0xe0)
                 {
@@ -71,7 +71,7 @@ namespace ChainFX
             {
                 sum |= (b & 0x3f);
                 rest--;
-                Add((char) sum);
+                Add((char)sum);
             }
             else if (rest == 2)
             {

@@ -1778,17 +1778,18 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder ADIALOG_<A, B, C>(A a, B b, C c, int mode, bool pick, string tip = null, string css = null)
+        public HtmlBuilder ADIALOG_<A, B, C>(A a, B b, C c, int mode, bool pick, string tip = null, bool inactive = false, string css = null)
         {
-            Add("<a");
+            Add("<a class=\"");
             if (css != null)
             {
-                Add(" class=\"");
                 Add(css);
-                Add("\"");
             }
-
-            Add(" href=\"");
+            if (inactive)
+            {
+                Add(" uk-inactive");
+            }
+            Add("\" href=\"");
             PutKey(a);
             PutKey(b);
             PutKey(c);
@@ -2183,11 +2184,10 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder NAVBAR<V>(string uri, int subscript, Map<short, V> map, Func<short, V, bool> filter = null)
+        public HtmlBuilder NAVBAR<V>(string uri, int subscript, Map<short, V> map, Func<short, V, bool> filter = null, Func<short, int> subscriptor = null)
         {
             Add("<nav class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
-            int num = 0;
             var count = map.Count;
             for (int i = 0; i < count; i++)
             {
@@ -2200,7 +2200,7 @@ namespace ChainFX.Web
                 }
 
                 Add("<li");
-                if (k == subscript || (num == 6 && subscript == 0))
+                if (k == subscript)
                 {
                     Add(" class=\"uk-active\"");
                 }
@@ -2208,11 +2208,17 @@ namespace ChainFX.Web
                 Add("><a href=\"");
                 Add(uri);
                 Add('-');
-                Add(k);
+                if (subscriptor != null)
+                {
+                    Add(subscriptor(k));
+                }
+                else
+                {
+                    Add(k);
+                }
                 Add("\" onclick=\"goto(this.href, event);\">");
                 Add(v.ToString());
                 Add("</a></li>");
-                num++;
             }
 
             Add("</ul>");
@@ -2221,6 +2227,7 @@ namespace ChainFX.Web
 
             return this;
         }
+
 
         public HtmlBuilder FORM_(string css = null, string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null)
         {
@@ -2633,6 +2640,25 @@ namespace ChainFX.Web
             return this;
         }
 
+        public HtmlBuilder SLIDERUL_()
+        {
+            Add("<div class=\"uk-position-relative uk-visible-toggle uk-light\" tabindex=\"-1\" uk-slider=\"clsActivated: uk-transition-active; center: true; autoplay: true\">");
+            Add("<ul class=\"uk-slider-items uk-grid\">");
+
+            return this;
+        }
+
+        public HtmlBuilder _SLIDERUL()
+        {
+            Add("</ul>");
+
+            Add("<a class=\"uk-position-center-left uk-position-small uk-hidden-hover\" href uk-slidenav-previous uk-slider-item=\"previous\"></a>");
+            Add("<a class=\"uk-position-center-right uk-position-small uk-hidden-hover\" href uk-slidenav-next uk-slider-item=\"next\"></a>");
+            Add("</div>");
+
+            return this;
+        }
+
         public HtmlBuilder TABLE_(bool dark = false, string css = null)
         {
             // Add("<div class=\"uk-overflow-auto\">");
@@ -2979,6 +3005,13 @@ namespace ChainFX.Web
                 Add(css);
             }
             Add("\">");
+
+            bool astack = Web.Query[nameof(astack)];
+            if (astack)
+            {
+                Add("<a class=\"uk-icon-button\" href=\"javascript: window.parent.closeUp(false);\" uk-icon=\"icon: chevron-left; ratio: 1.75\"></a>");
+            }
+
             return this;
         }
 
@@ -3336,7 +3369,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public void WORKBOARD(int twinSpy = 0, bool compact = true, short status = 255)
+        public void WORKBOARD(short accessTyp, int twinSpy = 0, bool compact = true, short status = 255)
         {
             var wc = Web;
             var wrk = wc.Work;
@@ -3357,7 +3390,9 @@ namespace ChainFX.Web
                     continue;
                 }
 
-                if (sub.Ui == null || !sub.DoAuthorize(wc, true))
+                // check access type to determine if include it or not
+                var atyp = sub.Authorize?.AccessTyp;
+                if (sub.Ui == null || (accessTyp & atyp) != atyp)
                 {
                     continue;
                 }
@@ -4974,8 +5009,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool showkey = false, bool required = true, sbyte size = 0, bool rtl = false, bool @readonly = false, string onchange = null)
-            where K : IEquatable<K>, IComparable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool showkey = false, bool required = true, sbyte size = 0, bool rtl = false, bool @readonly = false, string onchange = null) where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, false, required, size, rtl, onchange);
             if (opts != null)
@@ -5056,8 +5090,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0)
-            where K : IEquatable<K>, IComparable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0) where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)
@@ -5098,9 +5131,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, V[] opts, Func<V, bool> filter = null, bool required = true, sbyte size = 0)
-            where K : IEquatable<K>, IComparable<K>
-            where V : IKeyable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, V[] opts, Func<V, bool> filter = null, bool required = true, sbyte size = 0) where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
         {
             SELECT_(label, name, false, required, size);
             if (opts != null)
@@ -5130,9 +5161,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, V[] opts, Func<V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0)
-            where K : IEquatable<K>, IComparable<K>
-            where V : IKeyable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, V[] opts, Func<V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0) where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)

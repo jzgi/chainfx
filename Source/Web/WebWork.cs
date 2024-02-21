@@ -83,11 +83,21 @@ namespace ChainFX.Web
                 {
                     act = new WebAction(this, mi, async, pis[1].Name);
                 }
-                else continue;
+                else
+                {
+                    continue;
+                }
 
                 actions.Add(act);
-                if (act.Key == string.Empty) @default = act;
-                if (act.Key == "catch") @catch = act;
+                if (act.Key == string.Empty)
+                {
+                    act.IsDefault = true;
+                    @default = act;
+                }
+                if (act.Key == "catch")
+                {
+                    @catch = act;
+                }
             }
 
             // gather tooled action methods
@@ -214,14 +224,14 @@ namespace ChainFX.Web
         /// </summary>
         /// <param name="name">the identifying name for the work</param>
         /// <param name="state"></param>
-        /// <param name="header"></param>
         /// <param name="ui">to override class-wise UI attribute</param>
         /// <param name="authenticate"></param>
         /// <param name="authorize">to override class-wise Authorize attribute</param>
+        /// <param name="header"></param>
         /// <typeparam name="T">the type of work to create</typeparam>
         /// <returns>The newly created and subwork instance.</returns>
         /// <exception cref="ForbiddenException">Thrown if error</exception>
-        protected T CreateWork<T>(string name, object state = null, string header = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null) where T : WebWork, new()
+        protected T CreateWork<T>(string name, object state = null, UiAttribute ui = null, AuthenticateAttribute authenticate = null, AuthorizeAttribute authorize = null, string header = null) where T : WebWork, new()
         {
             if (subWorks == null)
             {
@@ -251,27 +261,27 @@ namespace ChainFX.Web
             return wrk;
         }
 
-        [Ui(icon: "question", Documented = false), Tool(Modal.ButtonShow)]
+        [Ui(tip: "帮助", icon: "question", Documented = false), Tool(Modal.ButtonShow)]
         public virtual void help(WebContext wc)
         {
             wc.GivePane(200, h =>
             {
                 // class help
 
-                h.ARTICLE_("uk-card uk-card-primary");
-                h.H2(Label, "uk-card-header");
-                h.SECTION_("uk-card-body");
                 if (Ui != null)
                 {
+                    h.ARTICLE_("uk-card uk-card-primary");
+                    h.H3("简介", css: "uk-card-header");
+                    h.SECTION_("uk-card-body");
                     if (Tip != null)
                     {
                         h.T(Tip);
                     }
-                }
-                _help?.Render(h);
+                    _help?.Render(h);
 
-                h._SECTION();
-                h._ARTICLE();
+                    h._SECTION();
+                    h._ARTICLE();
+                }
 
                 h.ARTICLE_("uk-card uk-card-primary");
                 h.H3("操作说明", "uk-card-header");
@@ -335,7 +345,7 @@ namespace ChainFX.Web
                 }
                 h._UL();
                 h._ARTICLE();
-            });
+            }, shared: true, maxage: 3600 * 6);
         }
 
         protected void GenerateRestDoc(HtmlBuilder h)

@@ -64,7 +64,7 @@ internal class DbMap<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
                 try
                 {
                     // re-fetch
-                    using var dc = Nodality.NewDbContext();
+                    using var dc = Storage.NewDbContext();
                     data = func(dc);
                     expiry = tick + MaxAge * 1000;
                 }
@@ -96,7 +96,7 @@ internal class DbMap<K, V> : DbCache where K : IComparable<K>, IEquatable<K>
             if (tick >= expiry)
             {
                 // re-fetch
-                using var dc = Nodality.NewDbContext();
+                using var dc = Storage.NewDbContext();
                 data = await func(dc);
                 expiry = tick + MaxAge * 1000;
             }

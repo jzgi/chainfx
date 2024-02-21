@@ -43,7 +43,7 @@ public static class NodalUtility
         return x.CompareTo(y);
     }
 
-    public static ArraySegment<T> Segment<T>(this T[] array, int offset, int count) where T : class
+    public static ArraySegment<T> GetSegment<T>(this T[] array, int offset, int count) where T : class
     {
         if (array == null)
         {

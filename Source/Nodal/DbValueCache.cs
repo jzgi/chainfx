@@ -59,7 +59,7 @@ internal class DbValueCache<K, V> : DbCache where K : IComparable<K>, IEquatable
         }
 
         // re-fetch
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = func(dc, key);
 
@@ -84,7 +84,7 @@ internal class DbValueCache<K, V> : DbCache where K : IComparable<K>, IEquatable
         }
 
         // re-fetch
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = await func(dc, key);
 

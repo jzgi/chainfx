@@ -9,5 +9,5 @@ public interface IGroupable<K> : IKeyable<K> where K : IEquatable<K>, IComparabl
     /// </summary>
     /// <param name="akey"></param>
     /// <returns></returns>
-    bool IsSameGroupAs(K akey);
+    bool SameGroupAs(K akey);
 }

@@ -178,7 +178,7 @@ namespace ChainFX
             if (value is IGroupable<K> gkeyable)
             {
                 // compare to current head
-                if (head == -1 || !gkeyable.IsSameGroupAs(entries[head].key))
+                if (head == -1 || !gkeyable.SameGroupAs(entries[head].key))
                 {
                     head = idx;
                 }

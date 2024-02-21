@@ -48,7 +48,7 @@ internal class DbGrouperCache<GK, K, V> : DbCache where K : IEquatable<K>, IComp
         }
 
         // re-fetch
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = func(dc, gkey);
 
@@ -73,7 +73,7 @@ internal class DbGrouperCache<GK, K, V> : DbCache where K : IEquatable<K>, IComp
         }
 
         // re-fetch
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
         ety.Item1 = tick + MaxAge * 1000;
         ety.Item2 = await func(dc, gkey);
 

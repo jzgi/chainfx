@@ -44,7 +44,7 @@ public class DbContext : ISource, IParameters, IDisposable
 
     internal DbContext()
     {
-        var dbsource = Nodality.DbSource;
+        var dbsource = Storage.DbSource;
         connection = new NpgsqlConnection(dbsource.ConnectionString);
         command = new NpgsqlCommand
         {

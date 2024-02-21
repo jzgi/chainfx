@@ -61,7 +61,7 @@ public abstract class DbTwinCache<FK, T> : DbCache where FK : IEquatable<FK>, IC
 
     public async Task<T> CreateAsync(Func<DbContext, Task<T>> dbfunc)
     {
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
 
         var twin = await dbfunc(dc);
 
@@ -101,7 +101,7 @@ public abstract class DbTwinCache<FK, T> : DbCache where FK : IEquatable<FK>, IC
 
     public async Task<bool> UpdateAsync(T twin, Func<DbContext, Task<bool>> dbupd, Action<T> upd = null)
     {
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
 
         // the resulted object after operation
         var ret = await dbupd(dc);
@@ -118,7 +118,7 @@ public abstract class DbTwinCache<FK, T> : DbCache where FK : IEquatable<FK>, IC
 
     public async Task<bool> RemoveAsync(T twin, Func<DbContext, Task<bool>> dbfunc)
     {
-        using var dc = Nodality.NewDbContext();
+        using var dc = Storage.NewDbContext();
 
         var dbok = await dbfunc(dc);
 
@@ -144,7 +144,7 @@ public abstract class DbTwinCache<FK, T> : DbCache where FK : IEquatable<FK>, IC
         // check if indexed
         if (!all.TryGetValue(key, out var value))
         {
-            using var dc = Nodality.NewDbContext();
+            using var dc = Storage.NewDbContext();
 
             // try get group key first 
             if (!TryGetForkKey(dc, key, out var fkey))
@@ -207,7 +207,7 @@ public abstract class DbTwinCache<FK, T> : DbCache where FK : IEquatable<FK>, IC
     {
         if (!forks.TryGetValue(fkey, out var map))
         {
-            using var dc = Nodality.NewDbContext();
+            using var dc = Storage.NewDbContext();
 
             map = LoadFork(dc, fkey);
             if (map == null)

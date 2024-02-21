@@ -6,10 +6,10 @@ using Npgsql;
 
 namespace ChainFX.Nodal;
 
-/// <summary>
-/// The structure & environment for data store and digital twins. 
-/// </summary>
-public abstract class Nodality
+///
+/// The environment and mechanism for data storage, object caches and digital twins.
+///  
+public abstract class Storage
 {
     // db data source
     private static DbSource dbSource;
@@ -53,7 +53,7 @@ public abstract class Nodality
     {
         if (dbSource == null)
         {
-            throw new DbException("missing 'db' in app.json");
+            throw new DbException("missing 'db' in application.json");
         }
 
         var dc = new DbContext();
@@ -310,9 +310,7 @@ public abstract class Nodality
         return default;
     }
 
-    public static T[] GrabTwinArray<FK, T>(FK forkKey, Predicate<T> filter = null, Comparison<T> sorter = null)
-        where FK : IEquatable<FK>, IComparable<FK>
-        where T : class, ITwin<FK>
+    public static T[] GrabTwinArray<FK, T>(FK forkKey, Predicate<T> filter = null, Comparison<T> sorter = null) where FK : IEquatable<FK>, IComparable<FK> where T : class, ITwin<FK>
     {
         foreach (var ca in twinCaches)
         {

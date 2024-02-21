@@ -120,7 +120,18 @@ namespace ChainFX.Web
 
         public string Icon => ui?.Icon;
 
-        public string Label => ui?.Label;
+        public string Label
+        {
+            get
+            {
+                var lbl = ui?.Label;
+                if (lbl == null && IsDefault)
+                {
+                    lbl = work.Label;
+                }
+                return lbl;
+            }
+        }
 
         public string Tip => ui?.Tip;
 
@@ -137,6 +148,8 @@ namespace ChainFX.Web
         public AuthorizeAttribute Authorize => authorize;
 
         public TwinSpyAttribute TwinSpy => twinSpy;
+
+        public bool IsDefault { get; internal set; }
 
 
         public bool DoAuthorize(WebContext wc, bool mock)

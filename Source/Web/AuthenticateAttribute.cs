@@ -46,7 +46,7 @@ public abstract class AuthenticateAttribute : Attribute
         var bdr = new JsonBuilder(true, 4096);
         try
         {
-            var secret = Application.Secret;
+            var secret = Application.Nodal.secret;
             bdr.PutToken(prin, msk); // use the special putting method to append time stamp
 
             // + ':' + secrent
@@ -78,7 +78,7 @@ public abstract class AuthenticateAttribute : Attribute
         {
             var bytes = Convert.FromBase64String(token);
 
-            var secret = Application.Secret;
+            var secret = Application.Nodal.Secret;
 
             // replace signature with secret
             Span<byte> sig = stackalloc byte[16];

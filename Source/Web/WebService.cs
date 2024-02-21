@@ -328,7 +328,7 @@ namespace ChainFX.Web
         // STATIC FILES
         //
 
-        const int STATIC_FILE_MAXAGE = 3600 * 24;
+        const int STATIC_FILE_MAXAGE = 3600 * 12;
 
         const int STATIC_FILE_GZIP_THRESHOLD = 1024 * 4;
 
@@ -445,7 +445,7 @@ namespace ChainFX.Web
         }
 
 
-        #region Web Actions
+        #region Reserved Web Actions
 
         /// <summary>
         /// To generate API reference documentation for this service.
@@ -474,10 +474,11 @@ namespace ChainFX.Web
         }
 
         /// <summary>
-        /// To handle a poll request and return sync data
+        /// To process dara packs submitted by peer.
         /// </summary>
-        public virtual void @extern(WebContext wc)
+        public async Task @extern(WebContext wc)
         {
+            var e = await wc.ReadAsync<Form>();
         }
 
         #endregion
