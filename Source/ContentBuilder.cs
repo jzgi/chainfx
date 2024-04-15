@@ -367,6 +367,21 @@ public abstract class ContentBuilder : HttpContent, IContent
                 Add(DIGIT[q]);
             }
         }
+        
+        
+        if (!bgn)
+        {
+            bgn = true;
+
+            if (digits > 0) // padding with zero
+            {
+                int pad = digits - 1;
+                for (int k = 0; k < pad; k++)
+                {
+                    Add('0');
+                }
+            }
+        }
 
         Add(DIGIT[v]); // last reminder
     }

@@ -19,7 +19,7 @@ namespace ChainFX
             { STU_VOID, "作废" },
             { STU_CREATED, "新建" },
             { STU_ADAPTED, "调整" },
-            { STU_OKED, "上线" },
+            { STU_OKED, "启用" },
         };
 
 
@@ -28,8 +28,9 @@ namespace ChainFX
             MSK_BORN = 0x0002,
             MSK_TYP = 0x0004,
             MSK_EDIT = 0x0010,
-            MSK_LATER = 0x0020,
-            MSK_STATUS = 0x0040,
+            MSK_LATE = 0x0020,
+            MSK_LATER = 0x0060,
+            MSK_STATUS = 0x0080,
             MSK_AUX = 0x0100,
             MSK_EXTRA = 0x0200;
 

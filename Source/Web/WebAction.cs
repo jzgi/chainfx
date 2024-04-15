@@ -36,7 +36,7 @@ namespace ChainFX.Web
 
         readonly AuthorizeAttribute authorize;
 
-        readonly TwinSpyAttribute twinSpy;
+        readonly WatchAttribute watch;
 
         // 4 possible forms of the action method
         //
@@ -63,7 +63,7 @@ namespace ChainFX.Web
             tool = (ToolAttribute)mi.GetCustomAttribute(typeof(ToolAttribute), true);
             authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
-            twinSpy = (TwinSpyAttribute)mi.GetCustomAttribute(typeof(TwinSpyAttribute), true);
+            watch = (WatchAttribute)mi.GetCustomAttribute(typeof(WatchAttribute), true);
             help = (HelpAttribute)mi.GetCustomAttribute(typeof(HelpAttribute), true);
             rests = (RestAttribute[])mi.GetCustomAttributes(typeof(RestAttribute), true);
 
@@ -147,7 +147,7 @@ namespace ChainFX.Web
 
         public AuthorizeAttribute Authorize => authorize;
 
-        public TwinSpyAttribute TwinSpy => twinSpy;
+        public WatchAttribute Watch => watch;
 
         public bool IsDefault { get; internal set; }
 

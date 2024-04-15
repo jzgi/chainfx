@@ -711,6 +711,24 @@ public class DbContext : ISource, IParameters, IDisposable
         return map;
     }
 
+    public Map<string, string> ToStringMap(Map<string, string> map = null)
+    {
+        while (Next())
+        {
+            if (map == null)
+            {
+                map = new Map<string, string>(32);
+            }
+
+            Let(out string k);
+            Let(out string v);
+
+            map.Add(k, v);
+        }
+
+        return map;
+    }
+
     // current column ordinal
     int ordinal;
 

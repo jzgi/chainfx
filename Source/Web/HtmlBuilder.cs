@@ -1460,7 +1460,10 @@ namespace ChainFX.Web
         {
             LABEL(label);
             Add("<span class=\"uk-static\">");
-            Add(opts[v]?.ToString());
+            if (opts != null)
+            {
+                Add(opts[v]?.ToString());
+            }
             Add("</span>");
             return this;
         }
@@ -2188,8 +2191,8 @@ namespace ChainFX.Web
         {
             Add("<nav class=\"uk-top-bar uk-flex-center\">");
             Add("<ul class=\"uk-subnav\">");
-            var count = map.Count;
-            for (int i = 0; i < count; i++)
+
+            for (int i = 0; i < map.Count; i++)
             {
                 var ety = map.EntryAt(i);
                 var k = ety.Key;
@@ -2207,13 +2210,11 @@ namespace ChainFX.Web
 
                 Add("><a href=\"");
                 Add(uri);
-                Add('-');
-                if (subscriptor != null)
+
+                short sub = (short)(subscriptor?.Invoke(k) ?? k);
+                if (sub > 0)
                 {
-                    Add(subscriptor(k));
-                }
-                else
-                {
+                    Add('-');
                     Add(k);
                 }
                 Add("\" onclick=\"goto(this.href, event);\">");
@@ -2481,8 +2482,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public void LIST<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> item, string ul = null, string li = null)
-            where K : IEquatable<K>, IComparable<K>
+        public void LIST<M, K>(Map<K, M> map, Action<Map<K, M>.Entry> item, string ul = null, string li = null) where K : IEquatable<K>, IComparable<K>
         {
             Add("<ul class=\"uk-list");
             if (ul != null)
@@ -2777,7 +2777,7 @@ namespace ChainFX.Web
         }
 
 
-        public HtmlBuilder TABLE<M>(IList<M> lst, Action<M> tr, Action thead = null, string caption = null, bool reverse = false, string css = null)
+        public HtmlBuilder TABLE<E>(IEnumerable<E> coll, Action<E> tr, Action thead = null, string caption = null, string css = null)
         {
             Add("<table class=\"uk-table uk-table-hover uk-table-divider");
             if (css != null)
@@ -2785,8 +2785,8 @@ namespace ChainFX.Web
                 Add(' ');
                 Add(css);
             }
-
             Add("\">");
+
             if (caption != null)
             {
                 Add("<caption>");
@@ -2794,58 +2794,14 @@ namespace ChainFX.Web
                 Add("</caption>");
             }
 
-            if (lst != null && tr != null) // tbody if having data objects
+            if (coll != null && tr != null) // tbody if having data objects
             {
                 Add("<tbody>");
-                thead?.Invoke();
-                if (reverse)
-                {
-                    for (int i = lst.Count - 1; i >= 0; i--)
-                    {
-                        var obj = lst[i];
-                        Add("<tr>");
-                        tr(obj);
-                        Add("</tr>");
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < lst.Count; i++)
-                    {
-                        var obj = lst[i];
-                        Add("<tr>");
-                        tr(obj);
-                        Add("</tr>");
-                    }
-                }
 
-                Add("</tbody>");
-            }
-
-            Add("</table>");
-
-            return this;
-        }
-
-        public HtmlBuilder TABLE<K, M>(Map<K, M> arr, Action<Map<K, M>.Entry> tr, Action thead = null, string caption = null)
-            where K : IEquatable<K>, IComparable<K>
-        {
-            Add("<table class=\"uk-table uk-table-hover uk-table-divider\">");
-            if (caption != null)
-            {
-                Add("<caption>");
-                Add(caption);
-                Add("</caption>");
-            }
-
-            if (arr != null && tr != null) // tbody if having data objects
-            {
-                Add("<tbody>");
                 thead?.Invoke();
 
-                for (int i = 0; i < arr.Count; i++)
+                foreach (var obj in coll)
                 {
-                    var obj = arr.EntryAt(i);
                     Add("<tr>");
                     tr(obj);
                     Add("</tr>");
@@ -2860,18 +2816,13 @@ namespace ChainFX.Web
         }
 
 
-        public HtmlBuilder MAINGRID<E>(IList<E> lst, Action<E> card, Predicate<E> filter = null, bool duo = false, string css = null)
+        public HtmlBuilder MAINGRID<E>(IEnumerable<E> coll, Action<E> card, Predicate<E> filter = null, string css = null)
         {
-            if (duo)
-            {
-                Add("<main uk-grid class=\"uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-child-width-1-5@l\">");
-            }
-            else
-                Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
+            Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
 
-            if (lst != null)
+            if (coll != null)
             {
-                foreach (var obj in lst)
+                foreach (var obj in coll)
                 {
                     if (filter != null && !filter(obj))
                     {
@@ -2884,7 +2835,6 @@ namespace ChainFX.Web
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
 
                     card(obj);
@@ -2899,7 +2849,7 @@ namespace ChainFX.Web
         }
 
 
-        public void GRID<M>(IList<M> lst, Action<M> card, Predicate<M> filter = null, int min = 1, string css = "uk-card-default")
+        public void GRID<E>(IEnumerable<E> coll, Action<E> card, Predicate<E> filter = null, int min = 1, string css = "uk-card-default")
         {
             Add("<div uk-grid class=\"uk-child-width-1-");
             Add(min++);
@@ -2910,11 +2860,10 @@ namespace ChainFX.Web
             Add("@m uk-child-width-1-");
             Add(min++);
             Add("@l\">");
-            if (lst != null)
+            if (coll != null)
             {
-                for (int i = 0; i < lst.Count; i++)
+                foreach (var obj in coll)
                 {
-                    var obj = lst[i];
                     if (filter != null && !filter(obj))
                     {
                         continue;
@@ -2926,9 +2875,10 @@ namespace ChainFX.Web
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
+
                     card(obj);
+
                     Add("</article>");
                 }
             }
@@ -2939,6 +2889,7 @@ namespace ChainFX.Web
         public void MAINGRID<S>(S src, Action<S> card, string css = null) where S : ISource
         {
             Add("<main uk-grid class=\"uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l\">");
+
             if (src != null && src.IsDataSet)
             {
                 while (src.Next())
@@ -2949,7 +2900,6 @@ namespace ChainFX.Web
                         Add(' ');
                         Add(css);
                     }
-
                     Add("\">");
 
                     card(src);
@@ -2971,7 +2921,7 @@ namespace ChainFX.Web
             Add(",'");
             if (tip != null)
             {
-                Add(tip);
+                AddEsc(tip);
             }
 
             Add("');\"");
@@ -3022,7 +2972,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder TOOLBAR(int subscript = -1, int twin = 0, bool toggle = false, bool bottom = false, short status = 255, short state = 0, string[] exclude = null)
+        public HtmlBuilder TOOLBAR(int subscript = -1, int twin = 0, bool toggle = false, bool bottom = false, short status = 255, short state = 0)
         {
             Add("<form id=\"tool-bar-form\" class=\"");
             Add(bottom ? "uk-bottom-bar" : "uk-top-bar");
@@ -3060,35 +3010,20 @@ namespace ChainFX.Web
                 {
                     var tool = act.Tool;
 
-                    // if exclude is specified 
-                    if (exclude != null)
-                    {
-                        bool match = false;
-                        foreach (var t in exclude)
-                        {
-                            if (t == act.Name)
-                            {
-                                match = true;
-                                break;
-                            }
-                        }
-                        if (match) continue;
-                    }
-
                     // current user autnorize check
                     if (Web.Principal != null && !act.DoAuthorize(Web, true)) continue;
 
                     var anchor = tool.IsAnchorTag;
 
                     // retrieve spy num
-                    var spy = (twin > 0 && anchor && act.TwinSpy != null) ? act.TwinSpy.Do(twin, clear: act == Web.Action) : 0;
+                    var wat = (twin > 0 && anchor && act.Watch != null) ? act.Watch.Peek(twin, clear: act == Web.Action) : 0;
 
                     var actStatus = act.Status;
                     if (anchor || actStatus == 0xff || actStatus == ctxStatus || (ctxStatus & actStatus) > 0) // anchor is always included
                     {
                         var stateYes = tool.MeetsOf(state);
                         // provide current anchor as subscript 
-                        PutTool(act, tool, anchor ? -1 : subscript, badge: spy, disabled: !stateYes, astack: astack, css: "uk-button-primary");
+                        PutTool(act, tool, anchor ? -1 : subscript, badge: wat, disabled: !stateYes, astack: astack, css: "uk-button-primary");
                     }
                 }
             }
@@ -3411,7 +3346,7 @@ namespace ChainFX.Web
                     {
                         H3(sub.Header, "uk-card-header");
                     }
-                    UL_(compact ? "uk-card-body uk-child-width-1-2" : "uk-card-body uk-list uk-list-divider uk-child-width-1-1", grid: true);
+                    UL_(compact ? "uk-card-body  uk-list uk-child-width-1-2" : "uk-card-body uk-list uk-list-divider uk-child-width-1-1", grid: true);
                 }
 
                 LI_();
@@ -4630,44 +4565,43 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, Predicate<V> filter = null, string legend = null, string css = null, bool required = false)
+        public HtmlBuilder RADIOSET<K, V>(string name, K v, Map<K, V> opt = null, Func<K, V, bool> filter = null, string legend = null, bool duo = false, bool required = false, string css = null)
             where K : IEquatable<K>, IComparable<K>
         {
             FIELDSUL_(legend, false, css);
             if (opt != null)
             {
-                lock (opt)
+                for (int i = 0; i < opt.Count; i++)
                 {
-                    for (int i = 0; i < opt.Count; i++)
+                    var e = opt.EntryAt(i);
+
+                    if (filter != null && !filter(e.key, e.Value)) continue;
+
+                    if (e.IsHead)
                     {
-                        var e = opt.EntryAt(i);
-                        if (filter != null && !filter(e.Value)) continue;
-                        if (e.IsHead)
-                        {
-                            FIELD_(null);
-                            Add(e.Value.ToString());
-                            _FIELD();
-                        }
-                        else
-                        {
-                            Add("<li>");
-                            Add("<label>");
-                            Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
-                            Add(name);
-                            Add("\" id=\"");
-                            Add(name);
-                            AddPrimitive(e.Key);
-                            Add("\"");
-                            Add("\" value=\"");
-                            AddPrimitive(e.Key);
-                            Add("\"");
-                            if (e.Key.Equals(v)) Add(" checked");
-                            if (required) Add(" required");
-                            Add(">");
-                            Add(e.Value.ToString());
-                            Add("</label>");
-                            Add("</li>");
-                        }
+                        FIELD_(null);
+                        Add(e.Value.ToString());
+                        _FIELD();
+                    }
+                    else
+                    {
+                        Add("<li>");
+                        Add("<label>");
+                        Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
+                        Add(name);
+                        Add("\" id=\"");
+                        Add(name);
+                        AddPrimitive(e.Key);
+                        Add("\"");
+                        Add("\" value=\"");
+                        AddPrimitive(e.Key);
+                        Add("\"");
+                        if (e.Key.Equals(v)) Add(" checked");
+                        if (required) Add(" required");
+                        Add(">");
+                        Add(e.Value.ToString());
+                        Add("</label>");
+                        Add("</li>");
                     }
                 }
             }
@@ -4676,55 +4610,50 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder RADIOSET2<K, V>(string name, K v, Map<K, V> opt = null, string legend = null, string css = null, bool required = false, Func<K, V, bool> filter = null)
+
+        public HtmlBuilder RADIOSET<K, V>(string name, K v, IEnumerable<V> opt = null, Predicate<V> filter = null, string legend = null, bool duo = false, bool required = false, string css = null)
             where K : IEquatable<K>, IComparable<K>
+            where V : IKeyable<K>
         {
             FIELDSUL_(legend, false, css);
+
             if (opt != null)
             {
-                lock (opt)
+                bool odd = true; // init as odd
+
+                foreach (var e in opt)
                 {
-                    bool odd = true;
-                    for (int i = 0; i < opt.Count; i++)
+                    if (filter != null && !filter(e)) continue;
+
+                    if (odd)
                     {
-                        var e = opt.EntryAt(i);
-                        if (filter != null && !filter(e.key, e.Value)) continue;
-                        if (e.IsHead)
-                        {
-                            FIELD_(null);
-                            Add(e.Value.ToString());
-                            _FIELD();
-                            odd = true;
-                        }
-                        else
-                        {
-                            if (odd)
-                            {
-                                Add("<li>");
-                            }
+                        Add("<li>");
+                    }
 
-                            Add("<label class=\"uk-width-expand\">");
-                            Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
-                            Add(name);
-                            Add("\" id=\"");
-                            Add(name);
-                            AddPrimitive(e.Key);
-                            Add("\"");
-                            Add("\" value=\"");
-                            AddPrimitive(e.Key);
-                            Add("\"");
-                            if (e.Key.Equals(v)) Add(" checked");
-                            if (required) Add(" required");
-                            Add(">");
-                            Add(e.Value.ToString());
-                            Add("</label>");
-                            if (!odd)
-                            {
-                                Add("</li>");
-                            }
+                    Add("<label class=\"uk-width-expand\">");
+                    Add("<input type=\"radio\" class=\"uk-radio\" name=\"");
+                    Add(name);
+                    Add("\" id=\"");
+                    Add(name);
+                    AddPrimitive(e.Key);
+                    Add("\"");
+                    Add("\" value=\"");
+                    AddPrimitive(e.Key);
+                    Add("\"");
+                    if (e.Key.Equals(v)) Add(" checked");
+                    if (required) Add(" required");
+                    Add(">");
+                    Add(e.ToString());
+                    Add("</label>");
 
-                            odd = !odd;
-                        }
+                    if (!odd)
+                    {
+                        Add("</li>");
+                    }
+
+                    if (duo)
+                    {
+                        odd = !odd;
                     }
                 }
             }
@@ -4956,12 +4885,18 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder OPTION<T>(T v, string caption = null, bool selected = false, bool enabled = true)
+        public HtmlBuilder OPTION<T>(T v, string caption = null, int title = 0, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
             AddPrimitive(v);
 
             Add("\"");
+            if (title != 0)
+            {
+                Add(" title=\"");
+                Add(title);
+                Add("\"");
+            }
             if (selected) Add(" selected");
             if (!enabled) Add(" disabled");
             Add(">");
@@ -5009,7 +4944,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool showkey = false, bool required = true, sbyte size = 0, bool rtl = false, bool @readonly = false, string onchange = null) where K : IEquatable<K>, IComparable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, Map<K, V> opts, Func<K, V, bool> filter = null, bool required = false, sbyte size = 0, bool rtl = false, bool @readonly = false, string onchange = null) where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, false, required, size, rtl, onchange);
             if (opts != null)
@@ -5051,12 +4986,6 @@ namespace ChainFX.Web
                         Add("<option value=\"");
                         AddPrimitive(key);
                         Add("\"");
-                        if (showkey)
-                        {
-                            Add(" title=\"");
-                            AddPrimitive(value);
-                            Add("\"");
-                        }
 
                         if (@readonly)
                         {
@@ -5067,14 +4996,7 @@ namespace ChainFX.Web
                             Add(" selected");
                         }
                         Add(">");
-                        if (showkey)
-                        {
-                            AddPrimitive(key);
-                        }
-                        else
-                        {
-                            AddPrimitive(value);
-                        }
+                        AddPrimitive(value);
                         Add("</option>");
                     }
                 }
@@ -5090,7 +5012,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0) where K : IEquatable<K>, IComparable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, Map<K, V> opts, Func<K, V, bool> filter = null, Func<V, string> capt = null, bool required = false, sbyte size = 0) where K : IEquatable<K>, IComparable<K>
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)
@@ -5131,7 +5053,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K v, V[] opts, Func<V, bool> filter = null, bool required = true, sbyte size = 0) where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K v, V[] opts, Func<V, bool> filter = null, bool required = false, sbyte size = 0) where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
         {
             SELECT_(label, name, false, required, size);
             if (opts != null)
@@ -5161,7 +5083,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, V[] opts, Func<V, bool> filter = null, Func<V, string> capt = null, bool required = true, sbyte size = 0) where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
+        public HtmlBuilder SELECT<K, V>(string label, string name, K[] vs, V[] opts, Func<V, bool> filter = null, Func<V, string> capt = null, bool required = false, sbyte size = 0) where K : IEquatable<K>, IComparable<K> where V : IKeyable<K>
         {
             SELECT_(label, name, true, required, size);
             if (opts != null)
@@ -5199,7 +5121,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT(string label, string name, string v, string[] opts, bool required = true, sbyte size = 0, bool refresh = false)
+        public HtmlBuilder SELECT(string label, string name, string v, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, true, required, size, refresh);
             if (opts != null)
@@ -5226,7 +5148,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder SELECT(string label, string name, string[] vs, string[] opts, bool required = true, sbyte size = 0, bool refresh = false)
+        public HtmlBuilder SELECT(string label, string name, string[] vs, string[] opts, bool required = false, sbyte size = 0, bool refresh = false)
         {
             SELECT_(label, name, true, required, size, refresh);
             if (opts != null)

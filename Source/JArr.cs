@@ -213,9 +213,7 @@ namespace ChainFX
             return arr;
         }
 
-        public Map<K, D> ToMap<K, D>(short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null)
-            where K : IEquatable<K>, IComparable<K>
-            where D : IData, new()
+        public Map<K, D> ToMap<K, D>(short proj = 0xff, Func<D, K> keyer = null, Predicate<K> toper = null) where K : IEquatable<K>, IComparable<K> where D : IData, new()
         {
             var map = new Map<K, D>();
             for (int i = 0; i < count; i++)
@@ -305,6 +303,28 @@ namespace ChainFX
         public IEnumerator GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+
+        public static implicit operator int[](JArr v)
+        {
+            var arr = new int[v.count];
+            for (int i = 0; i < v.count; i++)
+            {
+                arr[i] = v[i];
+            }
+
+            return arr;
+        }
+
+        public static implicit operator decimal[](JArr v)
+        {
+            var arr = new decimal[v.count];
+            for (int i = 0; i < v.count; i++)
+            {
+                arr[i] = v[i];
+            }
+
+            return arr;
         }
 
         public static implicit operator string[](JArr v)

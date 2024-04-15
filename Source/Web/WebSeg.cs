@@ -5,7 +5,7 @@ namespace ChainFX.Web
     /// <summary>
     /// A resolution segment along the uri path in the work hierarchy
     /// </summary>
-    public struct WebSeg
+    public readonly struct WebSeg
     {
         // as in uri segment
         readonly string key;
@@ -16,9 +16,12 @@ namespace ChainFX.Web
         // corresponding work object
         readonly WebWork work;
 
-        internal WebSeg(WebWork work, string key, object accessor)
+        readonly int adscript;
+
+        internal WebSeg(WebWork work, string key, int adscript, object accessor)
         {
             this.key = key;
+            this.adscript = adscript;
             this.accessor = accessor;
             this.work = work;
         }
@@ -26,6 +29,8 @@ namespace ChainFX.Web
         public WebWork Work => work;
 
         public string Key => key;
+
+        public int Adscript => adscript;
 
         public object Accessor => accessor;
 
@@ -40,7 +45,7 @@ namespace ChainFX.Web
         public static implicit operator short(WebSeg seg)
         {
             var str = seg.key;
-            if (string.IsNullOrEmpty(str)) return (short) seg.accessor;
+            if (string.IsNullOrEmpty(str)) return (short)seg.accessor;
             if (short.TryParse(str, out var v))
             {
                 return v;
@@ -51,7 +56,7 @@ namespace ChainFX.Web
         public static implicit operator int(WebSeg seg)
         {
             var str = seg.key;
-            if (string.IsNullOrEmpty(str)) return (int) seg.accessor;
+            if (string.IsNullOrEmpty(str)) return (int)seg.accessor;
             if (int.TryParse(str, out var v))
             {
                 return v;
@@ -62,7 +67,7 @@ namespace ChainFX.Web
         public static implicit operator long(WebSeg seg)
         {
             var str = seg.key;
-            if (string.IsNullOrEmpty(str)) return (long) seg.accessor;
+            if (string.IsNullOrEmpty(str)) return (long)seg.accessor;
             if (long.TryParse(str, out var v))
             {
                 return v;
@@ -75,7 +80,7 @@ namespace ChainFX.Web
             var str = seg.key;
             if (string.IsNullOrEmpty(str))
             {
-                return (string) seg.accessor;
+                return (string)seg.accessor;
             }
             return str;
         }
@@ -83,7 +88,7 @@ namespace ChainFX.Web
         public static implicit operator DateTime(WebSeg seg)
         {
             var str = seg.key;
-            if (string.IsNullOrEmpty(str)) return (DateTime) seg.accessor;
+            if (string.IsNullOrEmpty(str)) return (DateTime)seg.accessor;
             if (DateTime.TryParse(str, out var v))
             {
                 return v;
@@ -301,22 +306,22 @@ namespace ChainFX.Web
 
         public static implicit operator string[](WebSeg seg)
         {
-            return (string[]) seg.accessor;
+            return (string[])seg.accessor;
         }
 
         public static implicit operator short[](WebSeg seg)
         {
-            return (short[]) seg.accessor;
+            return (short[])seg.accessor;
         }
 
         public static implicit operator int[](WebSeg seg)
         {
-            return (int[]) seg.accessor;
+            return (int[])seg.accessor;
         }
 
         public static implicit operator long[](WebSeg seg)
         {
-            return (long[]) seg.accessor;
+            return (long[])seg.accessor;
         }
     }
 }

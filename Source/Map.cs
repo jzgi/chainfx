@@ -9,8 +9,7 @@ namespace ChainFX
     /// An add-only data collection that can act as both a list, a dictionary and/or a two-layered tree.
     /// </summary>
     [DebuggerDisplay("Count = {Count}")]
-    public class Map<K, V> : IEnumerable<Map<K, V>.Entry>
-        where K : IEquatable<K>, IComparable<K>
+    public class Map<K, V> : IEnumerable<Map<K, V>.Entry> where K : IEquatable<K>, IComparable<K>
     {
         int[] buckets;
 
@@ -53,6 +52,12 @@ namespace ChainFX
         public int Count => count;
 
         public Entry EntryAt(int idx) => entries[idx];
+
+        public (K, V) GetAt(int idx)
+        {
+            var ety = entries[idx];
+            return (ety.key, ety.Value);
+        }
 
         public Entry EntryOf(K key)
         {
@@ -399,7 +404,7 @@ namespace ChainFX
 
             public override string ToString()
             {
-                return key.ToString();
+                return Value.ToString();
             }
 
             public K Key => key;

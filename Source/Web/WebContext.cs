@@ -74,14 +74,14 @@ namespace ChainFX.Web
 
         int segnum; // actual number of segments
 
-        internal void AppendSeg(WebWork work, string key, object accessor = null)
+        internal void AppendSeg(WebWork work, string key, int adscript, object accessor = null)
         {
             if (segs == null)
             {
                 segs = new WebSeg[8];
             }
 
-            segs[segnum++] = new WebSeg(work, key, accessor);
+            segs[segnum++] = new WebSeg(work, key, adscript, accessor);
         }
 
         public WebSeg this[int pos] => pos <= 0 ? segs[segnum + pos - 1] : default;

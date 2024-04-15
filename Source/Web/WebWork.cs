@@ -110,7 +110,7 @@ namespace ChainFX.Web
                 {
                     toollst.Add(act);
                 }
-                if (act.TwinSpy != null)
+                if (act.Watch != null)
                 {
                     spylst.Add(act);
                 }
@@ -418,7 +418,7 @@ namespace ChainFX.Web
             {
                 foreach (var ntc in twinSpied)
                 {
-                    var n = ntc.TwinSpy.Do(noticeId);
+                    var n = ntc.Watch.Peek(noticeId);
                     if (n > 0)
                     {
                         return true;

@@ -244,7 +244,20 @@ namespace ChainFX.Web
                     }
                     else // check sub works and var work
                     {
-                        string key = rsc.Substring(0, slash);
+                        int hyphen = rsc.IndexOf('-', 0, slash);
+
+                        string key;
+                        int adscript = 0;
+                        if (hyphen < 0)
+                        {
+                            key = rsc.Substring(0, slash);
+                        }
+                        else
+                        {
+                            key = rsc.Substring(0, hyphen);
+                            adscript = rsc.ToInt(hyphen + 1, slash);
+                        }
+
                         var subwrk = curwrk.SubWorks?[key];
                         if (subwrk != null) // if child
                         {
@@ -257,7 +270,7 @@ namespace ChainFX.Web
                                 return;
                             }
 
-                            wc.AppendSeg(subwrk, key);
+                            wc.AppendSeg(subwrk, key, adscript);
 
                             curwrk = subwrk;
                         }
@@ -289,7 +302,7 @@ namespace ChainFX.Web
                                 accessor = varwrk.GetAccessor(prin, key);
                             }
                             // append the segment
-                            wc.AppendSeg(varwrk, key, accessor);
+                            wc.AppendSeg(varwrk, key, 0, accessor);
 
                             curwrk = varwrk;
                         }
