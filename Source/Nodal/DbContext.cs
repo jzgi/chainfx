@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
@@ -641,6 +642,58 @@ public class DbContext : ISource, IParameters, IDisposable
 
         return lst.ToArray();
     }
+
+    public short[] ToShortArray(IList<short> lst = null)
+    {
+        while (Next())
+        {
+            if (lst == null)
+            {
+                lst = new ValueList<short>(16);
+            }
+
+            Let(out short v);
+
+            lst.Add(v);
+        }
+
+        return lst?.ToArray();
+    }
+
+    public int[] ToIntArray(IList<int> lst = null)
+    {
+        while (Next())
+        {
+            if (lst == null)
+            {
+                lst = new ValueList<int>(16);
+            }
+
+            Let(out int v);
+
+            lst.Add(v);
+        }
+
+        return lst?.ToArray();
+    }
+
+    public string[] ToStringArray(IList<string> lst = null)
+    {
+        while (Next())
+        {
+            if (lst == null)
+            {
+                lst = new ValueList<string>(16);
+            }
+
+            Let(out string v);
+
+            lst.Add(v);
+        }
+
+        return lst?.ToArray();
+    }
+
 
     public Map<K, D> ToMap<K, D>(short msk = 0xff, Func<D, K> keyer = null, Map<K, D> map = null)
         where K : IEquatable<K>, IComparable<K>

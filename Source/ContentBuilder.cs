@@ -332,6 +332,14 @@ public abstract class ContentBuilder : HttpContent, IContent
     {
         if (v == 0)
         {
+            if (digits > 0)
+            {
+                int pad = digits - 1;
+                for (int k = 0; k < pad; k++)
+                {
+                    Add('0');
+                }
+            }
             Add('0');
             return;
         }

@@ -424,7 +424,7 @@ namespace ChainFX.Web
         //
         // RESPONSE CACHE
 
-        internal void TryAddToCache(WebContext wc)
+        protected internal void TryAddToCache(WebContext wc)
         {
             if (shared != null && wc.Shared == true && wc.IsCacheable())
             {

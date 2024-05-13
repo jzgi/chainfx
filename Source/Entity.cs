@@ -19,7 +19,7 @@ namespace ChainFX
             { STU_VOID, "作废" },
             { STU_CREATED, "新建" },
             { STU_ADAPTED, "调整" },
-            { STU_OKED, "启用" },
+            { STU_OKED, "上线" },
         };
 
 

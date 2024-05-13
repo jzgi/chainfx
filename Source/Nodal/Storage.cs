@@ -40,7 +40,7 @@ public abstract class Storage
     }
 
 
-    internal static void InitNodality(JObj dbcfg)
+    internal static void InitStorage(JObj dbcfg)
     {
         // create db source
         dbSource = new DbSource(dbcfg);
@@ -66,8 +66,14 @@ public abstract class Storage
     }
 
 
-    public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
-        where K : IEquatable<K>, IComparable<K>
+    public static void MakeCache<K, V>(Func<DbContext, Map<K, V>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
+    {
+        maps.Add(
+            new DbMap<K, V>(fetch, typeof(V), maxage, flag)
+        );
+    }
+
+    public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
 
     {
         maps.Add(
@@ -75,17 +81,7 @@ public abstract class Storage
         );
     }
 
-    public static void MakeCache<K, V>(Func<DbContext, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0)
-        where K : IEquatable<K>, IComparable<K>
-
-    {
-        maps.Add(
-            new DbMap<K, V>(fetch, typeof(V), maxage, flag)
-        );
-    }
-
-    public static void MakeCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0)
-        where K : IEquatable<K>, IComparable<K>
+    public static void MakeCache<K, V>(Func<DbContext, K, V> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
 
     {
         valueCaches.Add(
@@ -93,8 +89,7 @@ public abstract class Storage
         );
     }
 
-    public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0)
-        where K : IEquatable<K>, IComparable<K>
+    public static void MakeCache<K, V>(Func<DbContext, K, Task<V>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
 
     {
         valueCaches.Add(
@@ -102,16 +97,14 @@ public abstract class Storage
         );
     }
 
-    public static void MakeCache<GK, K, V>(Func<DbContext, GK, Map<K, V>> fetch, int maxage = 60, byte flag = 0)
-        where K : IEquatable<K>, IComparable<K>
+    public static void MakeCache<GK, K, V>(Func<DbContext, GK, Map<K, V>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
     {
         grouperCaches.Add(
             new DbGrouperCache<GK, K, V>(fetch, typeof(V), maxage, flag)
         );
     }
 
-    public static void MakeCache<GK, K, V>(Func<DbContext, GK, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0)
-        where K : IEquatable<K>, IComparable<K>
+    public static void MakeCache<GK, K, V>(Func<DbContext, GK, Task<Map<K, V>>> fetch, int maxage = 60, byte flag = 0) where K : IEquatable<K>, IComparable<K>
     {
         grouperCaches.Add(
             new DbGrouperCache<GK, K, V>(fetch, typeof(V), maxage, flag)

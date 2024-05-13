@@ -120,6 +120,14 @@ namespace ChainFX.Web
             return this;
         }
 
+        public HtmlBuilder T(TimeSpan v)
+        {
+            Add(v.Hours, digits: 2);
+            Add(':');
+            Add(v.Minutes, digits: 2);
+            return this;
+        }
+
         public HtmlBuilder T(decimal v)
         {
             Add(v);
@@ -1643,32 +1651,52 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder BUTTONVAR<A, B, C>(A a, B b, C c, string icon, bool disabled = false)
+        public HtmlBuilder BUTTONDIALOG_<A, B>(A a, B b, int mode, bool pick, string tip = null, bool disabled = false, string css = null)
         {
-            var vw = Web.Work.VarWork;
-            if (vw?.Default != null)
+            Add("<button class=\"uk-button");
+            if (css != null)
             {
-                Add("<button class=\"uk-button uk-button-link");
-                Add("\" formmethod=\"get\" formaction=\"");
-                PutKey(a);
-                PutKey(b);
-                PutKey(c);
-                Add("\" onclick=\"event.preventDefault(); event.stopPropagation(); return dialog(this,64,false,'');\"");
-                if (disabled)
-                {
-                    Add(" disabled");
-                }
-
-                Add("><span uk-icon=\"");
-                Add(icon);
-                Add("\"</span>");
-                Add("</button>");
+                Add(' ');
+                Add(css);
             }
-            else
+            Add("\"");
+            if (disabled)
             {
-                Add(icon);
+                Add(" disabled");
             }
+            Add(" formmethod=\"get\" formaction=\"");
+            PutKey(a);
+            PutKey(b);
+            Add("\"");
 
+            _DIALOG_(mode, pick, tip);
+
+            Add(">");
+            return this;
+        }
+
+        public HtmlBuilder BUTTONDIALOG_<A, B, C>(A a, B b, C c, int mode, bool pick, string tip = null, bool disabled = false, string css = null)
+        {
+            Add("<button class=\"uk-button");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\"");
+            if (disabled)
+            {
+                Add(" disabled");
+            }
+            Add(" formmethod=\"get\" formaction=\"");
+            PutKey(a);
+            PutKey(b);
+            PutKey(c);
+            Add("\"");
+
+            _DIALOG_(mode, pick, tip);
+
+            Add(">");
             return this;
         }
 
@@ -2164,7 +2192,7 @@ namespace ChainFX.Web
 
         public HtmlBuilder SUBNAV(params string[] actions)
         {
-            Add("<ul class=\"uk-subnav\">");
+            Add("<ul class=\"uk-subnav uk-margin-bottom\">");
             for (int i = 0; i < actions.Length; i++)
             {
                 var act = Web.Work.Actions[actions[i]];
@@ -2299,14 +2327,13 @@ namespace ChainFX.Web
                 Add("</legend>");
             }
 
-            Add("<ul");
+            Add("<ul class=\"uk-list uk-list-divider");
             if (css != null)
             {
-                Add(" class=\"");
+                Add(' ');
                 Add(css);
-                Add('\"');
             }
-            Add('>');
+            Add("\">");
 
             return this;
         }
@@ -2924,7 +2951,7 @@ namespace ChainFX.Web
                 AddEsc(tip);
             }
 
-            Add("');\"");
+            Add("',event);\"");
         }
 
         public HtmlBuilder TOPBAR_(string css = null)
@@ -2996,9 +3023,9 @@ namespace ChainFX.Web
                 Add("<input type=\"checkbox\" class=\"uk-checkbox\" onchange=\"return toggleAll(this);\">&nbsp;");
             }
 
-            // the contextual group
+            // the contextual status
             var ctxStatus = Web.Action.Status;
-            if (ctxStatus == 0)
+            if (ctxStatus == 0 || status > 0)
             {
                 ctxStatus = status;
             }
@@ -3269,8 +3296,8 @@ namespace ChainFX.Web
                 {
                     var act = acts[i];
 
-                    int g = act.Status;
-                    if (g == actgrp || (g & actgrp) > 0)
+                    int stu = act.Status;
+                    if (stu == actgrp || (stu & actgrp) > 0)
                     {
                         var tool = act.Tool;
 
@@ -3289,12 +3316,29 @@ namespace ChainFX.Web
             return this;
         }
 
+        public HtmlBuilder VAR<K>(string action, K varkey, int subscript = -1, string caption = null, string tip = null, ToolAttribute toolattr = null, string css = null)
+        {
+            var wrk = Web.Work.VarWork;
+            var act = wrk.Actions[action];
+            var tool = toolattr ?? act?.Tool;
+
+            if (tool != null)
+            {
+                // current user autnorize check
+                var perm = Web.Principal == null || act.DoAuthorize(Web, true);
+
+                PutToolVar(act, tool, varkey, tool.IsAnchorTag ? -1 : subscript, caption, tip, disabled: !perm, css: css);
+            }
+
+            return this;
+        }
+
+
         public HtmlBuilder TOOL(string action, int subscript = -1, string caption = null, string tip = null, ToolAttribute toolattr = null, string css = null)
         {
             // locate the proper work
-            var w = Web.Work;
-            var act = w[action];
-
+            var wrk = Web.Work;
+            var act = wrk[action];
             var tool = toolattr ?? act?.Tool;
             if (tool != null)
             {
@@ -3346,7 +3390,7 @@ namespace ChainFX.Web
                     {
                         H3(sub.Header, "uk-card-header");
                     }
-                    UL_(compact ? "uk-card-body  uk-list uk-child-width-1-2" : "uk-card-body uk-list uk-list-divider uk-child-width-1-1", grid: true);
+                    UL_(compact ? "uk-card-body uk-list uk-child-width-1-2" : "uk-card-body uk-list uk-list-divider uk-child-width-1-1", grid: true);
                 }
 
                 LI_();

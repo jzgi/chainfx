@@ -421,6 +421,11 @@ namespace ChainFX.Web
             fResponse.Headers.Add(name, new StringValues(v.ToString()));
         }
 
+        public void SetHeader(string name, StringValues v)
+        {
+            fResponse.Headers.Add(name, v);
+        }
+
         public void SetHeader(string name, string v)
         {
             fResponse.Headers.Add(name, new StringValues(v));

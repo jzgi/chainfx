@@ -107,10 +107,8 @@ public abstract class Application : Storage
         JObj db = config[nameof(db)];
         if (db != null)
         {
-            InitNodality(db);
+            InitStorage(db);
         }
-        // initialize shared tables
-        InitConnects();
 
         custom = config[nameof(custom)];
     }
@@ -276,14 +274,4 @@ public abstract class Application : Storage
     }
 
     static readonly CancellationTokenSource Canceller = new();
-
-
-    static void InitConnects()
-    {
-        using (var dc = NewDbContext())
-        {
-            dc.Sql("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND right(table_name,1) = '_' AND table_name != 'nodes_';");
-            // dc.que
-        }
-    }
 }
