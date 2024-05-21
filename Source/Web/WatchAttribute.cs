@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChainFX.Nodal;
+namespace ChainFX.Web;
 
 /// <summary>
 /// To bind notice functionality to action.

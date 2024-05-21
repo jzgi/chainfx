@@ -691,6 +691,10 @@ public class DbContext : ISource, IParameters, IDisposable
             lst.Add(v);
         }
 
+        if (lst is ValueList<string> vlst)
+        {
+            return vlst.ToArray();
+        }
         return lst?.ToArray();
     }
 

@@ -53,7 +53,7 @@ public class WebConnect : IKeyable<string>
     // RPC
     //
 
-    public async Task<(short, M)> GetAsync<M>(string uri, string token = null) where M : class, ISource
+    public async Task<(short, S)> GetAsync<S>(string uri, string token = null) where S : class, ISource
     {
         try
         {
@@ -67,9 +67,9 @@ public class WebConnect : IKeyable<string>
             {
                 var bytea = await rsp.Content.ReadAsByteArrayAsync();
                 string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
-                var model = (M)ParseContent(ctyp, bytea, bytea.Length, typeof(M));
+                var src = (S)ParseContent(ctyp, bytea, bytea.Length, typeof(S));
 
-                return ((short)rsp.StatusCode, model);
+                return ((short)rsp.StatusCode, src);
             }
             return ((short)rsp.StatusCode, default);
         }
