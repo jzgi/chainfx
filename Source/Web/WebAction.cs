@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ChainFX.Nodal;
 
 namespace ChainFX.Web
 {
@@ -45,9 +44,6 @@ namespace ChainFX.Web
         readonly Action<WebContext, int> do2;
         readonly Func<WebContext, int, Task> do2Async;
 
-        // help tags
-        readonly HelpAttribute help;
-
         // restful tags
         readonly RestAttribute[] rests;
 
@@ -64,7 +60,6 @@ namespace ChainFX.Web
             authenticate = (AuthenticateAttribute)mi.GetCustomAttribute(typeof(AuthenticateAttribute), true);
             authorize = (AuthorizeAttribute)mi.GetCustomAttribute(typeof(AuthorizeAttribute), true);
             watch = (WatchAttribute)mi.GetCustomAttribute(typeof(WatchAttribute), true);
-            help = (HelpAttribute)mi.GetCustomAttribute(typeof(HelpAttribute), true);
             rests = (RestAttribute[])mi.GetCustomAttributes(typeof(RestAttribute), true);
 
             // create a doer delegate
@@ -140,8 +135,6 @@ namespace ChainFX.Web
         public ToolAttribute Tool => tool;
 
         public RestAttribute[] Rests => rests;
-
-        public HelpAttribute Help => help;
 
         public AuthenticateAttribute Authenticate => authenticate;
 

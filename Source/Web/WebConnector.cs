@@ -10,7 +10,7 @@ namespace ChainFX.Web;
 /// <summary>
 /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
 /// </summary>
-public class WebConnect : IKeyable<string>
+public class WebConnector : IKeyable<string>
 {
     public const string
         CONTENT_TYPE = "Content-Type",
@@ -29,10 +29,14 @@ public class WebConnect : IKeyable<string>
     /// <summary>
     /// Used to construct a random client that does not necessarily connect to a remote service. 
     /// </summary>
-    public WebConnect(string baseUri, string file = null, string password = null)
+    public WebConnector(string baseUri, string file = null, string password = null)
     {
         handler = new HttpClientHandler()
         {
+            UseProxy = false,
+            AllowAutoRedirect = false,
+            AutomaticDecompression = DecompressionMethods.None,
+            UseCookies = false,
             ClientCertificateOptions = ClientCertificateOption.Manual
         };
         if (file != null && password != null)

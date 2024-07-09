@@ -238,7 +238,7 @@ namespace ChainFX.Web
         /// <summary>
         /// Gives a frame page.
         /// </summary>
-        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, int maxage = 12, string title = null, bool manifest = false, string onload = null, short refresh = 0)
+        public static void GivePage(this WebContext wc, short status, Action<HtmlBuilder> main, bool? shared = null, int maxage = 12, string title = null, bool manifest = false, string onload = null, short refresh = 0, bool? dark = null)
         {
             var h = new HtmlBuilder(true, 32 * 1024)
             {
@@ -273,9 +273,13 @@ namespace ChainFX.Web
             h.Add("</head>");
 
             h.Add("<body");
-            if (refresh > 0)
+            if (refresh > 0 || dark == true)
             {
                 h.Add(" class=\"uk-dark\"");
+            }
+            else if (dark == false)
+            {
+                h.Add(" class=\"uk-light\"");
             }
             if (onload != null)
             {
@@ -296,7 +300,7 @@ namespace ChainFX.Web
         /// <summary>
         /// Gives out adialog pane
         /// </summary>
-        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, int maxage = 12, string title = null)
+        public static void GivePane(this WebContext wc, short status, Action<HtmlBuilder> main = null, bool? shared = null, int maxage = 12, string css = null)
         {
             var h = new HtmlBuilder(true, 8 * 1024)
             {
@@ -307,12 +311,6 @@ namespace ChainFX.Web
             h.Add("<html>");
 
             h.Add("<head>");
-            if (title != null)
-            {
-                h.Add("<title>");
-                h.Add(title);
-                h.Add("</title>");
-            }
             h.Add("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             h.Add("<link rel=\"stylesheet\" href=\"/uikit.min.css\">");
             h.Add("<link rel=\"stylesheet\" href=\"/app.min.css\">");
@@ -321,7 +319,17 @@ namespace ChainFX.Web
             h.Add("<script src=\"/app.min.js\"></script>");
             h.Add("</head>");
 
-            h.Add("<body class=\"uk-light\">");
+            h.Add("<body class=\"");
+            var tool = wc.Action.Tool;
+            if (tool != null && tool.IsButtonTag)
+            {
+                h.Add("uk-light");
+            }
+            if (css != null)
+            {
+                h.Add(css);
+            }
+            h.Add("\">");
 
             main?.Invoke(h);
 

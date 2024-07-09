@@ -27,10 +27,10 @@ namespace ChainFX
             MSK_ID = 0x0001,
             MSK_BORN = 0x0002,
             MSK_TYP = 0x0004,
+            MSK_STATUS = 0x0008,
             MSK_EDIT = 0x0010,
-            MSK_LATE = 0x0020,
-            MSK_LATER = 0x0060,
-            MSK_STATUS = 0x0080,
+            MSK_REV = 0x0020,
+            MSK_LATER = 0x0040,
             MSK_AUX = 0x0100,
             MSK_EXTRA = 0x0200;
 

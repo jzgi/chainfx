@@ -15,11 +15,11 @@ namespace ChainFX.Web
         // declared actions 
         readonly Map<string, WebAction> actions = new Map<string, WebAction>(32);
 
-        // the default action, can be null
-        readonly WebAction @default;
-
         // the catch action, can be null
         internal readonly WebAction @catch;
+
+        // the default action, can be null
+        readonly WebAction @default;
 
         // actions with ToolAttribute
         readonly WebAction[] tooled;
@@ -27,31 +27,21 @@ namespace ChainFX.Web
         // actions with TwinSpyAttribute
         readonly WebAction[] twinSpied;
 
+
+        readonly Type type;
+
+        //
+        // object locator
+
+        Hold[] cells;
+
+        int size;
+
         // subworks, if any
         Map<string, WebWork> subWorks;
 
         // variable-key subwork, if any
         WebWork varWork;
-
-        // help tags
-        readonly HelpAttribute _help;
-
-
-        public string Name { get; internal set; }
-
-        public string Folder { get; internal set; }
-
-        public UiAttribute Ui { get; internal set; }
-
-        public AuthenticateAttribute Authenticate { get; internal set; }
-
-        public AuthorizeAttribute Authorize { get; internal set; }
-
-        public HelpAttribute Help => _help;
-
-        public object State { get; set; }
-
-        public string Header { get; set; }
 
         // to obtain a string key from a data object.
         protected WebWork()
@@ -61,7 +51,6 @@ namespace ChainFX.Web
             Ui = (UiAttribute)type.GetCustomAttribute(typeof(UiAttribute), true);
             Authenticate = (AuthenticateAttribute)type.GetCustomAttribute(typeof(AuthenticateAttribute), false);
             Authorize = (AuthorizeAttribute)type.GetCustomAttribute(typeof(AuthorizeAttribute), false);
-            _help = (HelpAttribute)type.GetCustomAttribute(typeof(HelpAttribute), true);
 
             // gather actions
             foreach (var mi in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -120,7 +109,20 @@ namespace ChainFX.Web
             twinSpied = spylst.ToArray();
         }
 
-        public virtual string Key => Name;
+
+        public string Name { get; internal set; }
+
+        public string Folder { get; internal set; }
+
+        public UiAttribute Ui { get; internal set; }
+
+        public AuthenticateAttribute Authenticate { get; internal set; }
+
+        public AuthorizeAttribute Authorize { get; internal set; }
+
+        public object State { get; set; }
+
+        public string Header { get; set; }
 
         public string Label => Ui?.Label;
 
@@ -129,9 +131,6 @@ namespace ChainFX.Web
         public string Icon => Ui?.Icon;
 
         public short Status => Ui?.Status ?? 0;
-
-
-        readonly Type type;
 
         public WebService Service { get; internal set; }
 
@@ -161,19 +160,21 @@ namespace ChainFX.Web
 
         public bool HasVarWork => varWork != null;
 
-        public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
-
         public WebAction this[string method] => string.IsNullOrEmpty(method) ? @default : actions[method];
 
         public WebAction this[int index] => actions.EntryAt(index).Value;
+
+        // to resolve from the principal object.
+        public Func<IData, string, object> Accessor { get; internal set; }
+
+        public virtual string Key => Name;
+
+        public bool IsOf(Type typ) => this.type == typ || typ.IsAssignableFrom(this.type);
 
         public string GetFilePath(string file)
         {
             return Path.Combine(Directory, file);
         }
-
-        // to resolve from the principal object.
-        public Func<IData, string, object> Accessor { get; internal set; }
 
         public object GetAccessor(IData prin, string key)
         {
@@ -259,93 +260,6 @@ namespace ChainFX.Web
             wrk.OnCreate();
 
             return wrk;
-        }
-
-        [Ui(tip: "帮助", icon: "question", Documented = false), Tool(Modal.ButtonShow)]
-        public virtual void help(WebContext wc)
-        {
-            wc.GivePane(200, h =>
-            {
-                // class help
-
-                if (Ui != null)
-                {
-                    h.ARTICLE_("uk-card uk-card-primary");
-                    h.H3("简介", css: "uk-card-header");
-                    h.SECTION_("uk-card-body");
-                    if (Tip != null)
-                    {
-                        h.T(Tip);
-                    }
-                    _help?.Render(h);
-
-                    h._SECTION();
-                    h._ARTICLE();
-                }
-
-                h.ARTICLE_("uk-card uk-card-primary");
-                h.H3("操作说明", "uk-card-header");
-                h.DL_("uk-bard-body");
-                for (int i = 0; i < actions?.Count; i++)
-                {
-                    var act = actions.ValueAt(i);
-
-                    if (act.Ui?.Documented == true)
-                    {
-                        // term
-
-                        h.DT_();
-
-                        if (act.Label != null)
-                        {
-                            if (act.Icon != null)
-                            {
-                                h.ICON(act.Icon);
-                            }
-                            h.T(act.Label);
-                        }
-                        else if (act.Icon != null)
-                        {
-                            h.ICON(act.Icon);
-                        }
-                        else
-                        {
-                            h.T(act.Tip);
-                        }
-
-                        h._DT();
-
-                        // definition
-
-                        h.DD_();
-                        h.P(act.Tip);
-                        act.Help?.Render(h);
-                        h._DD();
-                    }
-                }
-                h._DL();
-                h._ARTICLE();
-
-                if (SubWorks == null) return;
-
-                h.ARTICLE_("uk-card uk-card-primary");
-                h.H3("功能模块", "uk-card-header");
-                h.UL_("uk-bard-body");
-
-                for (int i = 0; i < SubWorks?.Count; i++)
-                {
-                    var w = SubWorks.ValueAt(i);
-                    if (w.Ui != null)
-                    {
-                        h.LI_();
-
-
-                        h._LI();
-                    }
-                }
-                h._UL();
-                h._ARTICLE();
-            }, shared: true, maxage: 3600 * 6);
         }
 
         protected void GenerateRestDoc(HtmlBuilder h)
@@ -434,13 +348,6 @@ namespace ChainFX.Web
             return Name;
         }
 
-        //
-        // object locator
-
-        Hold[] cells;
-
-        int size;
-
         public void Attach(object value, short flag = 0)
         {
             if (cells == null)
@@ -477,11 +384,10 @@ namespace ChainFX.Web
         /// </summary>
         class Hold
         {
+            readonly short flag;
             readonly Type typ;
 
             readonly object value;
-
-            readonly short flag;
 
             internal Hold(object value, short flag)
             {

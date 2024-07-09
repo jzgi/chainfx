@@ -48,7 +48,7 @@ public abstract class Application : Storage
 
 
     // registered web connectors
-    static readonly Map<string, WebConnect> connects = new(32);
+    static readonly Map<string, WebConnector> connects = new(32);
 
 
     /// <summary>

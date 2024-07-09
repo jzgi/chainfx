@@ -1556,8 +1556,14 @@ namespace ChainFX.Web
 
         public HtmlBuilder FIELD_(string label, string css = null)
         {
-            LABEL(label, css);
-            Add("<span class=\"uk-static\">");
+            LABEL(label);
+            Add("<span class=\"uk-static");
+            if (css != null)
+            {
+                Add(' ');
+                Add(css);
+            }
+            Add("\">");
             return this;
         }
 
@@ -1738,9 +1744,13 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder A_<A, B>(A a, B b, string css = null, int id = 0, string onclick = null)
+        public HtmlBuilder A_<A, B>(A a, B b, bool parent = false, string css = null, int id = 0, string onclick = null)
         {
             Add("<a");
+            if (parent)
+            {
+                Add(" target=\"_parent\"");
+            }
             if (css != null)
             {
                 Add(" class=\"");
@@ -2246,7 +2256,8 @@ namespace ChainFX.Web
                     Add(k);
                 }
                 Add("\" onclick=\"goto(this.href, event);\">");
-                Add(v.ToString());
+                var lbl = v.ToString();
+                Add(lbl);
                 Add("</a></li>");
             }
 
@@ -3388,7 +3399,7 @@ namespace ChainFX.Web
                     FORM_("uk-card uk-card-primary");
                     if (compact)
                     {
-                        H3(sub.Header, "uk-card-header");
+                        H3_("uk-card-header").T(sub.Header).SPAN_("uk-margin-auto-left").ICON("grid")._SPAN()._H3();
                     }
                     UL_(compact ? "uk-card-body uk-list uk-child-width-1-2" : "uk-card-body uk-list uk-list-divider uk-child-width-1-1", grid: true);
                 }
@@ -4929,7 +4940,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder OPTION<T>(T v, string caption = null, int title = 0, bool selected = false, bool enabled = true)
+        public HtmlBuilder OPTION<T>(T v, string caption = null, decimal title = 0, bool selected = false, bool enabled = true)
         {
             Add("<option value=\"");
             AddPrimitive(v);
