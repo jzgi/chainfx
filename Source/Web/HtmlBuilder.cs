@@ -1415,7 +1415,7 @@ namespace ChainFX.Web
             Add("<span class=\"uk-static");
             if (sep == "<br>")
             {
-                Add(" uk-text-small");
+                Add(" uk-text-xsmall");
             }
             Add("\">");
 

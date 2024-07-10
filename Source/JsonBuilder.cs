@@ -419,7 +419,6 @@ public class JsonBuilder : ContentBuilder, ISink
         }
     }
 
-
     public void Put(string name, JObj v)
     {
         if (counts[level]++ > 0) Add(',');
