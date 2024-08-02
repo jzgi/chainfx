@@ -147,6 +147,10 @@ public class JsonBuilder : ContentBuilder, ISink
             Add(':');
         }
 
+        if (v.negative)
+        {
+            Add('-');
+        }
         Add(v.bigint);
         if (v.Pt)
         {

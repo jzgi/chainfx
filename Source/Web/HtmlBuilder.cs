@@ -2269,15 +2269,20 @@ namespace ChainFX.Web
         }
 
 
-        public HtmlBuilder FORM_(string css = null, string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null)
+        public HtmlBuilder FORM_(string css = null, string action = null, bool post = true, bool mp = false, string oninput = null, string onsubmit = null, string id = null)
         {
             Add("<form class=\"");
             if (css != null)
             {
                 Add(css);
             }
-
             Add('"');
+            if (id != null)
+            {
+                Add(" id=\"");
+                Add(id);
+                Add('"');
+            }
             if (action != null)
             {
                 Add(" action=\"");
@@ -2675,25 +2680,6 @@ namespace ChainFX.Web
 
             // pagination if any
             Add("</ul>");
-            return this;
-        }
-
-        public HtmlBuilder SLIDERUL_()
-        {
-            Add("<div class=\"uk-position-relative uk-visible-toggle uk-light\" tabindex=\"-1\" uk-slider=\"clsActivated: uk-transition-active; center: true; autoplay: true\">");
-            Add("<ul class=\"uk-slider-items uk-grid\">");
-
-            return this;
-        }
-
-        public HtmlBuilder _SLIDERUL()
-        {
-            Add("</ul>");
-
-            Add("<a class=\"uk-position-center-left uk-position-small uk-hidden-hover\" href uk-slidenav-previous uk-slider-item=\"previous\"></a>");
-            Add("<a class=\"uk-position-center-right uk-position-small uk-hidden-hover\" href uk-slidenav-next uk-slider-item=\"next\"></a>");
-            Add("</div>");
-
             return this;
         }
 
