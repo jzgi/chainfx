@@ -375,8 +375,8 @@ public abstract class ContentBuilder : HttpContent, IContent
                 Add(DIGIT[q]);
             }
         }
-        
-        
+
+
         if (!bgn)
         {
             bgn = true;
@@ -612,7 +612,10 @@ public abstract class ContentBuilder : HttpContent, IContent
         else if (v is double doublev) Add(doublev);
         else if (v is DateTime dtv)
         {
-            if (dtv != default) Add(dtv, time: 2);
+            if (dtv != default)
+            {
+                Add(dtv, time: 0);
+            }
         }
         else
         {

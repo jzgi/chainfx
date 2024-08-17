@@ -20,7 +20,7 @@ public abstract class Application : Storage
 {
     public const string
         APPLICATION_JSON = "application.json",
-        CERTI_PFX = "cert.pfx";
+        CERTI_PFX = "application.pfx";
 
 
     static readonly Peer nodal;
@@ -48,7 +48,7 @@ public abstract class Application : Storage
 
 
     // registered web connectors
-    static readonly Map<string, WebConnector> connects = new(32);
+    static readonly Map<string, WebConnect> connects = new(32);
 
 
     /// <summary>
@@ -89,12 +89,12 @@ public abstract class Application : Storage
 
         // X509 certificate password & data
         //
-        string certpasswd = nodal.certpasswd;
-        if (certpasswd != null)
+        string certpass = nodal.certpass;
+        if (certpass != null)
         {
             try
             {
-                certificate = new X509Certificate2(File.ReadAllBytes(CERTI_PFX), certpasswd);
+                certificate = new X509Certificate2(File.ReadAllBytes(CERTI_PFX), certpass);
             }
             catch (Exception e)
             {
@@ -140,9 +140,9 @@ public abstract class Application : Storage
         //
 
         var prop = "service-" + name;
-        var serviceConfig = (JObj)config[prop];
+        var servicecfg = (JObj)config[prop];
 
-        if (serviceConfig == null)
+        if (servicecfg == null)
         {
             throw new ApplicationException("missing '" + prop + "' in " + APPLICATION_JSON);
         }
@@ -153,7 +153,7 @@ public abstract class Application : Storage
             Name = name,
             Folder = folder
         };
-        svc.Init(prop, serviceConfig);
+        svc.Init(prop, servicecfg);
 
         services.Add(name, svc);
 

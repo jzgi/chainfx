@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -26,12 +27,15 @@ namespace ChainFX.Web
         private string address;
 
         // the embedded HTTP engine
-        private readonly KestrelServer server;
+        private KestrelServer server;
 
 
         // local shared cache or not
         private bool cache;
 
+
+        // X509 certificate
+        private X509Certificate2 certificate;
 
         private string proxy;
 
@@ -48,40 +52,62 @@ namespace ChainFX.Web
             Service = this;
             Directory = "/";
             Pathing = "/";
-
-            // create the embedded server instance
-            var opts = new KestrelServerOptions
-            {
-                ApplicationServices = this
-            };
-
-            if (Application.Certificate != null)
-            {
-                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = Application.Certificate);
-            }
-
-            server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
         }
 
-        internal void Init(string prop, JObj serviceConfig)
+        internal void Init(string prop, JObj servicecfg)
         {
-            address = serviceConfig[nameof(address)];
-            if (address == null)
+            // X509 certificate password & data
+            //
+            string certpass = servicecfg[nameof(certpass)];
+            if (certpass != null)
             {
-                throw new ApplicationException("missing 'url' in app.json web-" + prop);
+                try
+                {
+                    certificate = new X509Certificate2(File.ReadAllBytes(Key + ".pfx"), certpass);
+                }
+                catch (Exception e)
+                {
+                    Application.War(e.Message);
+                }
             }
-            var feat = server.Features.Get<IServerAddressesFeature>();
-            feat.Addresses.Add(address);
 
-            cache = serviceConfig[nameof(cache)];
+            // cache setup
+            //
+            cache = servicecfg[nameof(cache)];
             if (cache)
             {
                 // create the response cache
                 shared = new ConcurrentDictionary<string, WebStaticContent>(ConcurrencyLevel, 1024);
             }
 
-            proxy = serviceConfig[nameof(proxy)];
+            proxy = servicecfg[nameof(proxy)];
+
+
+            // create the embedded server instance
+            //
+            var opts = new KestrelServerOptions
+            {
+                ApplicationServices = this
+            };
+
+            var cert = certificate ?? Application.Certificate;
+            if (cert != null)
+            {
+                opts.ConfigureHttpsDefaults(https => https.ServerCertificate = cert);
+            }
+
+            server = new KestrelServer(Options.Create(opts), Application.TransportFactory, Application.Logger);
+
+            address = servicecfg[nameof(address)];
+            if (address == null)
+            {
+                throw new ApplicationException("missing 'url' in app.json web-" + prop);
+            }
+            var feat = server.Features.Get<IServerAddressesFeature>();
+            feat.Addresses.Add(address);
         }
+
+        public X509Certificate2 Certificate => certificate;
 
 
         // IServiceProvider

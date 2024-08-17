@@ -9,7 +9,7 @@ public class Peer : Entity
 
     public string secret;
 
-    public string certpasswd;
+    public string certpass;
 
     public short logging;
 
@@ -19,7 +19,7 @@ public class Peer : Entity
 
         s.Get(nameof(peerid), ref peerid);
         s.Get(nameof(secret), ref secret);
-        s.Get(nameof(certpasswd), ref certpasswd);
+        s.Get(nameof(certpass), ref certpass);
         s.Get(nameof(logging), ref logging);
     }
 
@@ -29,7 +29,7 @@ public class Peer : Entity
 
         s.Put(nameof(peerid), peerid);
         s.Put(nameof(secret), secret);
-        s.Put(nameof(certpasswd), certpasswd);
+        s.Put(nameof(certpass), certpass);
         s.Put(nameof(logging), logging);
     }
 
@@ -37,7 +37,7 @@ public class Peer : Entity
 
     public string Secret => secret;
 
-    public string CertPasswd => certpasswd;
+    public string CertPasswd => certpass;
 
     public short Logging => logging;
 }

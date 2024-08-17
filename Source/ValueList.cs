@@ -120,7 +120,7 @@ namespace ChainFX
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            Array.Copy(this.array, 0, array, 0, count);
         }
     }
 }

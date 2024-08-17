@@ -677,6 +677,23 @@ public class DbContext : ISource, IParameters, IDisposable
         return lst?.ToArray();
     }
 
+    public DateTime[] ToDateTimeArray(IList<DateTime> lst = null)
+    {
+        while (Next())
+        {
+            if (lst == null)
+            {
+                lst = new ValueList<DateTime>(16);
+            }
+
+            Let(out DateTime v);
+
+            lst.Add(v);
+        }
+
+        return lst?.ToArray();
+    }
+
     public string[] ToStringArray(IList<string> lst = null)
     {
         while (Next())

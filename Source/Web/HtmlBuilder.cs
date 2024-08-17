@@ -2683,7 +2683,7 @@ namespace ChainFX.Web
             return this;
         }
 
-        public HtmlBuilder TABLE_(bool dark = false, string css = null)
+        public HtmlBuilder TABLE_(string caption = null, bool dark = false, string css = null)
         {
             // Add("<div class=\"uk-overflow-auto\">");
             if (dark)
@@ -2701,6 +2701,25 @@ namespace ChainFX.Web
             }
             Add("\">");
 
+            if (caption != null)
+            {
+                Add("<caption>");
+                Add(caption);
+                Add("</caption>");
+            }
+
+            return this;
+        }
+
+        public HtmlBuilder CAPTION_()
+        {
+            Add("<caption>");
+            return this;
+        }
+
+        public HtmlBuilder _CAPTION()
+        {
+            Add("</caption>");
             return this;
         }
 
@@ -4559,7 +4578,14 @@ namespace ChainFX.Web
             }
 
             Add(">");
-            Add(label);
+            if (label != null)
+            {
+                Add(label);
+            }
+            else
+            {
+                AddPrimitive(v);
+            }
             if (tip != null)
             {
                 Add("&nbsp;&nbsp;");
@@ -4715,6 +4741,28 @@ namespace ChainFX.Web
                 var o = opt[i];
                 if (i > 0) Add("&nbsp;&nbsp;");
                 RADIO(name, o, o, o.Equals(v));
+            }
+
+            if (legend != null)
+            {
+                _FIELDSUL();
+            }
+
+            return this;
+        }
+
+        public HtmlBuilder RADIOSET(string name, DateTime v, DateTime[] opt, string legend = null, string css = null, bool required = false)
+        {
+            if (legend != null)
+            {
+                FIELDSUL_(legend, false, css);
+            }
+
+            for (int i = 0; i < opt.Length; i++)
+            {
+                var o = opt[i];
+                if (i > 0) Add("&nbsp;&nbsp;");
+                RADIO(name, o, o.ToShortDateString(), o.Equals(v));
             }
 
             if (legend != null)

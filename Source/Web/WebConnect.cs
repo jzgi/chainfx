@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using static ChainFX.DataUtility;
@@ -10,12 +11,13 @@ namespace ChainFX.Web;
 /// <summary>
 /// A client connector that implements both one-to-one and one-to-many communication in both sync and async approaches.
 /// </summary>
-public class WebConnector : IKeyable<string>
+public class WebConnect : IKeyable<string>
 {
     public const string
         CONTENT_TYPE = "Content-Type",
         CONTENT_LENGTH = "Content-Length",
-        COOKIE = "Cookie";
+        COOKIE = "Cookie",
+        MAP_ADDRESS = "Map-Address";
 
 
     protected readonly HttpClientHandler handler;
@@ -29,7 +31,7 @@ public class WebConnector : IKeyable<string>
     /// <summary>
     /// Used to construct a random client that does not necessarily connect to a remote service. 
     /// </summary>
-    public WebConnector(string baseUri, string file = null, string password = null)
+    public WebConnect(string baseUri, string file = null, string password = null)
     {
         handler = new HttpClientHandler()
         {
@@ -57,15 +59,12 @@ public class WebConnector : IKeyable<string>
     // RPC
     //
 
-    public async Task<(short, S)> GetAsync<S>(string uri, string token = null) where S : class, ISource
+    public async Task<(short, S)> GetAsync<S>(string uri, Action<HttpRequestHeaders> headers = null) where S : class, ISource
     {
         try
         {
             var req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (token != null)
-            {
-                req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
-            }
+            headers?.Invoke(req.Headers);
             var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
             if (rsp.StatusCode == HttpStatusCode.OK)
             {
@@ -85,15 +84,12 @@ public class WebConnector : IKeyable<string>
         }
     }
 
-    public async Task<(short, D)> GetObjectAsync<D>(string uri, short msk = 0xff, string token = null) where D : IData, new()
+    public async Task<(short, D)> GetObjectAsync<D>(string uri, short msk = 0xff, Action<HttpRequestHeaders> headers = null) where D : IData, new()
     {
         try
         {
             var req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (token != null)
-            {
-                req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
-            }
+            headers?.Invoke(req.Headers);
             var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
             if (rsp.StatusCode == HttpStatusCode.OK)
             {
@@ -116,15 +112,12 @@ public class WebConnector : IKeyable<string>
         }
     }
 
-    public async Task<(short, D[])> GetArrayAsync<D>(string uri, short msk = 0xff, string token = null) where D : IData, new()
+    public async Task<(short, D[])> GetArrayAsync<D>(string uri, short msk = 0xff, Action<HttpRequestHeaders> headers = null) where D : IData, new()
     {
         try
         {
             var req = new HttpRequestMessage(HttpMethod.Get, uri);
-            if (token != null)
-            {
-                req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
-            }
+            headers?.Invoke(req.Headers);
             var rsp = await client.SendAsync(req, HttpCompletionOption.ResponseContentRead);
             if (rsp.StatusCode == HttpStatusCode.OK)
             {
@@ -146,15 +139,12 @@ public class WebConnector : IKeyable<string>
         }
     }
 
-    public async Task<short> PostAsync(string uri, IContent content, string token = null)
+    public async Task<short> PostAsync(string uri, IContent content, Action<HttpRequestHeaders> headers = null)
     {
         try
         {
             var req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (token != null)
-            {
-                req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
-            }
+            headers?.Invoke(req.Headers);
             req.Content = (HttpContent)content;
             req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
             req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
@@ -176,15 +166,12 @@ public class WebConnector : IKeyable<string>
         }
     }
 
-    public async Task<(short, M)> PostAsync<M>(string uri, IContent content, string token = null) where M : class, ISource
+    public async Task<(short, S)> PostAsync<S>(string uri, IContent content, Action<HttpRequestHeaders> headers = null) where S : class, ISource
     {
         try
         {
             var req = new HttpRequestMessage(HttpMethod.Post, uri);
-            if (token != null)
-            {
-                req.Headers.TryAddWithoutValidation(COOKIE, "token=" + token);
-            }
+            headers?.Invoke(req.Headers);
             req.Content = (HttpContent)content;
             req.Headers.TryAddWithoutValidation(CONTENT_TYPE, content.CType);
             req.Headers.TryAddWithoutValidation(CONTENT_LENGTH, content.Count.ToString());
@@ -194,7 +181,7 @@ public class WebConnector : IKeyable<string>
             {
                 string ctyp = rsp.Content.Headers.GetValue(CONTENT_TYPE);
                 var bytes = await rsp.Content.ReadAsByteArrayAsync();
-                var model = ParseContent(ctyp, bytes, bytes.Length, typeof(M)) as M;
+                var model = ParseContent(ctyp, bytes, bytes.Length, typeof(S)) as S;
 
                 return ((short)rsp.StatusCode, model);
             }
